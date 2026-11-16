@@ -39,7 +39,7 @@ extern void func_800030D0(void *, s32);         /* bzero */
 typedef struct {
     u32 inst1, inst2, inst3, inst4;
 } __osExceptionVector;
-extern __osExceptionVector D_80003270;          /* __osExceptionPreamble */
+extern __osExceptionVector __osExceptionPreamble_rt;          /* __osExceptionPreamble */
 extern __osExceptionVector func_80000000;       /* UT_VEC */
 
 OSTime osClockRate = 62500000;                   /* osClockRate (TU-defined) */
@@ -82,10 +82,10 @@ void osInitialize(void) {
     while (func_8000A040((void *)0x1FC007FC, pifdata | 8)) {
         ;
     }
-    *(__osExceptionVector *)0x80000000 = D_80003270;
-    *(__osExceptionVector *)0x80000080 = D_80003270;
-    *(__osExceptionVector *)0x80000100 = D_80003270;
-    *(__osExceptionVector *)0x80000180 = D_80003270;
+    *(__osExceptionVector *)0x80000000 = __osExceptionPreamble_rt;
+    *(__osExceptionVector *)0x80000080 = __osExceptionPreamble_rt;
+    *(__osExceptionVector *)0x80000100 = __osExceptionPreamble_rt;
+    *(__osExceptionVector *)0x80000180 = __osExceptionPreamble_rt;
     func_800031F0((void *)0x80000000, 0x190);
     func_80005350((void *)0x80000000, 0x190);
     func_80009DF0();

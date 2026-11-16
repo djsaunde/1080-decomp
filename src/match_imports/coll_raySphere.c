@@ -1,5 +1,6 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post0b.c. Target bytes unchanged. */
 #include "context_game_libs_post0b.h"
+#include "uso_call.h"
 int coll_raySphere(float *a, float *b, float *c, float r, float *out) {
     float step[3];
     float v_oc[3];
@@ -48,7 +49,7 @@ int coll_raySphere(float *a, float *b, float *c, float r, float *out) {
         tmp = d2;
         *(Tri3i *)dir = *(Tri3i *)&tmp;
     }
-    gl_func_00000000_3a58cn((Vec3 *)dir);
+    XCALL(gl_func_00000000_3a58cn, math_vec3Normalize)((Vec3 *)dir);
     dot = (v_ca[2] * dir[2]) + ((v_ca[1] * dir[1]) + (dir[0] * v_ca[0]));
     disc = (r * r) - (((v_ca[2] * v_ca[2]) + ((v_ca[1] * v_ca[1]) + (v_ca[0] * v_ca[0]))) - (dot * dot));
     if (disc < zero) {
@@ -61,7 +62,7 @@ int coll_raySphere(float *a, float *b, float *c, float r, float *out) {
     if (1) {}
     tmp = d3;
     *(Tri3i *)v_bc = *(Tri3i *)&tmp;
-    if (r < gl_func_00000000_3a58cs((v_bc[2] * v_bc[2]) + ((v_bc[1] * v_bc[1]) + (v_bc[0] * v_bc[0])))) {
+    if (r < XCALL(gl_func_00000000_3a58cs, math_vec3Length_0005BBCC)((v_bc[2] * v_bc[2]) + ((v_bc[1] * v_bc[1]) + (v_bc[0] * v_bc[0])))) {
         return 0;
     }
     scalar = dot - gl_3a58c_sqrt_082880(disc);

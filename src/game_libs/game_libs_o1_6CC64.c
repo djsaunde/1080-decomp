@@ -17,6 +17,7 @@ extern u32 gl_func_00000000(void);  /* __osDisableInt */
 extern void gl_func_00000001(u32);  /* __osRestoreInt */
 
 void osViBlack(u8 active) {
+    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
     register u32 saveMask = gl_func_00000000();
     if (active)
         gl___osViNext_vinext->state |= 0x20;

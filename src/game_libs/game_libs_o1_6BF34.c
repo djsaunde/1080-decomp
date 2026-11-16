@@ -59,6 +59,7 @@ void gl_osCreateThread(S *self, int a1, int a2, int a3, int a4, int a5) {
     self->f24 = 0;
     self->s16 = 1;
     self->s18 = 0;
+    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
     tmp = gl_func_00000000();
     self->f12 = D_00000000_f;
     D_00000000_g = self;

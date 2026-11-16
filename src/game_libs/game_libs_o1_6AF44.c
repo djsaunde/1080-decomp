@@ -23,6 +23,7 @@ void gl_osDestroyThread(int *target) {
     register int *curr;
     register int *next;
 
+    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
     prelim = gl_func_00000000();
     if (target == 0) {
         target = gl___osRunningThread;

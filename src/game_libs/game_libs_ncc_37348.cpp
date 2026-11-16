@@ -25,7 +25,9 @@ inline void rz(Node *n, V3 &o) { if (0) { n = 0; } n->v60.z = o.z; }
 inline void sx(Node *n, f32 v) { if (0) { n = 0; } n->v60.x = v; }
 inline void sy(Node *n, f32 v) { if (0) { n = 0; } n->v60.y = v; }
 inline void sz(Node *n, f32 v) { if (0) { n = 0; } n->v60.z = v; }
+/* UNNAMED: unknown-role inline helper inlined at two jals with different callees (math_mtxAddTranslation, math_mtxRotateEuler); one spelling cannot name both */
 inline void call(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } gl_func_00000000(n->m30, v, o); }
+/* UNNAMED: no-reloc unused inline helper (callr), never emitted, no jal */
 inline void callr(Node *n, const V3 &v, Obj *o) { if (0) { n = 0; } gl_func_00000000(n->m30, &v, o); }
 inline void z3(V3 &v, int z) { v.x = z; v.y = z; v.z = z; }
 extern "C" void StickCtrlA_update_00037348(Obj *o) {
@@ -35,6 +37,7 @@ extern "C" void StickCtrlA_update_00037348(Obj *o) {
     V3 v2;
     f32 x, y;
     f32 ab;
+    /* UNNAMED: no-reloc dead if (0) codegen lever, emits no jal */
     if (0) { gl_func_00000000(&s); }
     x = o->in->x * kRo_StickCtrlA_update_00037348_19F0[0x19F0 / 4];
     y = o->in->y * kRo_StickCtrlA_update_00037348_19F0[0x19F0 / 4];

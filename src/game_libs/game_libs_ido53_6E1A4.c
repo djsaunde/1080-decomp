@@ -15,6 +15,7 @@ typedef struct { int queue; int msg; } EventState_0006E1A4;
 extern EventState_0006E1A4 D_00000000[];
 
 void gl_osSetEventMesg(int event, void *queue, int msg) {
+    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
     register int sr = gl_func_00000000();
     EventState_0006E1A4 *es = &gl___osEventStateTab[event];
     es->queue = (int)queue;

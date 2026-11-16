@@ -1,5 +1,6 @@
 /* Native original-compiler source port from src/game_uso/game_uso.c. Target bytes unchanged. */
 #include "context_game_uso.h"
+#include "uso_call.h"
 /* an MNode combined matrix (gdl/mnode.h MNode.cmtx; row 3 = world position) */
 typedef struct { float m[4][4]; } SnowChaseCMtx;
 void SnowChaseActorLook_update(GameUsoHomingPrefix *a0) {
@@ -49,14 +50,14 @@ void SnowChaseActorLook_update(GameUsoHomingPrefix *a0) {
         } while (0);
         *(Vec3 *)scratch = diff;
         dc2 = *(Vec3 *)scratch;
-        mag[0] = game_uso_func_070238(ay = dc2.x * dc2.x + dc2.y * dc2.y + dc2.z * dc2.z);
+        mag[0] = XCALL(game_uso_func_070238, math_vec3Length_0005BBCC)(ay = dc2.x * dc2.x + dc2.y * dc2.y + dc2.z * dc2.z);
         game_uso_28C0_normalize(&dc2);
         f = mag[0] * a0->field_5C;
         dc2.x = dc2.x * f;
         dc2.y = dc2.y * f;
         dc2.z = dc2.z * f;
         pose = out_home[0];
-        game_uso_func_072EE8((char *)pose + 0x30, &dc2);
+        XCALL(game_uso_func_072EE8, math_mtxAddTranslation)((char *)pose + 0x30, &dc2);
         out_home[0]->field_A0.x = out_home[0]->field_60.x;
         out_home[0]->field_A0.y = out_home[0]->field_60.y;
         out_home[0]->field_A0.z = out_home[0]->field_60.z;
@@ -97,14 +98,14 @@ void SnowChaseActorLook_update(GameUsoHomingPrefix *a0) {
         ssv.x = ssv.x - refv2[0];
         ssv.y = ssv.y - refv2[1];
         ssv.z = ssv.z - refv2[2];
-        mag2 = game_uso_func_070238(ssv.x * ssv.x + ssv.y * ssv.y + ssv.z * ssv.z);
+        mag2 = XCALL(game_uso_func_070238, math_vec3Length_0005BBCC)(ssv.x * ssv.x + ssv.y * ssv.y + ssv.z * ssv.z);
         game_uso_28C0_normalize(&ssv);
         f = (0, mag2) * a0->field_5C;
         ssv.x = ssv.x * f;
         ssv.y = ssv.y * f;
         ssv.z = ssv.z * f;
         pose = out_home[0];
-        game_uso_func_072EE8((char *)pose + 0x30, &ssv);
+        XCALL(game_uso_func_072EE8, math_mtxAddTranslation)((char *)pose + 0x30, &ssv);
         out_home[0]->field_A0.x = out_home[0]->field_60.x;
         out_home[0]->field_A0.y = out_home[0]->field_60.y;
         out_home[0]->field_A0.z = out_home[0]->field_60.z;

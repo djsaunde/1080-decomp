@@ -8,6 +8,7 @@
  * the 0x4F800000 add is the standard (float)(u32) correction. The two
  * statements share one global load via same-BB CSE. */
 #include "libultra/os_vi.h"
+#include "uso_call.h"
 extern int gl_func_00000000();
 extern __OSViContext *gl___osViNext_74DB4_p1;  /* __osViNext */
 extern unsigned short *gl___osViNext_74DB4_p2; /* &__osViNext->state (its own reloc'd load) */
@@ -15,10 +16,11 @@ extern unsigned short *gl___osViNext_74DB4_p2; /* &__osViNext->state (its own re
 void gl_osViSetXScale(float f) {
     register int v;
     register int sr;
+    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
     sr = gl_func_00000000();
     gl___osViNext_74DB4_p1->x.factor = f;
     *gl___osViNext_74DB4_p2 |= VI_STATE_XSCALE_UPDATED;
     v = gl___osViNext_74DB4_p1->modep->comRegs.xScale & VI_SCALE_MASK;
     gl___osViNext_74DB4_p1->x.scale = (u32)(gl___osViNext_74DB4_p1->x.factor * (float)(u32)v) & VI_SCALE_MASK;
-    gl_func_00000000(sr);
+    CALL(gl___osRestoreInt)(sr);
 }

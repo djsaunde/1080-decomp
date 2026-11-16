@@ -79,9 +79,10 @@ int Col::side(int f1, int f2) {
     {
     V3 *n = &me(me(me(me(me(me(me(this)))))))->gn()[f1];
     f1 = f1 + 0 * (int)&d1;
+    /* UNNAMED: no-reloc the placeholder's address in a 0 * (int)& regalloc lever, not a call; no jal */
     f1 = f1 + 0 * (int)&gl_func_00000000;
     f1 = f1 + 0 * (int)&d1;
-    f1 = f1 + 0 * (int)&gl_func_00000000;
+    f1 = f1 + 0 * (int)&gl_func_00000000; /* UNNAMED: no-reloc (as above) */
     f32 p1 = d1 * *n;
     f2 = f2;
     n = &(me(me(me(me(me(me(me(this)))))))->gn() + 0 * *(int *)&pad64[0])[f2];

@@ -102,7 +102,7 @@ int dbg_printfSink(int a0, char *src, int n) {
     int g = *(int *)((char *)&D_00000000 + 8);
     int k;
     if (g != 0) {
-        gl_func_00000000(g, 0, src, n);
+        CALL(TextWin_write)(g, 0, src, n);
     }
     if (n >= 255) {
         n = 255;

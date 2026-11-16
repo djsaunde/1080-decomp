@@ -29,6 +29,7 @@ extern void gl_func_00000001(void);         /* __osViSwapContext = __osViSwapCon
 #define IO_WRITE(a, v) (*(volatile u32 *)(a) = (v))
 
 void __osViInit(void) {
+    /* UNNAMED: mid-entry gl_bzero+0xC (libultra bzero entry, 3 insns into the build symbol) */
     gl_func_00000000(vi, sizeof(vi)); /* bzero */
     gl___osViCurr_vicurr = &vi[0];
     gl___osViNext_vinext = &vi[1];

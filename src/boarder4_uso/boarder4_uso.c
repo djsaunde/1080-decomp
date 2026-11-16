@@ -19,6 +19,7 @@ void fs_gdlReadQuad_boarder4_0000003C(Quad4 *dst) {
 
 void boarder4_readQuadParm_00000094(char *dst) {
     int tmp;
+    /* UNNAMED: sentinel callee is boarder4_uso_func_00000000, this module's own Text+0 function (a *_00000000 name, kept) */
     boarder4_uso_func_00000000(&tmp);
     fs_gdlReadQuad_boarder4_0000003C((Quad4*)(dst + 0x10));
 }

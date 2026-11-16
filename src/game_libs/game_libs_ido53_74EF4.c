@@ -40,6 +40,7 @@
  *     __osBaseCounter) and all jals: blank USO relocs -> pins = 0.
  * Spliced into game_libs_post2b_f.c.o via REPLACE_FUNC_BODY. */
 #include "libultra/os_pi.h"    /* OSMesgQueue, OSIoMesgHdr, OSIoMesg, OSDevMgr, OSThread (were private copies) */
+#include "uso_call.h"
 #include "libultra/os_timer.h" /* OSTime */
 
 typedef struct {
@@ -99,23 +100,24 @@ void osCreateViManager(OSPri pri)
     OSPri myPri;
     if (gl___osViDevMgr_site.active == 0)
     {
-        gl_func_00000000_tsvcinit();
-        gl_func_00000000_crmq(&viEventQueue, viEventBuf, 5);
+        XCALL(gl_func_00000000_tsvcinit, __osTimerServicesInit)();
+        XCALL(gl_func_00000000_crmq, gl_osCreateMesgQueue)(&viEventQueue, viEventBuf, 5);
         viRetraceMsg.hdr.type = OS_MESG_TYPE_VRETRACE;
         viRetraceMsg.hdr.pri = OS_MESG_PRI_NORMAL;
         viRetraceMsg.hdr.retQueue = NULL;
         viCounterMsg.hdr.type = OS_MESG_TYPE_COUNTER;
         viCounterMsg.hdr.pri = OS_MESG_PRI_NORMAL;
         viCounterMsg.hdr.retQueue = NULL;
-        gl_func_00000000_sevm(OS_EVENT_VI, &viEventQueue, &viRetraceMsg);
-        gl_func_00000000_sevm(OS_EVENT_COUNTER, &viEventQueue, &viCounterMsg);
+        XCALL(gl_func_00000000_sevm, gl_osSetEventMesg)(OS_EVENT_VI, &viEventQueue, &viRetraceMsg);
+        XCALL(gl_func_00000000_sevm, gl_osSetEventMesg)(OS_EVENT_COUNTER, &viEventQueue, &viCounterMsg);
         oldPri = -1;
-        myPri = gl_func_00000000_getpri(NULL);
+        myPri = XCALL(gl_func_00000000_getpri, gl_osGetThreadPri)(NULL);
         if (myPri < pri)
         {
             oldPri = myPri;
-            gl_func_00000000_setpri(NULL, pri);
+            XCALL(gl_func_00000000_setpri, gl_osSetThreadPri)(NULL, pri);
         }
+        /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
         savedMask = gl_func_00000000_dint();
         gl___osViDevMgr_site.active = 1;
         gl___osViDevMgr_site.thread = &viThread;
@@ -124,13 +126,13 @@ void osCreateViManager(OSPri pri)
         gl___osViDevMgr_site.acsQueue = NULL;
         gl___osViDevMgr_site.dma = NULL;
         gl___osViDevMgr_site.edma = NULL;
-        gl_func_00000000_crth(&viThread, 0, viMgrMain, &gl___osViDevMgr_site, &viThreadStack[OS_VIM_STACKSIZE], pri);
-        gl_func_00000000_viinit();
-        gl_func_00000000_stth(&viThread);
-        gl_func_00000000_rint(savedMask);
+        XCALL(gl_func_00000000_crth, gl_osCreateThread)(&viThread, 0, viMgrMain, &gl___osViDevMgr_site, &viThreadStack[OS_VIM_STACKSIZE], pri);
+        XCALL(gl_func_00000000_viinit, __osViInit)();
+        XCALL(gl_func_00000000_stth, gl_osStartThread)(&viThread);
+        XCALL(gl_func_00000000_rint, gl___osRestoreInt)(savedMask);
         if (oldPri != -1)
         {
-            gl_func_00000000_setpri(0, oldPri);
+            XCALL(gl_func_00000000_setpri, gl_osSetThreadPri)(0, oldPri);
         }
     }
 }
@@ -145,41 +147,43 @@ static void viMgrMain(void *arg)
 
     mb = NULL;
     first = 0;
-    vc = gl_func_00000000_vigetc();
+    vc = XCALL(gl_func_00000000_vigetc, gl___osViGetCurrentContext)();
     retrace = vc->retraceCount;
     if (retrace == 0)
         retrace = 1;
     dm = (OSDevMgr *)arg;
     while (TRUE)
     {
-        gl_func_00000000_recv(dm->evtQueue, (OSMesg)&mb, OS_MESG_BLOCK);
+        XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->evtQueue, (OSMesg)&mb, OS_MESG_BLOCK);
         switch (mb->hdr.type)
         {
         case OS_MESG_TYPE_VRETRACE:
-            gl_func_00000000_viswap();
+            XCALL(gl_func_00000000_viswap, __osViSwapContext)();
             retrace--;
             if (retrace == 0)
             {
-                vc = gl_func_00000000_vigetc();
+                vc = XCALL(gl_func_00000000_vigetc, gl___osViGetCurrentContext)();
                 if (vc->msgq != NULL)
-                    gl_func_00000000_send(vc->msgq, vc->msg, OS_MESG_NOBLOCK);
+                    XCALL(gl_func_00000000_send, gl_osSendMesg)(vc->msgq, vc->msg, OS_MESG_NOBLOCK);
                 retrace = vc->retraceCount;
             }
             gl_viIntrCount++;
             if (first)
             {
 
+                /* UNNAMED: mid-entry gl_osGetCount+0x8 (libultra osGetCount entry, 2 insns into the build symbol) */
                 count = gl_func_00000000_getcount();
                 gl___osCurrentTime_site = count;
                 first = 0;
             }
             count = gl_BaseCounter;
+            /* UNNAMED: mid-entry gl_osGetCount+0x8 (libultra osGetCount entry, 2 insns into the build symbol) */
             gl_BaseCounter = gl_func_00000000_getcount();
             count = gl_BaseCounter - count;
             gl___osCurrentTime_site = gl___osCurrentTime_site + count;
             break;
         case OS_MESG_TYPE_COUNTER:
-            gl_func_00000000_tint();
+            XCALL(gl_func_00000000_tint, __osTimerInterrupt)();
             break;
         }
     }

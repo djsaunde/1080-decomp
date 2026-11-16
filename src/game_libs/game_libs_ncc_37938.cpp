@@ -47,6 +47,7 @@ extern "C" void SeekNode_update(Obj *o) {
     gp(&a, c.getOut());
     o->t->mtx.getPos0(&b);
     Node *n = o->s;
+    /* UNNAMED: no-reloc dead if (0) codegen lever, emits no jal */
     if (0) { gl_func_00000000(&a, &b); }
     arg = (b - a) * (kk = o->k); if (1) {}
     if (n) {}

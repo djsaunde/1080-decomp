@@ -71,6 +71,7 @@ extern void gl_func_00000000_rstint711(unsigned int);
 
 void osViSetEvent(void *mq, void *m, unsigned int retraceCount) {
     register unsigned int saveMask;
+    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
     saveMask = gl_func_00000000_disint711();
     gl_func_00000000_vinext711->msgq = mq;
     gl_func_00000000_vinext711->msg = m;

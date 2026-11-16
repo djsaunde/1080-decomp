@@ -75,8 +75,10 @@ OSPiHandle *gl_osCartRomInit(void) {
     gl_CartRomHandle_cartrom.domain = 0;               /* PI_DOMAIN1 */
     gl_CartRomHandle_cartrom.speed = 0;
 
+    /* UNNAMED: mid-entry gl_bzero+0xC (libultra bzero entry, 3 insns into the build symbol) */
     gl_func_00000000_bzero(&gl_CartRomHandle_cartrom.transferInfo, sizeof(__OSTranxInfo));
 
+    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
     saveMask = gl_func_00000000_disint();
     gl_CartRomHandle_cartrom.next = gl___osPiTable_pitable;
     gl___osPiTable_pitable = &gl_CartRomHandle_cartrom;

@@ -33,6 +33,7 @@ inline Node *id(Node *n) { if (0) { n = 0; } return n; }
 inline void sx(Node *n, f32 v) { if (0) { n = 0; } n->v60.x = v; }
 inline void sy(Node *n, f32 v) { if (0) { n = 0; } n->v60.y = v; }
 inline void sz(Node *n, f32 v) { if (0) { n = 0; } n->v60.z = v; }
+/* UNNAMED: unknown-role inline helper inlined at two jals with different callees (math_mtxAddTranslation, math_mtxRotateEuler); one spelling cannot name both */
 inline void call(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } gl_func_00000000(n->m30, v, o); }
 extern "C" void StickCtrlB_update_00037540(Obj *o) {
     /* declaration order = the target's homes (agent-g runs 206 / 249 / 288): vB4 first, hz 176 / hy 172, hx at the
@@ -50,6 +51,7 @@ extern "C" void StickCtrlB_update_00037540(Obj *o) {
     Node *s;
     f32 ab;
     s = o->s;
+    /* UNNAMED: no-reloc dead if (0) codegen lever, emits no jal */
     if (0) { gl_func_00000000(&s); }
     int pad9C = 0;
     a = o->in->y * o->k3C;

@@ -17,6 +17,7 @@ fs_seek_rt = 0x80001870;
 fs_closeFile_rt = 0x80001894;
 uso_returnZeroF_8000149C_rt = 0x8000189C;
 D_80003270 = 0x80003270;
+__osExceptionPreamble_rt = 0x80003270;  /* runtime (link + 0x400) address of __osExceptionPreamble (linked at 0x80002E70), copied to the exception vectors by osInitialize; D_80003270 stays as exceptasm.s's linked alabel inside __osException */
 __ptExceptionPreamble_rt = 0x80003280;
 D_80003344 = 0x80003344;
 __osCleanupThread = 0x80003FE0;

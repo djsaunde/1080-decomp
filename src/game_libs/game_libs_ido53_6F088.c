@@ -58,7 +58,9 @@ OSPiHandle *gl_osLeoDiskInit(void) {
     IO_WRITE(0xA460002C, gl_LeoDiskHandle_leodisk.pageSize);    /* PI_BSD_DOM2_PGS */
     IO_WRITE(0xA4600030, gl_LeoDiskHandle_leodisk.relDuration); /* PI_BSD_DOM2_RLS */
     gl_LeoDiskHandle_leodisk.speed = 0;
+    /* UNNAMED: mid-entry gl_bzero+0xC (libultra bzero entry, 3 insns into the build symbol) */
     gl_func_00000000_bzero(&gl_LeoDiskHandle_leodisk.transferInfo, sizeof(__OSTranxInfo));
+    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
     saveMask = gl_func_00000000_disint();
     gl_LeoDiskHandle_leodisk.next = gl___osPiTable_pitable;
     gl___osPiTable_pitable = &gl_LeoDiskHandle_leodisk;

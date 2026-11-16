@@ -22,6 +22,7 @@ struct Base {
 struct Der : Base { char p60[0x90 - 0x60]; void v4(It *); Der() {} };
 extern "C" Der *Mat_clone_0004FBA4(Der *src, unsigned **pp) {
     Der *o = new Der;
+    /* UNNAMED: no-reloc dead if (0) codegen lever, emits no jal */
     if (0) { gl_func_00000000(&src); }
     o->m = src->m;
     It it;

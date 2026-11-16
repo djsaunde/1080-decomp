@@ -19,6 +19,7 @@ static void map4b2_copyQuad_0000003C(Quad4 *dst) {
 
 void map4b2_init_00000094(char *dst) {
     int tmp;
+    /* UNNAMED: sentinel callee is map4_data_uso_b2_func_00000000, this module's own Text+0 function (a *_00000000 name, kept) */
     map4_data_uso_b2_func_00000000(&tmp);
     map4b2_copyQuad_0000003C((Quad4*)(dst + 0x10));
 }

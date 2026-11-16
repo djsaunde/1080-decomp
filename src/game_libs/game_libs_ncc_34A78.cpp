@@ -31,6 +31,7 @@ extern "C" void app_initSystem(int a0) {
         gl_ref_0003B8F8 = 12;
         { signed char &a = sF6[0]; signed char &b = sF6[1]; a = 13; b = 2; }
         gl_ref_0003B8F9 = 1;
+        /* UNNAMED: mid-entry gl_bzero+0xC (libultra bzero entry, 3 insns into the build symbol) */
         gl_ref_0003B900 = 0; gl_func_00000000(&gl_ref_0003B904, 96);
         CALL(gl_osEPiLinkHandle)(&gl_ref_0003B8F0);
     }

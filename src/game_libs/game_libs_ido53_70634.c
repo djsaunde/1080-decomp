@@ -13,6 +13,7 @@ extern int gl_func_00000000();
 extern int D_00000000;
 
 void gl___osResetGlobalIntMask(int mask) {
+    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
     register int sr = gl_func_00000000();
     gl___OSGlobalIntMask &= ~(mask & ~0x401);
     CALL(gl___osRestoreInt)(sr);

@@ -36,6 +36,7 @@ typedef struct { float x, y, z; } Vec3;
  * C lever; do NOT re-grind. */
 void eddproc_uso_func_00000000(int *dst) {
     int buf[2];
+    /* UNNAMED: sentinel this is the sentinel-named Text+0 function (PREFIX_BYTES trampoline at word 0), which the call resolver cannot place; the ROM jal at Text+0x18 is fs_gdlReadFile */
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
@@ -217,18 +218,22 @@ void edd_EditorsProcess_handleInput(int a0) {
 
 void edd_readIntParm_0000032C(char *dst) {
     int tmp;
+    /* UNNAMED: sentinel callee is eddproc Text+0 = eddproc_uso_func_00000000 (a *_00000000 name, kept) */
     gl_func_00000000(&tmp);
+    /* UNNAMED: sentinel callee is eddproc Text+0 = eddproc_uso_func_00000000 (a *_00000000 name, kept) */
     gl_func_00000000(dst + 0x10);
 }
 
 void edd_readFloatParm_0000035C(char *dst) {
     int tmp;
+    /* UNNAMED: sentinel callee is eddproc Text+0 = eddproc_uso_func_00000000 (a *_00000000 name, kept) */
     gl_func_00000000(&tmp);
     eddproc_uso_func_edd_3C((float*)(dst + 0x10));
 }
 
 void edd_readQuadParm_0000038C(char *dst) {
     int tmp;
+    /* UNNAMED: sentinel callee is eddproc Text+0 = eddproc_uso_func_00000000 (a *_00000000 name, kept) */
     gl_func_00000000(&tmp);
     eddproc_uso_func_edd_78((Quad4*)(dst + 0x10));
 }
@@ -272,6 +277,7 @@ void *edd_ItemType_create_000003BC(int *arg0) {
 
 void edd_readVec3Parm_0000044C(char *dst) {
     int tmp;
+    /* UNNAMED: sentinel callee is eddproc Text+0 = eddproc_uso_func_00000000 (a *_00000000 name, kept) */
     gl_func_00000000(&tmp);
     eddproc_uso_func_edd_D0((Vec3*)(dst + 0x10));
 }

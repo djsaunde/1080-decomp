@@ -16,8 +16,10 @@ extern void *D_00000000;       /* running thread ptr placeholder */
 extern int gl_data_00000000;   /* run-queue head placeholder */
 
 void gl_osYieldThread(void) {
+    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
     register int sr = gl_func_00000000();
     ((OSThread *)gl___osRunningThread)->state = OS_STATE_RUNNABLE;
+    /* UNNAMED: mid-entry gl___osExceptionPreamble+0x630 (libultra __osEnqueueAndYield inside the exceptasm block) */
     gl_func_00000000(&gl_data_00000000);
     CALL(gl___osRestoreInt)(sr);
 }

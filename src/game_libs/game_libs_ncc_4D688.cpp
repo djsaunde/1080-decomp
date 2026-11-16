@@ -50,6 +50,7 @@ extern "C" void RcpMgr_insertTask(RcpTask *task, RcpTask **head) {
 }
 extern "C" void RcpMgr_removeTask(RcpTask *task, RcpTask **head) {
     if (*head == 0) {
+        /* UNNAMED: unknown-role this object is not the ROM body here (unspliced donor); its reloc maps to the ROM jal sys_fatal but the tool cannot prove the site */
         gl_func_00000000(D_00000000 + 0x201E4, head, task); /* "RcpTask remove" */
     }
     if (task->next == task->prev && task == task->prev) {

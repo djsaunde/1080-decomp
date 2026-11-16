@@ -98,6 +98,7 @@ extern "C" void gui_drawStringScaled_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f
             fh = h * sy;
             x = (f32)x0 + cx * sx;
             y = (f32)y0 + cy * sy;
+            /* UNNAMED: sentinel callee is gui Text+0 = gui_func_00000000, the char-to-glyph mapper (a *_00000000 name, kept) */
             idx = gl_func_00000000(*p);
             c = idx;
             u = f->glyphs[idx].u;

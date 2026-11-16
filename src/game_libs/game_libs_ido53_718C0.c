@@ -70,6 +70,7 @@ s32 __osRepairPackId(OSPfs *pfs, __OSPackId *badid, __OSPackId *newid)
         ERRCK(CALL(__osPfsSelectBank)(pfs))
     }
     newid->repaired = -1;
+    /* UNNAMED: mid-entry gl_osGetCount+0x8 (libultra osGetCount entry, 2 insns into the build symbol) */
     newid->random = gl_func_00000000();
     newid->serial_mid = badid->serial_mid;
     newid->serial_low = badid->serial_low;

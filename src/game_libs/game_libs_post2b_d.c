@@ -51,9 +51,10 @@ int gl_osSetTimer(OSTimer *t, OSTime countdown, OSTime interval, OSMesgQueue *mq
     }
     t->mq = mq;
     t->msg = msg;
+    /* UNNAMED: no-reloc the host body is spliced (REPLACE_FUNC_BODY gl_osSetTimer = the 73824 donor); its jal is the donor's gl_func_00000000_ll reloc (__osInsertTimer), not this token */
     r = ((OSTime (*)(OSTimer *))gl_func_00000000)(t);
     if ((*(OSTimer **)&D_00000000)->next == t) {
-        ((void (*)(OSTime))gl_func_00000000)(r);
+        ((void (*)(OSTime))CALL(__osSetTimerIntr))(r);
     }
     return 0;
 }

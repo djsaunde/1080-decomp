@@ -11,6 +11,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * scripts/inject-prefix-bytes.py). */
 void boarder5_uso_func_00000000(int *dst) {
     int buf[2];
+    /* UNNAMED: sentinel this is the sentinel-named Text+0 function (PREFIX_BYTES trampoline at word 0), which the call resolver cannot place; the ROM jal at Text+0x18 is fs_gdlReadFile */
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
@@ -29,6 +30,7 @@ extern int boarder5_uso_func_b5_D0();
 extern int boarder5_uso_func_b5_10C();
 void boarder5_readQuadParm_00000098(char *dst) {
     int tmp;
+    /* UNNAMED: sentinel callee is boarder5 Text+0 = boarder5_uso_func_00000000 (a *_00000000 name, kept) */
     gl_func_00000000(&tmp);
     boarder5_uso_func_b5_3C((Quad4*)(dst + 0x10));
 }

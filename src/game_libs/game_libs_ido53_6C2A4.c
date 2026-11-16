@@ -51,8 +51,10 @@ OSPiHandle *gl_osDriveRomInit(void) {
     gl_DriveRomHandle_drvrom.domain = 0;                /* PI_DOMAIN1 */
     gl_DriveRomHandle_drvrom.speed = 0;
 
+    /* UNNAMED: mid-entry gl_bzero+0xC (libultra bzero entry, 3 insns into the build symbol) */
     gl_func_00000000_bzero(&gl_DriveRomHandle_drvrom.transferInfo, sizeof(__OSTranxInfo));
 
+    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
     saveMask = gl_func_00000000_disint();
     gl_DriveRomHandle_drvrom.next = gl___osPiTable_pitable;
     gl___osPiTable_pitable = &gl_DriveRomHandle_drvrom;

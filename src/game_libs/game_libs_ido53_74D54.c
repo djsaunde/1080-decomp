@@ -12,6 +12,7 @@ extern unsigned short *gl___osViNext_74D54_p2;
 
 void gl_osViSetYScale(float f) {
     register int sr;
+    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
     sr = gl_func_00000000();
     gl___osViNext_74D54_p1->y.factor = f;
     *gl___osViNext_74D54_p2 |= VI_STATE_YSCALE_UPDATED;

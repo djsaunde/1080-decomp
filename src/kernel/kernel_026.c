@@ -49,6 +49,7 @@ const KernelUsoEntry k_gFsDevices[] = {
     { sStr_rom_8000A598, 0x0000B7C0, 0x00D9FDB0, 0, 0 },
     { NULL, 0, 0, 0, 0 },
 };
+/* UNNAMED: unknown-role the zero word after k_gFsDevices' 3 entries (0x3C bytes) and before func_80009EA0; no kernel code references it (nor its runtime alias 0x8000A29C) */
 u32 D_80009E9C = 0;
 
 const char *const func_80009EA0[] = {

@@ -1677,7 +1677,7 @@ GLOBAL_ASM("src/handwritten/kernel/decode_yay0_setintmask.s")
  * opt and the donor bytes replace it in the .o). Key decode facts: enables
  * FPU (SR |= CU1), sets FpcCsr, polls PIF status 0x1FC007FC via
  * __osSiRawReadIo/__osSiRawWriteIo (func_80004EC0/func_8000A040), installs
- * the 16-byte exception preamble D_80003270 at the four vectors
+ * the 16-byte exception preamble __osExceptionPreamble_rt at the four vectors
  * 0x80000000/80/100/180 + writeback/inval caches, osMapTLBRdb
  * (func_80009DF0), reads the clock via osPiRawReadIo(4,..)
  * (__osSetSR); osClockRate = osClockRate is a u64 (OSTime):
@@ -1690,7 +1690,7 @@ GLOBAL_ASM("src/handwritten/kernel/decode_yay0_setintmask.s")
 typedef struct {
     u32 inst1, inst2, inst3, inst4;
 } __osExceptionVector;
-extern __osExceptionVector D_80003270;          /* __osExceptionPreamble */
+extern __osExceptionVector __osExceptionPreamble_rt;          /* __osExceptionPreamble */
 extern u64 osClockRate;                          /* osClockRate (OSTime) */
 extern s32 osViClock;                          /* osViClock */
 extern s32 osResetType;                          /* osResetType */
@@ -1741,10 +1741,10 @@ void osInitialize(void) {
     while (func_8000A040((void *)0x1FC007FC, pifdata | 8)) {
         ;
     }
-    *(__osExceptionVector *)0x80000000 = D_80003270;
-    *(__osExceptionVector *)0x80000080 = D_80003270;
-    *(__osExceptionVector *)0x80000100 = D_80003270;
-    *(__osExceptionVector *)0x80000180 = D_80003270;
+    *(__osExceptionVector *)0x80000000 = __osExceptionPreamble_rt;
+    *(__osExceptionVector *)0x80000080 = __osExceptionPreamble_rt;
+    *(__osExceptionVector *)0x80000100 = __osExceptionPreamble_rt;
+    *(__osExceptionVector *)0x80000180 = __osExceptionPreamble_rt;
     func_800031F0((void *)0x80000000, 0x190);
     func_80005350(0x80000000, 0x190);
     func_80009DF0();
