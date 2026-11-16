@@ -2095,7 +2095,7 @@ void *RaceTracker_ctor(RaceTracker *arg0) {
             *(int *)((char *)arg0->entries + v1 + 0x124) = 0;
         }
         CALL(RaceTracker_reset)(arg0);
-        CALL(game_forEachPlayer_000020D8)(*(int *)((char *)&gInputMgr + 0x134), arg0);
+        CALL(game_forEachPlayer_000020D8)(*(int *)&GAMEFLOW(&gInputMgr)->game, arg0);
         CALL(Node_pauseUpdate_0000E464)(arg0);
     }
     return arg0;
@@ -2944,7 +2944,7 @@ void RaceTracker_popFinalScore(RaceTracker *a0, int a1) {
     f32 num255;
 
     sub = (int *)a0->pointsList;
-    if ((sub != 0) && (a0->hudFlags & 2) && (*(int **)((char *)&gInputMgr + 0x64) != 0)) {
+    if ((sub != 0) && (a0->hudFlags & 2) && (GAMEFLOW(&gInputMgr)->course != 0)) {
         v0 = (int *)CALL(PointsGadget_allocSlot_00003C0C)(sub, (int)((float)a1 / 1000.0f * 100.0f), 0, 1);
         POPUP(v0)->timer = 230;
         POPUP(v0)->unk7C = 0;
@@ -3360,11 +3360,11 @@ void RaceTracker_toggleGhost(int a0) {
         return;
     }
     if (((RaceTracker *)a0)->ghostFlag != 0) {
-        int *v = (int *)(*(int *)((int)((RaceTracker *)a0)->entries + 0x60) + 0x18);
+        int *v = &NODE(((RaceTracker *)a0)->entries[1].rider)->doFlags;
         *v &= ~4;
         ((RaceTracker *)a0)->ghostFlag = 0;
     } else {
-        int *v = (int *)(*(int *)((int)((RaceTracker *)a0)->entries + 0x60) + 0x18);
+        int *v = &NODE(((RaceTracker *)a0)->entries[1].rider)->doFlags;
         *v |= 4;
         ((RaceTracker *)a0)->ghostFlag = 1;
     }

@@ -281,13 +281,13 @@ void CountDownGadget_display(char *arg0) {
     CALL(gui_setupRenderMode_0000055C)(COUNTDOWN(arg0)->arg1);
     a2 = arg0 + 0x94;
     CALL(gui_setPrimColor_000006B8)(COUNTDOWN(arg0)->arg1,
-                     (int)(*(float *)&D_00000000 * (float)*(int *)(arg0 + 0xA8)), /* alpha: the member spelling recolours the fp regs */
+                     (int)(*(float *)&D_00000000 * (float)*(int *)&COUNTDOWN(arg0)->alpha), /* int-load spelling: the plain member recolours the fp regs */
                      a2, COUNTDOWN(arg0)->unkA4);
     CALL(gui_drawString_00000D04)(COUNTDOWN(arg0)->arg1, COUNTDOWN(arg0)->parms.xps.value,
                      COUNTDOWN(arg0)->parms.yps.value, arg0 + 0xB4);
     CALL(gui_setupRenderMode_0000055C)(COUNTDOWN(arg0)->arg2);
     CALL(gui_setPrimColor_000006B8)(COUNTDOWN(arg0)->arg2,
-                     (int)(*(float *)&D_00000000 * (float)*(int *)(arg0 + 0xA8)), /* alpha: the member spelling recolours the fp regs */
+                     (int)(*(float *)&D_00000000 * (float)*(int *)&COUNTDOWN(arg0)->alpha), /* int-load spelling: the plain member recolours the fp regs */
                      a2, COUNTDOWN(arg0)->unkA4);
     CALL(gui_drawString_00000D04)(COUNTDOWN(arg0)->arg2,
                      COUNTDOWN(arg0)->parms.xps.value + COUNTDOWN(arg0)->parms.shx.value,
@@ -961,15 +961,15 @@ void CoolGadget_display(char *o) {
     p = COOLG(o)->barSprite;
     CALL(gui_spriteRefresh)(p);
     CALL(gui_setColorEnvPrim_000017DC)(p, (int)(255.0f * gl_ref_00001818_scale_f), COOLG(o)->colour, 0xFF);
-    q = *(char**)(COOLG(o)->barSprite + 0x10); /* the bar image; +0x20 = its width */
+    q = (char *)((RaceSprite *)COOLG(o)->barSprite)->image; /* the bar image */
     if (1) {}
-    h = *(short*)(q + 0x20);
-    CALL(gui_drawSpriteIA8Clip_00002BB0)(p, m[0] + *(int *)(o + 0x44), COOLG(o)->parms.yps.value, m[0] - 1, h - m[0] - 1);
+    h = ((RaceSpriteImage *)q)->width;
+    CALL(gui_drawSpriteIA8Clip_00002BB0)(p, m[0] + *(int *)&COOLG(o)->parms.xps.value, COOLG(o)->parms.yps.value, m[0] - 1, h - m[0] - 1);
     if (COOLG(o)->seg > 0) {
         p = COOLG(o)->capSprite;
         CALL(gui_spriteRefresh)(p);
         CALL(gui_setColorEnvPrim_000017DC)(p, (int)(255.0f * gl_ref_00001818_scale_f), &w, 0xFF);
-        CALL(gui_drawSprite)(p, m[0] + *(int *)(o + 0x44) - 3, COOLG(o)->parms.yps.value, 0);
+        CALL(gui_drawSprite)(p, m[0] + *(int *)&COOLG(o)->parms.xps.value - 3, COOLG(o)->parms.yps.value, 0);
     }
 }
 

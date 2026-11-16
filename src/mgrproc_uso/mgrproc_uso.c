@@ -76,7 +76,7 @@ extern int *import_80263D60_30;
 void mgr_pauseRetry_00000B5C(void) {
     int v0;
     import_000A5A1C(import_80263D60_30);
-    v0 = XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)(*(int *)((char *)((int **)import_80263D60_30)[0x6AC / 4] + 0x4C));
+    v0 = XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)((int)DATAMGR(MGRRACE(import_80263D60_30)->dataMgr)->session);
     if (v0 != 0) {
         import_80263D60_30[0x504 / 4] = 0;
         import_80263D60_30[0x4E0 / 4] = 7;
@@ -113,7 +113,7 @@ extern int *import_80263D60_30;
 void mgr_pauseQuit_00000C14(void) {
     int v0;
     import_000A5A1C(import_80263D60_30);
-    v0 = XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)(*(int *)((char *)((int **)import_80263D60_30)[0x6AC / 4] + 0x4C));
+    v0 = XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)((int)DATAMGR(MGRRACE(import_80263D60_30)->dataMgr)->session);
     if (v0 != 0) {
         import_80263D60_30[0x504 / 4] = 0;
         import_80263D60_30[0x4E0 / 4] = 7;
@@ -263,7 +263,7 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
 
         w = (char *)MGRRACE(obj)->dataMgr;
         o1 = (char *)NODE(w)->vptr;
-        ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
+        ((void (*)(int))VT_SLOT(o1, 10).fn)(VT_SLOT(o1, 10).delta + (int)w);
 
         o1 = (char *)MGRRACE(obj)->dataMgr;
         XCALL(mgrproc_uso_func_07ACE0, list_append)(obj + 16, o1);
@@ -885,10 +885,10 @@ void MGRRaceProcess_updateSub2(char *s0) {
             vt = (char *)&import_80020098;
             RACEPROC(s0)->subState = 3;
             *(int *)((char *)RACEPROC(s0)->unk524 + 0x60) = 1;
-            *(int *)(vt + 0x40) = 5;
-            *(int *)(vt + 0x44) = 7;
+            GAMEFLOW(vt)->procState = 5;
+            GAMEFLOW(vt)->nextProcState = 7;
             MGRRACE(s0)->fade7A4 = 0.0f;
-            XCALL(mgrproc_uso_func_0139B0, Fader_start)(*(int *)(vt + 0x190), 1, 1);
+            XCALL(mgrproc_uso_func_0139B0, Fader_start)((int)GAMEFLOW(vt)->fader, 1, 1);
         } else {
             INPUT_MGR(import_800200D8).procState = 7;
             XCALL(mgrproc_uso_func_00F954, Process_fadeOut_0000F954)(s0, 0, 0);
