@@ -102,6 +102,13 @@ build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_SUFFIX_
 # inject-suffix-bytes appends at the section end as well: clip .text back to the Text size
 build/src/snoweffects_uso/snoweffects_uso.c.o: TRUNCATE_TEXT := 0xA900
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0xA900
+# trnproc.uso: the Text ends in the 16-byte .text pad after the last function (1CA4, Vec3
+# Parm read); all-zero SUFFIX on it + clip back to the Text size (as snoweffects above).
+TRN_SUFFIX := trnproc_uso_func_00001CA4=0x00000000,0x00000000,0x00000000
+build/src/trnproc_uso/trnproc_uso.c.o: SUFFIX_BYTES_FORCE := $(TRN_SUFFIX)
+build/non_matching/src/trnproc_uso/trnproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := $(TRN_SUFFIX)
+build/src/trnproc_uso/trnproc_uso.c.o: TRUNCATE_TEXT := 0x1CE0
+build/non_matching/src/trnproc_uso/trnproc_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x1CE0
 # 9F44: EXACT IDO 7.1 NCC donor (agent-h run 621): inline Parm<T>::get() + Vec3 operator=.
 SNOW_9F44_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp.o
 $(SNOW_9F44_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp
