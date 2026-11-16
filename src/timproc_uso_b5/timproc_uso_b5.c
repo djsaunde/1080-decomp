@@ -5655,7 +5655,7 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     ((GenScene *)self)->cam = (GenCamera *)gen_createCamera_0000283C(0, 1, 2, 0x29);
     p39c = (char *)gen_createCamera_0000283C(0, 2, 3, 0x29);
     ((GenScene *)self)->cam2 = (GenCamera *)p39c;
-    ((ScreenWindow *)((GenCamera *)p39c)->view)->unk1B8 = (int)((GenScene *)self)->cam->view; /* +0x1B8 is past Window: a ScreenWindow */
+    ((ScreenWindow *)((GenCamera *)p39c)->view)->unk1B8 = (Window *)((GenScene *)self)->cam->view; /* +0x1B8 is past Window: a ScreenWindow */
 end:
     return self;
 }
