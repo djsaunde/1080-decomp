@@ -1,11 +1,7 @@
 #ifndef GDL_WINDOW_H
 #define GDL_WINDOW_H
 
-#ifdef __cplusplus /* the NCC (edg) donors build without -I include and include this header by relative path */
-#include "node.h"
-#else
-#include "gdl/node.h"
-#endif
+#include "node.h" /* same directory: the NCC donors include this header by relative path */
 
 /* libgdl Window / ScreenWindow (game_libs post0b; see docs/1080_GRAPHICS.md).
  *
@@ -120,7 +116,6 @@ typedef struct ScreenWindow {
 #ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char DLMark_size_check[sizeof(DLMark) == 0xC ? 1 : -1];
 typedef char Window_size_check[sizeof(Window) == 0x144 ? 1 : -1];
-#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char Window_proj_check[(int)&((Window *)0)->proj == 0x30 ? 1 : -1];
 typedef char Window_flags_check[(int)&((Window *)0)->flags == 0x78 ? 1 : -1];
 typedef char Window_aspect_check[(int)&((Window *)0)->aspect == 0xB4 ? 1 : -1];

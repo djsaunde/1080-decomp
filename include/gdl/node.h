@@ -31,7 +31,6 @@ typedef struct Node {
 
 #ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char Node_size_check[sizeof(Node) == 0x2C ? 1 : -1];
-#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char Node_name_check[(int)&((Node *)0)->name == 0x0C ? 1 : -1];
 typedef char Node_serial_check[(int)&((Node *)0)->serial == 0x1C ? 1 : -1];
 typedef char Node_vptr_check[(int)&((Node *)0)->vptr == 0x28 ? 1 : -1];
