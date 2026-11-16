@@ -66,7 +66,8 @@ endif()
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.s
   COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen-uso-blobs.py
           ${PORT_EXT_DIR} ${PORT_GEN}/uso_blobs.tsv ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.s
-  DEPENDS ${PORT_EXT_DEP} ${PORT_GEN}/uso_blobs.tsv ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen-uso-blobs.py
+  DEPENDS ${PORT_EXT_DEP} ${PORT_GEN}/uso_blobs.tsv ${PORT_GEN}/blob_types.tsv
+          ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen-uso-blobs.py ${CMAKE_CURRENT_SOURCE_DIR}/tools/blob_swap.py
   COMMENT "Generating the USO data blobs"
   VERBATIM)
 add_library(uso STATIC uso/uso.c ${PORT_GEN}/uso_modules.c ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.s)
