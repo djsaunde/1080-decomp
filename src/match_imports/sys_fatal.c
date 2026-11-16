@@ -147,27 +147,28 @@ percent:
             goto fmt_r;
 fmt_d:
             gl_ref_00034810((char *)&D_00000000 + 0x21E48,
+                              /* RAW: data-table: va_arg slot reads from the varargs area (args - 4 / - 8), not a struct */
                               *(int *)((args = (char *)(((unsigned int)args + 7) & ~3)) - 4));
             goto next;
 fmt_f:
             args = (char *)(((unsigned int)args + 15) & ~7);
             gl_ref_00034810((char *)&D_00000000 + 0x21E4C,
-                              *(double *)(args - 8));
+                              *(double *)(args - 8)); /* RAW: data-table (as above) */
             goto next;
 fmt_s:
             args = (char *)(((unsigned int)args + 7) & ~3);
             gl_ref_00034810((char *)&D_00000000 + 0x21E50,
-                              *(char **)(args - 4));
+                              *(char **)(args - 4)); /* RAW: data-table (as above) */
             goto next;
 fmt_c:
             args = (char *)(((unsigned int)args + 7) & ~3);
             gl_ref_00034810((char *)&D_00000000 + 0x21E54,
-                              *(u8 *)(args - 1));
+                              *(u8 *)(args - 1)); /* RAW: data-table (as above) */
             goto next;
 fmt_x:
             args = (char *)(((unsigned int)args + 7) & ~3);
             gl_ref_00034810((char *)&D_00000000 + 0x21E58,
-                              *(unsigned int *)(args - 4));
+                              *(unsigned int *)(args - 4)); /* RAW: data-table (as above) */
             goto next;
 fmt_r:
             gl_ref_00034810((char *)gSysImStack_6170C_arr[gSysImDepth_6170C_idx - 1]);

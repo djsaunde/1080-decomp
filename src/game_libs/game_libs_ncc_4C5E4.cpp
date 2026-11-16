@@ -73,16 +73,17 @@ struct Obj {                                         /* ScreenWindow (window.h) 
 };
 void Obj::run() {
     char *g = S(0);
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     *(Obj **)(g + 0x254) = this;
-    fbIndex = *(int *)(g + 0x204);
+    fbIndex = *(int *)(g + 0x204); /* RAW: donor-mirror (as above) */
     curBg = bgDL[fbIndex];
-    *(short *)(gGfxLib_4c5e4_sh + 0x208) = dbg_printThreads(g, nearWord, farWord); /* gfx perspNorm = gfx_calcPerspNorm(near, far) */
+    *(short *)(gGfxLib_4c5e4_sh + 0x208) = dbg_printThreads(g, nearWord, farWord); /* gfx perspNorm = gfx_calcPerspNorm(near, far) */ /* RAW: donor-mirror (as above) */
     unk1B4 = 0;
     g = mark15C; /* agent-g run 260 (kit CCXCIII spilltemps): the mark15C address first mentioned before the fbOwner load, so its item takes the first temp (spill 68 -> 72 = target); held in the dead g (a fresh name costs a home) */
     dl = ((DL **)((char *)fbOwner + fbIndex * 4))[0x198 / 4]; /* fbOwner->setupDL[fbIndex] */
     dbg_printThreads(g, dl); /* gfx_dlMarkBegin */
     char *s1;
-    if (*(int *)(gGfxLib_4c5e4_flag + 0x1C4) & 2) { /* gfx flags bit 2: clear with a zero quad */
+    if (*(int *)(gGfxLib_4c5e4_flag + 0x1C4) & 2) { /* gfx flags bit 2: clear with a zero quad */ /* RAW: donor-mirror (as above) */
         int f = ((clearFlags & 2) != 0) + 0 * (int)(originX); /* agent-c run 210: folded counted use of the member originX (zero code) */
         s1 = (char *)fbOwner->zBuffer;
         if (f) f = (flags & 2) != 0;
@@ -138,5 +139,5 @@ void Obj::run() {
     }
     dbg_printThreads(this);
     dbg_printThreads(gGfxLib_4c5e4_arg, this);
-    *(int *)(gGfxLib_4c5e4_clr + 0x254) = 0;
+    *(int *)(gGfxLib_4c5e4_clr + 0x254) = 0; /* RAW: donor-mirror (as above) */
 }

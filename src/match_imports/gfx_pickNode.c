@@ -64,6 +64,7 @@ void gfx_pickNode(struct GLRender4C *arg0, struct Arg4C928 *arg1)
   arg0->dD4 = (s32) (4.0f - arg1->fC0);
   *((s32 *) (((char *) (&gl_4C928_state_base)) + 0x1C4)) = (*((s32 *) (((char *) (&gl_4C928_state_base)) + 0x1C4))) | 2;
   gl_4C928_process(arg0);
+  /* RAW: data-table: words at offsets of section-base symbols (gl_4C928_*_base + K) */
   *(s32 *)((char *)&gl_4C928_state_base + 0x1C4) &= ~2;
   arg0->dD0 = work.saved_d0;
   arg0->dD4 = ready;
@@ -107,7 +108,7 @@ void gfx_pickNode(struct GLRender4C *arg0, struct Arg4C928 *arg1)
     }
   }
   while (0);
-  work.queue = *(void **)((char *)&gl_4C928_queue_base + 0x1C);
+  work.queue = *(void **)((char *)&gl_4C928_queue_base + 0x1C); /* RAW: data-table (as above) */
   gl_4C928_send(work.queue, 0x68, 1);
   work.state = *((struct St4C928 **) (((char *) (&gl_4C928_state_base)) + 0x218));
   do

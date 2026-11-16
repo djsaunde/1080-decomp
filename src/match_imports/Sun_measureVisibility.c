@@ -2,6 +2,7 @@
 #include "context_game_uso.h"
 void Sun_measureVisibility(GameUsoSentinelObject *obj) {
     int count = 0;
+    /* RAW: data-table: a word at an offset of an import-base symbol (import_8005C348 + 0x240) */
     char *cursor = *(char **)(&import_8005C348 + 0x240);
     unsigned short *data = ((GameUsoSentinelContext *)cursor)->buffer->cells;
     int w;

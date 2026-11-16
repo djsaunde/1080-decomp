@@ -43,6 +43,7 @@ void gfx_setupMatTextures_00045E20(void *a0, GL470E4Object *a1, GLRenderNode *a2
         }
     }
     {
+        /* RAW: unknown-object: a1->list is an untyped display-list record (+4 sync index) */
         int syncIndex = *(int *)((int)a1->list + 4);
         int tail = (int)a1->list;
         unsigned int *syncCmd;

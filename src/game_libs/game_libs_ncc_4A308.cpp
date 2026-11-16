@@ -55,9 +55,10 @@ extern "C" s32 PolyShape_vslot12_0004A308(char *arg0, int arg1, int arg2, int ar
         CALL(dbg_printf)((char *)&D_00000000 + 0x20030, sp74[0], sp74[1], sp74[2]);
     } else {
         unsigned char col[4];
+        /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
         col[0] = (u32)(*(float *)(arg4 + 0) * 255.0f);
-        col[1] = (u32)(*(float *)(arg4 + 4) * 255.0f);
-        col[2] = (u32)(*(float *)(arg4 + 8) * 255.0f);
+        col[1] = (u32)(*(float *)(arg4 + 4) * 255.0f); /* RAW: donor-mirror (as above) */
+        col[2] = (u32)(*(float *)(arg4 + 8) * 255.0f); /* RAW: donor-mirror (as above) */
         CALL(gfx_copyBytes3_00046DA0)(&gGfxLib,sp74, col);
         CALL(gfx_copyBytes3_00046DA0)(&gGfxLib,sp70, col);
     }

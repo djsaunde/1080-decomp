@@ -1,4 +1,5 @@
 #include "common.h"
+#include "libultra/os_thread.h"
 
 extern void* func_80009C30(void);
 
@@ -16,8 +17,8 @@ void __rmonMaskIdleThreadInts(void) {
     register s32* node = (s32*)func_80009C30();
     while (node[1] != -1) {
         if (node[1] == 0) {
-            *(s32*)((char*)node + 0x118) = *(s32*)((char*)node + 0x118) & 0xFFFF00FE;
-            *(s32*)((char*)node + 0x118) = *(s32*)((char*)node + 0x118) | 0x6C01;
+            ((OSThread *)node)->context.sr = ((OSThread *)node)->context.sr & 0xFFFF00FE;
+            ((OSThread *)node)->context.sr = ((OSThread *)node)->context.sr | 0x6C01;
             break;
         }
         node = (s32*)node[3];

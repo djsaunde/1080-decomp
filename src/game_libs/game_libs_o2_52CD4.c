@@ -114,6 +114,7 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
             case 8:
                 q = cur; cur += 1; BASEPOLY(arg0)->alphas = (u8 *)*q;
                 p = arg0 + 0x34;
+                /* RAW: unknown-object: p is the parse cursor's current shape record (flags at +4), type not proven */
                 if (1) { *(s32 *)(p + 4) |= 8; }
                 break;
             case 9:
@@ -130,9 +131,9 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
                 q = cur; cur += 1; w = *q;
                 p = arg0 + 0x34;
                 if (w != 0) {
-                    *(s32 *)(p + 4) |= 0x2000;
+                    *(s32 *)(p + 4) |= 0x2000; /* RAW: unknown-object (as above) */
                 } else {
-                    *(s32 *)(p + 4) &= ~0x2000;
+                    *(s32 *)(p + 4) &= ~0x2000; /* RAW: unknown-object (as above) */
                 }
                 break;
             case 36:
@@ -156,9 +157,9 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
                 q = cur; cur += 1; w = *q;
                 p = arg0 + 0x34;
                 if (w != 0) {
-                    *(s32 *)(p + 4) |= 0x4000;
+                    *(s32 *)(p + 4) |= 0x4000; /* RAW: unknown-object (as above) */
                 } else {
-                    *(s32 *)(p + 4) &= ~0x4000;
+                    *(s32 *)(p + 4) &= ~0x4000; /* RAW: unknown-object (as above) */
                 }
                 break;
             case 10:

@@ -1,6 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "uso_call.h"
+#include "libultra/os_thread.h"
 
 /* gl_osYieldThread = libultra scheduler yield/dispatch helper, statically linked
  * into the game_libs USO. Byte-exact masked-twin of matched kernel osYieldThread
@@ -16,7 +17,7 @@ extern int gl_data_00000000;   /* run-queue head placeholder */
 
 void gl_osYieldThread(void) {
     register int sr = gl_func_00000000();
-    *(short *)((char *)gl___osRunningThread + 0x10) = 2;
+    ((OSThread *)gl___osRunningThread)->state = OS_STATE_RUNNABLE;
     gl_func_00000000(&gl_data_00000000);
     CALL(gl___osRestoreInt)(sr);
 }

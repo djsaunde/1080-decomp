@@ -39,10 +39,11 @@ void n64_procMain(int arg0, int arg1) {
             cur = (int*)CALL(QuitProcess_ctor)(0, one, 0);
             flag = one;
             CALL(list_append)(base10, cur);
+            /* RAW: unknown-object: the app process-list node (+0x4 run flag, +0x14 owner) is untyped (same record as app_runProcess) */
             if (*(int*)((char*)cur + 0x14) != 0) {
-                *(int*)((char*)cur + 0x4) = one;
+                *(int*)((char*)cur + 0x4) = one; /* RAW: unknown-object (as above) */
             }
-            *(int*)((char*)cur + 0x14) = (int)base;
+            *(int*)((char*)cur + 0x14) = (int)base; /* RAW: unknown-object (as above) */
             break;
         }
         arg1 = ((InputMgr *)gl_d_n64p14)->procState;
@@ -112,23 +113,24 @@ Lp28:
     NODE(a0)->name = (char*)&D_n64_100_e + 0xB8;
     CALL(n64_loadSprites_00000230)(a0);
 
+    /* RAW: unknown-object: N64DemoProcess (0x2C..0x54) has no struct yet; D_n64_100_f + 0x190 is a USO-local pool word (the Fader) */
     *(int*)((char*)a0 + 0x50) = 0;
-    *(int*)((char*)a0 + 0x3C) = 0x64;
-    *(int*)((char*)a0 + 0x54) = 0xFF;
+    *(int*)((char*)a0 + 0x3C) = 0x64; /* RAW: unknown-object (as above) */
+    *(int*)((char*)a0 + 0x54) = 0xFF; /* RAW: unknown-object (as above) */
     /* SAME-NAME destructive reuse (E9C0 lever): the late registration node is
      * the SAME variable as the cascade's q — its a1-arg spill/a3-reload web
      * joins q's family, coloring the whole family $a3 and COALESCING both
      * spills into one home slot 0x24 (frame 0x30 -> 0x28). A block-scoped
      * `int *z` gave q=$v1 + three distinct slots (the old 13-word cap). */
-    q = *(void**)((char*)&D_n64_100_f + 0x190);
+    q = *(void**)((char*)&D_n64_100_f + 0x190); /* RAW: unknown-object (as above) */
     CALL(list_append)((char*)a0 + 0x10, q);
     if (((int*)q)[0x14 / 4] != 0) ((int*)q)[1] = 1;
     ((int*)q)[0x14 / 4] = (int)a0;
-    CALL(Fader_start)(*(int*)((char*)&D_n64_100_f + 0x190), 2, 0);
+    CALL(Fader_start)(*(int*)((char*)&D_n64_100_f + 0x190), 2, 0); /* RAW: unknown-object (as above) */
     CALL(snd_postEvent)(0xA3);
-    *(int*)((char*)a0 + 0x48) = 0;
-    *(int*)((char*)a0 + 0x30) = 0;
-    *(int*)((char*)a0 + 0x2C) = 0;
+    *(int*)((char*)a0 + 0x48) = 0; /* RAW: unknown-object (as above) */
+    *(int*)((char*)a0 + 0x30) = 0; /* RAW: unknown-object (as above) */
+    *(int*)((char*)a0 + 0x2C) = 0; /* RAW: unknown-object (as above) */
 end:
     return a0;
 }
@@ -192,16 +194,17 @@ void N64DemoProcess_drawGui(char *a0) {
     buf[1] = 1.0f;
     buf[2] = 1.0f;
     buf[3] = 1.0f;
+    /* RAW: unknown-object: N64DemoProcess (key 0x50, alpha 0x54) has no struct yet */
     key = *(int*)(a0 + 0x50);
     switch (key) {
     case 0:
-        val = *(int*)(a0 + 0x54);
+        val = *(int*)(a0 + 0x54); /* RAW: unknown-object (as above) */
         CALL(gui_setColor_00001A5C)(&D_00000000, val, buf);
         CALL(gui_spriteRefresh)(a0 + 0x58);
         CALL(gui_drawSprite)(a0 + 0x58, 0xA0, 0x78, 3);
         break;
     case 1:
-        val = *(int*)(a0 + 0x54);
+        val = *(int*)(a0 + 0x54); /* RAW: unknown-object (as above) */
         CALL(gui_setColor_00001A5C)(&D_00000000, val, buf);
         CALL(gui_spriteRefresh)(a0 + 0x70);
         CALL(gui_drawSprite)(a0 + 0x70, 0xA0, 0x78, 3);

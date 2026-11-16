@@ -71,9 +71,10 @@ void ImageFile_load_00068990(char *o) {
         switch (b) {
         case 1:
             gl_ref_0007C8EC(&a);
+            /* RAW: unknown-object: the ImageFile record (w/h 0x20/0x22, data 0x8, size 0x2C, pos 0x28) is not typed yet */
             *(short *)(o + 0x20) = a;
             gl_ref_0007C8EC(&a);
-            *(short *)(o + 0x22) = a;
+            *(short *)(o + 0x22) = a; /* RAW: unknown-object (as above) */
             break;
         case 2:
             gl_ref_0007C860((int *)(o + 0x24));
@@ -82,13 +83,13 @@ void ImageFile_load_00068990(char *o) {
             gl_ref_0007C928((int *)(o + 0x2C));
             if (gSysLib_0005C6E0.unk4 == 0) {
                 saved = CALL(app_setHeapMode)(0);
-                v = CALL(mem_new)(*(int *)(o + 0x2C));
-                *(int *)(o + 8) = v;
-                CALL(fs_gdlReadFile)(&gSysLib_0005C6E0, v, *(int *)(o + 0x2C));
+                v = CALL(mem_new)(*(int *)(o + 0x2C)); /* RAW: unknown-object (as above) */
+                *(int *)(o + 8) = v; /* RAW: unknown-object (as above) */
+                CALL(fs_gdlReadFile)(&gSysLib_0005C6E0, v, *(int *)(o + 0x2C)); /* RAW: unknown-object (as above) */
                 CALL(app_setHeapMode)(saved);
             } else {
-                *(int *)(o + 0x28) = CALL(fs_gdlSeekFile)(&gSysLib_0005C6E0, 1, 0);
-                CALL(fs_gdlSeekFile)(&gSysLib_0005C6E0, 1, *(int *)(o + 0x2C));
+                *(int *)(o + 0x28) = CALL(fs_gdlSeekFile)(&gSysLib_0005C6E0, 1, 0); /* RAW: unknown-object (as above) */
+                CALL(fs_gdlSeekFile)(&gSysLib_0005C6E0, 1, *(int *)(o + 0x2C)); /* RAW: unknown-object (as above) */
             }
             break;
         case -1:

@@ -49,12 +49,13 @@ SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, 
             float cf;
             gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEE54 + 0x15E4,
                                        0.0f, 0.0f, 0.0f);
+            /* RAW: unknown-object: the SelChar light-target fields 0x108..0x124 are not typed; &import_K + K is an import-base data read */
             cf = *(float *)((char *)&import_80807FB8 + 0x3A0);
             ((TimB5UiObject *)gc)->field_28 = (void *)(&import_80087FB8[0]); (*(int *)((char *)(gc) + (0x120))) = 0xFFFF;
-            *(float *)(gc + 0x108) = cf;
-            *(float *)(gc + 0x10C) = cf;
-            *(float *)(gc + 0x110) = cf;
-            *(float *)(gc + 0x124) = 1.0f;
+            *(float *)(gc + 0x108) = cf; /* RAW: unknown-object (as above) */
+            *(float *)(gc + 0x10C) = cf; /* RAW: unknown-object (as above) */
+            *(float *)(gc + 0x110) = cf; /* RAW: unknown-object (as above) */
+            *(float *)(gc + 0x124) = 1.0f; /* RAW: unknown-object (as above) */
         }
         MODEL(child.ptr)->head.inner = gc;
         gen_imp_MNode_addChild(child.ptr, gc);
@@ -66,7 +67,7 @@ SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, 
             ((struct TimB5V3 *)p)->z = 0.0f;
             ((struct TimB5V3 *)p)->y = 100.0f;
         } while (0);
-        MODEL(child.ptr)->highlight = *(float *)((char *)&import_80800078 + 0x3A4);
+        MODEL(child.ptr)->highlight = *(float *)((char *)&import_80800078 + 0x3A4); /* RAW: unknown-object (as above) */
         n = *(int *)&import_80020078;
         if (1) {}
         p = (char *)timproc_uso_b5_d14c_alloc(0xB4);
@@ -86,7 +87,7 @@ SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, 
             char *p2 = (char *)MODEL(child.ptr)->anim;
             struct TimB5UiMethod24 *vt;
             char *adjusted;
-            p = *(char **)(p2 + 0x28);
+            p = *(char **)(p2 + 0x28); /* RAW: unknown-object (as above) */
             vt = (struct TimB5UiMethod24 *)p;
             adjusted = p2 + vt->adjustment;
             vt->method(adjusted);

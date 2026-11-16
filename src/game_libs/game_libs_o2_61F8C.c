@@ -91,6 +91,7 @@ void AnimData_load(AnimData *self) {
     }
     /* the second numNodes read stays a raw `*(s16 *)` deref: spelled self->numNodes,
      * the beql operands swap (t3, v0 -> v0, t3) */
+    /* RAW: byte-lock: spelled self->numNodes the beql operands swap (t3, v0 -> v0, t3); see the comment above */
     if (self->numNodes != 0 && ((AnimDataMgr *)self->mgr)->numNodes != *(s16 *)((char *)self + 0)) {
         CALL(sys_fatal)(sStr_AMgr_bad_num_Nodes_220AC);
     }

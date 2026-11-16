@@ -16,9 +16,10 @@ void gl_osViSetXScale(float f) {
     register int v;
     register int sr;
     sr = gl_func_00000000();
+    /* RAW: unknown-object: libultra __OSViContext (modep 0x8, x scale 0x18, 0x20 xscale reg) has no header in include/libultra yet */
     *(float *)(gl___osViNext_74DB4_p1 + 0x18) = f;
     *gl___osViNext_74DB4_p2 |= 2;
-    v = *(int *)(*(char **)(gl___osViNext_74DB4_p1 + 0x8) + 0x20) & 0xFFF;
-    *(int *)(gl___osViNext_74DB4_p1 + 0x20) = (u32)(*(float *)(gl___osViNext_74DB4_p1 + 0x18) * (float)(u32)v) & 0xFFF;
+    v = *(int *)(*(char **)(gl___osViNext_74DB4_p1 + 0x8) + 0x20) & 0xFFF; /* RAW: unknown-object (as above) */
+    *(int *)(gl___osViNext_74DB4_p1 + 0x20) = (u32)(*(float *)(gl___osViNext_74DB4_p1 + 0x18) * (float)(u32)v) & 0xFFF; /* RAW: unknown-object (as above) */
     gl_func_00000000(sr);
 }

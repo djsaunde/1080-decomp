@@ -65,10 +65,11 @@ void SnowChaseActorLook_update(GameUsoHomingPrefix *a0) {
         refv2[1] = pose->field_A0.y;
         refv2[2] = pose->field_A0.z;
         ss = (char *)a0->field_38;
+        /* RAW: unknown-object: ss (the chased snowboarder's state block, 0x34/0x38/0xA0) is untyped in this port */
         ssv.x = *(float *)(ss + 0xA0);
         ss += 0x70;
-        ssv.y = *(float *)(ss + 0x34);
-        ssv.z = *(float *)(ss + 0x38);
+        ssv.y = *(float *)(ss + 0x34); /* RAW: unknown-object (as above) */
+        ssv.z = *(float *)(ss + 0x38); /* RAW: unknown-object (as above) */
         if (a0->field_40 == 3) {
             f = -1000.0f;
         } else {

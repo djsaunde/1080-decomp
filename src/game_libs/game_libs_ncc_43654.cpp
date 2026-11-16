@@ -45,8 +45,9 @@ void PolyShape_buildStateDL_00043654(Mat *mat, char *arg1) {
             idx = ((DLBuf *)temp_a0)->count; if (1) {}
             ((DLBuf *)temp_a0)->count = idx + 1;
             temp_a2 = (char *) ((DLContext *)sp34)->gfx.cur->base + (idx * 8); if (1) {}
+            /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
             FW(temp_a2, 0x0) = 0x06000000;
-            FW(temp_a2, 0x4) = (int) temp_v0;
+            FW(temp_a2, 0x4) = (int) temp_v0; /* RAW: donor-mirror (as above) */
         }
         gl_func_00000000(mat->stateDL);
     } else {
@@ -54,9 +55,9 @@ void PolyShape_buildStateDL_00043654(Mat *mat, char *arg1) {
         idx2 = ((DLBuf *)temp_a0_2)->count;
         ((DLBuf *)temp_a0_2)->count = idx2 + 1;
         temp_a1 = (char *) ((DLContext *)var_a3)->gfx.cur->base + (idx2 * 8);
-        FW(temp_a1, 0x0) = 0xBB040000;
+        FW(temp_a1, 0x0) = 0xBB040000; /* RAW: donor-mirror (as above) */
         if (!sp34) {}
-        FW(temp_a1, 0x4) = -1;
+        FW(temp_a1, 0x4) = -1; /* RAW: donor-mirror (as above) */
     }
     gl_func_00000000(mat->stateDL);
 }

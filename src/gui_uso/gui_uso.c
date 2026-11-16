@@ -166,6 +166,7 @@ void gui_drawString(int *a0, int a1, int a2, unsigned char *a3) {
             g0 = g[0]; g1 = g[1]; w = g[2];
             CALL(gui_loadTileIA8)(a0[0x24 / 4], a0[4 / 4], a0[0x18 / 4], a0[0x1C / 4], g0, g1, w, h, 0);
             CALL(gui_texRect_00004568)(a0[0x24 / 4], a1, a2, w, h, (w << 10) / w, (h << 10) / h);
+            /* RAW: data-table: font glyph table (a0[8], stride bytes per glyph, advance at +8) */
             a1 += *(int *)(a0[0x20 / 4] + gi * stride + 8);
         } else {
             a1 += a0[8 / 4];
@@ -276,10 +277,11 @@ void gui_drawString_00000D04(int *a0, int *a1, int a2, char *a3) {
                                  gu, gv, gw, scale, 0);
                 goff = gi * 0x14;
                 px = x;
+                /* RAW: data-table: font glyph table (a0[8], 20-byte glyph records) */
                 px += *(int *)((char *)a0[0x20 / 4] + goff + 16);
                 CALL(gui_texRect_00004568)(a0[0x24 / 4], px,
                                  a2, gw, scale, (gw * 1024) / gw, sd);
-                x += *(int *)((char *)a0[0x20 / 4] + goff + 12);
+                x += *(int *)((char *)a0[0x20 / 4] + goff + 12); /* RAW: data-table (as above) */
             } else {
                 x += ((int *)a0[0x20 / 4])[3];
             }
@@ -418,9 +420,10 @@ int gui_stringWidth(char *a0, unsigned char *a1) {
             c = *p;
             if (c != 0x20) {
                 key = gl_func_00000000(c);
+                /* RAW: data-table: font glyph table (a0 + 0x20, 20-byte glyph records, advance at +8); a0 + 0x8 is the untyped font's spacing */
                 total += *(int*)(*(char**)(a0 + 0x20) + key * 20 + 8);
             } else {
-                total += *(int*)(a0 + 0x8);
+                total += *(int*)(a0 + 0x8); /* RAW: data-table (as above) */
             }
             p++;
             i++;
@@ -599,8 +602,9 @@ void gui_setScissor(a0, x0, y0, x1, y1)
     int y1;
 {
     int *global = *(int **)&D_00000000;
+    /* RAW: unknown-object: the gui display-list context (global->0xC: list base 0, cursor 4) is not typed yet */
     int *ctx = *(int **)((char *)global + 0xC);
-    int cursor = *(int *)((char *)ctx + 4);
+    int cursor = *(int *)((char *)ctx + 4); /* RAW: unknown-object (as above) */
     int *dst;
     int sx0;
     int sy0;
@@ -608,8 +612,8 @@ void gui_setScissor(a0, x0, y0, x1, y1)
     int sy1;
 
     (void)&a0;
-    *(int *)((char *)ctx + 4) = cursor + 1;
-    dst = (int *)(*(int *)((char *)*(int **)((char *)global + 0xC) + 0) + (cursor << 3));
+    *(int *)((char *)ctx + 4) = cursor + 1; /* RAW: unknown-object (as above) */
+    dst = (int *)(*(int *)((char *)*(int **)((char *)global + 0xC) + 0) + (cursor << 3)); /* RAW: unknown-object (as above) */
 
     sx0 = (int)((float)x0 * 4.0f) & 0xFFF;
     sy0 = (int)((float)y0 * 4.0f) & 0xFFF;
@@ -625,9 +629,10 @@ extern char D_00000000;
 
 void gui_spriteLoad(char *a0, int a1) {
     int saved;
+    /* RAW: unknown-object: the gui sprite (file id 0x14, handle 0x10) is untyped; D_00000000 + 0x150 is a USO-local pool word */
     *(int*)(a0 + 0x14) = a1;
     saved = CALL(app_setHeapMode)(7);
-    *(int*)(a0 + 0x10) = CALL(BinFileMgr_getAcquire)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14));
+    *(int*)(a0 + 0x10) = CALL(BinFileMgr_getAcquire)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14)); /* RAW: unknown-object (as above) */
     CALL(app_setHeapMode)(saved);
 }
 
@@ -640,10 +645,11 @@ extern int gui_func_00000000();
 extern char D_00000000;
 
 void gui_spriteRelease(char *a0) {
+    /* RAW: unknown-object: the gui sprite (file id 0x14, handle 0x10) is untyped; D_00000000 + 0x150 is a USO-local pool word */
     if (*(int*)(a0 + 0x10) != 0) {
-        XCALL(gui_func_00000000, BinFileMgr_getRelease)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14), a0);
+        XCALL(gui_func_00000000, BinFileMgr_getRelease)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14), a0); /* RAW: unknown-object (as above) */
     }
-    *(int*)(a0 + 0x10) = 0;
+    *(int*)(a0 + 0x10) = 0; /* RAW: unknown-object (as above) */
 }
 
 extern int gl_func_00000000();
@@ -651,14 +657,15 @@ void gui_spriteRefresh(char *a0) {
     int saved;
     int v0;
     int v1;
+    /* RAW: unknown-object: the gui sprite (file id 0x14, handle 0x10) is untyped; D_00000000 + 0x150 is a USO-local pool word */
     if (*(int*)(a0 + 0x14) == -1) {
-        *(int*)(a0 + 0x14) = 0;
+        *(int*)(a0 + 0x14) = 0; /* RAW: unknown-object (as above) */
     }
     saved = CALL(app_setHeapMode)(7);
-    v0 = CALL(BinFileMgr_get_00068730)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14));
-    v1 = *(int*)(a0 + 0x10);
+    v0 = CALL(BinFileMgr_get_00068730)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14)); /* RAW: unknown-object (as above) */
+    v1 = *(int*)(a0 + 0x10); /* RAW: unknown-object (as above) */
     if (v1 == 0 || v0 != v1) {
-        *(int*)(a0 + 0x10) = CALL(BinFileMgr_getAcquire)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14));
+        *(int*)(a0 + 0x10) = CALL(BinFileMgr_getAcquire)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14)); /* RAW: unknown-object (as above) */
     }
     CALL(app_setHeapMode)(saved);
 }

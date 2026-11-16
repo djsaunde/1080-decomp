@@ -15,9 +15,10 @@ void SelectWin_init_00005BF0(B5TimingScreen *screen, int *arg1, int *arg2, int *
     screen->out[2] = arg3;
     screen->out[3] = arg4;
     screen->out[4] = arg5;
+    /* RAW: data-table: per-character / per-board save tables indexed off timproc_uso_b5 Data symbols; p414 is an untyped SelectWin child */
     screen->cheatChar = *(int *)(&timproc_uso_b5_D_807FE6E4 + *arg2 * 4 + 0xE74);
-    screen->chosenItem[0] = *(int *)(&timproc_uso_b5_D_807FE6E4_b + *arg2 * 4 + 0xE54);
-    screen->cheatBoard = *(int *)(&timproc_uso_b5_D_807FE6C4 + *arg4 * 4 + 0xE94);
+    screen->chosenItem[0] = *(int *)(&timproc_uso_b5_D_807FE6E4_b + *arg2 * 4 + 0xE54); /* RAW: data-table (as above) */
+    screen->cheatBoard = *(int *)(&timproc_uso_b5_D_807FE6C4 + *arg4 * 4 + 0xE94); /* RAW: data-table (as above) */
     screen->chosenItem[1] = SelectWin_findItem_00008988((char *)screen, 1, *arg4);
     row = screen->itemsMgr->lists[0];
     i = 0;
@@ -97,7 +98,7 @@ void SelectWin_init_00005BF0(B5TimingScreen *screen, int *arg1, int *arg2, int *
         char *p414;
         e = timproc_uso_b5_func_00008A38_entry(screen);
         p414 = screen->scene;
-        SelectWin_setCamToItem_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14));
+        SelectWin_setCamToItem_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14)); /* RAW: data-table (as above) */
     }
     SelectWin_beginTransition_00008688((char *)screen, 0);
     screen->idleTimer = screen->lfw;

@@ -65,6 +65,7 @@ char *CourseMarkerTmpl_create(char *owner) {
         }
     }
     result = carrier.allocated;
+    /* RAW: unknown-object: owner + 0x40 node link on an untyped owner */
     node = *(char **)(owner + 0x40);
     if (node != 0) {
         result = carrier.allocated;

@@ -25,9 +25,10 @@ extern "C" void ColourItem_display(Obj *o) {
         *d = *(Blk *)GFX->worldMtx;  /* modelView = worldMtx, then its translation row = the position * worldScale
                                        * (GfxLib +0x128..0x130; GFX->worldScale[i] folds the 0x128 into the base
                                        * address and splits it from the curWindow base, so those three stay raw) */
+        /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
         d->m[3][0] = o->x * *(f32 *)(gGfxLib + 0x128);
-        d->m[3][1] = o->y * *(f32 *)(gGfxLib + 0x12C);
-        d->m[3][2] = o->z * *(f32 *)(gGfxLib + 0x130);
+        d->m[3][1] = o->y * *(f32 *)(gGfxLib + 0x12C); /* RAW: donor-mirror (as above) */
+        d->m[3][2] = o->z * *(f32 *)(gGfxLib + 0x130); /* RAW: donor-mirror (as above) */
         CALL(Node_display)(o);
     }
 }

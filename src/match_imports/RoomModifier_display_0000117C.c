@@ -8,9 +8,10 @@ void RoomModifier_display_0000117C(TimB5SlotController *a0) {
     SelectWin_setGlobalFade_0000896C(a0->field_38[a0->field_34]);
     SelectWin_dimOtherItems_00008AFC(b->field_38[b->field_34]);
     slot = b->field_38[b->field_34];
+    /* RAW: unknown-object: the room slot sub-objects (0x40C->0x38, 0x41C) are untyped in this port */
     if ((1 << b->field_34) & *(s32 *)(slot->field_41C + 0x50)) {
         if (b->field_2C != 0) {
-            flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18);
+            flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18); /* RAW: unknown-object (as above) */
             do {
                 do {
                     *flags = *flags | 4;
@@ -18,7 +19,7 @@ void RoomModifier_display_0000117C(TimB5SlotController *a0) {
             } while (0);
             slot = b->field_38[b->field_34 ^ 1];
             if (slot != 0) {
-                flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18);
+                flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18); /* RAW: unknown-object (as above) */
                 do {
                     do {
                         *flags = *flags & ~4;
@@ -26,7 +27,7 @@ void RoomModifier_display_0000117C(TimB5SlotController *a0) {
                 } while (0);
             }
         } else {
-            flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18);
+            flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18); /* RAW: unknown-object (as above) */
             do {
                 do {
                     *flags = *flags & ~4;
@@ -34,7 +35,7 @@ void RoomModifier_display_0000117C(TimB5SlotController *a0) {
             } while (0);
             slot = b->field_38[b->field_34 ^ 1];
             if (slot != 0) {
-                flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18);
+                flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18); /* RAW: unknown-object (as above) */
                 do {
                     do {
                         *flags = *flags & ~4;
@@ -44,7 +45,7 @@ void RoomModifier_display_0000117C(TimB5SlotController *a0) {
         }
         gen_imp_Node_display(b);
     } else {
-        flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18);
+        flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18); /* RAW: unknown-object (as above) */
         do {
             do {
                 *flags = *flags | 4;
@@ -52,7 +53,7 @@ void RoomModifier_display_0000117C(TimB5SlotController *a0) {
         } while (0);
         slot = b->field_38[b->field_34 ^ 1];
         if (slot != 0) {
-            flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18);
+            flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18); /* RAW: unknown-object (as above) */
             do {
                 do {
                     *flags = *flags & ~4;

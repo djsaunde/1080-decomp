@@ -37,6 +37,7 @@ extern "C" s32 uso_relocate(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
     s32 hival;
     u32 *p;
 
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     symtab = *(UsoRelSym_1ADC **)(obj + 0x3C);
     if (0) { info = 0; sym = 0; }
     if (base == 0 || rel == 0) {

@@ -63,5 +63,6 @@ void Obj::reflect(const Plane &p) {
     mtx.m[3][1] = k * p.n.y;
     mtx.m[3][2] = k * p.n.z;
     mtx.m[3][3] = i1(); /* run 203: i1() like the diagonals -- a literal 1.0f here was CSE'd with them into one long-lived f16 */
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     *(M4 **)(gGfxLib + 0xE4) = &mtx;
 }

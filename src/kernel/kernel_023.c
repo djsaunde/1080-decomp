@@ -1,4 +1,5 @@
 #include "common.h"
+#include "libultra/os_thread.h"
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
@@ -65,7 +66,7 @@ extern OSEventState __osEventStateTab[];
 
 void osYieldThread(void) {
     register s32 sr = func_800066B0();
-    *(s16*)((char*)__osRunningThread + 0x10) = 2;
+    ((OSThread *)__osRunningThread)->state = 2; /* OS_STATE_RUNNABLE */
     func_80003D0C(&__osRunQueue);
     func_800066D0(sr);
 }

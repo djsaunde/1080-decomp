@@ -13,9 +13,10 @@ void KeyMessage_display(TitprocBlendObject *object) {
     src = ones;
     red = 1.0f;
     ones[0] = red; ones[1] = red; ones[2] = red; ones[3] = red;
+    /* RAW: data-table: words at offsets of import-base symbols (import_00020098 / import_00263E00) */
     if (*(int *)((char *)&import_00020098 + 0x18C) != 0) {
         red = ones[0];
-        t = *(float *)((char *)&import_00263E00 + 0x40);
+        t = *(float *)((char *)&import_00263E00 + 0x40); /* RAW: data-table (as above) */
         vec[0] = red; vec[3] = red; vec[1] = t; vec[2] = t;
         t = (float)object->field_2C / 255.0f;
         out[3] = red;

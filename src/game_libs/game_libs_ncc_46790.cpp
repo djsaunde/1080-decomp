@@ -31,6 +31,7 @@ extern "C" void gfx_drawFbChar_00046790(char *o, unsigned char ch, int x, int y)
     unsigned short px;
 
     if (1) { q = &dst; }
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     dst = *(unsigned short **)(*(char **)(gGfxLib_46790_g + 576) + *(int *)(o + 516) * 4 + 244);
     dst += y * 320 + x;
     c = ch;

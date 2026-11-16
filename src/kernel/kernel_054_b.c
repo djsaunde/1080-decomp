@@ -74,6 +74,7 @@ s32 __rmonGetFRegisters(RmonMsg91FC* msg) {
         return -2;
     }
     func_80006B20((char*)&pkt + 0x10, (char*)buf + 0x130, 0x20);
+    /* RAW: unknown-object: buf is the thread context (fpcsr at 0x12C), untyped in this TU */
     pkt.field_90 = *(s32*)((char*)buf + 0x12C);
     pkt.type = p->field_04;
     pkt.flags = 0;
@@ -99,6 +100,7 @@ s32 __rmonSetFRegisters(RmonMsg91FC* msg) {
         return -2;
     }
     func_80006B20((char*)buf + 0x130, (char*)p + 0x10, 0x20);
+    /* RAW: unknown-object: buf is the thread context (fpcsr at 0x12C), untyped in this TU */
     *(s32*)((char*)buf + 0x12C) = p->field_90;
     hdr.field_0C = p->field_0C;
     hdr.type = p->field_04;

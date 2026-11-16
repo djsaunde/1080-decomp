@@ -53,6 +53,7 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
     register char *tmp;    /* s2 */
 
     sp34 = sp38 = (char *)gInputMgr_0000004C;
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     gl_func_00000000(&gInputMgr, *(int *)((char *)&gProcUsoPaths_8FFC_base + 8));
     if ((*(BackupSession **)arg0)->ghost->data != 0) {
         gInputMgr_00000181 = gl_func_00000000((*(BackupSession **)arg0)->ghost);

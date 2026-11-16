@@ -120,6 +120,7 @@ void osInitialize(void) {
             func_80005350((void *)0x80000180, 0x24);
             __kmc_pt_mode = 1;
             if (!(*sp38 & 0x10)) {
+                /* RAW: data-table: a word of the debugger ROM header at hardware address 0xBFF00000 (not a struct) */
                 sp40 = *(s32 *)((char *) sp3C + 4);
                 if (sp40 != 0xBFF00000) {
                     sp30 = (s32 *)(sp40 | 0x20000000);

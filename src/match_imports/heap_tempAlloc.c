@@ -1,6 +1,7 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post0b.c. Target bytes unchanged. */
 #include "context_game_libs_post0b.h"
 u8 *heap_tempAlloc(s32 unused, u32 size) {
+    /* RAW: data-table: a word at an offset of a section-base symbol (gl_4C928_state_base + 0x218) */
     u8 *result = *(u8 **)((char *)&gl_4C928_state_base + 0x218);
     s32 ready;
     f32 divisor = 1024.0f;

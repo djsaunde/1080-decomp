@@ -20,13 +20,14 @@ struct G { char pad[0xA0]; Cam cam; char padDC[0x128 - 0xDC]; V3 scale; char pad
 inline void Cam::mul(G &g) { v.x *= g.scale.x; v.y *= g.scale.y; v.z *= g.scale.z; }
 extern "C" G gGfxLib_39E24_g;
 extern "C" void SNode_display(char *a0) {
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     if (gl_proto_39E24(gGfxLib_39E24_g.root, 3, *(float *)(a0 + 0x5C), *(float *)(a0 + 0x60),
-                    *(float *)(a0 + 0x64), 0, 0.0f) != 0) {
+                    *(float *)(a0 + 0x64), 0, 0.0f) != 0) { /* RAW: donor-mirror (as above) */
         XCALL(gl_func_00000000_39E24v, gfx_loadMatrix_00047DD8)(&gGfxLib_39E24_g, a0 + 0x2C);
         {
             Cam &c = gGfxLib_39E24_g.cam;
             c.mul(gGfxLib_39E24_g);
-            c.v.y += *(float *)(a0 + 0x6C);
+            c.v.y += *(float *)(a0 + 0x6C); /* RAW: donor-mirror (as above) */
         }
         CALL(Node_display)(a0);
     }

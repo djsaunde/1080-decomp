@@ -73,6 +73,7 @@ extern "C" void Sprite_display_0004BAF4(Sprite *self) {
      * first packet as dlG and the 0xEE append as add() at depth 2: 99.586 -> 99.681; the else-arm packet as dlS
      * (count = nextP()'s by-value int parameter) and the B4 x MAX through mx4B(): -> 99.894, same length */
 
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     pos.x = F4B(me((Ctx4B *)&gGfxLib_4BAF4_cam), 0x30, f32);
     {
     u32 r;
@@ -84,7 +85,7 @@ extern "C" void Sprite_display_0004BAF4(Sprite *self) {
     }
     /* self->depthBias / the camera position x, read through the me((Ctx4B *)) accessor: a typed (Sprite *) /
      * (Cam4B *) member read there moves the FP operand order and the edg parameter spill slots (agent-a run 540) */
-    iz = (pos.z + 1.0f) * 16384.0f + F4B(me((Ctx4B *)self), 0xC8, f32);
+    iz = (pos.z + 1.0f) * 16384.0f + F4B(me((Ctx4B *)self), 0xC8, f32); /* RAW: donor-mirror (as above) */
     if (1) {} /* agent-g run 262 (kit CCC random code-free test search): 97.03 -> 97.39 (agent-c run 288: the paired iz / r tests below dropped, byte-identical -- any two of the four levers are redundant; agent-c run 307: the second `if (1) {}` here dropped, byte-identical) */
     if (self->perspective != 0) {
         sx = self->scaleX * (f32)((f64)(f32)GS4B->win.height * 0.5 * (f64)out[0]);
@@ -138,7 +139,7 @@ extern "C" void Sprite_display_0004BAF4(Sprite *self) {
     me(me(WDL4B))->add(0xEE000000, ((iz & 0x7FFF) & 0x7FFF) << 16); /* agent-g run 332: 0xEE receiver through two me() (receiver-depth re-grid on the else-arm-d base, final add depth 0): 99.137 -> 99.196 */
     if (GFXLIB(&gGfxLib_4BAF4_flags)->flags & 2) {
         if ((self->unk2C[1] & 8) && *(char **)&self->node.parent != 0) { /* parent read as a pointer (Node.parent is s32; an int compare changes the code) */ /* agent-g run 332: one `& 8` again (ring re-tuned for the else arm's d) */
-            CALL(gfx_emitStateAndPrimColour_00042684)(WDL4B, (char *)spr + 0x34, F4B(*(char **)&self->node.parent, 0x1E, s16));
+            CALL(gfx_emitStateAndPrimColour_00042684)(WDL4B, (char *)spr + 0x34, F4B(*(char **)&self->node.parent, 0x1E, s16)); /* RAW: donor-mirror (as above) */
         }
     } else {
         /* agent-g run 332: spr->dl64 through d like the first packet's 0xCC pointer -- the target holds it in v0 (a

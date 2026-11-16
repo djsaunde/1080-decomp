@@ -18,11 +18,12 @@ void RaceTracker_findGates(GameLibsC784 *self) {
     if (self->count > 0) {
         do {
             ((GameLibsC784Record *)((char *)self->records + offset))->field_0C = -6553600.0f;
+            /* RAW: data-table: course Data table words (table + 0xD680..); the records + 0x4C store is an untyped slot of the gate record */
             key68.field_00 = *(s32 *)(table + 0xD680);
-            *(void **)((char *)self->records + 0x4C) = gl_d0d0_import_3EAE0(gl_d0d0_root_7770, key68, (char *)self->records->field_00 + 0xDC, 0);
-            key64.field_00 = *(s32 *)(table + 0xD684);
+            *(void **)((char *)self->records + 0x4C) = gl_d0d0_import_3EAE0(gl_d0d0_root_7770, key68, (char *)self->records->field_00 + 0xDC, 0); /* RAW: data-table (as above) */
+            key64.field_00 = *(s32 *)(table + 0xD684); /* RAW: data-table (as above) */
             first = gl_d0d0_import_3EAE0(gl_d0d0_root_7770, key64, (char *)self->records->field_00 + 0xDC, 0);
-            key60.field_00 = *(s32 *)(table + 0xD688);
+            key60.field_00 = *(s32 *)(table + 0xD688); /* RAW: data-table (as above) */
             second = gl_d0d0_import_3EAE0(gl_d0d0_root_7770, key60, (char *)self->records->field_00 + 0xDC, 0);
             available = second != 0;
             if (available) {}

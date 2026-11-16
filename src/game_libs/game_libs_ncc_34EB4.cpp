@@ -36,6 +36,7 @@ extern "C" void app_run(St *a0, App *a1) {
         do {
             Node *n;
             for (n = a0->list; n != 0; n = n->next) CALL(pad_update)(n);
+            /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
             if (FW(FW(DB, 0x218), 0x48) != 0) a1->v15();
             while (a0->flags & 4) {
                 a0->f10 = 0;

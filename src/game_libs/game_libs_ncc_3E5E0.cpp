@@ -52,17 +52,19 @@ inline void loop(char *it, int d0) {
     if (it != 0) {
         do {
             dbg_printThreads(&gHostio_e5e0q, it + 0x2C, new CB2(it, *(PMF *)(&D_00000000_e5e0o + 0x1EED0)));
+            /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
             it = (char *)FW(it, 0x30);
         } while (it != 0);
     }
 }
 extern "C" void ItemMgr_hostioParms(char *arg0) {
 
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     { int x = FW(arg0, 0xC); dbg_printThreads(&gHostio_e5e0a, x, 0); } /* run 158: read before the call setup = the target's `lw a1,12(a0)` straight from a0 (no home reload); 91.78 -> 94.32, length 604 -> 600 (target 608: away, flagged) */
     reg0(arg0);
     reg1(arg0);
     dbg_printThreads(&gHostio_e5e0l, &sStr_Items_1F330 + 0x1F330, 0);
-    loop((char *)FW(arg0, 0x2C), 1);
+    loop((char *)FW(arg0, 0x2C), 1); /* RAW: donor-mirror (as above) */
     dbg_printThreads(&gHostio_e5e0r);
     dbg_printThreads(&gHostio_e5e0s);
     dbg_printThreads(arg0);

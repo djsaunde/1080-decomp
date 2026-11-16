@@ -59,6 +59,7 @@ void SnowAI_applyStickInput(int *a0, int arg1) {
             output_48 = 1.0f;
             suppress_direction = 1;
             arg0->field_50 = 8;
+            /* RAW: data-table: table_pair walks a (stick, output) float pair table; arg0 + 0x6C is a volatile read of an AI field not in the port's struct */
             active_mask = *(volatile int *)((char *)arg0 + 0x6C);
         } else if (arg1 & 0x20) {
             arg0->field_6C = (s32) (active_mask | 0x20);
@@ -117,7 +118,7 @@ void SnowAI_applyStickInput(int *a0, int arg1) {
                 table_pair = (char*)&game_uso_D_807FEC28 + 0x638;
                 if (1) { table_pair += arg0->field_58 * 8; }
                 output_44 = *(float *)table_pair;
-                output_48 = *(float *)(table_pair + 4);
+                output_48 = *(float *)(table_pair + 4); /* RAW: data-table (as above) */
             }
             arg0->field_4C = (s32) (arg1 - 1);
         }
@@ -150,7 +151,7 @@ void SnowAI_applyStickInput(int *a0, int arg1) {
             table_pair = (char*)&game_uso_D_807FEC28 + 0x638;
             if (1) { table_pair += arg0->field_58 * 8; }
             output_44 = *(float *)table_pair;
-            output_48 = *(float *)(table_pair + 4);
+            output_48 = *(float *)(table_pair + 4); /* RAW: data-table (as above) */
         }
         if (1) { temp_a2 = arg0->field_44; }
         temp_a1_6 = temp_a3_2 + 1;

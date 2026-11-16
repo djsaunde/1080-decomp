@@ -22,6 +22,7 @@ struct M4 { int a; M4() { a = 0; } };
 struct W4 { M4 m; W4() {} };
 struct A { char p0[0x138]; M8 m138; M8 m140; char p148[0x18C - 0x148]; M4 m18C; char p190[0x1C4 - 0x190]; W4 w1C4; char p1C8[0x1E0 - 0x1C8]; A() {} };
 struct E { M8 m; int x; E() {} };
+/* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
 struct F { char p[0x18]; F() { gl_func_00000000(this); } };
 struct El { char p[0xC]; El(); };
 struct G { El e[50]; int n; G() {} };

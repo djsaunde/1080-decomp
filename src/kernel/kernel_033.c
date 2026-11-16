@@ -12,9 +12,10 @@ typedef struct { s32 pad0; u8 type; char pad5[4]; u8 domain; char padA[2]; s32 i
 s32 __rmonGetExeName(RmonMsg* msg) {
     RmonMsg* p = msg;
     s32* buf = (s32*)__rmonUtilityBuffer;
+    /* RAW: unknown-object: buf is the rmon reply packet header, untyped in this TU */
     *(u8*)((char*)buf + 4) = p->type;
-    *(s16*)((char*)buf + 6) = 0;
-    *(s32*)((char*)buf + 0xC) = p->id;
+    *(s16*)((char*)buf + 6) = 0; /* RAW: unknown-object (as above) */
+    *(s32*)((char*)buf + 0xC) = p->id; /* RAW: unknown-object (as above) */
     if (msg->domain == 1) {
         func_80006B54((char*)buf + 0x10, &D_8000A828);
     } else {

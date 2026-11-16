@@ -49,9 +49,10 @@ extern "C" S4D *RcpMgr_ctor(S4D *s) {
     s->w2C = CALL(mem_newAligned)(0x400, 16);
     CALL(gl_osCreateThread)(D_00000000 + 0x3C950, 4, D_4D468_a2, s, D_00000000 + 0x3EB00, 11);
     sCanL = 0x1234567812345678LL;
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     bind(9, *(int *)(gSysLib_4D468_w + 0x1C), 102);
-    { int h = *(int *)(gSysLib_4D468_w + 0x1C); CALL(gl_osSetEventMesg)(4, h, 101); }
-    { int h = *(int *)(gSysLib_4D468_w + 0x1C); CALL(gl_osSetEventMesg)(14, h, 108); }
+    { int h = *(int *)(gSysLib_4D468_w + 0x1C); CALL(gl_osSetEventMesg)(4, h, 101); } /* RAW: donor-mirror (as above) */
+    { int h = *(int *)(gSysLib_4D468_w + 0x1C); CALL(gl_osSetEventMesg)(14, h, 108); } /* RAW: donor-mirror (as above) */
     CALL(gl_osStartThread)(D_00000000 + 0x3C950);
     s->w20 = 0;
     s->w1C = 0;

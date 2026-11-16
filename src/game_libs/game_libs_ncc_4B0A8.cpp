@@ -54,9 +54,10 @@ struct Obj : Base {
     Obj(Src *s);
 };
 Obj::Obj(Src *s) : Base(D_00000000 + 0x200EC) {
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     Pair p = *(Pair *)(&gGfxLib_4b0a8_vt + 0x140);
     f0 = 2;
-    f40 = (DL *)dbg_printThreads(0, D_00000000 + 0x200F4, *(int *)(&gGfxLib_4b0a8_w214 + 0x214));
+    f40 = (DL *)dbg_printThreads(0, D_00000000 + 0x200F4, *(int *)(&gGfxLib_4b0a8_w214 + 0x214)); /* RAW: donor-mirror (as above) */
     dbg_printThreads(f40, &p);
     dbg_printThreads(f40, &p);
     dbg_printThreads(f40, &p);

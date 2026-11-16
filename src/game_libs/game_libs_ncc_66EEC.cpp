@@ -49,11 +49,12 @@ extern "C" void pad_threadLoop_00066EEC(char *arg0) {
         case 1:
             if (flag == 0) {
                 for (i = 0; i != 4; i++) {
+                    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
                     FCALL(pad_updateMotor_00067084)(arg0, i, *(s16 *)(arg0 + i * 2 + 0x13E0));
                 }
             }
             FCALL(osContStartReadData)(arg0 + 0x11B0);
-            *(int *)(arg0 + 0x13E8) = 0;
+            *(int *)(arg0 + 0x13E8) = 0; /* RAW: donor-mirror (as above) */
             break;
         case 4:
             break;
@@ -62,7 +63,7 @@ extern "C" void pad_threadLoop_00066EEC(char *arg0) {
             if (flag == 0) {
                 FCALL(pad_initMotors_00067264)(arg0);
             }
-            *(int *)(arg0 + 0x13E8) = 1;
+            *(int *)(arg0 + 0x13E8) = 1; /* RAW: donor-mirror (as above) */
             break;
         }
     }

@@ -12,6 +12,7 @@ extern unsigned short *gl___osViNext_74D54_p2;
 void gl_osViSetYScale(float f) {
     register int sr;
     sr = gl_func_00000000();
+    /* RAW: unknown-object: libultra __OSViContext (y scale 0x24) has no header in include/libultra yet */
     *(float *)(gl___osViNext_74D54_p1 + 0x24) = f;
     *gl___osViNext_74D54_p2 |= 4;
     CALL(gl___osRestoreInt)(sr);

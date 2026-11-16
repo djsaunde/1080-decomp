@@ -80,6 +80,7 @@ extern "C" void CourseGadget_drawMarker(char *arg0, s32 arg1, f32 arg2, f32 arg3
         CALL(gui_spriteRefresh)(p);
         CALL(gui_setColorEnvPrim_000017DC)(p, (s32) (255.0f * (*(f32*)&D_00000000)), vec, 0xFF);
         /* agent-g run 276: the (f32) term first (target add.s f8,f10,f6 = cvt + product): 99.88 -> 99.97 */
+        /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
         CALL(gui_drawSprite)(p, (s32) ((f32) (FW(arg0, 0x164) - 0xC) + (((b4 * dx) + (d4 * dy)) * 150.0f)), arg4 - 8, 0);
     }
 }

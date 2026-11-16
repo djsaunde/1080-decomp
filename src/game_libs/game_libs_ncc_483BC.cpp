@@ -59,6 +59,7 @@ extern "C" void PolyShape_emitTriBatch_000483BC(Obj488A0 *obj) {
         g = &ctx->dl->base[n];
         g->w0 = 0x04000000 | (((obj->nv << 10) | ((obj->nv << 4) - 1)) & 0xFFFF);
         g->w1 = CALL(gl_osVirtualToPhysical)(*(c2 = obj->ctx)->vtx + obj->vbase);
+        /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
         *(int *)((char *)obj + 0x58C) += obj->nv;
         for (i = 0; i < obj->nline; i++) {
             Gfx488A0 *h;

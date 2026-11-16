@@ -187,11 +187,12 @@ void app_runProcess(int a0, int a1, int *a2) {
     base = (char *)&gInputMgr;
     p = base + 0x10;
     CALL(list_append)(p, obj);
+    /* RAW: unknown-object: the app process-list node (+0x4 run flag, +0x14 owner) is untyped */
     if (*(int *)((char *)obj + 0x14) != 0) {
-        *(int *)((char *)obj + 0x4) = 1;
+        *(int *)((char *)obj + 0x4) = 1; /* RAW: unknown-object (as above) */
     }
     p = base;
-    *(int *)((char *)obj + 0x14) = (int)p;
+    *(int *)((char *)obj + 0x14) = (int)p; /* RAW: unknown-object (as above) */
     obj = a2;
     CALL(node_linkBack_0004E888)(D_w0, obj);
     CALL(game_stub_000031B8)(gInputMgr_w134);

@@ -53,12 +53,13 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
             gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEE84 + 0x1614, (f32) 0, (f32) 0, (f32) 0);
             g2 = gc;
             if (1) {}
+            /* RAW: unknown-object: the SelBoard light-target fields 0x108..0x124 are not in SelBoardModel; &import_80807FB8 + K is an import-base data read */
             cf = *(f32 *)((char *)&import_80807FB8 + 0x3B4);
-            NODE(g2)->vptr = &import_80087FB8[0]; (*(s32 *)((char *)(g2) + 0x120)) = 1; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
-            *(f32 *)(g2 + 0x108) = cf;
-            *(f32 *)(g2 + 0x10C) = cf;
-            *(f32 *)(g2 + 0x110) = cf;
-            *(f32 *)(g2 + 0x124) = 1.0f;
+            NODE(g2)->vptr = &import_80087FB8[0]; (*(s32 *)((char *)(g2) + 0x120)) = 1; /* vptr: bootup LightTarget_vtbl (gl_data.h) */ /* RAW: unknown-object (as above) */
+            *(f32 *)(g2 + 0x108) = cf; /* RAW: unknown-object (as above) */
+            *(f32 *)(g2 + 0x10C) = cf; /* RAW: unknown-object (as above) */
+            *(f32 *)(g2 + 0x110) = cf; /* RAW: unknown-object (as above) */
+            *(f32 *)(g2 + 0x124) = 1.0f; /* RAW: unknown-object (as above) */
         }
         MODEL(child)->head.inner = gc;
         gen_imp_MNode_addChild(child, gc);
@@ -92,7 +93,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         g2 = r;
         do {
         ((TimB5EntryFields *)g2)->model = child;
-        ((TimB5EntryFields *)g2)->cfv = *(f32 *)((char *)&import_80807FB8 + 0x3B8);
+        ((TimB5EntryFields *)g2)->cfv = *(f32 *)((char *)&import_80807FB8 + 0x3B8); /* RAW: unknown-object (as above) */
         ((TimB5EntryFields *)g2)->node = child;
         } while (0);
     }

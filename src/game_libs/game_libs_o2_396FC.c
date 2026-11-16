@@ -64,6 +64,7 @@ void MNode_doCommand(int *a0, int *a1) {
     case 112:
         q = (int *)a1[1]; a1[1] = (int)(q + 1);
         s = (short *)*q;
+        /* RAW: unknown-object: MNode's matrix block at 0x30 / 0x70 (Mtx16 copies) is not in the MNode struct yet */
         *(Mtx16_396FC *)((char *)a0 + 0x30) = *(Mtx16_396FC *)s;
         break;
     case 113:
@@ -94,7 +95,7 @@ void MNode_doCommand(int *a0, int *a1) {
         xf.v[5] = z;
         m = (Mtx16_396FC *)((char *)a0 + 0x30);
         CALL(math_quatScaleToMtx4)(&xf, m);
-        *(Mtx16_396FC *)((char *)a0 + 0x70) = *m;
+        *(Mtx16_396FC *)((char *)a0 + 0x70) = *m; /* RAW: unknown-object (as above) */
         *(Z0_396FC *)&xf = *(Z0_396FC *)&D_00000000;
         *(Z0_396FC *)b1 = *(Z0_396FC *)&D_00000000;
         break;

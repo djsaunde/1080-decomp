@@ -62,8 +62,9 @@ extern "C" int gfx_screenRaycast(char *arg0, int x, int y, V3 *out) {
     V3 e;
     V3 d; /* agent-g run 224 (decl-move sweep): declared before dir, 95.46 -> 95.67 */
     V3 dir;
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     dir.x = -((f32)x - 160.0f); dir.y = (f32)y - 120.0f; dir.z = 8.0f / *(f32 *)((char *)&gGfxLib_4F2DC_b + 0x128);
-    CALL(math_mtx4MulVec3)(&dir, (*(Cam **)(arg0 + 0x70))->mtx);
+    CALL(math_mtx4MulVec3)(&dir, (*(Cam **)(arg0 + 0x70))->mtx); /* RAW: donor-mirror (as above) */
     CALL(math_vec3Normalize)(&dir);
     d = dir;
     /* agent-g run 297: the product reads d through a const reference (zero code): uopt no longer forwards the
@@ -75,7 +76,7 @@ extern "C" int gfx_screenRaycast(char *arg0, int x, int y, V3 *out) {
     /* agent-g run 303: was agent-c run 289's PadK<4> pz frame pad (no longer needed: frame 424 = target); agent-c run 307:
      * the run-303 `if (1) {}` here dropped -- with the operator+ pad the cam pointer then takes v1 and the dead this-temp
      * `addiu v1,v1,112` follows the three loads like the target, 98.534 -> 100 */
-    (*(Cam **)(arg0 + 0x70))->m.getPos(start);
+    (*(Cam **)(arg0 + 0x70))->m.getPos(start); /* RAW: donor-mirror (as above) */
     /* agent-g run 303: the target's `end` (sp+84, below the operator temporaries) is e's by-value operator= parameter --
      * e = start + dr * -1e5 (bootup.uso RoData 0x1BA8 / 0x1BAC are the literals -1e5 / 1e5), start *= KV, then e *= KV
      * (same values as e.set(KV.x * end.x, ...)): start.x stays in f18 across the add and the scale like the target,

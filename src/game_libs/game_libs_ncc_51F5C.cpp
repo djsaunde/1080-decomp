@@ -28,25 +28,26 @@ extern "C" void BasePolyShape_parseMats(char *arg0, int *arg1) {
         case 100:
             prev = node;
             vec = (int *)(arg0 + 0x84);
+            /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
             if (idx >= *(int *)(arg0 + 0x8C)) {
                 XCALL(gl_func_00034458_51F5C, sys_fatal)((char *)&D_00000000 + 0x20F38, cmd);
             }
             node = (char *)XCALL(gl_func_00034458_51F5C, Mat_clone_0004FBA4)(arg0, &arg1);
             n = node;
-            if (*(int *)(arg0 + 0x90) >= *(int *)(arg0 + 0x8C)) {
+            if (*(int *)(arg0 + 0x90) >= *(int *)(arg0 + 0x8C)) { /* RAW: donor-mirror (as above) */
                 XCALL(gl_func_00034458_51F5C, sys_fatal)((char *)&D_00000000 + 0x20F4C);
             }
             k = vec[3];
             vec[3] = k + 1;
             ((char **)vec[0])[k] = n;
-            *(int *)(node + 0x18) = idx;
+            *(int *)(node + 0x18) = idx; /* RAW: donor-mirror (as above) */
             idx++;
             break;
         case 101:
             if (prev == 0) {
                 XCALL(gl_func_00034458_51F5C, sys_fatal)((char *)&D_00000000 + 0x20F68, cmd);
             }
-            *(char **)(prev + 0x40) = node;
+            *(char **)(prev + 0x40) = node; /* RAW: donor-mirror (as above) */
             break;
         case 0:
             done = 1;

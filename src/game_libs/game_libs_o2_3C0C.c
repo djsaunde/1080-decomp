@@ -24,6 +24,8 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "uso_call.h"
+#include "game/input.h"
+#include "gdl/race.h"
 
 extern int D_00000000;
 extern int gl_func_00000000();
@@ -67,7 +69,7 @@ GlSlot3C0C *PointsGadget_allocSlot_00003C0C(char *arg0, s32 arg1, s32 arg2, s32 
             XCALL(gl_func_00000000_i3ff, PointsPopup_setPosScale)((int)slot, 160, arg2 + 90, 1.0f, 1.0f);
             p->slot->unkA0 = 0;
             p->slot->unk7C = 1;
-            q = (s32 *)(*(char **)(*(char **)((char *)&gInputMgr + 0x138) + 0x44) + 0x14);
+            q = &INPUT_MGR(gInputMgr).dataMgr->entries->time; /* entries[0] */
             *q += arg1;
             if (arg3 != 0) {
                 p->slot->unk94 = 3;
@@ -85,6 +87,7 @@ GlSlot3C0C *PointsGadget_allocSlot_00003C0C(char *arg0, s32 arg1, s32 arg2, s32 
             p->slot->unkAC = 0.5f;
             p->slot->unk80 = 0;
             p->slot->unk84 = -18;
+            /* RAW: unknown-object: arg0 (PointsGadget host, 0x54) is untyped char * in this TU */
             p->slot->unkB0 = *(s32 *)(arg0 + 0x54);
             slot = p->slot;
             CALL(gl_sprintf)(slot->unkB4, GL_DATA(0xCD04), slot->unk98);

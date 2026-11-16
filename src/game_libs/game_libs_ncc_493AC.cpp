@@ -157,6 +157,7 @@ int Mgr::run() {
          * local: stored to o->triDL and re-read through the member (uopt forwards the store), rec.ctx taken before
          * the rec stores that would kill the forwarding; `g` kept as a home-keeping local (frame offsets) --
          * agent-c run 299: g dropped, the first loop's block-scoped e1 now holds that home word */
+        /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
         o->triDL = *(Ctx **)((char *)&gGfxLib_493AC_d + 0x214);
         o->triStart = o->triDL->count();
         rec.ctx = o->triDL;

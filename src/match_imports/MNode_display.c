@@ -55,12 +55,13 @@ void MNode_display(GlObjectPrefix *root) {
             float scaled[3];
             float x, y, z;
             float *gv;
+            /* RAW: unknown-object: root's scale vector 0xA0..0xA8 and the 0xE8 matrix of D_39094_dat are untyped in this port */
             vec = *(GlObjectMatrix*)((char*)&D_39094_dat + 0xE8);
             do {
                 gv = (float*)((char*)&D_39094_dat + 0x128);
-                x = gv[0] * *(float*)((char*)root + 0xA0);
-                y = gv[1] * *(float*)((char*)root + 0xA4);
-                z = gv[2] * *(float*)((char*)root + 0xA8);
+                x = gv[0] * *(float*)((char*)root + 0xA0); /* RAW: unknown-object (as above) */
+                y = gv[1] * *(float*)((char*)root + 0xA4); /* RAW: unknown-object (as above) */
+                z = gv[2] * *(float*)((char*)root + 0xA8); /* RAW: unknown-object (as above) */
                 scaled[0] = x;
                 scaled[1] = y;
                 scaled[2] = z;

@@ -83,6 +83,7 @@ extern "C" void hostio_dispatch(int arg0) {
         CALL(hostio_start)();
         break;
     case 28: {
+        /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
         O28 *o = *(O28 **)(gGfxLib_3FC58_g + 0x1C8);
         out.type = 25;
         out.obj = o;

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "libultra/os_thread.h"
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
@@ -194,7 +195,7 @@ void osDestroyThread(int *target) {
     if (target == 0) {
         target = __osRunningThread;
     } else {
-        if (*(unsigned short *)((char *)target + 0x10) != 1) {
+        if (((OSThread *)target)->state != OS_STATE_STOPPED) {
             func_80003FF0(target[2], target);
         }
     }

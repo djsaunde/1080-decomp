@@ -43,8 +43,9 @@ extern "C" void PolyShape_hostioParms(char *self) {
     while (it.next()) {
           it.cur()->tick(); 
     }
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     CALL(hostio_addInt)(gHostio_49B3C_s5, D_00000000 + 0x20004, self + 164, -1, *(int *)(self + 140), 0); if (1) {}
-     if (*(Grp **)(self + 44)) { Grp *g = *(Grp **)(self + 44); 
+     if (*(Grp **)(self + 44)) { Grp *g = *(Grp **)(self + 44); /* RAW: donor-mirror (as above) */
         LI li(g->head); while (li.next()) {
              callu(li.cur->data); 
         }

@@ -50,6 +50,7 @@ void h2h_WinsDisplay_display_00001360(int *self) {
     h2hproc_1360_import_163(v_call);
     vtable = (int *)H2HWINS(self)->sprites[0].image;
     if (1) {}
+    /* RAW: data-table: Cfront vtable entry (s16 this-delta at +0x20) */
     retval = *(short*)((char*)vtable + 0x20);
     h2hproc_1360_import_164(v_call, retval + 68, 64, 3);
     v_call = (int*)&H2HWINS(self)->sprites[2];
@@ -59,7 +60,7 @@ void h2h_WinsDisplay_display_00001360(int *self) {
     h2hproc_1360_import_163(v_call);
     vtable = (int *)H2HWINS(self)->sprites[2].image;
     if (1) {}
-    retval = *(short*)((char*)vtable + 0x20);
+    retval = *(short*)((char*)vtable + 0x20); /* RAW: data-table (as above) */
     h2hproc_1360_import_164(v_call, retval + 228, 64, 3);
     h2hproc_1360_import_165(self);
 }

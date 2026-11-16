@@ -839,7 +839,7 @@ s32 uso_callEntry(void) {
         return -1;
     }
 
-    funcTable = *(s32*)((char*)mod + 0x3C);
+    funcTable = (s32)((UsoModuleSlot *)mod)->secData[USO_SEC_SYM];
     if (funcTable == 0) {
         return -1;
     }
@@ -851,6 +851,7 @@ s32 uso_callEntry(void) {
          * (2026-06-10 kernel relayout audit; was the last kernel_000
          * non-reloc word diff.) */
         s32 t;
+        /* RAW: data-table: Sym section entries (12 bytes: name, value, size); +4 is the entry's address */
         UsoFunc fn = (UsoFunc)*(s32*)((t = funcTable) + funcIndex * 12 + 4);
         gUsoEntryResult = fn(&gUsoCtx);
     }
@@ -1217,19 +1218,20 @@ void uso_initSlot(void* arg0) {
     s32 i;
     char* ptr;
 
-    *(u8*)((char*)arg0 + 0x99) = 1;
-    *(s32*)((char*)arg0 + 0x38) = 0;
-    *(s32*)((char*)arg0 + 0x3C) = 0;
+    ((UsoModuleSlot *)arg0)->unk99 = 1;
+    ((UsoModuleSlot *)arg0)->secData[USO_SEC_INFO] = 0;
+    ((UsoModuleSlot *)arg0)->secData[USO_SEC_SYM] = 0;
     /* 2026-06-10 kernel-relayout: previous do-while form was a FALSE match
      * (v0/v1 swapped + bound/counter pre-header order; verified against a
      * shifted baseline). for-comma-init pins ptr->$v1, bound-before-counter
      * (docs/IDO_CODEGEN.md for-loop comma-init lever). Now byte-exact. */
     for (i = 2, ptr = (char*)arg0 + 8; i != 0xE; ) {
         i += 4;
+        /* RAW: byte-lock: ptr is a char cursor over secData[2..13] (16 bytes per pass); the for-comma-init lever (docs/IDO_CODEGEN.md) needs that cursor */
         *(s32*)(ptr + 0x38) = 0;
-        *(s32*)(ptr + 0x3C) = 0;
-        *(s32*)(ptr + 0x40) = 0;
-        *(s32*)(ptr + 0x44) = 0;
+        *(s32*)(ptr + 0x3C) = 0; /* RAW: byte-lock (as above) */
+        *(s32*)(ptr + 0x40) = 0; /* RAW: byte-lock (as above) */
+        *(s32*)(ptr + 0x44) = 0; /* RAW: byte-lock (as above) */
         ptr += 0x10;
     }
 }
@@ -1277,7 +1279,7 @@ typedef struct { s32 info; s32 off; s32 val; } RelEnt18F0;
  * pushes 12 / 1 over the constrained threshold; the address LR takes t0), arg1 bound through a dead
  * assignment so it is the addu's first operand. */
 s32 uso_unrelocate(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
-    RelSym18F0 *syms = *(RelSym18F0 **)((char *)arg0 + 0x3C);
+    RelSym18F0 *syms = ((UsoModuleSlot *)arg0)->secData[USO_SEC_SYM];
     RelSym18F0 *s;
     s32 i;
     s32 found;
@@ -1776,6 +1778,7 @@ void osInitialize(void) {
             func_80005350(0x80000180, 0x24);
             __kmc_pt_mode = 1;
             if (!(*sp38 & 0x10)) {
+                /* RAW: data-table: a word of the debugger ROM header at hardware address 0xBFF00000 (not a struct) */
                 sp40 = *(s32 *)((char *) sp3C + 4);
                 if (sp40 != 0xBFF00000) {
                     sp30 = (s32 *)(sp40 | 0x20000000);

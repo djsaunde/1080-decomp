@@ -23,13 +23,14 @@ void gl___osLeoResume(void) {
     register int res;
 
     bufp = (int *)((char *)&gl___osEventStateTab + 0x40);
+    /* RAW: unknown-object: __osEventStateTab[8] queue is libultra OSMesgQueue, but this TU types the table as a char blob and the queue pointer as char * */
     if ((head = *(char **)((char *)&gl___osEventStateTab + 0x40)) == 0 ||
-        *(int *)(head + 8) >= *(int *)(head + 0x10)) {
+        *(int *)(head + 8) >= *(int *)(head + 0x10)) { /* RAW: unknown-object (as above) */
         return;
     }
-    slot = (*(int *)(head + 0xC) + *(int *)(head + 8)) % *(int *)(head + 0x10);
-    *(int *)(*(char **)(head + 0x14) + slot * 4) = bufp[1];
-    *(int *)(head + 8) = *(int *)(head + 8) + 1;
+    slot = (*(int *)(head + 0xC) + *(int *)(head + 8)) % *(int *)(head + 0x10); /* RAW: unknown-object (as above) */
+    *(int *)(*(char **)(head + 0x14) + slot * 4) = bufp[1]; /* RAW: unknown-object (as above) */
+    *(int *)(head + 8) = *(int *)(head + 8) + 1; /* RAW: unknown-object (as above) */
     if (**(int ***)head != 0) {
         res = CALL(gl___osPopThread)(head);
         gl_func_00000000((char *)&gl___osRunQueue, res);

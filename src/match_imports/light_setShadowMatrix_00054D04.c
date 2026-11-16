@@ -41,6 +41,7 @@ void light_setShadowMatrix_00054D04(char *self, float *plane, Vec3 *out) {
         }
         matrix = self + 0x12C;
         gl_54d04_project(matrix, &direction, plane);
+        /* RAW: data-table: a word at an offset of a section-base symbol (gl_54d04_root + 0xE4) */
         *(char **)(&gl_54d04_root + 0xE4) = matrix;
     } else {
         gl_54d04_report(&gl_54d04_strings + 0x210EC);

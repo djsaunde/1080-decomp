@@ -1,5 +1,6 @@
 #include "gdl/gl_data.h"
 #include "uso_call.h"
+#include "libultra/os_thread.h"
 /* IDO 7.1 -O2 donor for dbg_faultThread (0x13C / 79 words, the
  * subsystem poll loop) and sys_hang (0x20, the hang stub).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY; only those two
@@ -51,13 +52,13 @@ int dbg_printThreads() {
     int s1;
     int vB;
     CALL(dbg_printf)(GL_DATA_STR(0x1E3F4, "Threads: \n"));
-    while (*(int *)(n + 4) != -1) {
-        (*(int (**)(int, int *, int *))(gSysApi_34458_obj + 0x70))(*(int *)(n + 0x11C), &outA, &outB);
-        s1 = CALL(dbg_threadName)(*(int *)(n + 0x14));
-        vB = CALL(dbg_threadStateName)(*(unsigned short *)(n + 0x10));
-        CALL(dbg_printf)(GL_DATA_STR(0x1E400, "%s (%d): %s : (%s,0x%x) PC=0x%x \n"), s1, *(int *)(n + 0x14), vB,
-                         outA, outB, *(int *)(n + 0x11C));
-        n = *(char **)(n + 0xC);
+    while (((OSThread *)n)->priority != -1) {
+        (*(int (**)(int, int *, int *))(gSysApi_34458_obj + 0x70))(((OSThread *)n)->context.pc, &outA, &outB);
+        s1 = CALL(dbg_threadName)(((OSThread *)n)->id);
+        vB = CALL(dbg_threadStateName)(((OSThread *)n)->state);
+        CALL(dbg_printf)(GL_DATA_STR(0x1E400, "%s (%d): %s : (%s,0x%x) PC=0x%x \n"), s1, ((OSThread *)n)->id, vB,
+                         outA, outB, ((OSThread *)n)->context.pc);
+        n = (char *)((OSThread *)n)->tlnext;
     }
 }
 
@@ -76,12 +77,12 @@ void dbg_faultThread(void *a0) {
             continue;
         }
         s0 = D_34548_slot + 0x20;
-        (*(int (**)())(gSysApi_34548_obj + 0x70))(*(int *)(s0 + 0xFC), &sp50, &sp54);
+        (*(int (**)())(gSysApi_34548_obj + 0x70))(((__OSThreadContext *)s0)->pc, &sp50, &sp54);
         CALL(dbg_printf)(GL_DATA_STR(0x1E424, "****************\n"));
         CALL(fault_printThread)(D_34548_slot);
-        r5 = CALL(dbg_threadName)(*(int *)(D_34548_slot + 0x14));
-        CALL(sys_fatal)(GL_DATA_STR(0x1E438, "Fault (%s,0x%x) 0x%x in Thread %s (%d)\n"), sp50, sp54, *(int *)(s0 + 0xFC), r5,
-                         *(int *)(D_34548_slot + 0x14));
+        r5 = CALL(dbg_threadName)(((OSThread *)D_34548_slot)->id);
+        CALL(sys_fatal)(GL_DATA_STR(0x1E438, "Fault (%s,0x%x) 0x%x in Thread %s (%d)\n"), sp50, sp54, ((__OSThreadContext *)s0)->pc, r5,
+                         ((OSThread *)D_34548_slot)->id);
     }
 }
 

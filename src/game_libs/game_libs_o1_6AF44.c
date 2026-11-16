@@ -1,5 +1,6 @@
 #include "gdl/gl_data.h"
 #include "uso_call.h"
+#include "libultra/os_thread.h"
 /* -O1 donor for gl_osDestroyThread — 65-insn list-unlink + cleanup (frame 0x38,
  * saves s0/s1/s2). PROVEN EXACT 65/65 at IDO 7.1 -O1 (2026-07-08 standalone
  * probe; plain -O1, no -g3). post1b builds -O2, where `target` gets promoted
@@ -26,7 +27,7 @@ void gl_osDestroyThread(int *target) {
     if (target == 0) {
         target = gl___osRunningThread;
     } else {
-        if (*(unsigned short *)((char *)target + 0x10) != 1) {
+        if (((OSThread *)target)->state != OS_STATE_STOPPED) {
             CALL(gl___osDequeueThread)(target[2], target);
         }
     }

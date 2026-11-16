@@ -19,6 +19,7 @@ void GfxLib_reset(GlResetState *arg0) {
     }
     p = (int *)&arg0->flags_138;
     gl_44918_reset_4E00C(arg0);
+    /* RAW: data-table: a float at an offset of a section-base symbol (D_44918_flt + 0x1B38) */
     arg0->field_24C = *(f32 *)(D_44918_flt + 0x1B38);
     arg0->field_250 = 0;
     arg0->field_230 = 0;

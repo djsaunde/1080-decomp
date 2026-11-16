@@ -57,6 +57,7 @@ extern "C" void gl_func_00000000_void(...);
  * share v1 in one block like the target */
 struct Obj254 { char pad[0xB8]; int b8, bc, c0, c4; char padc8[0x148 - 0xC8]; char *p148; char pad14c[0x158 - 0x14C]; Ctx *ctx;
     Obj254 *me() { return this; }
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     void cf() { gl_func_00000000_void(ctx, *(int *)(p148 + 0xF0)); } };
 struct GState { char pad[0x21C]; int m21c, m220, m224, m228; char pad22c[0x254 - 0x22C]; Obj254 *o; };
 extern "C" {

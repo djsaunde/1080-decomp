@@ -104,6 +104,7 @@ struct Obj : Base {         /* Sprite (sprite.h) */
 };
 inline void g1(Elem *e) { if (0) { e = 0; } CALL(gfx_endDL)(e->m64); } /* run 173: the last per-element call through a kept parameter */
 Obj::Obj(void *a1) : Base(a1) {
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     *(char **)((char *)this + 0x28) = Sprite_vtbl; /* Sym 1871 */
     endDL = 0;
     unkD4 = 0;

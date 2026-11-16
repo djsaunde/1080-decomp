@@ -57,10 +57,11 @@ extern "C" void gfx_initMtxBlock_0004E00C(int *s0) {
     CALL(math_mtxScaleRows)((char *)s0 + 0xE8, (char *)s0 + 0x128);
     s0[0x1CC / 4] = 0;
     s0[0x18C / 4] = 0;
+    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
     *(float *)((char *)s0 + 0x1D0) = 0.0f;
-    *(float *)((char *)s0 + 0x1D4) = 0.0f;
-    *(float *)((char *)s0 + 0x1D8) = 0.0f;
-    *(float *)((char *)s0 + 0x1DC) = 0.5f;
+    *(float *)((char *)s0 + 0x1D4) = 0.0f; /* RAW: donor-mirror (as above) */
+    *(float *)((char *)s0 + 0x1D8) = 0.0f; /* RAW: donor-mirror (as above) */
+    *(float *)((char *)s0 + 0x1DC) = 0.5f; /* RAW: donor-mirror (as above) */
     ((Blk *)((char *)s0 + 0x148))->clear();
     ((Blk2 *)((char *)s0 + 0x160))->clear();
     CALL(gfx_setShadowLight)(s0, 0);

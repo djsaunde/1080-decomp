@@ -99,6 +99,7 @@ void gfx_decodeMatCmd(State_51AD8 *out, Strm_51AD8 *s) {
         p = s->cur; s->cur = p + 1; q = (s32 *)*p;
         r = (s32 *)CALL(gfx_getDdm)(&gGfxLib, q);
         out->w48 = r;
+        /* RAW: data-table: reads a word pair from the material command stream (r + 1) */
         out->m = *(Pair_51AD8 *)(r + 1);
         break;
     case 207:

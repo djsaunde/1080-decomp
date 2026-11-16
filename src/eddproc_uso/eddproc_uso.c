@@ -66,12 +66,13 @@ void edd_nop_00000150(int a0, int a1) {
 extern int D_00000004;
 
 void edd_DataManager_init(char *a0) {
+    /* RAW: unknown-object: edd's DataManager subclass (timer 0xA0, gadget 0x84) has no struct yet; only the RaceTracker base is typed */
     *(char**)(a0 + 0xC) = &D_00000000 + 0x220;
     CALL(hud_addPointsGadgetList)(a0);
-    CALL(hud_addSpeedGadget)(a0, 0xD6, 0x13, *(char**)(a0 + 0x44) + 0x10);
+    CALL(hud_addSpeedGadget)(a0, 0xD6, 0x13, *(char**)(a0 + 0x44) + 0x10); /* RAW: unknown-object (as above) */
     CALL(hud_addCountDownGadget)(a0, 0x6C, 0x11, (char*)a0 + 0xA0);
-    *(int*)(a0 + 0xA0) = 0x2328;
-    *(int*)(a0 + 0xA4) = 0;
+    *(int*)(a0 + 0xA0) = 0x2328; /* RAW: unknown-object (as above) */
+    *(int*)(a0 + 0xA4) = 0; /* RAW: unknown-object (as above) */
     *(int*)&D_00000000 = CALL(mem_new)(0x3E80);
     D_00000004 = 0;
     CALL(Node_resumeUpdate_0000E450)(a0);
@@ -81,12 +82,13 @@ void edd_DataManager_update(char *a0) {
     if (*(int*)(&D_00000000 + 0x74) == 0) {
         CALL(RaceTracker_passCheckpoints)();
         CALL(RaceTracker_passGates)(a0);
+        /* RAW: unknown-object: edd's DataManager subclass (timer 0xA0, gadget 0x84) has no struct yet */
         if ((*(int*)(a0 + 0xA0) -= 0xA) < 0) {
-            *(int*)(a0 + 0xA0) = 0;
+            *(int*)(a0 + 0xA0) = 0; /* RAW: unknown-object (as above) */
         }
     }
     CALL(RaceTracker_update)(a0);
-    CALL(CountDownGadget_setTime)(*(int*)(a0 + 0x84), *(int*)(a0 + 0xA0), 1);
+    CALL(CountDownGadget_setTime)(*(int*)(a0 + 0x84), *(int*)(a0 + 0xA0), 1); /* RAW: unknown-object (as above) */
     CALL(Node_update)(a0);
 }
 
@@ -242,6 +244,7 @@ void *edd_ItemType_create_000003BC(int *arg0) {
     if (p1 != 0) {
         CALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (char *)&D_00000000;
+        /* RAW: unknown-object: the app process-list node (+0x4 run flag, +0x14 owner) is untyped (same record as app_runProcess) */
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -249,10 +252,10 @@ void *edd_ItemType_create_000003BC(int *arg0) {
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
         CALL(list_append)((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        if (*(int*)((char*)head + 0x14) != 0) { /* RAW: unknown-object (as above) */
+            *(int*)((char*)head + 0x4) = 1; /* RAW: unknown-object (as above) */
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        *(int*)((char*)head + 0x14) = (int)p2; /* RAW: unknown-object (as above) */
     }
     return p2;
 }

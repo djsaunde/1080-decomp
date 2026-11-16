@@ -38,19 +38,20 @@ extern int D_00000000;
 int gl_osSetTimer(char *obj, int a1, int a2, int a3, int arg5, int arg6, int arg7, int arg8) {
     long long rr;
     char *head;
+    /* RAW: unknown-object: obj is libultra OSTimer but this TU keeps it as char * (u64 fields stored as word halves) */
     *(int *)(obj + 0x0) = 0;
-    *(int *)(obj + 0x4) = 0;
-    *(int *)(obj + 0xC) = arg6;
-    *(int *)(obj + 0x8) = arg5;
+    *(int *)(obj + 0x4) = 0; /* RAW: unknown-object (as above) */
+    *(int *)(obj + 0xC) = arg6; /* RAW: unknown-object (as above) */
+    *(int *)(obj + 0x8) = arg5; /* RAW: unknown-object (as above) */
     if (a2 != 0 || a3 != 0) {
-        *(int *)(obj + 0x10) = a2;
-        *(int *)(obj + 0x14) = a3;
+        *(int *)(obj + 0x10) = a2; /* RAW: unknown-object (as above) */
+        *(int *)(obj + 0x14) = a3; /* RAW: unknown-object (as above) */
     } else {
-        *(int *)(obj + 0x10) = arg5;
-        *(int *)(obj + 0x14) = arg6;
+        *(int *)(obj + 0x10) = arg5; /* RAW: unknown-object (as above) */
+        *(int *)(obj + 0x14) = arg6; /* RAW: unknown-object (as above) */
     }
-    *(int *)(obj + 0x18) = arg7;
-    *(int *)(obj + 0x1C) = arg8;
+    *(int *)(obj + 0x18) = arg7; /* RAW: unknown-object (as above) */
+    *(int *)(obj + 0x1C) = arg8; /* RAW: unknown-object (as above) */
     rr = gl_func_00000000(obj);
     head = *(char **)(*(char **)&D_00000000);
     if (head == obj) {

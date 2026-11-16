@@ -86,10 +86,11 @@ s32 __rmonSetBreak(void *arg0) {
     }
     if (*(s32 *)var_s2 == 0) {
         if (REQ(arg0)->header.method == 1) {
+            /* RAW: data-table: breakpoint table entry (+4 saved instruction) */
             *(s32 *)(var_s2 + 4) = func_80006A98(REQ(s0)->addr);
             func_80006A50(REQ(s0)->addr, ((((var_s2 - var_s1) >> 3) + 0x10) & 0xFFFFF) << 6 | 0xD);
         } else {
-            *(s32 *)(var_s2 + 4) = *(s32 *)REQ(s0)->addr;
+            *(s32 *)(var_s2 + 4) = *(s32 *)REQ(s0)->addr; /* RAW: data-table (as above) */
             *(s32 *)REQ(s0)->addr = ((((var_s2 - var_s1) >> 3) + 0x10) & 0xFFFFF) << 6 | 0xD;
             func_800031F0((void *) REQ(s0)->addr, 4);
             func_80005350((void *) REQ(s0)->addr, 4);
@@ -100,7 +101,7 @@ s32 __rmonSetBreak(void *arg0) {
     reply.header.error = 0;
     reply.object = REQ(s0)->object;
     reply.bp = (var_s2 - var_s1) >> 3;
-    reply.instruction = *(s32 *)(var_s2 + 4);
+    reply.instruction = *(s32 *)(var_s2 + 4); /* RAW: data-table (as above) */
     func_800073F8(&reply, 0x18, 1);
     return 0;
 }

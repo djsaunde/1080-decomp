@@ -37,19 +37,20 @@ void Node_doCommand(char *o, char *c) {
     int *p;
     switch (code = *(int *)c) {
         case 0x64:
+            /* RAW: data-table: c + 4 is the command-stream read cursor of the node command buffer, not a struct field */
             key = *(unsigned int *)(c + 0x4);
-            *(unsigned int *)(c + 0x4) = key + 4;
+            *(unsigned int *)(c + 0x4) = key + 4; /* RAW: data-table (as above) */
             NODE(o)->handle = *(int *)key;
             return;
         case 0x65:
-            p = *(int **)(c + 0x4);
-            *(int **)(c + 0x4) = p + 1;
+            p = *(int **)(c + 0x4); /* RAW: data-table (as above) */
+            *(int **)(c + 0x4) = p + 1; /* RAW: data-table (as above) */
             key = *p;
             NODE(o)->name = (const char *)key;
             return;
         case 0x66:
-            p = *(int **)(c + 0x4);
-            *(int **)(c + 0x4) = p + 1;
+            p = *(int **)(c + 0x4); /* RAW: data-table (as above) */
+            *(int **)(c + 0x4) = p + 1; /* RAW: data-table (as above) */
             key = *p;
             if (key >= 40) {
                 CALL(sys_fatal)(sFmt_Global_out_of_range_1EC6C, key);
@@ -62,8 +63,8 @@ void Node_doCommand(char *o, char *c) {
             NODE(o)->parent = NODE(r);
             return;
         case 0x67:
-            p = *(int **)(c + 0x4);
-            *(int **)(c + 0x4) = p + 1;
+            p = *(int **)(c + 0x4); /* RAW: data-table (as above) */
+            *(int **)(c + 0x4) = p + 1; /* RAW: data-table (as above) */
             key = *p;
             if (key >= 40) {
                 CALL(sys_fatal)(sFmt_Global_out_of_range_1EC84, key);

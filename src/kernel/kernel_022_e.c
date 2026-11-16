@@ -129,10 +129,11 @@ s32 __rmonGetGRegisters(void *arg0) {
             hdr.reg[i] = (s32)*src;
             src++;
         }
+        /* RAW: unknown-object: the rmon register-reply packet tail (0x98..0xA0) and ctx (thread context words) are untyped here */
         *(s32 *)((char *)&hdr + 0x98) = FW(ctx, 0x120);
-        *(s32 *)((char *)&hdr + 0x9C) = FW(ctx, 0x11C);
-        *(s32 *)((char *)&hdr + 0xA0) = FW(ctx, 0x118);
-        *(s32 *)((char *)&hdr + 0x10) = 0;
+        *(s32 *)((char *)&hdr + 0x9C) = FW(ctx, 0x11C); /* RAW: unknown-object (as above) */
+        *(s32 *)((char *)&hdr + 0xA0) = FW(ctx, 0x118); /* RAW: unknown-object (as above) */
+        *(s32 *)((char *)&hdr + 0x10) = 0; /* RAW: unknown-object (as above) */
     } else {
         return -2;
     }
@@ -168,9 +169,10 @@ s32 __rmonSetGRegisters(void *arg0) {
             *p = (s64)msg[i + 4];
             p++;
         }
+        /* RAW: unknown-object: ctx is the thread context as an untyped word base (0x118 sr, 0x11C pc, 0x120 cause) */
         FW(ctx, 0x120) = msg[0x26];
-        FW(ctx, 0x11C) = msg[0x27];
-        FW(ctx, 0x118) = msg[0x28];
+        FW(ctx, 0x11C) = msg[0x27]; /* RAW: unknown-object (as above) */
+        FW(ctx, 0x118) = msg[0x28]; /* RAW: unknown-object (as above) */
     } else {
         return -2;
     }

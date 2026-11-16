@@ -41,6 +41,7 @@ void ItemMgr_Load(GLLoadObject *arg0) {
         if (child != 0 && (arg0->field_34 & child->field_44)) {
             methods = child->base_00.methods_28;
             (*(void (**)(char *))((char *)methods + 0x4C))(
+                /* RAW: data-table: Cfront vtable entry (s16 this-delta at +0x48, fn at +0x4C) */
                 *(short *)((char *)methods + 0x48) + (char *)child);
         } else {
             gl_E39C_seek(gl_E39C_stream, 1, count);
