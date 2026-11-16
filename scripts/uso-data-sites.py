@@ -70,6 +70,12 @@ verifies the named game.uso section offsets in include/game/game_uso_data.h (che
                      `AT(T, &game_uso_D_x, K)`, `&D_00000000 + K`) with the header constant
                      whose section the relocs prove it is (adds the header include)
 
+Mode USOs (agent-g run 589): `--uso titproc|eddproc|mgrproc|arcproc|h2hproc|timproc|trkproc|genproc`
+runs the same game.uso machinery (sites / calls / census / object / pmf-table / const-table / spell /
+check) on that module (MODULES: timproc / trkproc / genproc are src/timproc_uso_b1 / b3 / b5). Each
+module's named section offsets go in its own header (include/game/<src dir>_data.h, created by
+`const-table --write`); the bootup `check` (gate step 5) also checks every such header that exists.
+
 Run from the project root. Needs pyelftools + crunch64 (the repo .venv); any other python re-execs
 itself under /home/danjs/code/decomp/.venv/bin/python, so `python3 scripts/uso-data-sites.py` works too:
   /home/danjs/code/decomp/.venv/bin/python scripts/uso-data-sites.py census -n 40
@@ -104,6 +110,58 @@ STR_MACRO = {'GL_DATA_STR': 6, 'GL_RODATA_STR': 7}
 GAME_INNER_HDR = 0x7CC900
 GAME_TEXT_O = 'build/assets/game_uso_block1_yay0.lnk.o'
 GAME_SRC = 'src/game_uso'
+# Mode USOs (agent-g run 589): `--uso NAME` runs the game.uso machinery (sites / calls / census /
+# object / pmf-table / const-table / spell / check) on another module. Per module: the inner
+# header (magic 0x12345678, ROM offset), where its Text comes from, the source dirs and the
+# section-offset constants header (const-table --write / spell / check; created by --write).
+#   ('map', SEGMENTS): Text linked into tenshoe.elf as those VRAM-0 segments; each function's Text
+#                      offset = VRAM + (segment load address - Text data ROM offset).
+#   ('yay0', OBJS):    a Yay0 code block built from OBJS concatenated in order (each at the sum
+#                      of the earlier .text sizes; an `ld -r` block is its one .lnk.o).
+# timproc_uso_b1 / b3 / b5 are the Text of timproc.uso / trkproc.uso / genproc.uso.
+MODULES = {
+    'game': (0x7CC900, ('yay0', (GAME_TEXT_O,)), (GAME_SRC,), 'include/game/game_uso_data.h'),
+    'titproc': (0x595408, ('map', ('.titproc_uso',)), ('src/titproc_uso',),
+                'include/game/titproc_uso_data.h'),
+    'eddproc': (0x59F21C, ('map', ('.eddproc_uso',)), ('src/eddproc_uso',),
+                'include/game/eddproc_uso_data.h'),
+    'mgrproc': (0x5A0184, ('yay0', ('build/assets/mgrproc_uso_block1_yay0.lnk.o',)),
+                ('src/mgrproc_uso',), 'include/game/mgrproc_uso_data.h'),
+    'arcproc': (0x5A5C08, ('map', ('.arcproc_uso',)), ('src/arcproc_uso',),
+                'include/game/arcproc_uso_data.h'),
+    'h2hproc': (0x5AB230, ('map', ('.h2hproc_uso',)), ('src/h2hproc_uso',),
+                'include/game/h2hproc_uso_data.h'),
+    'timproc': (0x5AF114, ('yay0', ('build/src/timproc_uso_b1/timproc_uso_b1_o0_0.c.o',
+                                    'build/src/timproc_uso_b1/timproc_uso_b1.c.o')),
+                ('src/timproc_uso_b1',), 'include/game/timproc_uso_b1_data.h'),
+    'trkproc': (0x5B3DE2, ('yay0', ('build/assets/timproc_uso_block3_yay0.lnk.o',)),
+                ('src/timproc_uso_b3',), 'include/game/timproc_uso_b3_data.h'),
+    'genproc': (0x5BCA4E, ('yay0', ('build/src/timproc_uso_b5/timproc_uso_b5.c.o',)),
+                ('src/timproc_uso_b5',), 'include/game/timproc_uso_b5_data.h'),
+}
+
+
+def mod_srcs(uso):
+    """The .c / .cpp sources of a MODULES entry, sorted."""
+    return [p for d in MODULES[uso][2] for e in ('c', 'cpp') for p in sorted(glob.glob(f'{d}/*.{e}'))]
+
+
+def mod_text_objs(uso, text_rom=None):
+    """[(text offset, size, obj path)] and {text offset: name} from the map, for a MODULES entry."""
+    kind, what = MODULES[uso][1]
+    if kind == 'map':
+        return load_map(MAP, what, text_rom)
+    from elftools.elf.elffile import ELFFile
+    objs, off = [], 0
+    for path in what:
+        size = 0
+        if os.path.exists(path):
+            with open(path, 'rb') as f:
+                t = ELFFile(f).get_section_by_name('.text')
+                size = t['sh_size'] if t is not None else 0
+        objs.append((off, size, path))
+        off += size
+    return {}, objs
 TYPES = {1: 'Sym', 2: 'TextReloc', 3: 'DataReloc', 4: 'RoDataReloc', 5: 'Text', 6: 'Data',
          7: 'RoData', 9: 'EntrySym', 11: 'End'}
 
@@ -112,8 +170,9 @@ def u32(b, o):
     return struct.unpack_from('>I', b, o)[0]
 
 
-def parse_uso(rom, mod):
-    """Section table walk (same layout as scripts/uso-sym-oracle.py). Returns name -> bytes."""
+def parse_uso(rom, mod, roms=None):
+    """Section table walk (same layout as scripts/uso-sym-oracle.py). Returns name -> bytes;
+    `roms` (a dict), when given, gets name -> ROM offset of the section data."""
     import crunch64
     assert u32(rom, mod) == 0x12345678
     o = mod + 16
@@ -133,6 +192,8 @@ def parse_uso(rom, mod):
         else:
             data = rom[d0:d0 + size]; nxt = d0 + size
         secs.setdefault(TYPES[t], data)
+        if roms is not None:
+            roms.setdefault(TYPES[t], d0)
         o = nxt
         if t in (9, 11) and 'Sym' in secs:
             break
@@ -180,7 +241,7 @@ TEXT_ROM = 0xDD0A6C           # bootup.uso Text section data in the ROM
 SEGMENTS = ('.bootup_uso', '.game_libs_head', '.game_libs')   # = bootup.uso's Text section
 
 
-def load_map(path):
+def load_map(path, segments=SEGMENTS, text_rom=TEXT_ROM):
     """Function symbols of the segments that make up bootup.uso's Text (bootup_uso then
     game_libs), keyed by TEXT SECTION OFFSET (= load address - TEXT_ROM + (vram - section vram)),
     plus each .o's (text offset, size, path)."""
@@ -193,9 +254,9 @@ def load_map(path):
             cur = line.split()[0]
             hdr = line if 'load address' in line else line + ' ' + lines[i + 1]
             m = re.search(r'0x([0-9a-f]+)\s+0x[0-9a-f]+\s+load address 0x([0-9a-f]+)', hdr)
-            delta = (int(m.group(2), 16) - TEXT_ROM - int(m.group(1), 16)) if m else None
+            delta = (int(m.group(2), 16) - text_rom - int(m.group(1), 16)) if m else None
             continue
-        if cur not in SEGMENTS:
+        if cur not in segments:
             continue
         m = re.match(r'\s+\.text\s+0x([0-9a-f]+)\s+0x([0-9a-f]+)\s+(\S+\.o)$', line)
         if m:
@@ -239,7 +300,11 @@ def ensure_build(no_build=False, uso='bootup'):
     sources. A missing or stale build is refreshed with an incremental
     `make RUN_CC_CHECK=0 -j8` (the readability gate leaves a full build behind, so right
     after a gate this is a no-op; `--keep-build` is NOT needed). --no-build only warns."""
-    dirs, target = ((GAME_SRC,), GAME_TEXT_O) if uso == 'game' else (('src/game_libs', 'src/bootup_uso'), MAP)
+    if uso in MODULES:
+        kind, what = MODULES[uso][1]
+        dirs, target = MODULES[uso][2], (MAP if kind == 'map' else what[-1])
+    else:
+        dirs, target = ('src/game_libs', 'src/bootup_uso'), MAP
     srcs = [p for d in dirs for e in ('c', 'cpp', 's')
             for p in glob.glob(f'{d}/*.{e}')]
     # headers are not make dependencies here, and the census only reads relocs (which header
@@ -274,7 +339,8 @@ class Census:
         ensure_build(no_build, uso)
         self.uso = uso
         self.rom = open(ROM, 'rb').read()
-        secs = parse_uso(self.rom, GAME_INNER_HDR if uso == 'game' else INNER_HDR)
+        self.sec_rom = {}
+        secs = parse_uso(self.rom, MODULES[uso][0] if uso in MODULES else INNER_HDR, self.sec_rom)
         self.secs = secs
         sd = secs['Sym']
         self.syms = [Sym(i, *struct.unpack_from('>II', sd, i * 12)) for i in range(len(sd) // 12)]
@@ -282,10 +348,11 @@ class Census:
         # game.uso 2 RoData / 3 Data / 4 Bss / 1 Text
         self.base = {s.sect: s.idx for s in self.syms if s.kind == 4}
         self.text = secs['Text']
-        if uso == 'game':
-            # one object: its .text offsets are game.uso Text offsets (local + global symbols)
-            mfuncs = {}
-            ofuncs, self.ph = load_objfiles([(0, len(self.text), GAME_TEXT_O)])
+        if uso in MODULES:
+            # game.uso: one object whose .text offsets are game.uso Text offsets (local + global
+            # symbols); the mode USOs: their map segments / Yay0 block objects (mod_text_objs)
+            mfuncs, objs = mod_text_objs(uso, self.sec_rom.get('Text'))
+            ofuncs, self.ph = load_objfiles(objs)
         else:
             mfuncs, objs = load_map(MAP)
             ofuncs, self.ph = load_objfiles(objs)
@@ -307,7 +374,7 @@ class Census:
                 self.objs[s.sect].append((s.value, s.idx))
         for v in self.objs.values():
             v.sort()
-        self.sect_size = {6: len(secs['Data']), 7: len(secs['RoData'])}
+        self.sect_size = {6: len(secs.get('Data', b'')), 7: len(secs.get('RoData', b''))}
         self._sites()
         self._data_ptrs()
 
@@ -365,8 +432,11 @@ class Census:
     def _data_ptrs(self):
         """DataReloc words inside each Data object: vtables / string tables / fn tables."""
         self.dptr = collections.defaultdict(list)    # obj key -> [(off, target sym)]
-        for secname, base in (('DataReloc', self.syms[self.base[6]]), ('RoDataReloc', self.syms[self.base[7]])):
-            dr = self.secs[secname]
+        for secname, sect in (('DataReloc', 6), ('RoDataReloc', 7)):
+            if sect not in self.base:       # a mode USO without that section (eddproc: no RoData)
+                continue
+            base = self.syms[self.base[sect]]
+            dr = self.secs.get(secname, b'')
             for i in range(len(dr) // 12):
                 info, off, _ = struct.unpack_from('>III', dr, i * 12)
                 if info & 7 != 4:
@@ -1003,7 +1073,7 @@ def check_direct(c, bodies, verbose=False):
 
 def cmd_check(c, a):
     if c.uso == 'game':
-        return 1 if check_game(a.no_build, a.verbose) else 0
+        return 1 if check_game(a.no_build, a.verbose, c.uso) else 0
     macros = scan_macros()
     claimed = [m for m in macros if m['claim']]
     srcs = [p for d in ('game_libs', 'bootup_uso') for e in ('c', 'cpp')
@@ -1127,7 +1197,12 @@ def cmd_check(c, a):
     print(f'check: {len(ps_names)} per-site aliases named after an object, {ps_ok} LO16 sites verified, '
           f'{ps_bad} mismatches')
     rb = check_plain_ratchet(c, srcs, a.update_ratchet)
-    gb = check_game(a.no_build, a.verbose) if c.uso == 'bootup' else 0
+    gb = 0
+    if c.uso == 'bootup':
+        # game.uso always; a mode USO once its constants header exists (agent-g run 589)
+        for m in MODULES:
+            if m == 'game' or os.path.exists(MODULES[m][3]):
+                gb += check_game(a.no_build, a.verbose, m)
     return 1 if bad or ps_bad or d_bad or str_bad or rb or gb else 0
 
 
@@ -1216,6 +1291,24 @@ def cmd_selftest(c, a):
     print('selftest OK')
     if c.uso == 'bootup':
         selftest_game(a)
+        selftest_modes(a)
+
+
+# Text section sizes of the mode USOs (the Makefile's YAY0_TEXT_SIZE for the Yay0 blocks)
+MODE_TEXT_SIZE = {'titproc': 0x2A20, 'eddproc': 0x480, 'mgrproc': 0x3420, 'arcproc': 0x2980,
+                  'h2hproc': 0x1B30, 'timproc': 0x2EE0, 'trkproc': 0x30E0, 'genproc': 0xE620}
+
+
+def selftest_modes(a):
+    """Mode USO invariants (agent-g run 589): each module's Text size, and every LO16 site lands
+    in a function of the module's built objects."""
+    for m, n in MODE_TEXT_SIZE.items():
+        g = Census('.', a.no_build, m)
+        assert len(g.text) == n, (m, hex(len(g.text)))
+        lo = [s for s in g.sites if s.rtype == 2]
+        assert lo and not [s for s in lo if s.func == '?'], m
+        assert sum(1 for s in lo if s.placeholder) * 10 >= len(lo) * 8, m   # objects line up
+    print(f'selftest mode USOs OK ({len(MODE_TEXT_SIZE)} modules)')
 
 
 def selftest_game(a):
@@ -1265,7 +1358,9 @@ GSECT = {'Data': 6, 'RoData': 7, 'Bss': 8}
 # a site literal K next to a zero placeholder: `&S + K`, `(char *)&S + K`, `(&S) + K`, `AT(T, &S, K)`
 # (agent-g run 551: also a per-site zero alias `D_<tag>_<name>` such as SnowAI_ctor's D_44F4_iterA; the
 # relocs still decide: a site counts only when the .o's placeholder for it IS that token and K matches)
-GSITE_RE = re.compile(r'&\s*\(?\s*(game_uso_D_[0-9A-Fa-f]+|D_00000000|D_[0-9A-Fa-f]+_\w+)\s*\)?\s*\)?\s*([+,])\s*(0x[0-9A-Fa-f]+|\d+)\b')
+# (agent-g run 589, mode USOs: `<seg>_uso[_bN]_D_<addr>` per-address symbols, `D_<tag>_<name>` aliases,
+# `import_<addr>`)
+GSITE_RE = re.compile(r'&\s*\(?\s*([A-Za-z]\w*_uso(?:_b\d)?_D_[0-9A-Fa-f]+|D_\w+|import_[0-9A-Fa-f]+)\s*\)?\s*\)?\s*([+,])\s*(0x[0-9A-Fa-f]+|\d+)\b')
 
 
 def game_spans(src):
@@ -1282,11 +1377,17 @@ def game_bodies(path):
     return out
 
 
-def game_consts():
-    """[(name, value, sect, comment, line)] from GAME_HDR."""
-    if not os.path.exists(GAME_HDR):
+def mod_hdr(uso):
+    """The section-offset constants header of a MODULES entry (game: GAME_HDR)."""
+    return MODULES[uso][3]
+
+
+def game_consts(uso='game'):
+    """[(name, value, sect, comment, line)] from the module's header (GAME_HDR for game.uso)."""
+    hdr = mod_hdr(uso)
+    if not os.path.exists(hdr):
         return []
-    src = open(GAME_HDR).read()
+    src = open(hdr).read()
     out = []
     for m in GCONST_RE.finditer(src):
         out.append((m.group(1), int(m.group(2), 16), GSECT[m.group(3)], int(m.group(4), 16),
@@ -1307,15 +1408,17 @@ def game_ptr_target(c, sect, k):
     return 'null' if k + 4 <= len(d) and u32(d, k) == 0 else None
 
 
-def check_game(no_build=False, verbose=False):
-    """game.uso section-offset constants (GAME_HDR) and their uses in src/game_uso."""
-    consts = game_consts()
+def check_game(no_build=False, verbose=False, uso='game'):
+    """game.uso section-offset constants (GAME_HDR) and their uses in src/game_uso; with `uso`, the
+    same for a mode USO's header and sources."""
+    consts = game_consts(uso)
+    GAME_HDR = mod_hdr(uso)
     if not consts:
-        print('check: game.uso: no named constants')
+        print(f'check: {uso}.uso: no named constants')
         return 0
-    g = Census('.', no_build, 'game')
+    g = Census('.', no_build, uso)
     bad = ok = tgt = 0
-    srcs = [p for e in ('c', 'cpp') for p in sorted(glob.glob(f'{GAME_SRC}/*.{e}'))]
+    srcs = mod_srcs(uso)
     bodies = {p: game_bodies(p) for p in srcs}
     for name, val, sect, coff, comment, line in consts:
         if val != coff:
@@ -1351,7 +1454,7 @@ def check_game(no_build=False, verbose=False):
                     continue
                 bad += 1
                 print(f'MISMATCH {name} in {f} ({p}): no {SECT_NAME[sect]}-base site with K=0x{val:X}')
-    print(f'check: game.uso: {len(consts)} named section offsets ({GAME_HDR}), {tgt} pointer targets / '
+    print(f'check: {uso}.uso: {len(consts)} named section offsets ({GAME_HDR}), {tgt} pointer targets / '
           f'values verified, {ok} (constant, function) uses verified, {bad} mismatches')
     return bad
 
@@ -1384,7 +1487,8 @@ def plan_game_const(c, src, consts):
 
 def cmd_game_spell(c, a):
     """Respell the literal K of game_uso sites with their GAME_HDR constant (`--uso game spell`)."""
-    consts = game_consts()
+    consts = game_consts(c.uso)
+    hdr = mod_hdr(c.uso)
     total = 0
     for path in a.files:
         src = open(path, errors='replace').read()
@@ -1400,15 +1504,16 @@ def cmd_game_spell(c, a):
         if a.write:
             for s0, s1, n, _ in sorted(edits, reverse=True):
                 src = src[:s0] + n + src[s1:]
-            if 'game/game_uso_data.h"' not in src:
+            inc = hdr[len('include/'):]
+            if f'{inc}"' not in src:
                 if path.endswith('.cpp'):
                     ms = list(re.finditer(r'^#include .*\n', src, re.M))
                     i = ms[-1].end() if ms else 0
-                    src = src[:i] + f'#include "{GAME_HDR_REL}"\n' + src[i:]
+                    src = src[:i] + f'#include "../../{hdr}"\n' + src[i:]
                 else:
                     i = src.find('#include "common.h"')
                     i = src.find('\n', i) + 1 if i >= 0 else 0
-                    src = src[:i] + '#include "game/game_uso_data.h"\n' + src[i:]
+                    src = src[:i] + f'#include "{inc}"\n' + src[i:]
             open(path, 'w').write(src)
     print(f'{total} sites' + ('' if a.write else ' (dry run; --write to apply)'))
 
@@ -1484,9 +1589,9 @@ def plan_const_table(c):
     """{(sect, k): (typ, [func..])} for every literal game_uso site K that no GAME_HDR constant names
     yet and whose relocs prove ONE section base: a string start (Data / RoData), or a scalar whose
     site casts it as float / double (the cast within the statement just before the placeholder)."""
-    have = {(sect, val) for _, val, sect, *_ in game_consts()}
+    have = {(sect, val) for _, val, sect, *_ in game_consts(c.uso)}
     out = {}
-    srcs = [p for e in ('c', 'cpp') for p in sorted(glob.glob(f'{GAME_SRC}/*.{e}'))]
+    srcs = mod_srcs(c.uso)
     for path in srcs:
         src = open(path, errors='replace').read()
         for f, b0, b1 in game_spans(src):
@@ -1522,11 +1627,17 @@ CONST_BEGIN = '/* const-table:begin (uso-data-sites.py --uso game const-table --
 CONST_END = '/* const-table:end */'
 
 
+def const_begin(uso):
+    return CONST_BEGIN.replace('--uso game', f'--uso {uso}')
+
+
 def cmd_const_table(c, a):
     """#define lines naming the game.uso strings, parm tags and float / double constants that the
     game_uso sites reach by a literal K (`--uso game const-table [--write]`). Each line carries its
     value claim ("text" / f32 V / f64 V), which `check` verifies against the ROM. --write replaces
-    the generated block of GAME_HDR."""
+    the generated block of GAME_HDR. `--uso MODE const-table` does the same for a mode USO's header
+    (MODULES; --write creates it)."""
+    GAME_HDR, CONST_BEGIN = mod_hdr(c.uso), const_begin(c.uso)
     plan = plan_const_table(c)
     groups = {'str': [], 'tag': [], 'num': []}
     for (sect, k), (typ, fs) in sorted(plan.items()):
@@ -1540,7 +1651,7 @@ def cmd_const_table(c, a):
         groups[grp].append(f'#define {n} 0x{k:X} /* {SECT_NAME[sect]}+0x{k:X}: {val} */')
     # keep the lines an earlier --write generated (their sites are spelled by name now, so the plan
     # no longer sees them; agent-g run 551: a second --write used to drop them)
-    src0 = open(GAME_HDR).read()
+    src0 = open(GAME_HDR).read() if os.path.exists(GAME_HDR) else ''
     i0, j0 = src0.find(CONST_BEGIN), src0.find(CONST_END)
     if i0 >= 0 and j0 > i0:
         for l in src0[i0 + len(CONST_BEGIN):j0].splitlines():
@@ -1568,6 +1679,11 @@ def cmd_const_table(c, a):
         print(text, end='')
         print(f'{len(names)} constants (dry run; --write to update {GAME_HDR})')
         return 0
+    if not os.path.exists(GAME_HDR):
+        g_ = re.sub(r'\W', '_', os.path.basename(GAME_HDR)).upper()
+        open(GAME_HDR, 'w').write(f'#ifndef {g_}\n#define {g_}\n\n/* {c.uso}.uso section offsets named by '
+                                  f'scripts/uso-data-sites.py --uso {c.uso} (const-table / pmf-table); '
+                                  f'`check` verifies each one against the relocs */\n\n#endif\n')
     src = open(GAME_HDR).read()
     i, j = src.find(CONST_BEGIN), src.find(CONST_END)
     if i >= 0 and j > i:
@@ -1597,8 +1713,9 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--no-build', action='store_true',
                     help='never run make; only warn when build/tenshoe.map is older than the sources')
-    ap.add_argument('--uso', choices=('bootup', 'game'), default='bootup',
-                    help='module: bootup.uso (bootup_uso + game_libs, default) or game.uso (src/game_uso)')
+    ap.add_argument('--uso', choices=('bootup',) + tuple(MODULES), default='bootup',
+                    help='module: bootup.uso (bootup_uso + game_libs, default), game.uso (src/game_uso) '
+                         'or a mode USO (MODULES: timproc / trkproc / genproc = timproc_uso_b1 / b3 / b5)')
     sub = ap.add_subparsers(dest='cmd', required=True)
     p = sub.add_parser('sites'); p.add_argument('funcs', nargs='*')
     p = sub.add_parser('calls'); p.add_argument('funcs', nargs='+')
