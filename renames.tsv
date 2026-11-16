@@ -5475,3 +5475,7 @@ ColourItemType_vtbl_7600	ColourItem_vtbl_75A0_type_7600
 sStr_rom_heli_uso_7D94	gStrHeliUso_7D94
 sStr_BG_7EF8	gStrBG_7EF8
 SnowBoard_fadeOut_0000EAF8	SnowBoard_onPreNmi
+D_0001B710	gl_hdwrBugFlag
+D_0001B710_w0	gl_hdwrBugFlag_w0
+D_0001B710_w1	gl_hdwrBugFlag_w1
+D_0001E21C	gl_fatalHaltExitCombo

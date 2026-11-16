@@ -8015,23 +8015,23 @@ void Audio_WritebackDCache(int a0, int a1) {
  * cap" was a MISREAD: 277E0 is the fall-through tail of this function (the
  * bgez at 277D0 branches into it) - 4th stolen-prologue/false-split
  * caller-set retraction. Symbol 277E0 absorbed. */
-extern u8 D_0001B710;    /* hdwrBugFlag (game_libs bss) */
-extern u8 D_0001B710_w1; /* same address; distinct per-site externs kill the
+extern u8 gl_hdwrBugFlag;    /* hdwrBugFlag (game_libs bss) */
+extern u8 gl_hdwrBugFlag_w1; /* same address; distinct per-site externs kill the
                           * %hi-CSE (uopt would otherwise materialize one
                           * lui/addiu base) and give the target's per-access
                           * at-macro lbu/sb form. */
-extern u8 D_0001B710_w0;
+extern u8 gl_hdwrBugFlag_w0;
 s32 osAiSetNextBuffer(void *bufPtr, u32 size) {
     char *bptr = bufPtr;
     u32 status;
 
-    if (D_0001B710 != 0) {
+    if (gl_hdwrBugFlag != 0) {
         bptr -= 0x2000;
     }
     if ((((u32)bufPtr + size) & 0x1FFF) == 0) {
-        D_0001B710_w1 = 1;
+        gl_hdwrBugFlag_w1 = 1;
     } else {
-        D_0001B710_w0 = 0;
+        gl_hdwrBugFlag_w0 = 0;
     }
     status = *(volatile u32 *)0xA450000C;
     if (status & 0x80000000) {
@@ -16863,7 +16863,7 @@ void sys_fatalSwapBuffer_00034180(void) {
 //   cb args and the config table were all one &D_00000000 placeholder. Target
 //   has distinct symbols: gConsoleNode_3EF04_34240_G (record ptr, address hoisted to s4),
 //   gGfxLib_34240_X / gGfxLib_34240_Y (cb args, fresh lui/addiu each), gSysDevBlock_3A4E8_34240_P (poll
-//   arg, s3, rematerialized per loop) and the table D_0001E21C (pinned to its
+//   arg, s3, rematerialized per loop) and the table gl_fatalHaltExitCombo (pinned to its
 //   real address; `&D_00000000 + 0x1E21C` folds the first test into
 //   `lui; lw -7652`, a zero-offset symbol keeps `lw 0(s2)`). No param (the
 //   old `a2` homed a0). d[0x80] + saved34 declared before the named pointers
@@ -16872,7 +16872,7 @@ void sys_fatalSwapBuffer_00034180(void) {
 //   its use instead of right after `sw s1`.
 extern int D_00000000;
 extern char *gConsoleNode_3EF04_34240_G;
-extern char D_0001E21C, gGfxLib_34240_X, gSysDevBlock_3A4E8_34240_P, gGfxLib_34240_Y;
+extern char gl_fatalHaltExitCombo, gGfxLib_34240_X, gSysDevBlock_3A4E8_34240_P, gGfxLib_34240_Y;
 #define CONMGR ((ConsoleMgr *)gConsoleNode_3EF04_34240_G) /* agent-c run 535: gdl/console.h; d is the PadCtl pad_open fills */
 void sys_fatalHaltLoop(void) {
     char d[0x80];
@@ -16887,7 +16887,7 @@ void sys_fatalHaltLoop(void) {
     saved34 = CONMGR->input;
     CALL(gfx_viBlack)(&gGfxLib_34240_X, 1);
 
-    cfg = &D_0001E21C;
+    cfg = &gl_fatalHaltExitCombo;
     s0 = cfg;
     if (*(int *)s0 != 0) {
         do {
