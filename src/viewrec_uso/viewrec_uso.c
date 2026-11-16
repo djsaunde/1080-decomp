@@ -1276,12 +1276,11 @@ void viewrec_uso_func_00003F24(ViewRecScreen *self) {
     }
 }
 
-/* NM (84%): the erase screen's pad handling. Left / right pick yes / no (+0x70), A erases the record
- * set named by proc+0x70 (0x100000 course times, 0x200000 course scores, 0x400000 arcade, 0x800000
- * ghost, 0x1000000 everything, which restarts the game flow). The target colours the switch value v0
- * and the reloaded proc v1 (here v1 / a2, with the &GameFlow lui hoisted into the last beq's slot);
- * switch / if-chain / locals / store order / NCC all give the same colouring. */
-#ifdef NON_MATCHING
+/* The erase screen's pad handling. Left / right pick yes / no (+0x70), A erases the record set named
+ * by proc+0x70 (0x100000 course times, 0x200000 course scores, 0x400000 arcade, 0x800000 ghost,
+ * 0x1000000 everything, which restarts the game flow). The snd_postEvent(5) before the switch goes
+ * through the void alias: with no dead int $v0 def at the call, the switch value takes v0 and the
+ * reloaded proc v1. */
 void viewrec_uso_func_00004354(ViewRecScreen *self) {
     if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x10001) && *(s32 *)((char *)self + 0x70) != 0) {
         gl_func_00000000(/* snd_postEvent */ 1);
@@ -1293,7 +1292,7 @@ void viewrec_uso_func_00004354(ViewRecScreen *self) {
     }
     if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x40100)) {
         if (*(s32 *)((char *)self + 0x70) == 0) {
-            gl_func_00000000(/* snd_postEvent */ 5);
+            XCALL(gl_func_00000000_vrv, snd_postEvent)(5);
             switch (*(s32 *)((char *)self->proc + 0x70)) {
                 case 0x100000:
                     gl_func_00000000(/* Backup_sessionResetCourseTimes */ self->proc->session, *(s32 *)((char *)self + 0xA8));
@@ -1326,9 +1325,6 @@ void viewrec_uso_func_00004354(ViewRecScreen *self) {
         self->proc->mode = 0x80000;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004354);
-#endif
 
 /* the replay screen's ctor (0x9C bytes): Node -> Process -> replay screen, as the erase screen's 0x36B4 */
 extern char vr_vtNode_4518[], vr_vtProc_4518[], vr_vtReplay_4518[];
