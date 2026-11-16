@@ -1622,7 +1622,7 @@ void GameDemoProcess_handleInput(GameDemoProcess *s0) {
         p3c = (int *)WORLDREG(INPUT_MGR(import_00020098).game)->players[0].rider;
         arg = (int)SNOWB(p3c)->input;
         XCALL(titproc_uso_func_07BA68, pad_reset_000673FC)(arg, 0);
-        a1 = s0->race.session->ghost->data;
+        a1 = (int)s0->race.session->ghost->data;
         XCALL(titproc_uso_func_07C07C, pad_startPlay_00067A10)(arg, a1,
                          s0->race.session->ghost->count);
         XCALL(titproc_uso_func_01CCD4, RaceProcess_callGlobalSlot11_00008674)(s0);

@@ -136,7 +136,8 @@ typedef struct BackupGhost {
                                  * (ghostMatches); titproc's vs-ghost states copy rider / flag /
                                  * board to InputMgr ghostRider / ghostFlags / ghostBoard */
     /* 0x4 */ s32 count;        /* data length in words */
-    /* 0x8 */ s32 data;         /* RAM pointer (zeroed in the SRAM copy) */
+    /* 0x8 */ struct InputFrame *data; /* RAM pointer to count frames (gdl/pad.h InputFrame, one word
+                                 * each; pad_startPlay replays them); zeroed in the SRAM copy */
     /* 0xC */ s32 unkC;
 } BackupGhost;
 

@@ -7484,7 +7484,7 @@ void *ItemMgr_ctor(int *a0, int a1, int a2) {
     }
     CALL(Node_ctor)(a0, a1);
     ((Node *)a0)->vptr = (char *)&ItemMgr_vtbl;
-    ITEMMGR(a0)->unk34 = a2;
+    ITEMMGR(a0)->classMask = a2;
     ITEMMGR(a0)->unk30 = 0;
     ITEMMGR(a0)->types = 0;
     p = a0;

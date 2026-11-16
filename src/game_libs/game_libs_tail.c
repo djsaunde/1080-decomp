@@ -921,7 +921,7 @@ fail:
 
 /* 28-insn / 0x70 5-call wrapper followed by 2-field commit. Each call passes
  * the same a0 plus a different arg as a1; result of last call is ignored. */
-void Backup_ghostSetHeader(BackupGhost *a0, int a1, int a2, int a3, int arg5, int arg6, int arg7, int arg8) {
+void Backup_ghostSetHeader(BackupGhost *a0, int a1, int a2, int a3, int arg5, int arg6, struct InputFrame *arg7, int arg8) {
     CALL(Backup_ghostSetMode)(a0, a1);
     CALL(Backup_ghostSetRider)(a0, a3);
     CALL(Backup_ghostSetBoardFlag)(a0, arg5);
