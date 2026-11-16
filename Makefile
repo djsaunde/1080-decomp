@@ -190,13 +190,13 @@ $(SNOW_NM_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
 SNOW_NM_FUNCS := snoweffects_uso_func_000015D0 snoweffects_uso_func_00001A18 snoweffects_uso_func_00002310
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_FUNCS),$(f)=$(SNOW_NM_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_DONOR)
-# agent-e runs 664 / 668: NON_MATCHING-only NCC donor for 0x7960 (99.7 %, zero / |speed| FP swap) and 0x64B8
+# agent-e runs 664 / 668: NON_MATCHING-only NCC donor for 0x64B8
 # (94.2 %, 404 words = target; edg temp slots off).
 SNOW_NM_E_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp.o
 $(SNOW_NM_E_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NM_E_FUNCS := snoweffects_uso_func_00007960 snoweffects_uso_func_000064B8 snoweffects_uso_func_00006B28
+SNOW_NM_E_FUNCS := snoweffects_uso_func_000064B8 snoweffects_uso_func_00006B28
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_E_FUNCS),$(f)=$(SNOW_NM_E_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_E_DONOR)
 # viewrec.uso Text ends with one zero pad word after 0x55A4's `jr ra; sw a0,0(sp)`: all-zero SUFFIX
@@ -6174,7 +6174,7 @@ SNOW_NCC_E_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_e.cpp.o
 $(SNOW_NCC_E_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_e.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NCC_E_FUNCS := snoweffects_uso_func_00008C60 snoweffects_uso_func_00009FE8 snoweffects_uso_func_00009768 snoweffects_uso_func_00009884 snoweffects_uso_func_00008D70
+SNOW_NCC_E_FUNCS := snoweffects_uso_func_00008C60 snoweffects_uso_func_00009FE8 snoweffects_uso_func_00009768 snoweffects_uso_func_00009884 snoweffects_uso_func_00008D70 snoweffects_uso_func_00007960
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NCC_E_FUNCS),$(f)=$(SNOW_NCC_E_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NCC_E_DONOR)
 # snoweffects.uso below 0x6000: agent-c's NCC donor for 0x270 / 0xC90 / 0x28E0 (agent-c run 655; kept apart

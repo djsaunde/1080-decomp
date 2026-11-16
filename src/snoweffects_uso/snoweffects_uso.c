@@ -948,18 +948,10 @@ void snoweffects_uso_func_000078E8(char *this, int a1, int a2, int a3, int a4, i
     *(float *)(this + 0x164) = 140.0f;
 }
 
-/* 0x7960: trail head update (angle from acosf of the +0x114 / +0x108 dot, 0x52D4 push-back, side
- * points +0x120 / +0x12C through the +0x30 matrix). NM: an NCC draft at 212 / 219 words (frame exact
- * since run 659; only the zero / |speed| FP colour swap is left) is kept in
- * ncc_drafts/snoweffects_nm_e.cpp (agent-e runs 650 / 653 / 659). */
-#ifdef NON_MATCHING
-/* NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e run 664, 99.7 %), spliced over
- * this placeholder on the non_matching build. */
-void snoweffects_uso_func_00007960(void) {
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 673),
+ * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
+void snoweffects_uso_func_00007960(void *self) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007960);
-#endif
 
 void snoweffects_uso_func_00007CCC(char *a0) {
     int tag;

@@ -179,3 +179,78 @@ extern "C" void snoweffects_uso_func_00008D70(SnowProbe *t) {
     }
     t->qD4 = t->qC4;
 }
+
+/* 0x7960: trail head update. +0x148 = -dot(+0x114, +0x108); ang = acosf of it, negated when the camera's
+ * +0x318 / +0x3C8 dot is negative; +0x144 = 0; when |speed| (+0x4C) >= RoData+0xB4, probe +0x138 through the
+ * CollShape test 0x52D4 and on 0 < d < +0x15C push it back by n * -d, +0x144 = 2 and rebuild the side
+ * points +0x120 / +0x12C = (cos * +-w, 0, sin * +-h) through the +0x30 matrix.
+ * Levers (agent-e runs 653-673): float ang declared before SnowV n; a named push in the inner block; the two
+ * scratch blocks fill the target's frame words (176). The zero / |speed| colour (target zero f12, |speed|
+ * f2) comes from the +0x148 store being its own statement: `ang = acosf(t->dist = -dot)` makes edg share
+ * one temporary (M-28) between the acosf argument and the ?: result, so |speed| inherits the argument's
+ * f12 preference (uopt -zdbug:5 trace, run 673). uopt forwards the stored value, so no reload appears. */
+extern "C" float gl_func_00000000_snow_ff(float);  /* math_acosf / fcos / fsin: float(float) blank jal */
+extern "C" float snow_ro_B4;  /* RoData+0xB4: the minimum speed */
+/* the libgdl Vec3 as the 0x7960 body uses it (value temporaries, inline helpers) */
+struct SnowV {
+    float x, y, z;
+    SnowV() {}
+    SnowV(float a, float b, float c) { x = a; y = b; z = c; }
+    SnowV operator*(float s) const { return SnowV(x * s, y * s, z * s); }
+    SnowV &operator+=(const SnowV &v) { x += v.x; y += v.y; z += v.z; return *this; }
+};
+inline float dotv(const SnowV &a, const SnowV &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
+struct M44 { float m[4][4]; };
+inline void xform(SnowV &v, const M44 &m) { float x = m.m[0][0] * v.x + m.m[1][0] * v.y + m.m[2][0] * v.z + m.m[3][0]; float y = m.m[0][1] * v.x + m.m[1][1] * v.y + m.m[2][1] * v.z + m.m[3][1]; float z = m.m[0][2] * v.x + m.m[1][2] * v.y + m.m[2][2] * v.z + m.m[3][2]; v.x = x; v.y = y; v.z = z; }
+struct SnowCam { char pad[0x318]; SnowV fwd; char pad324[0x3C8 - 0x324]; SnowV dir; };
+struct SnowBody7 {
+    char pad00[0x2C];
+    /* 0x2C */ SnowCam *cam;
+    /* 0x30 */ M44 *mtx;
+    char pad34[0x3C - 0x34];
+    /* 0x3C */ float w;
+    /* 0x40 */ float h;
+    char pad44[0x4C - 0x44];
+    /* 0x4C */ float speed;
+    char pad50[0xD4 - 0x50];
+    /* 0xD4 */ int qD4[4];
+    char padE4[0x108 - 0xE4];
+    /* 0x108 */ SnowV n;
+    /* 0x114 */ SnowV p;
+    /* 0x120 */ SnowV a;
+    /* 0x12C */ SnowV b;
+    /* 0x138 */ SnowV pos;
+    /* 0x144 */ int hits;
+    /* 0x148 */ float dist;
+    char pad14C[0x15C - 0x14C];
+    /* 0x15C */ float maxDist;
+};
+extern "C" void snoweffects_uso_func_00007960(SnowBody7 *t) {
+    float ang;
+    SnowV n;
+    t->dist = -dotv(t->p, t->n);
+    ang = XCALL(gl_func_00000000_snow_ff, math_acosf)(t->dist);
+    if (dotv(t->cam->fwd, t->cam->dir) < 0.0f) {
+        ang = -ang;
+    }
+    t->hits = 0;
+    if (!((t->speed < 0.0f ? -t->speed : t->speed) < snow_ro_B4)) {
+        float d = XCALL(gl_func_00000000_snow_52d4, snoweffects_uso_func_000052D4)(t, &t->pos, &n, t->qD4);
+        if (d != 0.0f && d < t->maxDist) {
+            SnowV push = n * -d;
+            t->pos += push;
+            t->hits = 2;
+            { int sc[2]; sc[0] = 0; }
+            t->a.x = XCALL(gl_func_00000000_snow_ff, fcos)(ang) * t->w;
+            t->a.y = 0.0f;
+            t->a.z = XCALL(gl_func_00000000_snow_ff, fsin)(ang) * t->h;
+            xform(t->a, *t->mtx);
+            t->b.x = XCALL(gl_func_00000000_snow_ff, fcos)(ang) * -t->w;
+            t->b.y = 0.0f;
+            t->b.z = XCALL(gl_func_00000000_snow_ff, fsin)(ang) * -t->h;
+            xform(t->b, *t->mtx);
+            { int sc2[2]; sc2[0] = 0; }
+        }
+    }
+}
+
