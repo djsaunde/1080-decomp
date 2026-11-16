@@ -5043,7 +5043,7 @@ void *SkinMgr_init(char *self, char *arg1, char *arg2) {
             dst[2] = src[2];
         } while (i < (unsigned int)BASEPOLY(arg2)->nVerts);
     }
-    ((SkinMgr *)self)->shape = (int)arg2;
+    ((SkinMgr *)self)->shape = (MorphPoly *)arg2;
     CALL(SkinMgr_reset)(self);                                    /* SkinMgr_reset */
     p = arg1 + 0x70;                                           /* the bone's world matrix */
     CALL(math_mtx4Inverse)(p, ((SkinMgr *)self)->invBone);           /* math_mtx4Inverse */
