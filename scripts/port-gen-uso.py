@@ -47,7 +47,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--lib", default="/tmp/claude-1000/port-build/libgame.a")
     a = ap.parse_args()
-    defined = pgb.port_defined(a.lib)
+    defined, _ = pgb.port_defined(a.lib)     # (names, dropped data objects) since run 616
     excluded = {r[0] for r in pgb.read_tsv("port/gen/excluded.tsv")}
     rom = npc.Rom()
     rt = pgb.RomTargets(rom)

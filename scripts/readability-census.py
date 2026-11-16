@@ -318,7 +318,7 @@ def block_names(m):
     """[(open, close, name)] for file-scope brace blocks: functions by their (Class::)name, other
     blocks (C++ class bodies with inline members, initialisers) as `<struct X>` / `<block>`."""
     out = []
-    for boundary, op, cl in NPC.top_blocks(m):
+    for boundary, op, cl, _outer in NPC.top_blocks(m):
         h = m[boundary:op]
         if re.fullmatch(r'\s*(?:extern\s*|namespace\s+\w*\s*)', h):
             # `extern "C" { ... }` (the string is masked) / namespace: name the blocks inside

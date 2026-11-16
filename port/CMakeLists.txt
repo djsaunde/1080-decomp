@@ -81,6 +81,12 @@ target_compile_options(uso PRIVATE ${PORT_ARCH_FLAGS})
 set(PORT_ULTRA_SOURCES ultra/thread.c ultra/message.c ultra/vi.c ultra/pi.c ultra/si.c
     ultra/ai_sp.c ultra/misc.c)
 set(PORT_HOST_SOURCES main.c host_headless.c trace.c)
+# agent-g run 619: the SysApi table and the cartridge file system (host side)
+foreach(f sysapi.c fs/fs.c)
+  if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${f})
+    list(APPEND PORT_HOST_SOURCES ${f})
+  endif()
+endforeach()
 set(PORT_HOST_FLAGS ${PORT_ARCH_FLAGS} -std=gnu99 -fno-math-errno)
 set(PORT_HOST_DEFS PORT)
 if(NOT PORT_LINK)
@@ -110,6 +116,15 @@ if(PORT_LINK)
   target_compile_options(test_ultra PRIVATE ${PORT_HOST_FLAGS})
   target_link_options(test_ultra PRIVATE -m32 -no-pie)
   target_link_libraries(test_ultra PRIVATE ultra m)
+
+  # the file-system host test: fs.c and the ROM only
+  if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/fs/test_fs.c)
+    add_executable(test_fs fs/test_fs.c fs/fs.c)
+    target_compile_definitions(test_fs PRIVATE PORT)
+    target_include_directories(test_fs PRIVATE ${GAME_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
+    target_compile_options(test_fs PRIVATE ${PORT_HOST_FLAGS})
+    target_link_options(test_fs PRIVATE -m32 -no-pie)
+  endif()
 endif()
 
 # port/undefined.txt: what the library needs from outside (no 32-bit libc needed).

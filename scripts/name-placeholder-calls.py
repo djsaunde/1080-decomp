@@ -907,7 +907,7 @@ def skeleton(m, blk, sites):
 def body_tokens(m, blk, sites, argc=False):
     """Tokens of a function block (header .. closing brace) with each call site spelled `@<tok>`
     (`@<tok>/<argc>` with argc)."""
-    a, op, cl = blk
+    a, op, cl = blk[:3]
     edits = sorted((s.pos, s.end, '@' + s.tok + (f'/{site_argc(m, s)}' if argc else '')) for s in sites if s.block == blk)
     out, k = [], a
     for pos, end, rep_ in edits:
@@ -1083,6 +1083,8 @@ def cmd_plan(a, rom, mv):
         if only is not None and not path.endswith('.cpp'):
             named = [s for s in named if (path, s.func) in only]
         left = [s for s in raw if s not in named]
+        for s in left:
+            res['left'].setdefault(s.i, 'outside --funcs')
         if res.get('hidden'):
             hid = res['hidden']
             print(f'{path}: macro-hidden sites (placeholder calls inside function-like macro bodies, not '
@@ -1141,11 +1143,56 @@ def current_name(name):
     return None if n == name else n
 
 
+MACRO_ANY_RE = re.compile(r"^[ \t]*#[ \t]*define[ \t]+(\w+)(\([^)]*\))?((?:[^\n]*\\\n)*[^\n]*)", re.M)
+
+
+def macro_named(text):
+    """{(function, token): Counter(name)} for the CALL / XCALL names inside macro bodies, counted
+    once per use of the macro in a function block (run 618: SnowAI_ctor's INIT_ITER, the audio
+    files' `#define AudioHeap_SearchCaches CALL(...)` spellings). The scanner does not see inside
+    a #define, so these sites stayed in the ROM multiset and made their function ambiguous. The
+    nearest preceding #define of a name is the one used; nested macros are not followed."""
+    defs = collections.defaultdict(list)        # name -> [(pos, Counter((tok, name)))]
+    for mt in MACRO_ANY_RE.finditer(text):
+        body = mt.group(3)
+        c = collections.Counter()
+        for mm in MAC_RE.finditer(body):
+            tok = TOK_OF[mm.group(1)] if mm.group(1) else mm.group(3)
+            c[(tok, current_name(mm.group(2) or mm.group(4)) or (mm.group(2) or mm.group(4)))] += 1
+        defs[mt.group(1)].append((mt.start(), c, bool(mt.group(2))))
+    for mt in re.finditer(r"^[ \t]*#[ \t]*undef[ \t]+(\w+)", text, re.M):
+        if mt.group(1) in defs:
+            defs[mt.group(1)].append((mt.start(), collections.Counter(), False))
+    for v in defs.values():
+        v.sort(key=lambda x: x[0])
+    defs = {k: v for k, v in defs.items() if any(c for _, c, _ in v)}
+    out = collections.defaultdict(collections.Counter)
+    if not defs:
+        return out
+    m = mask(text)
+    blocks = [b for b in top_blocks(m) if func_header_name(m, b[0], b[1])]
+    spans = [(mm.start(), mm.end()) for mm in MAC_RE.finditer(m)]   # the name inside CALL(name)
+    for mt in re.finditer(r"\b(" + "|".join(sorted(map(re.escape, defs))) + r")\b(\s*\()?", m):
+        if any(a <= mt.start() < b for a, b in spans):
+            continue
+        d = [x for x in defs[mt.group(1)] if x[0] < mt.start()]
+        if not d or (d[-1][2] and not mt.group(2)):
+            continue
+        blk = next((b for b in blocks if b[1] < mt.start() < b[2]), None)
+        if blk is None:
+            continue
+        fnm = func_header_name(m, blk[0], blk[1])
+        for (tok, name), n in d[-1][1].items():
+            out[(fnm, tok)][name] += n
+    return out
+
+
 def check_fast(path, src, rom, quiet=False):
     """-> (named calls, mismatches) for one file's text."""
     sites, _ = scan(src)
     mac = [s for s in sites if s.name is not None]
-    if not mac:
+    macn = macro_named(src)      # CALL / XCALL names inside #define bodies, per use (run 618)
+    if not mac and not macn:
         return 0, 0
     md = rom.module_for(path) or donor_module(path, rom, MakeVars())
     if md is None or not md.funcs:
@@ -1160,6 +1207,8 @@ def check_fast(path, src, rom, quiet=False):
     want = collections.defaultdict(collections.Counter)
     for s in mac:
         want[(None if cpp else s.func, s.tok)][s.name] += 1
+    for (fnm, tok), c in macn.items():
+        want[(None if cpp else fnm, tok)] += c
     n = bad = 0
     for (fn, tok), cnt in want.items():
         n += sum(cnt.values())

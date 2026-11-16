@@ -240,9 +240,15 @@ def main():
         # sites the source already names (CALL macros) call the real name in the port object:
         # take their callees out of the ROM multiset first (C and C++: the scanner is lexical)
         named = collections.defaultdict(collections.Counter)
-        for st in npc.scan(open(src, errors="replace").read())[0]:
+        text = open(src, errors="replace").read()
+        for st in npc.scan(text)[0]:
             if st.name is not None:
                 named[(st.func, st.tok)][npc.current_name(st.name) or st.name] += 1
+        for (fnm, tok), c in npc.macro_named(text).items():
+            named[(fnm, tok)] += c
+        pool = collections.defaultdict(collections.Counter)
+        for (_f, tok), c in named.items():
+            pool[tok] += c
         for fn in by_src[src]:
             fo = fn if fn in rfuncs else ("gl_" + fn) if ("gl_" + fn) in rfuncs else None
             if fo is None:
@@ -289,7 +295,15 @@ def main():
                 elif typ == 2:
                     pera[sym][field - (0x100000000 if field & 0x80000000 else 0)][t] += 1
             for tok in list(per):
-                per[tok] -= named.get((fn, tok), collections.Counter())
+                if src.endswith(".cpp"):
+                    # C++: a site's function is a source block (inline member, `operator new`,
+                    # class name), not the object function: the file's named sites are one pool,
+                    # each name used once by the function whose jal it matches (run 618)
+                    take = per[tok] & pool[tok]
+                    pool[tok] -= take
+                    per[tok] -= take
+                else:
+                    per[tok] -= named.get((fn, tok), collections.Counter())
                 if per[tok]:
                     calls.append((src, fn, tok, per[tok]))
             for tok, tg in perd.items():
