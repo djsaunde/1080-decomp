@@ -4,12 +4,15 @@
  * else-branch display-list append (permuter find, agent-c run 120): it moves the
  * append pointer from v1 to the target's a1. Spliced into game_libs_post0b.c.o via
  * REPLACE_FUNC_BODY. */
-typedef int s32; typedef short s16;
+typedef int s32; typedef short s16; typedef unsigned int u32; typedef unsigned char u8; typedef float f32;
+#include "../../include/gdl/gfxlib.h"   /* gGfx->staticDL */
+#include "../../include/gdl/dlctx.h"    /* DLContext / DLBuf */
+#include "../../include/gdl/material.h" /* Mat */
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 extern "C" {
 extern char D_00000000;
 int gl_func_00000000(...);
-void PolyShape_buildStateDL_00043654(char *arg0, char *arg1) {
+void PolyShape_buildStateDL_00043654(Mat *mat, char *arg1) {
     char *sp34;
     char *var_a3;
     char *temp_v0;
@@ -20,41 +23,41 @@ void PolyShape_buildStateDL_00043654(char *arg0, char *arg1) {
     s32 idx;
     s32 idx2;
 
-    FW(arg0, 0x64) = (int) *(char **)((char *)&gGfxLib + 0x214);
-    var_a3 = (char *) FW(arg0, 0x64);
-    *(s16 *)(arg0 + 0x88) = FW((char *)FW((char *)FW(arg0, 0x64), 0xC), 0x4);
-    if (FW(arg0, 0x48) == 0) {
-        gl_func_00000000(FW(arg0, 0x64), arg1);
-        gl_func_00000000(FW(arg0, 0x64), arg1);
-        gl_func_00000000(FW(arg0, 0x64), arg1);
-        gl_func_00000000(FW(arg0, 0x64), arg1);
-        var_a3 = (char *) FW(arg0, 0x64);
+    mat->stateDL = gGfx->staticDL;
+    var_a3 = (char *) mat->stateDL;
+    mat->stateStart = mat->stateDL->gfx.cur->count;
+    if (mat->base.unk48 == 0) {
+        gl_func_00000000(mat->stateDL, arg1);
+        gl_func_00000000(mat->stateDL, arg1);
+        gl_func_00000000(mat->stateDL, arg1);
+        gl_func_00000000(mat->stateDL, arg1);
+        var_a3 = (char *) mat->stateDL;
     }
-    if (FW(arg0, 0x38) & 0x400000) {
-        gl_func_00000000((char *)&gGfxLib, var_a3, arg0);
-        if (FW(arg0, 0x38) & 0x100000) {
-            FW(arg0, 0x68) = gl_func_00000000(0, GL_DATA(0x1FD1C), 0xA, 0, 5, 0, 0);
-            gl_func_00000000(FW(arg0, 0x68)); if (1) {}
-            temp_v0 = (char *) FW(arg0, 0x68);
-            sp34 = (char *) FW(arg0, 0x64);
-            temp_v0 = (char *) gl_func_00000000(FW(temp_v0, 0x60));
-            temp_a0 = (char *) FW(sp34, 0xC);
-            idx = FW(temp_a0, 0x4); if (1) {}
-            FW(temp_a0, 0x4) = idx + 1;
-            temp_a2 = (char *) FW((char *)FW(sp34, 0xC), 0x0) + (idx * 8); if (1) {}
+    if (mat->base.geomFlags & MAT_GEOM_TEXTURED) {
+        gl_func_00000000((char *)&gGfxLib, var_a3, mat);
+        if (mat->base.geomFlags & MAT_GEOM_TEXGEN) {
+            mat->texgenDL = (DLContext *) gl_func_00000000(0, GL_DATA(0x1FD1C), 0xA, 0, 5, 0, 0);
+            gl_func_00000000(mat->texgenDL); if (1) {}
+            temp_v0 = (char *) mat->texgenDL;
+            sp34 = (char *) mat->stateDL;
+            temp_v0 = (char *) gl_func_00000000(((DLContext *)temp_v0)->frameStart);
+            temp_a0 = (char *) ((DLContext *)sp34)->gfx.cur;
+            idx = ((DLBuf *)temp_a0)->count; if (1) {}
+            ((DLBuf *)temp_a0)->count = idx + 1;
+            temp_a2 = (char *) ((DLContext *)sp34)->gfx.cur->base + (idx * 8); if (1) {}
             FW(temp_a2, 0x0) = 0x06000000;
             FW(temp_a2, 0x4) = (int) temp_v0;
         }
-        gl_func_00000000(FW(arg0, 0x64));
+        gl_func_00000000(mat->stateDL);
     } else {
-        temp_a0_2 = (char *) FW(var_a3, 0xC); if (1) {}
-        idx2 = FW(temp_a0_2, 0x4);
-        FW(temp_a0_2, 0x4) = idx2 + 1;
-        temp_a1 = (char *) FW((char *)FW(var_a3, 0xC), 0x0) + (idx2 * 8);
+        temp_a0_2 = (char *) ((DLContext *)var_a3)->gfx.cur; if (1) {}
+        idx2 = ((DLBuf *)temp_a0_2)->count;
+        ((DLBuf *)temp_a0_2)->count = idx2 + 1;
+        temp_a1 = (char *) ((DLContext *)var_a3)->gfx.cur->base + (idx2 * 8);
         FW(temp_a1, 0x0) = 0xBB040000;
         if (!sp34) {}
         FW(temp_a1, 0x4) = -1;
     }
-    gl_func_00000000(FW(arg0, 0x64));
+    gl_func_00000000(mat->stateDL);
 }
 }

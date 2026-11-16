@@ -18,12 +18,12 @@ typedef struct Sprite {
     s32 unk88[10];
     f32 scaleX;             /* 0xB0 */
     f32 scaleY;             /* 0xB4 */
-    f32 unkB8;
-    f32 unkBC;
+    f32 offsetX;
+    f32 offsetY;
     s16 unkC0;              /* 0xC0: image / material */
     s16 padC2;
-    s32 unkC4;
-    f32 unkC8;
+    s32 perspective;
+    f32 depthBias;
     struct DLContext *startDL; /* 0xCC */
     struct DLContext *endDL;   /* 0xD0 */
     s32 unkD4;

@@ -64,11 +64,33 @@ typedef struct BaseMat {
 #define MAT_TEX_CLAMP_T  0x2000
 #define MAT_TEX_MIRROR_T 0x4000
 
+/* Mat (0x90, Mat_fromFrameBuffer_0004F85C: mem_new(0x90), BaseMat base, Mat vtable at +0x5C).
+ * PolyShape_buildStateDL_00043654 compiles the material's render state into the GfxLib static
+ * display list: stateDL = gGfx->staticDL, stateStart = its Gfx count at the start (the span
+ * gfx_callStaticDL replays); with geomFlags bit 22 (textured) the texture setup goes in, and with
+ * bit 20 (texgen) as well a 5-Gfx list of its own (texgenDL) is built and called with G_DL;
+ * untextured materials append G_TEXTURE off (0xBB040000, -1). */
+typedef struct Mat {
+    /* 0x00 */ BaseMat base;
+    /* 0x60 */ s32 unk60;
+    /* 0x64 */ struct DLContext *stateDL;  /* gGfx->staticDL ("MainStaticDL") */
+    /* 0x68 */ struct DLContext *texgenDL; /* geomFlags bit 20: gfx_newDLContext(.., 0xA, 0, 5, ..) */
+    /* 0x6C */ s32 unk6C[7];
+    /* 0x88 */ s16 stateStart;             /* stateDL->gfx.cur->count before the state commands */
+    /* 0x8A */ s16 pad8A;
+    /* 0x8C */ s32 unk8C;
+} Mat;
+
+#define MAT_GEOM_TEXGEN   0x00100000 /* geomFlags bit 20: G_TEXTURE_GEN */
+#define MAT_GEOM_TEXTURED 0x00400000 /* geomFlags bit 22: Mat_print "Tex" (else "RGB") */
+
 typedef char BaseMat_size_check[sizeof(BaseMat) == 0x60 ? 1 : -1];
+typedef char Mat_size_check[sizeof(Mat) == 0x90 ? 1 : -1];
 #ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char BaseMat_format_check[(int)&((BaseMat *)0)->format == 0x24 ? 1 : -1];
 typedef char BaseMat_name_check[(int)&((BaseMat *)0)->name == 0x44 ? 1 : -1];
 typedef char BaseMat_vptr_check[(int)&((BaseMat *)0)->vptr == 0x5C ? 1 : -1];
+typedef char Mat_stateStart_check[(int)&((Mat *)0)->stateStart == 0x88 ? 1 : -1];
 #endif
 
 #endif /* GDL_MATERIAL_H */

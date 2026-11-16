@@ -13,6 +13,9 @@ typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef uns
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+#include "../../include/gdl/gfxlib.h" /* GfxLib (curWindow, flags) */
+#include "../../include/gdl/window.h" /* ScreenWindow */
+#include "../../include/gdl/sprite.h" /* Sprite */
 extern "C" {
 extern int D_00000000;
 extern int gGfxLib_4BAF4_flags;
@@ -31,7 +34,9 @@ inline void put4B(Gfx4B *g, u32 hi, u32 lo) { g->w0 = hi; g->w1 = lo; }
 struct Ctx4B { char pad[0xC]; GP4B *gfx; Gfx4B *nextP(int n) { gfx->n = n + 1; return &gfx->buf[n]; } void dlS(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(me2(this)->nextP(gfx->n), 0x06000000, r); } int ex() { return (int)this; } Gfx4B *nQ4(int z0, int z1, int z2, int z3, int n) { gfx->n = n + 1; return &gfx->buf[n]; } void dW4(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(nQ4((int)r, (int)r, (int)r, (int)r, gfx->n), 0x06000000, r); } void dM4(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(me2(this)->nQ4((int)r, (int)r, (int)r, (int)r, gfx->n), 0x06000000, r); } int gt(int v, int c) { return v > c + (int)this; } void dlc(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(nextF(), 0x06000000, r); } void dlG(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(nextG(), 0x06000000, r); } void dlM(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(me2(this)->nextG(), 0x06000000, r); } Gfx4B *next() { return &gfx->buf[gfx->n++]; } Gfx4B *nextF() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n]; } Gfx4B *nextG() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n + 0 * n]; } void addG(u32 hi, u32 lo) { put4B(me2(this)->nextG(), hi, lo); } void addF(u32 hi, u32 lo) { put4B(me2(this)->nextF(), hi, lo); } Gfx4B *nextO() { return &this->gfx->buf[me2(me2(me2(me2(this))))->gfx->n++]; } void addO(u32 hi, u32 lo) { Gfx4B *g = nextO(); g->w0 = hi; g->w1 = lo; } void add(u32 hi, u32 lo) { Gfx4B *g = next(); g->w0 = hi; g->w1 = lo; } };
 typedef struct { f32 x, y, z; } V4B;
 typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } Spr4B;
-#define GS4B (*(char **)((char *)&gGfxLib + 0x254)) /* the current ScreenWindow (every D_00000000 site here is Sym 154) */
+#define GS4B (gGfx->curWindow) /* the current ScreenWindow (every D_00000000 site here is Sym 154) */
+#define WDL4B ((Ctx4B *)GS4B->dl) /* its current display list, as the inline-append context */
+#define VW4B(f) (*(volatile int *)&GS4B->win.f) /* a volatile read of a window field (the clip half-extents, see the header note) */ /* the current ScreenWindow (every D_00000000 site here is Sym 154) */
 #define F4B(p, o, T) (*(T *)((char *)(p) + (o)))
 template <class T> inline T *me(T *p) { return p; } /* agent-g run 296: zero-code accessor (kit CCLXXXIV) */
 #define PKT4B(c) ((c)->next())
@@ -51,7 +56,7 @@ template <class T> inline T idv(T v) { return v; } /* agent-g run 300: zero-code
 /* agent-c run 402 (kit CDLXXXVI): the B4 x clamp's MAX through a by-value int inline -- its parameter is an edg
  * pool word, so the merge temps move onto the target's v1 / a1 (99.693 -> 99.835) */
 inline int mx4B(int v) { return MAX(v, 0); }
-extern "C" void Sprite_display_0004BAF4(char *self) {
+extern "C" void Sprite_display_0004BAF4(Sprite *self) {
     V4B pos;
     f32 out[17];
     int iz;
@@ -76,20 +81,22 @@ extern "C" void Sprite_display_0004BAF4(char *self) {
     if ((d = (char *)CALL(Window_projectPoint)(GS4B, &pos, 1, out)) == 0) { /* agent-g run 332: live call result in r (kit CDXXII) */
         return;
     }
+    /* self->depthBias / the camera position x, read through the me((Ctx4B *)) accessor: a typed (Sprite *) /
+     * (Cam4B *) member read there moves the FP operand order and the edg parameter spill slots (agent-a run 540) */
     iz = (pos.z + 1.0f) * 16384.0f + F4B(me((Ctx4B *)self), 0xC8, f32);
     if (1) {} /* agent-g run 262 (kit CCC random code-free test search): 97.03 -> 97.39 (agent-c run 288: the paired iz / r tests below dropped, byte-identical -- any two of the four levers are redundant; agent-c run 307: the second `if (1) {}` here dropped, byte-identical) */
-    if (F4B(self, 0xC4, int) != 0) {
-        sx = F4B(self, 0xB0, f32) * (f32)((f64)(f32)F4B(GS4B, 0xBC, int) * 0.5 * (f64)out[0]);
-        sy = F4B(self, 0xB4, f32) * (f32)((f64)(f32)F4B(GS4B, 0xBC, int) * 0.5 * (f64)out[0]);
+    if (self->perspective != 0) {
+        sx = self->scaleX * (f32)((f64)(f32)GS4B->win.height * 0.5 * (f64)out[0]);
+        sy = self->scaleY * (f32)((f64)(f32)GS4B->win.height * 0.5 * (f64)out[0]);
     } else {
-        sx = F4B(self, 0xB0, f32);
-        sy = F4B(self, 0xB4, f32);
+        sx = self->scaleX;
+        sy = self->scaleY;
     } if (self) {}
-    spr = F4B(self, 0x84, Spr4B **)[F4B(self, 0xC0, s16)];
+    spr = ((Spr4B **)self->children)[self->unkC0];
     pos.x -= (f32)(spr->w >> 1) * sx;
     pos.y -= (f32)(spr->h >> 1) * sy;
-    pos.x += F4B(self, 0xB8, f32);
-    pos.y += F4B(self, 0xBC, f32);
+    pos.x += self->offsetX;
+    pos.y += self->offsetY;
     {
     int x;
     int y;
@@ -109,36 +116,36 @@ extern "C" void Sprite_display_0004BAF4(char *self) {
      * in ctx): the C0 centre takes a2 like the target (ext / ctx / centre variable grid, 161): 99.515 -> 99.539 */
     /* agent-g run 372: with the first packet's count coloured before ctx (addG below), the extent carriers re-gridded
      * (ctx / d / r / by-value idv(idv()) pool temp per read, `x > C0 + ext` order): 99.539 -> 99.586, same length */
-    if ((((Ctx4B *)F4B(GS4B, 0xB8, volatile int))->gt(x, F4B(GS4B, 0xC0, int) + 0 * (int)d))) {
+    if ((((Ctx4B *)VW4B(width))->gt(x, GS4B->win.originX + 0 * (int)d))) {
         return;
     }
-    if ((((Ctx4B *)F4B(GS4B, 0xBC, volatile int))->gt(y, F4B(GS4B, 0xC4, int)))) {
+    if ((((Ctx4B *)VW4B(height))->gt(y, GS4B->win.originY))) {
         return;
     }
-    if ((x < F4B(GS4B, 0xC0, int) - ((Ctx4B *)F4B(GS4B, 0xB8, volatile int))->ex())) {
+    if ((x < GS4B->win.originX - ((Ctx4B *)VW4B(width))->ex())) {
         return;
     }
-    if ((y < F4B(GS4B, 0xC4, int) - ((Ctx4B *)F4B(GS4B, 0xBC, volatile int))->ex())) {
+    if ((y < GS4B->win.originY - ((Ctx4B *)VW4B(height))->ex())) {
         return;
     } r = (u32)d; if (r) {}
     /* agent-g run 332: this and the else-arm ctx load through two me() (depth grid over the three ctx loads, 63): 99.243 -> 99.291; agent-g run 266: the folded `+ 0 * (int)(spr->h)` (runs 209-233) dropped with the d change */
-    F4B(GS4B, 0x158, Ctx4B *)->dW4(F4B(self, 0xCC, char *)); /* agent-c run 405: dW4 (see the final append); agent-g run 372: addG's named count with a folded counted use (`n + 0 * n`, adjsave 3.0 -> 4.0) is coloured
+    WDL4B->dW4((char *)self->startDL); /* agent-c run 405: dW4 (see the final append); agent-g run 372: addG's named count with a folded counted use (`n + 0 * n`, adjsave 3.0 -> 4.0) is coloured
                                * BEFORE ctx: this packet's ctx / gfx / count = the target's a3 / a0 / a2 (was a2 / a0 / v1 via run 336's addO) */
     /* agent-c run 306 (kit CCCLXXXVIII ring lever): one doubled (value-preserving) iz mask here = one ugen ring slot, so
      * the target's `addu t1; andi t6; sll t9; sw w0; sw w1` WAR order comes out; the three extra `& 8` below (period 4)
      * put the ring back for the rest of the body: 98.021 -> 98.617, same length */
-    me(me(F4B(GS4B, 0x158, Ctx4B *)))->add(0xEE000000, ((iz & 0x7FFF) & 0x7FFF) << 16); /* agent-g run 332: 0xEE receiver through two me() (receiver-depth re-grid on the else-arm-d base, final add depth 0): 99.137 -> 99.196 */
-    if (*(s32 *)((char *)&gGfxLib_4BAF4_flags + 0x1C4) & 2) {
-        if ((F4B(self, 0x30, int) & 8) && F4B(self, 0x14, char *) != 0) { /* agent-g run 332: one `& 8` again (ring re-tuned for the else arm's d) */
-            CALL(gfx_emitStateAndPrimColour_00042684)(F4B(GS4B, 0x158, Ctx4B *), (char *)spr + 0x34, F4B(F4B(self, 0x14, char *), 0x1E, s16));
+    me(me(WDL4B))->add(0xEE000000, ((iz & 0x7FFF) & 0x7FFF) << 16); /* agent-g run 332: 0xEE receiver through two me() (receiver-depth re-grid on the else-arm-d base, final add depth 0): 99.137 -> 99.196 */
+    if (GFXLIB(&gGfxLib_4BAF4_flags)->flags & 2) {
+        if ((self->unk2C[1] & 8) && *(char **)&self->node.parent != 0) { /* parent read as a pointer (Node.parent is s32; an int compare changes the code) */ /* agent-g run 332: one `& 8` again (ring re-tuned for the else arm's d) */
+            CALL(gfx_emitStateAndPrimColour_00042684)(WDL4B, (char *)spr + 0x34, F4B(*(char **)&self->node.parent, 0x1E, s16));
         }
     } else {
         /* agent-g run 332: spr->dl64 through d like the first packet's 0xCC pointer -- the target holds it in v0 (a
          * coloured LR, `lw v0,100(t2); lw a0,96(v0)`), not a ugen temp: 99.007 -> 99.137, same length */
-        me(me(F4B(GS4B, 0x158, Ctx4B *)))->dM4(d = spr->dl64); /* agent-c run 402: the count as a by-value parameter (a reused edg pool word, kit CDLXXXVI); run 405: dM4 (see the final append) */
+        me(me(WDL4B))->dM4(d = spr->dl64); /* agent-c run 402: the count as a by-value parameter (a reused edg pool word, kit CDLXXXVI); run 405: dM4 (see the final append) */
     }
     {
-        Gfx4B *_g = (Gfx4B *)(PKT4B(me(me(me(F4B(GS4B, 0x158, Ctx4B *)))))); /* agent-g run 332: both TEXRECT packets' receivers at depth 3 (grid 0-4 x 0-4 x 0xEE 1-3): 99.196 -> 99.243 */
+        Gfx4B *_g = (Gfx4B *)(PKT4B(me(me(me(WDL4B))))); /* agent-g run 332: both TEXRECT packets' receivers at depth 3 (grid 0-4 x 0-4 x 0xEE 1-3): 99.196 -> 99.243 */
         _g->w0 = (SHL4B(0xE4, 24, 8) |
                   SHL4B(MAX((s16)((x + (int)(w * sx)) << 2), 0), 12, 12) |
                   SHL4B(((((s16)((y + (int)(h * sy) - 1) << 2)) > 0 ? (d = (char *)(int)((s16)((y + (int)(h * sy) - 1) << 2))) : (d = (char *)0)), (int)d), 0, 12)); /* agent-c run 288 (fork C): this MAX as `E <= 0 ? 0 : E` -- the zero is no longer set before the branch, 97.54 -> 97.88. agent-c run 310 (kit CCCXCIV one-variable reading): the target's v0 holds d (the 0xCC pointer) AND this MAX result AND the w1 yl MAX result -- both clamps assigned into d in each arm (int <-> pointer casts), plain `E > 0` order again: 98.617 -> 98.960, same length */
@@ -147,7 +154,7 @@ extern "C" void Sprite_display_0004BAF4(char *self) {
                   SHL4B(((((s16)(y << 2)) > 0 ? (d = (char *)(int)((s16)(y << 2))) : (d = (char *)0)), (int)d), 0, 12)); /* agent-c run 287: this line's `if (1) {}` and the one after the block dropped (stale: instruction stream identical, 97.54) */
     }
     {
-        Gfx4B *_g = (Gfx4B *)(PKT4B(me(me(me(F4B(GS4B, 0x158, Ctx4B *))))));
+        Gfx4B *_g = (Gfx4B *)(PKT4B(me(me(me(WDL4B)))));
         _g->w0 = SHL4B(0xB4, 24, 8);
         _g->w1 = (SHL4B((0 -
                    (((s16)(x << 2) < 0) ?
@@ -165,7 +172,7 @@ extern "C" void Sprite_display_0004BAF4(char *self) {
      * appends' dl / count colours move toward the target's (97.879 -> 98.009, same length); agent-g run 332: the final
      * append at depth 0 and the 0xEE append at depth 2 on the else-arm-d base; agent-g run 336: this one at depth 2 */
     {
-        me(me(F4B(GS4B, 0x158, Ctx4B *)))->add(SHL4B(0xB3, 24, 8), (SHL4B(((u16)(s32)(1024.0f / sx)), 16, 16) | SHL4B(((u16)(s32)(1024.0f / sy)), 0, 16)));
+        me(me(WDL4B))->add(SHL4B(0xB3, 24, 8), (SHL4B(((u16)(s32)(1024.0f / sx)), 16, 16) | SHL4B(((u16)(s32)(1024.0f / sy)), 0, 16)));
     }
     /* agent-g run 321: the self->0xD0 pointer through d with a BB split before the call (kit CDXII): the pointer is a
      * coloured LR (the target's v0) instead of a ugen temp, 98.960 -> 99.007, same length; agent-g run 336: the BB split
@@ -175,7 +182,7 @@ extern "C" void Sprite_display_0004BAF4(char *self) {
      * leading parameters fed the call result): edg hands out parameter pool words in creation order, so the 5th one is the
      * SAME word at the first, else-arm and final packet AND the B4 y-MIN merge temp -- one variable, one live range, which
      * also spans block 20 where the a1 gfx word lives, so it colours a2 like the target: 99.894 -> 100 */
-    F4B(GS4B, 0x158, Ctx4B *)->dM4(F4B(self, 0xD0, char *));
+    WDL4B->dM4((char *)self->endDL);
     }
     }
 }

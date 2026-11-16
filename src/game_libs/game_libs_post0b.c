@@ -14982,10 +14982,10 @@ char *Sprite_ctor_0004B620(char *arg0, char *arg1) {
         if ((self != 0) || ((sub = (Sprite *) gl_func_00000000(0xCC)) != 0)) {
             gl_func_00000000(sub, GL_DATA_STR(0x200FC, "sprite"), arg1, 0); /* base ctor, "sprite" */
             sub->unkC0 = 0;
-            sub->unkC4 = 0;
-            sub->unkB8 = 0.0f;
-            sub->unkBC = 0.0f;
-            sub->unkC8 = 0.0f;
+            sub->perspective = 0;
+            sub->offsetX = 0.0f;
+            sub->offsetY = 0.0f;
+            sub->depthBias = 0.0f;
             sub->scaleX = 1.0f;
             sub->scaleY = 1.0f;
         }

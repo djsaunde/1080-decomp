@@ -29,10 +29,12 @@ typedef struct Node {
     /* 0x28 */ s32 vptr;           /* Cfront vtable pointer */
 } Node;
 
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char Node_size_check[sizeof(Node) == 0x2C ? 1 : -1];
 typedef char Node_name_check[(int)&((Node *)0)->name == 0x0C ? 1 : -1];
 typedef char Node_serial_check[(int)&((Node *)0)->serial == 0x1C ? 1 : -1];
 typedef char Node_vptr_check[(int)&((Node *)0)->vptr == 0x28 ? 1 : -1];
+#endif
 
 /* Cfront vtable: slot N is {s16 this-delta, pad, fn} at vtbl + 8 + 8*N, called as
  * vt->slot[N].fn((char *)this + vt->slot[N].delta, ...). VT_SLOT(vt, N) is slot N of a vtable
@@ -58,6 +60,8 @@ typedef struct App {
     /* 0x30 */ s32 unk30;          /* cleared by the vtable method App_restart */
 } App;
 
+#ifndef __cplusplus
 typedef char App_unk30_check[(int)&((App *)0)->unk30 == 0x30 ? 1 : -1];
+#endif
 
 #endif
