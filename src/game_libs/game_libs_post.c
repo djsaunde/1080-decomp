@@ -7887,49 +7887,53 @@ void AudioThread_WaitForAudioTask(void) {
  *  - q44 mismatch exits via its own `goto ret0b` label AFTER the tail
  *    (out of as1's 9-insn dup window -> plain bne+nop to a far [jr;move]);
  *  - tail operands NAMED (`end`/`start`, end assigned first) -> color
- *    $a1/$a2 with the target's subu order. */
+ *    $a1/$a2 with the target's subu order.
+ * Run 548 (agent-c): on audio.h members -- seqPlayers[a0] -> channels[a1]
+ * -> layers[a2] -> note; returns tunedSample->sample->loop->end minus the
+ * note's synthesisState.samplePosInt (same bytes). */
 extern char gAudioContext_275F4[];
 int AudioThread_GetLayerSamplesLeft(int a0, int a1, int a2) {
-    char *rec = gAudioContext_275F4 + a0 * 0x160;
-    char *p1;
-    char *p2;
-    char *q;
-    char *q2;
+    SequencePlayer *player = &((AudioContext *)gAudioContext_275F4)->seqPlayers[a0];
+    SequenceChannel *channel;
+    SequenceLayer *layer;
+    char *q;    /* the layer's Note, then (reused) its TunedSample */
+    char *q2;   /* the Note */
     int flags;
     int end;
     int start;
-    if (!(*(unsigned int *)(rec + 0x2D00) >> 31)) {
+    /* `word >> 31` = the `enabled` bitfield (bit 31) of each struct's flag word */
+    if (!(*(unsigned int *)player >> 31)) {
         goto ret0;
     }
-    p1 = *(char **)(rec + 0x2D38 + a1 * 4);
-    if (!(*(unsigned int *)p1 >> 31)) {
+    channel = player->channels[a1];
+    if (!(*(unsigned int *)channel >> 31)) {
         goto ret0;
     }
-    p2 = *(char **)(p1 + 0x50 + a2 * 4);
-    if (p2 == 0) {
+    layer = channel->layers[a2];
+    if (layer == 0) {
         return 0;
     }
-    flags = *(int *)p2;
+    flags = *(int *)layer;
     if (!((unsigned int)flags >> 31)) {
         goto ret0;
     }
-    q = *(char **)(p2 + 0x2C);
+    q = (char *)layer->note;
     if (q == 0) {
         return 0;
     }
-    if ((flags << 3 << 1) >= 0) {
+    if ((flags << 3 << 1) >= 0) { /* layer->bit3 (bit 27) clear */
         return 0;
     }
     q2 = q;
-    if (p2 != *(char **)(q + 0x44)) {
+    if (layer != ((Note *)q)->playbackState.parentLayer) {
         goto ret0b;
     }
-    q = *(char **)(q + 0xC0);
+    q = (char *)((Note *)q)->sampleState.tunedSample;
     if (q == 0) {
         return 0;
     }
-    end = *(int *)(*(int *)(*(int *)q + 8) + 4);
-    start = *(int *)(q2 + 0x18);
+    end = ((TunedSample *)q)->sample->loop->end;
+    start = ((Note *)q2)->synthesisState.samplePosInt;
     return end - start;
 ret0b:
     return 0;
@@ -15794,11 +15798,12 @@ void cam_createDefault_00033228(char *o) {
     *(int *)(o + 0x0C) = (int)n;
     *(int *)(o + 0x10) = (int)n;
     lst = *(char **)(*(char **)(o + 0x3C) + 0x10);
-    CALL(list_append)(lst + 0x10, n);
-    if (*(int *)(n + 0x14) != 0) {
-        *(int *)(n + 0x04) = 1;
+    /* the Node child-attach idiom: append to lst's children, mark a re-parented node */
+    CALL(list_append)(&NODE(lst)->children, n);
+    if (NODE(n)->parent != 0) {
+        NODE(n)->unk04 = 1;
     }
-    *(int *)(n + 0x14) = (int)lst;
+    NODE(n)->parent = (Node *)lst;
 }
 
 // MCamera_doCommand — command-stream handler step (0x84 / 33 words).
