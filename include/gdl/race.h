@@ -295,8 +295,9 @@ typedef struct TimDataManager {
     /* 0xD4 */ s32 unkD4;
     /* 0xD8 */ s32 beepTimer;        /* update: 0..0x32; sound 0x135 when it wraps while the
                                       * cool gadget's +0xC4 >= 12 */
-    /* 0xDC */ s32 unkDC;            /* 1 after init; with 2 entries it mirrors
-                                      * entries[1].rider->0x800->0x4C and a 1 -> 0 edge calls (this, 1) */
+    /* 0xDC */ s32 ghostReplayMode;  /* 1 (PAD_REPLAY_PLAY) after init; with 2 entries update mirrors entries[1]'s
+                                      * PadCtl replayMode into it and a 1 -> 0 edge (the ghost replay ran out) sends
+                                      * RaceTracker_sendEntryLoseResult(this, 1) (as TrkDataManager 0xD8) */
 } TimDataManager;
 
 typedef char TimDataManager_size_check[sizeof(TimDataManager) == 0xE0 ? 1 : -1];

@@ -356,7 +356,7 @@ void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
 
         w = (char *)TIMRACE(obj)->dataManager;
         o1 = (char *)NODE(w)->vptr;
-        ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
+        ((void (*)(int))VT_SLOT(o1, 10).fn)(VT_SLOT(o1, 10).delta + (int)w);
 
         o1 = (char *)TIMRACE(obj)->dataManager;
         CALL(list_append)(obj + 16, o1);
@@ -446,7 +446,7 @@ int TrkRace_endTimerEnabled(TimRace *a0) {
     if (p == 0) {
         goto ret0;
     }
-    if (*(int*)((char*)p + 0xEC) == 0) {
+    if (TPOINTS(p)->allIdle == 0) {
         goto ret0;
     }
     return 1;
@@ -663,22 +663,22 @@ void TrkRace_onLeave(TimRace *a0) {
 void TrkRace_onPause(TimRace *a0) {
     int *p;
 
-    p = (int*)*(int*)((char*)a0->dataManager + 0x6C);
-    p = (int*)((char*)p + 0x18);
+    p = (int*)DATAMGR(a0->dataManager)->pointsList;
+    p = &NODE(p)->doFlags;
     *p &= ~4;
-    p = (int*)*(int*)((char*)a0->dataManager + 0x94);
-    p = (int*)((char*)p + 0x18);
+    p = (int*)DATAMGR(a0->dataManager)->points94;
+    p = &NODE(p)->doFlags;
     *p &= ~4;
 }
 
 void TrkRace_hideHud_0000120C(TimRace *a0) {
     int *p;
 
-    p = (int*)*(int*)((char*)a0->dataManager + 0x6C);
-    p = (int*)((char*)p + 0x18);
+    p = (int*)DATAMGR(a0->dataManager)->pointsList;
+    p = &NODE(p)->doFlags;
     *p |= 4;
-    p = (int*)*(int*)((char*)a0->dataManager + 0x94);
-    p = (int*)((char*)p + 0x18);
+    p = (int*)DATAMGR(a0->dataManager)->points94;
+    p = &NODE(p)->doFlags;
     *p |= 4;
 }
 
@@ -780,10 +780,10 @@ void TrkRace_drawResultExtra(TimRace *a0) {
                 CALL(gui_spriteRefresh)(saved);
                 if ((a0->race.unk508 & 8) != 0) {
                     CALL(gui_drawSprite)(saved, 0xA0, 0xA0, 3);
-                    CALL(trk_drawScore_000013B8)(a0, 0x8C, *(int*)(*(char**)((char*)a0->dataManager + 0x44) + 0x14));
+                    CALL(trk_drawScore_000013B8)(a0, 0x8C, DATAMGR(a0->dataManager)->entries->time);
                 }
             } else {
-                CALL(trk_drawScore_000013B8)(a0, 0x8C, *(int*)(*(char**)((char*)a0->dataManager + 0x44) + 0x14));
+                CALL(trk_drawScore_000013B8)(a0, 0x8C, DATAMGR(a0->dataManager)->entries->time);
             }
         }
     }
@@ -1025,7 +1025,7 @@ void TrkDataManager_init_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
         sp44 = (char *)CALL(Backup_courseRecordGetScore)((*(int *)((char *)&D_00000000 + 0x64) * 0x30) + *(int *)((int *)DATAMGR(arg0)->session), 0);
         o = (char *)CALL(BestScoreGadget_ctor)(0, DATAMGR(arg0)->sprites60);
         TIMDATAMGR(arg0)->rankLabel = (int)o;
-        CALL(BestScoreGadget_setScore)(o, *(int *)(sp44 + 4));
+        CALL(BestScoreGadget_setScore)(o, ((BackupScoreEntry *)sp44)->score);
         CALL(TimeGadgetParms_setPos_00013FE0)((char *)TIMDATAMGR(arg0)->rankLabel, 0x35, 0xD6);
         o = (char *)TIMDATAMGR(arg0)->rankLabel;
         CALL(list_append)(arg0 + 0x10, o);
@@ -1401,7 +1401,7 @@ char *TrkMenu_ctor(char *arg0) {
         if ((arg0 != 0) || (a3 = (char *)CALL(mem_new)(80), (a3 != 0))) {
             a0 = a3;
             if ((a3 != 0) || (a0 = (char *)CALL(mem_new)(44), (a0 != 0))) {
-                CALL(Node_ctor)(a0, (char *)&D_00000000 + 1160); *(char **)(a0 + 0x28) = &D_00000000;
+                CALL(Node_ctor)(a0, (char *)&D_00000000 + 1160); *(char **)&NODE(a0)->vptr = &D_00000000;
             }
             *(char **)(a3 + 0x28) = &D_00000000;
         }
@@ -1426,20 +1426,20 @@ char *TrkMenu_ctor(char *arg0) {
         if (1) {}
         v0 = (char *)TIMMENU(arg0)->base.menu;
         a3 = (char *)NODE(v0)->vptr;
-        ((void (*)(int))(*(int *)(a3 + 0x5C)))(*(short *)(a3 + 0x58) + (int)v0);
+        ((void (*)(int))VT_SLOT(a3, 10).fn)(VT_SLOT(a3, 10).delta + (int)v0);
         a3 = (char *)TIMMENU(arg0)->base.menu;
         CALL(list_append)(arg0 + 16, a3); if (NODE(a3)->parent != 0) { NODE(a3)->unk04 = 1; } NODE(a3)->parent = (int)arg0;
-        if (*(int *)((char *)&D_b3_23E4_base + 388) == 0 ||
+        if (INPUT_MGR(D_b3_23E4_base).unk184 == 0 ||
             (D_b3_23E4_17D7 == 0x17D7) == 0) {
             GUIMENU(TIMMENU(arg0)->base.menu)->rows[2].enabled = 0;
         }
-        a3 = *(char **)((char *)&D_b3_23E4_base + 400);
+        a3 = (char *)INPUT_MGR(D_b3_23E4_base).fader;
         CALL(list_append)(arg0 + 16, a3);
         if (NODE(a3)->parent != 0) {
             NODE(a3)->unk04 = 1;
         }
         NODE(a3)->parent = (int)arg0;
-        CALL(Fader_start)(*(int *)((char *)&D_b3_23E4_base + 400), 1, 0, a3);
+        CALL(Fader_start)(INPUT_MGR(D_b3_23E4_base).fader, 1, 0, a3);
         TIMMENU(arg0)->unk54 = 0;
         TIMMENU(arg0)->base.state = 0;
         TIMMENU(arg0)->base.unk30 = 1;
@@ -1665,15 +1665,15 @@ void TrkMenu_handleInput_00002C98(char *obj) {
             if (1) {}
             o48 = (char *)TIMMENU(obj)->base.menu;
             TIMMENU(obj)->base.state = 0;
-            vt = *(char **)(o48 + 0x28);
-            ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
+            vt = (char *)NODE(o48)->vptr;
+            ((void (*)(int))VT_SLOT(vt, 10).fn)(VT_SLOT(vt, 10).delta + (int)o48);
         } else {
             trk_imp_snd_postEvent(0x802);
             if (1) {}
             o48 = (char *)TIMMENU(obj)->base.menu;
             TIMMENU(obj)->base.state = 0;
-            vt = *(char **)(o48 + 0x28);
-            ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
+            vt = (char *)NODE(o48)->vptr;
+            ((void (*)(int))VT_SLOT(vt, 10).fn)(VT_SLOT(vt, 10).delta + (int)o48);
         }
     }
     if (trk_imp_input_checkPressed(&gInputMgr, 0x200) != 0) {
@@ -1681,8 +1681,8 @@ void TrkMenu_handleInput_00002C98(char *obj) {
         if (1) {}
         o48 = (char *)TIMMENU(obj)->base.menu;
         TIMMENU(obj)->base.state = 0;
-        vt = *(char **)(o48 + 0x28);
-        ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
+        vt = (char *)NODE(o48)->vptr;
+        ((void (*)(int))VT_SLOT(vt, 10).fn)(VT_SLOT(vt, 10).delta + (int)o48);
     }
 }
 

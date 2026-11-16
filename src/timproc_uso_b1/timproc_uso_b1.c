@@ -5,6 +5,8 @@
 #include "game/modemenu.h"
 #include "game/guimenu.h"
 #include "game/input.h"
+#include "game/snowboarder.h"
+#include "gdl/gadget.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -329,13 +331,13 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
             NODE(o2)->vptr = (int)&D_b1_097C_v4;
         }
         TIMRACE(obj)->dataManager = (int)o2;
-        *(char **)((char *)&D_b1_097C_g + 0x138) = o2;
+        INPUT_MGR(D_b1_097C_g).dataMgr = (struct RaceTracker *)o2;
 
         XCALL(gl_func_00000000_994v, TimDataManager_init_00001A64)(TIMRACE(obj)->dataManager, obj, RACEPROC(obj)->spriteSet, (int)RACEPROC(obj)->session);
 
         w = (char *)TIMRACE(obj)->dataManager;
         o1 = (char *)NODE(w)->vptr;
-        ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
+        ((void (*)(int))VT_SLOT(o1, 10).fn)(VT_SLOT(o1, 10).delta + (int)w);
 
         o1 = (char *)TIMRACE(obj)->dataManager;
         CALL(list_append)(obj + 16, o1);
@@ -491,9 +493,9 @@ state0:
     s1 = (char *)CALL(Backup_courseRecordGetTime)(*(int *)((int)base + 0x64) * 0x30 + *(int *)s2->race.session, s2->recordRank);
     for (state = s2->recordRank - 1; state >= 0; state--) {
         r = (char *)CALL(Backup_courseRecordGetTime)(base[0x64 / 4] * 0x30 + *(int *)s2->race.session, state);
-        if (*(unsigned char *)(s1 + 5) != *(unsigned char *)(r + 5)) break;
-        if (*(unsigned char *)(s1 + 6) != *(unsigned char *)(r + 6)) break;
-        if (*(unsigned char *)(s1 + 7) != *(unsigned char *)(r + 7)) break;
+        if (((BackupTimeEntry *)s1)->time[0] != ((BackupTimeEntry *)r)->time[0]) break;
+        if (((BackupTimeEntry *)s1)->time[1] != ((BackupTimeEntry *)r)->time[1]) break;
+        if (((BackupTimeEntry *)s1)->time[2] != ((BackupTimeEntry *)r)->time[2]) break;
         s2->recordRank = s2->recordRank - 1;
     }
     s2->race.subState = 1;
@@ -671,7 +673,7 @@ void TimRace_drawResultExtra(TimRace *a0) {
         flag = 0;
         if ((a0->race.session->modes & BACKUP_MODE_TIME) &&
             (a0->race.unk4FC != 0) &&
-            (*(int *)(*(char **)(*(char **)((char *)&D_b1_11d8_d + 0x138) + 0x44) + 0x38) < 3)) {
+            (INPUT_MGR(D_b1_11d8_d).dataMgr->entries->rank[0] < 3)) {
             flag = 1;
         }
         if (flag != 0) {
@@ -681,10 +683,10 @@ void TimRace_drawResultExtra(TimRace *a0) {
                              (char *)a0 + 0x2F0, (char *)a0 + 0x314);
             if (a0->race.unk508 & 8) {
                 CALL(gui_drawSprite)(saved, 160, 160, 3);
-                CALL(tim_drawTime_00001340)(a0, 140, *(int *)((char *)a0->dataManager + 0x30));
+                CALL(tim_drawTime_00001340)(a0, 140, DATAMGR(a0->dataManager)->elapsed);
             }
         } else {
-            CALL(tim_drawTime_00001340)(a0, 140, *(int *)((char *)a0->dataManager + 0x30));
+            CALL(tim_drawTime_00001340)(a0, 140, DATAMGR(a0->dataManager)->elapsed);
         }
     }
 }
@@ -951,7 +953,7 @@ void TimDataManager_init_00001A64(int *a0, int a1, int a2, int a3) {
   DATAMGR(a0)->pointsListArg = a2;
   TIMDATAMGR(a0)->alpha = 0xFF;
   TIMDATAMGR(a0)->unkD4 = 0;
-  TIMDATAMGR(a0)->unkDC = 1;
+  TIMDATAMGR(a0)->ghostReplayMode = 1;
   TIMDATAMGR(a0)->colour[3] = 1.0f;
   TIMDATAMGR(a0)->colour[2] = 1.0f;
   TIMDATAMGR(a0)->colour[1] = 1.0f;
@@ -1010,16 +1012,16 @@ void TimDataManager_update_00001BCC(char *arg0) {
     }
     if ((v1 != 0) && (RACEPROC(pb)->raceState == 1)) {
         if (DATAMGR(arg0)->numEntries == 2) {
-            if ((TIMDATAMGR(arg0)->unkDC == 1) &&
-                (*(int *)(*(char **)(*(char **)((char *)DATAMGR(arg0)->entries + 0x60) + 0x800) + 0x4C) == 0)) {
+            if ((TIMDATAMGR(arg0)->ghostReplayMode == 1) &&
+                (((PadCtl *)SNOWB(DATAMGR(arg0)->entries[1].rider)->input)->replayMode == 0)) {
                 CALL(RaceTracker_sendEntryLoseResult)(arg0, 1);
             }
-            TIMDATAMGR(arg0)->unkDC = *(int *)(*(char **)(*(char **)((char *)DATAMGR(arg0)->entries + 0x60) + 0x800) + 0x4C);
+            TIMDATAMGR(arg0)->ghostReplayMode = ((PadCtl *)SNOWB(DATAMGR(arg0)->entries[1].rider)->input)->replayMode;
         }
         if (DATAMGR(arg0)->entries->finished != 0) {
             CALL(RaceProcess_finishCourse)(TIMDATAMGR(arg0)->race);
         }
-        if (*(int *)((char *)DATAMGR(arg0)->cool + 0xC8) <= 0) {
+        if (((CoolGadget *)DATAMGR(arg0)->cool)->cur <= 0) {
             CALL(RaceProcess_endResult4_00006EE0)(TIMDATAMGR(arg0)->race);
             RACEPROC((char *)TIMDATAMGR(arg0)->race)->msgFloor = 192.0f;
             RACEPROC((char *)TIMDATAMGR(arg0)->race)->msgAlpha = 0xFF;
@@ -1029,7 +1031,7 @@ void TimDataManager_update_00001BCC(char *arg0) {
             TIMDATAMGR(arg0)->beepTimer = 0;
         }
         pc = (char *)DATAMGR(arg0)->cool;
-        if ((pc != 0) && (*(int *)(pc + 0xC4) >= 0xC) && (TIMDATAMGR(arg0)->beepTimer == 0)) {
+        if ((pc != 0) && (((CoolGadget *)pc)->seg >= 0xC) && (TIMDATAMGR(arg0)->beepTimer == 0)) {
             CALL(snd_sendEvent)(0x135, 0);
         }
         pb = (char *)TIMDATAMGR(arg0)->race;
@@ -1042,10 +1044,10 @@ void TimDataManager_update_00001BCC(char *arg0) {
             RACEPROC((char *)TIMDATAMGR(arg0)->race)->msgAlpha = 0xFF;
             DATAMGR(arg0)->active = 0;
         }
-        gl_proto_1c94(DATAMGR(arg0)->course, *(int *)((char *)DATAMGR(arg0)->entries + 0x30), 0.0f);
+        gl_proto_1c94(DATAMGR(arg0)->course, *(int *)&DATAMGR(arg0)->entries->pct, 0.0f);
         if (1) {
             pd = (char *)DATAMGR(arg0)->entries;
-            gl_proto_1c68(DATAMGR(arg0)->course, *(int *)(pd + 8), *(int *)(pd + 0xC), 0.0f, 0.0f);
+            gl_proto_1c68(DATAMGR(arg0)->course, *(int *)&((RaceEntry *)pd)->posX, *(int *)&((RaceEntry *)pd)->progress, 0.0f, 0.0f);
         }
         if (1) {
             pe = (char *)TIMDATAMGR(arg0)->race;
@@ -1153,7 +1155,7 @@ extern char D_b1_1FE4_b;
 extern char D_b1_1FE4_c;
 void TimMenu_rowGhost_00001FE4(void) {
     CALL(Process_stop)(*(int*)((char*)&D_b1_1FE4_a + 0x208));
-    *(int*)((char*)&D_b1_1FE4_b + 0x40) = 6;
+    INPUT_MGR(D_b1_1FE4_b).procState = 6;
     CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_b1_1FE4_c + 0x20C), -1, 0);
 }
 
@@ -1242,9 +1244,9 @@ char *TimMenu_ctor(char *arg0) {
         if ((arg0 != 0) || (a3 = (char *)CALL(mem_new)(80), (a3 != 0))) {
             a0 = a3;
             if ((a3 != 0) || (a0 = (char *)CALL(mem_new)(44), (a0 != 0))) {
-                CALL(Node_ctor)(a0, (char *)&D_00000000 + 0x4B8); *(char **)(a0 + 0x28) = &D_00000000;
+                CALL(Node_ctor)(a0, (char *)&D_00000000 + 0x4B8); *(char **)&NODE(a0)->vptr = &D_00000000;
             }
-            *(char **)(a3 + 0x28) = &D_00000000;
+            *(char **)&NODE(a3)->vptr = &D_00000000;
         }
         TIMMENU(arg0)->base.node.vptr = (s32)(&D_00000000);
         TIMMENU(arg0)->base.node.name = (s32)((char *)&D_00000000 + 0x4C0);
@@ -1267,20 +1269,20 @@ char *TimMenu_ctor(char *arg0) {
         if (1) {}
         v0 = (char *)TIMMENU(arg0)->base.menu;
         a3 = (char *)NODE(v0)->vptr;
-        ((void (*)(int))(*(int *)(a3 + 0x5C)))(*(short *)(a3 + 0x58) + (int)v0);
+        ((void (*)(int))VT_SLOT(a3, 10).fn)(VT_SLOT(a3, 10).delta + (int)v0);
         a3 = (char *)TIMMENU(arg0)->base.menu;
         CALL(list_append)(arg0 + 16, a3); if (NODE(a3)->parent != 0) { NODE(a3)->unk04 = 1; } NODE(a3)->parent = (int)arg0;
-        if (*(int *)((char *)&D_b1_21D4_base + 388) == 0 ||
+        if (INPUT_MGR(D_b1_21D4_base).unk184 == 0 ||
             (*(int *)0xA0000200 == 0xAC290000) == 0) {
             GUIMENU(TIMMENU(arg0)->base.menu)->rows[2].enabled = 0;
         }
-        a3 = *(char **)((char *)&D_b1_21D4_base + 400);
+        a3 = (char *)INPUT_MGR(D_b1_21D4_base).fader;
         CALL(list_append)(arg0 + 16, a3);
         if (NODE(a3)->parent != 0) {
             NODE(a3)->unk04 = 1;
         }
         NODE(a3)->parent = (int)arg0;
-        CALL(Fader_start)(*(int *)((char *)&D_b1_21D4_base + 400), 1, 0);
+        CALL(Fader_start)(INPUT_MGR(D_b1_21D4_base).fader, 1, 0);
         TIMMENU(arg0)->unk54 = 0;
         TIMMENU(arg0)->base.state = 0;
         TIMMENU(arg0)->base.unk30 = 1;
@@ -1553,15 +1555,15 @@ void TimMenu_handleInput_00002A8C(char *obj) {
             if (1) {}
             o48 = (char *)TIMMENU(obj)->base.menu;
             TIMMENU(obj)->base.state = 0;
-            vt = *(char **)(o48 + 0x28);
-            ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
+            vt = (char *)NODE(o48)->vptr;
+            ((void (*)(int))VT_SLOT(vt, 10).fn)(VT_SLOT(vt, 10).delta + (int)o48);
         } else {
             tim_imp_snd_postEvent(0x802);
             if (1) {}
             o48 = (char *)TIMMENU(obj)->base.menu;
             TIMMENU(obj)->base.state = 0;
-            vt = *(char **)(o48 + 0x28);
-            ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
+            vt = (char *)NODE(o48)->vptr;
+            ((void (*)(int))VT_SLOT(vt, 10).fn)(VT_SLOT(vt, 10).delta + (int)o48);
         }
     }
     if (tim_imp_input_checkPressed(&gInputMgr, 0x200) != 0) {
@@ -1569,8 +1571,8 @@ void TimMenu_handleInput_00002A8C(char *obj) {
         if (1) {}
         o48 = (char *)TIMMENU(obj)->base.menu;
         TIMMENU(obj)->base.state = 0;
-        vt = *(char **)(o48 + 0x28);
-        ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
+        vt = (char *)NODE(o48)->vptr;
+        ((void (*)(int))VT_SLOT(vt, 10).fn)(VT_SLOT(vt, 10).delta + (int)o48);
     }
 }
 
