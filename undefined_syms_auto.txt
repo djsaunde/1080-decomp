@@ -5735,6 +5735,7 @@ sVrMenu = 0x00000878;  /* viewrec Bss static */
 sVrProc = 0x0000087C;  /* viewrec Bss static */
 sVrScreen = 0x00000880;  /* viewrec Bss static */
 gInputMgr_vrncc = 0x00000000;  /* bootup Bss 0xF8 GameFlow import (viewrec NCC donor) */
+gInputMgr_vr4698 = 0x00000000;  /* bootup Bss 0xF8 GameFlow import (viewrec 0x4698, apart from the gui import) */
 heli_data_00000000 = 0x00000000;  /* heli.uso Data section base (module-local zero symbol: vtables, names) */
 heli_rodata_00000000 = 0x00000000;  /* heli.uso RoData section base (float constants) */
 heli_polyFlags_ld = 0x00000000;  /* heli 0x274: gPolyFlags_3EEC4 (bootup Bss+0x3EEC4) per-site load alias */

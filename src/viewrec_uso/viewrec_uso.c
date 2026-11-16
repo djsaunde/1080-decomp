@@ -55,6 +55,9 @@ extern ViewRecProc *sVrProc;        /* 0x87C */
 extern Node *sVrScreen;             /* 0x880: the screen being shown */
 
 #define gInputMgr_vr (*(InputMgr *)&D_00000000)
+/* the same GameFlow import under its own symbol (pinned to 0): 0x4698 also passes the gui import
+ * &D_00000000, and one shared symbol would let uopt CSE the two bases into one s-register */
+extern InputMgr gInputMgr_vr4698;
 
 /* Cfront virtual call through slot n of a Node's vtable */
 #define VCALL(obj, n) ((void (*)(int))VT_SLOT((obj)->vptr, n).fn)(VT_SLOT((obj)->vptr, n).delta + (int)(obj))
@@ -226,19 +229,20 @@ void viewrec_uso_func_000014DC(ViewRecProc *proc) {
     }
 }
 
-/* draw one records row at y: its title (label sprite via 0x1488), then three indexed sprites at
- * x 46 / 240 (row y) and 160 (y + 30) */
-void viewrec_uso_func_00001588(ViewRecProc *self, s32 y, s32 label, s32 a, s32 b, s32 c) {
+/* draw one record's row at y (0x4698 passes a saved ghost's course / rider / board / mode - 1):
+ * the course title (label sprite via 0x1488), then the rider and board sprites at x 46 / 240 and
+ * the mode label at 160, y + 30 */
+void viewrec_uso_func_00001588(ViewRecProc *self, s32 y, s32 course, s32 rider, s32 board, s32 mode) {
     RaceSprite *spr;
 
-    CALL(viewrec_uso_func_00001488)(self, label, y);
-    spr = &sVrSprites_048[a];
+    CALL(viewrec_uso_func_00001488)(self, course, y);
+    spr = &sVrSprites_048[rider];
     CALL(gui_spriteRefresh)(spr);
     CALL(gui_drawSprite)(spr, 46, y, 2);
-    spr = &sVrSprites_108[b];
+    spr = &sVrSprites_108[board];
     CALL(gui_spriteRefresh)(spr);
     CALL(gui_drawSprite)(spr, 240, y, 2);
-    spr = &sVrLabels_7B0[c];
+    spr = &sVrLabels_7B0[mode];
     CALL(gui_spriteRefresh)(spr);
     CALL(gui_drawSprite)(spr, 160, y + 30, 3);
 }
@@ -264,6 +268,10 @@ typedef struct ViewRecScreen {
     /* 0x00 */ Node node;
     /* 0x2C */ char pad2C[0x50 - 0x2C];
     /* 0x50 */ ViewRecProc *proc;
+    /* 0x54 */ char pad54[0x58 - 0x54];
+    /* 0x58 */ s32 frame;            /* replay screen: counted up per draw (0x4698) */
+    /* 0x5C */ char pad5C[0x80 - 0x5C];
+    /* 0x80 */ s32 rowY;             /* replay screen: y of the ghost's row (0x1588) */
 } ViewRecScreen;
 
 /* NM: the target holds &gInputMgr in v0 for the procState copy (here v1). */
@@ -392,7 +400,34 @@ void viewrec_uso_func_00004670(ViewRecScreen *self) {
     CALL(Node_update)(self);
 }
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004698);
+/* the replay screen's draw: frame count, the records draws, the colours, label sprite 40 at
+ * (160, 37), then the saved ghost's row (course / rider / board / mode - 1 via 0x1588).
+ * The white `col` is set and never read, as in the target; the unused locals keep the frame
+ * (0x58) and the homes of course / rider (sp+0x40 / 0x3C); the last two reads stay call
+ * arguments (one spilled to the temp area at sp+0x28). */
+void viewrec_uso_func_00004698(ViewRecScreen *self) {
+    f32 col[4];
+    s32 unused;
+    s32 course, rider;
+    s32 unused2[3];
+
+    col[0] = 1.0f;
+    col[1] = 1.0f;
+    col[2] = 1.0f;
+    col[3] = 1.0f;
+    self->frame++;
+    CALL(viewrec_uso_func_000011B4)(self->proc);
+    CALL(viewrec_uso_func_000014DC)(self->proc);
+    CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, 255, sVrPrimColour, sVrEnvColour);
+    CALL(gui_spriteRefresh)(&sVrLabels[40]);
+    CALL(gui_drawSprite)(&sVrLabels[40], 160, 37, 3);
+    CALL(gui_setCombine_00001794)(&D_00000000);
+    course = CALL(Backup_ghostGetCourse)((char *)gInputMgr_vr4698.backup + 4);
+    rider = CALL(Backup_ghostGetRider)((char *)gInputMgr_vr4698.backup + 4);
+    CALL(viewrec_uso_func_00001588)(self->proc, self->rowY, course, rider,
+                                     CALL(Backup_ghostGetBoard)((char *)gInputMgr_vr4698.backup + 4),
+                                     CALL(Backup_ghostGetMode)((char *)gInputMgr_vr4698.backup + 4) - 1);
+}
 
 /* the replay screen's pad handling: A / Start fades out to the saved ghost's mode
  * (procState = Backup_ghostGetMode + 6, then state 1); B goes back to the main menu */
