@@ -11771,41 +11771,41 @@ void GfxLib_reset(char *arg0) {
     int i;
     int busy;
 
-    p = (int *)(arg0 + 0x2AC);
-    *(int *)(arg0 + 0x5D0) = 0;
+    p = ((GfxLib *)arg0)->ddm;
+    ((GfxLib *)arg0)->unk5D0 = 0;
     for (i = 0; i < 50; i++) {
         p[i] = 0;
     }
     p[50] = 0;
-    *(int *)(arg0 + 0x210) = 0;
-    gl_func_00000000(arg0 + 0x294);
+    ((GfxLib *)arg0)->unk210 = 0;
+    gl_func_00000000(((GfxLib *)arg0)->unk294);
     gl_func_00000000(arg0, 0);
-    r = *(unsigned int **)(arg0 + 0x218);
+    r = (unsigned int *)((GfxLib *)arg0)->rcp;
     if (0) { gl_func_00000000(&r); }
     busy = (r[7] != 0 || r[1] != 0 || r[3] != 0);
     while (busy) {
         gl_func_00000000();
         busy = (r[7] != 0 || r[1] != 0 || r[3] != 0);
     }
-    fl = (Pair2 *)(arg0 + 0x138);
+    fl = (Pair2 *)&((GfxLib *)arg0)->unk138;     /* fl->b = renderFlags */
     gl_func_00000000(arg0);
-    *(int *)(arg0 + 0x250) = 0;
-    *(int *)(arg0 + 0x230) = 0;
-    *(int *)(arg0 + 0x138) = 0;
-    *(int *)(arg0 + 0x13C) = 0;
-    *(f32 *)(arg0 + 0x24C) = *(f32 *)(D_44918_flt + 0x1B38);
+    ((GfxLib *)arg0)->unk250 = 0;
+    ((GfxLib *)arg0)->unk230 = 0;
+    ((GfxLib *)arg0)->unk138 = 0;
+    ((GfxLib *)arg0)->renderFlags = 0;
+    ((GfxLib *)arg0)->unk24C = *(f32 *)(D_44918_flt + 0x1B38);
     fl->b &= ~0x10000;
     D_44918_fzero = 0.0f;
     fl->b &= ~2;
     fl->b &= ~0x1000;
-    gl_func_00000000(*(int *)(arg0 + 0x214));
+    gl_func_00000000(((GfxLib *)arg0)->staticDL);
     fl->b |= 1;
     fl->b |= 0x4000;
     fl->b |= 0x8000;
     fl->b |= 0x20000;
     fl->b |= 0x80;
     gl_func_00000000((char *)&D_00000000 + 0x1FE70);
-    gl_func_00000000(&D_44918_arg0c, *(int *)(*(int *)(arg0 + 0x240) + 0xFC),
+    gl_func_00000000(&D_44918_arg0c, (int)((GfxLib *)arg0)->mainWindow->win.bufAlloc,
                      D_44918_ma * D_44918_mb * 6);
 }
 #else
@@ -16713,10 +16713,10 @@ void gfx_setEvery4thFrameFlag(GfxLib *a0) {
  * `a0->0x134` load and assigns $v1 to p1, $v0 to p2 (target's regalloc).
  * Same pattern as CommonInfo_loadData_00008F98. Replaces prior INSN_PATCH
  * approach — no Makefile entry needed. */
-void gfx_vcall_0004E150(char *a0) {
-    char *p2 = *(char**)(*(char**)(a0 + 0x134) + 0x14);
-    char *p1 = *(char**)(a0 + 0x134);
-    (*(int(**)(char*))(p2 + 0xC))(p1 + *(short*)(p2 + 0x8));
+void gfx_vcall_0004E150(GfxLib *a0) {
+    char *p2 = *(char **)((char *)a0->unk134 + 0x14);  /* the +0x134 object's vtable (kept at +0x14) */
+    char *p1 = (char *)a0->unk134;
+    VT_SLOT(p2, 0).fn(p1 + VT_SLOT(p2, 0).delta);
 }
 
 /* CRACKED 2026-05-27 (byte-exact): the lever is "no explicit local —
