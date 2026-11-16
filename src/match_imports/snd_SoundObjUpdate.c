@@ -67,7 +67,7 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
             temp_v0_7 = D_stateC_E354;  if (1) {}
             if ((((u32)temp_v0_7 == 1) || ((u32)temp_v0_7 == 2) || ((u32)temp_v0_7 == 3)) && (SO(arg0)->flags1C == 1U) && (SO(arg0)->kind == 0)) {
                 SO(arg0)->kind = 2U;
-                SO(arg0)->volScale = 0.0f;
+                SO(arg0)->voice.volScale = 0.0f;
             }
         }
         if (D_stateB_E354 == 1) {
@@ -134,22 +134,22 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
                 SO(arg0)->reverbOnSent = SO(arg0)->reverbOn;
             }
             if (SO(arg0)->flags1C & 1) {
-                temp_f0 = SO(arg0)->volScale;
+                temp_f0 = SO(arg0)->voice.volScale;
                 SO(arg0)->unk26 = (u32) ((f32) (u32) SO(arg0)->unk26 * temp_f0);
-                sp78 *= SO(arg0)->unk58;
-                temp_v0 = SO(arg0)->pan[0];
+                sp78 *= SO(arg0)->voice.turnAtten;
+                temp_v0 = SO(arg0)->voice.pan[0];
                 SO(arg0)->unk28 = (u8) ((s32) (temp_v0 + SO(arg0)->unk28) >> 1);
                 if (SO(arg0)->kind == 0) {
                     gl_E354_setf(0x01020000, temp_f0);
                     func_00000000(0x03020000, (s8) SO(arg0)->unk28);
                     func_00000000(0x90000000, 0x806);
-                    func_00000000(0x0C00FF00, *(s8 *)&SO(arg0)->pan[3]);
+                    func_00000000(0x0C00FF00, *(s8 *)&SO(arg0)->voice.pan[3]);
                     temp_f10_2 = func_00000000(0x0D00FF00, 0x3000);
                 } else {
                     gl_E354_setf(0x01020100, temp_f0);
                     func_00000000(0x03020100, (s8) SO(arg0)->unk28);
                     func_00000000(0x90000000, 0x1060);
-                    func_00000000(0x0C00FF00, *(s8 *)&SO(arg0)->pan[3]);
+                    func_00000000(0x0C00FF00, *(s8 *)&SO(arg0)->voice.pan[3]);
                     temp_f10_2 = func_00000000(0x0D00FF00, 0x3000);
                 }
             } else {

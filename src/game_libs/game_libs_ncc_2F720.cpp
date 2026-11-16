@@ -6,51 +6,51 @@
  * the source order of `fl * K` and of the 0xE store after the rate. The FP pool reads
  * are per-site symbols pinned at their pool offsets. Spliced into game_libs_post.c.o
  * via REPLACE_FUNC_BODY. */
-typedef float f32;
 extern "C" {
+#include "../../include/audio.h"
 int gl_ref_00043824(float, ...);
 extern int D_00000000;
 extern int D_2F720_t1, D_2F720_t2, D_2F720_t3;
 extern int D_2F720_lut, D_2F720_flut;
 extern int kRo_snd_SoundObjSetAngle_1740, kRo_snd_SoundObjSetAngle_1744, kRo_snd_SoundObjSetAngle_1748, kRo_snd_SoundObjSetAngle_174C;
-void snd_SoundObjSetAngle(char *o, f32 in, signed char idxb) {
+void snd_SoundObjSetAngle(SoundObj *o, f32 in, signed char idxb) {
     float dlt;
     int v;
-    char *p;
+    SoundVoice *p;
     int t;
     float fl;
     float lo;
 
     in = in * 180.0f;
-    dlt = in - *(float *)(o + 0x5C);
-    *(float *)(o + 0x5C) = in;
+    dlt = in - o->voice.angle;
+    o->voice.angle = in;
     v = idxb;
-    p = o + 0x54;
+    p = &o->voice;
     if (idxb >= 0x40) {
         v = 0x7F - idxb;
     }
     if (v < -0x40) {
         v = -0x80 - v;
     }
-    *(unsigned char *)(p + 0xC) = v + 0x40;
+    p->pan[0] = v + 0x40;
 
     t = gl_ref_00043824(in, (char *)&D_2F720_t1, 8);
-    *(unsigned char *)(p + 0xD) = *((unsigned char *)&D_2F720_lut + t);
+    p->pan[1] = *((unsigned char *)&D_2F720_lut + t);
     t = gl_ref_00043824(in, (char *)&D_2F720_t2, 0x10);
     fl = *(float *)((char *)&D_2F720_flut + t * 4);
-    *(float *)(p + 0) = (*(float *)(p + 0) * *(float *)&kRo_snd_SoundObjSetAngle_1740) + (fl * *(float *)&kRo_snd_SoundObjSetAngle_1744);
+    p->volScale = (p->volScale * *(float *)&kRo_snd_SoundObjSetAngle_1740) + (fl * *(float *)&kRo_snd_SoundObjSetAngle_1744);
     t = gl_ref_00043824(in, (char *)&D_2F720_t3, 0x10);
     lo = *(float *)&kRo_snd_SoundObjSetAngle_1748;
-    *(unsigned char *)(p + 0xF) = t / 2;
-    *(unsigned char *)(p + 0xF) <<= 4;
+    p->pan[3] = t / 2;
+    p->pan[3] <<= 4;
 
-    *(float *)(p + 4) = 1.0f - (dlt * 0.0625f);
-    *(unsigned char *)(p + 0xE) = idxb & 0x80;
-    if (*(float *)(p + 4) < lo) {
-        *(float *)(p + 4) = lo;
+    p->turnAtten = 1.0f - (dlt * 0.0625f);
+    p->pan[2] = idxb & 0x80;
+    if (p->turnAtten < lo) {
+        p->turnAtten = lo;
     }
-    if (*(float *)&kRo_snd_SoundObjSetAngle_174C < *(float *)(p + 4)) {
-        *(float *)(p + 4) = *(float *)&kRo_snd_SoundObjSetAngle_174C;
+    if (*(float *)&kRo_snd_SoundObjSetAngle_174C < p->turnAtten) {
+        p->turnAtten = *(float *)&kRo_snd_SoundObjSetAngle_174C;
     }
 }
 }

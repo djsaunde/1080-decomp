@@ -981,6 +981,15 @@ typedef char audio_envelope_size_assert[sizeof(AdsrEnvelope) == 0x4 ? 1 : -1];
  * (obj at +0, the event argument at +8) and the one-call wrappers 0x85C..0xA94 forward to the
  * snd_SoundObj* functions. Unnamed fields are named by offset.
  */
+/* The voice-parameter block of a SoundObj (0x54..0x63): snd_SoundObjSetAngle takes its
+ * address and updates it from the angle. */
+typedef struct SoundVoice {
+    f32 volScale;           /* 0x00 (SoundObj 0x54): Play multiplies the volume by it when flags1C bit0 */
+    f32 turnAtten;          /* 0x04 (0x58): snd_SoundObjSetAngle: 1 - |angle step| / 16, clamped; Update multiplies the volume by it */
+    f32 angle;              /* 0x08 (0x5C): last angle passed to snd_SoundObjSetAngle (degrees) */
+    u8 pan[4];              /* 0x0C (0x60): SetAngle: [0] pan (0x40 centre), [1] table byte, [2] sign bit, [3] high-nibble rate */
+} SoundVoice;
+
 typedef struct SoundObj {
     f32 speed;              /* 0x00: snd_SoundObjTriggerEvent picks level 1/2/3 at 25 / 38 / 50 */
     f32 unk04;              /* 0x04 */
@@ -1026,10 +1035,7 @@ typedef struct SoundObj {
     s32 unk48;              /* 0x48 */
     u8 pad4C[4];
     f32 unk50;              /* 0x50 */
-    f32 volScale;           /* 0x54: Play multiplies the volume by it when flags1C bit0 */
-    f32 unk58;              /* 0x58 */
-    f32 unk5C;              /* 0x5C */
-    u8 pan[4];              /* 0x60: pan bytes (SetAngle writes 0x60) */
+    SoundVoice voice;       /* 0x54: snd_SoundObjSetAngle works on this block */
 } SoundObj;
 
 #ifndef __cplusplus /* edg (the NCC donors) rejects the &((T *)0)->f constant form */
@@ -1037,8 +1043,9 @@ AUDIO_ASSERT_MEMBER(SoundObj, flags, 0x16);
 AUDIO_ASSERT_MEMBER(SoundObj, kind, 0x21);
 AUDIO_ASSERT_MEMBER(SoundObj, eventType, 0x30);
 AUDIO_ASSERT_MEMBER(SoundObj, unk48, 0x48);
-AUDIO_ASSERT_MEMBER(SoundObj, volScale, 0x54);
-AUDIO_ASSERT_MEMBER(SoundObj, pan, 0x60);
+AUDIO_ASSERT_MEMBER(SoundObj, voice, 0x54);
+typedef char audio_soundobj_voice_pan_assert[(int)&((SoundObj *)0)->voice.pan == 0x60 ? 1 : -1];
+typedef char audio_soundvoice_size_assert[sizeof(SoundVoice) == 0x10 ? 1 : -1];
 typedef char audio_soundobj_size_assert[sizeof(SoundObj) == 0x64 ? 1 : -1];
 #endif /* !__cplusplus */
 

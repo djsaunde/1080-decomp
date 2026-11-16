@@ -2692,6 +2692,7 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_308AC_DONOR)
 # 2F720 = voice parameter update; p[0xF] = t/2; p[0xF] <<= 4; NCC donor.
 GAMELIBS_2F720_DONOR := build/src/game_libs/game_libs_ncc_2F720.cpp.o
+$(GAMELIBS_2F720_DONOR): NCC_CFLAGS += -I include
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_SoundObjSetAngle=$(GAMELIBS_2F720_DONOR)
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_2F720_DONOR)
 # 23914 = resource acquire (5-entry jumptable switch on the entry mode), IDO 7.1

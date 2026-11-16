@@ -12610,9 +12610,9 @@ void snd_SoundObjInit(SoundObj *o, int a1) {
     o->scaleIdx = 0;
     o->unk33 = 0;
     o->unk1F = 0;
-    o->pan[0] = 0;
-    o->pan[1] = 0;
-    o->pan[2] = 0;
+    o->voice.pan[0] = 0;
+    o->voice.pan[1] = 0;
+    o->voice.pan[2] = 0;
     o->speed = 0.0f;
     o->unk50 = 0.0f;
     o->unk04 = 0.0f;
@@ -12620,9 +12620,9 @@ void snd_SoundObjInit(SoundObj *o, int a1) {
     o->unk0C = 0.0f;
     o->unk44 = 0.0f;
     o->unk10 = 0.0f;
-    o->volScale = 1.0f;
-    o->unk58 = 1.0f;
-    o->unk5C = (float)1;
+    o->voice.volScale = 1.0f;
+    o->voice.turnAtten = 1.0f;
+    o->voice.angle = (float)1;
     if (*(int*)&D_00000000 != 0) {
         CALL(snd_soundObjChannelsOn)(a1 & 0xFF);
     }
@@ -13018,7 +13018,7 @@ void snd_SoundObjUpdate(SoundObj *arg0, s32 arg1) {
             temp_v0_7 = D_stateC_E354; /* agent-g run 251: u32 web (keeps temp_v1 off v0 after the switch-5 move) */ if (1) {} /* agent-g run 271: BB split lengthens sp60's LR so the o->0*o->4*100 product (temp_f18) colours f18 first */
             if ((((u32)temp_v0_7 == 1) || ((u32)temp_v0_7 == 2) || ((u32)temp_v0_7 == 3)) && (arg0->flags1C == 1U) && (arg0->kind == 0)) {
                 arg0->kind = 2U;
-                arg0->volScale = 0.0f;
+                arg0->voice.volScale = 0.0f;
             }
         }
         if (D_stateB_E354 == 1) {
@@ -13108,13 +13108,13 @@ void snd_SoundObjUpdate(SoundObj *arg0, s32 arg1) {
                 arg0->reverbOnSent = arg0->reverbOn;
             }
             if (arg0->flags1C & 1) {
-                temp_f0 = arg0->volScale;
+                temp_f0 = arg0->voice.volScale;
                 /* agent-g run 250: the (u32) result goes straight into the store (target ugen temp t3);
                  * the colourable variable is the o->0x60 read (target lbu v0,0x60)
                  * agent-g run 271: the whole (f32)(u32) o->0x26 * temp_f0 chain inline (target ugen f10/f4) */
                 arg0->unk26 = (u32) ((f32) (u32) arg0->unk26 * temp_f0);
-                sp78 *= arg0->unk58; /* agent-g run 271: compound form (now that sp78 is plain, target loads sp78 into f6 first) */
-                temp_v0 = arg0->pan[0]; /* not var_v0: that variable carries an a2 argument preference */
+                sp78 *= arg0->voice.turnAtten; /* agent-g run 271: compound form (now that sp78 is plain, target loads sp78 into f6 first) */
+                temp_v0 = arg0->voice.pan[0]; /* not var_v0: that variable carries an a2 argument preference */
                 arg0->unk28 = (u8) ((s32) (temp_v0 + arg0->unk28) >> 1);
                 if (arg0->kind == 0) {
                     gl_E354_setf(0x01020000, temp_f0);
@@ -13715,8 +13715,8 @@ void snd_SoundObjPlay(SoundObj *o, int a1, int a2, f32 v, unsigned char b) {
         w = 127.0f;
     }
     if (o->flags1C & 1) {
-        w = o->volScale * w;
-        b = o->pan[0];
+        w = o->voice.volScale * w;
+        b = o->voice.pan[0];
     }
     iv = (int)w;
     if (iv >= 0x80) {
