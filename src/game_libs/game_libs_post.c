@@ -9525,6 +9525,15 @@ void Audio_NoteInitAll(void) {
 #endif
 typedef char *(*GP_000295BC)();
 typedef struct { unsigned b0:8; int f80:1; unsigned rest:23; } BF1_000295BC;
+/* SequenceChannel byte 0x1, the change bits (audio.h changesFreqScale 0x80 / changesVolume 0x40 /
+ * changesPan 0x20; AudioSeq_InitSequenceChannel sets the byte to 0xFF, ProcessSound clears it).
+ * The tests keep the matched spellings (see above): freqScale a signed 1-bit field read (lb),
+ * volume / pan word shifts of word 0 (bits 22 / 21). */
+#define CH_CHANGES(c) (*(u8 *)((char *)(c) + 0x1))
+#define CH_CHANGE_FREQSCALE 0x80
+#define CH_CHANGED_FREQSCALE(c) (((BF1_000295BC *)(c))->f80)
+#define CH_CHANGED_VOLUME(c) ((FW(c, 0x0) << 8 << 1) < 0)
+#define CH_CHANGED_PAN(c) ((FW(c, 0x0) << 9 << 1) < 0)
 typedef struct { unsigned p0:2; unsigned b29:1; unsigned rest:29; } BF_000295BC;
 #ifndef FF
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
@@ -9543,7 +9552,7 @@ void Audio_SequenceChannelProcessSound(char *arg0, s32 arg1, s32 arg2) {
     char *temp_v0;
     char *temp_v1;
 
-    if (((FW(arg0, 0x0) << 8 << 1) < 0) || (arg1 != 0)) {
+    if ((CH_CHANGED_VOLUME(arg0)) || (arg1 != 0)) {
         temp_v0 = (char *)CH->seqPlayer;
         var_f0 = (CH->volume * CH->volumeScale) * ((SequencePlayer *)temp_v0)->appliedFadeVolume;
         if ((((BF_000295BC *)temp_v0)->b29) && (CH->muteBehavior & 0x20)) {
@@ -9551,13 +9560,13 @@ void Audio_SequenceChannelProcessSound(char *arg0, s32 arg1, s32 arg2) {
         }
         CH->appliedVolume = var_f0 * var_f0;
     }
-    if ((FW(arg0, 0x0) << 9 << 1) < 0) {
+    if (CH_CHANGED_PAN(arg0)) {
         CH->pan = CH->newPan * CH->panChannelWeight;
     }
     var_f0_2 = CH->freqScale;
     if (arg2 != 0) {
         var_f0_2 *= CH->seqPlayer->bend;
-        (*(u8*)(arg0 + 0x1)) = ((*(u8*)(arg0 + 0x1)) & 0xFF) | 0x80;
+        CH_CHANGES(arg0) = (CH_CHANGES(arg0) & 0xFF) | CH_CHANGE_FREQSCALE;
     }
     for (arg2 = 0; arg2 != 0x20; arg2 += 4) {
         temp_v1 = *(char **)(arg0 + arg2 + 0x50);
@@ -9566,22 +9575,22 @@ void Audio_SequenceChannelProcessSound(char *arg0, s32 arg1, s32 arg2) {
             if (b & 1) {
                 LAYER->noteFreqScale = LAYER->freqScale * var_f0_2;
                 LAYER->noteVelocity = LAYER->velocitySquare * CH->appliedVolume;
-                LAYER->notePan = (s32) ((LAYER->pan * (0x80 - CH->panChannelWeight)) + FW(arg0, 0x30)) >> 7;
+                LAYER->notePan = (s32) ((LAYER->pan * (0x80 - CH->panChannelWeight)) + *(int *)&CH->pan) >> 7;
                 *(u8*)temp_v1 = b & 0xFFFE;
             } else {
-                if (((BF1_000295BC *) arg0)->f80) {
+                if (CH_CHANGED_FREQSCALE(arg0)) {
                     LAYER->noteFreqScale = LAYER->freqScale * var_f0_2;
                 }
-                if (((FW(arg0, 0x0) << 8 << 1) < 0) || (arg1 != 0)) {
+                if ((CH_CHANGED_VOLUME(arg0)) || (arg1 != 0)) {
                     LAYER->noteVelocity = LAYER->velocitySquare * CH->appliedVolume;
                 }
-                if (((FW(arg0, 0x0) << 9 << 1) < 0)) {
-                    LAYER->notePan = (s32) ((LAYER->pan * (0x80 - CH->panChannelWeight)) + FW(arg0, 0x30)) >> 7;
+                if ((CH_CHANGED_PAN(arg0))) {
+                    LAYER->notePan = (s32) ((LAYER->pan * (0x80 - CH->panChannelWeight)) + *(int *)&CH->pan) >> 7;
                 }
             }
         }
     }
-    (*(u8*)(arg0 + 0x1)) = 0;
+    CH_CHANGES(arg0) = 0;
 }
 #undef LAYER
 #undef CH
@@ -11277,31 +11286,30 @@ int AudioSeq_GetInstrument(char *a0, unsigned char a1, int **a2, char *a3)
  * PROTOTYPED with an `unsigned char` 2nd param, so op reaches the jal in
  * a1 untouched while the tests use a v0 copy (K&R / int prototype copies
  * op into s0 and grows the frame). Flag bit3 as an unsigned-char
- * bitfield burns t3 (the `|= 8` mask form rings at t3/t4). */
-typedef struct Gl2BAACFlags {
-    unsigned char b7 : 1, b6 : 1, b5 : 1, b4 : 1, f3 : 1, rest : 3;
-} Gl2BAACFlags;
+ * bitfield burns t3 (the `|= 8` mask form rings at t3/t4). Run 544: bit3 is
+ * SequenceChannel.hasInstrument (audio.h's u32 bitfield gives the same bytes), h24
+ * instOrWave, w48 instrument, the reader's last two args &instrument / &adsr. */
 extern int gl_ref_000400A4(char *, unsigned char, char *, char *);
 void AudioSeq_SetInstrument(char *o, unsigned char op) {
     int a;
     if (op >= 0x80) {
-        *(short *)(o + 0x24) = op;
-        *(int *)(o + 0x48) = 0;
+        ((SequenceChannel *)o)->instOrWave = op;
+        *(int *)&((SequenceChannel *)o)->instrument = 0;
     } else if (op == 0x7F) {
-        *(short *)(o + 0x24) = 0;
-        *(int *)(o + 0x48) = 1;
+        ((SequenceChannel *)o)->instOrWave = 0;
+        *(int *)&((SequenceChannel *)o)->instrument = 1;
     } else if (op == 0x7E) {
-        *(short *)(o + 0x24) = 1;
-        *(int *)(o + 0x48) = 2;
+        ((SequenceChannel *)o)->instOrWave = 1;
+        *(int *)&((SequenceChannel *)o)->instrument = 2;
     } else {
-        a = gl_ref_000400A4(o, op, o + 0x48, o + 0x8C);
-        *(short *)(o + 0x24) = a;
+        a = gl_ref_000400A4(o, op, (char *)&((SequenceChannel *)o)->instrument, (char *)&((SequenceChannel *)o)->adsr);
+        ((SequenceChannel *)o)->instOrWave = a;
         if ((short)a == 0) {
-            ((Gl2BAACFlags *)o)->f3 = 0;
+            ((SequenceChannel *)o)->hasInstrument = 0;
             return;
         }
     }
-    ((Gl2BAACFlags *)o)->f3 = 1;
+    ((SequenceChannel *)o)->hasInstrument = 1;
 }
 
 /* AudioSeq_SequenceChannelSetVolume: 9-insn byte-to-float-scale leaf (EXACT).
@@ -11500,12 +11508,12 @@ void AudioSeq_ResetSequencePlayer(char *a0) {
 extern int gl_alloc_2D130();
 void AudioSeq_InitSequencePlayerChannels(int a0) {
     char *base = (char *)&gAudioContext;
-    int *s3 = (int*)(base + (a0 * 0x160) + 0x2D00);
-    char *d5280 = base + 0x5280;
-    int *s1;
+    int *s3 = (int*)&((AudioContext *)base)->seqPlayers[a0];
+    char *d5280 = (char *)&((AudioContext *)base)->sequenceChannelNone;
+    int *s1;    /* walks seqPlayers[a0].channels[0..15] (+0x38) */
     int j;
     for (s1 = s3, j = 0; j < 64; j += 4) {
-        int *retval = (int*)gl_alloc_2D130(base + 0x2198, 228);
+        int *retval = (int*)gl_alloc_2D130(&((AudioContext *)base)->miscPool, 228);
         *(int**)((char*)s1 + 0x38) = retval;
         if (retval == 0) {
             *(int*)((char*)s1 + 0x38) = (int)d5280;
@@ -11513,14 +11521,14 @@ void AudioSeq_InitSequencePlayerChannels(int a0) {
             int *p;
             int i;
             p = *(int**)((char*)s1 + 0x38);
-            *(int*)((char*)p + 0x4C) = (int)s3;
-            *(unsigned char*)p &= 0xFF7F;
-            for (i = 0; i < 8; i += 4) {
-                *(int*)((char*)p + 0x54) = 0;
-                *(int*)((char*)p + 0x58) = 0;
-                *(int*)((char*)p + 0x5C) = 0;
+            *(int *)&((SequenceChannel *)p)->seqPlayer = (int)s3;
+            *(unsigned char*)p &= 0xFF7F; /* enabled = 0 */
+            for (i = 0; i < 8; i += 4) { /* layers[0..7] = NULL, four per pass */
+                *(int *)&((SequenceChannel *)p)->layers[1] = 0;
+                *(int *)&((SequenceChannel *)p)->layers[2] = 0;
+                *(int *)&((SequenceChannel *)p)->layers[3] = 0;
                 p = (int*)((char*)p + 16);
-                *(int*)((char*)p + 0x40) = 0;
+                *(int*)((char*)p + 0x40) = 0; /* the previous p's layers[0] */
             }
         }
         gl_ref_0003E8C4(*(int*)((char*)s1 + 0x38));
