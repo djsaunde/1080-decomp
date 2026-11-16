@@ -16487,6 +16487,8 @@ int RcpMgr_startTask(RcpMgr *self) {
 }
 
 
+/* UNNAMED: unknown-role homes a0..a3 and returns 1 (a varargs-style stub); no Text, Data or RoData reloc in any
+ * module targets it, and it sits between RcpMgr_startTask and RcpMgr_initTask (agent-b run 595). */
 int RcpMgr_func_0004DB38(int a0, int a1, int a2, int a3) {
     return 1;
 }

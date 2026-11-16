@@ -39,7 +39,7 @@ extern "C" void app_run(St *a0, App *a1) {
         do {
             Node *n;
             for (n = a0->list; n != 0; n = n->next) CALL(pad_update)(n);
-            if (GFXLIB(DB)->rcp->unk48[0] != 0) a1->v15(); /* RcpMgr +0x48 set: run the app's slot-15 hook */
+            if (GFXLIB(DB)->rcp->unk48[0] != 0) a1->v15(); /* RcpMgr +0x48 (set by the pre-NMI message 108): v15 is vtable slot 14, App_onPreNmi */
             while (a0->flags & 4) {
                 a0->f10 = 0;
                 CALL(gl_osYieldThread)();
