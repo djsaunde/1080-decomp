@@ -15,15 +15,17 @@
 #include "../gdl/node.h"
 #endif
 
-/* ---- U64BGWall (0x4C, vtbl Data 0x6648; U64BGWall_ctor E68) ----
- * The tiled background-wall mesh. The ctor builds the quad grid into a scratch vertex buffer and
- * appends the index list to `mesh`'s +0xC {data, count} handle. */
+/* ---- U64BGWall (0x4C, vtbl Data 0x6648; U64BGWall_ctor E68, U64BGWall_display 1A44) ----
+ * The tiled background wall. The ctor builds the quad grid into a scratch vertex buffer and
+ * records its display list; U64BGWall_display draws it with guPosition(rotX, rotY, rotZ, 1,
+ * eye * worldScale) + gSPDisplayList(displayList). game_createBGBox builds the box's sides as
+ * U64BGWall_ctor(0, tex, 0, 90, 0) .. (0, tex, -90, 0, 0) (agent-g run 551 / 555). */
 typedef struct U64BGWall {
     Node node;                  /* 0x00 */
-    s32 mesh;                   /* 0x2C: ctor arg 2: the shape whose +0xC index-list handle is filled */
-    s32 arg30;                  /* 0x30: ctor arg 3 (appended after the per-quad indices) */
-    s32 arg34;                  /* 0x34: ctor arg 4 */
-    s32 unk38;
+    s32 rotX;                   /* 0x2C: ctor arg 2, degrees (int -> float for guPosition) */
+    s32 rotY;                   /* 0x30: ctor arg 3, degrees */
+    s32 rotZ;                   /* 0x34: ctor arg 4, degrees */
+    s32 displayList;            /* 0x38: the Gfx list the ctor builds (gSPDisplayList w1) */
     f32 scale[4];               /* 0x3C: 1.0f x 4 (stored 0x48 first) */
 } U64BGWall;
 
@@ -121,6 +123,25 @@ typedef struct Tv1Tmpl {
     s32 displayCount;           /* 0x68: cleared by update, counted by display */
 } Tv1Tmpl;
 
+/* A "tv1" instance (0x88, Tv1Tmpl_create: mem_new(0x88) + SNode_ctor, vptr Tv1_vtbl, radius = RoData
+ * 0x5EC; it adopts the template's model). The layout is gdl/mnode.h's SNode, spelled flat because the
+ * edg (NCC) donors cannot include mnode.h (Tv1_display, bootup_uso_ncc_76F4.cpp); the C build asserts
+ * it against SNode below. Tv1_display is SNode_display's twin: cull on pos / radius * scale, then draw
+ * mtx with the camera vector raised by height (agent-g run 555). */
+typedef struct Tv1 {
+    Node node;                  /* 0x00 */
+    char mtx[0x30];             /* 0x2C: SNode "Mtx" */
+    f32 pos[3];                 /* 0x5C: the cull query takes pos[0] / pos[1] as int words */
+    s32 unk68;                  /* 0x68 */
+    f32 height;                 /* 0x6C: added to the camera vector's y while drawing */
+    f32 scale;                  /* 0x70 */
+    f32 rot[3];                 /* 0x74: rotX / rotY / rotZ (degrees) */
+    f32 radius;                 /* 0x80: cull radius (Tv1Tmpl_create: RoData 0x5EC) */
+    s32 next;                   /* 0x84: SNode item chain */
+} Tv1;
+
+#define TV1(p) ((Tv1 *)(p))
+
 /* ---- SnowBCollider (0x178, vtbl Data 0x8698; ctor 8B44, onContact 8BD4) ----
  * The rider's contact probes (1080_PHYSICS.md). The base (0x150) is built by the shared init. */
 typedef struct SnowBCollider {
@@ -200,6 +221,9 @@ ENVOBJ_ASSERT(SnowBCollider, contactFlags, 0x174);
 ENVOBJ_ASSERT(ShpNode, life, 0x3D4);
 ENVOBJ_ASSERT(Tree, coll.obj.pos, 0xA0);
 typedef char envobj_size_U64BGWall[sizeof(U64BGWall) == 0x4C ? 1 : -1];
+typedef char envobj_size_Tv1[sizeof(Tv1) == sizeof(SNode) ? 1 : -1];
+ENVOBJ_ASSERT(Tv1, pos, 0x5C);
+ENVOBJ_ASSERT(Tv1, radius, 0x80);
 typedef char envobj_size_EnvSettings[sizeof(EnvSettings) == 0x44 ? 1 : -1];
 typedef char envobj_size_FogItem[sizeof(FogItem) == 0x90 ? 1 : -1];
 typedef char envobj_size_SnowItem[sizeof(SnowItem) == 0x74 ? 1 : -1];

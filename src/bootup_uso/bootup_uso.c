@@ -693,8 +693,10 @@ void BGBox_func_00000D94(char *a0) {
 //   }
 //
 // Struct-typing reference:
-//   self: 0x0C vtable(&sStr_U64BGWall_66B8), 0x28 fnptr=0, 0x2C/0x30 owner ptrs,
-//         0x34 arg5, 0x3C/0x40/0x44/0x48 f32=1.0 (scale/uv defaults), size 0x4C.
+//   (agent-g run 555: the "owner" words are not pointers -- 0x2C / 0x30 / 0x34 = rotX / rotY / rotZ in
+//    degrees, read by U64BGWall_display; 0x38 = the display list built here. See envobj.h U64BGWall.)
+//   self: 0x0C vtable(&sStr_U64BGWall_66B8), 0x28 fnptr=0, 0x2C/0x30 rotX/rotY,
+//         0x34 rotZ, 0x3C/0x40/0x44/0x48 f32=1.0 (scale/uv defaults), size 0x4C.
 //   owner2(s1)->0x0C = a {data,count} index-list handle.
 //   sStr_Node_66B0 base-init descriptor; sStr_U64BGWall_66B8 instance vtable.
 //   func_00000000 + 0x4 = a placeholder/folded data ref (same JAL-target-0
@@ -815,9 +817,9 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         NODE(self)->name = (const char *)(&sStr_U64BGWall_66B8);
         timg = *(u32 *)(cfg + 0x8);
         tlut = *(u32 *)(cfg + 0xC);
-        ((U64BGWall *)self)->mesh = arg2;
-        ((U64BGWall *)self)->arg30 = arg3;
-        ((U64BGWall *)self)->arg34 = arg4;
+        ((U64BGWall *)self)->rotX = arg2;
+        ((U64BGWall *)self)->rotY = arg3;
+        ((U64BGWall *)self)->rotZ = arg4;
         ((U64BGWall *)self)->scale[3] = 1.0f;
         ((U64BGWall *)self)->scale[2] = 1.0f;
         ((U64BGWall *)self)->scale[1] = 1.0f;
@@ -958,7 +960,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
             if (1) {} /* run 182 (lever-sweep bbsplit) */
         }
         E68_END(E68_NEXTB(m2));
-        ((U64BGWall *)self)->unk38 = (s32)head;
+        ((U64BGWall *)self)->displayList = (s32)head;
     }
     return self;
 }
@@ -4197,7 +4199,7 @@ void *Tv1Tmpl_create(char *a0) {
         NODE(ret)->vptr = (char *)(&Tv1_vtbl);
     }
 
-    *(float*)(ret + 0x80) = D_000005EC;
+    TV1(ret)->radius = D_000005EC;
     link = (int *)((Tv1Tmpl *)a0)->model;
     FCALL(list_append)(ret + 0x10, link);
     if (link[5] != 0) {

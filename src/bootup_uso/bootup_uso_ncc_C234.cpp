@@ -10,6 +10,12 @@ typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef uns
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
 #include "../../include/game/snowboarder.h"
+#include "../../include/game/input.h" /* GameFlow (InputMgr) */
+#include "../../include/gdl/gl_data.h" /* gCourseColl = Bss+0x50 Sym 451 (the course CollShape *; its +0x84 is
+                                        * CollShape.shape, gdl/coll.h, which is C-only) */
+/* GameFlow through gInputMgr_c234_g8: the token is pinned at 8 (undefined_syms_auto.txt), so the object
+ * starts 8 bytes below it; the reloc names Bss+0xF8 (GameFlow) +0x34 = nextFlowMode (uso-data-sites.py sites). */
+#define C234_FLOW INPUT_MGR(gInputMgr_c234_g8[-8])
 inline void zf(float &f, int z) { f = z; }
 #undef NULL
 #define NULL 0
@@ -123,14 +129,14 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
     /* agent-g run 235: sp3C is a frozen-home named pointer (saved at its own home across the call, not in the
      * temp area): the folded read of *rider stops uopt copy-propagating it; defined in the argument list after
      * argument 0 so its addiu follows the D_00000000 lui (99.84 -> 99.85, spill slot = target) */
-    if ((var_v0 = func_00000000((sp3Ck = *(s32 *)((char *)&D_00000000 + 0)), sp3C = (char *)rider->dnode.cvqs.trans + 0 * (int)(*(char *)rider), 0x457A0000, &spCC)) != 0) {
-        rider->groundSurface = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
+    if ((var_v0 = func_00000000((sp3Ck = *(s32 *)&gCourseColl), sp3C = (char *)rider->dnode.cvqs.trans + 0 * (int)(*(char *)rider), 0x457A0000, &spCC)) != 0) {
+        rider->groundSurface = func_00000000(*(s32 *)(*(char **)&gCourseColl + 0x84) /* CollShape.shape */, spCC.dc);
         if (spCC.d8 < D_bu_ro_pool[0x924 / 4]) {
             rider->surface = rider->groundSurface;
         } else {
             rider->surface = 0;
         }
-        rider->groundFlags = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
+        rider->groundFlags = func_00000000(*(s32 *)(*(char **)&gCourseColl + 0x84) /* CollShape.shape */, spCC.dc);
         rider->groundDist = spCC.d8;
         /* agent-g run 231: the plane distance on its own line before the test (spCC.f0 then loads after it, as1 line
          * order), operands K * (dc * e4 + (e0 + K2) * e8 + e4' * ec) + 4 in the target's load / multiply order: 95.45 -> 98.17 */
@@ -199,14 +205,14 @@ c61:
         rider->dnode.surfSpd = (f32) rider->dnode.parms.spd.value;
         rider->dnode.surfVsc = (f32) rider->dnode.parms.vsc.value;
         rider->impactScale = (f32) rider->parms.snf.value;
-        func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, (char *)&rider->groundColor);
+        func_00000000(*(s32 *)(*(char **)&gCourseColl + 0x84) /* CollShape.shape */, spCC.de, (char *)&rider->groundColor);
         goto cend;
 c62:
         rider->dnode.surfImp = 0.0f;
         rider->dnode.surfSpd = kRo_SnowBoarder_procColl_944;
         rider->dnode.surfVsc = kRo_SnowBoarder_procColl_948;
         rider->impactScale = (f32) rider->parms.dsf.value;
-        func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, (char *)&rider->groundColor);
+        func_00000000(*(s32 *)(*(char **)&gCourseColl + 0x84) /* CollShape.shape */, spCC.de, (char *)&rider->groundColor);
 cend:
         rider->noGroundFrames = 0;
     } else {
@@ -245,7 +251,7 @@ cend:
         func_00000000((char *)&rider->sound, 0);
         var_f2 = 1.0f;
     }
-    if (*(s32 *)(gInputMgr_c234_g8 + 0x2C) != 2) {
+    if (C234_FLOW.nextFlowMode != 2) {
         temp_f0 = rider->unk91C;
         rider->unk91C = (f32) ((f64) temp_f0 + ((f64) (var_f2 - temp_f0) * D_bu_ro_dpool[0x950 / 8]));
         func_00000000(rider->light, *(s32 *)&rider->unk91C);
@@ -268,9 +274,9 @@ cend:
                 /* agent-g run 232: the target's mov.s copy (z scaled by a copy in f0, y's product back into f12):
                  * the copy is taken before temp_f12 is overwritten by the y product, so uopt cannot propagate it */
                 temp_f0 = temp_f12;
-                ga = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f12;
-                temp_f12 = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f12;
-                gb = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0;
+                ga = ((V3C234 *)var_v0_2)->x * temp_f12;
+                temp_f12 = ((V3C234 *)var_v0_2)->y * temp_f12;
+                gb = ((V3C234 *)var_v0_2)->z * temp_f0;
                 sp68.x = ga; sp68.y = temp_f12; sp68.z = gb;
             }
             spB4 = sp68;
@@ -283,7 +289,7 @@ cend:
             rider->penetration.y = (f32) 0;
             rider->penetration.z = (f32) 0;
         }
-        spB4 = *(V3C234 *)((char *)(var_v0_2) + 0x0);
+        spB4 = *(V3C234 *)var_v0_2;
         rider->lastContactNormal.x = spB4.x;
         rider->lastContactNormal.y = spB4.y;
         rider->lastContactNormal.z = spB4.z;
@@ -293,9 +299,9 @@ cend:
         }
         temp_f0 = -var_f2_2; if (1) {} /* run 182 (lever-sweep bbsplit) */
         { /* run 156: held products */
-            gc = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f0;
-            gd = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f0;
-            ge = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0; /* run 200: no longer volatile (run 182's +2-word lever is surplus after the 0x944 order fix) */
+            gc = ((V3C234 *)var_v0_2)->x * temp_f0;
+            gd = ((V3C234 *)var_v0_2)->y * temp_f0;
+            ge = ((V3C234 *)var_v0_2)->z * temp_f0; /* run 200: no longer volatile (run 182's +2-word lever is surplus after the 0x944 order fix) */
             sp40.x = gc; sp40.y = gd; sp40.z = ge;
         }
         spB4 = sp40;

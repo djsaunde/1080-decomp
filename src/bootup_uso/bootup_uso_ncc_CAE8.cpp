@@ -46,17 +46,17 @@ extern "C" void SnowBoarder_reset(char *st) {
     case 4: RIDER(st)->health = 0x4B; break;
     default: RIDER(st)->health = 0xF4240; break;
     }
-    F(0x9F4) = 0.0f;
-    F(0x9F0) = 0.0f;
-    F(0x9EC) = 0.0f;
-    F(0x9E8) = 0.0f;
-    I(0x3DC) = 1;
+    RIDER(st)->shade[3] = 0.0f;
+    RIDER(st)->shade[2] = 0.0f;
+    RIDER(st)->shade[1] = 0.0f;
+    RIDER(st)->shade[0] = 0.0f;
+    RIDER(st)->riding = 1;
     RIDER(st)->raceResult = 0;
     gPolyFlags_3EEC4_cae8_x_st = gPolyFlags_3EEC4_cae8_x_ld & ~8;
-    F(0xA0C) = 1.0f;
+    RIDER(st)->localUp.z = 1.0f;
     bu_cae8_y = 0;
-    I(0xA58) = I(0x8BC);
-    if (I(0x8BC) & 0x20) func_00000000(st);
+    RIDER(st)->flags = RIDER(st)->initFlags;
+    if (RIDER(st)->initFlags & SNOWB_FLAG_20) func_00000000(st);
     func_00000000(st, RIDER(st)->dnode.unk3A4); /* reset to the spawn point (startPos) */
     func_00000000(st);
     func_00000000(RIDER(st)->anim);

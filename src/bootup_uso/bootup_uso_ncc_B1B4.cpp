@@ -18,6 +18,8 @@
  * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY. Every symbol is
  * extern "C"; blank refs go through bu_b1b4_* aliases (0) in
  * undefined_syms_auto.txt; the three vtables are aliases too. */
+typedef short s16; typedef int s32; typedef unsigned char u8; typedef float f32;
+#include "../../include/gdl/material.h"
 extern "C" {
 int func_00000000(...);
 extern char D_00000000;
@@ -28,10 +30,16 @@ struct Bb4Pair { int a, b; Bb4Pair() { b = 0; a = 0; } };
 struct Bb4Word { int a; Bb4Word() { a = 0; } };
 struct Bb4Base { char p[0x34]; Bb4Pair m; char q[0x58 - 0x3C]; Bb4Word n; Bb4Base() { func_00000000(this); } virtual void v(); };
 struct Bb4Mid : Bb4Base { char x[0x30]; Bb4Mid() {} virtual void v(); };
-#define W(o) (*(int *)((char *)this + (o)))
-#define H(o) (*(short *)((char *)this + (o)))
+/* agent-g run 555: the real classes. Bb4Base = libgdl BaseMat (its out-of-line ctor is BaseMat_init_000517E4,
+ * vtable BaseMat_vtbl Data+0x20640), Bb4Mid = Mat (0x90, Mat_vtbl Data+0x1FBEC), and Bb4Bank = a Mat subclass
+ * whose vtable is Data+0x8440 (gl_data.h's "SnowBoarder_vtbl + 0x70"; a separate table after SnowBoarder's):
+ * slot 0 = SnowBoarder_grabScreenThumb_0000E740, then BaseMat_hostioParms, Mat_print, gfx_decodeMatCmd,
+ * BaseMat_vslot4_000437C0. add() puts it in gGfxLib.frameStartCbs (Bss+0x3C168 +0x148 / count +0x15C), so
+ * gfx_start calls slot 0 every frame: a 64x32 RGBA16 texture (texels = mem_new(0x1000)) that E740 refills
+ * with every 4th pixel of the main screen. The stores below are BaseMat fields (gdl/material.h). */
+#define BM ((BaseMat *)this)
 struct Bb4Bank : Bb4Mid {
-    Bb4Bank() { W(0x24) = 0x110; W(0x1C) = func_00000000(0x1000); H(0x20) = 0x40; H(0x22) = 0x20; W(0x28) = 0x1100; W(0x38) = 0x402C4B; W(0x34) = 0; W(0x18) = 0; }
+    Bb4Bank() { BM->format = MAT_FMT_RGBA16; BM->texels = (void *)func_00000000(0x1000); BM->width = 0x40; BM->height = 0x20; BM->texFlags = MAT_TEX_WRAP_S | MAT_TEX_WRAP_T; BM->geomFlags = 0x402C4B; BM->unk34 = 0; BM->id = 0; }
     virtual void v();
 };
 struct Bb4Reg { Bb4Base *tbl[5]; int n; void add(Bb4Base *b) { if (n >= 5) func_00000000(); Bb4Base *o = b; tbl[n++] = o; } };

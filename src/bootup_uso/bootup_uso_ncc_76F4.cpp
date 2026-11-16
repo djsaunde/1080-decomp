@@ -10,7 +10,12 @@
  *   function-typed vector alias) could not get together;
  * - the stack-argument product is written 0x80 * 0x70 (NCC load order; cfe wanted 0x70 * 0x80).
  * Spliced into bootup_uso.c.o (both trees) via REPLACE_FUNC_BODY over an empty placeholder;
- * gGfxLib_76f4_g / bu_76f4_cnt / func_00000000_76f4_q / func_00000000_76f4_v are blank (0) aliases. */
+ * gGfxLib_76f4_g / bu_76f4_cnt / func_00000000_76f4_q / func_00000000_76f4_v are blank (0) aliases.
+ * agent-g run 555: `self` on envobj.h Tv1 (pos / height / scale / radius / mtx); same bytes. */
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
+typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
+#include "../../include/game/course.h"
+#include "../../include/game/envobj.h" /* Tv1 (the SNode-layout instance) */
 extern "C" {
 int func_00000000_76f4_q(void *, int, int, int, float, int, float);
 void func_00000000_76f4_v(...);
@@ -22,16 +27,16 @@ struct Cam { char pad[0x30]; V3 v; void mul(G &g); };
 struct G { char pad[0xA0]; Cam cam; char padDC[0x128 - 0xDC]; V3 scale; char pad134[0x254 - 0x134]; void *root; };
 inline void Cam::mul(G &g) { v.x *= g.scale.x; v.y *= g.scale.y; v.z *= g.scale.z; }
 extern "C" G gGfxLib_76f4_g;
-extern "C" void Tv1_display(char *s0) {
-    if (func_00000000_76f4_q(gGfxLib_76f4_g.root, 3, *(int *)(s0 + 0x5C), *(int *)(s0 + 0x60),
-                    *(float *)(s0 + 0x64), 0, *(float *)(s0 + 0x80) * *(float *)(s0 + 0x70)) != 0) {
-        func_00000000_76f4_v(&gGfxLib_76f4_g, s0 + 0x2C);
+extern "C" void Tv1_display(Tv1 *self) {
+    if (func_00000000_76f4_q(gGfxLib_76f4_g.root, 3, *(int *)&self->pos[0], *(int *)&self->pos[1],
+                    self->pos[2], 0, self->radius * self->scale) != 0) {
+        func_00000000_76f4_v(&gGfxLib_76f4_g, self->mtx);
         {
             Cam &c = gGfxLib_76f4_g.cam;
             c.mul(gGfxLib_76f4_g);
-            c.v.y += *(float *)(s0 + 0x6C);
+            c.v.y += self->height;
         }
-        func_00000000_76f4_v(s0);
+        func_00000000_76f4_v(self);
         bu_76f4_cnt += 1;
     }
 }
