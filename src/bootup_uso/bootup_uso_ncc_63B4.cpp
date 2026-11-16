@@ -16,15 +16,15 @@
 typedef float f32;
 extern "C" {
 extern char D_00000000;
-extern unsigned char bu_63b4_c57c[];
-/* RoData+0x5B0 (uso-data-sites: the site is RoData-base K = 0x5B0; the alias is valued 0x57C): f32 57.29578
- * = 180 / pi, so angle / it is the map angle in radians */
-#define kRoF_MapProp_display_5B0 0x34
+extern f32 bu_63b4_c57c[];   /* == func_0000057C: bootup RoData-base + 0x57C (USO links at VRAM 0) */
 extern float func_00000000_63b4_ff(float);
 extern void func_00000000_63b4_fpp(float, float *, float *);
 extern void func_00000000_63b4_pq(void *, void *);
 extern void func_00000000_63b4_p(void *);
 }
+/* RoData+0x5B0 = 57.29578f, degrees per radian: the target reloc is func_0000057C + 0x34, so the
+ * constant is element 0x34 / 4 of the alias (same lui / lwc1 words and reloc) */
+#define kRo_MapProp_degPerRad bu_63b4_c57c[0x34 / 4]
 struct V3 {
     f32 x, y, z;
     V3() {}
@@ -51,7 +51,7 @@ struct Obj { char p[0xB4]; Rr *rr; int nb8; int nbc; int org; };
 extern "C" void MapProp_display(Obj *obj) {
     V3 A;
     V3 B;
-    A.set(0.0f, 0.0f, (f32)(-obj->nb8) / func_00000000_63b4_ff((f32)obj->nbc / *(f32 *)(bu_63b4_c57c + kRoF_MapProp_display_5B0))); /* angle (deg) -> rad */
+    A.set(0.0f, 0.0f, (f32)(-obj->nb8) / func_00000000_63b4_ff((f32)obj->nbc / kRo_MapProp_degPerRad));
     func_00000000_63b4_fpp((f32)obj->nbc, &A.x, &A.z);
     B.y = 0.0f;
     B.x = -A.x;

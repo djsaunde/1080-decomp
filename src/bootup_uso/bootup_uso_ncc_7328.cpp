@@ -78,9 +78,9 @@ extern "C" void EnvSettings_load(char *self) {
         stream_readS32_00004FF0(&ENVSET(self)->clipNear);
         stream_readS32_00004FF0(&ENVSET(self)->clipFar);
     }
-    { int mode = GAMEFLOW_7328->gameMode; /* GameFlow.gameMode (Bss 0xF8 + 0x3C: alias value 8, + 0x34) */
+    { int mode = GAMEFLOW_7328->gameMode;
     if (mode == 6 || mode == 11) {
-        GFX_7328->fog.colour[3] = 1.0f; /* GfxLib +0x2A0 (alias value 0x29C, + 4) */
+        GFX_7328->fog.colour[3] = 1.0f; /* fog alpha */
         ENVSET(self)->flags |= 2;
         ENVSET(self)->clipFar = 800;
     } }

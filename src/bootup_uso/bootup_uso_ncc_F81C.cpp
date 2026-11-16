@@ -4,7 +4,7 @@
  * Spliced into bootup_uso_tail1.c.o via REPLACE_FUNC_BODY. */
 typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
 typedef signed char s8; typedef signed short s16; typedef signed int s32; typedef float f32; typedef double f64;
-#include "../../include/game/course.h" /* WorldRegistry (GameFlow.game) */
+#include "../../include/game/course.h" /* GameFlow.game is the WorldRegistry: windows[3] (+0x114) = ProcessWindow */
 extern "C" {
 extern int func_00000000(...);
 extern char D_00000000;
@@ -18,7 +18,7 @@ extern float D_00000030[4];    /* == func_00000008 + 0x28: Vec4f zeroed slot */
 extern char gSnowBoard_0000002C;        /* == func_00000008 + 0x24 */
 typedef struct {
     char pad44[0x44];
-    char *ptr44;                /* +0x44: object holder, result stored at +0x114 */
+    WorldRegistry *game;        /* +0x44: GameFlow.game (InputMgr +0x134), the game world */
 } F0Struct;
 extern F0Struct func_000000F0; /* USO-base reloc */
 extern int func_00000188;      /* USO-base reloc */
@@ -59,9 +59,7 @@ void *game_createProcessWindow(int a0, int a1) {
     p = (float *)result;
     q = &gSnowBoard_0000002C;
     func_00000000(q, p);
-    /* GameFlow.game is the WorldRegistry: the new window becomes windows[3] (+0x114), the "ProcessWindow"
-     * slot that bootup_uso_tail3a_10C8C.c links the pause / quit nodes under */
-    WORLDREG(func_000000F0.ptr44)->windows[3] = result;
+    func_000000F0.game->windows[3] = result; /* the ProcessWindow slot (GameFlow_startMode reads it) */
     return (void *)result;
 }
 

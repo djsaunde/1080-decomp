@@ -107,7 +107,7 @@ extern "C" void Fader_display(Fire *f) {
         f->f48 = 1.0f;
         if (f->state == 1) f->state = 0;
     }
-    Ctx *c = (Ctx *)GFX_1304C->curWindow->dl; /* GfxLib.curWindow (+0x254 = alias 0x23C + 0x18) ->dl (+0x158) */
+    Ctx *c = (Ctx *)GFX_1304C->curWindow->dl; /* the current window's display list (Ctx mirrors DLContext with next()) */
     G2(c->next(), 0xE7000000, 0);
     G2(c->next(), 0xBA001402, 0x100000);
     G2B(c->next(), 0xBA001301, 0);

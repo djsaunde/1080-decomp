@@ -24,7 +24,8 @@ struct VO { char pad[0x28];
     virtual void v10(); virtual char *buf(); };
 struct Obj { char pad[0x1C]; unsigned short *pix; };
 extern "C" void ScreenThumbMat_grab_0000E740(Obj *self, int a1) {
-    /* pixel (32, 58) of the main window's 320-wide RGBA5551 frame buffer (byte offset 0x9140) */
+    /* the 256x160 region at pixel (32, 58) of the 320-wide RGBA5551 frame buffer, sampled every
+     * 4th pixel and every 5th row (byte offset 0x9140 = (58 * 320 + 32) * 2) */
     unsigned short *src = (unsigned short *)((VO *)GFX_E740->mainWindow)->buf() + (58 * 320 + 32);
     unsigned short *dst = self->pix;
     for (int y = 0; y < 32; y++) {
@@ -32,6 +33,6 @@ extern "C" void ScreenThumbMat_grab_0000E740(Obj *self, int a1) {
             *dst++ = *src;
             src += 4;
         }
-        src += 0x540;
+        src += 5 * 320 - 64 * 4; /* 0x540: on to the next sampled row */
     }
 }
