@@ -200,17 +200,17 @@ void func_000003F8(V3_3F8 *pos, f32 *dist, s32 *proj, char *obj) {
     f32 t;
 
     d = *pos;
-    d.x = d.x - *(f32 *)(*(char **)(obj + 0x70) + 0xA0);
-    d.y = d.y - *(f32 *)(*(char **)(obj + 0x70) + 0xA4);
-    d.z = d.z - *(f32 *)(*(char **)(obj + 0x70) + 0xA8);
+    d.x = d.x - ((CamWindow *)obj)->cam->mnode.world[3][0];
+    d.y = d.y - ((CamWindow *)obj)->cam->mnode.world[3][1];
+    d.z = d.z - ((CamWindow *)obj)->cam->mnode.world[3][2];
     *dist = XCALL(func_00000000_3F8_f, math_vec3Length_0005BBCC)(d.x * d.x + d.y * d.y + d.z * d.z);
     inv = 1.0 / *dist;
     d.x *= inv;
     d.y *= inv;
     d.z *= inv;
-    n[0] = *(f32 *)(*(char **)(obj + 0x70) + 0xB4);
-    n[1] = *(f32 *)(*(char **)(obj + 0x70) + 0xC4);
-    n[2] = *(f32 *)(*(char **)(obj + 0x70) + 0xD4);
+    n[0] = ((CamWindow *)obj)->cam->view[0][0];
+    n[1] = ((CamWindow *)obj)->cam->view[1][0];
+    n[2] = ((CamWindow *)obj)->cam->view[2][0];
     *proj = (s32)((d.z * n[2] + (d.y * n[1] + n[0] * (t = d.x))) * 63.0f);
     *dist = *dist / D_00000050;
     if (*dist > 1.0) {
@@ -1504,7 +1504,7 @@ void CamDirector_update(CamDirector *self) {
 }
 
 void CamDirector_setActiveCam(CamDirector *a0, int a1) {
-    if (*(int*)((char *)a0 + 0x18) & 8) { /* Node flag 8: enabled */
+    if (NODE(a0)->doFlags & 8) { /* DoUpdate */
         f32 *p;
         a0->activeCam = a1;
         a0->window->cam = a0->cams[a1];
@@ -1861,8 +1861,8 @@ void game_createLights(char *s1) {
         *(float *)(c + 0x130) = 1.0f;
     }
     p90 = (char *)WORLDREG(s1)->light0; ((BaseLight *)p90)->mask = 1;
-    p90 = (char *)WORLDREG(s1)->light0; if (1) { p90 += 0xC4; } *(int *)p90 |= 0x40;
-    p90 = (char *)WORLDREG(s1)->light0; if (1) { p90 += 0xC4; } *(int *)p90 |= 0x80;
+    p90 = (char *)WORLDREG(s1)->light0; if (1) { p90 = (char *)&((BaseLight *)p90)->flags; } *(int *)p90 |= 0x40;
+    p90 = (char *)WORLDREG(s1)->light0; if (1) { p90 = (char *)&((BaseLight *)p90)->flags; } *(int *)p90 |= 0x80;
     c = (char *)FCALL(BaseLight_ctor)(0, &sStr_Infinite_Light_7434);
     WORLDREG(s1)->light1 = (s32)c;
     *(float *)(c + 0x130) = 1.0f;
@@ -1870,13 +1870,13 @@ void game_createLights(char *s1) {
     *(float *)(c + 0x128) = 1.0f;
     *(float *)(c + 0x124) = 1.0f;
     p90 = (char *)WORLDREG(s1)->light1; ((BaseLight *)p90)->mask = 2;
-    p90 = (char *)WORLDREG(s1)->light1; if (1) { p90 += 0xC4; } *(int *)p90 |= 0x40;
+    p90 = (char *)WORLDREG(s1)->light1; if (1) { p90 = (char *)&((BaseLight *)p90)->flags; } *(int *)p90 |= 0x40;
     o = (char *)FCALL(BaseLight_ctor)(0, &sStr_Shadow_Light_7444);
     vec[0] = 0.0f;
     vec[2] = 0.0f;
     vec[1] = kRo_game_createLights_528;
     XCALL(func_00000000_2F90_v, math_mtxAddTranslation)(o + 0x70, vec);
-    c = o; if (1) { c += 0xC4; } *(int *)c |= 0x40;
+    c = o; if (1) { c = (char *)&((BaseLight *)c)->flags; } *(int *)c |= 0x40;
     XCALL(func_00000000_2F90_v, gfx_setShadowLight)(&gGfxLib_2F90_reg, WORLDREG(s1)->light1);
     XCALL(func_00000000_2F90_v, gfx_listAppend_0004E214)(&gGfxLib_2F90_reg, WORLDREG(s1)->light0);
     XCALL(func_00000000_2F90_v, gfx_listAppend_0004E214)(&gGfxLib_2F90_reg, WORLDREG(s1)->light1);
@@ -3791,13 +3791,13 @@ void FallingSnow_create(char *a0) {
     FCALL(list_append)(head + 0x10, r);
     if (NODE(r)->parent != 0) NODE(r)->unk04 = 1;
     NODE(r)->parent = (s32)head;
-    v = *(int**)(*(char**)(a0 + 0x40) + 0x28);
-    (*(void (**)(char*, int))((char*)v + 0x5C))(
-        (char*)((int)*(char**)(a0 + 0x40) + (int)(short)*(short*)((char*)v + 0x58)),
+    v = (int *)NODE(*(char**)(a0 + 0x40))->vptr;
+    ((void (*)(char*, int))VT_SLOT(v, 10).fn)(
+        (char*)((int)*(char**)(a0 + 0x40) + (int)(short)VT_SLOT(v, 10).delta),
         0x96);
     v = *(int**)(a0 + 0x40); ((FallingSnow *)v)->enabled = 1;
     v = *(int**)(a0 + 0x40); ((FallingSnow *)v)->unk4C = 0.0f;
-    *(int*)(*(char**)(a0 + 0x40) + 0x48) = 0;
+    ((FallingSnow *)*(char**)(a0 + 0x40))->enabled = 0;
     FCALL(memtrack_end)();
 }
 
@@ -4732,7 +4732,7 @@ void TreeTmpl_display(char *arg0) {
 extern char gHostio_func_00008744_arg1;
 extern char gHostio_func_00008744_arg2;
 void TreeTmpl_hostioParms(char *a0) {
-    int arg = *(int*)(a0 + 0xC);
+    int arg = NODE(a0)->name;
     FCALL(hostio_beginGroup)(&gHostio_func_00008744_arg1, arg, 0);
     FCALL(gfx_declColourParm)(TREETMPL(a0)->colour, 0);
     FCALL(FogParms_hostioParms)(TREETMPL(a0)->fog);
