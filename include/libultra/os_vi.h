@@ -3,9 +3,9 @@
 
 /* libultra VI modes and the VI manager context (2.0I PR/os.h for OSViMode,
  * src/io/viint.h for __OSViContext; references/libreultra). Shared by the
- * game_libs osViSet* copies. Opt-in like os_thread.h: TUs that still carry a
- * private OSViMode / __OSViContext typedef (game_libs_ido53_70B04.c,
- * game_libs_o1_71144.c) must drop it before including this. Offsets and
+ * game_libs osViSet* copies and the __osViInit / osViSetSpecialFeatures
+ * donors (game_libs_ido53_70B04.c, game_libs_o1_71144.c; their private copies
+ * were dropped in agent-a run 586). Opt-in like os_thread.h. Offsets and
  * sizes are asserted below (array size -1 => compile error). */
 
 #include "libultra/os_message.h"

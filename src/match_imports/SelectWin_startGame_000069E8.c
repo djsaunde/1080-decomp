@@ -1,13 +1,13 @@
 /* Native original-compiler source port from src/timproc_uso_b5/timproc_uso_b5.c. Target bytes unchanged. */
 #include "context_timproc_uso_b5.h"
+#include "game/input.h" /* InputMgr (GameFlow) */
 int SelectWin_startGame_000069E8(char *scr, int a1) {
     B5TimingPanels *C;
     int a4;
     B5TimingScreen *screen = (B5TimingScreen *)scr;
     import_000A53B4(scr, a1);
-    /* RAW: unknown-object: the timproc global (0x34 / 0x40 / 0x44 flow words) and scr + 0x418 are untyped in this port */
-    gen_imp_Process_fadeOut_0000F954(*(char **)(scr + 0x418), -1, 0);
-    *(int *)(timproc_uso_b5_69E8_global + 0x40) = *(int *)(timproc_uso_b5_69E8_global + 0x44); /* RAW: unknown-object (as above) */
+    gen_imp_Process_fadeOut_0000F954(((SelectWin *)scr)->fadeProc, -1, 0);
+    ((InputMgr *)timproc_uso_b5_69E8_global)->procState = ((InputMgr *)timproc_uso_b5_69E8_global)->nextProcState; /* the global is GameFlow (InputMgr): its reloc is import_80020098 in the origin .s */
     *screen->out[1] = screen->itemsMgr->lists[0]->items[screen->curItem[0]]->id;
     a4 = screen->cheatChar;
     if (a4 != 0 && a4 < 4) {
@@ -28,7 +28,7 @@ int SelectWin_startGame_000069E8(char *scr, int a1) {
     if (a1 != 0) {
         *screen->out[4] = screen->itemsMgr->lists[2]->items[screen->curItem[2]]->id;
     }
-    if (*(int *)(timproc_uso_b5_69E8_global + 0x34) != 2) { /* RAW: unknown-object (as above) */
+    if (((InputMgr *)timproc_uso_b5_69E8_global)->nextFlowMode != 2) {
         ((int *)(&import_8002013C + 0xA4))[screen->curItem[0]] = *screen->out[3];
     } else {
         ((int *)(&import_80020150 + 0xB8))[screen->player] =

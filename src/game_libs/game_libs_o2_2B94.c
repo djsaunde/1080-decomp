@@ -32,6 +32,8 @@
  *    home (pad70[10] + dummies rebuild the 200-byte frame). */
 #include "common.h"
 #include "uso_call.h"
+#include "gdl/race.h"    /* RaceSprite: unk1F0 is the gui sprite (image +0x10) */
+#include "gdl/binfile.h" /* ImageFile: the sprite image (width / height) */
 
 typedef struct { int a, b, c, d; } Quad4;
 
@@ -87,12 +89,11 @@ void CourseGadget_display(GlObj2B94 *self) {
     if (temp_a1 != 0) {
         CALL(gui_spriteRefresh)(temp_a1);
         temp_a0 = self->unk1F0;
-        /* RAW: unknown-object: the gui sprite record behind unk1F0->0x10 (w/h halves at 0x20/0x22) is not typed yet */
-        sub = *(char **)(temp_a0 + 0x10);
-        half = *(s16 *)(sub + 0x20); /* RAW: unknown-object (as above) */
+        sub = (char *)((RaceSprite *)temp_a0)->image;
+        half = IMAGEFILE(sub)->width;
         self->e[0].q.a = self->unk1C4 - half;
-        sub = *(char **)(temp_a0 + 0x10); /* RAW: unknown-object (as above) */
-        half = *(s16 *)(sub + 0x22); /* RAW: unknown-object (as above) */
+        sub = (char *)((RaceSprite *)temp_a0)->image;
+        half = IMAGEFILE(sub)->height;
         self->e[1].q.a = self->unk1C8 - half;
         spB8[3] = 1.0f;
         spB8[2] = 1.0f;

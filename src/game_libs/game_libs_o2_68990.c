@@ -42,6 +42,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "uso_call.h"
+#include "gdl/binfile.h" /* ImageFile (o) */
 
 typedef struct {
     int unk0;
@@ -71,25 +72,24 @@ void ImageFile_load_00068990(char *o) {
         switch (b) {
         case 1:
             gl_ref_0007C8EC(&a);
-            /* RAW: unknown-object: the ImageFile record (w/h 0x20/0x22, data 0x8, size 0x2C, pos 0x28) is not typed yet */
-            *(short *)(o + 0x20) = a;
+            IMAGEFILE(o)->width = a;
             gl_ref_0007C8EC(&a);
-            *(short *)(o + 0x22) = a; /* RAW: unknown-object (as above) */
+            IMAGEFILE(o)->height = a;
             break;
         case 2:
-            gl_ref_0007C860((int *)(o + 0x24));
+            gl_ref_0007C860(&IMAGEFILE(o)->format);
             break;
         case 4:
-            gl_ref_0007C928((int *)(o + 0x2C));
+            gl_ref_0007C928(&IMAGEFILE(o)->dataSize);
             if (gSysLib_0005C6E0.unk4 == 0) {
                 saved = CALL(app_setHeapMode)(0);
-                v = CALL(mem_new)(*(int *)(o + 0x2C)); /* RAW: unknown-object (as above) */
-                *(int *)(o + 8) = v; /* RAW: unknown-object (as above) */
-                CALL(fs_gdlReadFile)(&gSysLib_0005C6E0, v, *(int *)(o + 0x2C)); /* RAW: unknown-object (as above) */
+                v = CALL(mem_new)(IMAGEFILE(o)->dataSize);
+                IMAGEFILE(o)->base.data = (char *)v;
+                CALL(fs_gdlReadFile)(&gSysLib_0005C6E0, v, IMAGEFILE(o)->dataSize);
                 CALL(app_setHeapMode)(saved);
             } else {
-                *(int *)(o + 0x28) = CALL(fs_gdlSeekFile)(&gSysLib_0005C6E0, 1, 0); /* RAW: unknown-object (as above) */
-                CALL(fs_gdlSeekFile)(&gSysLib_0005C6E0, 1, *(int *)(o + 0x2C)); /* RAW: unknown-object (as above) */
+                IMAGEFILE(o)->dataOffset = CALL(fs_gdlSeekFile)(&gSysLib_0005C6E0, 1, 0); /* keep the data position: read later by vfn1 */
+                CALL(fs_gdlSeekFile)(&gSysLib_0005C6E0, 1, IMAGEFILE(o)->dataSize);
             }
             break;
         case -1:

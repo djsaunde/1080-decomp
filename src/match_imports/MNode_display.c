@@ -1,5 +1,7 @@
 /* Native original-compiler source port from src/game_libs/game_libs_o2_39094.c. Target bytes unchanged. */
 #include "context_game_libs_o2_39094.h"
+#include "gdl/gfxlib.h" /* D_39094_dat is the GfxLib: worldMtx, worldScale */
+#include "gdl/mnode.h" /* root is an MNode: cmtx[3] = world position */
 void MNode_display(GlObjectPrefix *root) {
     GlObjectLink *iter2[2];
     GlObjectPrefix *node;
@@ -55,13 +57,12 @@ void MNode_display(GlObjectPrefix *root) {
             float scaled[3];
             float x, y, z;
             float *gv;
-            /* RAW: unknown-object: root's scale vector 0xA0..0xA8 and the 0xE8 matrix of D_39094_dat are untyped in this port */
-            vec = *(GlObjectMatrix*)((char*)&D_39094_dat + 0xE8);
+            vec = *(GlObjectMatrix*)GFXLIB(&D_39094_dat)->worldMtx;
             do {
-                gv = (float*)((char*)&D_39094_dat + 0x128);
-                x = gv[0] * *(float*)((char*)root + 0xA0); /* RAW: unknown-object (as above) */
-                y = gv[1] * *(float*)((char*)root + 0xA4); /* RAW: unknown-object (as above) */
-                z = gv[2] * *(float*)((char*)root + 0xA8); /* RAW: unknown-object (as above) */
+                gv = GFXLIB(&D_39094_dat)->worldScale;
+                x = gv[0] * ((MNode *)root)->cmtx[3][0];
+                y = gv[1] * ((MNode *)root)->cmtx[3][1];
+                z = gv[2] * ((MNode *)root)->cmtx[3][2];
                 scaled[0] = x;
                 scaled[1] = y;
                 scaled[2] = z;

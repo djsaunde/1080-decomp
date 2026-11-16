@@ -1,5 +1,6 @@
 /* Native original-compiler source port from src/timproc_uso_b5/timproc_uso_b5.c. Target bytes unchanged. */
 #include "context_timproc_uso_b5.h"
+#include "gdl/light.h" /* LightTarget (the model's light-target child) */
 #define LIST(p) ((SelItemList *)(p))
 #define MODEL(p) ((SelBoardModel *)(p))
 /* the d550 externs are aliases of bootup gPolyGeomMode (one import, separate %hi / %lo pairs) */
@@ -53,13 +54,12 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
             gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEE84 + 0x1614, (f32) 0, (f32) 0, (f32) 0);
             g2 = gc;
             if (1) {}
-            /* RAW: unknown-object: the SelBoard light-target fields 0x108..0x124 are not in SelBoardModel; &import_80807FB8 + K is an import-base data read */
-            cf = *(f32 *)((char *)&import_80807FB8 + 0x3B4);
-            NODE(g2)->vptr = &import_80087FB8[0]; (*(s32 *)((char *)(g2) + 0x120)) = 1; /* vptr: bootup LightTarget_vtbl (gl_data.h) */ /* RAW: unknown-object (as above) */
-            *(f32 *)(g2 + 0x108) = cf; /* RAW: unknown-object (as above) */
-            *(f32 *)(g2 + 0x10C) = cf; /* RAW: unknown-object (as above) */
-            *(f32 *)(g2 + 0x110) = cf; /* RAW: unknown-object (as above) */
-            *(f32 *)(g2 + 0x124) = 1.0f; /* RAW: unknown-object (as above) */
+            cf = *(f32 *)((char *)&import_80807FB8 + 0x3B4); /* RAW: data-table: an import-base data read (&import_80807FB8 + K, a RoData float) */
+            NODE(g2)->vptr = &import_80087FB8[0]; ((LightTarget *)g2)->mask = 1; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
+            ((LightTarget *)g2)->unk108[0] = cf;
+            ((LightTarget *)g2)->unk108[1] = cf;
+            ((LightTarget *)g2)->unk108[2] = cf;
+            ((LightTarget *)g2)->scale = 1.0f;
         }
         MODEL(child)->head.inner = gc;
         gen_imp_MNode_addChild(child, gc);
@@ -93,7 +93,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         g2 = r;
         do {
         ((TimB5EntryFields *)g2)->model = child;
-        ((TimB5EntryFields *)g2)->cfv = *(f32 *)((char *)&import_80807FB8 + 0x3B8); /* RAW: unknown-object (as above) */
+        ((TimB5EntryFields *)g2)->cfv = *(f32 *)((char *)&import_80807FB8 + 0x3B8); /* RAW: data-table (as above) */
         ((TimB5EntryFields *)g2)->node = child;
         } while (0);
     }

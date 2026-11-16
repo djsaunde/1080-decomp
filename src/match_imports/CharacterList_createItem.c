@@ -1,5 +1,6 @@
 /* Native original-compiler source port from src/timproc_uso_b5/timproc_uso_b5.c. Target bytes unchanged. */
 #include "context_timproc_uso_b5.h"
+#include "gdl/light.h" /* LightTarget (the model's light-target child) */
 #define ITEM(p) ((SelCharacterItem *)(p))
 #define MODEL(p) ((SelCharModel *)(p))
 SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, u32 arg3,
@@ -49,13 +50,12 @@ SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, 
             float cf;
             gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEE54 + 0x15E4,
                                        0.0f, 0.0f, 0.0f);
-            /* RAW: unknown-object: the SelChar light-target fields 0x108..0x124 are not typed; &import_K + K is an import-base data read */
-            cf = *(float *)((char *)&import_80807FB8 + 0x3A0);
-            ((TimB5UiObject *)gc)->field_28 = (void *)(&import_80087FB8[0]); (*(int *)((char *)(gc) + (0x120))) = 0xFFFF;
-            *(float *)(gc + 0x108) = cf; /* RAW: unknown-object (as above) */
-            *(float *)(gc + 0x10C) = cf; /* RAW: unknown-object (as above) */
-            *(float *)(gc + 0x110) = cf; /* RAW: unknown-object (as above) */
-            *(float *)(gc + 0x124) = 1.0f; /* RAW: unknown-object (as above) */
+            cf = *(float *)((char *)&import_80807FB8 + 0x3A0); /* RAW: data-table: an import-base data read (&import_80807FB8 + K, a RoData float) */
+            ((TimB5UiObject *)gc)->field_28 = (void *)(&import_80087FB8[0]); ((LightTarget *)gc)->mask = 0xFFFF; /* gc is a LightTarget (vptr: bootup LightTarget_vtbl) */
+            ((LightTarget *)gc)->unk108[0] = cf;
+            ((LightTarget *)gc)->unk108[1] = cf;
+            ((LightTarget *)gc)->unk108[2] = cf;
+            ((LightTarget *)gc)->scale = 1.0f;
         }
         MODEL(child.ptr)->head.inner = gc;
         gen_imp_MNode_addChild(child.ptr, gc);
@@ -67,7 +67,7 @@ SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, 
             ((struct TimB5V3 *)p)->z = 0.0f;
             ((struct TimB5V3 *)p)->y = 100.0f;
         } while (0);
-        MODEL(child.ptr)->highlight = *(float *)((char *)&import_80800078 + 0x3A4); /* RAW: unknown-object (as above) */
+        MODEL(child.ptr)->highlight = *(float *)((char *)&import_80800078 + 0x3A4); /* RAW: data-table (as above) */
         n = *(int *)&import_80020078;
         if (1) {}
         p = (char *)timproc_uso_b5_d14c_alloc(0xB4);
@@ -87,7 +87,7 @@ SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, 
             char *p2 = (char *)MODEL(child.ptr)->anim;
             struct TimB5UiMethod24 *vt;
             char *adjusted;
-            p = *(char **)(p2 + 0x28); /* RAW: unknown-object (as above) */
+            p = ((Node *)p2)->vptr; /* the AnimPlayer's vtable */
             vt = (struct TimB5UiMethod24 *)p;
             adjusted = p2 + vt->adjustment;
             vt->method(adjusted);

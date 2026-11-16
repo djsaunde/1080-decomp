@@ -19,43 +19,8 @@
  * spliced (fn symbol size 0x1B8); the unit keeps
  * gl_func_00071144_pad.s. Spliced into game_libs_post2.c.o via
  * REPLACE_FUNC_BODY. */
-typedef unsigned short u16;
-typedef unsigned int u32;
-typedef unsigned char u8;
-
-typedef struct {
-    u32 ctrl;
-    u32 width;
-    u32 burst;
-    u32 vSync;
-    u32 hSync;
-    u32 leap;
-    u32 hStart;
-    u32 xScale;
-    u32 vCurrent;
-} OSViCommonRegs;
-
-typedef struct {
-    u32 origin;
-    u32 yScale;
-    u32 vStart;
-    u32 vBurst;
-    u32 vIntr;
-} OSViFieldRegs;
-
-typedef struct {
-    u8 type;
-    OSViCommonRegs comRegs;
-    OSViFieldRegs fldRegs[2];
-} OSViMode;
-
-typedef struct {
-    u16 state;
-    u16 retraceCount;
-    void *framep;
-    OSViMode *modep;
-    u32 control;
-} __OSViContext;
+#include "common.h"
+#include "libultra/os_vi.h" /* OSViMode / __OSViContext (offsets asserted there) */
 
 /* __osViNext (blank USO reloc, pin = 0) */
 extern __OSViContext *gl_func_00000000_vinext711;

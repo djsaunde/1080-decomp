@@ -11,43 +11,8 @@
  * gl_func_00000000 = bzero, gl_func_00000001 = __osViSwapContext
  * (= __osViSwapContext, the next function).
  * Spliced into game_libs_post1c.c.o via REPLACE_FUNC_BODY. */
-typedef signed int s32;
-typedef unsigned int u32;
-typedef unsigned short u16;
-typedef unsigned char u8;
-typedef float f32;
-
-typedef struct {
-    u32 ctrl, width, burst, vSync, hSync, leap, hStart, xScale, vCurrent;
-} OSViCommonRegs;
-
-typedef struct {
-    u32 origin, yScale, vStart, vBurst, vIntr;
-} OSViFieldRegs;
-
-typedef struct {
-    u8 type;                /* 0x00 */
-    OSViCommonRegs comRegs; /* 0x04 */
-    OSViFieldRegs fldRegs[2]; /* 0x28 */
-} OSViMode;
-
-typedef struct {
-    f32 factor; /* 0x0 */
-    u16 offset; /* 0x4 */
-    u32 scale;  /* 0x8 */
-} __OSViScale;
-
-typedef struct {
-    u16 state;        /* 0x00 */
-    u16 retraceCount; /* 0x02 */
-    void *framep;     /* 0x04 */
-    OSViMode *modep;  /* 0x08 */
-    u32 control;      /* 0x0C */
-    void *msgq;       /* 0x10 */
-    void *msg;        /* 0x14 */
-    __OSViScale x;    /* 0x18 */
-    __OSViScale y;    /* 0x24 */
-} __OSViContext;      /* sizeof 0x30 */
+#include "common.h"
+#include "libultra/os_vi.h" /* OSViMode / __OSViContext (offsets asserted there) */
 
 extern __OSViContext gl_ref_0002E4C0[2];    /* vi[2] (baked 0x2E4C0) */
 extern __OSViContext *gl___osViCurr_vicurr;    /* __osViCurr */
