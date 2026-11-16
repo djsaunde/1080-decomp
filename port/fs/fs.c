@@ -294,8 +294,8 @@ int port_fs_info(const char *path, int *romAddr)
         int r = raw_read(&f, hdr, 12);
         unsigned int type, size;
 
-        if (r <= 0) {
-            return r == 0 ? PORT_FS_ERR_NO_DATA : r;
+        if (r < 12) {
+            return r < 0 ? r : PORT_FS_ERR_NO_DATA;
         }
         type = be32(f.romStart + f.pos - 12);
         size = be32(f.romStart + f.pos - 8);
@@ -341,7 +341,7 @@ PortFsFile *port_fs_open(const char *path)
         return 0;
     }
     file_at(f, dev, e);
-    if (raw_read(f, hdr, 12) < 0) {
+    if (raw_read(f, hdr, 12) != 12) {
         return 0;
     }
     f->window = f->pos;
