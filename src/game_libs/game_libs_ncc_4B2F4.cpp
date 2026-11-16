@@ -25,7 +25,10 @@
  * spans the matrix loop, where v0 / v1 / a0-a3 / t1 / t2 are all busy, so the shared LR takes t0 like the
  * target; `i != 4` keeps uopt's `bne` exit test (with i referenced after the loop, `i < 4` becomes sltu/bnez).
  * Spliced over a placeholder on both build paths. */
-typedef float f32; typedef unsigned int u32; typedef int s32;
+typedef float f32; typedef unsigned int u32; typedef int s32; typedef short s16; typedef unsigned short u16;
+#include "../../include/gdl/gfxlib.h" /* GfxLib */
+#include "../../include/gdl/window.h" /* ScreenWindow */
+#include "../../include/gdl/dlctx.h"  /* DLContext / DLBuf */
 extern "C" {
 extern char gGfxLib_4B2F4_flags, gGfxLib_4B2F4_state, gGfxLib_4B2F4_matrix, D_4B2F4_fixed;
 extern void F_4B2F4_copy(f32 (*)[4], void *);
@@ -33,8 +36,8 @@ extern void F_4B2F4_pack(void *, void *);
 extern u32 F_4B2F4_phys(void *);
 extern u32 F_4B2F4_list(void *, u32 *, s32 *);
 }
-#define W(p, o) (*(s32 *)((char *)(p) + (o)))
 #define P(p, o) (*(char **)((char *)(p) + (o)))
+#define DLCTX(p) ((DLContext *)(p))
 extern "C" void Shadow_display_0004B2F4(char *arg0) {
     s32 i, j, k;
     f32 mtx[4][4];
@@ -50,10 +53,10 @@ extern "C" void Shadow_display_0004B2F4(char *arg0) {
     u32 *cmd2, *cmd3;
     u32 list;
     s32 *h1;
-    if (W(&gGfxLib_4B2F4_flags, 0x1C4) & 1) {
+    if (GFXLIB(&gGfxLib_4B2F4_flags)->flags & 1) {
         g = &gGfxLib_4B2F4_state;
         /* agent-c run 228: b / a / loop on one line (as1 line tie: the b load issues after the a / bound addresses; 98.37 -> 99.36) */
-        b = *(f32 (**)[4])(g + 0xE4); a = (f32 (*)[4])(&gGfxLib_4B2F4_matrix + 0xA0); for (i = 0; i != 4; i++) {
+        b = GFXLIB(g)->extraMtx; a = GFXLIB(&gGfxLib_4B2F4_matrix)->modelView; for (i = 0; i != 4; i++) {
             for (j = 0; j < 4; j++) {
                 mtx[i][j] = 0.0f;
                 for (k = 0; k < 4; k++) {
@@ -63,28 +66,28 @@ extern "C" void Shadow_display_0004B2F4(char *arg0) {
         }
         F_4B2F4_copy(mtx, &D_4B2F4_fixed + 0x3C8A0);
         g = &gGfxLib_4B2F4_state;
-        ctx = P(P(g, 0x254), 0x158);
-        flags = W(g, 0x1F4);
-        slot1 = (*(s32 **)(ctx + 0x3C))[1];
-        (*(s32 **)(ctx + 0x3C))[1] = slot1 + 1;
-        fixed = P(P(ctx, 0x3C), 0) + (slot1 << 6) + 0 * (int)(flags);
+        ctx = (char *)GFXLIB(g)->curWindow->dl;
+        flags = GFXLIB(g)->mtxMode;
+        slot1 = DLCTX(ctx)->mtx.cur->count;
+        DLCTX(ctx)->mtx.cur->count = slot1 + 1;
+        fixed = (char *)DLCTX(ctx)->mtx.cur->base + (slot1 << 6) + 0 * (int)(flags);
         F_4B2F4_pack(&D_4B2F4_fixed + 0x3C8A0, fixed);
-        slot2 = (*(s32 **)(ctx + 0xC))[1];
-        (*(s32 **)(ctx + 0xC))[1] = slot2 + 1;
-        cmd1 = (u32 *)(P(P(ctx, 0xC), 0) + slot2 * 8);
+        slot2 = DLCTX(ctx)->gfx.cur->count;
+        DLCTX(ctx)->gfx.cur->count = slot2 + 1;
+        cmd1 = (u32 *)(DLCTX(ctx)->gfx.cur->base + slot2 * 8);
         cmd1[0] = (((u32)(flags | 2) & 0xFF) << 16) | 0x01000000 | 0x40;
         cmd1[1] = F_4B2F4_phys(fixed);
         if (ctx) {} /* run 144: block split (98.15 -> 98.23, 203 words) */
         g = &gGfxLib_4B2F4_state;
-        ctx = P(P(g, 0x254), 0x158);
-        h1 = *(s32 **)(ctx + 0xC); slot3 = h1[1]; h1[1] = slot3 + 1;
-        cmd2 = (u32 *)(P(P(ctx, 0xC), 0) + slot3 * 8);
+        ctx = (char *)GFXLIB(g)->curWindow->dl;
+        h1 = (s32 *)DLCTX(ctx)->gfx.cur; slot3 = h1[1]; h1[1] = slot3 + 1;
+        cmd2 = (u32 *)(DLCTX(ctx)->gfx.cur->base + slot3 * 8);
         cmd2[0] = 0xFA000100;
-        cmd2[1] = (u32)(*(f32 *)(g + 0x24C) * 255.0f) & 0xFF;
-        ctx = P(P(g, 0x254), 0x158);
+        cmd2[1] = (u32)(GFXLIB(g)->unk24C * 255.0f) & 0xFF;
+        ctx = (char *)GFXLIB(g)->curWindow->dl;
         i = (s32)P(arg0, 0x40); list = F_4B2F4_list(P(i, 0x60), cmd2, h1);
-        { s32 *h = *(s32 **)(ctx + 0xC); slot3 = h[1]; h[1] = slot3 + 1; }
-        cmd2 = (u32 *)(P(P(ctx, 0xC), 0) + slot3 * 8);
+        { DLBuf *h = DLCTX(ctx)->gfx.cur; slot3 = h->count; h->count = slot3 + 1; }
+        cmd2 = (u32 *)(DLCTX(ctx)->gfx.cur->base + slot3 * 8);
         cmd2[0] = 0x06000000;
         cmd2[1] = list;
     }

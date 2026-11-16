@@ -1,4 +1,6 @@
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+typedef int s32; typedef short s16; typedef float f32;
+#include "../../include/gdl/gadget.h" /* CoolGadget */
 /* IDO 7.1 NCC (C++) donor for CoolGadget_ctor (0x19C / 103 words), EXACT.
  * The function is a cfront-style constructor G::G(int) of a 0x198-byte class:
  * edg's ctor protocol gives the get-or-create head (`if (this == 0) this =
@@ -17,8 +19,6 @@
  * __ct__1BFPc -> gl_func_00000000_15fc_base, __ct__1MFv ->
  * gl_func_00000000_15fc_m, __vtbl__1G -> gl_data_00000000_15fc. The data
  * words are pinned at their USO offsets (D_15FC_* in undefined_syms_auto.txt). */
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#define FF(p, o) (*(float *)((char *)(p) + (o)))
 extern "C" {
 void *gl_func_00000000(...);
 extern char sStr_Node_CC58[], sStr_CoolGadget_CC60[];
@@ -29,34 +29,34 @@ struct B { char p[0x28]; B(char *); virtual void g(); };
 struct M { char p[0xA8]; M(); };
 struct G : B { M m; char rest[0x198 - 0xD4]; G(int arg1); virtual void g(); };
 G::G(int arg1) : B(sStr_Node_CC58) {
-    char *self = (char *)this;
+    CoolGadget *self = (CoolGadget *)this;
     float temp_f2 = kRo_CoolGadget_ctor_C7C;
-    FW(self, 0xC) = (int)sStr_CoolGadget_CC60;
-    FF(self, 0xE8) = temp_f2;
-    FF(self, 0xF8) = temp_f2;
-    FF(self, 0xEC) = 0.0f; FF(self, 0xF0) = 0.0f; FF(self, 0xF4) = 0.0f; FF(self, 0xFC) = 0.0f; FF(self, 0x100) = 0.0f; FF(self, 0x104) = 0.0f;
-    FF(self, 0x108) = kRo_CoolGadget_ctor_C80;
-    FF(self, 0x118) = 1.0f;
-    FF(self, 0x114) = 0.0f;
-    FF(self, 0x110) = 0.0f;
-    FF(self, 0x10C) = 0.0f;
-    FF(self, 0x11C) = kRo_CoolGadget_ctor_C84;
-    FF(self, 0x124) = 0.0f;
-    FF(self, 0x120) = 0.0f;
-    FF(self, 0xD8) = kRo_CoolGadget_ctor_C88;
-    FF(self, 0xDC) = kRo_CoolGadget_ctor_C8C;
-    FF(self, 0xE0) = kRo_CoolGadget_ctor_C90;
-    FF(self, 0xE4) = 0.0f;
-    FW(self, 0xD4) = arg1;
-    FF(self, 0x128) = 0.0f;
-    FW(self, 0xCC) = 0x64;
-    FW(self, 0xC8) = 0x64;
-    FF(self, 0x12C) = kRo_CoolGadget_ctor_C94;
-    FW(self, 0xD0) = 0x82;
-    CALL(gui_spriteInit)(self + 0x138, 0x5000A);
-    CALL(gui_spriteInit)(self + 0x150, 0x50009);
-    CALL(gui_spriteInit)(((char *)this) + 0x180, 0x5000B);
-    CALL(gui_spriteInit)(((char *)this) + 0x168, 0x5001C);
-    CALL(CoolGadget_setLabels)(((char *)this), ((char *)this) + 0x168, ((char *)this) + 0x180);
+    self->node.name = (int)sStr_CoolGadget_CC60;
+    self->lowColour.r = temp_f2;
+    self->midColour.r = temp_f2;
+    self->lowColour.g = 0.0f; self->lowColour.b = 0.0f; self->lowColour.a = 0.0f; self->midColour.g = 0.0f; self->midColour.b = 0.0f; self->midColour.a = 0.0f;
+    self->pulseLo.r = kRo_CoolGadget_ctor_C80;
+    self->pulseHi.r = 1.0f;
+    self->pulseLo.a = 0.0f;
+    self->pulseLo.b = 0.0f;
+    self->pulseLo.g = 0.0f;
+    self->pulseHi.g = kRo_CoolGadget_ctor_C84;
+    self->pulseHi.a = 0.0f;
+    self->pulseHi.b = 0.0f;
+    self->colour[0] = kRo_CoolGadget_ctor_C88;
+    self->colour[1] = kRo_CoolGadget_ctor_C8C;
+    self->colour[2] = kRo_CoolGadget_ctor_C90;
+    self->colour[3] = 0.0f;
+    self->total = arg1;
+    self->phase = 0.0f;
+    self->target = 100;
+    self->cur = 100;
+    self->step = kRo_CoolGadget_ctor_C94;
+    self->labelAlpha = 0x82;
+    CALL(gui_spriteInit)(self->barSprite, 0x5000A);
+    CALL(gui_spriteInit)(self->capSprite, 0x50009);
+    CALL(gui_spriteInit)(((CoolGadget *)this)->label2Sprite, 0x5000B);
+    CALL(gui_spriteInit)(((CoolGadget *)this)->label1Sprite, 0x5001C);
+    CALL(CoolGadget_setLabels)(((CoolGadget *)this), ((CoolGadget *)this)->label1Sprite, ((CoolGadget *)this)->label2Sprite);
     CALL(CoolGadget_setLabelPos)(self, -0x49, -2, -0x32, -1);
 }

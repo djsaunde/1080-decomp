@@ -18,7 +18,7 @@
  * busy with name "Gfx", then the RDP with "gfx", then logs "RSP"; the busy /
  * name pairs at +0x1C/+0x3C and +0x20/+0x40 are read that way. */
 
-#include "libultra/os_task.h"
+#include "../libultra/os_task.h" /* by relative path: the NCC donors include this header without -I include */
 
 typedef struct RcpTask {
     /* 0x00 */ s32 unk00[4];
@@ -58,8 +58,12 @@ typedef struct RcpMgr {
 } RcpMgr;
 
 typedef char RcpTask_size_check[sizeof(RcpTask) == 0x78 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char RcpTask_next_check[(int)&((RcpTask *)0)->next == 0x50 ? 1 : -1];
+#endif
 typedef char RcpMgr_size_check[sizeof(RcpMgr) == 0x50 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char RcpMgr_name_check[(int)&((RcpMgr *)0)->rspTaskName == 0x3C ? 1 : -1];
+#endif
 
 #endif /* GDL_RCP_H */

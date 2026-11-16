@@ -1,7 +1,7 @@
 #ifndef GDL_GADGET_H
 #define GDL_GADGET_H
 
-#include "gdl/node.h"
+#include "node.h" /* same directory: the NCC donors include this header by relative path */
 
 /* A libgdl tunable parameter (0x18), built in place inside a "<Class>::Parms" object by a
  * ctor call (parm, owner Parms, 4-byte tag by value, 1) and then typed: +0xC = the parm type
@@ -89,10 +89,12 @@ typedef struct Gadget {
 } Gadget;
 
 typedef char Gadget_size_check[sizeof(Gadget) == 0x13C ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char Gadget_colour_check[(int)&((Gadget *)0)->colour == 0xC4 ? 1 : -1];
 typedef char Gadget_text_check[(int)&((Gadget *)0)->text == 0xE4 ? 1 : -1];
 typedef char Gadget_label2_check[(int)&((Gadget *)0)->label2 == 0x108 ? 1 : -1];
 typedef char Gadget_sprite1_check[(int)&((Gadget *)0)->sprite1 == 0x124 ? 1 : -1];
+#endif
 
 /* Field access through an untyped pointer (the bodies keep `char *` / `int *` parameters). */
 #define GADGET(p)  ((Gadget *)(p))
@@ -117,7 +119,9 @@ typedef struct BoardsGadget {
 } BoardsGadget;
 
 typedef char BoardsGadget_size_check[sizeof(BoardsGadget) == 0x140 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char BoardsGadget_count_check[(int)&((BoardsGadget *)0)->count == 0x10C ? 1 : -1];
+#endif
 
 /* CountDownGadget (0xD4, CountDownGadget_ctor 0xA8C) is built on a smaller
  * 0xC4 Node-derived base. CountDownGadget_setCount (0xB94, the ms -> "%d"
@@ -193,8 +197,10 @@ typedef struct PointsPopup {
 } PointsPopup;
 
 typedef char PointsPopup_size_check[sizeof(PointsPopup) == 0xD4 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char PointsPopup_state_check[(int)&((PointsPopup *)0)->state == 0x94 ? 1 : -1];
 typedef char PointsPopup_y_check[(int)&((PointsPopup *)0)->parms.yps.value == 0x5C ? 1 : -1];
+#endif
 
 #define POPUP(p) ((PointsPopup *)(p))
 
@@ -241,9 +247,11 @@ typedef struct CoolGadget {
 } CoolGadget;
 
 typedef char CoolGadget_size_check[sizeof(CoolGadget) == 0x198 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char CoolGadget_colour_check[(int)&((CoolGadget *)0)->colour == 0xD8 ? 1 : -1];
 typedef char CoolGadget_phase_check[(int)&((CoolGadget *)0)->phase == 0x128 ? 1 : -1];
 typedef char CoolGadget_sprite_check[(int)&((CoolGadget *)0)->label2Sprite == 0x180 ? 1 : -1];
+#endif
 
 #define COOLG(p) ((CoolGadget *)(p))
 
@@ -283,8 +291,10 @@ typedef struct TrickPointsGadget {
 } TrickPointsGadget;
 
 typedef char TrickPointsGadget_size_check[sizeof(TrickPointsGadget) == 0x168 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char TrickPointsGadget_y_check[(int)&((TrickPointsGadget *)0)->y == 0xBC ? 1 : -1];
 typedef char TrickPointsGadget_allIdle_check[(int)&((TrickPointsGadget *)0)->allIdle == 0xEC ? 1 : -1];
+#endif
 
 #define TPOINTS(p) ((TrickPointsGadget *)(p))
 
@@ -349,8 +359,10 @@ typedef struct CourseGadget {
 } CourseGadget;
 
 typedef char CourseGadget_size_check[sizeof(CourseGadget) == 0x2FC ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char CourseGadget_course_check[(int)&((CourseGadget *)0)->course == 0x1F0 ? 1 : -1];
 typedef char CourseGadget_my1_check[(int)&((CourseGadget *)0)->parms.my1.value == 0xEC ? 1 : -1];
+#endif
 
 #define COURSEG(p) ((CourseGadget *)(p))
 

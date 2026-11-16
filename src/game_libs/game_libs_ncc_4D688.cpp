@@ -1,4 +1,6 @@
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+typedef int s32; typedef unsigned int u32; typedef unsigned long long u64;
+#include "../../include/gdl/rcp.h" /* RcpTask / RcpMgr */
 /* IDO 7.1 NCC (C++) donor for RcpMgr_service -- EXACT (agent-g run 256), spliced over the post0b placeholder on
  * both build paths via REPLACE_FUNC_BODY (only RcpMgr_service = `Obj::run()` is taken from this object).
  * The debug-console event loop (agent-c run 137 NCC goto form; agent-g runs 192 / 204: member function, for(;;) loop
@@ -25,36 +27,37 @@ extern char gSysLib_4D468_w[];
 extern char D_4D468_a2[];
 }
 static long long sG;
-extern "C" void RcpMgr_loadTask_0004D354(int *arg0) {
-    CALL(sys_writebackDCacheAll)(arg0);
-    CALL(osSpTaskLoad)((char*)arg0 + 0x10);
-    CALL(gl_osSpTaskStartGo)((char*)arg0 + 0x10);
-    arg0[0x60/4] = 1;
-    arg0[0x64/4] = 0;
+extern "C" void RcpMgr_loadTask_0004D354(RcpTask *task) {
+    CALL(sys_writebackDCacheAll)(task);
+    CALL(osSpTaskLoad)(&task->task);
+    CALL(gl_osSpTaskStartGo)(&task->task);
+    task->unk60 = 1;
+    task->unk64 = 0;
 }
-extern "C" void RcpMgr_insertTask(int *a0, int **a1) {
-    if (*a1 != 0) {
-        *(int*)((char*)a0 + 0x50) = (int)*a1;
-        *(int*)((char*)a0 + 0x54) = *(int*)((char*)*a1 + 0x54);
-        *(int*)((char*)*(int**)((char*)*a1 + 0x54) + 0x50) = (int)a0;
-        *(int*)((char*)*a1 + 0x54) = (int)a0;
+/* append task to the circular queue at *head (before the head) */
+extern "C" void RcpMgr_insertTask(RcpTask *task, RcpTask **head) {
+    if (*head != 0) {
+        task->next = *head;
+        task->prev = (*head)->prev;
+        (*head)->prev->next = task;
+        (*head)->prev = task;
     } else {
-        *(int*)((char*)a0 + 0x50) = (int)a0;
-        *(int*)((char*)a0 + 0x54) = (int)a0;
-        *a1 = a0;
+        task->next = task;
+        task->prev = task;
+        *head = task;
     }
 }
-extern "C" void RcpMgr_removeTask(int node, int *head) {
+extern "C" void RcpMgr_removeTask(RcpTask *task, RcpTask **head) {
     if (*head == 0) {
-        gl_func_00000000(D_00000000 + 0x201E4, head, node);
+        gl_func_00000000(D_00000000 + 0x201E4, head, task); /* "RcpTask remove" */
     }
-    if (*(int *)(node + 0x50) == *(int *)(node + 0x54) && node == *(int *)(node + 0x54)) {
+    if (task->next == task->prev && task == task->prev) {
         *head = 0;
         return;
     }
-    *head = *(int *)(*head + 0x50);
-    *(int *)(*(int *)(node + 0x54) + 0x50) = *(int *)(node + 0x50);
-    *(int *)(*(int *)(node + 0x50) + 0x54) = *(int *)(node + 0x54);
+    *head = (*head)->next;
+    task->prev->next = task->next;
+    task->next->prev = task->prev;
 }
 struct E { E() {} char pad[0x78]; };
 void *operator new(unsigned int n, int al);

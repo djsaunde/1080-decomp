@@ -1,5 +1,6 @@
 #include "common.h"
 #include "uso_call.h"
+#include "gdl/gadget.h" /* PointsPopup */
 
 /* PointsGadget_display_FFFFFFE0: the FIRST function of the game_libs text, bootup.uso
  * Text section offset 0x1464C (USO Sym export 871, ROM 0xDE50B8). Its first 8
@@ -11,19 +12,26 @@
  * blank-call placeholder gl_func_00000000 is pinned to 0 in
  * undefined_syms_auto.txt.
  *
- * Colour fade toward (235, 80, 80) / 255 by o->0x74 / 255, then three draw calls
- * on o->0xB0 and (if set) o->0xA0. cfe -O2, one pass:
+ * A PointsPopup's display: the colour fades toward (235, 80, 80) / 255 by p->unk74 / 255
+ * (PointsGadget_update_00003430 ramps unk74 by 0x10), then the text is drawn with the arg
+ * font at (x + 2, y) scaled by scaleX / scaleY, and (if set) the font sprite at
+ * (x + unk80, y + unk84), both at alpha x the global fade scale. cfe -O2, one pass:
  * - base[] / col[] are arrays (memory: base[3] is a dead store, base[1] / [2]
  *   are reloaded); r / g / b get homes (stored, then reloaded into col);
  * - the declaration order base, col, d255, r, g, b, t plus an unused int pad[4]
  *   gives the 0x70 frame (b / g / r at 64 / 68 / 72, col at 80, base at 96);
  * - every sum is written `product + field` (cfe emits `add.s field, product`);
+ *   on the typed fields the drawSprite sums read `field + (f32)offset` (same add.s order);
  * - the 5-argument call takes a float at 16(sp): prototyped gl_func_00000000f. */
 extern int gl_func_00000000();
 extern int gl_func_00000000f(char *, int, int, int, f32, char *);
 extern f32 D_00000000;
 
-void PointsGadget_display_FFFFFFE0(char *o) {
+/* PointsPopup.font (s32) read as the sprite pointer it holds: the test and the three calls share one
+ * pointer-typed load (an int field cast per use is two values: an extra move) */
+#define POPUP_SPRITE(p) (*(char **)&(p)->font)
+
+void PointsGadget_display_FFFFFFE0(PointsPopup *p) {
     f32 base[4];
     f32 col[4];
     f32 d255 = 255.0f;
@@ -35,22 +43,23 @@ void PointsGadget_display_FFFFFFE0(char *o) {
     base[1] = 80.0f / d255;
     base[2] = 80.0f / d255;
     base[3] = 0.0f / d255;
-    t = (f32)*(int *)(o + 0x74);
-    r = (base[0] - *(f32 *)(o + 0x64)) * t / d255 + *(f32 *)(o + 0x64);
-    g = (base[1] - *(f32 *)(o + 0x68)) * t / d255 + *(f32 *)(o + 0x68);
-    b = (base[2] - *(f32 *)(o + 0x6C)) * t / d255 + *(f32 *)(o + 0x6C);
+    t = (f32)p->unk74;
+    r = (base[0] - p->colour[0]) * t / d255 + p->colour[0];
+    g = (base[1] - p->colour[1]) * t / d255 + p->colour[1];
+    b = (base[2] - p->colour[2]) * t / d255 + p->colour[2];
     col[0] = r;
     col[1] = g;
     col[2] = b;
     col[3] = 1.0f;
-    CALL(gui_setupRenderMode_0000055C)(*(char **)(o + 0xB0));
-    CALL(gui_setPrimColor_000006B8)(*(char **)(o + 0xB0), (int)((f32)*(int *)(o + 0x78) * D_00000000), col, 255);
-    XCALL(gl_func_00000000f, gui_drawStringScaled_00000F04)(*(char **)(o + 0xB0), (int)(*(f32 *)(o + 0x44) + 2.0f), (int)*(f32 *)(o + 0x5C),
-                      *(int *)(o + 0x88), *(f32 *)(o + 0x8C), o + 0xB4);
-    if (*(char **)(o + 0xA0) != 0) {
-        CALL(gui_spriteRefresh)(*(char **)(o + 0xA0));
-        CALL(gui_setColorEnvPrim_000017DC)(*(char **)(o + 0xA0), (int)((f32)*(int *)(o + 0x78) * D_00000000), col, 255);
-        CALL(gui_drawSprite)(*(char **)(o + 0xA0), (int)((f32)*(int *)(o + 0x80) + *(f32 *)(o + 0x44)),
-                         (int)((f32)*(int *)(o + 0x84) + *(f32 *)(o + 0x5C)), 3);
+    CALL(gui_setupRenderMode_0000055C)((char *)p->arg);
+    CALL(gui_setPrimColor_000006B8)((char *)p->arg, (int)((f32)p->alpha * D_00000000), col, 255);
+    /* scaleX goes in a3 as its raw bits (the callee is K&R here: lw, not lwc1 + mfc1) */
+    XCALL(gl_func_00000000f, gui_drawStringScaled_00000F04)((char *)p->arg, (int)(p->parms.xps.value + 2.0f), (int)p->parms.yps.value,
+                      *(int *)&p->scaleX, p->scaleY, p->text);
+    if (POPUP_SPRITE(p) != 0) {
+        CALL(gui_spriteRefresh)(POPUP_SPRITE(p));
+        CALL(gui_setColorEnvPrim_000017DC)(POPUP_SPRITE(p), (int)((f32)p->alpha * D_00000000), col, 255);
+        CALL(gui_drawSprite)(POPUP_SPRITE(p), (int)(p->parms.xps.value + (f32)p->unk80),
+                         (int)(p->parms.yps.value + (f32)p->unk84), 3);
     }
 }
