@@ -1,0 +1,215 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Mon, 16 Nov 2026 14:19:19 -0500
+Subject: [PATCH 3/4] fast: deferred colour / depth read-back API for ports
+
+Ports of code that reads the N64 colour or depth buffer from the CPU queue
+requests before Run(); ServiceReadbacks() fulfils them at the end of Run(),
+after the frame is drawn and before it is resolved / presented, so the game
+thread never touches the GPU. Results are ready for the next update: one
+frame of latency, the same as reading the last completed N64 framebuffer.
+
+- ReadbackRequestRgba5551 / gfx_readback_rgba5551: a region in native
+  coordinates, taken from the native-aspect centre of the game view scaled
+  to the native size, as RGBA5551, optionally byte-swapped to big-endian.
+- ReadbackRequestDepth / ReadbackGetDepth (gfx_readback_depth_*): batched
+  depth at points, in GetPixelDepth units (far plane = 0xFFFC).
+---
+ include/fast/interpreter.h |  29 ++++++++++
+ src/fast/interpreter.cpp   | 115 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 144 insertions(+)
+
+diff --git a/include/fast/interpreter.h b/include/fast/interpreter.h
+index f5c7703..15b4cfb 100644
+--- a/include/fast/interpreter.h
++++ b/include/fast/interpreter.h
+@@ -410,6 +410,18 @@ class Interpreter {
+     void AdjustPixelDepthCoordinates(float& x, float& y);
+     void GetPixelDepthPrepare(float x, float y);
+     uint16_t GetPixelDepth(float x, float y);
++    // CPU read-back of the game's colour and depth buffers, for ports of code that reads the N64 framebuffer.
++    // Requests made before Run() are serviced at the end of that Run(), once the frame is drawn, so the results
++    // describe that frame and are ready for the game's next update: one frame of latency, like a game reading its
++    // last completed framebuffer. Coordinates are in native pixels (e.g. 320x240).
++    // Colour: dst receives width * height RGBA5551 pixels from the native-aspect centre of the game view, scaled to
++    // the native dimensions; bswap stores them big-endian, the N64 memory order the texture importers expect.
++    void ReadbackRequestRgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst, bool bswap);
++    // Depth: same units as GetPixelDepth; the far plane (the cleared value) reads as 0xFFFC, the N64 Z clear value.
++    // ReadbackGetDepth returns false if (x, y) was not requested before the last Run().
++    void ReadbackRequestDepth(uint32_t x, uint32_t y);
++    bool ReadbackGetDepth(uint32_t x, uint32_t y, uint16_t* depth) const;
++    void ServiceReadbacks();
+     void RegisterBlendedTexture(const char* name, uint8_t* mask, uint8_t* replacement);
+     void UnregisterBlendedTexture(const char* name);
+ 
+@@ -561,6 +573,19 @@ class Interpreter {
+ 
+     std::set<std::pair<float, float>> mGetPixelDepthPending; // get_pixel_depth_pending;
+     std::unordered_map<std::pair<float, float>, uint16_t, hash_pair_ff> mGetPixelDepthCached; // get_pixel_depth_cached;
++
++    struct ReadbackRequest {
++        uint32_t x, y, width, height;
++        uint16_t* dst;
++        bool bswap;
++    };
++    std::vector<ReadbackRequest> mReadbackRequests;
++    std::set<std::pair<uint32_t, uint32_t>> mReadbackDepthRequests;
++    std::map<std::pair<uint32_t, uint32_t>, uint16_t> mReadbackDepthResults;
++    std::vector<uint16_t> mReadbackBuffer;
++    int mReadbackFb = -1;
++    uint32_t mReadbackFbWidth = 0;
++    uint32_t mReadbackFbHeight = 0;
+     std::map<std::string, MaskedTextureEntry, std::less<>> mMaskedTextures;
+     std::unordered_map<uintptr_t, int> mFbTextures; // CPU addr -> GPU FB id
+ 
+@@ -588,6 +613,10 @@ const char* GfxGetOpcodeName(int8_t opcode);
+ } // namespace Fast
+ 
+ extern "C" void gfx_texture_cache_clear();
++extern "C" void gfx_readback_rgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
++                                      bool bswap);
++extern "C" void gfx_readback_depth_request(uint32_t x, uint32_t y);
++extern "C" bool gfx_readback_depth_get(uint32_t x, uint32_t y, uint16_t* depth);
+ extern "C" void gfx_shader_cache_clear();
+ extern "C" int gfx_create_framebuffer(uint32_t width, uint32_t height, uint32_t native_width, uint32_t native_height,
+                                       uint8_t resize, bool forceFixedAspect = false);
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index 2a46b10..d439f54 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -5311,6 +5311,9 @@ void Interpreter::Run(Gfx* commands, const std::unordered_map<Mtx*, MtxF>& mtx_r
+     }
+ 
+     Flush();
++    if (!mFbActive) {
++        ServiceReadbacks();
++    }
+     mGfxFrameBuffer = 0;
+     currentDir = std::stack<std::string>();
+ 
+@@ -5437,6 +5440,105 @@ void Interpreter::AdjustPixelDepthCoordinates(float& x, float& y) {
+     }
+ }
+ 
++void Interpreter::ReadbackRequestRgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
++                                          bool bswap) {
++    mReadbackRequests.push_back({ x, y, width, height, dst, bswap });
++}
++
++void Interpreter::ReadbackRequestDepth(uint32_t x, uint32_t y) {
++    mReadbackDepthRequests.emplace(x, y);
++}
++
++bool Interpreter::ReadbackGetDepth(uint32_t x, uint32_t y, uint16_t* depth) const {
++    auto it = mReadbackDepthResults.find(std::make_pair(x, y));
++    if (it == mReadbackDepthResults.end()) {
++        return false;
++    }
++    *depth = it->second;
++    return true;
++}
++
++void Interpreter::ServiceReadbacks() {
++    const int srcFb = mRendersToFb ? mGameFb : 0;
++
++    if (!mReadbackRequests.empty()) {
++        const uint32_t width = mNativeDimensions.width;
++        const uint32_t height = mNativeDimensions.height;
++
++        if (mReadbackFb < 0) {
++            mReadbackFb = mRapi->CreateFramebuffer();
++        }
++        if (mReadbackFbWidth != width || mReadbackFbHeight != height) {
++            mRapi->UpdateFramebufferParameters(mReadbackFb, width, height, 1, true, true, false, false);
++            mReadbackFbWidth = width;
++            mReadbackFbHeight = height;
++        }
++
++        // Same source area as CopyFrameBuffer, narrowed to its centre at the native aspect ratio
++        int srcX0, srcY0, srcW, srcH;
++        if (srcFb == 0 || (mMsaaLevel > 1 && mCurDimensions.width == mGameWindowViewport.width &&
++                           mCurDimensions.height == mGameWindowViewport.height)) {
++            srcX0 = mGameWindowViewport.x;
++            srcY0 = mGameWindowViewport.y;
++            srcW = mGameWindowViewport.width;
++            srcH = mGameWindowViewport.height;
++        } else {
++            srcX0 = 0;
++            srcY0 = 0;
++            srcW = mCurDimensions.width;
++            srcH = mCurDimensions.height;
++        }
++        if ((float)srcW / srcH > (float)width / height) {
++            int sliceW = (int)((float)srcH * width / height);
++            srcX0 += (srcW - sliceW) / 2;
++            srcW = sliceW;
++        }
++
++        mRapi->CopyFramebuffer(mReadbackFb, srcFb, srcX0, srcY0, srcX0 + srcW, srcY0 + srcH, 0, 0, width, height);
++        mReadbackBuffer.resize((size_t)width * height);
++        mRapi->ReadFramebufferToCPU(mReadbackFb, width, height, mReadbackBuffer.data());
++
++        for (const auto& req : mReadbackRequests) {
++            for (uint32_t row = 0; row < req.height; row++) {
++                for (uint32_t col = 0; col < req.width; col++) {
++                    const uint32_t x = req.x + col;
++                    const uint32_t y = req.y + row;
++                    uint16_t pixel = (x < width && y < height) ? mReadbackBuffer[(size_t)y * width + x] : 0;
++#ifndef IS_BIGENDIAN
++                    if (req.bswap) {
++                        pixel = BE16SWAP(pixel);
++                    }
++#endif
++                    req.dst[(size_t)row * req.width + col] = pixel;
++                }
++            }
++        }
++        mReadbackRequests.clear();
++    }
++
++    mReadbackDepthResults.clear();
++    if (!mReadbackDepthRequests.empty()) {
++        std::set<std::pair<float, float>> coordinates;
++        std::vector<std::pair<std::pair<uint32_t, uint32_t>, std::pair<float, float>>> lookups;
++        for (const auto& request : mReadbackDepthRequests) {
++            float x = request.first;
++            float y = request.second;
++            AdjustPixelDepthCoordinates(x, y);
++            coordinates.emplace(x, y);
++            lookups.emplace_back(request, std::make_pair(x, y));
++        }
++
++        std::unordered_map<std::pair<float, float>, uint16_t, hash_pair_ff> res =
++            mRapi->GetPixelDepth(srcFb, coordinates);
++        for (const auto& [request, coordinate] : lookups) {
++            if (auto it = res.find(coordinate); it != res.end()) {
++                mReadbackDepthResults.emplace(request, it->second);
++            }
++        }
++        mReadbackDepthRequests.clear();
++    }
++}
++
+ void Interpreter::GetPixelDepthPrepare(float x, float y) {
+     AdjustPixelDepthCoordinates(x, y);
+     mGetPixelDepthPending.emplace(x, y);
+@@ -5627,6 +5729,19 @@ extern "C" void gfx_texture_cache_clear() {
+     Fast::mInstance.lock().get()->TextureCacheClear();
+ }
+ 
++extern "C" void gfx_readback_rgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
++                                      bool bswap) {
++    Fast::mInstance.lock().get()->ReadbackRequestRgba5551(x, y, width, height, dst, bswap);
++}
++
++extern "C" void gfx_readback_depth_request(uint32_t x, uint32_t y) {
++    Fast::mInstance.lock().get()->ReadbackRequestDepth(x, y);
++}
++
++extern "C" bool gfx_readback_depth_get(uint32_t x, uint32_t y, uint16_t* depth) {
++    return Fast::mInstance.lock().get()->ReadbackGetDepth(x, y, depth);
++}
++
+ extern "C" void gfx_shader_cache_clear() {
+     auto instance = Fast::mInstance.lock().get();
+     instance->mColorCombinerPool.clear();

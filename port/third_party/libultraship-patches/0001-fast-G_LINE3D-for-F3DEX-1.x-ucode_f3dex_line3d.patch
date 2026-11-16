@@ -1,0 +1,207 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Mon, 16 Nov 2026 14:17:33 -0500
+Subject: [PATCH 1/4] fast: G_LINE3D for F3DEX 1.x (ucode_f3dex_line3d)
+
+F3DEX 1.x shares opcode 0xB5 between G_QUAD (F3DEX) and G_LINE3D (L3DEX).
+Add a ucode_f3dex_line3d entry, the F3DEX table with 0xB5 decoded as
+G_LINE3D, and GfxSpLine3D, which draws the line as a quad extruded
+perpendicular to it on screen, 1.5 + width / 2 native pixels thick.
+The enum value is appended so existing ucode ids stay stable.
+---
+ include/fast/interpreter.h                    |   1 +
+ include/fast/ucodehandlers.h                  |   3 +
+ src/fast/interpreter.cpp                      | 107 +++++++++++++++++-
+ .../resource/factory/DisplayListFactory.cpp   |   1 +
+ 4 files changed, 106 insertions(+), 6 deletions(-)
+
+diff --git a/include/fast/interpreter.h b/include/fast/interpreter.h
+index a7334a9..f5c7703 100644
+--- a/include/fast/interpreter.h
++++ b/include/fast/interpreter.h
+@@ -460,6 +460,7 @@ class Interpreter {
+     void GfxSpVertex(size_t numVertices, size_t destIndex, const F3DVtx* vertices);
+     void GfxSpModifyVertex(uint16_t vtxIdx, uint8_t where, uint32_t val);
+     void GfxSpTri1(uint8_t vtx1Idx, uint8_t vtx2Idx, uint8_t vtx3Idx, bool isRect);
++    void GfxSpLine3D(uint8_t vtx1Idx, uint8_t vtx2Idx, uint8_t width);
+     void GfxSpGeometryMode(uint32_t clear, uint32_t set);
+     void GfxSpExtraGeometryMode(uint32_t clear, uint32_t set);
+     void GfxSpMovememF3dex2(uint8_t index, uint8_t offset, const void* data);
+diff --git a/include/fast/ucodehandlers.h b/include/fast/ucodehandlers.h
+index 330375e..fe88016 100644
+--- a/include/fast/ucodehandlers.h
++++ b/include/fast/ucodehandlers.h
+@@ -7,5 +7,8 @@ typedef enum UcodeHandlers {
+     ucode_f3dexb,
+     ucode_f3dex2,
+     ucode_s2dex,
++    // F3DEX 1.x with 0xB5 decoded as G_LINE3D (the L3DEX meaning) instead of G_QUAD, for games that put
++    // lines in their F3DEX display lists. Appended so the existing values stay stable.
++    ucode_f3dex_line3d,
+     ucode_max,
+ } UcodeHandlers;
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index a1907a1..c731eda 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -90,6 +90,7 @@ static constexpr std::array ucode_attr_handlers = {
+     &f3dexAttrHandler,  // ucode_f3exb
+     &f3dex2AttrHandler, // ucode_f3ex2
+     &f3dex2AttrHandler, // ucode_s2dex
++    &f3dexAttrHandler,  // ucode_f3dex_line3d
+ };
+ 
+ static uint32_t get_attr(Attribute attr) {
+@@ -2301,6 +2302,65 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+     }
+ }
+ 
++// Draws a G_LINE3D as a quad between two loaded vertices, extruded perpendicular to the line on screen.
++// The line is 1.5 + width / 2 N64 pixels thick (see gSPLineW3D in gbi.h). Lines are never culled.
++void Interpreter::GfxSpLine3D(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t width) {
++    struct LoadedVertex* v1 = &mRsp->loaded_vertices[vtx1_idx];
++    struct LoadedVertex* v2 = &mRsp->loaded_vertices[vtx2_idx];
++
++    if (v1->clip_rej & v2->clip_rej) {
++        // The whole line lies outside the visible area
++        return;
++    }
++
++    if (v1->w <= 0.0f || v2->w <= 0.0f || mRdp->viewport.width == 0 || mRdp->viewport.height == 0) {
++        // LUSTODO: clip lines that cross the near plane instead of dropping them
++        return;
++    }
++
++    // Half the thickness in output pixels. Scale by the vertical ratio only, so that the thickness stays the
++    // same in both directions when the window is wider than the native aspect ratio.
++    const float half_px = (1.5f + width * 0.5f) * 0.5f * RATIO_Y(mActiveFrameBuffer, mCurDimensions);
++    const float vp_w = (float)mRdp->viewport.width;
++    const float vp_h = (float)mRdp->viewport.height;
++
++    // Line direction in output pixels
++    float dx = (v2->x / v2->w - v1->x / v1->w) * vp_w * 0.5f;
++    float dy = (v2->y / v2->w - v1->y / v1->w) * vp_h * 0.5f;
++    float len = sqrtf(dx * dx + dy * dy);
++    if (len == 0.0f) {
++        dx = 1.0f;
++        dy = 0.0f;
++        len = 1.0f;
++    }
++
++    // Perpendicular offset in normalized device coordinates
++    const float nx = -dy / len * half_px * 2.0f / vp_w;
++    const float ny = dx / len * half_px * 2.0f / vp_h;
++
++    struct LoadedVertex* q = &mRsp->loaded_vertices[MAX_VERTICES];
++    q[0] = *v1;
++    q[1] = *v1;
++    q[2] = *v2;
++    q[3] = *v2;
++    q[0].x += nx * v1->w;
++    q[0].y += ny * v1->w;
++    q[1].x -= nx * v1->w;
++    q[1].y -= ny * v1->w;
++    q[2].x -= nx * v2->w;
++    q[2].y -= ny * v2->w;
++    q[3].x += nx * v2->w;
++    q[3].y += ny * v2->w;
++
++    uint32_t geometry_mode_saved = mRsp->geometry_mode;
++    mRsp->geometry_mode &= ~get_attr(CULL_BOTH);
++
++    GfxSpTri1(MAX_VERTICES + 0, MAX_VERTICES + 1, MAX_VERTICES + 2, false);
++    GfxSpTri1(MAX_VERTICES + 0, MAX_VERTICES + 2, MAX_VERTICES + 3, false);
++
++    mRsp->geometry_mode = geometry_mode_saved;
++}
++
+ void Interpreter::GfxSpGeometryMode(uint32_t clear, uint32_t set) {
+     mRsp->geometry_mode &= ~clear;
+     mRsp->geometry_mode |= set;
+@@ -3939,6 +3999,15 @@ bool gfx_quad_handler_f3dex(F3DGfx** cmd0) {
+     return false;
+ }
+ 
++// F3DEX 1.x G_LINE3D shares its opcode with G_QUAD: w1 = v0 * 2 << 16 | v1 * 2 << 8 | width
++bool gfx_line3d_handler_f3dex(F3DGfx** cmd0) {
++    Interpreter* gfx = mInstance.lock().get();
++    F3DGfx* cmd = *cmd0;
++
++    gfx->GfxSpLine3D(C1(16, 8) / 2, C1(8, 8) / 2, C1(0, 8));
++    return false;
++}
++
+ bool gfx_othermode_l_handler_f3dex2(F3DGfx** cmd0) {
+     Interpreter* gfx = mInstance.lock().get();
+     F3DGfx* cmd = *cmd0;
+@@ -4802,6 +4871,30 @@ static constexpr UcodeHandler f3dexHandlers = {
+     { F3DEX_G_QUAD, { "G_QUAD", gfx_quad_handler_f3dex } },
+ };
+ 
++// Same as f3dexHandlers, except that 0xB5 is G_LINE3D instead of G_QUAD
++static constexpr UcodeHandler f3dexLine3dHandlers = {
++    { F3DEX_G_NOOP, { "G_NOOP", gfx_noop_handler_f3dex2 } },
++    { F3DEX_G_CULLDL, { "G_CULLDL", gfx_cull_dl_handler_f3dex2 } },
++    { F3DEX_G_MTX, { "G_MTX", gfx_mtx_handler_f3d } },
++    { F3DEX_G_POPMTX, { "G_POPMTX", gfx_pop_mtx_handler_f3d } },
++    { F3DEX_G_MOVEMEM, { "G_POPMEM", gfx_movemem_handler_f3d } },
++    { F3DEX_G_MOVEWORD, { "G_MOVEWORD", gfx_moveword_handler_f3d } },
++    { F3DEX_G_TEXTURE, { "G_TEXTURE", gfx_texture_handler_f3d } },
++    { F3DEX_G_SETOTHERMODE_L, { "G_SETOTHERMODE_L", gfx_othermode_l_handler_f3d } },
++    { F3DEX_G_SETOTHERMODE_H, { "G_SETOTHERMODE_H", gfx_othermode_h_handler_f3d } },
++    { F3DEX_G_SETGEOMETRYMODE, { "G_SETGEOMETRYMODE", gfx_set_geometry_mode_handler_f3dex } },
++    { F3DEX_G_CLEARGEOMETRYMODE, { "G_CLEARGEOMETRYMODE", gfx_clear_geometry_mode_handler_f3dex } },
++    { F3DEX_G_VTX, { "G_VTX", gfx_vtx_handler_f3dex } },
++    { F3DEX_G_TRI1, { "G_TRI1", gfx_tri1_handler_f3dex } },
++    { F3DEX_G_MODIFYVTX, { "G_MODIFYVTX", gfx_modify_vtx_handler_f3dex2 } },
++    { F3DEX_G_DL, { "G_DL", gfx_dl_handler_common } },
++    { F3DEX_G_ENDDL, { "G_ENDDL", gfx_end_dl_handler_common } },
++    { F3DEX_G_TRI2, { "G_TRI2", gfx_tri2_handler_f3dex } },
++    { F3DEX_G_SPNOOP, { "G_SPNOOP", gfx_spnoop_command_handler_f3dex2 } },
++    { F3DEX_G_RDPHALF_1, { "mRdpHALF_1", gfx_stubbed_command_handler } },
++    { F3DEX_G_LINE3D, { "G_LINE3D", gfx_line3d_handler_f3dex } },
++};
++
+ static constexpr UcodeHandler f3dHandlers = {
+     { F3DEX_G_NOOP, { "G_NOOP", gfx_noop_handler_f3dex2 } },
+     { F3DEX_G_CULLDL, { "G_CULLDL", gfx_cull_dl_handler_f3dex2 } },
+@@ -4837,12 +4930,13 @@ static constexpr UcodeHandler s2dexHandlers = {
+ };
+ 
+ static constexpr std::array ucode_handlers = {
+-    &f3dHandlers,    // ucode_f3db
+-    &f3dHandlers,    // ucode_f3d
+-    &f3dexHandlers,  // ucode_f3dex
+-    &f3dexHandlers,  // ucode_f3dexb
+-    &f3dex2Handlers, // ucode_f3dex2
+-    &s2dexHandlers,  // ucode_s2dex
++    &f3dHandlers,         // ucode_f3db
++    &f3dHandlers,         // ucode_f3d
++    &f3dexHandlers,       // ucode_f3dex
++    &f3dexHandlers,       // ucode_f3dexb
++    &f3dex2Handlers,      // ucode_f3dex2
++    &s2dexHandlers,       // ucode_s2dex
++    &f3dexLine3dHandlers, // ucode_f3dex_line3d
+ };
+ 
+ const char* GfxGetOpcodeName(int8_t opcode) {
+@@ -4883,6 +4977,7 @@ static void gfx_set_ucode_handler(UcodeHandlers ucode) {
+         case ucode_f3dex:
+         case ucode_f3dexb:
+         case ucode_f3dex2:
++        case ucode_f3dex_line3d:
+             gfx->mRsp->fog_mul = 0;
+             gfx->mRsp->fog_offset = 0;
+             break;
+diff --git a/src/fast/resource/factory/DisplayListFactory.cpp b/src/fast/resource/factory/DisplayListFactory.cpp
+index 11fbc7f..bb2eff1 100644
+--- a/src/fast/resource/factory/DisplayListFactory.cpp
++++ b/src/fast/resource/factory/DisplayListFactory.cpp
+@@ -155,6 +155,7 @@ int8_t GetEndOpcodeByUCode(UcodeHandlers ucode) {
+         case ucode_f3db:
+         case ucode_f3dex:
+         case ucode_f3dexb:
++        case ucode_f3dex_line3d:
+             return F3DEX_G_ENDDL;
+         case ucode_f3dex2:
+         case ucode_s2dex: {

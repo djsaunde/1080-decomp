@@ -1,0 +1,34 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Mon, 16 Nov 2026 14:18:07 -0500
+Subject: [PATCH 2/4] fast: read the cycle 1 blender fields for invisible
+ detection in 1-cycle mode
+
+In 1-cycle mode the RDP blender runs only its first cycle. Games that build
+1-cycle render modes from a single GBL_c1 word leave the cycle 2 fields at
+zero, so a Z-only mode such as 0x0C4C3078 (IN * 0 + MEM * 0) was drawn opaque.
+Test the cycle 1 A / M fields in 1-cycle mode; other cycle types keep the
+cycle 2 test. Render modes that set both cycles to the same value behave as
+before.
+---
+ src/fast/interpreter.cpp | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index c731eda..2a46b10 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -1898,8 +1898,11 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+     bool use_noise = (mRdp->other_mode_l & (3U << G_MDSFT_ALPHACOMPARE)) == G_AC_DITHER;
+     bool use_2cyc = (mRdp->other_mode_h & (3U << G_MDSFT_CYCLETYPE)) == G_CYC_2CYCLE;
+     bool alpha_threshold = (mRdp->other_mode_l & (3U << G_MDSFT_ALPHACOMPARE)) == G_AC_THRESHOLD;
+-    bool invisible =
+-        (mRdp->other_mode_l & (3 << 24)) == (G_BL_0 << 24) && (mRdp->other_mode_l & (3 << 20)) == (G_BL_CLR_MEM << 20);
++    // In 1-cycle mode the blender uses its cycle 1 fields (A at bit 26, M at bit 22), which are the only ones set by
++    // games that build 1-cycle render modes from a single GBL_c1 word. Otherwise check the cycle 2 fields.
++    const uint32_t bl_shift = (mRdp->other_mode_h & (3U << G_MDSFT_CYCLETYPE)) == G_CYC_1CYCLE ? 2 : 0;
++    bool invisible = (mRdp->other_mode_l & (3U << (24 + bl_shift))) == ((uint32_t)G_BL_0 << (24 + bl_shift)) &&
++                     (mRdp->other_mode_l & (3U << (20 + bl_shift))) == ((uint32_t)G_BL_CLR_MEM << (20 + bl_shift));
+     bool use_grayscale = mRdp->grayscale;
+     bool use_prim_depth = (mRdp->other_mode_l & G_ZS_PRIM) != 0;
+ 

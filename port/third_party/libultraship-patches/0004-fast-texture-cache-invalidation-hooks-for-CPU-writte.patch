@@ -1,0 +1,91 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Mon, 16 Nov 2026 14:19:49 -0500
+Subject: [PATCH 4/4] fast: texture cache invalidation hooks for CPU-written
+ textures
+
+The texture cache is keyed by address, so a game that rewrites texels or a
+palette in place keeps drawing the stale upload. Add
+TextureCacheInvalidateRange, which drops every entry whose texels or palette
+start inside a range and marks the loaded tiles changed, and C entry points
+gfx_texture_cache_delete / gfx_texture_cache_invalidate_range that a port can
+call where the N64 code wrote back the data cache.
+---
+ include/fast/interpreter.h |  5 +++++
+ src/fast/interpreter.cpp   | 33 +++++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
+
+diff --git a/include/fast/interpreter.h b/include/fast/interpreter.h
+index 15b4cfb..591c47f 100644
+--- a/include/fast/interpreter.h
++++ b/include/fast/interpreter.h
+@@ -445,6 +445,9 @@ class Interpreter {
+     std::shared_ptr<Ship::IResource> ResolveResourceCached(const char* path);
+     bool TextureCacheLookup(int i, const TextureCacheKey& key);
+     void TextureCacheDelete(const uint8_t* origAddr);
++    // Drops every cached texture whose texels or palette start in [addr, addr + size), for ports whose game code
++    // rewrites textures or palettes in place (the N64 equivalent being a data cache writeback before the RDP reads)
++    void TextureCacheInvalidateRange(const void* addr, size_t size);
+     void ImportTextureRgba16(int tile, bool importReplacement);
+     void ImportTextureRgba32(int tile, bool importReplacement);
+     void ImportTextureIA4(int tile, bool importReplacement);
+@@ -613,6 +616,8 @@ const char* GfxGetOpcodeName(int8_t opcode);
+ } // namespace Fast
+ 
+ extern "C" void gfx_texture_cache_clear();
++extern "C" void gfx_texture_cache_delete(const void* addr);
++extern "C" void gfx_texture_cache_invalidate_range(const void* addr, size_t size);
+ extern "C" void gfx_readback_rgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
+                                       bool bswap);
+ extern "C" void gfx_readback_depth_request(uint32_t x, uint32_t y);
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index d439f54..c5e57c2 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -571,6 +571,31 @@ void Interpreter::TextureCacheDelete(const uint8_t* origAddr) {
+     }
+ }
+ 
++void Interpreter::TextureCacheInvalidateRange(const void* addr, size_t size) {
++    const uintptr_t start = (uintptr_t)addr;
++    auto inRange = [start, size](const void* p) { return p != nullptr && (uintptr_t)p - start < size; };
++
++    for (auto it = mTextureCache.map.begin(); it != mTextureCache.map.end();) {
++        const TextureCacheKey& key = it->first;
++        if (inRange(key.texture_addr) || inRange(key.palette_addrs[0]) || inRange(key.palette_addrs[1])) {
++            for (int j = 0; j < SHADER_MAX_TEXTURES; j++) {
++                if (mRenderingState.mTextures[j] == &*it) {
++                    mRenderingState.mTextures[j] = nullptr;
++                }
++            }
++            mTextureCache.lru.erase(it->second.lru_location);
++            mTextureCache.free_texture_ids.push_back(it->second.texture_id);
++            it = mTextureCache.map.erase(it);
++        } else {
++            ++it;
++        }
++    }
++
++    // The loaded tiles may refer to the rewritten data; look them up again at the next draw
++    mRdp->textures_changed[0] = true;
++    mRdp->textures_changed[1] = true;
++}
++
+ // Pick the per-line byte width for texture decode. Prefer the DRAM stride from
+ // loaded_texture when it looks like real per-line info (differs from total size).
+ // Fall back to the TMEM tile stride when loaded sizes match total (LoadBlock with
+@@ -5729,6 +5754,14 @@ extern "C" void gfx_texture_cache_clear() {
+     Fast::mInstance.lock().get()->TextureCacheClear();
+ }
+ 
++extern "C" void gfx_texture_cache_delete(const void* addr) {
++    Fast::mInstance.lock().get()->TextureCacheDelete((const uint8_t*)addr);
++}
++
++extern "C" void gfx_texture_cache_invalidate_range(const void* addr, size_t size) {
++    Fast::mInstance.lock().get()->TextureCacheInvalidateRange(addr, size);
++}
++
+ extern "C" void gfx_readback_rgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
+                                       bool bswap) {
+     Fast::mInstance.lock().get()->ReadbackRequestRgba5551(x, y, width, height, dst, bswap);
