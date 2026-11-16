@@ -44,6 +44,8 @@ extern char heli_gGfxLib_a, heli_gGfxLib_b, heli_gGfxLib_c;
 typedef struct HeliTypeTag { int v; } HeliTypeTag;
 
 typedef struct HeliColour { float r, g, b, a; } HeliColour;
+typedef struct HeliVec3f { float x, y, z; } HeliVec3f;
+char *heli_uso_func_00000388(char *self);
 
 char *heli_uso_func_000004C0(char *self, void *body, void *blades, void *sprite);
 void heli_uso_func_000008A8(char *self);
@@ -174,7 +176,28 @@ char *heli_uso_func_00000388(char *self) {
     return self;
 }
 
+/* heli_uso_func_000003F4: HeliRotor update: spin the local quaternion about the axis
+ * (+0x10C) by speed / RoData+0x54, then QNode_update. NM 84%: the target loads the axis
+ * z, y, x into f12 / f2 / f0 (the inlined Vec3(x, y, z) copy); every local / member order
+ * probed gives x first. */
+#ifdef NON_MATCHING
+void heli_uso_func_000003F4(char *self) {
+    int pad_top[5];
+    HeliVec3f axis;
+    int pad_bot[1];
+    float x = *(float *)(self + 0x10C);
+    float y = *(float *)(self + 0x110);
+    float z = *(float *)(self + 0x114);
+    float angle = *(float *)(self + 0x108) / HELI_RODATA_F(0x54);
+    axis.x = x;
+    axis.y = y;
+    axis.z = z;
+    gl_func_00000000_heli_ppf /* math_quatRotateAxisAngle */(self + 0xCC, &axis, angle);
+    gl_func_00000000 /* QNode_update */(self);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000003F4);
+#endif
 
 /* heli_uso_func_00000458: empty virtual (one-arg no-op slot). */
 void heli_uso_func_00000458(int a0) {
@@ -190,7 +213,58 @@ char *heli_uso_func_00000460(char *self) {
     return self;
 }
 
+/* heli_uso_func_000004C0: Heli ctor (0x174, "<QNode>"): attach the body shape, two HeliRotor
+ * children sharing the blade shape (main: pitched 90 deg, y = 480, axis y; tail: yawed 90 deg,
+ * scale / trans from RoData, axis x) and a QNode carrying the sprite, then reset the flight
+ * state (0x8A8). NM ~82%: the rotor-field zero stores need their own constant web (the
+ * `(float)0` int-cast literal gives it) but land in f2 where the target uses f0; the
+ * RoData loads need one alias per site (heli_ro_*). */
+#ifdef NON_MATCHING
+extern char heli_ro_58, heli_ro_5C, heli_ro_60, heli_ro_64, heli_ro_68, heli_ro_6C;
+extern void gl_func_00000000_heli_euler(void *, float, float, float); /* math_eulerToQuat */
+#define HELI_RO_SITE(off) (*(float *)(&heli_ro_##off + 0x##off))
+char *heli_uso_func_000004C0(char *self, void *body, void *blades, void *sprite) {
+    char *mainRotor;
+    char *tailRotor;
+    char *n;
+    if (self != 0 || (self = (char *)gl_func_00000000 /* mem_new */(0x174)) != 0) {
+        gl_func_00000000f3 /* QNode_ctor */(self, &heli_data_00000000 + 0xCB98, 0.0f, 0.0f, 0.0f);
+        NODE(self)->vptr = (char *)&D_00000000; /* Heli vtable (Data+0xCA88) */
+        gl_func_00000000 /* MNode_addChild */(self, body);
+        mainRotor = (char *)gl_func_00000000 /* heli_uso_func_00000388 */(0);
+        gl_func_00000000 /* MNode_addChild */(self, mainRotor);
+        tailRotor = (char *)gl_func_00000000 /* heli_uso_func_00000388 */(0);
+        gl_func_00000000 /* MNode_addChild */(self, tailRotor);
+        gl_func_00000000 /* MNode_addChild */(mainRotor, blades);
+        gl_func_00000000 /* MNode_addChild */(tailRotor, blades);
+        gl_func_00000000_heli_euler /* math_eulerToQuat */(mainRotor + 0xCC, 90.0f, 0.0f, 0.0f);
+        *(float *)(mainRotor + 0xB4) = (float)0;
+        *(float *)(mainRotor + 0xB8) = 480.0f;
+        *(float *)(mainRotor + 0xBC) = (float)0;
+        *(float *)(mainRotor + 0x10C) = (float)0;
+        *(float *)(mainRotor + 0x110) = 1.0f;
+        *(float *)(mainRotor + 0x114) = (float)0;
+        gl_func_00000000_heli_euler /* math_eulerToQuat */(tailRotor + 0xCC, 0.0f, 90.0f, 0.0f);
+        *(float *)(tailRotor + 0xC0) = *(float *)(tailRotor + 0xC4) = *(float *)(tailRotor + 0xC8) = HELI_RO_SITE(58);
+        *(float *)(tailRotor + 0xB4) = HELI_RO_SITE(5C);
+        *(float *)(tailRotor + 0xB8) = HELI_RO_SITE(60);
+        *(float *)(tailRotor + 0xBC) = HELI_RO_SITE(64);
+        *(float *)(tailRotor + 0x10C) = 1.0f;
+        *(float *)(tailRotor + 0x110) = (float)0;
+        *(float *)(tailRotor + 0x114) = (float)0;
+        n = (char *)gl_func_00000000f3 /* QNode_ctor */(0, &heli_data_00000000 + 0xCBA0, 0.0f, 0.0f, 0.0f);
+        gl_func_00000000 /* MNode_addChild */(self, n);
+        *(float *)(n + 0xB4) = 0.0f;
+        *(float *)(n + 0xB8) = HELI_RO_SITE(68);
+        *(float *)(n + 0xBC) = HELI_RO_SITE(6C);
+        gl_func_00000000 /* MNode_addChild */(n, sprite);
+        gl_func_00000000 /* heli_uso_func_000008A8 */(self);
+    }
+    return self;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000004C0);
+#endif
 
 /* heli_uso_func_0000069C: Heli loadData: the start position (+0x108), then the local pose
  * (vqs.trans = start raised by RoData+0x70) is copied into the combined pose (cvqs). */
