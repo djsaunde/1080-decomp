@@ -14,7 +14,7 @@
  * sym1341 Text 0x7E5D0 = osRecvMesg;
  * sym2570 Text 0x80514 = __osSiRelAccess (gl___osSiRelAccess).
  * The module-base relocation at +0x28 retains jal 0x80824, the static
- * gl___osPackRequestData_6BD14 at gl___osPackReadData. gl_ref_00080824 is already pinned.
+ * gl___osPackReadData (libultra __osPackReadData). gl_ref_00080824 is already pinned.
  * Whole compiled body is spliced into the -O2 post1b2 host.
  */
 extern u8 gl___osContLastCmd_6C084;

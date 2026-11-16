@@ -317,7 +317,7 @@ extern s32		osContStartQuery(OSMesgQueue *);
 extern s32		osContStartReadData(OSMesgQueue *);
 extern s32		osContSetCh(u8);
 extern void		osContGetQuery(OSContStatus *);
-extern void		gl___osContGetInitData_6BC44(OSContPad *);
+extern void		osContGetReadData(OSContPad *);
 extern s32 osPfsInitPak(OSMesgQueue *, OSPfs *, int);
 extern s32 osPfsRepairId(OSPfs *);
 extern s32 osPfsInit(OSMesgQueue *, OSPfs *, int);

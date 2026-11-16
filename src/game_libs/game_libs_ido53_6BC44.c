@@ -3,14 +3,15 @@
 extern char D_00000000;
 extern u8 gl_data_00000000;
 
-/* gl___osContGetInitData_6BC44 = 1080-customized gl___osContGetInitData_6BC44 (libultra
- * contreaddata.c ancestry; statically-linked libultra, ido53-carve vein).
+/* gl___osContGetInitData_6BC44 = libultra __osContGetInitData (controller.c; statically-linked
+ * libultra, ido53-carve vein; named osContGetReadData until run 542).
  * Boundary-fixed 2026-06-09: splat had split the leading MAX_CONTROLLERS
  * load (lui+lbu) into a phantom 8-byte symbol "game_libs_func_0006BC44";
- * the true function spans [0x6BC44..0x6BD14). vs stock libultra: two args
- * (a0 = connected-controller bitmask out, a1 = 4-byte pad records), button
- * stored byte-swapped ((lo<<8)|hi), stick_y dropped, mask |= 1<<i per good
- * controller; all format fields u8 (stick loads are lbu). Bound and PIF
+ * the true function spans [0x6BC44..0x6BD14). Stock 2.0I: a0 = the pattern
+ * (connected-controller bitmask) out, a1 = OSContStatus[] (4 bytes each):
+ * type = typel << 8 | typeh, status, errno = CHNL_ERR, bits |= 1 << i per
+ * good controller. GlContReadFormat below is __OSContRequesFormat (button_hi /
+ * button_lo / stick_x = typeh / typel / status). Bound and PIF
  * buffer are two distinct runtime-patched data placeholders. Byte-exact at
  * IDO 5.3 -O1 (52/52 incl. the pre-prologue lui/lbu pair). */
 typedef struct {
@@ -38,10 +39,10 @@ void gl___osContGetInitData_6BC44(u8 *maskOut, u8 *pads) {
     *maskOut = mask;
 }
 
-/* gl___osPackRequestData_6BD14 = 1080-customized gl___osPackRequestData_6BD14 (contreaddata.c
- * sibling of gl___osContGetInitData_6BC44 above): clears the 15-word PIF command
+/* gl___osPackRequestData_6BD14 = libultra __osPackRequestData(u8 cmd) (controller.c
+ * sibling of gl___osContGetInitData_6BC44 above; named __osPackReadData until run 542): clears the 15-word PIF command
  * buffer, sets pifstatus = CONT_CMD_EXE, builds the 8-byte read-command
- * record (dummy=0xFF, tx=1, rx=3 -- 4-byte responses -- cmd byte passed as
+ * record (dummy=0xFF, tx=1, rx=3 -- CONT_CMD_REQUEST_STATUS -- cmd byte passed as
  * the ARG, 4x 0xFF payload), then stamps it per controller (swl/swr
  * unaligned struct copies) and terminates with 0xFE (CONT_CMD_END).
  * Byte-exact at IDO 5.3 -O1 (61/61). Load-bearing shapes: pifstatus store

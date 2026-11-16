@@ -88,7 +88,7 @@
 #define gl___osViCurr          D_00000000 /* Data+0x2E520 Sym 2647: __osViCurr (__osViInit, __osViSwapContext, __osViGetCurrentContext) */
 #define gl___osViNext          D_00000000 /* Data+0x2E524 Sym 2599: __osViNext (__osViInit, __osViSwapContext, osViSetXScale / Mode / Event) */
 #define gl___osViDevMgr        D_00000000 /* Data+0x2E650 Sym 2672: __osViDevMgr (osCreateViManager) */
-#define gl___osContPifRam      D_00000000 /* Bss+0x42770 Sym 2555: __osContPifRam (__osContGetInitData, __osPackRequestData, gl___osPackRequestData_6BD14) */
+#define gl___osContPifRam      D_00000000 /* Bss+0x42770 Sym 2555: __osContPifRam (gl___osContGetInitData_6BC44, gl___osPackRequestData_6BD14, gl___osPackReadData, gl_osContGetReadData) */
 #define gl___osContLastCmd     D_00000000 /* Bss+0x427B0 Sym 2556: __osContLastCmd (u8; __osContRamRead / Write, __osPfsRequestData) */
 #define gl___osMaxControllers  D_00000000 /* Bss+0x427B1 Sym 2557: __osMaxControllers (u8; osPfsIsPlug, __osPfsGetInitData, __osPfsRequestData, gl___osPackRequestData_6BD14) */
 #define gl___osPfsPifRam       D_00000000 /* Bss+0x42CA0 Sym 2605: __osPfsPifRam (__osContRamRead / Write, __osPfsGetInitData / RequestData, osMotorStart / Stop; +0x3C = pifstatus) */

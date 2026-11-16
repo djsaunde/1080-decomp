@@ -14,7 +14,7 @@
  * &thread, 14)), so the 4 KB stack is the first 0x1000 bytes. pad_threadLoop_00066EEC
  * (NCC donor game_libs_ncc_66EEC.cpp) receives the messages: 5 = SI event (osPfsIsPlug,
  * then osMotorInit + osMotorStop per plugged pak), 1 = start a read (push the motor values,
- * osContStartReadData, readDone = 0), 2 = read finished (gl___osContGetInitData_6BC44(conts),
+ * osContStartReadData, readDone = 0), 2 = read finished (gl_osContGetReadData(conts),
  * pad_initMotors, readDone = 1). The layout below is libultra's: osContInit(&mq,
  * &present, status), osPfsInitPak / osMotorInit(&mq, &pfs[i], i), and
  * pad_decodeButtonMap_00034CC8 reads conts[port - 1] (6-byte OSContPad).
@@ -75,7 +75,7 @@ typedef struct PadDev {
     /* 0x11B0 */ char mq[0x18];             /* OSMesgQueue: SI events + read requests */
     /* 0x11C8 */ char msgs[4][4];           /* OSMesg[4] */
     /* 0x11D8 */ char pad11D8[0x1200 - 0x11D8];
-    /* 0x1200 */ PadContData conts[4];      /* gl___osContGetInitData_6BC44 */
+    /* 0x1200 */ PadContData conts[4];      /* gl_osContGetReadData */
     /* 0x1218 */ PadContStatus status[4];   /* osContInit */
     /* 0x1228 */ char pfs[4][0x68];         /* OSPfs[4] (osPfsInitPak / osMotorInit) */
     /* 0x13C8 */ int pakState[4];           /* 3 at init; pad_probePaks: 0 motor init failed,

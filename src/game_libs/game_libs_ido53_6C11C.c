@@ -1,4 +1,5 @@
-/* IDO 5.3 -O1 donor for gl_osContGetReadData — 42-insn 8-byte-record decoder
+/* IDO 5.3 -O1 donor for gl_osContGetReadData (libultra osContGetReadData, contreaddata.c:
+ * out is OSContPad[] -- button, stick_x, stick_y, errno = CHNL_ERR(rxsize)) — 42-insn 8-byte-record decoder
  * loop (frame 0x18, leaf). PROVEN EXACT 42/42 (2026-07-09 verify; 7.1 -O1
  * emits the same shape but colors the struct-copy scratch $t1/$t0 — only
  * 5.3 uses $at as the lwl/lwr block-copy scratch, the target's registers).

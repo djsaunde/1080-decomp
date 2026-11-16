@@ -1,4 +1,5 @@
-/* IDO 5.3 -O1 donor for gl___osPackReadData — 59-insn table-reset + 8-byte
+/* IDO 5.3 -O1 donor for gl___osPackReadData (libultra __osPackReadData, contreaddata.c:
+ * the CONT_CMD_READ_BUTTON request, tx 1 / rx 4) — 59-insn table-reset + 8-byte
  * record emitter, reset-sibling of gl___osPackRequestData_6BD14 and same family as the
  * landed gl_osContGetReadData decoder (frame 0x10, leaf). PROVEN EXACT 59/59
  * (2026-07-09 standalone probe). 5.3 required: it colors the struct-copy

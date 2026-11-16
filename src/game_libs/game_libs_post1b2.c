@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "libultra/os_cont.h"
 #include "uso_call.h"
 extern int D_00000000;
 extern int gl_data_00000000;
@@ -71,19 +72,18 @@ int osContStartReadData(void *mq) {
 }
 
 
-/* gl_osContGetReadData: 8-byte-record decoder loop (42 insns incl. the absorbed
- * 3-word orphan game_libs_func_0006C110 — its lui/lbu count-preload pair is
- * this function's stolen prologue, so the donor's true entry is 0x6C110 and
- * the spliced symbol covers 0x6C110..0x6C1B8; the orphan INCLUDE_ASM was
- * removed here). For each record: out[4] = (rec[2]&0xC0)>>4; if 0, copy
- * u16/byte fields; out += 6, cursor += 8, count reloaded per iteration.
- * LANDED 2026-07-09 via REPLACE_FUNC_BODY donor splice: real C lives in the
- * IDO 5.3 -O1 donor unit game_libs_ido53_6C11C.c (42/42 — 5.3 colors the
- * lwl/lwr struct-copy scratch $at; 7.1 uses $t1/$t0), spliced over this -O2
- * stand-in. Body below is a placeholder for the splice (its bytes are
+/* gl_osContGetReadData = libultra osContGetReadData (contreaddata.c; named __osContGetInitData until
+ * run 542): for each of __osMaxControllers 8-byte __OSContReadFormat records in __osContPifRam,
+ * data->errno = (rxsize & 0xC0) >> 4 (CHNL_ERR) and, when 0, button / stick_x / stick_y; data
+ * advances one 6-byte OSContPad. 42 insns incl. the absorbed 3-word orphan
+ * game_libs_func_0006C110 (its lui/lbu count preload is this function's stolen prologue, so the
+ * donor's true entry is 0x6C110 and the spliced symbol covers 0x6C110..0x6C1B8).
+ * LANDED 2026-07-09 via REPLACE_FUNC_BODY donor splice: the real C is the IDO 5.3 -O1 donor unit
+ * game_libs_ido53_6C11C.c (42/42; 5.3 colors the lwl/lwr struct-copy scratch $at, 7.1 uses
+ * $t1/$t0). The body below is a placeholder for the splice on both build paths (its bytes are
  * replaced by the donor). */
-void gl_osContGetReadData(char *out, char *cursor, int count) {
-    unsigned char rec[8];
+void gl_osContGetReadData(OSContPad *data, char *cursor, int count) {
+    unsigned char rec[8];               /* __OSContReadFormat: dummy, txsize, rxsize, cmd, button, stick_x, stick_y */
     volatile int i;
     volatile char *cur = cursor;
     if (count > 0) {
@@ -91,13 +91,13 @@ void gl_osContGetReadData(char *out, char *cursor, int count) {
         do {
             *(int *)rec = *(int *)cur;
             *(int *)(rec + 4) = *(int *)(cur + 4);
-            *(char *)(out + 4) = (rec[2] & 0xC0) >> 4;
-            if (*(unsigned char *)(out + 4) == 0) {
-                *(short *)(out + 0) = *(unsigned short *)(rec + 4);
-                *(char *)(out + 2) = rec[6];
-                *(char *)(out + 3) = rec[7];
+            data->errno = (rec[2] & 0xC0) >> 4;
+            if (data->errno == 0) {
+                data->button = *(unsigned short *)(rec + 4);
+                data->stick_x = rec[6];
+                data->stick_y = rec[7];
             }
-            out += 6;
+            data++;
             cur += 8;
             i++;
         } while (i < 1);
