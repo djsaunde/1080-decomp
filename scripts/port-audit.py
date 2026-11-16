@@ -27,8 +27,11 @@ width or at the wrong offset. Many of these spellings are load-bearing for the m
 (an int-cast base colours a different register, see IDO_CODEGEN.md), so a 64-bit port needs them
 behind a PORT / NON_MATCHING path or typed once the matching constraint is lifted.
 
-Without --list: a Markdown summary (pattern x owner table, the top files and functions).
+Without --list / --top: a Markdown summary (pattern x owner table, the top 15 files and functions).
 --list P prints every site of pattern P (A, B, C, D or H) as path:line function: text.
+--top N prints a work list instead: the N functions with the most A-D sites, one per line,
+        `total  A B C D  owner  path:line  function` (line = the function header; --owner X
+        narrows it to one area). With --md, --top N sets the length of the summary's tables.
 """
 import collections
 import importlib.util
@@ -158,6 +161,8 @@ def main():
     stores = collections.Counter()                          # owner -> A* stores
     per_file = collections.defaultdict(collections.Counter)
     per_fn = collections.Counter()
+    fn_pat = collections.defaultdict(collections.Counter)   # (p, fn, own) -> pattern -> n
+    fn_line = {}
     sites = []
     for p in CEN.compiled_sources():
         src = open(p, errors='replace').read()
@@ -178,6 +183,9 @@ def main():
                 stores[own] += 1
             per_file[p][pat] += 1
             per_fn[(p, fn, own)] += 1
+            fn_pat[(p, fn, own)][pat] += 1
+            if b and (p, fn, own) not in fn_line:
+                fn_line[(p, fn, own)] = live.count('\n', 0, b[0]) + 1
             if lst == pat:
                 line = live.count('\n', 0, pos) + 1
                 text = live.split('\n')[line - 1].strip()
@@ -192,6 +200,12 @@ def main():
             sites.append(f'{h}:{line}: {text[:140]}')
     if lst:
         print('\n'.join(sites))
+        return
+    if '--top' in args and '--md' not in args:
+        for key, n in per_fn.most_common(top):
+            p, fn, own = key
+            c = fn_pat[key]
+            print(f'{n:4d}  {c["A"]:3d} {c["B"]:3d} {c["C"]:3d} {c["D"]:3d}  {own:3s}  {p}:{fn_line.get(key, 0)}  {fn}')
         return
 
     owners = ['a', 'b', 'c', 'g', 'h', 'hdr']
