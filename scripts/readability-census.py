@@ -199,13 +199,15 @@ def accessor_macros():
     return names
 
 
-NAMED_OFF_HDRS = ('include/game/game_uso_data.h', 'include/gdl/gl_data.h')
+NAMED_OFF_HDRS = ('include/game/game_uso_data.h', 'include/gdl/gl_data.h',
+                  'include/game/select.h', 'include/audio.h')   # run 585: genproc / audio section offsets
 NAMED_OFF_DEF = re.compile(r'^\s*#\s*define\s+(k[A-Z]\w*)\s+\(?\s*(?:0x[0-9A-Fa-f]+|\d+)\s*\)?\s*(?:/\*.*)?$', re.M)
 
 
 def named_offsets():
     """`kPmf_*` / `kRoD_*` / `kRoF_*` / `kStr_*` / `kTag_*` ...: the named section offsets
-    (`#define kX <integer>`) in game_uso_data.h / gl_data.h (run 568, agent-g's rule)."""
+    (`#define kX <integer>`) in game_uso_data.h / gl_data.h (run 568, agent-g's rule), and select.h /
+    audio.h (run 585: genproc and audio section offsets)."""
     names = set()
     for p in NAMED_OFF_HDRS:
         if os.path.exists(p):
@@ -537,7 +539,7 @@ def main():
     L += ['', 'Function classes: sentinel = `[<segment>_]func_00000000` (address-0 placeholder, never renamed); placeholder = `func_<addr>` / `<segment>_func_<addr>`; weak = '
           '`<Kind>_func_<addr>`, `<Kind>_vfnN[_<addr>]`, `<Kind>_vslotN[_<addr>]`; real = the rest; real % excludes sentinels. '
           f'Accessor macros counted: {", ".join(sorted(acc))}; a use whose offset argument is one of the '
-          f'{len(NAMED_OFF)} named offsets (`#define kX <int>` in game_uso_data.h / gl_data.h: kPmf_, kRoD_, kRoF_, '
+          f'{len(NAMED_OFF)} named offsets (`#define kX <int>` in game_uso_data.h / gl_data.h / select.h / audio.h: kPmf_, kRoD_, kRoF_, '
           'kStr_, kTag_ ...) is not counted.', '']
     L += ['### Data sites (bootup.uso Text: game_libs + bootup_uso)', '']
     L += tbl(['', 'LO16 sites', 'named linker alias', 'provably raw left'],
