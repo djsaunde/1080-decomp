@@ -121,14 +121,19 @@ $(SNOW_9F44_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += SnowLink_update_00009F44=$(SNOW_9F44_DONOR)
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_9F44_DONOR)
-# agent-h run 628: further NCC donors (shared class model src/snoweffects_uso/snoweffects_ncc.h).
-SNOW_NCC_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc.cpp.o
-$(SNOW_NCC_DONOR): src/snoweffects_uso/snoweffects_uso_ncc.cpp src/snoweffects_uso/snoweffects_ncc.h
+# viewrec.uso Text ends with one zero pad word after 0x55A4's `jr ra; sw a0,0(sp)`: all-zero SUFFIX
+# on the last function, then clip .text back to the Text size (same mechanism as h2hproc / snoweffects).
+build/src/viewrec_uso/viewrec_uso.c.o: SUFFIX_BYTES_FORCE := viewrec_uso_func_000055A4=0x00000000
+build/non_matching/src/viewrec_uso/viewrec_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := viewrec_uso_func_000055A4=0x00000000
+build/src/viewrec_uso/viewrec_uso.c.o: TRUNCATE_TEXT := 0x55B0
+build/non_matching/src/viewrec_uso/viewrec_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x55B0
+# viewrec.uso is C++: functions only edg reproduces come from one NCC donor (agent-a run 630).
+VIEWREC_NCC_DONOR := build/src/viewrec_uso/viewrec_uso_ncc.cpp.o
+$(VIEWREC_NCC_DONOR): src/viewrec_uso/viewrec_uso_ncc.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NCC_FUNCS := SnowRing_draw_000040B4
-build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NCC_FUNCS),$(f)=$(SNOW_NCC_DONOR))
-build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NCC_DONOR)
+build/src/viewrec_uso/viewrec_uso.c.o build/non_matching/src/viewrec_uso/viewrec_uso.c.o: private REPLACE_FUNC_BODY += viewrec_uso_func_00001664=$(VIEWREC_NCC_DONOR)
+build/src/viewrec_uso/viewrec_uso.c.o build/non_matching/src/viewrec_uso/viewrec_uso.c.o: $(VIEWREC_NCC_DONOR)
 build/src/h2hproc_uso/h2hproc_uso.c.o: SUFFIX_BYTES_FORCE := h2h_closeSession_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
 build/src/h2hproc_uso/h2hproc_uso.c.o: TRUNCATE_TEXT := 0x1B30
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := h2h_closeSession_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
