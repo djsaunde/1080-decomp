@@ -1355,22 +1355,26 @@ int SelectionMgr_canCommit_00001D1C(char *a0, int a1) {
  * edg (NCC) keeps the source order `C0 + B8 * t` / `41.0f + 5.0f * f`, which
  * is exactly the target's const-first mul/add operand order. */
 void SelectionMgr_setSplit_00001DB0(char *a0) {
-    *(char **)(a0 + 0) = "LookAround";
-    *(char **)(a0 + 4) = "ZoomingUp";
-    *(char **)(a0 + 8) = "ZoomingUpLevel";
-    *(char **)(a0 + 12) = "ZoomedChar";
-    *(char **)(a0 + 16) = "ZoomedHandiChar";
-    *(char **)(a0 + 20) = "ZoomedSuperChar";
-    *(char **)(a0 + 24) = "ZoomedBoard";
-    *(char **)(a0 + 28) = "ZoomedBoardType";
-    *(char **)(a0 + 32) = "ZoomedCourse";
-    *(char **)(a0 + 36) = "ZoomedLevel";
-    *(char **)(a0 + 40) = "ZoomingDown";
-    *(char **)(a0 + 44) = "CrystalGuy";
-    *(char **)(a0 + 48) = "MetalGuy";
-    *(char **)(a0 + 52) = "Panda";
-    *(double *)(a0 + 0x40) = 1.3333;
-    *(double *)(a0 + 0x48) = 1.3329999446868896;
+    /* .rodata only (text dropped): SelectionMgr's 14 state-name strings, then the two doubles. */
+    char **stateNames = (char **)a0;
+    double *dbl = (double *)a0;
+
+    stateNames[0] = "LookAround";
+    stateNames[1] = "ZoomingUp";
+    stateNames[2] = "ZoomingUpLevel";
+    stateNames[3] = "ZoomedChar";
+    stateNames[4] = "ZoomedHandiChar";
+    stateNames[5] = "ZoomedSuperChar";
+    stateNames[6] = "ZoomedBoard";
+    stateNames[7] = "ZoomedBoardType";
+    stateNames[8] = "ZoomedCourse";
+    stateNames[9] = "ZoomedLevel";
+    stateNames[10] = "ZoomingDown";
+    stateNames[11] = "CrystalGuy";
+    stateNames[12] = "MetalGuy";
+    stateNames[13] = "Panda";
+    dbl[8] = 1.3333;
+    dbl[9] = 1.3329999446868896;
 }
 
 /* timproc_uso_b5_func_00001EB8 MERGED into 1DB0 2026-06-10 (bnezl tail fragment). */
@@ -1430,18 +1434,22 @@ extern void gen_imp_Node_update(char *);
  * six f64, f32); IDO merges equal literals in one fn, so distinct values
  * stand in for the repeated ones. The splice drops its text and relocs. */
 void SelectionMgr_update_00001F14(char *arg0) {
-    *(volatile float *)(arg0 + 0) = 0.05f;
-    *(volatile float *)(arg0 + 0) = 0.0501f;
-    *(volatile double *)(arg0 + 8) = 1.3329999446868896;
-    *(volatile double *)(arg0 + 8) = 1.3333;
-    *(volatile float *)(arg0 + 0) = 0.0502f;
-    *(volatile double *)(arg0 + 8) = 1.33331;
-    *(volatile double *)(arg0 + 8) = 1.33332;
-    *(volatile double *)(arg0 + 8) = 1.33333;
-    *(volatile double *)(arg0 + 8) = 1.33334;
-    *(volatile double *)(arg0 + 8) = 1.33335;
-    *(volatile double *)(arg0 + 8) = 1.33336;
-    *(volatile float *)(arg0 + 0) = 0.0503f;
+    /* .rodata only (text dropped): the layout of RoData +0xC8..+0x11C. */
+    volatile float *fv = (volatile float *)arg0;
+    volatile double *dv = (volatile double *)(arg0 + 8);
+
+    *fv = 0.05f;
+    *fv = 0.0501f;
+    *dv = 1.3329999446868896;
+    *dv = 1.3333;
+    *fv = 0.0502f;
+    *dv = 1.33331;
+    *dv = 1.33332;
+    *dv = 1.33333;
+    *dv = 1.33334;
+    *dv = 1.33335;
+    *dv = 1.33336;
+    *fv = 0.0503f;
 }
 
 /* CRACKED 2026-05-27 (byte-exact): the lever is "declare `float buf[4]`
@@ -3330,15 +3338,15 @@ void SelectWin_display_00006394(char *arg0) {
 
     tmpl_w = 0;
     var_v0 = (int)SELWIN(arg0)->scene;
-    temp_v1 = FW(var_v0, 0xC);
-    if (FW(temp_v1, 0xBC) >= 0x78) {
-        sp44 = FW(temp_v1, 0xC4) + FW(arg0, 0x3B0);
+    temp_v1 = (char *)((GenCamera *)var_v0)->view;
+    if (((Window *)temp_v1)->height >= 0x78) {
+        sp44 = ((Window *)temp_v1)->originY + *(int *)&SELWIN(arg0)->parms.tpy.value;
         if (sp44 < 0x15) {
             sp44 = 0x15;
         }
         sp40 = (char *)&timproc_uso_b5_D_807FF5E0 + 0x160;
-        sp40 = sp40 + *(int *)((char *)timproc_uso_b5_D_807FE728 + gen_stageBitToIndex_000087A0(arg0, SELWIN(arg0)->stageBit) * 4) * 0x18;
-        import_0024E608(&import_8024CAF8, SELWIN(arg0)->parms.ctf.value, (int)arg0 + 0x1E8);
+        sp40 = sp40 + timproc_uso_b5_D_807FE728[gen_stageBitToIndex_000087A0(arg0, SELWIN(arg0)->stageBit)] * 0x18;
+        import_0024E608(&import_8024CAF8, SELWIN(arg0)->parms.ctf.value, (int)&SELWIN(arg0)->parms.cc[5].rgba);
         import_0024F2C8(sp40);
         import_0024F34C(sp40, 0xA0, sp44, 3);
         if (SELWIN(arg0)->busy != 1) {
@@ -3348,7 +3356,7 @@ void SelectWin_display_00006394(char *arg0) {
                 SELWIN(arg0)->blink = (s32) (temp_v0_2 + 1);
                 if (temp_v0_2 & 8) {
                     if (SelectWin_canScrollNext_00006900(arg0) != 0) {
-                        import_0024E608(&import_8024CAF8, 0xFF, (int)arg0 + 0x20C);
+                        import_0024E608(&import_8024CAF8, 0xFF, (int)&SELWIN(arg0)->parms.cc[6].rgba);
                         import_0024F2C8((char *)&timproc_uso_b5_D_807FF5B0 + 0x130);
                         temp_v1 = (char *)&timproc_uso_b5_D_807FF5B0;
                         temp_v1 += 0x130;
@@ -3357,7 +3365,7 @@ void SelectWin_display_00006394(char *arg0) {
                         import_0024F34C(temp_v1, (s32) (((temp_v0 / 2) + 0xA0) - (tmpl_w * 0.25f)), sp44, 2);
                     }
                     if (SelectWin_canScrollPrev_0000687C((int *)arg0) != 0) {
-                        import_0024E608(&import_8024CAF8, 0xFF, (int)arg0 + 0x20C);
+                        import_0024E608(&import_8024CAF8, 0xFF, (int)&SELWIN(arg0)->parms.cc[6].rgba);
                         import_0024F2C8((char *)&timproc_uso_b5_D_807FF5C8 + 0x148);
                         temp_v1 = (char *)&timproc_uso_b5_D_807FF5C8;
                         temp_v1 += 0x148;
@@ -3371,7 +3379,7 @@ void SelectWin_display_00006394(char *arg0) {
         var_v0 = (int)SELWIN(arg0)->scene;
     }
     SELWIN(arg0)->frame = (s32) (SELWIN(arg0)->frame + 1);
-    var_v1 = FW(FW(var_v0, 0xC), 0xBC);
+    var_v1 = ((GenCamera *)var_v0)->view->height;
     if (var_v1 >= 0x78) {
         temp_v0_3 = SELWIN(arg0)->state;
         if ((temp_v0_3 != 1) && (temp_v0_3 != 0xA) && (SELWIN(arg0)->fade == 1.0f) && (SELWIN(arg0)->busy != 1)) {
@@ -3379,16 +3387,16 @@ void SelectWin_display_00006394(char *arg0) {
                 if (SELWIN(arg0)->frame & 8) {
                     temp_v0_4 = (char *)SelectWin_curItem_00008A38(arg0);
                     temp_v1_2 = (int)SELITEM(temp_v0_4)->vptr;
-                    ((GP_00006394)SELVT(temp_v1_2)->drawLabel.fn)(SELVT(temp_v1_2)->drawLabel.delta + temp_v0_4, arg0, (int)arg0 + 0x254, (int)arg0 + 0x278);
+                    ((GP_00006394)SELVT(temp_v1_2)->drawLabel.fn)(SELVT(temp_v1_2)->drawLabel.delta + temp_v0_4, arg0, (int)&SELWIN(arg0)->parms.cc[8].rgba, (int)&SELWIN(arg0)->parms.c12.rgba);
                 }
             } else if (temp_v0_3 == 8) {
                 temp_v0_5 = (char *)SelectWin_curItem_00008A38(arg0);
                 temp_v1_3 = (int)SELITEM(temp_v0_5)->vptr;
-                ((GP_00006394)SELVT(temp_v1_3)->drawLabel.fn)(SELVT(temp_v1_3)->drawLabel.delta + temp_v0_5, arg0, (int)arg0 + 0x29C, (int)arg0 + 0x2C0);
+                ((GP_00006394)SELVT(temp_v1_3)->drawLabel.fn)(SELVT(temp_v1_3)->drawLabel.delta + temp_v0_5, arg0, (int)&SELWIN(arg0)->parms.cc9.rgba, (int)&SELWIN(arg0)->parms.c11.rgba);
             } else {
                 temp_v0_6 = (char *)SelectWin_curItem_00008A38(arg0);
                 temp_v1_4 = (int)SELITEM(temp_v0_6)->vptr;
-                ((GP_00006394)SELVT(temp_v1_4)->drawLabel.fn)(SELVT(temp_v1_4)->drawLabel.delta + temp_v0_6, arg0, (int)arg0 + 0x254, (int)arg0 + 0x278);
+                ((GP_00006394)SELVT(temp_v1_4)->drawLabel.fn)(SELVT(temp_v1_4)->drawLabel.delta + temp_v0_6, arg0, (int)&SELWIN(arg0)->parms.cc[8].rgba, (int)&SELWIN(arg0)->parms.c12.rgba);
             }
             if (INPUT_MGR(import_800200CC).nextFlowMode == 2) {
                 temp_v0_7 = SELWIN(arg0)->state;
@@ -4830,16 +4838,16 @@ void SelectWin_state8_000080F4(char *arg0) {
     if (SELWIN(arg0)->numPlayers == 2) {
         busy = SELWIN(arg0)->owner->busy;
         e = (char *) SelectionMgr_otherWin_00001CF0((int *) SELWIN(arg0)->owner, SELWIN(arg0)->player);
-        /* FW(e, 0x4B4) = the other window's busy and, below, FW(owner, 0x48) = owner->zoomWin:
-         * as members both swap their lw registers (run 525), so they stay raw */
-        flags = (SELWIN(arg0)->busy | FW(e, 0x4B4)) | busy;
+        /* the other window's busy and, below, owner->zoomWin: the plain members swap their lw
+         * registers (run 525); the `*(int *)&member` form keeps the target's (run 548) */
+        flags = (SELWIN(arg0)->busy | *(int *)&SELWIN(e)->busy) | busy;
         q = (char *) SelectionMgr_canCommit_00001D1C((char *) SELWIN(arg0)->owner, SELWIN(arg0)->player);
     } else {
         busy = 0;
         flags = SELWIN(arg0)->busy;
         q = (char *) 1;
     }
-    if (*(f32 *)((char *)arg0 + 0x44) < SELWIN(arg0)->transition) {
+    if (SELWIN(arg0)->parms.cwt.value < SELWIN(arg0)->transition) {
         e = (char *) SelectWin_curItem_00008A38(arg0);
         ((GP_000080F4)SELITEM(e)->vptr->onStageReturn.fn)(SELITEM(e)->vptr->onStageReturn.delta + e);
     }
@@ -4873,17 +4881,17 @@ void SelectWin_state8_000080F4(char *arg0) {
             SelectWin_commitSelection_00006C00(arg0);
             return;
         }
-        gen_imp_snd_sendEvent(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (SELWIN(arg0)->stage * 4)), FW((arg0 + (SELWIN(arg0)->stage * 4)), 0x3D0) | FW(arg0, 0x4D4));
-        if ((SELWIN(arg0)->numPlayers == 2) && ((SELWIN(arg0)->player + 1) == FW(FW(arg0, 0x41C), 0x48))) {
+        gen_imp_snd_sendEvent((&timproc_uso_b5_D_807FE748)[SELWIN(arg0)->stage], SELWIN(arg0)->curItem[SELWIN(arg0)->stage] | *(int *)&SELWIN(arg0)->eventFlags);
+        if ((SELWIN(arg0)->numPlayers == 2) && ((SELWIN(arg0)->player + 1) == *(int *)&SELWIN(arg0)->owner->zoomWin)) {
             flags = 0;
             busy = 0;
             if (SELWIN(arg0)->itemsMgr->lists[2]->count > 0) {
                 do {
                     r2 = (char *) SelectionMgr_otherWin_00001CF0((int *) SELWIN(arg0)->owner, SELWIN(arg0)->player);
-                    a1v = (char *) FW(FW(FW(r2, 0x40C), 0x48) + busy, 0x3C);
-                    e = (char *) FW(FW(FW(arg0, 0x40C), 0x48) + busy, 0x3C);
+                    a1v = *(char **)((char *)SELWIN(r2)->itemsMgr->lists[2]->items + busy);
+                    e = *(char **)((char *)SELWIN(arg0)->itemsMgr->lists[2]->items + busy);
                     if (1) {
-                        r2 = (char *) FW(e, 0x28);
+                        r2 = (char *) SELITEM(e)->vptr;
                         ((GP_000080F4)SELVT(r2)->copyState.fn)(SELVT(r2)->copyState.delta + e, a1v);
                     }
                     flags += 1;
@@ -6065,8 +6073,8 @@ void *GenItemType_create_0000AB24(int *arg0) {
 }
 
 void SelCharAnim_vfunc10_0000ABB4(int *a0) {
-    *(int*)((char*)a0 + 0xB0) = 1;
-    *(int*)((char*)a0 + 0x64) = -1000;
+    ((SelCharAnim *)a0)->keyHit = 1;
+    ((SelCharAnim *)a0)->player.eventKey = ANIM_NO_KEY;
 }
 
 void SelItem_copyState_0000ABC8(int a0, int a1) {
@@ -6347,32 +6355,32 @@ void CharacterItem_toggleVariant_0000B914(SelCharacterItem *it) {
 void CharacterItem_playPickAnim_0000B928(SelCharacterItem *it) {
     SelCharModel *p = it->model;
     CALL(AnimPlayer_start)(p->anim, p->animSet, 3, 1, 1, 1);
-    *(int*)((char*)it->model->anim + 0xB0) = 0;
-    *(int*)((char*)it->model->anim + 0x64) = -1000;
+    it->model->anim->keyHit = 0;
+    it->model->anim->player.eventKey = ANIM_NO_KEY;
 }
 
 void CharacterItem_playAcceptAnim_0000B98C(SelCharacterItem *it) {
     SelCharModel *p = it->model;
     CALL(AnimPlayer_start)(p->anim, p->animSet, 2, 3, 1, 1);
-    *(int*)((char*)it->model->anim + 0xB0) = 0;
-    *(int*)((char*)it->model->anim + 0x64) = -1000;
+    it->model->anim->keyHit = 0;
+    it->model->anim->player.eventKey = ANIM_NO_KEY;
 }
 
 void CharacterItem_confirm_0000B9F0(SelCharacterItem *it) {
     SelCharModel *p = it->model;
     CALL(AnimPlayer_start)(p->anim, p->animSet, 3, 2, 1, 1);
-    *(int*)((char*)it->model->anim + 0x64) = 2;
-    *(int*)((char*)it->model->anim + 0xB0) = 0;
-    it->model->animMode = 0x10;
+    it->model->anim->player.eventKey = 2;
+    it->model->anim->keyHit = 0;
+    it->model->animTimer = 0x10;
 }
 
 void CharacterItem_focus_0000BA60(SelCharacterItem *it) {
     SelCharModel *p = it->model;
     CALL(AnimPlayer_start)(p->anim, p->animSet, 0, 2, 2, 1);
-    *(int*)((char*)it->model->anim + 0xB0) = 0;
-    *(int*)((char*)it->model->anim + 0x64) = -1000;
+    it->model->anim->keyHit = 0;
+    it->model->anim->player.eventKey = ANIM_NO_KEY;
     it->model->focused = 1;
-    it->model->animMode = 0;
+    it->model->animTimer = 0;
     it->barCount = 0;
     it->barTimer = 2;
 }
@@ -6381,12 +6389,12 @@ void CharacterItem_unfocus_0000BAE8(SelCharacterItem *it) {
     SelCharModel *p = it->model;
     CALL(AnimPlayer_start)(p->anim, p->animSet, 3, 2, 1, 1);
     it->model->focused = 0;
-    it->model->animMode = 0x20;
+    it->model->animTimer = 0x20;
 }
 
 void CharacterItem_onStageLeave_0000BB44(SelCharacterItem *it) {
     it->model->focused = 0;
-    it->model->animMode = 8;
+    it->model->animTimer = 8;
 }
 
 void CharacterItem_onStageReturn_0000BB5C(int a0) {

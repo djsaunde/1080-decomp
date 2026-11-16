@@ -73,10 +73,10 @@ SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, 
         if (p != 0) {
             import_0010D33C(p, n);
             ((TimB5UiObject *)p)->field_28 = (void *)(&timproc_uso_b5_D_807FDAB8 + 0x248);
-            (*(int *)((char *)(p) + (0xB0))) = 0;
+            ((SelCharAnim *)p)->keyHit = 0;
             gen_imp_AnimPlayer_reset(p);
         }
-        MODEL(child.ptr)->anim = (s32)p;
+        MODEL(child.ptr)->anim = (SelCharAnim *)p;
         gen_imp_MNode_addChild(child.ptr, p);
         savedbit = d14c_ee6c_l1.flags & 0x80000; if (1) {} { int x = (d14c_ee6c_l2.flags & 0xFFF7FFFF) | 0x20000 | 0x2000 | 2 | 1; d14c_ee6c_s1.flags = x; } d14c_ee64_st = d14c_ee64_ld & ~8; p = (char *)MODEL(child.ptr)->anim; gen_imp_SnowBoarder_loadBoardModel_0000B1B4(arg2, 0, 0x201, p, child.ptr);
         MODEL(child.ptr)->animSet = ((s32 *)&timproc_uso_b5_D_807FDB4C)[arg2];
@@ -104,9 +104,9 @@ SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, 
         MODEL(child.ptr)->alpha = 0.0f;
         MODEL(child.ptr)->unk124 = d14c_fb8_a[0x3A8 / sizeof(f32)];
         MODEL(child.ptr)->unk128 = d14c_fb8_b[0x3AC / sizeof(f32)];
-        MODEL(child.ptr)->animMode = 1;
+        MODEL(child.ptr)->animTimer = 1;
         MODEL(child.ptr)->focused = 0;
-        MODEL(child.ptr)->unk134 = 0;
+        MODEL(child.ptr)->visible = 0;
     }
     {
         char *rr = r;

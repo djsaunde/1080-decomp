@@ -35,9 +35,21 @@ struct Quat {
     void rot(V3 *axis, f32 ang) { gen_imp_math_quatRotateAxisAngle(this, axis, ang); }
 };
 inline void one(Quat &q, f32 xa) { if (0) { xa = 0.0f; } V3 a(1.0f, 0.0f, 0.0f); q.rot(&a, xa); }
+/* select.h SelCharAnim: the AnimPlayer (0xB0) plus keyHit, set by its onKey. */
+struct SelCharAnim { char player[0xB0]; s32 keyHit; };
+/* select.h SelCharModel, with the QNode head's pos / rotation spelled out (edg sees no gdl headers). */
 struct Obj {
-    char pad0[0xDC]; V3 pos; f32 sE8, sEC, sF0; Quat q; char pad104[0x108 - 0x104]; s32 i108;
-    char *p10C; f32 f110, f114, f118;
+    char pad0[0xDC]; V3 pos; f32 sE8, sEC, sF0; Quat q; char pad104[0x108 - 0x104];
+    s32 inner;              /* 0x108: SelModel.inner */
+    SelCharAnim *anim;      /* 0x10C */
+    f32 view[4];            /* 0x110: item rot z / x / y, scale */
+    f32 alpha, unk124, unk128, unk12C;
+    f32 highlight;          /* 0x130 */
+    s32 visible;            /* 0x134: 1 when drawn this frame (facing the camera) */
+    s32 focused;            /* 0x138 */
+    s32 chosen;             /* 0x13C */
+    s32 animSet;            /* 0x140 */
+    s32 animTimer;          /* 0x144 */
 };
 extern "C" void SelCharacter_display_0000B624(Obj *o) {
     V3 d = rel(o->pos, &sXY[0]);
@@ -45,25 +57,25 @@ extern "C" void SelCharacter_display_0000B624(Obj *o) {
     if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF370 + 0x350)) {
         o->q.x = 0.0f; o->q.y = 0.0f; o->q.z = 0.0f; o->q.w = 1.0f;
         f32 ang3;
-        one(o->q, o->f114);
-        { f32 ang = o->f110; V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); }
-        ang3 = o->f118;
+        one(o->q, o->view[1]);
+        { f32 ang = o->view[0]; V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); }
+        ang3 = o->view[2];
         { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang3); }
-        timproc_uso_b5_func_06970C_i(o->i108, FW(o, 0x130));
-        if (FW(o, 0x144) != 0 || FW(o, 0x138) != 0) {
+        timproc_uso_b5_func_06970C_i(o->inner, *(s32 *)&o->highlight);
+        if (o->animTimer != 0 || o->focused != 0) {
             gen_imp_QNode_update(o);
             timproc_uso_b5_D_807FFBBC += 1;
-            if (FW(o, 0x144) != 0) FW(o, 0x144) -= 1;
-            if (FW(o, 0x144) == 0) {
-                if (FW(o->p10C, 0xB0) != 0) {
-                    gen_imp_AnimPlayer_start(o->p10C, FW(o, 0x140), 0, 2, 2, 1);
-                    FW(o->p10C, 0xB0) = 0;
+            if (o->animTimer != 0) o->animTimer -= 1;
+            if (o->animTimer == 0) {
+                if (o->anim->keyHit != 0) {
+                    gen_imp_AnimPlayer_start(o->anim, o->animSet, 0, 2, 2, 1);
+                    o->anim->keyHit = 0;
                 }
             }
         }
         gen_imp_QNode_display(o);
-        FW(o, 0x134) = 1;
+        o->visible = 1;
         return;
     }
-    FW(o, 0x134) = 0;
+    o->visible = 0;
 }

@@ -185,20 +185,37 @@ typedef struct SelModel {
     char *inner;            /* 0x108: the child QNode (0x16C) */
 } SelModel;                 /* 0x10C */
 
+/* The character model's anim player (SelCharModel.anim): an AnimPlayer whose onKey
+ * (SelCharAnim_vfunc10_0000ABB4, vtable slot 10) sets keyHit and parks eventKey at
+ * ANIM_NO_KEY. Every CharacterItem anim change clears keyHit; SelCharacter_display restarts
+ * the idle anim (animSet, 0, 2, 2, 1) when animTimer is 0 and keyHit is set. */
+typedef struct SelCharAnim {
+#ifndef __cplusplus
+    AnimPlayer player;      /* 0x00 */
+#else
+    char player[0xB0];      /* 0x00 */
+#endif
+    s32 keyHit;             /* 0xB0 */
+} SelCharAnim;
+
 typedef struct SelCharModel {   /* SelCharacter (vtbl Data 0x57C) */
     SelModel head;          /* 0x000 */
-    s32 anim;               /* 0x10C: the SelCharAnim player (+0x64 / +0xB0 reset on each anim) */
+    SelCharAnim *anim;      /* 0x10C */
     f32 view[4];            /* 0x110 */
     f32 alpha;              /* 0x120: setAlpha (createItem: 0) */
     f32 unk124;             /* 0x124: createItem: RoData 0x3A8 */
     f32 unk128;             /* 0x128: createItem: RoData 0x3AC */
     char pad12C[0x130 - 0x12C];
     f32 highlight;          /* 0x130 (createItem: RoData 0x3A4) */
-    s32 unk134;             /* 0x134: createItem: 0 */
+    s32 visible;            /* 0x134: SelCharacter_display: 1 when the model faces the camera and is
+                             * drawn this frame, else 0 (createItem: 0). Was unk134 */
     s32 focused;            /* 0x138 */
     s32 chosen;             /* 0x13C: setChosen / clearChosen */
     s32 animSet;            /* 0x140: arg 2 of every anim change */
-    s32 animMode;           /* 0x144: 0 focus, 8 onStageLeave, 0x10 confirm, 0x20 unfocus */
+    s32 animTimer;          /* 0x144: frames SelCharacter_display keeps updating the model after
+                             * focus is lost: 8 onStageLeave, 0x10 confirm, 0x20 unfocus (0 on
+                             * focus, which updates through `focused`); counted down there, and at
+                             * 0 a pending keyHit restarts the idle anim. Was animMode */
 } SelCharModel;
 
 typedef struct SelBoardModel {  /* SelBoard (vtbl Data 0x444) */
@@ -533,7 +550,8 @@ SELECT_ASSERT(itemex_model, (int)&((SelItemEx *)0)->model == 0x2B8);
 SELECT_ASSERT(itemex_size, sizeof(SelItemEx) == 0x2C4);
 SELECT_ASSERT(model_inner, (int)&((SelModel *)0)->inner == 0x108);
 SELECT_ASSERT(model_size, sizeof(SelModel) == 0x10C);
-SELECT_ASSERT(charmodel_mode, (int)&((SelCharModel *)0)->animMode == 0x144);
+SELECT_ASSERT(charmodel_mode, (int)&((SelCharModel *)0)->animTimer == 0x144);
+SELECT_ASSERT(charanim_keyhit, (int)&((SelCharAnim *)0)->keyHit == 0xB0);
 SELECT_ASSERT(boardmodel_chosen, (int)&((SelBoardModel *)0)->chosen == 0x134);
 SELECT_ASSERT(coursemodel_13c, (int)&((SelCourseModel *)0)->unk13C == 0x13C);
 SELECT_ASSERT(tesurimodel_chosen, (int)&((SelTesuriModel *)0)->chosen == 0x138);
