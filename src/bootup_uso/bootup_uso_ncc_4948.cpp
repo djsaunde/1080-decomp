@@ -36,7 +36,7 @@ extern float bu_4948_k0, bu_4948_k1, bu_4948_klo, bu_4948_khi;
 }
 #define F(p,o) (*(float *)((char *)(p) + (o)))
 #define W(p,o) (*(unsigned *)((char *)(p) + (o)))
-#define SNAP() { Vec3 *sv = (Vec3 *)(*(char **)(obj + 0x154) + 0x318); Vec3 B; B = *sv * bu_4948_k0; B.y *= bu_4948_k1; func_00000000(obj + 0x30, &B); }
+#define SNAP(SETPOS) { Vec3 *sv = (Vec3 *)(*(char **)(obj + 0x154) + 0x318); Vec3 B; B = *sv * bu_4948_k0; B.y *= bu_4948_k1; SETPOS(obj + 0x30, &B); }
 extern "C" void RiderCam_update_00004948(char *obj) {
 #define st W(obj, 0x158)
     if (st == 2) {
@@ -64,7 +64,7 @@ extern "C" void RiderCam_update_00004948(char *obj) {
         if (e->lo < dist) F(obj, 0x14C) = e->w;
         else if (dist < e->hi) F(obj, 0x14C) = e->v;
         else F(obj, 0x14C) = e->w + (e->v - e->w) / (e->lo - e->hi) * (e->lo - dist);
-        if (st >= 0x18 && st < 0x1D) SNAP();
+        if (st >= 0x18 && st < 0x1D) SNAP(func_00000000);
     } else if ((st >= 0x1D && st < 0x22) || (st >= 0x22 && st < 0x27)) {
         Vec3 d, C, E;
         float dist;
@@ -88,7 +88,7 @@ extern "C" void RiderCam_update_00004948(char *obj) {
         t = bu4948_ff(dist * dist + r * r);
         t = bu4948_ff(dist / t) * 2 / F(func_000003F8, 0x160) * 180.0f;
         if (t < bu_4948_klo) F(obj, 0x14C) = bu_4948_klo; else if (bu_4948_khi < t) F(obj, 0x14C) = bu_4948_khi; else F(obj, 0x14C) = t;
-        if (st >= 0x22 && st < 0x27) SNAP();
+        if (st >= 0x22 && st < 0x27) SNAP(func_00000000);
     } else {
         F(obj, 0x14C) = F(obj, 0x150);
     }

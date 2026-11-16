@@ -37,20 +37,20 @@ struct Item {
     Item(Q q) { game_uso_func_051E64(this, q.p, 0, 0); vt = &game_uso_D_807FEAA8; }
 };
 #define NM(s, o) (*(Name *)(&game_uso_D_##s + (o)))
-#define BLK(k, s, o) Q q##k(NM(s, o)); game_uso_func_052F70(arg0, new Item(q##k), -1);
+#define BLK(k, s, o, ADD) Q q##k(NM(s, o)); ADD(arg0, new Item(q##k), -1);
 extern "C" void CourseMarker_registerTemplates(void *arg0) {
-    BLK(0, 807FEC70, 0x680)
-    BLK(1, 807FEC74, 0x684)
-    BLK(2, 807FEC78, 0x688)
-    BLK(3, 807FEC7C, 0x68C)
-    BLK(4, 807FEC80, 0x690)
-    BLK(5, 807FEC84, 0x694)
-    BLK(6, 807FEC88, 0x698)
-    BLK(7, 807FEC8C, 0x69C)
-    BLK(8, 807FEC90, 0x6A0)
-    BLK(9, 807FEC94, 0x6A4)
-    BLK(10, 807FEC98, 0x6A8)
-    BLK(11, 807FEC9C, 0x6AC)
+    BLK(0, 807FEC70, 0x680, game_uso_func_052F70)
+    BLK(1, 807FEC74, 0x684, game_uso_func_052F70)
+    BLK(2, 807FEC78, 0x688, game_uso_func_052F70)
+    BLK(3, 807FEC7C, 0x68C, game_uso_func_052F70)
+    BLK(4, 807FEC80, 0x690, game_uso_func_052F70)
+    BLK(5, 807FEC84, 0x694, game_uso_func_052F70)
+    BLK(6, 807FEC88, 0x698, game_uso_func_052F70)
+    BLK(7, 807FEC8C, 0x69C, game_uso_func_052F70)
+    BLK(8, 807FEC90, 0x6A0, game_uso_func_052F70)
+    BLK(9, 807FEC94, 0x6A4, game_uso_func_052F70)
+    BLK(10, 807FEC98, 0x6A8, game_uso_func_052F70)
+    BLK(11, 807FEC9C, 0x6AC, game_uso_func_052F70)
     int z0, z1, z2, z3;
     z0 = 0; z1 = 0; z2 = 0; z3 = 0;
 }

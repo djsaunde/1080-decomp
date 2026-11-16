@@ -29,13 +29,13 @@ extern void game_uso_func_071028(Vec3 *v);
 extern float SnowAI_rivalLeadZ(Self *);
 
 /* XZ(const Vec3 &v): Vec3(v.x, 0, v.z) into temp T through pointer P */
-#define XZV(P, T, V) vp = (V); P = &(T); if (P || (P = (Vec3 *)game_uso_func_055750(12))) { tx = vp->x; tz = vp->z; P->x = tx; P->y = 0.0f; P->z = tz; }
-#define SUB2(Q, PP, T, A, B) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { vp = (B); tx = (A).x - vp->x; tz = (A).z - vp->z; PP->x = tx; PP->y = 0.0f; PP->z = tz; }
-#define SUB2S(Q, PP, T, A, B) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { vp = (B); sa = (A).x - vp->x; sc = (A).z - vp->z; PP->x = sa; PP->y = 0.0f; PP->z = sc; }
+#define XZV(P, T, V, NEW) vp = (V); P = &(T); if (P || (P = (Vec3 *)NEW(12))) { tx = vp->x; tz = vp->z; P->x = tx; P->y = 0.0f; P->z = tz; }
+#define SUB2(Q, PP, T, A, B, NEW) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)NEW(12))) { vp = (B); tx = (A).x - vp->x; tz = (A).z - vp->z; PP->x = tx; PP->y = 0.0f; PP->z = tz; }
+#define SUB2S(Q, PP, T, A, B, NEW) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)NEW(12))) { vp = (B); sa = (A).x - vp->x; sc = (A).z - vp->z; PP->x = sa; PP->y = 0.0f; PP->z = sc; }
 /* perp(v) = XZ(v.z, -v.x); the do-while block keeps sa / sc as coloured values */
-#define XZG2S(Q, PP, T, A, C) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { do { tx = (A); tz = (C); } while (0); PP->x = tx; PP->y = 0.0f; PP->z = tz; }
+#define XZG2S(Q, PP, T, A, C, NEW) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)NEW(12))) { do { tx = (A); tz = (C); } while (0); PP->x = tx; PP->y = 0.0f; PP->z = tz; }
 /* XZ(a, c) */
-#define XZGPS(PP, A, C) if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { do { m2 = (A); tz = (C); } while (0); PP->x = m2; PP->y = 0.0f; PP->z = tz; }
+#define XZGPS(PP, A, C, NEW) if (PP || (PP = (Vec3 *)NEW(12))) { do { m2 = (A); tz = (C); } while (0); PP->x = m2; PP->y = 0.0f; PP->z = tz; }
 /* Vec3 r; r.set(v * s) */
 #define MULS(R, V, S) vp = &(V); tx = vp->x * (S); ty = vp->y * (S); tz = vp->z * (S); (R).x = tx; (R).y = ty; (R).z = tz;
 /* the same with the temporaries rotated (third operator* level at three sites) */
@@ -51,11 +51,11 @@ extern float SnowAI_rivalLeadZ(Self *);
 #define THRV ty
 #define M2V tx
 #define DOTV dot
-#define SUB2VS(Q, PP, T, A, B) vp = (B); Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { sa = (A).x - vp->x; sc = (A).z - vp->z; PP->x = sa; PP->y = 0.0f; PP->z = sc; }
+#define SUB2VS(Q, PP, T, A, B, NEW) vp = (B); Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)NEW(12))) { sa = (A).x - vp->x; sc = (A).z - vp->z; PP->x = sa; PP->y = 0.0f; PP->z = sc; }
 
-#define XZU2(P, T, V) P = &(T); if (P || (P = (Vec3 *)game_uso_func_055750(12))) { vp = (V); do { tx = vp->x; tz = vp->z; } while (0); P->x = tx; P->y = 0.0f; P->z = tz; }
+#define XZU2(P, T, V, NEW) P = &(T); if (P || (P = (Vec3 *)NEW(12))) { vp = (V); do { tx = vp->x; tz = vp->z; } while (0); P->x = tx; P->y = 0.0f; P->z = tz; }
 
-#define SUBQ2(PP, A, B) if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { vp = (B); do { sa = (A).x - vp->x; sc = (A).z - vp->z; } while (0); PP->x = sa; PP->y = 0.0f; PP->z = sc; }
+#define SUBQ2(PP, A, B, NEW) if (PP || (PP = (Vec3 *)NEW(12))) { vp = (B); do { sa = (A).x - vp->x; sc = (A).z - vp->z; } while (0); PP->x = sa; PP->y = 0.0f; PP->z = sc; }
 
 Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
     Vec3 result;
@@ -131,16 +131,16 @@ Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
         *out = 0.0f;
     }
     if (b == 0) {
-        XZV(p, t38c, &a->pos)
-        SUB2(q, p, t348, t38c, pos)
+        XZV(p, t38c, &a->pos, game_uso_func_055750)
+        SUB2(q, p, t348, t38c, pos, game_uso_func_055750)
         R = t348;
         d = R;
         result.y = 0.0f;
         result.x = d.x; result.z = d.z;
     } else {
         mode = 0;
-        XZU2(p, t328, &b->pos)
-        SUB2VS(q, pB, t2b4, t328, &a->pos)
+        XZU2(p, t328, &b->pos, game_uso_func_055750)
+        SUB2VS(q, pB, t2b4, t328, &a->pos, game_uso_func_055750)
         R = t2b4; t334 = R;
         seg = t334;
         if (s->w->other != 0) {
@@ -155,8 +155,8 @@ Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
             }
             active = s->active;
             if (active == 1 && DOTV <= *(float *)((char *)&SnowAI_aimAlongSegment_rodata + 0xFC)) {
-                XZV(p, t280, &s->w->other->pos)
-                SUB2VS(q, p, t274, t280, &a->pos)
+                XZV(p, t280, &s->w->other->pos, game_uso_func_055750)
+                SUB2VS(q, p, t274, t280, &a->pos, game_uso_func_055750)
                 R = t274;
                 e = R;
                 if (seg.x * e.z <= seg.z * e.x) {
@@ -166,11 +166,11 @@ Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
                 }
             }
         }
-        XZG2S(q, vp, t268, seg.z, -seg.x)
+        XZG2S(q, vp, t268, seg.z, -seg.x, game_uso_func_055750)
         R = t268; dir = R;
         game_uso_func_071028(&dir);
-        XZU2(p, t31c, &b->pos)
-        SUB2S(q, p, t25c, t31c, pos)
+        XZU2(p, t31c, &b->pos, game_uso_func_055750)
+        SUB2S(q, p, t25c, t31c, pos, game_uso_func_055750)
         R = t25c;
         rd = R;
         R = rd;
@@ -201,16 +201,16 @@ Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
         }
         n = b->next;
         for (; n != 0; n = n->next + 0 * (int)(n->next)) { if (1) {}
-            p = &t170; pC = &t134; pB = &t140; XZV(q, t170, &n->pos)
-            SUBQ2(pB, t170, &b->pos)
+            p = &t170; pC = &t134; pB = &t140; XZV(q, t170, &n->pos, game_uso_func_055750)
+            SUBQ2(pB, t170, &b->pos, game_uso_func_055750)
             R = t140;
             lbind = R;
-            XZGPS(pC, lbind.z, -lbind.x)
+            XZGPS(pC, lbind.z, -lbind.x, game_uso_func_055750)
             P2 = t134;
             ldir = P2;
             game_uso_func_071028(&ldir);
-            XZV(p, t164, &n->pos)
-            SUB2S(q, p, t128, t164, pos)
+            XZV(p, t164, &n->pos, game_uso_func_055750)
+            SUB2S(q, p, t128, t164, pos, game_uso_func_055750)
             R = t128;
             lrd = R;
             R = lrd;
