@@ -5724,6 +5724,7 @@ gl_func_00000000_snow_3ee4 = 0x00000000;  /* SnowRing_init_00003EE4 (snoweffects
 SnowFall_moveFlakes_000027A8_rodata = 0x0000000C;  /* snoweffects 0x27A8 NCC donor: its 0.0015f literal (.rodata+0, renamed by the splice) -> RoData+0xC */
 sVrSprites = 0x00000000;  /* viewrec Bss static */
 sVrLabels = 0x000001F8;  /* viewrec Bss static */
+sVrLabels_378 = 0x00000378;  /* viewrec Bss static */
 sVrPrimColour = 0x00000858;  /* viewrec Bss static */
 sVrEnvColour = 0x00000868;  /* viewrec Bss static */
 sVrMenu = 0x00000878;  /* viewrec Bss static */

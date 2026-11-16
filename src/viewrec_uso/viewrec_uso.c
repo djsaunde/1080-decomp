@@ -41,6 +41,9 @@ typedef struct ViewRecProc {
  * Bss offset in undefined_syms_auto.txt, so the linked words carry the offset as in the ROM). */
 extern RaceSprite sVrSprites[21];   /* 0x000: gui_spriteLoad (0x718) */
 extern RaceSprite sVrLabels[68];    /* 0x1F8: gui_spriteInit (0x8C8) */
+/* 0x378 (sVrLabels[16..]): a separate static array in the original. 0x2F1C indexes it with a
+ * variable and the target folds 0x378 into the reloc, which `&sVrLabels[i + 16]` cannot give. */
+extern RaceSprite sVrLabels_378[52];
 extern f32 sVrPrimColour[4];        /* 0x858 */
 extern f32 sVrEnvColour[4];         /* 0x868 */
 extern GuiMenu *sVrMenu;            /* 0x878: the menu that has the pad */
@@ -294,7 +297,23 @@ INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002C0
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002D9C);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002F1C);
+/* draw label sprite i (from 0x378) at (x, y) tinted (255, 175, 44): the colour is r / d with the
+ * divisor in a local (fire ctor lever) and int numerators, which keeps the 255.0f dividend apart from
+ * the divisor; the colour is declared first for its sp+0x28 slot. */
+void viewrec_uso_func_00002F1C(ViewRecScreen *self, s32 i, s32 x, s32 y) {
+    f32 col[4];
+    RaceSprite *spr = &sVrLabels_378[i];
+    f32 d;
+
+    d = 255.0f;
+    col[0] = 255 / d;
+    col[1] = 175 / d;
+    col[2] = 44 / d;
+    col[3] = 255 / d;
+    CALL(gui_spriteRefresh)(spr);
+    CALL(gui_setColorEnvPrim_000017DC)(spr, 255, col, 255);
+    CALL(gui_drawSprite)(spr, x, y, 2);
+}
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002FC0);
 
