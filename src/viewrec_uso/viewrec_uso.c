@@ -999,7 +999,62 @@ void viewrec_uso_func_00002FC0(VrScreen2 *self) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000319C);
+/* 0x319C: the course scores page (three score rows of the selected course). Levers (agent-b run 662,
+ * read in the -Wo,-zdbug:5 colouring trace): uopt colours the saved registers in priority order
+ * (refs / live units), lowest free s-register first. `y = y * 1`, `self = self * 1` (in the loop) and
+ * `course = course * 1` are emission-free extra refs that put self > y > i > show and course >
+ * course*48 (the target's s1 / s2 / s3 / s4 and s7 / s8). The void alias on the 0x2D9C call drops its
+ * dead $v0 def so e->score takes v0. `show = 1` after the GetScore call and `i = 0; do {` on one line
+ * are as1 order levers (as1 schedules within the source-line groups). `if (1) {}` stops uopt hoisting
+ * &col into s8. */
+typedef struct { u8 b0; char name[3]; s32 score; } VrScoreEnt;
+typedef struct { char pad[24]; VrScoreEnt scores[3]; } VrCourseRec;
+void viewrec_uso_func_0000319C(ViewRecScreen *self) {
+    f32 d;
+    f32 col[4];
+    s32 course;
+    s32 i;
+    s32 y;
+    s32 prev;
+    s32 show;
+    s32 rank;
+    u8 *e;
+
+    d = 255.0f;
+    col[0] = 40 / d;
+    col[1] = 100 / d;
+    col[2] = 255 / d;
+    col[3] = 255 / d;
+    y = 123;
+    course = *(s32 *)((char *)self + 0x98);
+    CALL(gui_setCombine_00001794)(&D_00000000);
+    CALL(viewrec_uso_func_00001488)(self->proc, course, 83);
+    course = course * 1;
+    prev = -1;
+    i = 0; do {
+        e = (u8 *)CALL(Backup_courseRecordGetScore)(&((VrCourseRec *)*self->proc->session)[course], i);
+        show = 1;
+        if (CALL(Backup_scoreEntryIsNew)(&((VrCourseRec *)*self->proc->session)[course].scores[i]) &&
+            (*(s32 *)((char *)self + 0x6C) & 8)) {
+            show = 0;
+        }
+        rank = i;
+        if (prev == *(s32 *)(e + 4)) {
+            rank = -1;
+        }
+        if (show) {
+            if (1) {}
+            CALL(viewrec_uso_func_000029B0)(self, rank, 38, y, e[0] & 7, (e[0] & 0x78) >> 3);
+            CALL(viewrec_uso_func_00002AE4)(self, 132, y, e + 1);
+            XCALL(gl_func_00000000_vrv, viewrec_uso_func_00002D9C)(self, 196, y, *(s32 *)(e + 4), col);
+        }
+        prev = *(s32 *)(e + 4);
+        y = y * 1;
+        self = (ViewRecScreen *)((s32)self * 1);
+        y += 34;
+        i++;
+    } while (i < 3);
+}
 
 typedef struct VrArcadeEnt {
     /* 0x00 */ s32 b0;
