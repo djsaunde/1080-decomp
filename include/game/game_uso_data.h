@@ -76,6 +76,32 @@
 #define kPmf_RiderAnim_stateTimeUpLose 0xF50 /* Data+0xF50: PMF -> RiderAnim_stateTimeUpLose */
 #define kPmf_RiderAnim_stateStand 0xF58 /* Data+0xF58: PMF -> RiderAnim_stateStand */
 
+/* The course-marker type tags (agent-g run 558): 12 pointers at Data 0x548..0x574 (DataReloc
+ * RoData-base, RoData 0x60..0x8C = mrk, mk1..mk9, mkl, mkr), indexed by the MARKER_* types
+ * (course.h; SnowAI.targetNode / altNode / scanIndex). The readers load the 4-byte tag word through
+ * the pointer and pass it by value to the marker lookup. */
+#define kMarkerTypeTags_548 0x548 /* Data+0x548: const char *[MARKER_NUM_TYPES] */
+#define kMarkerTypeTag_mkl_570 0x570 /* Data+0x570: entry MARKER_MKL */
+#define kMarkerTypeTag_mkr_574 0x574 /* Data+0x574: entry MARKER_MKR */
+
+/* SnowAI_ctor's parm tags (agent-g run 558): SNOWAI_PARM_COUNT 4-byte tag strings at Data
+ * 0x6E8..0x788 (de0..de2, bd0.., .., ms1..ms8, in SNOWAI_PARM_* order); INIT_ITER reads the
+ * tag of parm IDX as one word at kSnowAIParmTags_6E8 + 4 * IDX. */
+#define kSnowAIParmTags_6E8 0x6E8 /* Data+0x6E8: "de0" */
+/* The float-parm vtable (Data 0x3C8; slot 1 = game_readFloatParm_00003968) that the parm builders
+ * store after Parms_addParm (CourseFParm / SnowAIParm vptr). */
+#define kVtbl_FloatParm_3C8 0x3C8 /* Data+0x3C8: float-parm vtable */
+
+/* Rider rumble patterns (agent-g run 558): 0xFF-terminated motor on / off bytes, one per frame
+ * (gdl/pad.h PadCtl.rumble), passed to pad_setRumble / pad_startRumble. RiderAnim_hitFeedback
+ * picks one per hit kind 1..5. On-runs: 109C 3; 10A4 4; 10AC 3, 3, 1; 10C0 3, 3, 2;
+ * 10DC 3, 4, 4. */
+#define kRumble_hit1_109C 0x109C /* Data+0x109C: 1 1 1 0 0, also the landing / selectAnim pulse */
+#define kRumble_hit3_10A4 0x10A4 /* Data+0x10A4: 1 1 1 1 0 */
+#define kRumble_hit2_10AC 0x10AC /* Data+0x10AC: 17 frames, three bursts */
+#define kRumble_hit4_10C0 0x10C0 /* Data+0x10C0: 26 frames, three bursts */
+#define kRumble_hit5_10DC 0x10DC /* Data+0x10DC: 31 frames, three bursts */
+
 /* const-table:begin (uso-data-sites.py --uso game const-table --write; do not edit by hand) */
 /* strings (class names, "Parms" group names, assert texts, file names) */
 #define kStr_Parms_318 0x318 /* Data+0x318: "Parms" */

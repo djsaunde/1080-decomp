@@ -213,7 +213,7 @@ after_24:;
                 sp30 = 0;
                 RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x2F);
                 game_uso_func_07C0FC((int)RIDER(var_v1)->input,
-                                     (char *)&game_uso_D_807FF68C + 4252, 0xA);
+                                     (char *)&game_uso_D_807FF68C + kRumble_hit1_109C, 0xA);
             }
         }
     }

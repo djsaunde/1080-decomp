@@ -59,7 +59,7 @@ extern "C" void RiderAnim_update_0000D204(H *a0) {
     {
         SnowBoarder *v0 = RA(a3)->rider;
         if (v0->contactCount == 0 && v0->groundDist < 700.0f && v0->dnode.vel[1] < -100.0f) {
-            XCALL(game_uso_func_07C0C0, pad_startRumble)((int)v0->input, &game_uso_D_807FF68C + 4252, 1);
+            XCALL(game_uso_func_07C0C0, pad_startRumble)((int)v0->input, &game_uso_D_807FF68C + kRumble_hit1_109C, 1);
         }
     }
     if (RA(a3)->trickPhase != 0) RiderAnim_selectAnim_0000D9CC(a3);
