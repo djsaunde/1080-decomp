@@ -653,9 +653,9 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         SELWIN(arg0)->prevStage = temp_v0_36;
         SELWIN(arg0)->prevItem = 0;
         if (SELWIN(arg0)->numPlayers == 2) {
-            SELWIN(arg0)->centerX = 0x78;
+            SELWIN(arg0)->viewH = 0x78;
         } else {
-            SELWIN(arg0)->centerX = 0xF0;
+            SELWIN(arg0)->viewH = 0xF0;
         }
         SELWIN(arg0)->blink = 0;
         SELWIN(arg0)->frame = 0;

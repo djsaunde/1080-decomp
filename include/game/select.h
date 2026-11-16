@@ -281,18 +281,19 @@ typedef struct SelectionMgr {
     struct SelectWin *wins[2]; /* 0x34 */
     /* The 2-player split screen (agent-c run 522: SelectionMgr_ctor, SelectionMgr_update
      * (ncc_1F14), SelectionMgr_setSplit (ncc_1DB0), SelectionMgr_finish). `split` is
-     * wins[0]->centerX and 0xF0 - split is wins[1]'s; 0x78 is the even split. When one
+     * wins[0]->viewH and 0xF0 - split is wins[1]'s; 0x78 is the even split. When one
      * window waits in state 8 (board accepted) and the other joins it, the waiting
      * window slides to the full screen: zoomWin picks it, splitT ramps 0 -> 1 by 0.05
      * and split follows (120 +- splitT * 120). */
     s32 waitMask;           /* 0x3C: bit 0 / 1 = wins[0] / wins[1] in SelectWin state 8 (rebuilt
                              * every update; 3 = both) */
     s32 prevWaitMask;       /* 0x40: last update's waitMask */
-    s32 split;              /* 0x44: wins[0]->centerX (0x78 even, 0xF0 = wins[0] full screen) */
+    s32 split;              /* 0x44: wins[0]->viewH, a height in lines (0x78 even, 0xF0 = wins[0]
+                             * full screen) */
     s32 zoomWin;            /* 0x48: 1 = wins[0] / 2 = wins[1] takes the screen, 0 = none;
                              * finish sends the result of that window */
     s32 busy;               /* 0x4C: 1 while the split slides */
-    s32 shownMask;          /* 0x50: bit 0 / 1 = wins[0] / wins[1] has a nonzero centerX */
+    s32 shownMask;          /* 0x50: bit 0 / 1 = wins[0] / wins[1] has a nonzero viewH */
     f32 splitT;             /* 0x54: slide progress 0..1 (also the fov / aspect blend) */
 } SelectionMgr;             /* 0x58 (SelectionMgr_ctor allocates 0x58) */
 
@@ -362,7 +363,10 @@ typedef struct SelectWin {
     f32 camPos[3];          /* 0x4C4: beginTransition copies scene->0x10 +0x60..0x68 */
     s32 font;               /* 0x4D0: gui_fontCreate(0, font, 0x48, 0xDD, 3, 13) (SelectWin_init) */
     s32 eventFlags;         /* 0x4D4: ctor arg 11 (0 / 0x80), ORed into the select event */
-    s32 centerX;            /* 0x4D8: 0x78 (2 players) / 0xF0 */
+    s32 viewH;              /* 0x4D8: the window's screen height in lines: 0x78 (2 players) /
+                             * 0xF0 (full screen); SelectionMgr_setSplit / _update write it as
+                             * split / 0xF0 - split and give SELWIN_VIEW() the same height (vpH).
+                             * Was centerX (agent-c run 530: the split is vertical) */
     s32 *out[5];            /* 0x4DC: commitSelection output pointers */
 } SelectWin;                /* 0x4F0 (SelectWin_ctor allocates 0x4F0) */
 

@@ -14,9 +14,9 @@ void SelectionMgr_setSplit_00001DB0(char *a0) {
     char *t;
     char *u;
 
-    MGR->wins[0]->centerX = MGR->split;
+    MGR->wins[0]->viewH = MGR->split;
     t = (char *)MGR->wins[0];
-    if (SELWIN(t)->centerX == 0) {
+    if (SELWIN(t)->viewH == 0) {
         SELWIN_VIEW(SELWIN(t))->height = 0;
     } else {
         SELWIN_VIEW(SELWIN(t))->originY = 0;
@@ -27,9 +27,9 @@ void SelectionMgr_setSplit_00001DB0(char *a0) {
             D_dbl_1DB0_C0 + D_dbl_1DB0_B8 * (f64)(1.0f - MGR->splitT);
         MGR->wins[0]->fovBase = 41.0f + 5.0f * MGR->splitT;
     }
-    MGR->wins[1]->centerX = 0xF0 - MGR->split;
+    MGR->wins[1]->viewH = 0xF0 - MGR->split;
     u = (char *)MGR->wins[1];
-    if (SELWIN(u)->centerX == 0) {
+    if (SELWIN(u)->viewH == 0) {
         SELWIN_VIEW(SELWIN(u))->height = 0;
         return;
     }
