@@ -36,6 +36,33 @@ typedef struct SnowPool {
 
 float snoweffects_uso_func_00000000(Vec3 *a, Vec3 *b);
 
+/* the 0x6248-created snow effect object (only the fields its default init 0x70C0 sets) */
+typedef struct SnowEffect {
+    /* 0x000 */ char unk000[0x54];
+    /* 0x054 */ s32 flags;
+    /* 0x058 */ char unk058[0x1DC - 0x58];
+    /* 0x1DC */ f32 unk1DC;
+    /* 0x1E0 */ f32 unk1E0;
+    /* 0x1E4 */ f32 unk1E4;
+    /* 0x1E8 */ f32 unk1E8;
+    /* 0x1EC */ f32 unk1EC;
+    /* 0x1F0 */ f32 unk1F0;
+    /* 0x1F4 */ f32 unk1F4;
+    /* 0x1F8 */ f32 unk1F8;
+    /* 0x1FC */ s32 unk1FC;
+    /* 0x200 */ s32 unk200;
+    /* 0x204 */ s32 unk204;
+    /* 0x208 */ f32 unk208;
+    /* 0x20C */ f32 unk20C;
+    /* 0x210 */ f32 unk210;
+    /* 0x214 */ f32 unk214;
+    /* 0x218 */ f32 unk218;
+    /* 0x21C */ f32 unk21C;
+    /* 0x220 */ f32 unk220;
+    /* 0x224 */ Vec3 scale;
+    /* 0x230 */ f32 unk230;
+} SnowEffect;
+
 /* one 0x2C-byte emitter point (3EE4 allocates count of them at +0x90 and clears each with 0x3EB0) */
 typedef struct SnowPoint {
     /* 0x00 */ Vec3 pos;
@@ -340,7 +367,10 @@ void snoweffects_uso_func_00003EE4(SnowRing *this, int a1, int stride, int count
     this->unk12C.z = this->unk12C.y = this->unk12C.x = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000040B4);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc.cpp (agent-h run 628),
+ * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
+void snoweffects_uso_func_000040B4(void *self) {
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00004188);
 
@@ -485,7 +515,32 @@ void snoweffects_uso_func_00006B08(char *a0) {
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00006B28);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000070C0);
+/* the RoData floats of the 0x70C0 defaults (each load takes its own lui: one pin per constant) */
+extern f32 snow_ro_80, snow_ro_84, snow_ro_88, snow_ro_8C, snow_ro_90, snow_ro_94;
+extern f32 snow_ro_98, snow_ro_9C, snow_ro_A0, snow_ro_A4, snow_ro_A8, snow_ro_AC;
+
+/* default parameters of a new snow effect (called from its create, 0x6248) */
+void snoweffects_uso_func_000070C0(SnowEffect *this) {
+    this->flags |= 4;
+    this->unk1E0 = snow_ro_80;
+    this->unk1F0 = 0.0f;
+    this->unk1E4 = snow_ro_84;
+    this->unk1F8 = snow_ro_88;
+    this->unk1DC = snow_ro_8C;
+    this->unk1EC = 0.0f;
+    this->unk1E8 = snow_ro_90;
+    this->unk1FC = 0;
+    this->unk204 = 0;
+    this->unk20C = snow_ro_94;
+    this->unk210 = snow_ro_98;
+    this->unk208 = snow_ro_9C;
+    this->unk214 = snow_ro_A0;
+    this->unk218 = snow_ro_A4;
+    this->unk21C = snow_ro_A8;
+    this->scale.z = this->scale.y = this->scale.x = 1.0f;
+    this->unk230 = 0.0f;
+    this->unk220 = snow_ro_AC;
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000718C);
 
