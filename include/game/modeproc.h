@@ -248,7 +248,7 @@ typedef struct TitleDemoProcess {
                                       * state 0 starts at unk6C * 30, state 1 at unk70 * 30 (agent-h run 496) */
     /* 0x40 */ s32 state;            /* TitleDemoProcess_handleInput's switch (the ctor starts at 0 or 1) */
     /* 0x44 */ char unk44[0x50 - 0x44];
-    /* 0x50 */ s32 dataMgr;          /* plain DataManager (also InputMgr.dataMgr) */
+    /* 0x50 */ struct RaceTracker *dataMgr; /* plain DataManager (also InputMgr.dataMgr) */
     /* 0x54 */ s32 keyMessage;       /* KeyMessage_ctor */
     /* 0x58 */ s32 mainLogo;         /* MainLogo_ctor */
     /* 0x5C */ s32 menu;             /* the title menu */

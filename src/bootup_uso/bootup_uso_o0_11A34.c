@@ -10,12 +10,12 @@ extern char D_00000000;
  * Walks a0->0x130, notifies with node->0, frees each node, then clears the
  * head pointer. */
 void GameFlow_unloadUso_00011A34(char *a0) {
-    char *cur;
-    char *next;
-    if ((cur = (char *)GAMEFLOW(a0)->usoList) != 0) {
+    FlowUso *cur;
+    FlowUso *next;
+    if ((cur = GAMEFLOW(a0)->usoList) != 0) {
         do {
-            next = *(char**)(cur + 4);
-            FCALL(app_unloadUso)(&gSysLib, *(int*)cur);
+            next = cur->next;
+            FCALL(app_unloadUso)(&gSysLib, cur->handle);
             FCALL(mem_delete)(cur);
         } while ((cur = next) != 0);
     }

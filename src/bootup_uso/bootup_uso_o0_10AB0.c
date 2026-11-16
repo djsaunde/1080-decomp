@@ -19,7 +19,7 @@
  *    (addu $t9, $a0, $t8) + per-field folded displacement.
  *  - `if (a2 != -1) {...} else {...}` puts the a2-store arm first with the
  *    b-over-else, matching the target block order. */
-void gui_addRow_00010AB0(register char *a0, register int a1, register int a2, register int a3) {
+void gui_addRow_00010AB0(register char *a0, register int a1, register int a2, register GuiRowFn a3) {
     register char *s;
 
     GUIMENU(a0)->rows[GUIMENU(a0)->numRows].enabled = 1;

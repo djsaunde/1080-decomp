@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/node.h"
 #include "uso_call.h"
 
 /* -O0 sub-file covering bootup_uso offset 0xF6C4..0xF76B (single function,
@@ -31,12 +32,12 @@ extern struct { int a, b, c; } func_00000188;
 void Process_update(char *a0) {
     register char *m;
     if (*(int*)(a0 + 0x2C) == 0) {
-        (*(int(**)())(m + 0x6C))(*(short*)((m = *(char**)(a0 + 0x28)) + 0x68) + a0);
+        (*(int(**)())(m + 0x6C))(*(short*)((m = NODE(a0)->vptr) + 0x68) + a0);
     }
     FCALL(Node_update)(a0);
     if (*(int*)(a0 + 0x2C) != 0) {
         if (FCALL(Fader_checkDone_00013924)(func_00000188.c)) {
-            (*(int(**)())(m + 0x64))(*(short*)((m = *(char**)(a0 + 0x28)) + 0x60) + a0);
+            (*(int(**)())(m + 0x64))(*(short*)((m = NODE(a0)->vptr) + 0x60) + a0);
         }
     }
 }

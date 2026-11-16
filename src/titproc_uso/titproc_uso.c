@@ -438,7 +438,7 @@ extern int titproc_uso_func_00101C();
 extern int import_00073B80();
 extern char titproc_uso_D_000114;
 extern char titproc_uso_D_00052C;
-extern int import_000B6C40();
+extern struct RaceTracker *import_000B6C40(); /* the plain DataManager ctor */
 extern int import_000B88CC();
 extern int import_000A5D38();
 extern int import_000A5F40();
@@ -462,8 +462,8 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
     NODE(root)->name = (const char *)((char *)&titproc_uso_D_00048C + 0x4B0);
     XCALL(titproc_uso_func_000000, titproc_uso_func_00000000)();
     XCALL(titproc_uso_func_000098, tit_loadLogoSprite_00000098)();
-    TITLEDEMO(root)->dataMgr = (s32)((void *)import_000B6C40(0));
-    INPUT_MGR(import_00020098).dataMgr = (void *)TITLEDEMO(root)->dataMgr;
+    TITLEDEMO(root)->dataMgr = import_000B6C40(0);
+    INPUT_MGR(import_00020098).dataMgr = TITLEDEMO(root)->dataMgr;
     import_000B88CC(TITLEDEMO(root)->dataMgr);
 
     sub = (void *)TITLEDEMO(root)->dataMgr;
@@ -1497,7 +1497,7 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
                     INPUT_MGR(import_00020098).session = 0;
                 }
                 obj = (char *)s0->menu;
-                (*(void (*)(void))(GUIMENU(obj)->rows[GUIMENU(obj)->cursor].arg))();
+                GUIMENU(obj)->rows[GUIMENU(obj)->cursor].arg();
             }
             return;
         case 2:

@@ -50,7 +50,7 @@ void settings_set8_00012818(char *a0, char *a1) {
 
     i = 0;
     do {
-        (*(char**)(a0 + 0x154))[i + 6] = a1[i];
+        GAMEFLOW(a0)->options[i + 6] = a1[i]; /* BackupOptions.unk6[i] */
     } while (++i < 8);
 
     unused = &gSysLib;

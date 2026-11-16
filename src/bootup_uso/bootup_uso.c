@@ -4833,12 +4833,12 @@ skip:
 
 extern char *gInputMgr_00000130;
 int game_isUsoLoaded(int a0) {
-    char *p = gInputMgr_00000130;
+    FlowUso *p = (FlowUso *)gInputMgr_00000130; /* GameFlow.usoList */
     while (p != 0) {
-        if (FCALL(str_compare_00067B04)(*(int*)p, a0) == 0) {
+        if (FCALL(str_compare_00067B04)(p->handle, a0) == 0) {
             return 1;
         }
-        p = *(char**)(p + 4);
+        p = p->next;
     }
     return 0;
 }

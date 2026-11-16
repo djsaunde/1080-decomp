@@ -1190,7 +1190,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u15;
             if ((mf = self + 0x158) != 0 || (mf = (char *)CALL(mem_new)(0x24)) != 0) {
                 CALL(Parms_addParm)(mf, self, t, 1);
-                PARMRGBA(mf)->type = (int)&gl_ref_0000CA34_1C54;
+                PARMRGBA(mf)->type = &gl_ref_0000CA34_1C54;
                 PARMRGBA(mf)->unk20 = 0;
                 *(Quad4 *)PARMRGBA(mf)->value = dst40;
             }

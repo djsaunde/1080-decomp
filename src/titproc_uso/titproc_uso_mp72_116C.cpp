@@ -38,7 +38,8 @@ typedef struct TitleDemoProcess {
 #define TITLEDEMO(p) ((TitleDemoProcess *)(p))
 typedef struct WhiteFader { char node[0x2C]; float colour[4]; int alpha; } WhiteFader;
 #define WFADER(p) ((WhiteFader *)(p))
-typedef struct GuiRow { int label; int enabled; int id; int arg; char sub[0x18]; } GuiRow;
+typedef void (*GuiRowFn)(void); /* as game/guimenu.h */
+typedef struct GuiRow { int label; int enabled; int id; GuiRowFn arg; char sub[0x18]; } GuiRow;
 typedef struct GuiMenu { char head[0x7C]; int cursor; int locked; GuiRow rows[16]; } GuiMenu;
 #define GUIMENU(p) ((GuiMenu *)(p))
 typedef struct RaceEntry { char pad00[0x34]; int finished; } RaceEntry;
@@ -225,7 +226,7 @@ fire:
                     *(int *)((char *)&import_00020098 + 0x84) = GUIMENU(TITLEDEMO(s0)->menu)->cursor;
                     v1 = (char *)TITLEDEMO(s0)->menu;
                     if (1) {}
-                    ((void (*)(void))(GUIMENU(v1)->rows[GUIMENU(v1)->cursor].arg))();
+                    GUIMENU(v1)->rows[GUIMENU(v1)->cursor].arg();
                 }
             }
         }

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/node.h"
 #include "gdl/gl_data.h"
 #include "game/input.h"
 #include "gdl/backup.h"
@@ -56,7 +57,7 @@ void settings_setFlag4_000126EC(char *arg0, s32 arg1) {
         *q = 0x15;
     }
     p = (u16 *)q;
-    ((GP_000126EC)FW(r, 0x34))((int)&gSnowBoard + *(short *)((r = *(char **)((char *)&gSnowBoard + 0x28)) + 0x30), p);
+    ((GP_000126EC)FW(r, 0x34))((int)&gSnowBoard + *(short *)((r = NODE(&gSnowBoard)->vptr) + 0x30), p);
 }
 
 /* 19-insn 8-byte copy loop. Logic: copy 8 bytes from

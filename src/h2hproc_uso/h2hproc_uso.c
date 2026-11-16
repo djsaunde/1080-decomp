@@ -605,7 +605,7 @@ void H2HRaceProcess_onPauseSelect(int *a0) {
         if (k) {}
         if (((GuiRow *)((char *)RACEPROC(a0)->menu->rows + RACEPROC(a0)->menu->cursor * k))->arg != 0) {
             *(int**)&D_00000000 = a0;
-            ((void (*)())((GuiRow *)((char *)RACEPROC(a0)->menu->rows + RACEPROC(a0)->menu->cursor * k))->arg)();
+            ((GuiRow *)((char *)RACEPROC(a0)->menu->rows + RACEPROC(a0)->menu->cursor * k))->arg();
         }
     }
 }
@@ -1011,8 +1011,8 @@ int *h2h_WhiteFader_ctor(int *a0) {
     }
     CALL(Node_ctor)(r, (char*)&D_00000000 + 0x3E0); NODE(r)->vptr = (char *)&D_00000000;
 tail:
-    *(int*)((char*)a0 + 0x28) = (int)&D_h2h_eb0_y;
-    *(int*)((char*)a0 + 0xC) = (int)((char*)&D_00000000 + 0x3E8);
+    NODE(a0)->vptr = &D_h2h_eb0_y;
+    NODE(a0)->name = (char *)&D_00000000 + 0x3E8;
     WFADER(a0)->alpha = 0;
     WFADER(a0)->colour[0] = 1.0f;
     WFADER(a0)->colour[1] = 1.0f;

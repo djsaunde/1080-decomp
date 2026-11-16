@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/node.h"
 #include "uso_call.h"
 
 /* -O0 run: 0xF6C4..0xFBCB. These functions compile at -O0, not -O2.
@@ -20,7 +21,7 @@ void Process_display(char *a0) {
     register char *p;
     FCALL(gui_beginFrame_000016A4)(&D_00000000);
     (**(void (**)())(p + 0x74))(
-        *(short*)((p = *(char**)(a0 + 0x28)) + 0x70) + (int)a0);
+        *(short*)((p = NODE(a0)->vptr) + 0x70) + (int)a0);
     FCALL(Node_display)(a0);
 }
 

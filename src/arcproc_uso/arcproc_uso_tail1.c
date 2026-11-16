@@ -1250,7 +1250,7 @@ void arc_DataManager_init(ArcDataManager *arg0, char *arg1, int arg2, char *arg3
     float r192 = 192.0f / denom;
     float r0;
 
-    *(int *)((char *)arg0 + 0xC) = (int)((char *)&D_00000000 + 0x3E4);
+    NODE(arg0)->name = (char *)&D_00000000 + 0x3E4;
     arg0->race = (s32)arg1;
     arg0->base.session = (BackupSession *)arg4;
     arg0->courseList = (ArcCourseList *)arg3;
@@ -1732,7 +1732,7 @@ void ARCMenuProcess_handleInput(int *a0)
     new_var2 = 0x7C / 4;
     p0 = (int *) MENUPROC(a0)->menu;
     /* rows[cursor].arg through the menu shifted by cursor rows (multiply-first spelling) */
-    if (GUIMENU(((char *) p0) + (GUIMENU(p0)->cursor * 0x28))->rows[0].arg != ((0, 0)))
+    if (GUIMENU(((char *) p0) + (GUIMENU(p0)->cursor * 0x28))->rows[0].arg != 0)
     {
       XCALL(gl_func_00000000_void, snd_postEvent)(5);
       sArcPauseMenu_27BC = a0[new_var = 0x48 / 4];

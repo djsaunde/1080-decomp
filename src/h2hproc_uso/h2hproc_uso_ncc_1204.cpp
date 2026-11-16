@@ -20,7 +20,8 @@ typedef struct WhiteFader { char node[0x2C]; float colour[4]; int alpha; } White
 #define WFADER(p) ((WhiteFader *)(p))
 typedef struct RaceProcess { char pad000[0x4F4]; int timeout; } RaceProcess;
 #define RACEPROC(p) ((RaceProcess *)(p))
-typedef struct GuiRow { int label; int enabled; int id; int arg; char sub[0x18]; } GuiRow;
+typedef void (*GuiRowFn)(void); /* as game/guimenu.h */
+typedef struct GuiRow { int label; int enabled; int id; GuiRowFn arg; char sub[0x18]; } GuiRow;
 typedef struct GuiMenu { char head[0x7C]; int cursor; int locked; GuiRow rows[16]; } GuiMenu;
 #define GUIMENU(p) ((GuiMenu *)(p))
 
@@ -62,7 +63,7 @@ void h2h_WinsDisplay_update_00001204(char *a0) {
                 *(int*)((char*)&D_00000000 + 0x4) = H2HWINS(a0)->menu;
                 *(int*)((char*)&D_00000000 + 0x0) = H2HWINS(a0)->race;
                 p1 = (char *)H2HWINS(a0)->menu;
-                ((void (*)(void))GUIMENU(p1)->rows[GUIMENU(p1)->cursor].arg)();
+                GUIMENU(p1)->rows[GUIMENU(p1)->cursor].arg();
             }
         }
     }

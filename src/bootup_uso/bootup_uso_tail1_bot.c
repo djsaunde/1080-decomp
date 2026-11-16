@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/node.h"
 
 /* bootup_uso 0xFC28..0x100F0 region, split off bootup_uso_tail1.c on
  * 2026-05-28 so that Process_setWindowFlag8_0000FBCC could move to a -O0 sub-file
@@ -45,7 +46,7 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
  * notes retired: all four 2026-05-08 variants were two-statement forms. */
 void QuitProcess_onQuit(char *a0) {
     register char *p;
-    (*(void(**)())(p + 0x64))(*(short*)((p = *(char**)(a0 + 0x28)) + 0x60) + a0);
+    (*(void(**)())(p + 0x64))(*(short*)((p = NODE(a0)->vptr) + 0x60) + a0);
 }
 
 /* PauseMenu_create - verified structural decode (0x208, 130 insns,

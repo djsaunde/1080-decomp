@@ -24,7 +24,7 @@ extern int func_00000000();
  * final `numRows += 1` goes through a REGISTER pointer var (p = a0; p->numRows
  * += 1) — that is what colors s0 (lw s0, 0x28(sp)) and forces the s0
  * save/restore at 0x18(sp). */
-void gui_addRowSub_00010B6C(GuiMenu *a0, void *a1, int a2, int a3) {
+void gui_addRowSub_00010B6C(GuiMenu *a0, void *a1, int a2, GuiRowFn a3) {
     register GuiMenu *p;
 
     a0->rows[a0->numRows].enabled = 1;

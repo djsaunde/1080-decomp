@@ -343,7 +343,7 @@ void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
             NODE(o2)->vptr = (char *)&D_b3_994_v4;
         }
         TIMRACE(obj)->dataManager = (RaceTracker *)o2;
-        *(char **)((char *)&D_b3_994_g + 0x138) = o2;
+        INPUT_MGR(D_b3_994_g).dataMgr = (RaceTracker *)o2;
         if ((RACEPROC(obj)->flags << 15) < 0) {
             o1 = (char *)TIMRACE(obj)->dataManager;
             DATAMGR(o1)->hudFlags = 11;
@@ -767,7 +767,7 @@ void TrkRace_drawResultExtra(TimRace *a0) {
             armed = 0;
             if ((a0->race.session->modes & BACKUP_MODE_TRICK) != 0 &&
                 a0->race.unk4FC != 0 &&
-                *(int*)(*(char**)(*(char**)((char*)&D_b3_1240_ptr138 + 0x138) + 0x44) + 0x3C) < 3) {
+                INPUT_MGR(D_b3_1240_ptr138).dataMgr->entries->rank[1] < 3) {
                 armed = 1;
             }
 
@@ -1403,7 +1403,7 @@ char *TrkMenu_ctor(char *arg0) {
             if ((a3 != 0) || (a0 = (char *)CALL(mem_new)(44), (a0 != 0))) {
                 CALL(Node_ctor)(a0, (char *)&D_00000000 + 1160); *(char **)&NODE(a0)->vptr = &D_00000000;
             }
-            *(char **)(a3 + 0x28) = &D_00000000;
+            NODE(a3)->vptr = &D_00000000;
         }
         TIMMENU(arg0)->base.node.vptr = (char *)(&D_00000000);
         TIMMENU(arg0)->base.node.name = (const char *)((char *)&D_00000000 + 1168);

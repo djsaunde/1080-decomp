@@ -14,11 +14,15 @@
  * gui_addRowSub append a row; gui_centerRows centres the block at x 160 around y 120, sets
  * alpha 255 and restarts timer; PauseMenu_update fades alpha up to 255, counts timer and moves the
  * cursor up (pad 0x2004) / down (0x8008) to the next enabled row, wrapping. */
+/* The row callback: the pause / menu processes call rows[cursor].arg() when the row is
+ * picked (H2HRaceProcess_onPauseSelect, the arc / tim / trk / tit menu handleInput). */
+typedef void (*GuiRowFn)(void);
+
 typedef struct GuiRow {
     /* 0x00 */ s32 label;           /* gui_addRow arg 1 (gui_addRowSub: 0, the label goes to sub) */
     /* 0x04 */ s32 enabled;         /* 1 when added; the cursor skips rows with 0 */
     /* 0x08 */ s32 id;              /* arg 2, or the row index when arg 2 is -1 */
-    /* 0x0C */ s32 arg;             /* arg 3 */
+    /* 0x0C */ GuiRowFn arg;        /* arg 3: the row callback (0 = none) */
     /* 0x10 */ char sub[0x18];      /* gui_addRowSub initialises it with its arg 1 */
 } GuiRow;
 
