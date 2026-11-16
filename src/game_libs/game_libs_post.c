@@ -15636,7 +15636,7 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
     v.y = y;
     v.z = z;
     gl_func_0001CA10(self + 0x30, &v);
-    NODE(self)->name = (s32)GL_DATA_STR(0x1E18C, "camera");
+    NODE(self)->name = (const char *)GL_DATA_STR(0x1E18C, "camera");
     NODE(self)->flags |= 0x40;
     MCAM->target = (CamMNode *)arg1; if (1) {}
     MCAM->lookDir.x = 0.0f;

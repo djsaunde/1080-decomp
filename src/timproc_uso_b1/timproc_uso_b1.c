@@ -944,7 +944,7 @@ void TimDataManager_init_00001A64(int *a0, int a1, int a2, int a3) {
   volatile int p4;
   int r5;
   int r6;
-  NODE(a0)->name = (int) (((char *) (&D_00000000)) + 0x40C);
+  NODE(a0)->name = (const char *)(((char *) (&D_00000000)) + 0x40C);
   TIMDATAMGR(a0)->race = a1;
   DATAMGR(a0)->owner = a1;
   DATAMGR(a0)->session = (BackupSession *)a3;
@@ -1257,7 +1257,7 @@ char *TimMenu_ctor(char *arg0) {
             *(char **)&NODE(a3)->vptr = &D_00000000;
         }
         TIMMENU(arg0)->base.node.vptr = (s32)(&D_00000000);
-        TIMMENU(arg0)->base.node.name = (s32)((char *)&D_00000000 + 0x4C0);
+        TIMMENU(arg0)->base.node.name = (const char *)((char *)&D_00000000 + 0x4C0);
         CALL(TimMenu_initLabels_000024F4)(arg0);
         TIMMENU(arg0)->unk60 = 120;
         TIMMENU(arg0)->unk64 = 161;

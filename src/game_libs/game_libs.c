@@ -35,7 +35,7 @@ char *TimeGadget_ctor(char *arg0, s32 arg1) {
             ((Node *)sub)->vptr = (s32)&TimeGadget_vtbl;
             CALL(TimeGadget_ctor_00013D40)(sub + 0x2C);
         }
-        ((Gadget *)arg0)->node.name = (s32)(sTimeGadgetName);
+        ((Gadget *)arg0)->node.name = (const char *)(sTimeGadgetName);
         CALL(gui_spriteInit)(((Gadget *)arg0)->sprite0, 0x50000);
         CALL(gui_spriteInit)(((Gadget *)arg0)->sprite1, 0x50007);
         CALL(TimeGadgetParms_set104_00014004)(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
@@ -98,7 +98,7 @@ char *BestTimeGadget_ctor(char *arg0, s32 arg1) {
             }
             ((Node *)sub)->vptr = (s32)&BestGadget_vtbl;
         }
-        ((Gadget *)arg0)->node.name = (s32)(sBestTimeGadgetName);
+        ((Gadget *)arg0)->node.name = (const char *)(sBestTimeGadgetName);
         CALL(gui_spriteInit)(((Gadget *)arg0)->sprite0, 0x5001B);
         CALL(gui_spriteInit)(((Gadget *)arg0)->sprite1, 0x5001D);
         CALL(TimeGadgetParms_set104_00014004)(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
@@ -151,7 +151,7 @@ char *BestScoreGadget_ctor(char *arg0, s32 arg1) {
             }
             ((Node *)sub)->vptr = (s32)&BestGadget_vtbl;
         }
-        ((Gadget *)arg0)->node.name = (s32)(sBestScoreGadgetName);
+        ((Gadget *)arg0)->node.name = (const char *)(sBestScoreGadgetName);
         CALL(gui_spriteInit)(((Gadget *)arg0)->sprite0, 0x5001E);
         CALL(gui_spriteInit)(((Gadget *)arg0)->sprite1, 0x5001D);
         CALL(TimeGadgetParms_set104_00014004)(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
@@ -316,7 +316,7 @@ char *CountDownGadget_ctor(char *arg0, int a1, int a2) {
         ((CountDownGadget *)arg0)->colour[1] = 80.0f / d255;
         ((CountDownGadget *)arg0)->colour[2] = 80.0f / d255;
         ((CountDownGadget *)arg0)->colour[3] = 0.0f / d255;
-        ((CountDownGadget *)arg0)->node.name = (s32)(sCountDownGadgetName);
+        ((CountDownGadget *)arg0)->node.name = (const char *)(sCountDownGadgetName);
         ((CountDownGadget *)arg0)->unkA4 = 0;
         ((CountDownGadget *)arg0)->alpha = 0xFF;
         ((CountDownGadget *)arg0)->arg1 = a1;
@@ -444,7 +444,7 @@ void *PointsGadget_ctor(char *s0, int a1) {
     ((Node *)sub)->vptr = (s32)&TimeGadget_vtbl;
     CALL(TimeGadget_ctor_00013D40)(sub + 0x2C);
 skip_init:
-    ((Gadget *)s0)->node.name = (s32)(sPointsGadgetName);
+    ((Gadget *)s0)->node.name = (const char *)(sPointsGadgetName);
     CALL(gui_spriteInit)(((Gadget *)s0)->sprite0, 0x050001);
     CALL(gui_spriteInit)(((Gadget *)s0)->sprite1, 0x050007);
     CALL(TimeGadgetParms_set104_00014004)(s0, ((Gadget *)s0)->sprite1, ((Gadget *)s0)->sprite0);
@@ -501,7 +501,7 @@ int PointsGadget_ctor_00000ED0(int a0, int a1) {
     CALL(FloatPosParms_ctor)(node + 0x2C);
 initfields:
     v = *(float*)(GL_RODATA(0xC74));
-    POPUP(a0)->node.name = (int)(sPointsGadgetName_CBE8);
+    POPUP(a0)->node.name = (const char *)(sPointsGadgetName_CBE8);
     POPUP(a0)->unk74 = 0;
     POPUP(a0)->alpha = 255;
     POPUP(a0)->colour[0] = v;
@@ -541,7 +541,7 @@ char *SpeedGadget_ctor(char *arg0, s32 arg1) {
             ((Node *)sub)->vptr = (s32)&TimeGadget_vtbl;
             CALL(TimeGadget_ctor_00013D40)(sub + 0x2C);
         }
-        ((Gadget *)arg0)->node.name = (s32)(sSpeedGadgetName);
+        ((Gadget *)arg0)->node.name = (const char *)(sSpeedGadgetName);
         CALL(gui_spriteInit)(((Gadget *)arg0)->sprite0, 0x50002);
         CALL(gui_spriteInit)(((Gadget *)arg0)->sprite1, 0x50008);
         CALL(TimeGadgetParms_set104_00014004)(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
@@ -598,7 +598,7 @@ int* BoardsGadget_ctor(int *self) {
             CALL(TimeGadget_ctor_00013D40)((char*)sub + 0x2C);
         }
         ((BoardsGadget *)self)->node.vptr = (int)&gl_data_00000000;
-        ((BoardsGadget *)self)->node.name = (s32)((char*)&gl_data_00000000 + 0xCC28);
+        ((BoardsGadget *)self)->node.name = (const char *)((char*)&gl_data_00000000 + 0xCC28);
         CALL(gui_spriteInit)(((BoardsGadget *)self)->sprite,
             *(int*)((char*)&gl_data_00000000_11a4 + 0x54) | 0x001E0000);
         f = *(float*)(GL_RODATA(0xC78));
@@ -790,7 +790,7 @@ char *CoolGadget_ctor(char *self, s32 arg1) {
         COOLG(self)->node.vptr = (int)&gl_data_00000000_15fc;
         func_00000000(&COOLG(self)->parms);
         temp_f2 = D_00000C7C;
-        COOLG(self)->node.name = (int)D_0000CC60;
+        COOLG(self)->node.name = (const char *)D_0000CC60;
         COOLG(self)->lowColour.r = temp_f2;
         COOLG(self)->midColour.r = temp_f2;
         COOLG(self)->lowColour.g = 0.0f; COOLG(self)->lowColour.b = 0.0f; COOLG(self)->lowColour.a = 0.0f; COOLG(self)->midColour.g = 0.0f; COOLG(self)->midColour.b = 0.0f; COOLG(self)->midColour.a = 0.0f;
@@ -1218,7 +1218,7 @@ char *CourseGadget_ctor(char *arg0, s32 arg1) {
         CALL(Node_ctor)(arg0, GL_DATA_STR(0xCCB4, "<Node>"));
         COURSEG(arg0)->node.vptr = (s32)&CourseGadget_vtbl;
         CALL(CourseGadgetParms_ctor)(arg0 + 0x2C);
-        COURSEG(arg0)->node.name = (s32)(sCourseGadgetName);
+        COURSEG(arg0)->node.name = (const char *)(sCourseGadgetName);
         COURSEG(arg0)->arg1 = arg1;
         COURSEG(arg0)->marker[1][0] = 0.0f;
         COURSEG(arg0)->marker[0][0] = 0.0f;
@@ -1405,7 +1405,7 @@ char *PointsGadget_ctor_00003138(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
     if ((arg0 != 0) || (arg0 = (char *)CALL(mem_new)(0x168), (arg0 != 0))) {
         CALL(Node_ctor)(arg0, GL_DATA_STR(0xCCD0, "<Node>"));
         TPOINTS(arg0)->node.vptr = (int)&PointsGadget_vtbl_CA4C;
-        TPOINTS(arg0)->node.name = (int)(sPointsGadgetName_CCD8);
+        TPOINTS(arg0)->node.name = (const char *)(sPointsGadgetName_CCD8);
         TPOINTS(arg0)->font = arg3;
         TPOINTS(arg0)->popupArg = arg1;
         TPOINTS(arg0)->popupArg2 = arg2;

@@ -4510,7 +4510,7 @@ stage_c:
     ((SunParm *)n)->unk14 = 0;
     ((SunParm *)n)->value.f = 0.0f;
 finalize:
-    NODE(arg0)->name = (int)((char *)&game_uso_D_807FF388 + kStr_LensFlare_D98);
+    NODE(arg0)->name = (const char *)((char *)&game_uso_D_807FF388 + kStr_LensFlare_D98);
     ((LensFlare *)arg0)->sprite = (Sprite *)import_000F5ADC(0, &game_uso_D_807FF214);
     ((LensFlare *)arg0)->numElems = LENSFLARE_MAX_ELEMS;
     i = 0;

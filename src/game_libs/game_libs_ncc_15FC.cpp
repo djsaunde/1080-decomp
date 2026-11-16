@@ -31,7 +31,7 @@ struct G : B { M m; char rest[0x198 - 0xD4]; G(int arg1); virtual void g(); };
 G::G(int arg1) : B(sStr_Node_CC58) {
     CoolGadget *self = (CoolGadget *)this;
     float temp_f2 = kRo_CoolGadget_ctor_C7C;
-    self->node.name = (int)sStr_CoolGadget_CC60;
+    self->node.name = (const char *)sStr_CoolGadget_CC60;
     self->lowColour.r = temp_f2;
     self->midColour.r = temp_f2;
     self->lowColour.g = 0.0f; self->lowColour.b = 0.0f; self->lowColour.a = 0.0f; self->midColour.g = 0.0f; self->midColour.b = 0.0f; self->midColour.a = 0.0f;

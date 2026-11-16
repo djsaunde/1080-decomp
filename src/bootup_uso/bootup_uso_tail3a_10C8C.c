@@ -48,7 +48,7 @@ void GameFlow_create(int *arg0, int arg1) {
 
     p = (char *)arg0;
     q = (char *)&sStr_GameFlow_C5D0;
-    NODE(p)->name = (int)q;
+    NODE(p)->name = (const char *)q;
     GAMEFLOW(arg0)->app = (void *)arg1;
     sp68 = FCALL(app_setHeapMode)(0);
     p = (char *)&rec;

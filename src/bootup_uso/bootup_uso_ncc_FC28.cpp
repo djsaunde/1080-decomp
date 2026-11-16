@@ -84,7 +84,7 @@ void *QuitProcess_ctor0(void *a0) {
         NODE(a0)->vptr = (int)&QuitProcess_vtbl;
         s0 = a0;
         s1 = (void*)&sStr_Quit_Process_C594;
-        NODE(s0)->name = (int)s1;
+        NODE(s0)->name = (const char *)s1;
         D_bootup_scratch0 = func_00000000(a0, 0);
         s0 = a0;
         func_00000000(D_bootup_scratch0, s0);
@@ -139,7 +139,7 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
         NODE(a0)->vptr = (int)&QuitProcess_vtbl;
         s0 = a0;
         s1 = (void*)&sStr_Quit_Process_C5AC;
-        NODE(s0)->name = (int)s1;
+        NODE(s0)->name = (const char *)s1;
         func_00000008.f2C = a1;
         func_00000008.f38 = a2;
         ((QuitProcess *)a0)->unk44 = 0;
@@ -218,7 +218,7 @@ void *PauseMenu_create(char *a0) {
         NODE(a0)->vptr = (int)&PauseMenu_vtbl;
         s = a0;
         d = &sStr_PauseMenu_C5C4;
-        NODE(s)->name = (int)d;
+        NODE(s)->name = (const char *)d;
         s = GUIMENU(a0)->unk4C;               /* 0x4C: the cursor row's colour (PauseMenu_display's q4C) */
         *(float *)(s + 0) = (float)(0, 119) / 255.0f;
         *(float *)(s + 4) = (float)(0, 117) / 255.0f;

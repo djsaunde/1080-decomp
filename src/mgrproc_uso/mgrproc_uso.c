@@ -1673,7 +1673,7 @@ void mgr_DataManager_init(self, a1, a2, a3, arg5)
     unsigned char *v1;
     float div255 = 255.0f;
     float c = 192.0f / div255;   /* the merged FP prologue: div.s f4(192)/f2(255) */
-    NODE(self)->name  = (int)((char*)&D_00000000 + 0x688);
+    NODE(self)->name  = (const char *)((char*)&D_00000000 + 0x688);
     self->race = a1;
     self->base.session = (BackupSession *)arg5;
     self->courseList = a3;

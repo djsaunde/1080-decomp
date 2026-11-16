@@ -3425,7 +3425,7 @@ subc:
     }
     *(int *)r = 0;
 fields:
-    ((Node *)p)->name = a1;
+    ((Node *)p)->name = (const char *)a1;
     ((Node *)p)->parent = 0;
 link:
     ((Node *)o)->vptr = (s32)&D_00000000;

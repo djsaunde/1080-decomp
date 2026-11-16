@@ -2913,7 +2913,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
                 PI(spA8)->unk14 = 0;
             }
         }
-        NODE(arg0)->name = (s32)((char *)&D_00000000 + 0x12F8);
+        NODE(arg0)->name = (const char *)((char *)&D_00000000 + 0x12F8);
         SELWIN(arg0)->eventFlags = arg11;
         SELWIN(arg0)->fadeProc = (char *)arg2;
         SELWIN(arg0)->itemsMgr = (SelItemsMgr *)arg7;

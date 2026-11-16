@@ -1406,7 +1406,7 @@ char *TrkMenu_ctor(char *arg0) {
             *(char **)(a3 + 0x28) = &D_00000000;
         }
         TIMMENU(arg0)->base.node.vptr = (s32)(&D_00000000);
-        TIMMENU(arg0)->base.node.name = (s32)((char *)&D_00000000 + 1168);
+        TIMMENU(arg0)->base.node.name = (const char *)((char *)&D_00000000 + 1168);
         CALL(TrkMenu_initLabels_00002700)(arg0);
         TIMMENU(arg0)->unk60 = 120;
         TIMMENU(arg0)->unk64 = 161;

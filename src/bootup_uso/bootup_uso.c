@@ -812,7 +812,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     if ((self != 0) || (self = (char *)FCALL(mem_new)(0x4C)) != 0) {
         FCALL(Node_ctor)(self, &sStr_Node_66B0);
         NODE(self)->vptr = (s32)(&U64BGWall_vtbl);
-        NODE(self)->name = (s32)(&sStr_U64BGWall_66B8);
+        NODE(self)->name = (const char *)(&sStr_U64BGWall_66B8);
         timg = *(u32 *)(cfg + 0x8);
         tlut = *(u32 *)(cfg + 0xC);
         ((U64BGWall *)self)->mesh = arg2;
@@ -1113,7 +1113,7 @@ void *WorldRegistry_create_00001E08(char *o) {
     ((WorldRegistry *)o)->vptr = (s32)&D_1E08_d;
     sub = (char *)&((WorldRegistry *)o)->head;
     FCALL(WorldCourse_ctorEmpty_00001D8C)(sub);
-    NODE(o)->name = (s32)&sStr_World_Registry_6E38; /* Node name "World Registry" */
+    NODE(o)->name = (const char *)&sStr_World_Registry_6E38; /* Node name "World Registry" */
     ((WorldRegistry *)o)->head.next = 0;
     ((WorldRegistry *)o)->numCourses = 0;
     ((WorldRegistry *)o)->tail = (WorldCourse *)sub;
@@ -2451,8 +2451,8 @@ void game_setupVs2P(char *s1, int a1) {
     r2 = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 1, *(int*)((char*)&D_00000000 + 0x58), *(int*)((char*)&D_00000000 + 0x60),
                              t, WORLDREG(s1)->fgRoot, WORLD_MAP(s1)->start[0] + 500.0f, WORLD_MAP(s1)->start[2],
                              *(int*)((char*)&D_00000000 + 0x5C), 0x15);
-    NODE(r1)->name = (s32)sStr_Player1_74E4;
-    NODE(r2)->name = (s32)sStr_Player2_74EC;
+    NODE(r1)->name = (const char *)sStr_Player1_74E4;
+    NODE(r2)->name = (const char *)sStr_Player2_74EC;
     SNOWB(r1)->rival = SNOWB(r2);
     SNOWB(r2)->rival = SNOWB(r1);
     x = (char*)FCALL(cam_create)(s1, 2, WORLDREG(s1)->fgRoot, r1, o[0]);
@@ -4752,7 +4752,7 @@ void TreeTmpl_display(char *arg0) {
 extern char gHostio_func_00008744_arg1;
 extern char gHostio_func_00008744_arg2;
 void TreeTmpl_hostioParms(char *a0) {
-    int arg = NODE(a0)->name;
+    int arg = (int)NODE(a0)->name;
     FCALL(hostio_beginGroup)(&gHostio_func_00008744_arg1, arg, 0);
     FCALL(gfx_declColourParm)(TREETMPL(a0)->colour, 0);
     FCALL(FogParms_hostioParms)(TREETMPL(a0)->fog);

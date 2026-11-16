@@ -77,7 +77,7 @@ void *Fader_ctor(arg0, arg1) void *arg0; s32 arg1; {
     NODE(b)->vptr = (s32)&D_12e00_b;
 derived:
     FADER(o)->node.vptr = (s32)&D_12e00_c;
-    FADER(o)->node.name = (s32)&D_12e00_d;
+    FADER(o)->node.name = (const char *)&D_12e00_d;
     FADER(o)->cols = 32;
     FADER(o)->rows = 32;
     FADER(o)->cells = 1024;

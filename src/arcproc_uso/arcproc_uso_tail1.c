@@ -1628,7 +1628,7 @@ char *ARCMenuProcess_ctor(char *arg0) {
             NODE(a3)->vptr = (int)D_arc251C_c;
         }
         NODE(arg0)->vptr = (int)D_arc251C_d;
-        NODE(arg0)->name = (int)(D_arc251C_e + 0x490);
+        NODE(arg0)->name = (const char *)(D_arc251C_e + 0x490);
         CALL(gui_spriteInit)(D_arc251C_reg + 16, 0x280000);
         CALL(gui_spriteInit)(D_arc251C_reg + 40, 0x280001);
         CALL(gui_spriteInit)(D_arc251C_reg + 64, 0x280002);

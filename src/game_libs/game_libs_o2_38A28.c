@@ -45,7 +45,7 @@ void Node_doCommand(char *o, char *c) {
             p = *(int **)(c + 0x4);
             *(int **)(c + 0x4) = p + 1;
             key = *p;
-            NODE(o)->name = key;
+            NODE(o)->name = (const char *)key;
             return;
         case 0x66:
             p = *(int **)(c + 0x4);

@@ -17,7 +17,7 @@ typedef struct Node {
     /* 0x00 */ s32 unk00;          /* -1 */
     /* 0x04 */ s32 unk04;          /* 0 */
     /* 0x08 */ s32 flags;          /* 0x8000 */
-    /* 0x0C */ s32 name;           /* const char *, e.g. "App", "<Node>" */
+    /* 0x0C */ const char *name;   /* e.g. "App", "<Node>" */
     /* 0x10 */ s32 children;       /* child list head */
     /* 0x14 */ struct Node *parent; /* the node whose child list (+0x10) holds this one */
     /* 0x18 */ s32 doFlags;        /* flags sub-object (initialised by a call on its address):

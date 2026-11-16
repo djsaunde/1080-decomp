@@ -459,7 +459,7 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
         NODE(sub)->vptr = (int)&import_00073B80;
     }
     NODE(root)->vptr = (int)&titproc_uso_D_000114;
-    NODE(root)->name = (int)((char *)&titproc_uso_D_00048C + 0x4B0);
+    NODE(root)->name = (const char *)((char *)&titproc_uso_D_00048C + 0x4B0);
     XCALL(titproc_uso_func_000000, titproc_uso_func_00000000)();
     XCALL(titproc_uso_func_000098, tit_loadLogoSprite_00000098)();
     TITLEDEMO(root)->dataMgr = (s32)((void *)import_000B6C40(0));
@@ -842,7 +842,7 @@ void *MainLogo_ctor(void *self) {
     *(int*)((char*)sub + 0x28) = (int)&import_00073B18;
 skip:
     NODE(self)->vptr = (int)&titproc_uso_D_0001FC;
-    NODE(self)->name = (int)((char*)&titproc_uso_D_00048C + 0x4E0);
+    NODE(self)->name = (const char *)((char*)&titproc_uso_D_00048C + 0x4E0);
     MAINLOGO(self)->posX = 163;
     MAINLOGO(self)->posY = 154;
     MAINLOGO(self)->mainX = 67;

@@ -89,7 +89,7 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
             SelItemParms_ctor(&((SelItem *)obj)->parms);
             SelItemInfo_ctor(&((SelItem *)obj)->info);
         }
-        NODE(child)->vptr = (s32) (&timproc_uso_b5_D_807FEE98 + 0x7C4); NODE(child)->name = (s32) (&timproc_uso_b5_D_807FEE98 + 0x1628);
+        NODE(child)->vptr = (s32) (&timproc_uso_b5_D_807FEE98 + 0x7C4); NODE(child)->name = (const char *)(&timproc_uso_b5_D_807FEE98 + 0x1628);
         SelItem_reset_00003890(child);
     }
     r = child;
@@ -106,7 +106,7 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
     child = gen_imp_mem_new((char *)0x144);
     if (child != 0) {
         gen_imp_QNode_ctor(child, &timproc_uso_b5_D_807FEEA4 + 0x1634, 0.0f, 0.0f, 0.0f);
-        NODE(child)->vptr = (s32) (&timproc_uso_b5_D_807FEEAC + 0x514); NODE(child)->name = (s32) (&timproc_uso_b5_D_807FEEAC + 0x163C);
+        NODE(child)->vptr = (s32) (&timproc_uso_b5_D_807FEEAC + 0x514); NODE(child)->name = (const char *)(&timproc_uso_b5_D_807FEEAC + 0x163C);
         gc = gen_imp_mem_new((char *)0x16C);
         if (gc != 0) {
             f32 one;
