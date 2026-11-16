@@ -152,7 +152,9 @@ void viewrec_uso_func_00000288(void) {
 void viewrec_uso_func_00000290(void) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000002D0);
+/* EXACT via the NCC (C++) donor src/viewrec_uso/viewrec_uso_ncc_2d0.cpp: the records process ctor. */
+void viewrec_uso_func_000002D0(void) {
+}
 
 /* load the 21 sprites of sVrSprites (0x1F0000.., the riders 0x1D0000.., the boards 0x1E0000.., 0x250000) */
 void viewrec_uso_func_00000718(ViewRecProc *proc) {
