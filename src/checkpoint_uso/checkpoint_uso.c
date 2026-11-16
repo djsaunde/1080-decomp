@@ -42,7 +42,47 @@ void checkpoint_uso_func_000000A4(int *dst) {
     *dst = buf[0];
 }
 
+/* checkpoint_uso_func_000000E0: cylinder Checkpoint ctor (0x10C bytes, cfront this==0
+ * alloc): SNode_ctor, vptr Data+0x3E20, two inline CollObj box ctors at +0x8C / +0xCC
+ * (coll_boxCtor + CollObj vptr, bootup Data+0x1EDF8), +0x88 = 20, then both become
+ * cylinders (CollObj_initCylinder(c, self, 100, 100.0f, 1000.0f)).
+ * NOT MATCHED (agent-b run 627): every instruction and stack slot matches (c1 / c2 /
+ * the shared inline-ctor `p` at sp+0x30 / 0x2C / 0x34) except the frame size, 0x40
+ * vs 0x38 (two words of 65). Without the named `p` the frame is 0x38 but the slots
+ * sit one word lower; block-scoped / reordered / partial `p` variants are worse.
+ * The NM body calls the placeholders unnamed (mem_new x3, SNode_ctor, coll_boxCtor_0003CAA0
+ * x2, CollObj_initCylinder x2): the matching object has no relocs to check CALL names against. */
+extern char CollObj_vtbl_chkE0;
+extern void gl_func_00000000_chkcyl(char *, char *, int, float, float);
+#ifdef NON_MATCHING
+int *checkpoint_uso_func_000000E0(char *self) {
+    char *c2;
+    char *c1;
+    char *p;
+    if (self != 0 || (self = (char *)gl_func_00000000(0x10C)) != 0) {
+        gl_func_00000000(self); /* SNode_ctor */
+        NODE(self)->vptr = &D_00000000;
+        c1 = self + 0x8C;
+        p = c1;
+        if (p != 0 || (p = (char *)gl_func_00000000(0x40)) != 0) {
+            gl_func_00000000(p); /* coll_boxCtor_0003CAA0 */
+            *(char **)(p + 0x30) = &CollObj_vtbl_chkE0;
+        }
+        c2 = self + 0xCC;
+        p = c2;
+        if (p != 0 || (p = (char *)gl_func_00000000(0x40)) != 0) {
+            gl_func_00000000(p); /* coll_boxCtor_0003CAA0 */
+            *(char **)(p + 0x30) = &CollObj_vtbl_chkE0;
+        }
+        *(s32 *)(self + 0x88) = 20;
+        gl_func_00000000_chkcyl(c1, self, 100, 100.0f, 1000.0f);
+        gl_func_00000000_chkcyl(c2, self, 100, 100.0f, 1000.0f);
+    }
+    return (int *)self;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_000000E0);
+#endif
 
 /* checkpoint_uso_func_000001E4: cylinder checkpoint loadData (int at 0x88). */
 void checkpoint_uso_func_000001E4(char *self) {

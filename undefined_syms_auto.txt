@@ -5715,3 +5715,5 @@ gGfxLib_bal1A8_g = 0x00000000;  /* balloon 1A8 NCC donor: GfxLib (bootup Bss+0x3
 gl_proto_bal1A8 = 0x00000000;  /* balloon 1A8 NCC donor: cam_isSphereInView 7-arg prototype */
 gl_fsin_bal1A8 = 0x00000000;  /* balloon 1A8 NCC donor: fsin (float -> float) */
 gl_func_00000000_bal1A8v = 0x00000000;  /* balloon 1A8 NCC donor: void callee alias */
+CollObj_vtbl_chkE0 = 0x00000000;  /* checkpoint E0 (NM): CollObj vptr, bootup Data+0x1EDF8 */
+gl_func_00000000_chkcyl = 0x00000000;  /* checkpoint E0 (NM): CollObj_initCylinder (char *, char *, int, float, float) */
