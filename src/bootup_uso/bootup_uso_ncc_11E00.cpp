@@ -7,7 +7,8 @@
  * same body compiles to the shipped 53 words.
  * Spliced into bootup_uso_o0_11E00.c.o via REPLACE_FUNC_BODY.
  * agent-g run 470: field form over include/game/input.h (InputMgr / InputPad); same bytes. */
-typedef int s32;
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
+typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 #include "../../include/game/input.h"
 extern "C" int input_checkPressed_00011E00(register InputMgr *a0, register int a1) {
     int i;

@@ -44,7 +44,7 @@ void tit_procMain(char *a0, int a1) {
             XCALL(titproc_uso_func_0120A8, snd_playSeq_000120A8)(d, 0, 0, 0);
             done = 1;
             ((InputMgr *)d)->level = 0;
-            *(int *)(d + 0x8C) = 0x820000;
+            ((InputMgr *)d)->titleFlags = 0x820000;
             r = (int *)XCALL(titproc_uso_func_0027E8, game_init)(d, 2, 9, 1);
             t = (int)r;
             XCALL(titproc_uso_func_07ACE0, list_append)((char *)&import_00020098 + 0x10, r); if (a0) {}

@@ -76,7 +76,10 @@ typedef struct InputMgr {
     /* 0x80 */ s32 unk80;          /* input_initDefaults_00012188: 0 */
     /* 0x84 */ s32 unk84;          /* GameFlow_create: 0 */
     /* 0x88 */ s32 unk88;          /* GameFlow_create: 1 */
-    char pad8C[0x90 - 0x8C];
+    /* 0x8C */ s32 titleFlags;     /* tit_procMain state 0 (entering the title demo): 0x820000 = bits 23 | 17,
+                                    * the bit layout of the flags it passes GameDemoProcess_ctor (bit 23 =
+                                    * build the title menu). Write-only: no load of GameFlow +0x8C in any
+                                    * built object (agent-g run 555 scan over every token / this-based site) */
     /* 0x90 */ s32 order90[5];     /* input_initDefaults_00012188: {4, 3, 1, 2, 5} */
     /* 0xA4 */ s32 orderA4[5];     /* input_initDefaults_00012188: {5, 1, 2, 3, 4} */
     char padB8[0xC0 - 0xB8];
@@ -147,21 +150,10 @@ typedef struct InputMgr {
 #define GAMEFLOW(p) ((InputMgr *)(p))
 
 #ifdef __cplusplus
-/* C++ (edg / NCC donor) mirror of what GameFlow.dataMgr points to. InputMgr itself compiles under
- * edg as is (game_uso F6D4 / E35C / D204 / B3C use INPUT_MGR), but gdl/race.h is C-only (its
- * &((T *)0)->f asserts), so a donor that reads through dataMgr gets the RaceTracker prefix here.
- * Same layout as gdl/race.h's RaceTracker up to hudFlags; keep the two in step. */
-#ifndef RTF_FLUSH
-#define RTF_FLUSH      1
-#define RTF_POINTS     2
-#define RTF_BONUS      4
-#define RTF_SCORE      8
-#define RTF_LOOKUP     0x10
-#endif
-struct RaceTracker {
-    char pad00[0xB4];       /* 0x00: Node base, timers, entries, gadgets (gdl/race.h) */
-    s32 hudFlags;           /* 0xB4: RTF_* */
-};
+/* C++ (edg / NCC donors): what GameFlow.dataMgr points to. gdl/race.h is C++-safe since run 552 (its
+ * offset asserts are C-only), so the donors get the real RaceTracker (hudFlags, RTF_*) from it; the
+ * old prefix mirror here clashed with race.h in donors that include both (agent-g run 555). */
+#include "../gdl/race.h"
 #endif
 
 #ifndef __cplusplus /* edg (NCC donors) rejects the &((T *)0)->f constant form */
