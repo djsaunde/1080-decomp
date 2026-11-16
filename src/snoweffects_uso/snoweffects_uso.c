@@ -1320,7 +1320,7 @@ void snoweffects_uso_func_00009FE8(void *self) {
 }
 
 #ifdef NON_MATCHING
-/* snow light update: NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp (agent-a run 665),
+/* snow light update: NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp (agent-a runs 665 / 669, objdiff 99.80 %),
  * REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
 void snoweffects_uso_func_0000A10C(void) {
 }

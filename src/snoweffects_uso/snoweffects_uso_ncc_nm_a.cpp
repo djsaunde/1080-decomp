@@ -1,7 +1,7 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donors for snoweffects.uso 0xA10C and 0x7FE0 (agent-a runs 661 / 665),
+/* IDO 7.1 NCC (C++) NON_MATCHING donors for snoweffects.uso 0xA10C and 0x7FE0 (agent-a runs 661 / 665 / 669),
  * spliced over the empty NON_MATCHING placeholders in snoweffects_uso.c on the non_matching build only
  * (Makefile SNOW_NM_A_FUNCS; the matching build keeps INCLUDE_ASM). Not byte-exact.
- * 0xA10C is spliced: 405 / 405 words, objdiff fuzzy 98.85 %. 0x7FE0 is NOT spliced: 811 / 800 words
+ * 0xA10C is spliced: 405 / 405 words, objdiff fuzzy 99.80 %. 0x7FE0 is NOT spliced: 811 / 800 words
  * (85.5 %), and a size change shifts the later functions of the non_matching object (0xA8D0 then drops
  * to 41.7 %), so a donor body has to be exactly the target's length. The callees are named by their real
  * symbols (the non_matching object is never linked).
@@ -10,35 +10,35 @@
 /* the callees, by name (a matching donor would call them through typed 0-pinned aliases) */
 extern "C" {
 int ItemMgr_findType_0003EA98(...);
-int PolyShape_getNormal8(...);
+void PolyShape_getNormal8(...);
 int PolyShape_getVertex(...);
 int snoweffects_uso_func_00004374(...);
 int snoweffects_uso_func_000046BC(...);
-int snoweffects_uso_func_00009768(...);
-int snoweffects_uso_func_00009884(...);
-int snoweffects_uso_func_00009BE8(...);
-int snoweffects_uso_func_00009C48(...);
-int snoweffects_uso_func_00009FE8(...);
+void snoweffects_uso_func_00009768(...);
+void snoweffects_uso_func_00009884(...);
+void snoweffects_uso_func_00009BE8(...);
+void snoweffects_uso_func_00009C48(...);
+void snoweffects_uso_func_00009FE8(...);
 }
 
-/* ---- 0xA10C snow light update: 401 / 405 instructions, 150 words off (frame and every instruction
- * shape match except: the ambient Parm pointer copy colours a0 -> v1 where the target has v1 -> s1;
- * the normal bytes sit at sp+120 (target sp+112: one more word in the loop-body block); the ItemType
- * walks lack the target's item copy (data in s1, item in s0); the second walk forwards the flags
- * value where the target reloads +0x234 after each store). Frame levers found in run 661 (read with
- * -O2 -g3 .mdebug): the second walk's ItemType at function scope (its by-value SKey temp is then the
- * first frame word, vfp-4 = sp+172), the first walk not in its own block (key temp vfp-28 = sp+148),
- * c / i at function scope, and the ambient Parm bound once as `const SParm<SVec> &a` before the
- * compare. SKey(int) ctor gives the `sw a1, K(sp)` arg-temp store.
- * Run 665: the item copy (data in one register for the first test / calls, a copy for the stores) is a
- * CSE temp, not a second variable. Each walk reads the item as `it.get()` in its first test and as the
- * named `item = it.get()` everywhere else: uopt CSEs the two cur->data loads into a temp and keeps the
- * named item as its copy (two named pointers coalesce; a copy survives only when its source is killed
- * before the copy's last use, and a second name costs a frame word the target does not have). That gives
- * all 405 words and the walk 2 flags reload (150 -> 73 words off, fuzzy 96.8 -> 98.85). Left: the temp
- * is caller-saved here (v0) where the target keeps it in s1 across the first call (walk 1 passes it to
- * both calls), the s-register numbering that follows, next()'s v0 / v1, n8 at sp+120 (target sp+112).
- * ---- */
+/* ---- 0xA10C snow light update: 405 / 405 words, objdiff 99.80 %. Only the second ItemType walk's
+ * iterator slot differs (sp+84 / +88 vs the target's +88 / +92): the first walk has one frame word more
+ * than the target (its named item and the pooled edg temporary p each take a word; the target has one).
+ * Levers (runs 661 / 665 / 669):
+ * - frame (run 661, -O2 -g3 .mdebug): the second walk's ItemType at function scope, c / i at function
+ *   scope, SKey(int) ctor for the `sw a1, K(sp)` arg-temp store.
+ * - s1 is ONE uopt variable: edg's pooled pointer temporary. It holds the colour Parm `this`, the ambient
+ *   Parm `this` of the copy, and each walk's item (the test and the calls). Pool temps are reused after each
+ *   full expression, so a value live across a call in one walk makes the whole pool variable callee-saved.
+ *   The walks pass `it.get()` to inline helpers whose item parameter is used more than once (a pool temp),
+ *   and the named item is assigned from a second, differently spelled read (`it.cur->data`) inside the same
+ *   call: the pool temp keeps the load, the item becomes its copy (s0) and is not coalesced.
+ * - the ambient compare as two full expressions (x || y, then z): two pool words above the key temp, the
+ *   compare on the CSE'd base (v1), the copy through the pool temp (s1).
+ * - the discarded-result callees declared void: an int return leaves a dead v0 def that pushed next()'s
+ *   result, the loop-body Parm base and the col cursor into v1.
+ * - j / f declared first in the vertex loop body and one more block-scope word put n8 at sp+112.
+ */
 extern "C" int snowDirtyFlag_A30;
 extern char *snow_itemMgr;
 struct SVec { float x, y, z; SVec &operator+=(const SVec &o) { x += o.x; y += o.y; z += o.z; return *this; } void set(float a, float b, float c) { x = a; y = b; z = c; } };
@@ -72,6 +72,17 @@ struct SIter {
 struct SIterB {
     SIt *it[2];
 };
+/* p is a pooled edg temporary (used three times); q is substituted where it is used, so the caller's
+ * `item = ...` copy is evaluated after p is loaded (p keeps the load, item becomes its copy) */
+inline void buildItem(SLights *t, SItem *p, SItem *q) {
+    q;
+    if (p->vtxCount == 0) snoweffects_uso_func_00009884(p, t->shape);
+    snoweffects_uso_func_00009BE8(p, t->shape);
+}
+inline int itemNormalsDirty(SItem *p, SItem *q) {
+    q;
+    return p->flags & 2;
+}
 extern "C" void snoweffects_uso_func_0000A10C(SLights *t) {
     SType *type;
     unsigned char *c;
@@ -79,22 +90,26 @@ extern "C" void snoweffects_uso_func_0000A10C(SLights *t) {
     t->tgt->mtx = t->src->mtx;
     t->tgt->colourParm.v = t->src->colour.get();
     snoweffects_uso_func_00009768(t->tgt);
-    const SParm<SVec> &a = t->ambient->v;
-    if (t->amb.x != a.get().x || t->amb.y != a.get().y || t->amb.z != a.get().z) {
-        t->amb.x = t->ambient->v.get().x;
-        t->amb.y = t->ambient->v.get().y;
-        t->amb.z = t->ambient->v.get().z;
-        snowDirtyFlag_A30 = 1;
-    }
+    if (t->amb.x != t->ambient->v.get().x || t->amb.y != t->ambient->v.get().y) goto changed;
+    if (t->amb.z == t->ambient->v.get().z) goto same;
+changed:
+    t->amb.x = t->ambient->v.get().x;
+    t->amb.y = t->ambient->v.get().y;
+    t->amb.z = t->ambient->v.get().z;
+    snowDirtyFlag_A30 = 1;
+same:
     if (snowDirtyFlag_A30) {
         c = t->shape->cols;
         for (i = 0; i < t->shape->nVtx; i++) {
             SVec col;
+            int j;
+            float *f;
             short *v = (short *)PolyShape_getVertex(t->shape, i);
             SVec *p = (SVec *)(D_00000000 + 0x40);
             p->x = v[0];
             p->y = v[1];
             p->z = v[2];
+            int unused = 0; /* one more block-scope word: puts n8 at sp+112 */
             {
                 signed char n8[4];
                 PolyShape_getNormal8(t->shape, i, n8);
@@ -108,9 +123,8 @@ extern "C" void snoweffects_uso_func_0000A10C(SLights *t) {
             col.y += t->ambient->v.get().y;
             col.z += t->ambient->v.get().z;
             snoweffects_uso_func_00009FE8(t, t->tgt, &col);
-            int j;
             for (j = 0; j < 3; j++) {
-                float *f = &col.x + j;
+                f = &col.x + j;
                 *f *= 255.0f;
                 if (*f < 0.0f) *f = 0.0f;
                 if (255.0f < *f) *f = 255.0f;
@@ -125,11 +139,8 @@ extern "C" void snoweffects_uso_func_0000A10C(SLights *t) {
         if (type != 0) {
             SIter it(type->items);
             while (it.next() != 0) {
-                SItem *item = it.get();
-                if (it.get()->vtxCount == 0) {
-                    snoweffects_uso_func_00009884(item, t->shape);
-                }
-                snoweffects_uso_func_00009BE8(item, t->shape);
+                SItem *item;
+                buildItem(t, it.get(), item = (SItem *)it.cur->data);
                 item->flags = 4;
             }
         }
@@ -141,8 +152,8 @@ extern "C" void snoweffects_uso_func_0000A10C(SLights *t) {
         if (type != 0) {
             SIter it(type->items);
             while (it.next() != 0) {
-                SItem *item = it.get();
-                if (it.get()->flags & 2) {
+                SItem *item;
+                if (itemNormalsDirty(it.get(), item = (SItem *)it.cur->data)) {
                     snoweffects_uso_func_00009884(item, t->shape);
                     item->flags &= ~2;
                 }
