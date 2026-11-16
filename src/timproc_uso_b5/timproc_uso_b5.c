@@ -1613,7 +1613,7 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
         zC[2] = -400.0f;
         gen_imp_math_mtxAddTranslation((s32 *)((char *)w + 0x30), zC);
         if (arg1 == (s32 *)1) {
-            w = (s32 *)gen_imp_game_create3DWindow(FW(&import_800201CC, 0x134), &import_8006EA70 + (arg2 * 0x1C), GCAM->camera);
+            w = (s32 *)gen_imp_game_create3DWindow(*(int *)&INPUT_MGR(import_800201CC).game, &import_8006EA70 + (arg2 * 0x1C), GCAM->camera);
             GCAM->view = (Window *)w;
         } else {
             w = (s32 *)gen_imp_game_create3DWindow(FW(&import_8001EA70, 0x134), &import_8006EA70 + (arg2 * 0x1C), GCAM->camera);

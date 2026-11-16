@@ -132,7 +132,7 @@ void SelectWin_update_00005FC0(char *arg0) {
     v0 = (char *)SELWIN(arg0)->itemsMgr->tesuri[1];
     v1 = (char *)FW(v0, 0x28);
     ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, FW(arg0, 0x480));
-    if (*(s32 *)(&import_800200CC + 0x34) != 2) {
+    if (INPUT_MGR(import_800200CC).nextFlowMode != 2) {
         v0 = (char *)SELWIN(arg0)->itemsMgr->tesuri[2];
         v1 = (char *)FW(v0, 0x28);
         ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, FW(arg0, 0x480));
