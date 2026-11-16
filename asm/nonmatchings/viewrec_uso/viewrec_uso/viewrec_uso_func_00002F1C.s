@@ -1,0 +1,12 @@
+nonmatching viewrec_uso_func_00002F1C, 0x20
+
+glabel viewrec_uso_func_00002F1C
+    /* 6457A6 00002F1C 3C01437F */  .word 0x3C01437F
+    /* 6457AA 00002F20 44811000 */  .word 0x44811000
+    /* 6457AE 00002F24 44812000 */  .word 0x44812000
+    /* 6457B2 00002F28 3C01432F */  .word 0x3C01432F
+    /* 6457B6 00002F2C 44813000 */  .word 0x44813000
+    /* 6457BA 00002F30 3C014230 */  .word 0x3C014230
+    /* 6457BE 00002F34 44815000 */  .word 0x44815000
+    /* 6457C2 00002F38 46022003 */  .word 0x46022003
+endlabel viewrec_uso_func_00002F1C

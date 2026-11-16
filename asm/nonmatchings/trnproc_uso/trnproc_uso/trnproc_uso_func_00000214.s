@@ -1,0 +1,12 @@
+nonmatching trnproc_uso_func_00000214, 0x20
+
+glabel trnproc_uso_func_00000214
+    /* 5B92CE 00000214 3C040000 */  .word 0x3C040000
+    /* 5B92D2 00000218 24840000 */  .word 0x24840000
+    /* 5B92D6 0000021C 240E0003 */  .word 0x240E0003
+    /* 5B92DA 00000220 240F0004 */  .word 0x240F0004
+    /* 5B92DE 00000224 AC8E0040 */  .word 0xAC8E0040
+    /* 5B92E2 00000228 AC8F0044 */  .word 0xAC8F0044
+    /* 5B92E6 0000022C 3C050000 */  .word 0x3C050000
+    /* 5B92EA 00000230 8CA501B0 */  .word 0x8CA501B0
+endlabel trnproc_uso_func_00000214

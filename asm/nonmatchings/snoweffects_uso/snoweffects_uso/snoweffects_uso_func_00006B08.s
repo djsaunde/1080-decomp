@@ -1,0 +1,12 @@
+nonmatching snoweffects_uso_func_00006B08, 0x20
+
+glabel snoweffects_uso_func_00006B08
+    /* 91042E 00006B08 8C8E0054 */  .word 0x8C8E0054
+    /* 910432 00006B0C 44802000 */  .word 0x44802000
+    /* 910436 00006B10 AC8001C8 */  .word 0xAC8001C8
+    /* 91043A 00006B14 35CF0002 */  .word 0x35CF0002
+    /* 91043E 00006B18 AC8F0054 */  .word 0xAC8F0054
+    /* 910442 00006B1C AC8001CC */  .word 0xAC8001CC
+    /* 910446 00006B20 03E00008 */  .word 0x03E00008
+    /* 91044A 00006B24 E48401D8 */  .word 0xE48401D8
+endlabel snoweffects_uso_func_00006B08

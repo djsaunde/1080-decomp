@@ -5,7 +5,8 @@ does NOT emit. Idempotent; run by `make setup` after splat.
 Two kinds, both derived deterministically from baserom.z64:
 
   1. Hand-carved linker inputs referenced directly by tenshoe.ld
-     (`build/assets/kernel.data.bin.o(.data)`, `build/assets/game_uso.bin.o`).
+     (`build/assets/kernel.data.bin.o(.data)`, `build/assets/game_uso.bin.o`,
+     `build/assets/game_uso_tail.bin.o`).
      They were carved once in March 2026 (f823d9730 / 627062f6d) and the
      splat config never described them, so a fresh checkout had no producer
      and the link died with `cannot find build/assets/kernel.data.bin.o`.
@@ -30,7 +31,11 @@ ASSETS = Path("assets")
 # name, rom_offset, length, md5
 CARVES = [
     ("kernel.data.bin", 0x1000 + 0x9FD0, 0xABC0 - 0x9FD0, "54ee36f69c570006dc4a32bb2d80a82e"),
-    ("game_uso.bin",    0x7CC8D8,        0x84F6F8 - 0x7CC8D8, "fc4a7916f834306a58147dc020388b16"),
+    # game_uso.bin stops at balloon.uso's Info record (0x7DECB2): balloon / heli /
+    # fire / checkpoint are linked from their own segments since 2026-11-16
+    # (docs/1080_NEW_MODULES.md); game_uso_tail.bin = bg1tex.uso + bg2tex.uso.
+    ("game_uso.bin",    0x7CC8D8,        0x7DECB2 - 0x7CC8D8, "6249e9de7d9f7e53f2418fc482e41a75"),
+    ("game_uso_tail.bin", 0x7FC37A,      0x84F6F8 - 0x7FC37A, "38a3621ac4bc0d7b34d0a0ac53295f0a"),
 ]
 
 # decompressed name, compressed (splat output) name, md5 of decompressed

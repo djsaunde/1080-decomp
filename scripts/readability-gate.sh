@@ -11,6 +11,10 @@
 #      same function count as REF's report.json, and the same (unit, address,
 #      size) set; every NAME that differs must be an OLD->NEW pair recorded in
 #      renames.tsv (so the only change is the names you meant to change).
+#      Units marked `"complete": false` in objdiff.json (the 2026-11-16 new modules,
+#      docs/1080_NEW_MODULES.md) may hold unmatched INCLUDE_ASM functions; a unit
+#      absent from REF may be added whole. Every other count must stay identical,
+#      and a function at 100% in REF must stay at 100%.
 #   then writes the regenerated report.json into the tree (commit it with the batch).
 #   5. source checks: name-placeholder-calls.py check (every CALL(X) names a ROM
 #      callee of its function) and uso-data-sites.py check (alias / GL_* claims,
@@ -91,15 +95,22 @@ def load(p):
     for u in r["units"]:
         for f in u.get("functions", []):
             d[(u["name"], int(f.get("address", 0) or 0), int(f["size"]))] = (f["name"], f.get("fuzzy_match_percent", 0.0))
-    return r["measures"], d
-mb, b = load(base); mn, n = load(new)
+    return r["measures"], d, {u["name"] for u in r["units"]}
+mb, b, bunits = load(base); mn, n, _ = load(new)
+# units still being decompiled (objdiff.json "complete": false) may hold unmatched functions
+incomplete = {u["name"] for u in json.load(open("objdiff.json"))["units"]
+              if not u.get("metadata", {}).get("complete", True)}
 bad = []
-if set(b) != set(n):
-    bad.append(f"function (unit,addr,size) set changed: -{len(set(b)-set(n))} +{len(set(n)-set(b))}")
-    for k in sorted(set(b) ^ set(n))[:10]: bad.append(f"   {k}")
-not100 = [(k, v) for k, v in n.items() if v[1] != 100.0]
-if not100:
-    bad.append(f"{len(not100)} functions not at 100%: {not100[:5]}")
+added = {k for k in set(n) - set(b) if k[0] not in bunits and k[0] in incomplete}
+if set(b) != set(n) - added:
+    bad.append(f"function (unit,addr,size) set changed: -{len(set(b)-set(n))} +{len(set(n)-set(b)-added)}")
+    for k in sorted(set(b) ^ (set(n) - added))[:10]: bad.append(f"   {k}")
+not100 = [(k, v) for k, v in n.items() if v[1] != 100.0 and k[0] not in incomplete]
+dropped = [(k, v) for k, v in n.items() if v[1] != 100.0 and k in b and b[k][1] == 100.0]
+if not100 or dropped:
+    bad.append(f"{len(not100) + len(dropped)} functions not at 100%: {(not100 + dropped)[:5]}")
+if added:
+    print(f"    {len(added)} functions in {len({k[0] for k in added})} new incomplete unit(s) added")
 renamed, unexplained = 0, []
 for k in set(b) & set(n):
     ob, nb = b[k][0], n[k][0]
@@ -109,11 +120,16 @@ for k in set(b) & set(n):
 if unexplained:
     bad.append(f"{len(unexplained)} name changes not in renames.tsv: {unexplained[:5]}")
 tf, mf = mn["total_functions"], mn.get("matched_functions", 0)
-if tf != mb["total_functions"] or mf != tf:
-    bad.append(f"functions {mf}/{tf} (base {mb.get('matched_functions')}/{mb['total_functions']})")
-for key in ("total_code", "matched_code", "total_data", "matched_data"):
-    if str(mn.get(key)) != str(mb.get(key)):
-        bad.append(f"{key} {mb.get(key)} -> {mn.get(key)}")
+nmatched = sum(1 for v in n.values() if v[1] == 100.0)
+if tf != mb["total_functions"] + len(added) or mf != nmatched or mf < mb.get("matched_functions", 0):
+    bad.append(f"functions {mf}/{tf} (base {mb.get('matched_functions')}/{mb['total_functions']}, +{len(added)} added)")
+want = dict(mb)
+want["total_code"] = int(mb["total_code"]) + sum(k[2] for k in added)
+for key in ("total_code", "total_data", "matched_data"):
+    if str(mn.get(key)) != str(want.get(key)):
+        bad.append(f"{key} {want.get(key)} -> {mn.get(key)}")
+if int(mn.get("matched_code", 0)) < int(mb.get("matched_code", 0)):
+    bad.append(f"matched_code {mb.get('matched_code')} -> {mn.get('matched_code')}")
 if bad:
     print("\n".join(bad)); sys.exit(1)
 print(f"    report: {mf}/{tf} functions at 100%, code {mn['matched_code']}/{mn['total_code']}, "

@@ -911,6 +911,66 @@ SECTIONS
     }
     __romPos += SIZEOF(.timproc_uso_inter34);
 
+    trnproc_uso_pre_ROM_START = __romPos;
+    trnproc_uso_pre_VRAM = ADDR(.trnproc_uso_pre);
+    .trnproc_uso_pre : AT(trnproc_uso_pre_ROM_START)
+    {
+        FILL(0x00000000);
+        trnproc_uso_pre_DATA_START = .;
+        build/assets/trnproc_uso_pre.bin.o(.data);
+        trnproc_uso_pre_DATA_END = .;
+        trnproc_uso_pre_DATA_SIZE = ABSOLUTE(trnproc_uso_pre_DATA_END - trnproc_uso_pre_DATA_START);
+    }
+    __romPos += SIZEOF(.trnproc_uso_pre);
+    trnproc_uso_pre_ROM_END = __romPos;
+    trnproc_uso_pre_VRAM_END = .;
+
+    /* trnproc_uso text: Text payload at USO Text offset 0 (VRAM 0), raw .word asm from
+       scripts/generate-uso-asm.py --sym. The ROM offset is 2 mod 4: AT() places the
+       section's load address exactly there (only its VMA is aligned). See
+       docs/1080_NEW_MODULES.md. */
+    trnproc_uso_ROM_START = __romPos;
+    .trnproc_uso 0x00000000 : AT(trnproc_uso_ROM_START)
+    {
+        FILL(0x00000000);
+        trnproc_uso_TEXT_START = .;
+        build/src/trnproc_uso/trnproc_uso.c.o(.text);
+        trnproc_uso_TEXT_END = .;
+        trnproc_uso_TEXT_SIZE = ABSOLUTE(trnproc_uso_TEXT_END - trnproc_uso_TEXT_START);
+    }
+    __romPos += SIZEOF(.trnproc_uso);
+    trnproc_uso_ROM_END = __romPos;
+    trnproc_uso_VRAM = ADDR(.trnproc_uso);
+    trnproc_uso_VRAM_END = .;
+
+    trnproc_uso_post_ROM_START = __romPos;
+    trnproc_uso_post_VRAM = ADDR(.trnproc_uso_post);
+    .trnproc_uso_post : AT(trnproc_uso_post_ROM_START)
+    {
+        FILL(0x00000000);
+        trnproc_uso_post_DATA_START = .;
+        build/assets/trnproc_uso_post.bin.o(.data);
+        trnproc_uso_post_DATA_END = .;
+        trnproc_uso_post_DATA_SIZE = ABSOLUTE(trnproc_uso_post_DATA_END - trnproc_uso_post_DATA_START);
+    }
+    __romPos += SIZEOF(.trnproc_uso_post);
+    trnproc_uso_post_ROM_END = __romPos;
+    trnproc_uso_post_VRAM_END = .;
+
+    timproc_uso_inter34_tail_ROM_START = __romPos;
+    timproc_uso_inter34_tail_VRAM = ADDR(.timproc_uso_inter34_tail);
+    .timproc_uso_inter34_tail : AT(timproc_uso_inter34_tail_ROM_START)
+    {
+        FILL(0x00000000);
+        timproc_uso_inter34_tail_DATA_START = .;
+        build/assets/timproc_uso_inter34_tail.bin.o(.data);
+        timproc_uso_inter34_tail_DATA_END = .;
+        timproc_uso_inter34_tail_DATA_SIZE = ABSOLUTE(timproc_uso_inter34_tail_DATA_END - timproc_uso_inter34_tail_DATA_START);
+    }
+    __romPos += SIZEOF(.timproc_uso_inter34_tail);
+    timproc_uso_inter34_tail_ROM_END = __romPos;
+    timproc_uso_inter34_tail_VRAM_END = .;
+
     .timproc_uso_block4_yay0 : AT(__romPos)
     {
         FILL(0x00000000);
@@ -938,6 +998,112 @@ SECTIONS
         build/assets/timproc_uso_inter56.bin.o(.data);
     }
     __romPos += SIZEOF(.timproc_uso_inter56);
+
+    viewrec_uso_pre_ROM_START = __romPos;
+    viewrec_uso_pre_VRAM = ADDR(.viewrec_uso_pre);
+    .viewrec_uso_pre : AT(viewrec_uso_pre_ROM_START)
+    {
+        FILL(0x00000000);
+        viewrec_uso_pre_DATA_START = .;
+        build/assets/viewrec_uso_pre.bin.o(.data);
+        viewrec_uso_pre_DATA_END = .;
+        viewrec_uso_pre_DATA_SIZE = ABSOLUTE(viewrec_uso_pre_DATA_END - viewrec_uso_pre_DATA_START);
+    }
+    __romPos += SIZEOF(.viewrec_uso_pre);
+    viewrec_uso_pre_ROM_END = __romPos;
+    viewrec_uso_pre_VRAM_END = .;
+
+    /* viewrec_uso text: Text payload at USO Text offset 0 (VRAM 0), raw .word asm from
+       scripts/generate-uso-asm.py --sym. The ROM offset is 2 mod 4: AT() places the
+       section's load address exactly there (only its VMA is aligned). See
+       docs/1080_NEW_MODULES.md. */
+    viewrec_uso_ROM_START = __romPos;
+    .viewrec_uso 0x00000000 : AT(viewrec_uso_ROM_START)
+    {
+        FILL(0x00000000);
+        viewrec_uso_TEXT_START = .;
+        build/src/viewrec_uso/viewrec_uso.c.o(.text);
+        viewrec_uso_TEXT_END = .;
+        viewrec_uso_TEXT_SIZE = ABSOLUTE(viewrec_uso_TEXT_END - viewrec_uso_TEXT_START);
+    }
+    __romPos += SIZEOF(.viewrec_uso);
+    viewrec_uso_ROM_END = __romPos;
+    viewrec_uso_VRAM = ADDR(.viewrec_uso);
+    viewrec_uso_VRAM_END = .;
+
+    viewrec_uso_post_ROM_START = __romPos;
+    viewrec_uso_post_VRAM = ADDR(.viewrec_uso_post);
+    .viewrec_uso_post : AT(viewrec_uso_post_ROM_START)
+    {
+        FILL(0x00000000);
+        viewrec_uso_post_DATA_START = .;
+        build/assets/viewrec_uso_post.bin.o(.data);
+        viewrec_uso_post_DATA_END = .;
+        viewrec_uso_post_DATA_SIZE = ABSOLUTE(viewrec_uso_post_DATA_END - viewrec_uso_post_DATA_START);
+    }
+    __romPos += SIZEOF(.viewrec_uso_post);
+    viewrec_uso_post_ROM_END = __romPos;
+    viewrec_uso_post_VRAM_END = .;
+
+    nameent_uso_pre_ROM_START = __romPos;
+    nameent_uso_pre_VRAM = ADDR(.nameent_uso_pre);
+    .nameent_uso_pre : AT(nameent_uso_pre_ROM_START)
+    {
+        FILL(0x00000000);
+        nameent_uso_pre_DATA_START = .;
+        build/assets/nameent_uso_pre.bin.o(.data);
+        nameent_uso_pre_DATA_END = .;
+        nameent_uso_pre_DATA_SIZE = ABSOLUTE(nameent_uso_pre_DATA_END - nameent_uso_pre_DATA_START);
+    }
+    __romPos += SIZEOF(.nameent_uso_pre);
+    nameent_uso_pre_ROM_END = __romPos;
+    nameent_uso_pre_VRAM_END = .;
+
+    /* nameent_uso text: Text payload at USO Text offset 0 (VRAM 0), raw .word asm from
+       scripts/generate-uso-asm.py --sym. The ROM offset is 2 mod 4: AT() places the
+       section's load address exactly there (only its VMA is aligned). See
+       docs/1080_NEW_MODULES.md. */
+    nameent_uso_ROM_START = __romPos;
+    .nameent_uso 0x00000000 : AT(nameent_uso_ROM_START)
+    {
+        FILL(0x00000000);
+        nameent_uso_TEXT_START = .;
+        build/src/nameent_uso/nameent_uso.c.o(.text);
+        nameent_uso_TEXT_END = .;
+        nameent_uso_TEXT_SIZE = ABSOLUTE(nameent_uso_TEXT_END - nameent_uso_TEXT_START);
+    }
+    __romPos += SIZEOF(.nameent_uso);
+    nameent_uso_ROM_END = __romPos;
+    nameent_uso_VRAM = ADDR(.nameent_uso);
+    nameent_uso_VRAM_END = .;
+
+    nameent_uso_post_ROM_START = __romPos;
+    nameent_uso_post_VRAM = ADDR(.nameent_uso_post);
+    .nameent_uso_post : AT(nameent_uso_post_ROM_START)
+    {
+        FILL(0x00000000);
+        nameent_uso_post_DATA_START = .;
+        build/assets/nameent_uso_post.bin.o(.data);
+        nameent_uso_post_DATA_END = .;
+        nameent_uso_post_DATA_SIZE = ABSOLUTE(nameent_uso_post_DATA_END - nameent_uso_post_DATA_START);
+    }
+    __romPos += SIZEOF(.nameent_uso_post);
+    nameent_uso_post_ROM_END = __romPos;
+    nameent_uso_post_VRAM_END = .;
+
+    timproc_uso_inter56_tail_ROM_START = __romPos;
+    timproc_uso_inter56_tail_VRAM = ADDR(.timproc_uso_inter56_tail);
+    .timproc_uso_inter56_tail : AT(timproc_uso_inter56_tail_ROM_START)
+    {
+        FILL(0x00000000);
+        timproc_uso_inter56_tail_DATA_START = .;
+        build/assets/timproc_uso_inter56_tail.bin.o(.data);
+        timproc_uso_inter56_tail_DATA_END = .;
+        timproc_uso_inter56_tail_DATA_SIZE = ABSOLUTE(timproc_uso_inter56_tail_DATA_END - timproc_uso_inter56_tail_DATA_START);
+    }
+    __romPos += SIZEOF(.timproc_uso_inter56_tail);
+    timproc_uso_inter56_tail_ROM_END = __romPos;
+    timproc_uso_inter56_tail_VRAM_END = .;
 
     .timproc_uso_block6_yay0 : AT(__romPos)
     {
@@ -1120,6 +1286,204 @@ SECTIONS
     game_uso_ROM_END = __romPos;
     game_uso_VRAM_END = .;
 
+    balloon_uso_pre_ROM_START = __romPos;
+    balloon_uso_pre_VRAM = ADDR(.balloon_uso_pre);
+    .balloon_uso_pre : AT(balloon_uso_pre_ROM_START)
+    {
+        FILL(0x00000000);
+        balloon_uso_pre_DATA_START = .;
+        build/assets/balloon_uso_pre.bin.o(.data);
+        balloon_uso_pre_DATA_END = .;
+        balloon_uso_pre_DATA_SIZE = ABSOLUTE(balloon_uso_pre_DATA_END - balloon_uso_pre_DATA_START);
+    }
+    __romPos += SIZEOF(.balloon_uso_pre);
+    balloon_uso_pre_ROM_END = __romPos;
+    balloon_uso_pre_VRAM_END = .;
+
+    /* balloon_uso text: Text payload at USO Text offset 0 (VRAM 0), raw .word asm from
+       scripts/generate-uso-asm.py --sym. The ROM offset is 2 mod 4: AT() places the
+       section's load address exactly there (only its VMA is aligned). See
+       docs/1080_NEW_MODULES.md. */
+    balloon_uso_ROM_START = __romPos;
+    .balloon_uso 0x00000000 : AT(balloon_uso_ROM_START)
+    {
+        FILL(0x00000000);
+        balloon_uso_TEXT_START = .;
+        build/src/balloon_uso/balloon_uso.c.o(.text);
+        balloon_uso_TEXT_END = .;
+        balloon_uso_TEXT_SIZE = ABSOLUTE(balloon_uso_TEXT_END - balloon_uso_TEXT_START);
+    }
+    __romPos += SIZEOF(.balloon_uso);
+    balloon_uso_ROM_END = __romPos;
+    balloon_uso_VRAM = ADDR(.balloon_uso);
+    balloon_uso_VRAM_END = .;
+
+    balloon_uso_post_ROM_START = __romPos;
+    balloon_uso_post_VRAM = ADDR(.balloon_uso_post);
+    .balloon_uso_post : AT(balloon_uso_post_ROM_START)
+    {
+        FILL(0x00000000);
+        balloon_uso_post_DATA_START = .;
+        build/assets/balloon_uso_post.bin.o(.data);
+        balloon_uso_post_DATA_END = .;
+        balloon_uso_post_DATA_SIZE = ABSOLUTE(balloon_uso_post_DATA_END - balloon_uso_post_DATA_START);
+    }
+    __romPos += SIZEOF(.balloon_uso_post);
+    balloon_uso_post_ROM_END = __romPos;
+    balloon_uso_post_VRAM_END = .;
+
+    heli_uso_pre_ROM_START = __romPos;
+    heli_uso_pre_VRAM = ADDR(.heli_uso_pre);
+    .heli_uso_pre : AT(heli_uso_pre_ROM_START)
+    {
+        FILL(0x00000000);
+        heli_uso_pre_DATA_START = .;
+        build/assets/heli_uso_pre.bin.o(.data);
+        heli_uso_pre_DATA_END = .;
+        heli_uso_pre_DATA_SIZE = ABSOLUTE(heli_uso_pre_DATA_END - heli_uso_pre_DATA_START);
+    }
+    __romPos += SIZEOF(.heli_uso_pre);
+    heli_uso_pre_ROM_END = __romPos;
+    heli_uso_pre_VRAM_END = .;
+
+    /* heli_uso text: Text payload at USO Text offset 0 (VRAM 0), raw .word asm from
+       scripts/generate-uso-asm.py --sym. The ROM offset is 2 mod 4: AT() places the
+       section's load address exactly there (only its VMA is aligned). See
+       docs/1080_NEW_MODULES.md. */
+    heli_uso_ROM_START = __romPos;
+    .heli_uso 0x00000000 : AT(heli_uso_ROM_START)
+    {
+        FILL(0x00000000);
+        heli_uso_TEXT_START = .;
+        build/src/heli_uso/heli_uso.c.o(.text);
+        heli_uso_TEXT_END = .;
+        heli_uso_TEXT_SIZE = ABSOLUTE(heli_uso_TEXT_END - heli_uso_TEXT_START);
+    }
+    __romPos += SIZEOF(.heli_uso);
+    heli_uso_ROM_END = __romPos;
+    heli_uso_VRAM = ADDR(.heli_uso);
+    heli_uso_VRAM_END = .;
+
+    heli_uso_post_ROM_START = __romPos;
+    heli_uso_post_VRAM = ADDR(.heli_uso_post);
+    .heli_uso_post : AT(heli_uso_post_ROM_START)
+    {
+        FILL(0x00000000);
+        heli_uso_post_DATA_START = .;
+        build/assets/heli_uso_post.bin.o(.data);
+        heli_uso_post_DATA_END = .;
+        heli_uso_post_DATA_SIZE = ABSOLUTE(heli_uso_post_DATA_END - heli_uso_post_DATA_START);
+    }
+    __romPos += SIZEOF(.heli_uso_post);
+    heli_uso_post_ROM_END = __romPos;
+    heli_uso_post_VRAM_END = .;
+
+    fire_uso_pre_ROM_START = __romPos;
+    fire_uso_pre_VRAM = ADDR(.fire_uso_pre);
+    .fire_uso_pre : AT(fire_uso_pre_ROM_START)
+    {
+        FILL(0x00000000);
+        fire_uso_pre_DATA_START = .;
+        build/assets/fire_uso_pre.bin.o(.data);
+        fire_uso_pre_DATA_END = .;
+        fire_uso_pre_DATA_SIZE = ABSOLUTE(fire_uso_pre_DATA_END - fire_uso_pre_DATA_START);
+    }
+    __romPos += SIZEOF(.fire_uso_pre);
+    fire_uso_pre_ROM_END = __romPos;
+    fire_uso_pre_VRAM_END = .;
+
+    /* fire_uso text: Text payload at USO Text offset 0 (VRAM 0), raw .word asm from
+       scripts/generate-uso-asm.py --sym. The ROM offset is 2 mod 4: AT() places the
+       section's load address exactly there (only its VMA is aligned). See
+       docs/1080_NEW_MODULES.md. */
+    fire_uso_ROM_START = __romPos;
+    .fire_uso 0x00000000 : AT(fire_uso_ROM_START)
+    {
+        FILL(0x00000000);
+        fire_uso_TEXT_START = .;
+        build/src/fire_uso/fire_uso.c.o(.text);
+        fire_uso_TEXT_END = .;
+        fire_uso_TEXT_SIZE = ABSOLUTE(fire_uso_TEXT_END - fire_uso_TEXT_START);
+    }
+    __romPos += SIZEOF(.fire_uso);
+    fire_uso_ROM_END = __romPos;
+    fire_uso_VRAM = ADDR(.fire_uso);
+    fire_uso_VRAM_END = .;
+
+    fire_uso_post_ROM_START = __romPos;
+    fire_uso_post_VRAM = ADDR(.fire_uso_post);
+    .fire_uso_post : AT(fire_uso_post_ROM_START)
+    {
+        FILL(0x00000000);
+        fire_uso_post_DATA_START = .;
+        build/assets/fire_uso_post.bin.o(.data);
+        fire_uso_post_DATA_END = .;
+        fire_uso_post_DATA_SIZE = ABSOLUTE(fire_uso_post_DATA_END - fire_uso_post_DATA_START);
+    }
+    __romPos += SIZEOF(.fire_uso_post);
+    fire_uso_post_ROM_END = __romPos;
+    fire_uso_post_VRAM_END = .;
+
+    checkpoint_uso_pre_ROM_START = __romPos;
+    checkpoint_uso_pre_VRAM = ADDR(.checkpoint_uso_pre);
+    .checkpoint_uso_pre : AT(checkpoint_uso_pre_ROM_START)
+    {
+        FILL(0x00000000);
+        checkpoint_uso_pre_DATA_START = .;
+        build/assets/checkpoint_uso_pre.bin.o(.data);
+        checkpoint_uso_pre_DATA_END = .;
+        checkpoint_uso_pre_DATA_SIZE = ABSOLUTE(checkpoint_uso_pre_DATA_END - checkpoint_uso_pre_DATA_START);
+    }
+    __romPos += SIZEOF(.checkpoint_uso_pre);
+    checkpoint_uso_pre_ROM_END = __romPos;
+    checkpoint_uso_pre_VRAM_END = .;
+
+    /* checkpoint_uso text: Text payload at USO Text offset 0 (VRAM 0), raw .word asm from
+       scripts/generate-uso-asm.py --sym. The ROM offset is 2 mod 4: AT() places the
+       section's load address exactly there (only its VMA is aligned). See
+       docs/1080_NEW_MODULES.md. */
+    checkpoint_uso_ROM_START = __romPos;
+    .checkpoint_uso 0x00000000 : AT(checkpoint_uso_ROM_START)
+    {
+        FILL(0x00000000);
+        checkpoint_uso_TEXT_START = .;
+        build/src/checkpoint_uso/checkpoint_uso.c.o(.text);
+        checkpoint_uso_TEXT_END = .;
+        checkpoint_uso_TEXT_SIZE = ABSOLUTE(checkpoint_uso_TEXT_END - checkpoint_uso_TEXT_START);
+    }
+    __romPos += SIZEOF(.checkpoint_uso);
+    checkpoint_uso_ROM_END = __romPos;
+    checkpoint_uso_VRAM = ADDR(.checkpoint_uso);
+    checkpoint_uso_VRAM_END = .;
+
+    checkpoint_uso_post_ROM_START = __romPos;
+    checkpoint_uso_post_VRAM = ADDR(.checkpoint_uso_post);
+    .checkpoint_uso_post : AT(checkpoint_uso_post_ROM_START)
+    {
+        FILL(0x00000000);
+        checkpoint_uso_post_DATA_START = .;
+        build/assets/checkpoint_uso_post.bin.o(.data);
+        checkpoint_uso_post_DATA_END = .;
+        checkpoint_uso_post_DATA_SIZE = ABSOLUTE(checkpoint_uso_post_DATA_END - checkpoint_uso_post_DATA_START);
+    }
+    __romPos += SIZEOF(.checkpoint_uso_post);
+    checkpoint_uso_post_ROM_END = __romPos;
+    checkpoint_uso_post_VRAM_END = .;
+
+    game_uso_tail_ROM_START = __romPos;
+    game_uso_tail_VRAM = ADDR(.game_uso_tail);
+    .game_uso_tail : AT(game_uso_tail_ROM_START)
+    {
+        FILL(0x00000000);
+        game_uso_tail_DATA_START = .;
+        build/assets/game_uso_tail.bin.o(.data);
+        game_uso_tail_DATA_END = .;
+        game_uso_tail_DATA_SIZE = ABSOLUTE(game_uso_tail_DATA_END - game_uso_tail_DATA_START);
+    }
+    __romPos += SIZEOF(.game_uso_tail);
+    game_uso_tail_ROM_END = __romPos;
+    game_uso_tail_VRAM_END = .;
+
     bg3tex_uso_ROM_START = __romPos;
     bg3tex_uso_VRAM = ADDR(.bg3tex_uso);
     .bg3tex_uso : AT(bg3tex_uso_ROM_START)
@@ -1175,6 +1539,66 @@ SECTIONS
     __romPos += SIZEOF(.bg8tex_uso);
     bg8tex_uso_ROM_END = __romPos;
     bg8tex_uso_VRAM_END = .;
+
+    snoweffects_uso_pre_ROM_START = __romPos;
+    snoweffects_uso_pre_VRAM = ADDR(.snoweffects_uso_pre);
+    .snoweffects_uso_pre : AT(snoweffects_uso_pre_ROM_START)
+    {
+        FILL(0x00000000);
+        snoweffects_uso_pre_DATA_START = .;
+        build/assets/snoweffects_uso_pre.bin.o(.data);
+        snoweffects_uso_pre_DATA_END = .;
+        snoweffects_uso_pre_DATA_SIZE = ABSOLUTE(snoweffects_uso_pre_DATA_END - snoweffects_uso_pre_DATA_START);
+    }
+    __romPos += SIZEOF(.snoweffects_uso_pre);
+    snoweffects_uso_pre_ROM_END = __romPos;
+    snoweffects_uso_pre_VRAM_END = .;
+
+    /* snoweffects_uso text: Text payload at USO Text offset 0 (VRAM 0), raw .word asm from
+       scripts/generate-uso-asm.py --sym. The ROM offset is 2 mod 4: AT() places the
+       section's load address exactly there (only its VMA is aligned). See
+       docs/1080_NEW_MODULES.md. */
+    snoweffects_uso_ROM_START = __romPos;
+    .snoweffects_uso 0x00000000 : AT(snoweffects_uso_ROM_START)
+    {
+        FILL(0x00000000);
+        snoweffects_uso_TEXT_START = .;
+        build/src/snoweffects_uso/snoweffects_uso.c.o(.text);
+        snoweffects_uso_TEXT_END = .;
+        snoweffects_uso_TEXT_SIZE = ABSOLUTE(snoweffects_uso_TEXT_END - snoweffects_uso_TEXT_START);
+    }
+    __romPos += SIZEOF(.snoweffects_uso);
+    snoweffects_uso_ROM_END = __romPos;
+    snoweffects_uso_VRAM = ADDR(.snoweffects_uso);
+    snoweffects_uso_VRAM_END = .;
+
+    snoweffects_uso_post_ROM_START = __romPos;
+    snoweffects_uso_post_VRAM = ADDR(.snoweffects_uso_post);
+    .snoweffects_uso_post : AT(snoweffects_uso_post_ROM_START)
+    {
+        FILL(0x00000000);
+        snoweffects_uso_post_DATA_START = .;
+        build/assets/snoweffects_uso_post.bin.o(.data);
+        snoweffects_uso_post_DATA_END = .;
+        snoweffects_uso_post_DATA_SIZE = ABSOLUTE(snoweffects_uso_post_DATA_END - snoweffects_uso_post_DATA_START);
+    }
+    __romPos += SIZEOF(.snoweffects_uso_post);
+    snoweffects_uso_post_ROM_END = __romPos;
+    snoweffects_uso_post_VRAM_END = .;
+
+    bg8tex_uso_tail_ROM_START = __romPos;
+    bg8tex_uso_tail_VRAM = ADDR(.bg8tex_uso_tail);
+    .bg8tex_uso_tail : AT(bg8tex_uso_tail_ROM_START)
+    {
+        FILL(0x00000000);
+        bg8tex_uso_tail_DATA_START = .;
+        build/assets/bg8tex_uso_tail.bin.o(.data);
+        bg8tex_uso_tail_DATA_END = .;
+        bg8tex_uso_tail_DATA_SIZE = ABSOLUTE(bg8tex_uso_tail_DATA_END - bg8tex_uso_tail_DATA_START);
+    }
+    __romPos += SIZEOF(.bg8tex_uso_tail);
+    bg8tex_uso_tail_ROM_END = __romPos;
+    bg8tex_uso_tail_VRAM_END = .;
 
     player_data_ROM_START = __romPos;
     player_data_VRAM = ADDR(.player_data);

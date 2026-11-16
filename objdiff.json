@@ -3175,6 +3175,142 @@
         "compiler": "ido7.1",
         "c_flags": "-O1 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul"
       }
+    },
+    {
+      "name": "src/trnproc_uso/trnproc_uso",
+      "target_path": "expected/src/trnproc_uso/trnproc_uso.c.o",
+      "base_path": "build/non_matching/src/trnproc_uso/trnproc_uso.c.o",
+      "metadata": {
+        "source_path": "src/trnproc_uso/trnproc_uso.c",
+        "progress_categories": [
+          "trnproc_uso"
+        ],
+        "complete": false
+      },
+      "scratch": {
+        "platform": "n64",
+        "compiler": "ido7.1",
+        "c_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul"
+      }
+    },
+    {
+      "name": "src/viewrec_uso/viewrec_uso",
+      "target_path": "expected/src/viewrec_uso/viewrec_uso.c.o",
+      "base_path": "build/non_matching/src/viewrec_uso/viewrec_uso.c.o",
+      "metadata": {
+        "source_path": "src/viewrec_uso/viewrec_uso.c",
+        "progress_categories": [
+          "viewrec_uso"
+        ],
+        "complete": false
+      },
+      "scratch": {
+        "platform": "n64",
+        "compiler": "ido7.1",
+        "c_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul"
+      }
+    },
+    {
+      "name": "src/nameent_uso/nameent_uso",
+      "target_path": "expected/src/nameent_uso/nameent_uso.c.o",
+      "base_path": "build/non_matching/src/nameent_uso/nameent_uso.c.o",
+      "metadata": {
+        "source_path": "src/nameent_uso/nameent_uso.c",
+        "progress_categories": [
+          "nameent_uso"
+        ],
+        "complete": false
+      },
+      "scratch": {
+        "platform": "n64",
+        "compiler": "ido7.1",
+        "c_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul"
+      }
+    },
+    {
+      "name": "src/balloon_uso/balloon_uso",
+      "target_path": "expected/src/balloon_uso/balloon_uso.c.o",
+      "base_path": "build/non_matching/src/balloon_uso/balloon_uso.c.o",
+      "metadata": {
+        "source_path": "src/balloon_uso/balloon_uso.c",
+        "progress_categories": [
+          "balloon_uso"
+        ],
+        "complete": false
+      },
+      "scratch": {
+        "platform": "n64",
+        "compiler": "ido7.1",
+        "c_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul"
+      }
+    },
+    {
+      "name": "src/heli_uso/heli_uso",
+      "target_path": "expected/src/heli_uso/heli_uso.c.o",
+      "base_path": "build/non_matching/src/heli_uso/heli_uso.c.o",
+      "metadata": {
+        "source_path": "src/heli_uso/heli_uso.c",
+        "progress_categories": [
+          "heli_uso"
+        ],
+        "complete": false
+      },
+      "scratch": {
+        "platform": "n64",
+        "compiler": "ido7.1",
+        "c_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul"
+      }
+    },
+    {
+      "name": "src/fire_uso/fire_uso",
+      "target_path": "expected/src/fire_uso/fire_uso.c.o",
+      "base_path": "build/non_matching/src/fire_uso/fire_uso.c.o",
+      "metadata": {
+        "source_path": "src/fire_uso/fire_uso.c",
+        "progress_categories": [
+          "fire_uso"
+        ],
+        "complete": false
+      },
+      "scratch": {
+        "platform": "n64",
+        "compiler": "ido7.1",
+        "c_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul"
+      }
+    },
+    {
+      "name": "src/checkpoint_uso/checkpoint_uso",
+      "target_path": "expected/src/checkpoint_uso/checkpoint_uso.c.o",
+      "base_path": "build/non_matching/src/checkpoint_uso/checkpoint_uso.c.o",
+      "metadata": {
+        "source_path": "src/checkpoint_uso/checkpoint_uso.c",
+        "progress_categories": [
+          "checkpoint_uso"
+        ],
+        "complete": false
+      },
+      "scratch": {
+        "platform": "n64",
+        "compiler": "ido7.1",
+        "c_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul"
+      }
+    },
+    {
+      "name": "src/snoweffects_uso/snoweffects_uso",
+      "target_path": "expected/src/snoweffects_uso/snoweffects_uso.c.o",
+      "base_path": "build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o",
+      "metadata": {
+        "source_path": "src/snoweffects_uso/snoweffects_uso.c",
+        "progress_categories": [
+          "snoweffects_uso"
+        ],
+        "complete": false
+      },
+      "scratch": {
+        "platform": "n64",
+        "compiler": "ido7.1",
+        "c_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul"
+      }
     }
   ],
   "progress_categories": [
@@ -3249,6 +3385,38 @@
     {
       "id": "map4_data_uso",
       "name": "map4_data_uso"
+    },
+    {
+      "id": "trnproc_uso",
+      "name": "trnproc_uso"
+    },
+    {
+      "id": "viewrec_uso",
+      "name": "viewrec_uso"
+    },
+    {
+      "id": "nameent_uso",
+      "name": "nameent_uso"
+    },
+    {
+      "id": "balloon_uso",
+      "name": "balloon_uso"
+    },
+    {
+      "id": "heli_uso",
+      "name": "heli_uso"
+    },
+    {
+      "id": "fire_uso",
+      "name": "fire_uso"
+    },
+    {
+      "id": "checkpoint_uso",
+      "name": "checkpoint_uso"
+    },
+    {
+      "id": "snoweffects_uso",
+      "name": "snoweffects_uso"
     }
   ]
 }

@@ -184,11 +184,40 @@ segments:
   - [0x5B3E5A, bin, timproc_uso_block2_yay0]      # 0x5F (data)
   - [0x5B3EB9, bin, timproc_uso_inter23]          # 13 bytes
   - [0x5B3EC6, bin, timproc_uso_block3_yay0]     # 0x19D4 (CODE 55 funcs)
-  - [0x5B589A, bin, timproc_uso_inter34]          # 30236 bytes data
+  - [0x5B589A, bin, timproc_uso_inter34]          # 0x3438 bytes data (to trnproc.uso)
+  # trnproc.uso (module id 27): Info record at 0x5B8CD2, Text payload 0x5B90BA size 0x1CE0 (2 mod 4 in ROM; docs/1080_NEW_MODULES.md).
+  - [0x5B8CD2, bin, trnproc_uso_pre]
+  - name: trnproc_uso
+    type: code
+    start: 0x5B90BA
+    vram: 0x00000000
+    subsegments:
+      - [0x5B90BA, c, trnproc_uso/trnproc_uso]
+  - [0x5BAD9A, bin, trnproc_uso_post]
+  - [0x5BCA1A, bin, timproc_uso_inter34_tail]
   - [0x5BCEB6, bin, timproc_uso_block4_yay0]      # 0x3FF (data)
   - [0x5BD2B5, bin, timproc_uso_inter45]          # 13 bytes
   - [0x5BD2C2, bin, timproc_uso_block5_yay0]     # 0x75A8 (CODE 98 funcs)
-  - [0x5C486A, bin, timproc_uso_inter56]          # 737272 bytes data
+  - [0x5C486A, bin, timproc_uso_inter56]          # 0x7DAA8 bytes data (to viewrec.uso)
+  # viewrec.uso (module id 32): Info record at 0x642312, Text payload 0x64288A size 0x55B0 (2 mod 4 in ROM; docs/1080_NEW_MODULES.md).
+  - [0x642312, bin, viewrec_uso_pre]
+  - name: viewrec_uso
+    type: code
+    start: 0x64288A
+    vram: 0x00000000
+    subsegments:
+      - [0x64288A, c, viewrec_uso/viewrec_uso]
+  - [0x647E3A, bin, viewrec_uso_post]
+  # nameent.uso (module id 33): Info record at 0x64C68E, Text payload 0x64C89A size 0x1510 (2 mod 4 in ROM; docs/1080_NEW_MODULES.md).
+  - [0x64C68E, bin, nameent_uso_pre]
+  - name: nameent_uso
+    type: code
+    start: 0x64C89A
+    vram: 0x00000000
+    subsegments:
+      - [0x64C89A, c, nameent_uso/nameent_uso]
+  - [0x64DDAA, bin, nameent_uso_post]
+  - [0x64E9C2, bin, timproc_uso_inter56_tail]
   - [0x678862, bin, timproc_uso_block6_yay0]      # 0x13828 (data)
   - [0x68C08A, bin, timproc_uso_inter67]          # 1548 bytes
   - [0x68C696, bin, timproc_uso_block7_yay0]      # 0x2A724 (data)
@@ -220,7 +249,45 @@ segments:
   - [0x7CCBA8, bin, game_uso_block0_yay0]      # 0x3D2 bytes (zero-data)
   - [0x7CCF7A, bin, game_uso_inter01]          # 12-byte descriptor
   - [0x7CCF86, bin, game_uso_block1_yay0]      # 0x9D6F bytes (CODE — built from C)
-  - [0x7D6CF5, bin, game_uso_inter12]          # 153289-byte data gap
+  - [0x7D6CF5, bin, game_uso_inter12]          # 0x7FBD-byte data gap (to balloon.uso; linked via assets/game_uso.bin)
+  # balloon.uso (module id 47): Info record at 0x7DECB2, Text payload 0x7E2EDE size 0x570 (2 mod 4 in ROM; docs/1080_NEW_MODULES.md).
+  - [0x7DECB2, bin, balloon_uso_pre]
+  - name: balloon_uso
+    type: code
+    start: 0x7E2EDE
+    vram: 0x00000000
+    subsegments:
+      - [0x7E2EDE, c, balloon_uso/balloon_uso]
+  - [0x7E344E, bin, balloon_uso_post]
+  # heli.uso (module id 48): Info record at 0x7E3D66, Text payload 0x7F0A82 size 0x1B60 (2 mod 4 in ROM; docs/1080_NEW_MODULES.md).
+  - [0x7E3D66, bin, heli_uso_pre]
+  - name: heli_uso
+    type: code
+    start: 0x7F0A82
+    vram: 0x00000000
+    subsegments:
+      - [0x7F0A82, c, heli_uso/heli_uso]
+  - [0x7F25E2, bin, heli_uso_post]
+  # fire.uso (module id 49): Info record at 0x7F3E2A, Text payload 0x7F621A size 0x3B0 (2 mod 4 in ROM; docs/1080_NEW_MODULES.md).
+  - [0x7F3E2A, bin, fire_uso_pre]
+  - name: fire_uso
+    type: code
+    start: 0x7F621A
+    vram: 0x00000000
+    subsegments:
+      - [0x7F621A, c, fire_uso/fire_uso]
+  - [0x7F65CA, bin, fire_uso_post]
+  # checkpoint.uso (module id 50): Info record at 0x7F6D0E, Text payload 0x7FAC7A size 0x980 (2 mod 4 in ROM; docs/1080_NEW_MODULES.md).
+  - [0x7F6D0E, bin, checkpoint_uso_pre]
+  - name: checkpoint_uso
+    type: code
+    start: 0x7FAC7A
+    vram: 0x00000000
+    subsegments:
+      - [0x7FAC7A, c, checkpoint_uso/checkpoint_uso]
+  - [0x7FB5FA, bin, checkpoint_uso_post]
+  # (not linked: tenshoe.ld takes 0x7FC37A..0x84F6F8 from the carved assets/game_uso_tail.bin)
+  - [0x7FC37A, bin, game_uso_inter12_tail]
   - [0x7FC3BE, bin, game_uso_block2_yay0]      # 0x20AEC bytes (data)
   - [0x81CEAA, bin, game_uso_inter23]          # 644-byte descriptor
   - [0x81D12E, bin, game_uso_block3_yay0]      # 0x323D2 bytes (data)
@@ -229,6 +296,16 @@ segments:
   - [0x8A8E60, bin, bg6tex_uso]
   - [0x8BF7B8, bin, bg7tex_uso]
   - [0x8DC8DC, bin, bg8tex_uso]
+  # snoweffects.uso (module id 60): Info record at 0x90239E, Text payload 0x909926 size 0xA900 (2 mod 4 in ROM; docs/1080_NEW_MODULES.md).
+  - [0x90239E, bin, snoweffects_uso_pre]
+  - name: snoweffects_uso
+    type: code
+    start: 0x909926
+    vram: 0x00000000
+    subsegments:
+      - [0x909926, c, snoweffects_uso/snoweffects_uso]
+  - [0x914226, bin, snoweffects_uso_post]
+  - [0x91708E, bin, bg8tex_uso_tail]
   - [0x9209B8, bin, player_data]
   - [0xD9FDB0, bin, rom_fs]
   # bootup_uso split into three: pre-text USO metadata/data/rodata/relocs,

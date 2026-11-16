@@ -1,0 +1,13 @@
+nonmatching checkpoint_uso_func_0000045C, 0x24
+
+glabel checkpoint_uso_func_0000045C
+    /* 7FB0D6 0000045C 248200A4 */  .word 0x248200A4
+    /* 7FB0DA 00000460 C4460000 */  .word 0xC4460000
+    /* 7FB0DE 00000464 C4A40000 */  .word 0xC4A40000
+    /* 7FB0E2 00000468 C44A0004 */  .word 0xC44A0004
+    /* 7FB0E6 0000046C C4A80004 */  .word 0xC4A80004
+    /* 7FB0EA 00000470 46062001 */  .word 0x46062001
+    /* 7FB0EE 00000474 C4460008 */  .word 0xC4460008
+    /* 7FB0F2 00000478 C4A40008 */  .word 0xC4A40008
+    /* 7FB0F6 0000047C 460A4081 */  .word 0x460A4081
+endlabel checkpoint_uso_func_0000045C

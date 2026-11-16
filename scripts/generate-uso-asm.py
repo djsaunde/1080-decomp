@@ -10,6 +10,15 @@ bytes either way.
 
 Usage:
     python3 scripts/generate-uso-asm.py <segment_name> <text_rom_start> <text_size>
+            [--sym SYM_ROM:SYM_SIZE]
+
+With --sym (the module's Sym payload ROM offset and byte size, e.g. from the
+port extractor manifest: section rom_offset + 12), function starts are the union
+of the module's Text symbols (kind 2, section 5; docs/USO_FORMAT.md section 6),
+the prologues, and leaf ends (a `jr ra` that no earlier branch of the function
+jumps past, then any zero padding). The segment must then start at the Text
+payload (record + 12) so names equal USO Text offsets. Used for the 2026-11-16
+new modules (docs/1080_NEW_MODULES.md).
 
 Example (gui_uso):
     python3 scripts/generate-uso-asm.py gui_uso 0x58D530 0x4880
@@ -26,10 +35,45 @@ import sys
 from pathlib import Path
 
 
+def leaf_ends(data, text_start, text_end, starts):
+    """Ends of functions found by a linear scan: a `jr ra` that no branch of the
+    current function targets past (and no `jr <reg>` jumptable seen), followed by
+    zero padding. Returns the next-function starts (ROM offsets) not in `starts`."""
+    out = set()
+    o, maxt, jt = text_start, text_start, False
+    while o < text_end:
+        if o in starts:
+            maxt, jt = o, False
+        x = struct.unpack(">I", data[o:o+4])[0]
+        op = x >> 26
+        if op in (1, 4, 5, 6, 7, 20, 21, 22, 23) or (op == 17 and ((x >> 21) & 31) == 8):
+            off = struct.unpack(">h", struct.pack(">H", x & 0xFFFF))[0]
+            maxt = max(maxt, o + 4 + off * 4)
+        if op == 0 and (x & 0x3F) == 8 and ((x >> 21) & 31) != 31:
+            jt = True
+        if x == 0x03E00008 and maxt <= o + 4 and not jt:
+            e = o + 8
+            while e < text_end and data[e:e+4] == b"\0\0\0\0":
+                e += 4
+            if e < text_end and e not in starts:
+                out.add(e)
+            o, maxt, jt = e, e, False
+            continue
+        o += 4
+    return out
+
+
 def main():
-    if len(sys.argv) != 4:
+    args = sys.argv[1:]
+    sym = None
+    if "--sym" in args:
+        i = args.index("--sym")
+        sym = [int(v, 0) for v in args[i + 1].split(":")]
+        del args[i:i + 2]
+    if len(args) != 3:
         print(__doc__)
         sys.exit(1)
+    sys.argv = [sys.argv[0]] + args
     seg = sys.argv[1]
     text_start = int(sys.argv[2], 0)
     text_size = int(sys.argv[3], 0)
@@ -45,6 +89,16 @@ def main():
         if (w >> 16) == 0x27BD and (w & 0x8000):
             prols.append(i)
 
+    if sym:
+        starts = {text_start} | set(prols)
+        s0, ssz = sym
+        for k in range(0, ssz, 12):
+            info, val = struct.unpack(">II", data[s0 + k:s0 + k + 8])
+            info >>= 16
+            if info & 7 == 2 and (info >> 4) & 0xF == 5 and val < text_size:
+                starts.add(text_start + val)
+        starts |= leaf_ends(data, text_start, text_end, starts)
+        prols = sorted(starts - {text_start})
     boundaries = [text_start] + prols + [text_end]
 
     # asm-processor inserts a trailing nop into .s files with < 2 words. Merge
@@ -92,7 +146,7 @@ def main():
     (src_dir / f"{seg}.c").write_text("\n".join(c_lines) + "\n")
 
     nfn = len([b for i, b in enumerate(boundaries[:-1]) if boundaries[i+1] > b])
-    print(f"Wrote {nfn} function .s files for {seg} ({len(prols)} prologue-bearing) + src/{seg}/{seg}.c")
+    print(f"Wrote {nfn} function .s files for {seg} ({len(prols)} non-zero starts) + src/{seg}/{seg}.c")
 
 
 if __name__ == "__main__":
