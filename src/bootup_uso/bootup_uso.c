@@ -558,7 +558,7 @@ void *func_00000C10(int *arg0) {
     if (p1 != 0) {
         FCALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;
@@ -2667,7 +2667,7 @@ void *boot_ItemType_create_000046EC(int *arg0) {
     if (p1 != 0) {
         FCALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;
@@ -4096,7 +4096,7 @@ void *boot_ItemType_create_00007B08(int *arg0) {
     if (p1 != 0) {
         FCALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;
@@ -6706,7 +6706,7 @@ void *boot_ItemType_create_0000E690(int *arg0) {
     if (p1 != 0) {
         FCALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;

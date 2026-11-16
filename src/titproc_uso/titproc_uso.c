@@ -113,7 +113,7 @@ void tit_menuMultiRace(void) {
     INPUT_MGR(D_00000000).procState = 0;
     INPUT_MGR(D_00000000).seq = 3;
     CALL(snd_sendEvent)(0xC, 0);
-    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_00000194_A + 0xA8), -1, 0);
+    CALL(Process_fadeOut_0000F954)((int)((GuiSpriteTable *)&D_00000194_A)->menuOwner, -1, 0);
 }
 
 extern char D_000001E4_A;
@@ -126,7 +126,7 @@ void tit_menuTimeAttack(void) {
     INPUT_MGR(D_00000000).procState = 0;
     INPUT_MGR(D_00000000).seq = 3;
     CALL(snd_sendEvent)(12, 1);
-    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_000001E4_A + 0xA8), -1, 0);
+    CALL(Process_fadeOut_0000F954)((int)((GuiSpriteTable *)&D_000001E4_A)->menuOwner, -1, 0);
 }
 
 extern char D_00000230_A;
@@ -136,7 +136,7 @@ void tit_menuTrick(void) {
     INPUT_MGR(D_00000000).procState = 0;
     INPUT_MGR(D_00000000).seq = 3;
     CALL(snd_sendEvent)(12, 2);
-    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_00000230_A + 0xA8), -1, 0);
+    CALL(Process_fadeOut_0000F954)((int)((GuiSpriteTable *)&D_00000230_A)->menuOwner, -1, 0);
 }
 
 extern char D_0000028C_A;
@@ -151,7 +151,7 @@ void tit_menuArcade(void) {
     INPUT_MGR(D_00000000).procState = 0;
     INPUT_MGR(D_00000000).seq = 3;
     CALL(snd_sendEvent)(12, 3);
-    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_0000028C_A + 0xA8), -1, 0);
+    CALL(Process_fadeOut_0000F954)((int)((GuiSpriteTable *)&D_0000028C_A)->menuOwner, -1, 0);
 }
 
 extern char D_000002D8_A;
@@ -164,7 +164,7 @@ void tit_menuHead2Head(void) {
     INPUT_MGR(D_00000000).procState = 0;
     INPUT_MGR(D_00000000).seq = 3;
     CALL(snd_sendEvent)(12, 4);
-    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_000002D8_A + 0xA8), -1, 0);
+    CALL(Process_fadeOut_0000F954)((int)((GuiSpriteTable *)&D_000002D8_A)->menuOwner, -1, 0);
 }
 
 extern char D_0000032C_A;
@@ -177,7 +177,7 @@ void tit_menuTraining(void) {
     INPUT_MGR(D_00000000).procState = 0;
     INPUT_MGR(D_00000000).seq = 3;
     CALL(snd_sendEvent)(12, 5);
-    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_0000032C_A + 0xA8), -1, 0);
+    CALL(Process_fadeOut_0000F954)((int)((GuiSpriteTable *)&D_0000032C_A)->menuOwner, -1, 0);
 }
 
 extern char D_00000380_A;
@@ -191,7 +191,7 @@ void tit_startTitleDemo_00000380(void) {
     INPUT_MGR(D_00000000).procState = 1;
     INPUT_MGR(D_00000000).nextProcState = 2;
     CALL(snd_postEvent)(9);
-    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_00000380_A + 0xA8), -1, 0);
+    CALL(Process_fadeOut_0000F954)((int)((GuiSpriteTable *)&D_00000380_A)->menuOwner, -1, 0);
 }
 
 extern char D_000003D0_A;
@@ -200,7 +200,7 @@ void tit_menuEditors(void) {
     INPUT_MGR(D_00000000).nextFlowMode = 8;
     INPUT_MGR(D_00000000).procState = 0;
     INPUT_MGR(D_00000000).nextProcState = 2;
-    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_000003D0_A + 0xA8), -1, 0);
+    CALL(Process_fadeOut_0000F954)((int)((GuiSpriteTable *)&D_000003D0_A)->menuOwner, -1, 0);
 }
 
 /* tit_randomUnlocked_00000418: 33-insn FP selector + scaled return.
@@ -539,8 +539,8 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
 
     INPUT_MGR(import_00020098).unk88 = 0;
     import_000A7ECC(&import_00020098, 0);
-    *(int *)((char *)root + 0x2C) = 0;
-    *(int *)((char *)root + 0x48) = 0;
+    TITLEDEMO(root)->fadingOut = 0;
+    TITLEDEMO(root)->pauseMenu = 0;
     (void)a1;
     }
     return root;
@@ -567,7 +567,7 @@ void TitleDemoProcess_buildMenu(int *a0) {
     CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 4, 4, &D_t_arg4_101C);
     CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 7, 5, &D_t_arg5_101C);
     CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 5, 6, &D_t_arg6_101C);
-    if (CALL(pad_isConnected)(*(int*)((char*)&D_t_target_101C + 0xC4)) == 0) {
+    if (CALL(pad_isConnected)((int)INPUT_MGR(D_t_target_101C).ctrls[1]) == 0) { /* no pad 2 */
         TITLEDEMO(a0)->menu->rows[4].enabled = 0; /* 0x84 + 4 * 0x28 + 4: no pad 2, no row 4 */
     }
 }
@@ -1333,10 +1333,10 @@ after_node:
         import_000A5F40(rtemp, arg0);
         XCALL(titproc_uso_func_0022BC, GameDemoProcess_buildMenu)(arg0);
         ((int *)arg0[0x6C0 / 4])[0x30 / 4] = (int)import_0024CCF4(0, &titproc_uso_D_00052C, 0x48, 0xDD, 3, 13);
-        *(float *)((char *)arg0[0x6C0 / 4] + 0x74) = 17.0f;
+        GUIMENU(arg0[0x6C0 / 4])->rowHeight = 17.0f;
         import_000A5FBC(arg0[0x6C0 / 4]);
         XCALL(titproc_uso_func_00F4CC, Process_stop)(arg0[0x6C0 / 4]);
-        *(int *)((char *)arg0[0x6C0 / 4] + 0x7C) = INPUT_MGR(import_00020098).unk84;
+        GUIMENU(arg0[0x6C0 / 4])->cursor = INPUT_MGR(import_00020098).unk84;
         node = (int *)arg0[0x6C0 / 4];
         XCALL(titproc_uso_func_07ACE0, list_append)(slot, node);
         if (node[0x14 / 4] != 0) {
@@ -1388,8 +1388,8 @@ void GameDemoProcess_buildMenu(GameDemoProcess *a0) {
     CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 4, 4, &titproc_uso_D_arg4_22BC);
     CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 7, 5, &titproc_uso_D_arg5_22BC);
     CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 5, 6, &titproc_uso_D_arg6_22BC);
-    if (CALL(pad_isConnected)(*(int*)((char*)&titproc_uso_D_target_22BC + 0xC4)) == 0) {
-        *(int*)((char*)a0->menu + 0x128) = 0;
+    if (CALL(pad_isConnected)((int)INPUT_MGR(titproc_uso_D_target_22BC).ctrls[1]) == 0) { /* no pad 2 */
+        GUIMENU(a0->menu)->rows[4].enabled = 0;
     }
 }
 
@@ -1487,7 +1487,7 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
                 if (GUIMENU(obj)->rows[GUIMENU(obj)->cursor].arg == 0) {
                     return;
                 }
-                *(int *)((char *)&import_00263D30 + 0xA8) = (int)s0;
+                ((GuiSpriteTable *)&import_00263D30)->menuOwner = (char *)s0;
                 INPUT_MGR(import_00020098).unk84 = GUIMENU(s0->menu)->cursor;
                 if ((s0->race.flags << 4) < 0) {
                     if (s0->race.session != 0) {
@@ -1736,7 +1736,7 @@ void *tit_ItemType_create_00002980(int *arg0) {
     if (p1 != 0) {
         XCALL(titproc_uso_func_051C28, ColourItem_ctor)(p1);
         NODE(p1)->vptr = (char *)&import_0006ED80;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;

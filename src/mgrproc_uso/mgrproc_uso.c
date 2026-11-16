@@ -1869,7 +1869,7 @@ void *mgr_ItemType_create_00003358(int *arg0) {
     if (p1 != 0) {
         XCALL(mgrproc_uso_func_051C28, ColourItem_ctor)(p1);
         NODE(p1)->vptr = (char *)&import_8006ED80;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;

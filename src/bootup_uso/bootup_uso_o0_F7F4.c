@@ -20,8 +20,8 @@ extern char D_00000000;
 void Process_display(char *a0) {
     register char *p;
     FCALL(gui_beginFrame_000016A4)(&D_00000000);
-    (**(void (**)())(p + 0x74))(
-        *(short*)((p = NODE(a0)->vptr) + 0x70) + (int)a0);
+    VT_SLOT(p, 13).fn(
+        VT_SLOT(p = NODE(a0)->vptr, 13).delta + (int)a0);
     FCALL(Node_display)(a0);
 }
 

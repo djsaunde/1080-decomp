@@ -106,7 +106,9 @@ extern char gPolyFlags_3EEC4_90cc_g8_ld, gPolyFlags_3EEC4_90cc_g8_st;      /* lo
 
 extern s32 bu_90cc_gown;
 extern char gNodeGlobals_90cc_gtbl;
-extern char gPolyGeomMode_3EEC8_90cc_gpair;
+/* gPolyGeomMode_3EEC8 (gl_data.h): two mode words, [1] = the PolyShape geometry-mode bits */
+typedef struct { s32 mode0; s32 geomMode; } GeomModePair_90cc;
+extern GeomModePair_90cc gPolyGeomMode_3EEC8_90cc_gpair;
 extern char gGfxLib_90cc_gdev;
 extern char SnowBoarder_vtbl_90cc_vt_self;  /* self +0x28 vtable (was decoded as literal 0; expected has lui/addiu reloc pair) */
 /* vtable draw slot (+0x5C): trailing two args are single-precision f32.
@@ -164,6 +166,9 @@ extern BuW90 gPolyGeomMode_3EEC8_90cc_gcfg_ld, gPolyGeomMode_3EEC8_90cc_gcfg_st,
 extern BuW90 gNodeGlobals_90cc_d44_01, gNodeGlobals_90cc_d44_02, gNodeGlobals_90cc_d44_03, gNodeGlobals_90cc_d44_04, gNodeGlobals_90cc_d44_05, gNodeGlobals_90cc_d44_06, gNodeGlobals_90cc_d44_07, gNodeGlobals_90cc_d44_08, gNodeGlobals_90cc_d44_09, gInputMgr_90cc_d44_10, gNodeGlobals_90cc_d08_01, gNodeGlobals_90cc_d08_02, gNodeGlobals_90cc_d08_03, gNodeGlobals_90cc_d08_04, gNodeGlobals_90cc_d80_01, gNodeGlobals_90cc_d80_02, gNodeGlobals_90cc_d80_03;
 extern void bu_90cc_call_p4d(void *, char *, f64, f32);
 extern void gSkinMgrs_41700_90cc_fz();  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
+/* bu_90cc_fz2 rows (0x18 bytes, zero-rider terminated): rider id, ddm slot, then the ddm data
+ * whose address SnowBoarder_ctor stores into the slot when the id matches its rider (arg2) */
+typedef struct { s32 rider; s32 slot; char ddm[0x10]; } RiderDdmRow_90cc;
 extern void bu_90cc_fz2();  /* sp174 list-walk head (same blank address), fn-typed for the same reason */
 
 void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6, s32 arg7, s32 arg8) {
@@ -915,8 +920,8 @@ sw_end:
             }
             *(s32 *)((char *)&gNodeGlobals_90cc_gtbl + var_a2 * 4) = 0;
         }
-        *(s32 *)((char *)&gPolyGeomMode_3EEC8_90cc_gpair + 4) = 0x2A003;
-        *(s32 *)&gPolyGeomMode_3EEC8_90cc_gpair = 0;
+        gPolyGeomMode_3EEC8_90cc_gpair.geomMode = 0x2A003;
+        gPolyGeomMode_3EEC8_90cc_gpair.mode0 = 0;
         SNOWB(arg0)->unk8F4[0] = (SnowBRec3 *) FCALL(gfx_addDdm)(&gGfxLib_90cc_gdev, 1, 0);
         SNOWB(arg0)->unk8F4[1] = (SnowBRec3 *) FCALL(gfx_addDdm)(&gGfxLib_90cc_gdev, 2, 0);
         SNOWB(arg0)->unk8F4[2] = (SnowBRec3 *) FCALL(gfx_addDdm)(&gGfxLib_90cc_gdev, 3, 0);
@@ -927,10 +932,10 @@ sw_end:
                 cg = *(s32 *)(char *)bu_90cc_d00_b; do { /* run 227: cg's load on the `do` line = as1 issues it after the d148 address */
                     if (arg2 == cg) {
                         /* (temp_v0_5->unk4 * 4)->unk160 store: scaled-index table write */
-                        var_s0 = temp_s1_8; var_s0 += *(s32 *)((char *)temp_v0_5 + 0x4) * 4 + 0 * (int)(arg2);
+                        var_s0 = temp_s1_8; var_s0 += ((RiderDdmRow_90cc *)temp_v0_5)->slot * 4 + 0 * (int)(arg2);
                         *(s32 *)var_s0 = (s32)(temp_v0_5 + 8);
                     }
-                    cg = *(s32 *)((char *)(temp_v0_5) + 0x18);
+                    cg = ((RiderDdmRow_90cc *)temp_v0_5)[1].rider;
                     temp_v0_5 += 0x18;
                 } while (cg != 0);
             }

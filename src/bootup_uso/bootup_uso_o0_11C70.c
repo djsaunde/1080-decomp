@@ -43,9 +43,9 @@ void input_addRacePad(InputMgr *a0, InputPad *a1) {
 void input_setRacePadsActive(int *a0, int a1) {
     if (a1 != 0) {
         FCALL(input_unpauseRacePads)(a0);
-        *(int*)((char*)a0 + 0x188) = 0;
+        GAMEFLOW(a0)->racePadsPaused = 0;
     } else {
         FCALL(input_pauseRacePads)(a0);
-        *(int*)((char*)a0 + 0x188) = 1;
+        GAMEFLOW(a0)->racePadsPaused = 1;
     }
 }

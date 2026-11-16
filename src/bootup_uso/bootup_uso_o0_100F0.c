@@ -38,8 +38,8 @@ void gui_initRows_000100F0(int *a0, int a1) {
     GUIMENU(a0)->arg = a1;
     GUIMENU(a0)->cursor = 0;
     FCALL(gui_clearRows_00010A9C)(a0);
-    (**(void (**)())((char*)p + 0x64))(
-        *(short*)((char*)(p = (int*)*(int*)((char*)a0 + 0x28)) + 0x60) + (int)a0);
+    VT_SLOT(p, 11).fn(
+        VT_SLOT(p = (int*)NODE(a0)->vptr, 11).delta + (int)a0);
     GUIMENU(a0)->rowHeight = 17.0f;
 }
 

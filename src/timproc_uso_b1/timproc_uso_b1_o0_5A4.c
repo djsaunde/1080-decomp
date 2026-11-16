@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/backup.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -13,9 +14,9 @@ void tim_openSession_000005A4(int **arg0, int arg1, int arg2) {
     D_0000014C = new_obj;
     CALL(app_setHeapMode)(handle);
     if (arg1 != 0) {
-        *(int*)((char*)*arg0 + 0x14) = 1;
+        ((BackupSession *)*arg0)->modes = 1;
     } else {
-        *(int*)((char*)*arg0 + 0x14) = 0;
+        ((BackupSession *)*arg0)->modes = 0;
     }
     D_00000068 = 0;
 }

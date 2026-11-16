@@ -55,14 +55,14 @@ void GameFlow_restart_000116C8(void) {
     FCALL(heap_printStats)();
     FCALL(dbg_printf)(&sStr_starLine_C65C);
     FCALL(GameFlow_startMode)(&gInputMgr, gInputMgr_bu_116C8_34, gInputMgr_bu_116C8_40);
-    (*(FN116C8)*(int *)(p + 0x14))(
-        (char *)&gSnowBoard + *(short *)((p = NODE(&gSnowBoard)->vptr) + 0x10));
+    ((FN116C8)VT_SLOT(p, 1).fn)(
+        (char *)&gSnowBoard + VT_SLOT(p = NODE(&gSnowBoard)->vptr, 1).delta);
     p = (char *)&local;
     if (p != 0 || (p = (char *)FCALL(mem_new)(0xC)) != 0) {
         *(int *)p = 8;
     }
-    (*(FN116C8)*(int *)(p + 0x34))(
-        (char *)&gSnowBoard + *(short *)((p = NODE(&gSnowBoard)->vptr) + 0x30),
+    ((FN116C8)VT_SLOT(p, 5).fn)(
+        (char *)&gSnowBoard + VT_SLOT(p = NODE(&gSnowBoard)->vptr, 5).delta,
         &local);
     FCALL(dbg_printf)(&sStr_done_C694);
 }

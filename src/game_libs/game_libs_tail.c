@@ -1153,7 +1153,7 @@ void Backup_resetOptionsData_0000AFC4(char *arg0) {
     do {
         temp_v0 = *(char **)((char *)&D_00000000 + 0x28);
         sp3C = 0x15;
-        ((GP_0000AFC4)FW(temp_v0, 0x34))((char *)&gSnowBoard + *(s16 *)(temp_v0 + 0x30), &sp3C);
+        ((GP_0000AFC4)VT_SLOT(temp_v0, 5).fn)((char *)&gSnowBoard + VT_SLOT(temp_v0, 5).delta, &sp3C);
     } while (0);
 }
 
@@ -1993,7 +1993,7 @@ int *ColourItem_create_0000C5B0(int *arg0) {
     if (p1 != 0) {
         gl_func_00000000(p1);
         NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;
@@ -2395,8 +2395,8 @@ int RaceTracker_handleMsg(int *a0, int *a1) {
     int cmd = *a1;
     if (cmd == 9) {
         int *p = (int *)a0[0x28 / 4];
-        int *new_a0 = (int*)((char*)a0 + *(short*)((char*)p + 0x58));
-        (*(int(**)(int*))((char*)p + 0x5C))(new_a0);
+        int *new_a0 = (int*)((char*)a0 + VT_SLOT(p, 10).delta);
+        ((int(*)(int*))VT_SLOT(p, 10).fn)(new_a0);
     }
     return CALL(Node_handleMsg)(a0, a1);
 }
@@ -2709,15 +2709,15 @@ void RaceTracker_passGates(RaceTracker *arg0) {
         }
     }
     if (tmp) {}
-    if (*(int *)((char *)tmp + 0xC8) & 1) {
-        if (e->entries->posX <= *(float *)((char *)tmp + 0x5C)) {
+    if (tmp->flags & 1) {
+        if (e->entries->posX <= tmp->x) {
             CALL(RaceTracker_onGateCleared)((RaceTracker *)((int)e | (int)arg0), tmp, e);
             return;
         }
         CALL(RaceTracker_onGateMissed)((RaceTracker *)((int)e | (int)arg0), tmp, e);
         return;
     }
-    if (*(float *)((char *)tmp + 0x5C) <= e->entries->posX) {
+    if (tmp->x <= e->entries->posX) {
         CALL(RaceTracker_onGateCleared)((RaceTracker *)((int)e | (int)arg0), tmp, e);
         return;
     }
@@ -3254,8 +3254,8 @@ void RaceTracker_startTrick(RaceTracker *self, int a1, int a2) {
         CALL(snd_sendEvent)(0x24, a2);
     }
     vt = (int*)self->vptr;
-    new_a0 = (int*)((char*)self + *(short*)((char*)vt + 0x68));
-    (*(int(**)(int*, int))((char*)vt + 0x6C))(new_a0, a2);
+    new_a0 = (int*)((char*)self + VT_SLOT(vt, 12).delta);
+    ((int(*)(int*, int))VT_SLOT(vt, 12).fn)(new_a0, a2);
 }
 
 /* RaceTracker_endTrick — 49/49 EXACT (2026-07-03, agent-e w4).
@@ -3291,7 +3291,7 @@ void RaceTracker_endTrick(int a0, int a1, int a2, int a3) {
         }
         {
             char *t = ((RaceTracker *)a0)->vptr;
-            (*(void (**)(int, int))(t + 0x74))(*(short *)(t + 0x70) + a0, a2);
+            ((void (*)(int, int))VT_SLOT(t, 13).fn)(VT_SLOT(t, 13).delta + a0, a2);
         }
     }
 }

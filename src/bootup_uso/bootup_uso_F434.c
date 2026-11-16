@@ -1,6 +1,7 @@
 #include "common.h"
 #include "gdl/node.h"
 #include "uso_call.h"
+#include "game/modeproc.h"
 
 /* -O0 sub-file covering bootup_uso offset 0xF6C4..0xF76B (single function,
  * 42 insns, 0xA8 bytes). Layout shim between bootup_uso_o0_F390.c and
@@ -31,13 +32,13 @@ extern struct { int a, b, c; } func_00000188;
  * 91.31% body) always reload a0 (+1 word per block). */
 void Process_update(char *a0) {
     register char *m;
-    if (*(int*)(a0 + 0x2C) == 0) {
-        (*(int(**)())(m + 0x6C))(*(short*)((m = NODE(a0)->vptr) + 0x68) + a0);
+    if (PROCESS(a0)->fadingOut == 0) {
+        VT_SLOT(m, 12).fn(VT_SLOT(m = NODE(a0)->vptr, 12).delta + a0);
     }
     FCALL(Node_update)(a0);
-    if (*(int*)(a0 + 0x2C) != 0) {
+    if (PROCESS(a0)->fadingOut != 0) {
         if (FCALL(Fader_checkDone_00013924)(func_00000188.c)) {
-            (*(int(**)())(m + 0x64))(*(short*)((m = NODE(a0)->vptr) + 0x60) + a0);
+            VT_SLOT(m, 11).fn(VT_SLOT(m = NODE(a0)->vptr, 11).delta + a0);
         }
     }
 }

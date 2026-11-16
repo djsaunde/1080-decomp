@@ -1,4 +1,6 @@
 #include "common.h"
+#include "gdl/backup.h"
+#include "game/course.h"
 #include "game/input.h"
 #include "game/modeproc.h"
 #include "game/nameentry.h"
@@ -49,7 +51,7 @@ void arc_openSession_000005C8(int *a0) {
     a0[0] = s0;
     D_0000014C = s0;
     gl_func_00000000(saved);
-    *(int*)((char*)a0[0] + 0x14) = 4;
+    ((BackupSession *)a0[0])->modes = 4;
     D_00000068 = 0;
 }
 
@@ -1509,7 +1511,7 @@ void *arc_ItemType_create_00002334(int *arg0) {
     if (p1 != 0) {
         CALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (char *)&D_00000000;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;

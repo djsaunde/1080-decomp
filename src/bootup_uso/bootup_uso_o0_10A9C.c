@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/guimenu.h"
 
 /* Bottom piece of the original bootup_uso_tail3a.c (carved 2026-07-10 as
  * bootup_uso_tail3a_10540.c). 2026-09-04: PauseMenu_display moved out to
@@ -14,5 +15,5 @@
  * docs/IDO_CODEGEN.md#o0-two-block-predicate-not-adjacent-leaf-cap. 5/5 words. */
 
 void gui_clearRows_00010A9C(int *a0) {
-    *(int*)((char*)a0 + 0x78) = 0;
+    GUIMENU(a0)->numRows = 0;
 }

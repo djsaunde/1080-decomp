@@ -3908,7 +3908,7 @@ int *ColourItem_create_000088B4(int *arg0) {
     if (p1 != 0) {
         CALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/guimenu.h"
 #include "uso_call.h"
 
 /* -O0 empty stub; see feedback_ido_o0_empty_stub.md + feedback_non_aligned_o_split.md. */
@@ -29,5 +30,5 @@ void PauseMenu_start(int *a0) {
  * emits exactly body + that one pair (0xA4 unit end), TRUNCATE_TEXT 0xA4;
  * frameless + file-terminal. */
 void gui_centerAt_000102A4(register char *a0, register int a1) {
-    *(float*)(a0 + 0x70) = (float)a1 - (*(float*)(a0 + 0x74) * (float)*(int*)(a0 + 0x78)) / 2.0f;
+    GUIMENU(a0)->y = (float)a1 - (*(float *)&GUIMENU(a0)->rowHeight * (float)*(int *)&GUIMENU(a0)->numRows) / 2.0f; /* byte lever: the plain member reads order the lwc1 before the int load */
 }

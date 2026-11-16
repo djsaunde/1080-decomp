@@ -1,6 +1,8 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "uso_call.h"
+#include "gdl/node.h"
+#include "game/modeproc.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -15,12 +17,12 @@ extern struct { int a, b, c; } func_00000188;
  * struct-field ref (folds to lui;lw 8 — an array/scalar+offset ref instead emits
  * an extra addiu materializing the address). */
 void Process_fadeOut_0000F954(int *a0, int a1, int a2) {
-    if (*(int*)((char*)a0 + 0x48) != 0) {
-        FCALL(Node_clearFlag4_0000F614)(*(int*)((char*)a0 + 0x48));
+    if (PROCESS(a0)->pauseMenu != 0) {
+        FCALL(Node_clearFlag4_0000F614)(*(int *)&PROCESS(a0)->pauseMenu);
     }
     FCALL(input_pauseRacePads)(&gInputMgr);
     FCALL(Fader_start)(func_00000188.c, 3, 0);
-    *(int*)((char*)a0 + 0x2C) = 1;
+    PROCESS(a0)->fadingOut = 1;
     FCALL(func_00000188)(a1, a2, 0);
 }
 
@@ -39,7 +41,7 @@ void Process_pause_0000F9E8(int *self) {
 
     FCALL(func_0000029C)();
     self[0x38 / 4] = FCALL(input_pauseRacePads)(&gInputMgr);
-    ((void(*)(int))vt[0x5C / 4])(self[0x48 / 4] + (int)*(short*)((char*)(vt = (int*)((int*)self[0x48 / 4])[0x28 / 4]) + 0x58));
+    ((void(*)(int))vt[0x5C / 4])(self[0x48 / 4] + (int)VT_SLOT(vt = (int*)((int*)self[0x48 / 4])[0x28 / 4], 10).delta);
     ((int*)self[0x48 / 4])[0x7C / 4] = 0;
     self[0x30 / 4] = 1;
     self[0x34 / 4] = 0;

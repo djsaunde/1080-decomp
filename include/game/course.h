@@ -119,10 +119,16 @@ typedef struct CourseItemTmpl {
  * 0x1EFC0, Sym 414) at +0x28, then a checkpoint.uso export (import 50: chk Sym 418, gtr and gtl share
  * Sym 420) at +0x28 and another at +0x48 (Syms 417 / 419 / 421: the per-type descriptor). */
 typedef struct RaceGate {
-    char unk00[0x64];
+    char unk00[0x5C];
+    f32 x;                      /* 0x5C: the gate's lateral position (world x); RaceTracker_passGates
+                                   compares the rider's posX against it */
+    char unk60[0x64 - 0x60];
     f32 z;                      /* 0x64: the gate's course coordinate (world z) */
     char unk68[0x84 - 0x68];
     struct RaceGate *next;      /* 0x84: the next gate along the course */
+    char unk88[0xC8 - 0x88];
+    s32 flags;                  /* 0xC8: bit 0 = pass on the left (cleared when posX <= x; else
+                                   cleared when posX >= x) (RaceTracker_passGates) */
 } RaceGate;
 
 /* ---- course markers (game.uso, the AI path) ----
@@ -233,7 +239,9 @@ COURSE_ASSERT(WorldRegistry, players, 0xC4);
 COURSE_ASSERT(WorldRegistry, numWindows, 0x104);
 COURSE_ASSERT(WorldRegistry, windows, 0x108);
 COURSE_ASSERT_SIZE(CourseItemTmpl, 0xC);
+COURSE_ASSERT(RaceGate, x, 0x5C);
 COURSE_ASSERT(RaceGate, z, 0x64);
+COURSE_ASSERT(RaceGate, flags, 0xC8);
 COURSE_ASSERT(RaceGate, next, 0x84);
 COURSE_ASSERT_SIZE(CourseParm, 0x18);
 COURSE_ASSERT_SIZE(CourseMarkerParms, 0x50);

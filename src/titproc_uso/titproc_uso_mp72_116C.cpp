@@ -44,6 +44,9 @@ typedef struct GuiMenu { char head[0x7C]; int cursor; int locked; GuiRow rows[16
 #define GUIMENU(p) ((GuiMenu *)(p))
 typedef struct RaceEntry { char pad00[0x34]; int finished; } RaceEntry;
 typedef struct DataManager { char pad00[0x44]; RaceEntry *entries; } DataManager;
+/* game/input.h InputMgr (GameFlow, bootup Bss 0xF8) up to unk84 (the picked title-menu row) */
+typedef struct InputMgr { char pad00[0x84]; int unk84; } InputMgr;
+#define INPUT_MGR(sym) (*(InputMgr *)&(sym))
 #define DATAMGR(p) ((DataManager *)(p))
 /* import_00263D30 (game_libs 0x80263D30): the shared 0x18-byte gui sprite table the title overlays draw from
  * (KeyMessage_display +0x0 / +0x18, MainLogo_display +0x60 / +0x78 / +0x90), then a word at +0xA8 that this
@@ -228,7 +231,7 @@ fire:
                 if (1) {}
                 if (GUIMENU(v1)->rows[GUIMENU(v1)->cursor].arg != 0) {
                     ((GuiSpriteTable *)&import_00263D30)->menuOwner = s0;
-                    *(int *)((char *)&import_00020098 + 0x84) = GUIMENU(TITLEDEMO(s0)->menu)->cursor;
+                    INPUT_MGR(import_00020098).unk84 = GUIMENU(TITLEDEMO(s0)->menu)->cursor;
                     v1 = (char *)TITLEDEMO(s0)->menu;
                     if (1) {}
                     GUIMENU(v1)->rows[GUIMENU(v1)->cursor].arg();

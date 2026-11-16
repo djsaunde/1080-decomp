@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/backup.h"
 #include "uso_call.h"
 #include "game/modeproc.h"
 
@@ -159,9 +160,9 @@ void mgr_openSession_00000504(int *a0) {
     CALL(app_setHeapMode)(v1);
     v3 = (int)&D_00000000;
     if (D_00000000 == 0x17D7) {
-        *(int*)((char*)a0[0] + 0x14) = 1;
+        ((BackupSession *)a0[0])->modes = 1;
     } else {
-        *(int*)((char*)a0[0] + 0x14) = 0;
+        ((BackupSession *)a0[0])->modes = 0;
     }
 }
 

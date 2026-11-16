@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/guimenu.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -24,5 +25,5 @@ typedef struct { int a, b, c, d; } Quad4;
  * TRUNCATE_TEXT 0x20 only clips IDO's section pad. Register params keep -O0
  * from homing a0/a1 (102A4 precedent). 8/8 words. */
 void gui_setY_000102F0(char *a0, int a1) {
-    *(float*)(a0 + 0x70) = (float)a1;
+    GUIMENU(a0)->y = (float)a1;
 }

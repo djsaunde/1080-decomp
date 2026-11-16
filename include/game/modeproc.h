@@ -242,12 +242,36 @@ typedef char GameDemoProcess_menu_check[(int)&((GameDemoProcess *)0)->menu == 0x
 
 /* ---- TitleDemoProcess (titproc, alloc 0x78) ----
  * A plain Process (0x50 head, no RaceProcess) with the same overlays as GameDemoProcess. */
+/* The bootup Process head every mode process starts with (Node + vptr; Process_update /
+ * Process_fadeOut_0000F954 / Process_pause_0000F9E8 reach it through an untyped pointer; RaceProcess
+ * in gdl/race.h and TitleDemoProcess below spell the same words). */
+typedef struct ProcessHead {
+    /* 0x00 */ char node[0x28];      /* Node */
+    /* 0x28 */ char *vptr;
+    /* 0x2C */ s32 fadingOut;        /* Process_fadeOut_0000F954 sets 1; Process_update runs vslot 12
+                                      * (+0x68 / +0x6C) while 0, vslot 11 once the fader is done */
+    /* 0x30 */ s32 paused;           /* Process_pause_0000F9E8: 1 (RaceProcess.unk030) */
+    /* 0x34 */ s32 unk34;            /* Process_pause_0000F9E8: 0 */
+    /* 0x38 */ s32 padState;         /* Process_pause_0000F9E8: input_pauseRacePads's return */
+    /* 0x3C */ char unk3C[0x48 - 0x3C];
+    /* 0x48 */ struct GuiMenu *pauseMenu; /* RaceProcess.menu; Process_fadeOut_0000F954 clears its flag 4 */
+    /* 0x4C */ s32 unk4C;
+} ProcessHead;
+
+#define PROCESS(p) ((ProcessHead *)(p))
+
 typedef struct TitleDemoProcess {
-    /* 0x00 */ char process[0x3C];   /* Node / Process head (vptr 0x28) */
+    /* 0x00 */ char process[0x2C];   /* Node / Process head (vptr 0x28) */
+    /* 0x2C */ s32 fadingOut;        /* Process head: Process_fadeOut_0000F954 sets 1; Process_update runs
+                                      * vslot 0x6C while 0, else 0x64. The ctor clears it */
+    /* 0x30 */ char unk30[0x3C - 0x30];
     /* 0x3C */ s32 timer;            /* frames left in the current state: handleInput counts it down;
                                       * state 0 starts at unk6C * 30, state 1 at unk70 * 30 (agent-h run 496) */
     /* 0x40 */ s32 state;            /* TitleDemoProcess_handleInput's switch (the ctor starts at 0 or 1) */
-    /* 0x44 */ char unk44[0x50 - 0x44];
+    /* 0x44 */ s32 unk44;
+    /* 0x48 */ struct GuiMenu *pauseMenu; /* Process head (RaceProcess.menu): Process_fadeOut_0000F954
+                                      * clears its flag 4 when set; the title demo has none (ctor: 0) */
+    /* 0x4C */ s32 unk4C;
     /* 0x50 */ struct RaceTracker *dataMgr; /* plain DataManager (also InputMgr.dataMgr) */
     /* 0x54 */ struct KeyMessage *keyMessage; /* KeyMessage_ctor */
     /* 0x58 */ struct MainLogo *mainLogo;     /* MainLogo_ctor */

@@ -30,6 +30,7 @@
 #include "uso_call.h"
 #include "game/input.h"
 #include "game/envobj.h"
+#include "gdl/polyshape.h"
 
 typedef struct { int w; } S4_55A0;
 typedef struct { f32 x, y, z; } V3_6808;
@@ -222,7 +223,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     FCALL(BasePolyShape_parse)(((char *)p), shapeImport);
     FCALL(memtrack_end)();
     FCALL(memtrack_begin)(&sStr_Colours_7F34, 0);
-    g0 = *(int *)(((char *)p) + 0x40); *(int *)(((char *)p) + 0x50) = FCALL(mem_new)(g0 * 4);
+    g0 = ((BasePolyShape *)p)->nVerts; ((BasePolyShape *)p)->vtxColours = (u32 *)FCALL(mem_new)(g0 * 4);
     FCALL(memtrack_end)();
     FCALL(memtrack_begin)(&sStr_Init_7F3C, 0);
     FCALL(MorphPoly_init)(((char *)p));
@@ -258,7 +259,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
         e4.w = *(int *)&sStr_st0_7F58;
         va = (char *)FCALL(ItemMgr_firstItemOfType)(D_bu_7770, e4, 0);
         if (va != 0) {
-            v4C = *(V3_6808 *)(va + 0x30);
+            v4C = *(V3_6808 *)((ColourSubItem *)va)->pos; /* the st0 / gol item's position */
             ((MapProp *)res)->start[0] = v4C.x;
             ((MapProp *)res)->start[1] = v4C.y;
             ((MapProp *)res)->start[2] = v4C.z;
@@ -270,7 +271,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
         e0.w = *(int *)&sStr_gol_7F64;
         vb = (char *)FCALL(ItemMgr_firstItemOfType)(D_bu_7770, e0, 0);
         if (vb != 0) {
-            v4C = *(V3_6808 *)(vb + 0x30);
+            v4C = *(V3_6808 *)((ColourSubItem *)vb)->pos; /* the st0 / gol item's position */
             ((MapProp *)res)->goal[0] = v4C.x;
             ((MapProp *)res)->goal[1] = v4C.y;
             ((MapProp *)res)->goal[2] = v4C.z;

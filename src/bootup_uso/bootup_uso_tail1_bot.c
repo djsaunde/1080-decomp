@@ -46,7 +46,7 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
  * notes retired: all four 2026-05-08 variants were two-statement forms. */
 void QuitProcess_onQuit(char *a0) {
     register char *p;
-    (*(void(**)())(p + 0x64))(*(short*)((p = NODE(a0)->vptr) + 0x60) + a0);
+    VT_SLOT(p, 11).fn(VT_SLOT(p = NODE(a0)->vptr, 11).delta + a0);
 }
 
 /* PauseMenu_create - verified structural decode (0x208, 130 insns,

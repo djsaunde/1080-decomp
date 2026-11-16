@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/backup.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -27,6 +28,6 @@ void arc_openSession_000005C8(int *a0) {
     a0[0] = s0;
     D_0000014C = s0;
     CALL(app_setHeapMode)(saved);
-    *(int *)((char *)a0[0] + 0x14) = 4;
+    ((BackupSession *)a0[0])->modes = 4;
     D_00000068 = 0;
 }

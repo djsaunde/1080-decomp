@@ -52,6 +52,16 @@ typedef char GuiMenu_cursor_check[(int)&((GuiMenu *)0)->cursor == 0x7C ? 1 : -1]
 typedef char GuiMenu_rowColour_check[(int)&((GuiMenu *)0)->rowColour == 0x5C ? 1 : -1];
 #endif
 
+/* titproc Bss 0 (relocation target of every titproc D_*_A / import_00263D30 site): the shared gui
+ * sprite table KeyMessage / MainLogo draw from (seven 0x18-byte sprites), then the menu owner: the
+ * process that TitleDemoProcess_handleInput / GameDemoProcess_onQuitButton store just before running
+ * the picked row's callback; the tit_menu* row callbacks fade it out (Process_fadeOut_0000F954).
+ * The MIPSpro donor titproc_uso_mp72_116C.cpp keeps its own copy of this layout. */
+typedef struct GuiSpriteTable {
+    /* 0x00 */ char sprites[7][0x18];
+    /* 0xA8 */ char *menuOwner;
+} GuiSpriteTable;
+
 /* Field access through an untyped `char *` / `int *` (the -O0 bodies keep them). */
 #define GUIMENU(p) ((GuiMenu *)(p))
 

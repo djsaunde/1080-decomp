@@ -1,4 +1,6 @@
 #include "common.h"
+#include "gdl/backup.h"
+#include "game/course.h"
 #include "gdl/race.h"
 #include "gdl/gl_data.h"
 #include "game/nameentry.h"
@@ -166,9 +168,9 @@ void trk_openSession_000005A4(int **arg0, int arg1, int arg2) {
     D_0000014C = new_obj;
     gl_func_00000000(handle);
     if (arg1 != 0) {
-        *(int*)((char*)*arg0 + 0x14) = 2;
+        ((BackupSession *)*arg0)->modes = 2;
     } else {
-        *(int*)((char*)*arg0 + 0x14) = 0;
+        ((BackupSession *)*arg0)->modes = 0;
     }
     D_00000068 = 0;
 }
@@ -1262,7 +1264,7 @@ void *TrkItemType_create_000020EC(int *arg0) {
     if (p1 != 0) {
         CALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (char *)&D_00000000;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;
