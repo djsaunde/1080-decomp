@@ -1,5 +1,11 @@
 /* Native original-compiler source port from src/bootup_uso/bootup_uso.c. Target bytes unchanged. */
 #include "context_bootup_uso.h"
+#include "gdl/node.h"
+#include "gdl/pad.h"
+
+/* st->field_800 is the rider's PadCtl (held / pressed / injectPending); the two indirect calls
+ * go through Cfront vtable slots (VT_SLOT): slot 4 of the rider's own vtable (message 9) and
+ * slot 3 of the field_804 / field_840 nodes. */
 void SnowBoarder_update(BootupState *st) {
     char *a0_2, *vt;
     int fl, v0, t5;
@@ -9,17 +15,17 @@ void SnowBoarder_update(BootupState *st) {
     v0 = st->field_A58 & 0x100;
     if (v0 != 0) {
         vt = (char *)st->field_800;
-        if (*(int *)(vt + 0x18) & 0x20) {
+        if (PADCTL(vt)->pressed & 0x20) {
             st->field_A28 ^= 1;
             vt = (char *)*(BootupInput *volatile *)&st->field_800;
         }
         if (st->field_A28 != 0) {
-            if (*(volatile int *)(vt + 0x18) & 0x10) {
+            if (*(volatile int *)&PADCTL(vt)->pressed & 0x10) {
                 v0 = st->field_A58 & 0x100;
                 goto block_9;
             }
         } else {
-            if (*(volatile int *)(vt + 0x18) & 0x10) {
+            if (*(volatile int *)&PADCTL(vt)->pressed & 0x10) {
                 st->field_A58 ^= 4;
             }
             v0 = st->field_A58 & 0x100;
@@ -29,20 +35,20 @@ void SnowBoarder_update(BootupState *st) {
     block_9:
         if (v0 != 0) {
             a0_2 = (char *)st->field_800;
-            if ((!!(*(volatile int *)(a0_2 + 0x10) & 0x80)) & ((*(int *)(a0_2 + 0x10) & 0x40) != 0)) {
+            if ((!!(*(volatile int *)&PADCTL(a0_2)->held & 0x80)) & ((*(int *)&PADCTL(a0_2)->held & 0x40) != 0) /* member form swaps the and operands */) {
                 sp58 = 9;
                 vt = (char *)st->field_28;
-                a0_2 = (char *)(*(short *)(vt + 0x28) + (int)st);
-                (*(void (**)(char *, int *))(vt + 0x2C))(a0_2, &sp58);
+                a0_2 = (char *)(VT_SLOT(vt, 4).delta + (int)st);
+                ((void (*)(char *, int *))VT_SLOT(vt, 4).fn)(a0_2, &sp58);
             }
         }
         if (st->field_A58 & 4) {
             vt = (char *)st->field_800;
-            *(int *)(vt + 0x3C) = 1;
+            PADCTL(vt)->injectPending = 1;
             bootup_D440_062380(bootup_D440_desc1 + 0x5C);
             fl = (int)st->field_804;
-            vt = *(char **)(fl + 0x28);
-            (*(void (**)(char *))(vt + 0x24))((char *)(fl + *(short *)(vt + 0x20)));
+            vt = NODE(fl)->vptr;
+            ((void (*)(char *))VT_SLOT(vt, 3).fn)((char *)(fl + VT_SLOT(vt, 3).delta));
             bootup_D440_062388(bootup_D440_desc2 + 0x64);
         }
         a0_2 = st->field_808;
@@ -52,8 +58,8 @@ void SnowBoarder_update(BootupState *st) {
         bootup_D440_000A94((BootupCodeContextPrefix *)a0_2, st->field_9A4);
         st->field_9A4 = 0;
         fl = (int)st->field_840;
-        vt = *(char **)(fl + 0x28);
-        (*(void (**)(char *))(vt + 0x24))((char *)(fl + *(short *)(vt + 0x20)));
+        vt = NODE(fl)->vptr;
+        ((void (*)(char *))VT_SLOT(vt, 3).fn)((char *)(fl + VT_SLOT(vt, 3).delta));
         st->field_A10 = 0;
         st->field_A1C = 0.0f;
         st->field_A20 = 0.0f;
@@ -72,10 +78,10 @@ void SnowBoarder_update(BootupState *st) {
                 }
                 bootup_D440_000A50(a0_2, st->field_A84);
                 if (st->field_8B8 & 1) {
-                    *(int *)((char *)st->field_81C + 0x94) = st->field_A84;
+                    st->field_81C->field_94 = st->field_A84;
                 }
                 if (st->field_8B8 & 4) {
-                    *(int *)((char *)st->field_818 + 0x94) = st->field_A84;
+                    st->field_818->field_94 = st->field_A84;
                 }
             }
         }
