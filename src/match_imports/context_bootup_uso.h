@@ -1705,7 +1705,7 @@ void boot_readQuadParm_0000E630(char *a0);
 void boot_readIntParm_0000E660(char *a0);
 void *boot_ItemType_create_0000E690(int *arg0);
 void SnowBChild_readParms_0000E720(char *a0);
-void SnowBoarder_grabScreenThumb_0000E740(char *a0, int a1);
+void ScreenThumbMat_grab_0000E740(char *a0, int a1);
 extern char sStr_rom_audio_seq_uso_8D34, sStr_rom_audio_wave_uso_8D48, sStr_rom_audio_bank_uso_8D5C;
 void SnowBoard_ctor(void);
 void stream_readS32_0000E8BC(int *dst);

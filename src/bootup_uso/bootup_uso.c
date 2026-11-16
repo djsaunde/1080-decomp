@@ -6708,7 +6708,7 @@ void SnowBChild_readParms_0000E720(char *a0) {
     FCALL(Parms_load_00035C6C)(a0 + 0x2C);
 }
 
-/* SnowBoarder_grabScreenThumb_0000E740 - verified structural decode (0xB4, 48 insns,
+/* ScreenThumbMat_grab_0000E740 - verified structural decode (0xB4, 48 insns,
  * 2D strided->packed halfword blit / unswizzle).
  * Struct-typing reference: global root *(func_0000023C+4); root->0x28
  * (40) vtable ptr with fn @0x64 (100) + s16 base-adjust @0x60 (96)
@@ -6721,7 +6721,7 @@ void SnowBChild_readParms_0000E720(char *a0) {
  * INCLUDE_ASM remains build path. */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_E740.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116). */
-void SnowBoarder_grabScreenThumb_0000E740(char *a0, int a1) {
+void ScreenThumbMat_grab_0000E740(char *a0, int a1) {
     volatile char *r = a0;
 }
 
