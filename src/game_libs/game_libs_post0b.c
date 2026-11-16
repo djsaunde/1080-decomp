@@ -3977,7 +3977,7 @@ int tag;
     if (tag != NODEMSG_SET_ACTIVE) return;
     goto L2;
 L12:
-    pl = (char *)c->arg;
+    pl = c->arg.payload;
     pv = *(int *)(pl + 0x4);
     flags = &o->doFlags;
     if (pv != 0) {
@@ -3987,24 +3987,24 @@ L12:
     }
     return;
 L13:
-    if (gl_func_00000000((char *)o->name, *(int *)c->arg) == 0) {
-        c->reply = (s32)o;
+    if (gl_func_00000000((char *)o->name, *(int *)c->arg.payload) == 0) {
+        c->reply = o;
     }
     return;
 L14:
-    if (o->serial == *(short *)((char *)c->arg + 0x4)) {
-        c->reply = (s32)o;
+    if (o->serial == *(short *)(c->arg.payload + 0x4)) {
+        c->reply = o;
     }
     return;
 L2:
-    pv = c->arg;
+    pv = c->arg.value;
     flags = &o->doFlags;
     if (pv != 0) {
         *flags |= 0x4;
     } else {
         *flags &= ~0x4;
     }
-    pv = c->arg;
+    pv = c->arg.value;
     if (pv != 0) {
         *flags |= 0x8;
     } else {

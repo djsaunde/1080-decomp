@@ -66,8 +66,11 @@ typedef struct GdlVtEnt {
  * the same when serial == (s16)payload +4; 0x2 sets/clears DoDisplay (0x4) and DoUpdate (0x8). */
 typedef struct NodeMsg {
     /* 0x0 */ s32 tag;
-    /* 0x4 */ s32 arg;             /* an int, or a pointer to the tag's payload */
-    /* 0x8 */ s32 reply;           /* the answering Node (find tags 0xD / 0xE) */
+    /* 0x4 */ union {
+        s32 value;                 /* NODEMSG_SET_ACTIVE: the on / off flag */
+        char *payload;             /* SET_FLAG80 / FIND_NAME / FIND_SERIAL: the tag's payload */
+    } arg;
+    /* 0x8 */ Node *reply;         /* the answering Node (find tags 0xD / 0xE) */
 } NodeMsg;
 
 #define NODEMSG_SET_ACTIVE  0x2    /* arg != 0: set DoDisplay | DoUpdate, else clear both */
