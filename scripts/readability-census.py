@@ -3,6 +3,8 @@
 
   scripts/readability-census.py [--no-build] [--write [PLAN.md]] [--top N]
   scripts/readability-census.py [--no-build] --unjustified [--owner X]   (file:line function list)
+  scripts/readability-census.py [--no-build] --unnamed-unjustified [--kind calls|functions|globals]
+      (file:line name list of the unnamed placeholders without an `UNNAMED:` tag)
   scripts/readability-census.py [--no-build] --by-reason [--list KEYWORD [--owner X]]
       (justified sites per RAW: keyword per owner; --list prints one keyword's sites as file:line function)
 
@@ -35,6 +37,15 @@ Measures (per segment = src/<segment>/ or the report.json unit's segment):
     nm-only (a NON_MATCHING reference body), donor-mirror (a C++ donor that cannot include the
     header). Raw total / justified / UNJUSTIFIED per owner and per file; --unjustified lists the
     unjustified sites as `file:line function` (--owner X narrows to one owner).
+  * Naming (run 594): placeholder calls left, placeholder / weak function names and `D_` globals,
+    each named / justified / UNJUSTIFIED. An unnamed one is justified when its line, or the line
+    just above it (or the comment that line closes), carries `UNNAMED: <keyword> <reason>` with
+    keyword one of no-reloc (the call has no relocation to resolve), sentinel (an address-0
+    placeholder that must stay), data-base (a symbol that doubles as a USO data base),
+    unknown-role (the evidence does not determine a name), mid-entry (the callee is an entry
+    point inside a build function, `f+0xK`, with no symbol of its own; say which). The line is
+    the call site's, the function definition's name line, or for a `D_` global any compiled line
+    that spells it (its extern / definition). --unnamed-unjustified lists the rest.
   * Globals: distinct `D_<8 hex>` names (not the D_00000000 sentinels) in compiled code.
   * Headers: include/ headers and the struct / union / class definitions in them.
   * Dead code: never-compiled `#if 0` / undefined-macro blocks (scripts/deadblocks.py).
@@ -256,14 +267,16 @@ def raw_offset_sites(code, acc_re):
 
 RAW_KEYWORDS = ('byte-lock', 'data-table', 'unknown-object', 'nm-only', 'donor-mirror')
 RAW_TAG = re.compile(r'\bRAW:\s*(' + '|'.join(RAW_KEYWORDS) + r')\b')
+UNNAMED_KEYWORDS = ('no-reloc', 'sentinel', 'data-base', 'unknown-role', 'mid-entry')
+UNNAMED_TAG = re.compile(r'\bUNNAMED:\s*(' + '|'.join(UNNAMED_KEYWORDS) + r')\b')
 
 
-def justified_lines(src):
+def justified_lines(src, tag=RAW_TAG):
     """{1-based line: keyword} for the lines whose raw sites are justified: a `RAW: <keyword>` tag on the
     line itself, or on the line just above (when that line closes a multi-line comment, anywhere
     in that comment)."""
     lines = src.split('\n')
-    tagged = [(RAW_TAG.search(ln) or None) and RAW_TAG.search(ln).group(1) for ln in lines]
+    tagged = [(tag.search(ln) or None) and tag.search(ln).group(1) for ln in lines]
     # a multi-line /* ... */ comment carries its tag to its closing line
     in_c, start = False, 0
     for i, ln in enumerate(lines):
@@ -384,6 +397,43 @@ def data_sites(compiled):
                 left_obj=left_obj, left_base=left_base)
 
 
+def naming(un_calls, fn_defs, d_lines, calls):
+    """-> (dashboard rows, [(kind, file, line, what)] unjustified) for calls / functions / globals."""
+    unj = []
+    named_calls = sum(c['named'] for c in calls.values())
+    cj = sum(1 for x in un_calls if x[4])
+    unj += [('calls', p, ln, f'{f}: {tok}') for p, ln, f, tok, k in un_calls if not k]
+    r = json.load(open('report.json'))
+    segs = sorted({u['name'].split('/')[1] for u in r['units'] if u['name'].count('/') >= 2})
+    prefixes = set(segs) | {s.replace('_uso', '') for s in segs} | {'gl', 'game_libs', 'gui'}
+    fcls = collections.Counter()
+    fj = 0
+    for u in r['units']:
+        for f in u.get('functions', []):
+            name = NPC.current_name(f['name']) or f['name']
+            c = fn_class(name, prefixes)
+            fcls[c] += 1
+            if c in ('placeholder', 'weak'):
+                ds = fn_defs.get(name, [])
+                if any(k for _, _, k in ds):
+                    fj += 1
+                else:
+                    d = next((x for x in ds if not x[0].startswith('src/match_imports/')), ds[0] if ds else None)
+                    unj.append(('functions', d[0] if d else '?', d[1] if d else 0, f'{name} ({c})'))
+    fun = fcls['placeholder'] + fcls['weak']
+    gj = 0
+    for nm, occ in sorted(d_lines.items()):
+        if any(k for _, _, k in occ):
+            gj += 1
+        else:
+            p, ln, _ = occ[0]
+            unj.append(('globals', p, ln, nm))
+    rows = [('placeholder calls', named_calls, len(un_calls), cj, len(un_calls) - cj),
+            ('placeholder / weak functions', fcls['real'], fun, fj, fun - fj),
+            ('`D_` globals', '-', len(d_lines), gj, len(d_lines) - gj)]
+    return rows, sorted(unj)
+
+
 def docs():
     out = []
     for p in sorted(glob.glob(os.path.join(DOCS, '1080_*.md'))) + \
@@ -434,6 +484,9 @@ def main():
     reasons = []                             # (file, line, function, owner, keyword) justified sites
     seg_off = collections.defaultdict(collections.Counter)
     dnames = collections.defaultdict(set)
+    un_calls = []                            # (file, line, function, token, keyword or None)
+    fn_defs = {}                             # function name -> [(file, line, keyword or None)] definitions
+    d_lines = collections.defaultdict(list)  # D_ name -> [(file, line, keyword or None)]
     spell = collections.Counter()
     for p in compiled:
         src = open(p, errors='replace').read()
@@ -442,8 +495,21 @@ def main():
         seg = segment_of(p)
         # address tokens (game_uso_func_055750(...)) are placeholder calls too (run 520)
         sites, _ = NPC.scan(live, m, extra=NPC.addr_tokens(p))
+        unl = justified_lines(src, UNNAMED_TAG)
         for s in sites:
             calls[seg]['named' if s.name else 'left'] += 1
+            if not s.name:
+                ln = src.count('\n', 0, s.pos) + 1
+                un_calls.append((p, ln, s.func, s.tok, unl.get(ln)))
+        for op, cl, nm in block_names(m):
+            k = m.rfind(nm.split('::')[-1], 0, op)
+            if k >= 0 and not nm.startswith('<'):
+                ln = src.count('\n', 0, k) + 1
+                fn_defs.setdefault(nm.split('::')[-1], []).append((p, ln, unl.get(ln)))
+        for mm in D_NAME.finditer(m):
+            if mm.group(1) != '00000000':
+                ln = src.count('\n', 0, mm.start()) + 1
+                d_lines[mm.group(0)].append((p, ln, unl.get(ln)))
         # C code without the preprocessor lines (masked), but keep string text out too
         cpos, apos = raw_offset_sites(m, acc_re)
         nc, na = len(cpos), len(apos)
@@ -478,6 +544,15 @@ def main():
             spell['salias'] += len(STR_ALIAS.findall(m))
             spell['kro'] += len(KRO.findall(m))
             spell['raw'] += len(RAW_BASE.findall(m))
+
+    nm_rows, nm_unj = naming(un_calls, fn_defs, d_lines, calls)
+    if '--unnamed-unjustified' in args:
+        kind = args[args.index('--kind') + 1] if '--kind' in args else None
+        rows = [r for r in nm_unj if kind is None or r[0] == kind]
+        for k, p, ln, what in rows:
+            print(f'{p}:{ln} {what} [{k}]')
+        print(f'{len(rows)} unjustified unnamed ' + (kind or 'calls / functions / globals'), file=sys.stderr)
+        return
 
     if '--by-reason' in args:
         # justified raw sites per RAW: keyword per owner (run 582); --list KEY [--owner X] lists them
@@ -581,6 +656,14 @@ def main():
     L += ['', f'Files with unjustified raw sites: {len(jf)} (top {top}):', '']
     L += tbl(['file', 'owner', 'raw total', 'justified', 'UNJUSTIFIED'],
              [(f'`{p}`', owner(p, ''), c['raw'], c['just'], c['raw'] - c['just']) for p, c in jf[:top]])
+    L += ['', '### Naming: unnamed placeholders (`UNNAMED:` tags)', '',
+          'An unnamed call / function / `D_` global is justified when its line (call site, definition name '
+          'line, or any line spelling the global), or the line just above it, carries `UNNAMED: <keyword> <reason>`; '
+          'keywords: ' + ', '.join(f'`{k}`' for k in UNNAMED_KEYWORDS) + ' (docs/READABILITY_AGENT_RULES.md). '
+          '`scripts/readability-census.py --no-build --unnamed-unjustified [--kind calls|functions|globals]` lists the rest. '
+          'Functions: placeholder + weak names (report.json, current names); one with no compiled definition '
+          'found counts as unjustified.', '']
+    L += tbl(['category', 'named', 'unnamed', 'justified', 'UNJUSTIFIED'], nm_rows)
     L += ['', '### Headers', '']
     L += tbl(['include/ dir', 'headers', 'struct/union/class defs'],
              [(f'`{d}`', hdr[d], nstruct[d]) for d in sorted(hdr)] +
