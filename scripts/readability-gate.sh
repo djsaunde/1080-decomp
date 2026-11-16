@@ -14,7 +14,9 @@
 #   then writes the regenerated report.json into the tree (commit it with the batch).
 #   5. source checks: name-placeholder-calls.py check (every CALL(X) names a ROM
 #      callee of its function) and uso-data-sites.py check (alias / GL_* claims,
-#      plus the plain-base-site ratchet that catches a merge dropping a GL_DATA_STR).
+#      plus the plain-base-site ratchet that catches a merge dropping a GL_DATA_STR),
+#      and gameflow-import-sites.py check (every INPUT_MGR(tok) token's relocs target
+#      GameFlow, bootup Bss 0xF8, in the ROM).
 #
 # REF defaults to HEAD (the last committed report.json). Scratch: $GATE_TMP
 # (default /tmp/claude-$UID/readability-gate-<worktree dir name>, private per
@@ -122,10 +124,12 @@ if [[ $WRITE == 1 ]]; then
     cp "$TMP/report.new.json" report.json
     echo "    report.json refreshed"
 fi
-echo ">>> [5/5] source checks: named placeholder calls, data-site aliases"
+echo ">>> [5/5] source checks: named placeholder calls, data-site aliases, GameFlow imports"
 # both re-exec under the repo .venv (pyelftools, crunch64); ~5 s on the fresh build
 python3 scripts/name-placeholder-calls.py check > "$TMP/calls.log" 2>&1 || { grep -v '^check:' "$TMP/calls.log" | head -20; fail "name-placeholder-calls.py check (see $TMP/calls.log)"; }
 tail -1 "$TMP/calls.log" | sed 's/^/    /'
 python3 scripts/uso-data-sites.py --no-build check > "$TMP/datasites.log" 2>&1 || { grep -E 'MISMATCH|Error|error' "$TMP/datasites.log" | head -20; fail "uso-data-sites.py check (see $TMP/datasites.log)"; }
 echo "    uso-data-sites check: 0 mismatches ($(grep -c '' "$TMP/datasites.log") lines)"
+python3 scripts/gameflow-import-sites.py check > "$TMP/gameflow.log" 2>&1 || { grep -v '^check:' "$TMP/gameflow.log" | head -20; fail "gameflow-import-sites.py check (see $TMP/gameflow.log)"; }
+tail -1 "$TMP/gameflow.log" | sed 's/^/    /'
 echo "GATE PASS"
