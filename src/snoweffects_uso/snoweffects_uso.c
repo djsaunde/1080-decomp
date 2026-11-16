@@ -864,6 +864,11 @@ void snoweffects_uso_func_00006420(SnowEffect *this) {
     this->unk1A8 = 0;
 }
 
+/* 0x64B8: spawn update of effect A (flag bit 0): burst / timer gating, a direction from the +0x30-matrix
+ * point minus +0x138 (normalized, scaled, plus the camera +0x318 lean) and per-particle pool spawns.
+ * NM draft (not spliced) in src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e run 664, 91.6 %,
+ * 406 words vs 404: the lerped spawn point is reloaded where the target forwards it, and the edg Vec3
+ * temporaries sit 4..24 bytes off the target's slots, frame 336 vs 344). */
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000064B8);
 
 void snoweffects_uso_func_00006B08(char *a0) {
@@ -918,7 +923,14 @@ void snoweffects_uso_func_000078E8(char *this, int a1, int a2, int a3, int a4, i
  * points +0x120 / +0x12C through the +0x30 matrix). NM: an NCC draft at 212 / 219 words (frame exact
  * since run 659; only the zero / |speed| FP colour swap is left) is kept in
  * ncc_drafts/snoweffects_nm_e.cpp (agent-e runs 650 / 653 / 659). */
+#ifdef NON_MATCHING
+/* NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e run 664, 99.7 %), spliced over
+ * this placeholder on the non_matching build. */
+void snoweffects_uso_func_00007960(void) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007960);
+#endif
 
 void snoweffects_uso_func_00007CCC(char *a0) {
     int tag;
