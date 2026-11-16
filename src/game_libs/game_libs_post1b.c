@@ -1113,7 +1113,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u1;
                 if ((m = base + 0x8) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_1;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_1;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =0.0f;
                 }
@@ -1123,7 +1123,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u2;
                 if ((m = base + 0x20) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_2;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_2;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =kRo_DNode_ctor_20D4;
                 }
@@ -1133,7 +1133,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u3;
                 if ((m = base + 0x38) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_3;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_3;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =100.0f;
                 }
@@ -1143,7 +1143,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u4;
                 if ((m = base + 0x50) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_4;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_4;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =0.0f;
                 }
@@ -1153,7 +1153,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u5;
                 if ((m = base + 0x68) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_5;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_5;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =kRo_DNode_ctor_20D8;
                 }
@@ -1163,7 +1163,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u6;
                 if ((m = base + 0x80) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_6;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_6;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =0.0f;
                 }
@@ -1173,7 +1173,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u7;
                 if ((m = base + 0x98) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_7;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_7;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =kRo_DNode_ctor_20DC;
                 }
@@ -1183,7 +1183,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u8;
                 if ((m = base + 0xB0) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_8;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_8;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =kRo_DNode_ctor_20E0;
                 }
@@ -1193,7 +1193,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u9;
                 if ((m = base + 0xC8) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_9;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_9;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =1.0f;
                 }
@@ -1223,7 +1223,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u10;
                 if ((m = base + 0x100) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_10;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_10;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =0.0f;
                 }
@@ -1233,7 +1233,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u11;
                 if ((m = base + 0x118) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_11;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_11;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =1.0f;
                 }
@@ -1243,7 +1243,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u12;
                 if ((m = base + 0x130) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_12;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_12;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =420.0f;
                 }
@@ -1253,7 +1253,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u13;
                 if ((m = base + 0x148) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_13;
+                    PARMF(m)->type = &gl_ref_000221D8_64588_13;
                     PARMF(m)->unk14 = 0;
                     PARMF(m)->value =150.0f;
                 }

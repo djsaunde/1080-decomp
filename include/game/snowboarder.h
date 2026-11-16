@@ -15,7 +15,7 @@ typedef struct AnimPose {
 } AnimPose;
 typedef struct GdlParmF {
     char head[0xC];
-    s32 type;
+    void *type;   /* as include/gdl/gadget.h */
     f32 value;
     s32 unk14;
 } GdlParmF;

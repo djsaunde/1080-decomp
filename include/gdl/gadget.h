@@ -11,14 +11,14 @@
  * (agent-h run 507). */
 typedef struct GdlParm {
     /* 0x00 */ char head[0xC];      /* filled by the parm base ctor */
-    /* 0x0C */ s32 type;            /* parm type vtable */
+    /* 0x0C */ void *type;          /* parm type vtable */
     /* 0x10 */ s32 value;
     /* 0x14 */ s32 unk14;           /* 0 */
 } GdlParm;
 
 typedef struct GdlParmF {
     /* 0x00 */ char head[0xC];
-    /* 0x0C */ s32 type;            /* the float parm type (Data 0xC83C) */
+    /* 0x0C */ void *type;          /* the float parm type (Data 0xC83C) */
     /* 0x10 */ f32 value;
     /* 0x14 */ s32 unk14;
 } GdlParmF;
@@ -29,7 +29,7 @@ typedef char GdlParm_size_check[sizeof(GdlParm) == 0x18 ? 1 : -1];
  * writes it first (on self, or on a fresh mem_new(8) when self is NULL), then builds its parms
  * after it (agent-h run 524). */
 typedef struct GdlParms {
-    /* 0x00 */ s32 name;            /* "<Class>::Parms" string */
+    /* 0x00 */ const char *name;    /* "<Class>::Parms" string */
     /* 0x04 */ s32 unk04;           /* 0 */
 } GdlParms;
 
@@ -39,7 +39,7 @@ typedef struct GdlParms {
  * sets the label offsets (TimeGadgetParms_setLabelPos_00013FEC: TimeGadget -78, -1, -51, 0).
  * CoolGadgetParms_ctor builds the same six tags (Data 0xCC38). */
 typedef struct TimeGadgetParms {
-    /* 0x00 */ s32 name;            /* "TimeGadget::Parms" */
+    /* 0x00 */ const char *name;    /* "TimeGadget::Parms" */
     /* 0x04 */ s32 unk04;           /* 0 */
     /* 0x08 */ GdlParm xps;         /* screen x of the text */
     /* 0x20 */ GdlParm yps;         /* screen y of the text */
@@ -54,7 +54,7 @@ typedef char TimeGadgetParms_size_check[sizeof(TimeGadgetParms) == 0x98 ? 1 : -1
 /* "TimeGadget::Parms" for the CountDownGadget (0x68, Data 0xCB60; game_libs.c
  * TimeGadgetParms_ctor): xps / yps and the shadow offset shx / shy (defaults 30, 30, 4, -2). */
 typedef struct CountDownParms {
-    /* 0x00 */ s32 name;
+    /* 0x00 */ const char *name;
     /* 0x04 */ s32 unk04;
     /* 0x08 */ GdlParm xps;
     /* 0x20 */ GdlParm yps;
@@ -82,8 +82,8 @@ typedef struct Gadget {
     /* 0x0DC */ s32 labelAlpha;     /* 0x82 in every ctor: label1 alpha */
     /* 0x0E0 */ s32 font;           /* the ctor's second argument: draws text */
     /* 0x0E4 */ char text[0x20];    /* sprintf target of the *_set<Value> methods */
-    /* 0x104 */ s32 label1;         /* = &sprite1 (TimeGadgetParms_set104_00014004 arg 1) */
-    /* 0x108 */ s32 label2;         /* = &sprite0 */
+    /* 0x104 */ char *label1;       /* = &sprite1 (TimeGadgetParms_set104_00014004 arg 1) */
+    /* 0x108 */ char *label2;       /* = &sprite0 */
     /* 0x10C */ char sprite0[0x18]; /* sprite sub-object (import ctor, id 0x5000x) */
     /* 0x124 */ char sprite1[0x18]; /* second sprite sub-object */
 } Gadget;
@@ -151,7 +151,7 @@ typedef char CountDownGadget_size_check[sizeof(CountDownGadget) == 0xD4 ? 1 : -1
  * parms xps / yps (tags "xps" / "yps" = sFloatParmsTags_CAE8[1] / [2], default 30). PointsPopup's
  * screen position (agent-h run 509). */
 typedef struct FloatPosParms {
-    /* 0x00 */ s32 name;            /* "TimeGadget::Parms" */
+    /* 0x00 */ const char *name;    /* "TimeGadget::Parms" */
     /* 0x04 */ s32 unk04;           /* 0 */
     /* 0x08 */ GdlParmF xps;
     /* 0x20 */ GdlParmF yps;
@@ -239,8 +239,8 @@ typedef struct CoolGadget {
     /* 0x118 */ GadgetRGBA pulseHi;
     /* 0x128 */ f32 phase;          /* += step, three times per frame */
     /* 0x12C */ f32 step;           /* 0.18 */
-    /* 0x130 */ s32 label1;         /* CoolGadget_setLabels_000017F4 arg 1 (&label1Sprite) */
-    /* 0x134 */ s32 label2;         /* arg 2 (&label2Sprite) */
+    /* 0x130 */ char *label1;       /* CoolGadget_setLabels_000017F4 arg 1 (&label1Sprite) */
+    /* 0x134 */ char *label2;       /* arg 2 (&label2Sprite) */
     /* 0x138 */ char barSprite[0x18];   /* id 0x5000A: the lit bar (+0x10 image, +0x20 width) */
     /* 0x150 */ char capSprite[0x18];   /* id 0x50009: the bar end */
     /* 0x168 */ char label1Sprite[0x18]; /* id 0x5001C */
@@ -315,7 +315,7 @@ typedef struct GdlParmRGBA {
  * (one case per course id) rewrites the eight mx0 .. gy0 values. hud_findMarkers maps world
  * x / z into the map box at (xps + mx0, yps + my0) with the scale my1 - my0. */
 typedef struct CourseGadgetParms {
-    /* 0x000 */ s32 name;           /* "CourseGadget::Parms" */
+    /* 0x000 */ const char *name;   /* "CourseGadget::Parms" */
     /* 0x004 */ s32 unk04;
     /* 0x008 */ GdlParm xps;        /* screen x of the gadget */
     /* 0x020 */ GdlParm yps;

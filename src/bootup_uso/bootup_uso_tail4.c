@@ -334,7 +334,7 @@ char *TimeGadget_ctor_00013D40(char *self) {
     Val13D40 t2;
     if (self != 0 || (self = (char *)FCALL(mem_new)(0x98)) != 0) {
         if ((p2 = self) != 0 || (p2 = (char *)FCALL(mem_new)(8)) != 0) {
-            TGPARMS(p2)->name = (s32)&sStr_TimeGadget_Parms_CAAC;
+            TGPARMS(p2)->name = &sStr_TimeGadget_Parms_CAAC;
             TGPARMS(p2)->unk04 = 0;
         }
         u1.v = sTag_xps_CAC0;
@@ -391,8 +391,8 @@ void TimeGadgetParms_setLabelPos_00013FEC(char *a0, int a1, int a2, int a3, int 
 }
 
 void TimeGadgetParms_set104_00014004(char *a0, int a1, int a2) {
-    GADGET(a0)->label1 = a1;
-    GADGET(a0)->label2 = a2;
+    GADGET(a0)->label1 = (char *)a1;
+    GADGET(a0)->label2 = (char *)a2;
 }
 
 /* Gadget_flipDigits_00014010 - verified structural decode (0xB4, 45 insns,

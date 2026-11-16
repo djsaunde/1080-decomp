@@ -242,7 +242,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
         if (((arg0 != (void *)-0x3EC) || ((var_s0 = FCALL(mem_new)(0x154)) != 0)) && ((FCALL(Node_ctor)(var_s0, &sStr_Node_8738), NODE(var_s0)->vptr = (char *)&D_00008108, var_s1 = var_s0 + 0x2C, (var_s0 != (void *)-0x2C)) || (temp_v0_5 = FCALL(mem_new)(0x128), var_s1 = temp_v0_5, (temp_v0_5 != 0)))) {
             var_a2 = (s32)var_s1;
             if ((var_s1 != 0) || (temp_v0_5 = FCALL(mem_new)(8), var_a2 = (s32)temp_v0_5, (temp_v0_5 != 0))) {
-                PARMS(var_a2)->name = (s32) &sStr_Parms_8740;
+                PARMS(var_a2)->name = &sStr_Parms_8740;
                 PARMS(var_a2)->unk04 = 0;
             }
             sp144.w = *(s32 *)(GL_DATA_STR(0x8748, "ied"));
@@ -250,7 +250,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp144;
             if ((var_s1 != (void *)-8) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = (s32) &D_00008018;
+                PARMF(sp108)->type = &D_00008018;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = kRo_SnowBoarder_ctor_868;
             }
@@ -259,7 +259,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp140;
             if ((var_s1 != (void *)-0x20) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = (s32) &D_00008018_s02;
+                PARMF(sp108)->type = &D_00008018_s02;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = kRo_SnowBoarder_ctor_86C;
             }
@@ -268,7 +268,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp13C;
             if ((var_s1 != (void *)-0x38) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = (s32) &D_00008018_s03;
+                PARMF(sp108)->type = &D_00008018_s03;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = 2.0f;
             }
@@ -277,7 +277,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp138;
             if ((var_s1 != (void *)-0x50) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = (s32) &D_00008018_s04;
+                PARMF(sp108)->type = &D_00008018_s04;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = kRo_SnowBoarder_ctor_870;
             }
@@ -286,7 +286,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp134;
             if ((var_s1 != (void *)-0x68) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = (s32) &D_00008018_s05;
+                PARMF(sp108)->type = &D_00008018_s05;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = kRo_SnowBoarder_ctor_874;
             }
@@ -295,7 +295,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp130;
             if ((var_s1 != (void *)-0x80) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = (s32) &D_00008018_s06;
+                PARMF(sp108)->type = &D_00008018_s06;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = kRo_SnowBoarder_ctor_878;
             }
@@ -304,7 +304,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp12C;
             if ((var_s1 != (void *)-0x98) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = (s32) &D_00008018_s07;
+                PARMF(sp108)->type = &D_00008018_s07;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = kRo_SnowBoarder_ctor_87C;
             }
@@ -313,7 +313,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp128;
             if ((var_s1 != (void *)-0xB0) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = (s32) &D_00008018_s08;
+                PARMF(sp108)->type = &D_00008018_s08;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = 0.0f;
             }
@@ -322,7 +322,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp124;
             if ((var_s1 != (void *)-0xC8) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = (s32) &D_00008018_s09;
+                PARMF(sp108)->type = &D_00008018_s09;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = kRo_SnowBoarder_ctor_880;
             }
@@ -331,7 +331,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp120;
             if ((var_s1 != (void *)-0xE0) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = (s32) &D_00008018_s10;
+                PARMF(sp108)->type = &D_00008018_s10;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = 1.0f;
             }
@@ -340,7 +340,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp11C;
             if ((var_s1 != (void *)-0xF8) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = (s32) &D_00008018_s11;
+                PARMF(sp108)->type = &D_00008018_s11;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = 1.0f;
             }
@@ -349,7 +349,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp118;
             if ((var_s1 != (void *)-0x110) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = (s32) &D_00008018_s12;
+                PARMF(sp108)->type = &D_00008018_s12;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = 1.0f;
             }
@@ -358,7 +358,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
         if ((arg0 != (void *)-0x540) || (temp_v0_5 = FCALL(mem_new)(0x2C0), var_s0 = temp_v0_5, (temp_v0_5 != 0))) {
             var_s1 = var_s0;
             if ((var_s0 != 0) || (temp_v0_5 = FCALL(mem_new)(8), var_s1 = temp_v0_5, (temp_v0_5 != 0))) {
-                PARMS(var_s1)->name = (s32) &sStr_SnowBoarder_Parms_8778;
+                PARMS(var_s1)->name = &sStr_SnowBoarder_Parms_8778;
                 PARMS(var_s1)->unk04 = 0;
             }
             sp100.w = *(s32 *)(GL_DATA_STR(0x878C, "hpf"));
@@ -366,7 +366,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp100;
             if ((var_s0 != (void *)-8) || (temp_v0_5 = FCALL(mem_new)(0x18), sp8C = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp8C, var_s0, sp104, 1);
-                PARMF(sp8C)->type = (s32) &D_00008018_s13;
+                PARMF(sp8C)->type = &D_00008018_s13;
                 PARMF(sp8C)->unk14 = 0;
                 PARMF(sp8C)->value = kRo_SnowBoarder_ctor_884;
             }
@@ -376,7 +376,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spFC;
             if ((var_s0 != (void *)-0x20) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s14;
+                PARMF(sp80)->type = &D_00008018_s14;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 1.0f;
             }
@@ -385,7 +385,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spF8;
             if ((var_s0 != (void *)-0x38) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s15;
+                PARMF(sp80)->type = &D_00008018_s15;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 1.0f;
             }
@@ -394,7 +394,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spF4;
             if ((var_s0 != (void *)-0x50) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s16;
+                PARMF(sp80)->type = &D_00008018_s16;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 1.0f;
             }
@@ -403,7 +403,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spF0;
             if ((var_s0 != (void *)-0x68) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s17;
+                PARMF(sp80)->type = &D_00008018_s17;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 1.0f;
             }
@@ -412,7 +412,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spEC;
             if ((var_s0 != (void *)-0x80) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s18;
+                PARMF(sp80)->type = &D_00008018_s18;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 1.0f;
             }
@@ -421,7 +421,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spE8;
             if ((var_s0 != (void *)-0x98) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s19;
+                PARMF(sp80)->type = &D_00008018_s19;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 1.0f;
             }
@@ -430,7 +430,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spE4;
             if ((var_s0 != (void *)-0xB0) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s20;
+                PARMF(sp80)->type = &D_00008018_s20;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = kRo_SnowBoarder_ctor_888;
             }
@@ -439,7 +439,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spE0;
             if ((var_s0 != (void *)-0xC8) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s21;
+                PARMF(sp80)->type = &D_00008018_s21;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = kRo_SnowBoarder_ctor_88C;
             }
@@ -448,7 +448,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spDC;
             if ((var_s0 != (void *)-0xE0) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s22;
+                PARMF(sp80)->type = &D_00008018_s22;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = kRo_SnowBoarder_ctor_890;
             }
@@ -457,7 +457,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spD8;
             if ((var_s0 != (void *)-0xF8) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s23;
+                PARMF(sp80)->type = &D_00008018_s23;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 1.0f;
             }
@@ -466,7 +466,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spD4;
             if ((var_s0 != (void *)-0x110) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s24;
+                PARMF(sp80)->type = &D_00008018_s24;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = kRo_SnowBoarder_ctor_894;
             }
@@ -475,7 +475,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spD0;
             if ((var_s0 != (void *)-0x128) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s25;
+                PARMF(sp80)->type = &D_00008018_s25;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = kRo_SnowBoarder_ctor_898;
             }
@@ -484,7 +484,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spCC;
             if ((var_s0 != (void *)-0x140) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s26;
+                PARMF(sp80)->type = &D_00008018_s26;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = kRo_SnowBoarder_ctor_89C;
             }
@@ -493,7 +493,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spC8;
             if ((var_s0 != (void *)-0x158) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s27;
+                PARMF(sp80)->type = &D_00008018_s27;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = kRo_SnowBoarder_ctor_8A0;
             }
@@ -502,7 +502,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spC4;
             if ((var_s0 != (void *)-0x170) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s28;
+                PARMF(sp80)->type = &D_00008018_s28;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 0.0f;
             }
@@ -511,7 +511,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spC0;
             if ((var_s0 != (void *)-0x188) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s29;
+                PARMF(sp80)->type = &D_00008018_s29;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 0.0f;
             }
@@ -520,7 +520,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spBC;
             if ((var_s0 != (void *)-0x1A0) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s30;
+                PARMF(sp80)->type = &D_00008018_s30;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = kRo_SnowBoarder_ctor_8A4;
             }
@@ -529,7 +529,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spB8;
             if ((var_s0 != (void *)-0x1B8) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s31;
+                PARMF(sp80)->type = &D_00008018_s31;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = kRo_SnowBoarder_ctor_8A8;
             }
@@ -538,7 +538,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spB4;
             if ((var_s0 != (void *)-0x1D0) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s32;
+                PARMF(sp80)->type = &D_00008018_s32;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = kRo_SnowBoarder_ctor_8AC;
             }
@@ -547,7 +547,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spB0;
             if ((var_s0 != (void *)-0x1E8) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARM(sp80)->type = (s32) &D_00008060; PARM(sp80)->value = 0x19;
+                PARM(sp80)->type = &D_00008060; PARM(sp80)->value = 0x19;
                 PARM(sp80)->unk14 = 0;
             }
             spAC.w = *(s32 *)(GL_DATA_STR(0x87E0, "min"));
@@ -555,7 +555,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spAC;
             if ((var_s0 != (void *)-0x200) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s33;
+                PARMF(sp80)->type = &D_00008018_s33;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 50.0f;
             }
@@ -564,7 +564,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spA8;
             if ((var_s0 != (void *)-0x218) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s34;
+                PARMF(sp80)->type = &D_00008018_s34;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 150.0f;
             }
@@ -573,7 +573,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spA4;
             if ((var_s0 != (void *)-0x230) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s35;
+                PARMF(sp80)->type = &D_00008018_s35;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 100.0f;
             }
@@ -582,7 +582,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spA0;
             if ((var_s0 != (void *)-0x248) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s36;
+                PARMF(sp80)->type = &D_00008018_s36;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 100.0f;
             }
@@ -591,7 +591,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = sp9C;
             if ((var_s0 != (void *)-0x260) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s37;
+                PARMF(sp80)->type = &D_00008018_s37;
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 0.0f;
             }
@@ -600,7 +600,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = sp98;
             if ((var_s0 != (void *)-0x278) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARM(sp80)->type = (s32) &D_00008060_s2; PARM(sp80)->value = 0xA;
+                PARM(sp80)->type = &D_00008060_s2; PARM(sp80)->value = 0xA;
                 PARM(sp80)->unk14 = 0;
             }
             sp94.w = *(s32 *)(GL_DATA_STR(0x87F8, "cdm"));
@@ -608,7 +608,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = sp94;
             if ((var_s0 != (void *)-0x290) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARM(sp80)->type = (s32) &D_00008060_s3; PARM(sp80)->value = 0xF;
+                PARM(sp80)->type = &D_00008060_s3; PARM(sp80)->value = 0xF;
                 PARM(sp80)->unk14 = 0;
             }
             sp90.w = *(s32 *)(GL_DATA_STR(0x87FC, "tch"));
@@ -616,7 +616,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = sp90;
             if ((var_s0 != (void *)-0x2A8) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARMF(sp80)->type = (s32) &D_00008018_s38 + 0 * (int)(arg2); /* agent-c run 212: folded counted use (zero code) */
+                PARMF(sp80)->type = &D_00008018_s38 + 0 * (int)(arg2); /* agent-c run 212: folded counted use (zero code) */
                 PARMF(sp80)->unk14 = 0;
                 PARMF(sp80)->value = 1.0f;
             }
