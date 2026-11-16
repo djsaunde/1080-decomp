@@ -5706,3 +5706,4 @@ func_80004DB8 = 0x80004DB8;  /* kernel call/address alias: jal/%hi targets are r
 func_80007FC8 = 0x80007FC8;  /* kernel call/address alias: jal/%hi targets are runtime addresses (= link + 0x400), so this is the function 0x400 below; the symbol linked at 0x80007FC8 is now __rmonPanic */
 func_80008430 = 0x80008430;  /* kernel call/address alias: jal/%hi targets are runtime addresses (= link + 0x400), so this is the function 0x400 below; the symbol linked at 0x80008430 is now __rmonClearBreak */
 func_80009148 = 0x80009148;  /* kernel call/address alias: jal/%hi targets are runtime addresses (= link + 0x400), so this is the function 0x400 below; the symbol linked at 0x80009148 is now __rmonGetFRegisters */
+gl_func_00000000_snow_hit = 0x00000000;  /* CollShape_nearestHit (snoweffects 0x52D4, typed blank jal) */

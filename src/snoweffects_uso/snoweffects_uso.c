@@ -36,6 +36,20 @@ typedef struct SnowPool {
 
 float snoweffects_uso_func_00000000(Vec3 *a, Vec3 *b);
 
+typedef struct SnowRGBA {
+    u8 r, g, b, a;
+} SnowRGBA;
+
+/* CollShape_nearestHit's result record (only pos / dist are read here) */
+typedef struct SnowHit {
+    /* 0x00 */ Tri3i pos;
+    /* 0x0C */ f32 dist;
+    /* 0x10 */ s32 unk10[7];
+} SnowHit;
+
+/* typed blank (0) alias for the CollShape_nearestHit import: the float radius goes in a2 */
+extern int gl_func_00000000_snow_hit(int shape, int ray, float radius, SnowHit *hit);
+
 float snoweffects_uso_func_00000000(Vec3 *a, Vec3 *b) {
     return a->x * b->x + a->y * b->y + a->z * b->z;
 }
@@ -248,11 +262,33 @@ void snoweffects_uso_func_000052CC(int a0) {
     (void)&a0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000052D4);
+float snoweffects_uso_func_000052D4(char *this, int a1, Vec3 *out, int a3) {
+    SnowHit hit;
+    int pad[3];
+    Tri3i tmp;
+    int pad2[2];
+    (void)&this;
+    (void)&a3;
+    if (XCALL(gl_func_00000000_snow_hit, CollShape_nearestHit)(*(int *)&D_00000000, a1, 2000.0f, &hit)) {
+        tmp = hit.pos;
+        out->x = *(float *)&tmp.a;
+        out->y = *(float *)&tmp.b;
+        out->z = *(float *)&tmp.c;
+        return hit.dist;
+    }
+    return 0.0f;
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000535C);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000053E8);
+int snoweffects_uso_func_000053E8(char *this) {
+    int d = *(int *)(this + 0x5C) - *(int *)(this + 0x58);
+    if (d < 0) {
+        d += *(int *)(this + 0x68);
+    }
+    d = d / *(int *)(this + 0x6C) + 1;
+    return d;
+}
 
 void snoweffects_uso_func_00005440(int a0, int a1) {
     (void)&a0;
@@ -269,9 +305,30 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00006248);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000634C);
+void snoweffects_uso_func_0000634C(char *this) {
+    if (*(int *)(this + 0x54) & 1) {
+        CALL(snoweffects_uso_func_000064B8)(this);
+    }
+    if (*(int *)(this + 0x54) & 2) {
+        CALL(snoweffects_uso_func_00006B28)(this);
+    }
+    if (*(int *)(this + 0x54) & 4) {
+        CALL(snoweffects_uso_func_0000718C)(this);
+    }
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000063B4);
+void snoweffects_uso_func_000063B4(char *this) {
+    char *v = *(char **)(this + 0x2C);
+    float x, a;
+    if (*(s16 *)(v + 0x9A2) != 98) {
+        x = *(float *)(v + 0x970);
+        a = (x < 0.0f) ? -x : x;
+        /* RoData+0x28: the module's own .rodata, spelled off the zero placeholder */
+        *(float *)(this + 0x50) = 1.0f - *(float *)((char *)&D_00000000 + 0x28) * a;
+    } else {
+        *(float *)(this + 0x50) = 1.0f;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00006420);
 
@@ -471,11 +528,40 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009884);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009BE8);
+void snoweffects_uso_func_00009BE8(char *this, char *src) {
+    SnowRGBA *cols = *(SnowRGBA **)(src + 0x50);
+    int i;
+    for (i = 0; i < *(int *)(this + 0x22C); i++) {
+        int idx = ((s16 *)(this + 0xAC))[i];
+        ((SnowRGBA *)(this + 0x12C))[i].r = cols[idx].r;
+        ((SnowRGBA *)(this + 0x12C))[i].g = cols[idx].g;
+        ((SnowRGBA *)(this + 0x12C))[i].b = cols[idx].b;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009C48);
 
+#ifdef NON_MATCHING
+/* item-type create: 0x9328 ctor(0), +0x70 = 1.0f, attach the type's +0x40 node.
+ * Logic exact; residual = item / head colouring swap (target item v1, head a2). */
+void *snoweffects_uso_func_00009E10(char *type) {
+    int *item;
+    int *head;
+    item = (int *)gl_func_00000000(0) /* 0x9328 ctor */;
+    *(float *)((char *)item + 0x70) = 1.0f;
+    head = *(int **)(type + 0x40);
+    if (*(int **)(type + 0x40) != 0) {
+        gl_func_00000000( /* list_append */ (char *)item + 0x10, head);
+        if ((int)NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
+        }
+        NODE(head)->parent = (Node *)item;
+    }
+    return item;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009E10);
+#endif
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009E88);
 
