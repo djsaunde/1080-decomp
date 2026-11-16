@@ -4987,7 +4987,7 @@ int* SkinMgr_ctor(int *a0, int a1, int a2) {
 store:
     *v1 = 0;
 after_store:
-    ((SkinMgr *)a0)->boneTable = a2;
+    ((SkinMgr *)a0)->boneTable = (SkinBone *)a2;
     ((SkinMgr *)a0)->bone = 0;
 end:
     return a0;

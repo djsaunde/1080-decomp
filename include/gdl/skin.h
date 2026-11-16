@@ -42,7 +42,7 @@ typedef struct SkinMgr {
     /* 0x48 */ NodeLink *anims;    /* list of SkinAnim * (item) (SkinMgr_addAnim) */
     /* 0x4C */ s32 lastFrame;      /* frame counter of the last update */
     /* 0x50 */ f32 invBone[4][4];  /* inverse of the main bone matrix at init */
-    /* 0x90 */ s32 boneTable;      /* SkinBone *, from the SkinMgr command */
+    /* 0x90 */ SkinBone *boneTable; /* from the SkinMgr command */
     /* 0x94 */ s32 jitter;         /* one-shot random offset amplitude (cleared by update) */
 } SkinMgr;
 
