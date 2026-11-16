@@ -1,0 +1,31 @@
+{
+  "function_name": "checkpoint_uso_func_000000E0",
+  "project": "1080-agent-b",
+  "model": "claude-manual",
+  "start_time": "2026-11-16T21:20:34.629148+00:00",
+  "end_time": "2026-11-16T21:20:34.629165+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T21:20:34.629161+00:00",
+      "assistant_text": "Only the inline ctor p named; CollObj addresses as self+K expressions (named c1/c2 add dead home words).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 65,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n#include \"uso_call.h\"\n#include \"gdl/node.h\"  /* Node, NodeMsg, VT_SLOT */\n#include \"gdl/mnode.h\" /* SNode (scale +0x70) */\n\nextern int gl_func_00000000();\nextern char D_00000000;\n\n/* checkpoint.uso: checkpoint course objects (two SNode subclasses, a CollObj\n * cylinder gate at 0xE0 and a box gate at 0x58C, plus their templates).\n * IDO 7.1 cfe -O2, like game_uso. Relocs (scripts/uso-imports.py sites\n * checkpoint): bootup Bss+0x3C740 = the gdl file system object, Bss+0x3C768 =\n * the hostio object. */\n\n/* checkpoint_uso_func_000000E0: cylinder Checkpoint ctor (0x10C bytes, cfront this==0\n * alloc): SNode_ctor, vptr Data+0x3E20, two inline CollObj box ctors at +0x8C / +0xCC\n * (coll_boxCtor + CollObj vptr, bootup Data+0x1EDF8), +0x88 = 20, then both become\n * cylinders (CollObj_initCylinder(c, self, 100, 100.0f, 1000.0f)).\n * Frame lever: only the inline ctor's `p` is a named local (its home is sp+0x34);\n * the two CollObj addresses are plain `self + K` expressions, CSE'd by uopt into\n * spill temps (sp+0x30 / 0x2C). Named c1 / c2 locals each add a dead home word\n * (frame 0x40 instead of 0x38). */\nextern char CollObj_vtbl_chkE0;\nextern void gl_func_00000000_chkcyl(char *, char *, int, float, float);\nint *checkpoint_uso_func_000000E0(char *self) {\n    char *p;\n    if (self != 0 || (self = (char *)CALL(mem_new)(0x10C)) != 0) {\n        CALL(SNode_ctor)(self);\n        NODE(self)->vptr = &D_00000000;\n        p = self + 0x8C;\n        if (p != 0 || (p = (char *)CALL(mem_new)(0x40)) != 0) {\n            CALL(coll_boxCtor_0003CAA0)(p);\n            *(char **)(p + 0x30) = &CollObj_vtbl_chkE0;\n        }\n        p = self + 0xCC;\n        if (p != 0 || (p = (char *)CALL(mem_new)(0x40)) != 0) {\n            CALL(coll_boxCtor_0003CAA0)(p);\n            *(char **)(p + 0x30) = &CollObj_vtbl_chkE0;\n        }\n        *(s32 *)(self + 0x88) = 20;\n        XCALL(gl_func_00000000_chkcyl, CollObj_initCylinder)(self + 0x8C, self, 100, 100.0f, 1000.0f);\n        XCALL(gl_func_00000000_chkcyl, CollObj_initCylinder)(self + 0xCC, self, 100, 100.0f, 1000.0f);\n    }\n    return (int *)self;\n}\n\n",
+  "metadata": {
+    "source_path": "src/checkpoint_uso/checkpoint_uso.c",
+    "asm_path": "asm/nonmatchings/checkpoint_uso/checkpoint_uso/checkpoint_uso_func_000000E0.s",
+    "segment": "checkpoint_uso",
+    "compiler": "IDO 7.1 cfe -O2"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "function_name": "checkpoint_uso_func_000002AC",
+  "project": "1080-agent-b",
+  "model": "claude-manual",
+  "start_time": "2026-11-16T21:20:34.777837+00:00",
+  "end_time": "2026-11-16T21:20:34.777855+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T21:20:34.777850+00:00",
+      "assistant_text": "z = 0.0 double literal keeps mul.s by mtc1 zero; right-nested sums; m declared before the Vec3 temps.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 108,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n#include \"uso_call.h\"\n#include \"gdl/node.h\"  /* Node, NodeMsg, VT_SLOT */\n#include \"gdl/mnode.h\" /* SNode (scale +0x70) */\n\nextern int gl_func_00000000();\nextern char D_00000000;\n\n/* checkpoint.uso: checkpoint course objects (two SNode subclasses, a CollObj\n * cylinder gate at 0xE0 and a box gate at 0x58C, plus their templates).\n * IDO 7.1 cfe -O2, like game_uso. Relocs (scripts/uso-imports.py sites\n * checkpoint): bootup Bss+0x3C740 = the gdl file system object, Bss+0x3C768 =\n * the hostio object. */\n\n/* checkpoint_uso_func_000002AC: cylinder checkpoint handleMsg: after\n * SNode_handleMsg, messages 7 (move) and 19 (rebuild) place the two gate posts\n * at (-/+ r, 0, 0) through the SNode's 3x4 Mtx (+0x2C, rows of 4) plus pos,\n * r = 117 / GfxLib.worldScale[0]; posts stored at +0xA4 and +0xE4.\n * Levers: the zero is `z = 0.0` (a double literal keeps the live `mul.s` by an\n * mtc1 zero; `0.0f` folds the terms away); each sum is spelled right-nested\n * (IDO evaluates the right operand first); `m` declared before the two Vec3\n * temps gives their homes (sp+0x5C / 0x50). */\ntypedef struct { float x, y, z; } ChkVec3;\nvoid checkpoint_uso_func_000002AC(char *self, int *msg) {\n    float r;\n    float z;\n    float nr;\n    float *m;\n    ChkVec3 a;\n    ChkVec3 b;\n\n    CALL(SNode_handleMsg)(self, msg);\n    if (*msg == 7 || *msg == 19) {\n        r = 117.0f / *(float *)(&D_00000000 + 0x128); /* GfxLib.worldScale[0] */\n        z = 0.0;\n        nr = -r;\n        m = (float *)SNODE(self)->mtx;\n        a.x = m[12] + (m[8] * z + (m[4] * z + m[0] * nr));\n        a.y = m[13] + (m[9] * z + (m[5] * z + m[1] * nr));\n        a.z = m[14] + (m[10] * z + (m[6] * z + m[2] * nr));\n        *(float *)(self + 0xA4) = a.x;\n        *(float *)(self + 0xA8) = a.y;\n        *(float *)(self + 0xAC) = a.z;\n        b.x = m[12] + (m[8] * z + (m[4] * z + m[0] * r));\n        b.y = m[13] + (m[9] * z + (m[5] * z + m[1] * r));\n        b.z = m[14] + (m[10] * z + (m[6] * z + m[2] * r));\n        *(float *)(self + 0xE4) = b.x;\n        *(float *)(self + 0xE8) = b.y;\n        *(float *)(self + 0xEC) = b.z;\n    }\n}\n\n",
+  "metadata": {
+    "source_path": "src/checkpoint_uso/checkpoint_uso.c",
+    "asm_path": "asm/nonmatchings/checkpoint_uso/checkpoint_uso/checkpoint_uso_func_000002AC.s",
+    "segment": "checkpoint_uso",
+    "compiler": "IDO 7.1 cfe -O2"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "function_name": "checkpoint_uso_func_0000058C",
+  "project": "1080-agent-b",
+  "model": "claude-manual",
+  "start_time": "2026-11-16T21:20:34.924558+00:00",
+  "end_time": "2026-11-16T21:20:34.924574+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T21:20:34.924569+00:00",
+      "assistant_text": "E0 shape with one CollObj.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 44,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n#include \"uso_call.h\"\n#include \"gdl/node.h\"  /* Node, NodeMsg, VT_SLOT */\n#include \"gdl/mnode.h\" /* SNode (scale +0x70) */\n\nextern int gl_func_00000000();\nextern char D_00000000;\n\n/* checkpoint.uso: checkpoint course objects (two SNode subclasses, a CollObj\n * cylinder gate at 0xE0 and a box gate at 0x58C, plus their templates).\n * IDO 7.1 cfe -O2, like game_uso. Relocs (scripts/uso-imports.py sites\n * checkpoint): bootup Bss+0x3C740 = the gdl file system object, Bss+0x3C768 =\n * the hostio object. */\n\n/* checkpoint_uso_func_0000058C: box Checkpoint ctor (0xCC bytes, cfront this==0\n * alloc), the E0 shape with one CollObj: SNode_ctor, vptr Data+0x3E80, inline\n * CollObj ctor at +0x88, CollObj_initCylinder(c, self, 100, 20.0f, 500.0f), then\n * +0xC8 = arg (the template's +0x48 word). Same frame lever as E0. */\nint *checkpoint_uso_func_0000058C(char *self, int arg) {\n    char *p;\n    if (self != 0 || (self = (char *)CALL(mem_new)(0xCC)) != 0) {\n        CALL(SNode_ctor)(self);\n        NODE(self)->vptr = &D_00000000;\n        p = self + 0x88;\n        if (p != 0 || (p = (char *)CALL(mem_new)(0x40)) != 0) {\n            CALL(coll_boxCtor_0003CAA0)(p);\n            *(char **)(p + 0x30) = &CollObj_vtbl_chkE0;\n        }\n        XCALL(gl_func_00000000_chkcyl, CollObj_initCylinder)(self + 0x88, self, 100, 20.0f, 500.0f);\n        *(int *)(self + 0xC8) = arg;\n    }\n    return (int *)self;\n}\n\n",
+  "metadata": {
+    "source_path": "src/checkpoint_uso/checkpoint_uso.c",
+    "asm_path": "asm/nonmatchings/checkpoint_uso/checkpoint_uso/checkpoint_uso_func_0000058C.s",
+    "segment": "checkpoint_uso",
+    "compiler": "IDO 7.1 cfe -O2"
+  }
+}
