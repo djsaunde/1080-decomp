@@ -101,7 +101,7 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
  * (declared base/obj/tmp in s0/s1/s2 order). The base-CSE residual (target
  * re-materializes &D per global VALUE read; mine shared the s0 base) was busted
  * by routing the +8/+0x4C/+0x17D/+0x50/+0x64 reads through DISTINCT externs
- * (D_00000008.. valued at the offset in undefined_syms_auto.txt) — each read now
+ * (gInputMgr_0000004C.. valued at the offset in undefined_syms_auto.txt) — each read now
  * gets its own lui base, matching the target (+8.7pp). Same distinct-extern
  * lever as the USO &D-CSE busts; works at -O0 too. The bare `&D_00000000` call
  * args + the `base`/`tmp` register pointer correctly stay on the shared s0 base.
@@ -110,7 +110,7 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
  * (lw v0,0x34); `register int *obj` keeps it in s1 (no home), and a plain
  * `int *obj` regresses to 85.5% (loses the s1 deref allocation). Plus -O0 temp
  * reg-renumber. Real wrap, correct logic; stays NM. */
-extern int D_00000008, gInputMgr_0000004C, gInputMgr_00000064;
+extern int gInputMgr_0000004C, gInputMgr_00000064;
 extern int D_00000050; /* UNNAMED: data-base D_00000050 = 0x50 is Bss sym272 +0x50 here (the &= 0x20 in app_createGame_00008FFC) but RoData +0x50 in bootup_uso.c (snd_calcEmitterDistPan_000003F8); one pinned value for two objects, so a pure rename would merge them: it needs a per-site split */
 extern unsigned char gInputMgr_0000017D;
 /* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:

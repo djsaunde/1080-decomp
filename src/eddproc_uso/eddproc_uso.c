@@ -76,7 +76,10 @@ void edd_nop_00000150(int a0, int a1) {
     (void)&a1;
 }
 
-extern int D_00000004;
+/* eddproc Bss+0x4 (the only Bss-base +4 site in eddproc.uso): zeroed right after
+ * edd_DataManager_init stores the mem_new(0x3E80) scratch buffer at Bss+0. A per-site
+ * alias of the shared 4 pin (D_00000004 is another object in game_libs / bootup). */
+extern int edd_scratchBufLen;
 
 void edd_DataManager_init(char *a0) {
     /* edd keeps its countdown (9000, -10 per frame) in the base's score word (0xA0), as trk */
@@ -87,7 +90,7 @@ void edd_DataManager_init(char *a0) {
     DATAMGR(a0)->score = 0x2328;
     DATAMGR(a0)->bonus = 0;
     *(int*)&D_00000000 = CALL(mem_new)(0x3E80);
-    D_00000004 = 0;
+    edd_scratchBufLen = 0;
     CALL(Node_resumeUpdate_0000E450)(a0);
 }
 
