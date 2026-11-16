@@ -1,0 +1,31 @@
+{
+  "function_name": "viewrec_uso_func_000036B4",
+  "project": "1080-agent-b",
+  "model": "claude-manual",
+  "start_time": "2026-11-16T22:12:49.528649+00:00",
+  "end_time": "2026-11-16T22:12:49.528665+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T22:12:49.528660+00:00",
+      "assistant_text": "cfront Node->Process->screen ctor chain; Node ctor call and vptr store on one line; 0-pinned per-site vtable symbols",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 89,
+  "initial_m2c_source": null,
+  "final_source": "/* the erase screen's ctor (200 bytes): the cfront chain Node (0x2C) -> Process (0x50) -> screen, each\n * level allocating when called with 0; the Node ctor call and its vptr store on one line (as in the\n * trnproc / h2h race ctors) give the target's schedule of the vptr address ahead of the o1 reload.\n * The three vtables are 0-pinned per-site symbols: bootup Data+0xC338 / +0xC3A0 imports and the\n * module's own Data+0x198. */\nextern char vr_vtNode_36B4[], vr_vtProc_36B4[], vr_vtErase_36B4[];\nViewRecScreen *viewrec_uso_func_000036B4(ViewRecScreen *self, ViewRecProc *proc) {\n    char *o1;\n    char *o2;\n\n    if (self != 0 || (self = (ViewRecScreen *)CALL(mem_new)(200)) != 0) {\n        o1 = (char *)self;\n        if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {\n            o2 = o1;\n            if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o2, &D_00000000 + 0x444); NODE(o2)->vptr = vr_vtNode_36B4; }\n            NODE(o1)->vptr = vr_vtProc_36B4;\n        }\n        self->node.vptr = vr_vtErase_36B4;\n        self->node.name = &D_00000000 + 0x44C;\n        self->proc = proc;\n        *(s32 *)((char *)self + 0x54) = proc->font;\n        *(s32 *)((char *)self + 0x7C) = 101;\n        *(s32 *)((char *)self + 0x6C) = 0;\n        *(s32 *)((char *)self + 0x74) = 119;\n        *(s32 *)((char *)self + 0x80) = 115;\n        *(s32 *)((char *)self + 0x78) = 26;\n        *(s32 *)((char *)self + 0x8C) = 66;\n        *(s32 *)((char *)self + 0x84) = 44;\n        *(s32 *)((char *)self + 0x90) = 72;\n        *(s32 *)((char *)self + 0x88) = 17;\n        *(s32 *)((char *)self + 0x94) = 120;\n        *(s32 *)((char *)self + 0x98) = 161;\n        *(s32 *)((char *)self + 0x9C) = 181;\n        *(s32 *)((char *)self + 0xA0) = 0;\n        *(s32 *)((char *)self + 0xA4) = 0;\n        *(s32 *)((char *)self + 0xA8) = 0;\n        *(s32 *)((char *)self + 0xAC) = 0;\n        *(f32 *)((char *)self + 0xB0) = 0.0f;\n        *(f32 *)((char *)self + 0xB4) = 0.0f;\n        CALL(Process_stop)(self);\n        *(s32 *)((char *)self + 0x30) = 1;\n        *(s32 *)((char *)self + 0x2C) = 0;\n        *(s32 *)((char *)self + 0x48) = 0;\n    }\n    return self;\n}\n\n",
+  "metadata": {
+    "source_path": "src/viewrec_uso/viewrec_uso.c",
+    "asm_path": "asm/nonmatchings/viewrec_uso/viewrec_uso/viewrec_uso_func_000036B4.s",
+    "segment": "viewrec_uso",
+    "compiler": "IDO 7.1 cc -O2"
+  }
+}

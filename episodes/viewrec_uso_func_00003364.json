@@ -1,0 +1,31 @@
+{
+  "function_name": "viewrec_uso_func_00003364",
+  "project": "1080-agent-b",
+  "model": "claude-manual",
+  "start_time": "2026-11-16T22:12:49.776764+00:00",
+  "end_time": "2026-11-16T22:12:49.776783+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T22:12:49.776778+00:00",
+      "assistant_text": "d declared first, int numerators over d, do-while outer and guarded do-while inner, show=1 after the entry read, counter updates on the array element",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 212,
+  "initial_m2c_source": null,
+  "final_source": "typedef struct VrArcadeEnt {\n    /* 0x00 */ s32 b0;\n    /* 0x04 */ u8 count;\n    /* 0x05 */ char name[3];\n    /* 0x08 */ s32 sub[5];\n    /* 0x1C */ s32 score;\n} VrArcadeEnt;\n/* the arcade records screen's draw: each entry's sub-score row count (+0x60[i]) grows toward the\n * entry's count while it is the selected one (+0x58 is 1-based) and shrinks otherwise; the block is\n * centred on y = 150; then per entry: the cursor sprite (label 36) on the selected row, rank / icons,\n * the sub scores (label j, 0x2D9C) and the name / total score. Levers: `d` declared first (its home\n * above the three colours puts them at sp+0x74 / 0x84 / 0x94), int numerators over d, do-while loops\n * (the outer one orders the loop-end increments; the inner guarded do-while, too), `show = 1` after\n * the entry read, the counter updates spelled on the array element (no named temp: one home less). */\nvoid viewrec_uso_func_00003364(ViewRecScreen *self) {\n    f32 d;\n    f32 col3[4];\n    f32 col1[4];\n    f32 col2[4];\n    s32 i;\n    s32 j;\n    s32 total;\n    s32 y;\n    s32 prev;\n    s32 show;\n    s32 rank;\n    VrArcadeEnt *e;\n\n    d = 255.0f;\n    col1[0] = 40 / d;\n    col1[1] = 100 / d;\n    col1[2] = 255 / d;\n    col1[3] = 255 / d;\n    col2[0] = 255 / d;\n    col2[1] = 255 / d;\n    col2[2] = 160 / d;\n    col2[3] = 255 / d;\n    col3[0] = 233 / d;\n    col3[1] = 255 / d;\n    col3[2] = 0 / d;\n    col3[3] = 255 / d;\n    total = 0;\n    for (i = 0; i < 3; i++) {\n        e = (VrArcadeEnt *)CALL(Backup_arcadeGetEntry)(((VrArcadeEnt **)self->proc->session)[1], i);\n        if (i + 1 == *(s32 *)((char *)self + 0x58)) {\n            if (((s32 *)((char *)self + 0x60))[i] < e->count) {\n                ((s32 *)((char *)self + 0x60))[i]++;\n            }\n        } else if (((s32 *)((char *)self + 0x60))[i] > 0) {\n            ((s32 *)((char *)self + 0x60))[i]--;\n        }\n        if (((s32 *)((char *)self + 0x60))[i] != 0) {\n            total += ((s32 *)((char *)self + 0x60))[i] * 15;\n        }\n        total += 30;\n    }\n    y = 150 - total / 2;\n    CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, 255, sVrPrimColour, sVrEnvColour);\n    CALL(viewrec_uso_func_00001488)(self->proc, 8, 37);\n    prev = -1;\n    i = 0;\n    do {\n        e = (VrArcadeEnt *)CALL(Backup_arcadeGetEntry)(((VrArcadeEnt **)self->proc->session)[1], i);\n        show = 1;\n        if (CALL(Backup_arcadeEntryIsNew)(&((VrArcadeEnt **)self->proc->session)[1][i]) &&\n            (*(s32 *)((char *)self + 0x6C) & 8)) {\n            show = 0;\n        }\n        if (i == *(s32 *)((char *)self + 0x5C)) {\n            CALL(gui_spriteRefresh)(&sVrLabels[36]);\n            CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[36], 255, col3, 255);\n            CALL(gui_drawSprite)(&sVrLabels[36], 30, y, 3);\n        }\n        rank = i;\n        if (prev == e->score) {\n            rank = -1;\n        }\n        if (show) {\n            CALL(viewrec_uso_func_000029B0)(self, rank, 38, y, e->b0 & 7, (e->b0 & 0x78) >> 3);\n        }\n        j = 0;\n        if (((s32 *)((char *)self + 0x60))[i] > 0) {\n            do {\n                CALL(viewrec_uso_func_00002F1C)(self, j, 132, y);\n                CALL(viewrec_uso_func_00002D9C)(self, 196, y, e->sub[j], col2);\n                y += 15;\n                j++;\n            } while (j < ((s32 *)((char *)self + 0x60))[i]);\n        }\n        if (show) {\n            CALL(viewrec_uso_func_00002AE4)(self, 132, y, e->name);\n            CALL(viewrec_uso_func_00002D9C)(self, 196, y, e->score, col1);\n        }\n        prev = e->score;\n        y += 30;\n        i++;\n    } while (i < 3);\n}\n\n",
+  "metadata": {
+    "source_path": "src/viewrec_uso/viewrec_uso.c",
+    "asm_path": "asm/nonmatchings/viewrec_uso/viewrec_uso/viewrec_uso_func_00003364.s",
+    "segment": "viewrec_uso",
+    "compiler": "IDO 7.1 cc -O2"
+  }
+}

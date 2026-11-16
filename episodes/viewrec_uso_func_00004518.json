@@ -1,0 +1,31 @@
+{
+  "function_name": "viewrec_uso_func_00004518",
+  "project": "1080-agent-b",
+  "model": "claude-manual",
+  "start_time": "2026-11-16T22:12:49.650348+00:00",
+  "end_time": "2026-11-16T22:12:49.650364+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T22:12:49.650360+00:00",
+      "assistant_text": "same ctor shape as 0x36B4 (replay screen, 156 bytes)",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 86,
+  "initial_m2c_source": null,
+  "final_source": "/* the replay screen's ctor (0x9C bytes): Node -> Process -> replay screen, as the erase screen's 0x36B4 */\nextern char vr_vtNode_4518[], vr_vtProc_4518[], vr_vtReplay_4518[];\nViewRecScreen *viewrec_uso_func_00004518(ViewRecScreen *self, ViewRecProc *proc) {\n    char *o1;\n    char *o2;\n\n    if (self != 0 || (self = (ViewRecScreen *)CALL(mem_new)(156)) != 0) {\n        o1 = (char *)self;\n        if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {\n            o2 = o1;\n            if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o2, &D_00000000 + 0x45C); NODE(o2)->vptr = vr_vtNode_4518; }\n            NODE(o1)->vptr = vr_vtProc_4518;\n        }\n        self->node.vptr = vr_vtReplay_4518;\n        self->node.name = &D_00000000 + 0x464;\n        self->proc = proc;\n        *(s32 *)((char *)self + 0x54) = proc->font;\n        *(s32 *)((char *)self + 0x68) = 98;\n        self->frame = 0;\n        *(s32 *)((char *)self + 0x60) = 122;\n        *(s32 *)((char *)self + 0x6C) = 101;\n        *(s32 *)((char *)self + 0x64) = 30;\n        *(s32 *)((char *)self + 0x78) = 46;\n        *(s32 *)((char *)self + 0x70) = 53;\n        *(s32 *)((char *)self + 0x7C) = 59;\n        *(s32 *)((char *)self + 0x74) = 15;\n        self->rowY = 96;\n        *(s32 *)((char *)self + 0x84) = 165;\n        *(s32 *)((char *)self + 0x88) = 181;\n        *(s32 *)((char *)self + 0x8C) = 0;\n        *(s32 *)((char *)self + 0x90) = 0;\n        *(s32 *)((char *)self + 0x94) = 0;\n        *(s32 *)((char *)self + 0x98) = 0;\n        CALL(Process_stop)(self);\n        *(s32 *)((char *)self + 0x30) = 1;\n        *(s32 *)((char *)self + 0x2C) = 0;\n        *(s32 *)((char *)self + 0x48) = 0;\n    }\n    return self;\n}\n\n",
+  "metadata": {
+    "source_path": "src/viewrec_uso/viewrec_uso.c",
+    "asm_path": "asm/nonmatchings/viewrec_uso/viewrec_uso/viewrec_uso_func_00004518.s",
+    "segment": "viewrec_uso",
+    "compiler": "IDO 7.1 cc -O2"
+  }
+}
