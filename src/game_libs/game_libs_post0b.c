@@ -22680,8 +22680,15 @@ void Mem_freeAllOfType(int *a0, int a1) {
  * new byte as `(a2 & 0xFF) << 24` (the eliminated andi burns t6). A plain
  * `*p & 0xFFFFFF` always numbers the load first (lw t6). */
 typedef struct {
+#ifdef PORT
+    /* Host compilers allocate bitfields LSB-first: declare low first so `low` is still
+     * hdr & 0xFFFFFF, which every other Mem_* access reads as a whole word (plan 18.3). */
+    unsigned int low : 24;
+    unsigned int top : 8;
+#else
     unsigned int top : 8;
     unsigned int low : 24;
+#endif
 } Bf5B5D8;
 void Mem_setBlockType(char a0, int *a1, int a2) {
     a1[-4] = ((a2 & 0xFF) << 24) + ((Bf5B5D8 *)&a1[-4])->low;
