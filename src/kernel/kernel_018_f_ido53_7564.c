@@ -13,40 +13,43 @@
  * 2026-06-23 kernel_018_f.c rebuild. Spliced into kernel_018_f.c.o via
  * REPLACE_FUNC_BODY (real 5.3 -O1 output; donor relocs imported by the
  * splice). */
-typedef signed int s32;
+#include "common.h"
+#include "libultra/os_thread.h"
+#include "libultra/rmon.h"
 
-extern void func_800073F8();        /* __rmonMaskIdleThreadInts */
+extern void func_800073F8();        /* __rmonSendReply (ultralib rmontask.c) */
 extern char __rmonUtilityBuffer;
-extern char *func_80009C30(void);   /* __osGetActiveQueue */
+extern OSThread *func_80009C30(void); /* __osGetActiveQueue */
 
-s32 __rmonListThreads(char *msg) {
+/* typed on rmon.h / os_thread.h like the kernel_018_f.c copy (agent-a run 531) */
+s32 __rmonListThreads(KKObjectRequest *msg) {
     int pad;
-    char *ub = &__rmonUtilityBuffer;
-    register char *m = msg;
-    register char *t;
-    if (*(int*)(m + 0xC) == -1) {
-        *(int*)(&__rmonUtilityBuffer + 0xC) = 0x3EA;
+    KKObjsEvent *ub = (KKObjsEvent *)&__rmonUtilityBuffer;
+    register KKObjectRequest *m = msg;
+    register OSThread *t;
+    if (m->object == -1) {
+        ((KKObjsEvent *)&__rmonUtilityBuffer)->object = RMON_PID_CPU;
     } else {
-        *(int*)(ub + 0xC) = *(int*)(m + 0xC);
+        ub->object = m->object;
     }
-    if (*(unsigned char*)(msg + 0x9) == 1) {
-        *(unsigned short*)(ub + 0x10) = 1;
-        *(int*)(ub + 0x14) = 0x3E8;
+    if (msg->header.method == RMON_RSP) {
+        ub->objs.number = 1;
+        ub->objs.objects[0] = RMON_TID_RSP;
     } else {
         t = func_80009C30();
-        *(unsigned short*)(ub + 0x10) = 0;
-        if (*(int*)(t + 0x4) != -1) {
+        ub->objs.number = 0;
+        if (t->priority != -1) {
             do {
-                if (*(int*)(t + 0x14) != 0) {
-                    ((int*)(ub + 0x14))[*(unsigned short*)(ub + 0x10)] = *(int*)(t + 0x14);
-                    *(unsigned short*)(ub + 0x10) += 1;
+                if (t->id != 0) {
+                    ub->objs.objects[ub->objs.number] = t->id;
+                    ub->objs.number += 1;
                 }
-                t = *(char**)(t + 0xC);
-            } while (*(int*)(t + 0x4) != -1);
+                t = t->tlnext;
+            } while (t->priority != -1);
         }
     }
-    *(unsigned char*)(ub + 0x4) = *(unsigned char*)(m + 0x4);
-    *(unsigned short*)(ub + 0x6) = 0;
-    func_800073F8(ub, *(unsigned short*)(ub + 0x10) * 4 + 0x14, 1);
+    ub->header.code = m->header.code;
+    ub->header.error = TV_ERROR_NO_ERROR;
+    func_800073F8(ub, ub->objs.number * 4 + 0x14, 1);
     return 0;
 }

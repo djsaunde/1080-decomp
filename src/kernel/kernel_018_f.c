@@ -1,4 +1,6 @@
 #include "common.h"
+#include "libultra/os_thread.h"
+#include "libultra/rmon.h"
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
@@ -140,48 +142,48 @@ extern OSEventState __osEventStateTab[];
  * .o). */
 extern void func_800073F8(); /* needed by the C body; split piece lost the chunk-local extern */
 extern char __rmonUtilityBuffer;
-extern char *func_80009C30(void);
-/* func_800073F8 is forward-declared 0-arg above (fragment stub); cast at
- * call site to its real 3-arg __rmonMaskIdleThreadInts signature. */
-s32 __rmonListThreads(char *msg) {
+extern OSThread *func_80009C30(void); /* __osGetActiveQueue */
+/* func_800073F8 is forward-declared 0-arg above (fragment stub); it is
+ * __rmonSendReply(header, size, KK_TYPE_REPLY) in ultralib's rmontask.c.
+ * Typed on rmon.h / os_thread.h (agent-a run 531): msg is the KKObjectRequest,
+ * __rmonUtilityBuffer the KKObjsEvent reply, t walks the active-thread list
+ * (OSThread.tlnext) to the priority -1 sentinel. The reply size is
+ * sizeof(KKObjsEvent) + 4 * (number - 1) = number * 4 + 0x14. */
+s32 __rmonListThreads(KKObjectRequest *msg) {
     int pad;
-    char *ub = &__rmonUtilityBuffer;
-    register char *m = msg;
-    register char *t;
-    if (*(int*)(m + 0xC) == -1) {
-        *(int*)(&__rmonUtilityBuffer + 0xC) = 0x3EA;
+    KKObjsEvent *ub = (KKObjsEvent *)&__rmonUtilityBuffer;
+    register KKObjectRequest *m = msg;
+    register OSThread *t;
+    if (m->object == -1) {
+        ((KKObjsEvent *)&__rmonUtilityBuffer)->object = RMON_PID_CPU;
     } else {
-        *(int*)(ub + 0xC) = *(int*)(m + 0xC);
+        ub->object = m->object;
     }
-    if (*(unsigned char*)(msg + 0x9) == 1) {
-        *(unsigned short*)(ub + 0x10) = 1;
-        *(int*)(ub + 0x14) = 0x3E8;
+    if (msg->header.method == RMON_RSP) {
+        ub->objs.number = 1;
+        ub->objs.objects[0] = RMON_TID_RSP;
     } else {
         t = func_80009C30();
-        *(unsigned short*)(ub + 0x10) = 0;
-        if (*(int*)(t + 0x4) != -1) {
+        ub->objs.number = 0;
+        if (t->priority != -1) {
             do {
-                if (*(int*)(t + 0x14) != 0) {
-                    ((int*)(ub + 0x14))[*(unsigned short*)(ub + 0x10)] = *(int*)(t + 0x14);
-                    *(unsigned short*)(ub + 0x10) += 1;
+                if (t->id != 0) {
+                    ub->objs.objects[ub->objs.number] = t->id;
+                    ub->objs.number += 1;
                 }
-                t = *(char**)(t + 0xC);
-            } while (*(int*)(t + 0x4) != -1);
+                t = t->tlnext;
+            } while (t->priority != -1);
         }
     }
-    *(unsigned char*)(ub + 0x4) = *(unsigned char*)(m + 0x4);
-    *(unsigned short*)(ub + 0x6) = 0;
-    func_800073F8(ub, *(unsigned short*)(ub + 0x10) * 4 + 0x14, 1);
+    ub->header.code = m->header.code;
+    ub->header.error = TV_ERROR_NO_ERROR;
+    func_800073F8(ub, ub->objs.number * 4 + 0x14, 1);
     return 0;
 }
 
-#ifndef FW
-#define FW(p, o) (*(s32 *)((char *)(p) + (o)))
-#endif
-#define HW(p, o) (*(u16 *)((char *)(p) + (o)))
 extern u8 __rmonRcpAtBreak;
-/* rmon thread/RCP register-query setup. Populate the reply context arg2 for
- * thread arg1: mode arg0==1 = RCP (SP IMEM window 0x04001000, read the RCP
+/* rmon thread/RCP register-query setup. Populate the reply event `reply` for
+ * thread `id`: method == RMON_RSP (1) = RCP (SP IMEM window 0x04001000, read the RCP
  * break-word via func_80006A98, flag a pending RCP break), else find the CPU
  * thread in the chain (func_80009C30) by id and copy its saved PC/break state.
  * The 0x8000785C alt-entry (external callers via undefined_syms) is the shared
@@ -214,76 +216,80 @@ extern u8 __rmonRcpAtBreak;
  * then-arm). The two in-function branches to "func_8000785C" in the .s are
  * now a local label (that address is a jal target 0x400 above
  * __rmonStopUserThreads, an absolute undefined_syms entry). */
-s32 __rmonGetThreadStatus(s32 arg0, s32 arg1, void *arg2) {
+/* Typed on rmon.h / os_thread.h (agent-a run 531), field for field ultralib's
+ * rmontask.c __rmonGetThreadStatus(method, id, reply): func_80008430 =
+ * __rmonRCPrunning, func_80006A98 = __rmonReadWordAt (0x04080000 = SP_PC_REG,
+ * 0x04001000 = SP_IMEM_START), 0xFC00003F / 0xD = MIPS_BREAK_MASK / _OPCODE. */
+s32 __rmonGetThreadStatus(s32 method, s32 id, KKStatusEvent *reply) {
     extern s32 func_80008430();
     s32 sp1C;
-    void *sp18;
+    OSThread *sp18;
 
-    FW(arg2, 0x14) = arg1;
-    if (arg0 == 1) {
-        FW(arg2, 0x18) = 0x3E9;
+    reply->status.tid = id;
+    if (method == RMON_RSP) {
+        reply->status.pid = RMON_PID_RSP;
     } else {
-        FW(arg2, 0x18) = 0x3EA;
+        reply->status.pid = RMON_PID_CPU;
     }
-    HW(arg2, 0x10) = 1;
-    HW(arg2, 0x12) = 0;
-    HW(arg2, 0x24) = 0;
-    HW(arg2, 0x26) = 0;
-    FW(arg2, 0x30) = 0;
-    if (arg0 == 1) {
-        FW(arg2, 0x2C) = 0x04001000;
-        FW(arg2, 0x28) = 0x2A;
+    reply->status.why = 1;
+    reply->status.what = 0;
+    reply->status.info.major = 0;
+    reply->status.info.minor = 0;
+    reply->status.rv = 0;
+    if (method == RMON_RSP) {
+        reply->status.start = 0x04001000;
+        reply->status.priority = RMON_PRI_RSP;
         if (func_80008430() != 0) {
-            FW(arg2, 0xC) = 4;
-            FW(arg2, 0x20) = 0;
-            FW(arg2, 0x1C) = 0;
+            reply->status.flags = OS_STATE_RUNNING;
+            reply->status.info.addr = 0;
+            reply->status.instr = 0;
         } else {
-            FW(arg2, 0xC) = 1;
-            FW(arg2, 0x20) = func_80006A98(0x04080000) + 0x04001000;
-            sp1C = func_80006A98(FW(arg2, 0x20));
+            reply->status.flags = OS_STATE_STOPPED;
+            reply->status.info.addr = func_80006A98(0x04080000) + 0x04001000;
+            sp1C = func_80006A98(reply->status.info.addr);
             if ((sp1C & 0xFC00003F) == 0xD) {
                 sp1C = 0xD;
             }
             if (__rmonRcpAtBreak != 0) {
-                HW(arg2, 0x10) = 2;
-                HW(arg2, 0x24) = 2;
-                HW(arg2, 0x26) = 4;
+                reply->status.why = 2;
+                reply->status.info.major = 2;
+                reply->status.info.minor = 4;
             }
-            FW(arg2, 0x1C) = sp1C;
+            reply->status.instr = sp1C;
         }
         goto block_25;
     }
-    sp18 = (void *) func_80009C30();
-    while (FW(sp18, 4) != -1) {
-        if (FW(sp18, 0x14) == arg1) {
+    sp18 = func_80009C30();
+    while (sp18->priority != -1) {
+        if (sp18->id == id) {
             break;
         }
-        sp18 = (void *) FW(sp18, 0xC);
+        sp18 = sp18->tlnext;
     }
-    if (FW(sp18, 4) == -1) {
-        return -2;
+    if (sp18->priority == -1) {
+        return TV_ERROR_INVALID_ID;
     }
-    FW(arg2, 0x28) = FW(sp18, 4);
-    if (HW(sp18, 0x10) != 0) {
-        FW(arg2, 0xC) = HW(sp18, 0x10);
+    reply->status.priority = sp18->priority;
+    if (sp18->state != 0) {
+        reply->status.flags = sp18->state;
     } else {
-        FW(arg2, 0xC) = 1;
+        reply->status.flags = OS_STATE_STOPPED;
     }
-    FW(arg2, 0x20) = FW(sp18, 0x11C);
-    sp1C = *(s32 *) FW(sp18, 0x11C);
+    reply->status.info.addr = sp18->context.pc;
+    sp1C = *(s32 *)sp18->context.pc;
     if ((sp1C & 0xFC00003F) == 0xD) {
         sp1C = 0xD;
     }
-    FW(arg2, 0x1C) = sp1C;
-    FW(arg2, 0x2C) = (s32) sp18;
-    if (HW(sp18, 0x12) & 1) {
-        HW(arg2, 0x10) = 2;
-        HW(arg2, 0x24) = 2;
-        HW(arg2, 0x26) = 4;
-    } else if (HW(sp18, 0x12) & 2) {
-        HW(arg2, 0x10) = 2;
-        HW(arg2, 0x24) = 1;
-        HW(arg2, 0x26) = 2;
+    reply->status.instr = sp1C;
+    reply->status.start = (s32)sp18;
+    if (sp18->flags & OS_FLAG_CPU_BREAK) {
+        reply->status.why = 2;
+        reply->status.info.major = 2;
+        reply->status.info.minor = 4;
+    } else if (sp18->flags & OS_FLAG_FAULT) {
+        reply->status.why = 2;
+        reply->status.info.major = 1;
+        reply->status.info.minor = 2;
     }
 block_25:
     return 0;

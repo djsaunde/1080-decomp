@@ -39,6 +39,13 @@ typedef struct OSThread_s {
 } OSThread; /* size 0x1B0 */
 
 #define OS_STATE_STOPPED 1
+#define OS_STATE_RUNNABLE 2
+#define OS_STATE_RUNNING 4
+#define OS_STATE_WAITING 8
+
+/* OSThread.flags (ultralib PR/os_exception.h) */
+#define OS_FLAG_CPU_BREAK 1 /* break exception has occurred */
+#define OS_FLAG_FAULT     2 /* CPU fault has occurred */
 
 /* compile-time offset checks (array size -1 => error) */
 #define OS_THREAD_ASSERT_OFFSET(field, off) \

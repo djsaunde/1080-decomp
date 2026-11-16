@@ -38,9 +38,15 @@ typedef u16 TVushort;
 #define TV_ERROR_OPERATIONS_PROTECTED -4
 #define TV_ERROR_INVALID_ADDRESS      -5
 
-/* rmon process ids (rmonint.h) */
-#define RMON_PID_CPU 1001
-#define RMON_PID_RSP 1002
+/* rmon methods / ids (ultralib include/PRinternal/rmonint.h). Checked against the
+ * kernel: __rmonGetThreadStatus stores 0x3E9 for method 1 (RSP) and __rmonListThreads
+ * answers object -1 with 0x3EA (CPU), so CPU = 1002, RSP = 1001. */
+#define RMON_CPU 0
+#define RMON_RSP 1
+#define RMON_TID_RSP 1000
+#define RMON_PRI_RSP 42
+#define RMON_PID_CPU 1002
+#define RMON_PID_RSP 1001
 
 typedef struct KKHeader {
     /* 0x00 */ s32 length;
