@@ -112,12 +112,12 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
                 q = cur; cur += 1; BASEPOLY(arg0)->unk78 = *q;
                 break;
             case 8:
-                q = cur; cur += 1; BASEPOLY(arg0)->unk7C = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->alphas = (u8 *)*q;
                 p = arg0 + 0x34;
                 if (1) { *(s32 *)(p + 4) |= 8; }
                 break;
             case 9:
-                q = cur; cur += 1; BASEPOLY(arg0)->unk50 = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->vtxColours = (u32 *)*q;
                 break;
             case 26:
                 q = cur; cur += 1; BASEPOLY(arg0)->nTris = *q;

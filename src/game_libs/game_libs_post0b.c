@@ -18910,7 +18910,7 @@ c17:
     goto done;
 c24:
     p = cur; cur++;
-    BASEPOLY(arg0)->unk0C[11] |= *p;
+    BASEPOLY(arg0)->shapeFlags |= *p;
     if (1) goto done;
 dflt:
     CALL(sys_fatal)(GL_DATA_STR(0x20FA8, "Invalid Shape cmd %d"), arg1, cur, arg0);
@@ -19023,7 +19023,7 @@ void BasePolyShape_reset(BasePolyShape *arg0) {
     arg0->nVerts = 0;
     arg0->unk48 = 0;
     arg0->triList = 0;
-    arg0->unk50 = 0;
+    arg0->vtxColours = 0;
     arg0->faceNormals = 0;
     arg0->vtxNormals = 0;
     arg0->palette = 0;
@@ -19034,7 +19034,7 @@ void BasePolyShape_reset(BasePolyShape *arg0) {
     arg0->remap = 0;
     arg0->unk74 = 0;
     arg0->unk78 = 0;
-    arg0->unk7C = 0;
+    arg0->alphas = 0;
     arg0->unk80 = 0;
     arg0->unk98 = -1;
     arg0->collGrid = 0;

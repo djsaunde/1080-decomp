@@ -15,6 +15,9 @@ typedef float f32; typedef double f64;
 #define NULL 0
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+#include "../../include/gdl/polyshape.h"
+#include "../../include/gdl/material.h"
+#include "../../include/gdl/gfxlib.h"
 extern "C" {
 extern int D_00000000;
 extern int gl_func_00000000(...);
@@ -26,7 +29,7 @@ extern void gl_func_00000000_49DBCv(...);
 extern char gMorphPolyShade_49dbc_t2[];
 extern char gl_d_49dbc_t3[];
 }
-extern "C" u8 *PolyShape_shade_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3, char *arg4) {
+extern "C" u8 *PolyShape_shade_00049DBC(BasePolyShape *shape, s32 arg1, s32 arg2, s32 tri, BaseMat *mat) {
     void *spAC;
     void *spA8;
     void *spA4;
@@ -46,24 +49,24 @@ extern "C" u8 *PolyShape_shade_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3
     u8 sp38[24];
     s32 var_a0;
 
-    spAC = (void *)CALL(PolyShape_getVertex)(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x2));
-    spA8 = (void *)CALL(PolyShape_getVertex)(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x4));
-    spA4 = (void *)CALL(PolyShape_getVertex)(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x6));
-    var_a0 = *(s32 *)(arg4 + 0x38);
+    spAC = (void *)CALL(PolyShape_getVertex)(shape, shape->tris[tri].v[0]);
+    spA8 = (void *)CALL(PolyShape_getVertex)(shape, shape->tris[tri].v[1]);
+    spA4 = (void *)CALL(PolyShape_getVertex)(shape, shape->tris[tri].v[2]);
+    var_a0 = mat->geomFlags;
     if ((var_a0 & 0x400000) && !(var_a0 & 0x100000)) {
-        spA0 = (void *)CALL(PolyShape_getVertexRef_0005318C)(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x2));
-        sp9C = (void *)CALL(PolyShape_getVertexRef_0005318C)(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x4));
-        sp98 = (void *)CALL(PolyShape_getVertexRef_0005318C)(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x6));
-        var_a0 = *(s32 *)(arg4 + 0x38);
+        spA0 = (void *)CALL(PolyShape_getVertexRef_0005318C)(shape, shape->tris[tri].v[0]);
+        sp9C = (void *)CALL(PolyShape_getVertexRef_0005318C)(shape, shape->tris[tri].v[1]);
+        sp98 = (void *)CALL(PolyShape_getVertexRef_0005318C)(shape, shape->tris[tri].v[2]);
+        var_a0 = mat->geomFlags;
     } else {
         sp98 = NULL;
         sp9C = NULL;
         spA0 = NULL;
     }
-    if (*(s32 *)(arg0 + 0x7C) != 0) {
-        sp84 = *(u8 *)(*(s32 *)(arg0 + 0x7C) + *(u16 *)((char *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8)) + 0x2));
-        sp86 = *(u8 *)(*(s32 *)(arg0 + 0x7C) + *(u16 *)((char *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8)) + 0x4));
-        sp88 = *(u8 *)(*(s32 *)(arg0 + 0x7C) + *(u16 *)((char *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8)) + 0x6));
+    if (shape->alphas != 0) {
+        sp84 = shape->alphas[shape->tris[tri].v[0]];
+        sp86 = shape->alphas[shape->tris[tri].v[1]];
+        sp88 = shape->alphas[shape->tris[tri].v[2]];
     } else {
         sp88 = 0xFF;
         sp8A = 0;
@@ -71,38 +74,38 @@ extern "C" u8 *PolyShape_shade_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3
         sp84 = 0xFF;
     }
     if (var_a0 & 0x2000) {
-        if (*(s32 *)(arg0 + 0x38) & 0x8000) {
-            CALL(PolyShape_getNormal8)(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x2), &sp94, arg4);
-            CALL(PolyShape_getNormal8)(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x4), &sp90);
-            CALL(PolyShape_getNormal8)(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x6), &sp8C);
+        if (shape->shapeFlags & 0x8000) {
+            CALL(PolyShape_getNormal8)(shape, shape->tris[tri].v[0], &sp94, mat);
+            CALL(PolyShape_getNormal8)(shape, shape->tris[tri].v[1], &sp90);
+            CALL(PolyShape_getNormal8)(shape, shape->tris[tri].v[2], &sp8C);
         } else {
-            if (*(s32 *)(arg0 + 0x54) == 0) {
+            if (shape->faceNormals == 0) {
                 XCALL(gl_func_00000000_49DBCv, sys_fatal)((char *)&D_00000000 + 0x20014);
             }
-            XCALL(gl_func_00000000_49DBCv, gfx_floatToS8x3_00046D4C)((char *)&gGfxLib, &sp94, *(s32 *)(arg0 + 0x54) + arg3 * 0xC);
+            XCALL(gl_func_00000000_49DBCv, gfx_floatToS8x3_00046D4C)(gGfx, &sp94, (s32)shape->faceNormals + tri * 0xC);
             *(u8 *)&sp8C = *(u8 *)&sp94;
             *(u8 *)&sp90 = *(u8 *)&sp94;
         }
     } else {
-        if (*(s32 *)(arg0 + 0x50) != 0) {
-            CALL(gfx_copyBytes3_00046DA0)((char *)&gGfxLib,&sp94, *(s32 *)(arg0 + 0x50) + (*(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x2)) * 4);
-            CALL(gfx_copyBytes3_00046DA0)((char *)&gGfxLib,&sp90, (*(s32 *)(arg0 + 0x50)) + (*(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x4)) * 4);
-            CALL(gfx_copyBytes3_00046DA0)((char *)&gGfxLib,&sp8C, (*(s32 *)(arg0 + 0x50)) + (*(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x6)) * 4);
+        if (shape->vtxColours != 0) {
+            CALL(gfx_copyBytes3_00046DA0)(gGfx,&sp94, &shape->vtxColours[shape->tris[tri].v[0]]);
+            CALL(gfx_copyBytes3_00046DA0)(gGfx,&sp90, &shape->vtxColours[shape->tris[tri].v[1]]);
+            CALL(gfx_copyBytes3_00046DA0)(gGfx,&sp8C, &shape->vtxColours[shape->tris[tri].v[2]]);
         } else {
-            sp38[0] = (u8)(s32)(u32)(*(f32 *)(arg4 + 0x0) * 255.0f);
-            sp38[1] = (s8)(s32)(u32)(*(f32 *)(arg4 + 0x4) * 255.0f);
-            sp38[2] = (s8)(s32)(u32)(*(f32 *)(arg4 + 0x8) * 255.0f);
-            CALL(gfx_copyBytes3_00046DA0)((char *)&gGfxLib,&sp94, sp38);
-            CALL(gfx_copyBytes3_00046DA0)((char *)&gGfxLib,&sp90, sp38);
-            CALL(gfx_copyBytes3_00046DA0)((char *)&gGfxLib,&sp8C, sp38);
+            sp38[0] = (u8)(s32)(u32)(mat->colour[0] * 255.0f);
+            sp38[1] = (s8)(s32)(u32)(mat->colour[1] * 255.0f);
+            sp38[2] = (s8)(s32)(u32)(mat->colour[2] * 255.0f);
+            CALL(gfx_copyBytes3_00046DA0)(gGfx,&sp94, sp38);
+            CALL(gfx_copyBytes3_00046DA0)(gGfx,&sp90, sp38);
+            CALL(gfx_copyBytes3_00046DA0)(gGfx,&sp8C, sp38);
         }
     }
-    CALL(gfx_makeVtx_00048104)((char *)&gGfxLib,&sp50, spAC, spA0, (s32) sp84, &sp94);
-    CALL(gfx_makeVtx_00048104)((char *)&gGfxLib,&sp60, spA8, sp9C, (s32) sp86, &sp90);
-    CALL(gfx_makeVtx_00048104)((char *)&gGfxLib,&sp70, spA4, sp98, (s32) sp88, &sp8C);
+    CALL(gfx_makeVtx_00048104)(gGfx,&sp50, spAC, spA0, (s32) sp84, &sp94);
+    CALL(gfx_makeVtx_00048104)(gGfx,&sp60, spA8, sp9C, (s32) sp86, &sp90);
+    CALL(gfx_makeVtx_00048104)(gGfx,&sp70, spA4, sp98, (s32) sp88, &sp8C);
     if (arg1 != 0) {
         return (u8 *)CALL(gfx_findFaceVtxs_0004880C)(arg2, &sp50);
     }
-    CALL(PolyShape_addFace_00048510)(arg2, &sp50, gMorphPolyShade_49dbc_t2, gl_d_49dbc_t3, (*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 2);
+    CALL(PolyShape_addFace_00048510)(arg2, &sp50, gMorphPolyShade_49dbc_t2, gl_d_49dbc_t3, &shape->tris[tri].v[0]);
     return NULL;
 }

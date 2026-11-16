@@ -22,14 +22,20 @@ typedef struct PolyTri {
 typedef struct BasePolyShape {
     /* 0x00 */ s32 unk00[2];
     /* 0x08 */ s32 flags;
-    /* 0x0C */ s32 unk0C[12];
+    /* 0x0C */ s32 unk0C[9];
+    /* 0x30 */ s32 unk30;          /* flag word: BasePolyShape_parseCmd 13 / 14 / 17 set bits 2 / 1 / 4 */
+    /* 0x34 */ s32 unk34;
+    /* 0x38 */ s32 shapeFlags;     /* parse cmd 8 sets 0x8 (alphas present), cmd 11 0x2000, cmd 21
+                                    * 0x4000, parseCmd 15 / 22 / 23 bits 2 / 1 / 0x20000, cmd 24 ORs
+                                    * a word in;
+                                    * 0x8000 = vertex normals come from PolyShape_getNormal8 */
     /* 0x3C */ s32 unk3C;
     /* 0x40 */ s32 nVerts;
     /* 0x44 */ u32 nTris;
     /* 0x48 */ s32 unk48;
     /* 0x4C */ s16 *triList;     /* parse cmd 26 (with nTris): optional tri index list; when set,
                                   * the CollShape ctorPoly / query paths use tris[triList[i]] */
-    /* 0x50 */ s32 unk50;
+    /* 0x50 */ u32 *vtxColours;  /* parse cmd 9: one RGBA word per vertex (PolyShape_shade copies RGB) */
     /* 0x54 */ f32 *faceNormals;   /* f32[3] per triangle */
     /* 0x58 */ f32 *vtxNormals;    /* f32[3] per vertex */
     /* 0x5C */ u8 *palette;        /* RGB888 */
@@ -40,7 +46,7 @@ typedef struct BasePolyShape {
     /* 0x70 */ u16 *remap;         /* optional, 3 u16 per vertex */
     /* 0x74 */ s32 unk74;
     /* 0x78 */ s32 unk78;
-    /* 0x7C */ s32 unk7C;
+    /* 0x7C */ u8 *alphas;       /* parse cmd 8 (sets shapeFlags 0x8): one alpha byte per vertex */
     /* 0x80 */ s32 unk80;
     /* 0x84 */ struct BaseMat **mats; /* parse cmd 29: alloc(matCap * 4); PolyShape_clipToWindow_00049308 culls
                                        * each by its minCut / maxCut, getMatCodeNum / Char read its code */
@@ -76,9 +82,13 @@ typedef struct PolyNormal {
 typedef char PolyVert_size_check[sizeof(PolyVert) == 6 ? 1 : -1];
 typedef char PolyTri_size_check[sizeof(PolyTri) == 8 ? 1 : -1];
 typedef char BasePolyShape_size_check[sizeof(BasePolyShape) == 0xB0 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char BasePolyShape_verts_check[(int)&((BasePolyShape *)0)->verts == 0x60 ? 1 : -1];
 typedef char BasePolyShape_remap_check[(int)&((BasePolyShape *)0)->remap == 0x70 ? 1 : -1];
 typedef char BasePolyShape_9C_check[(int)&((BasePolyShape *)0)->unk9C == 0x9C ? 1 : -1];
+typedef char BasePolyShape_shapeFlags_check[(int)&((BasePolyShape *)0)->shapeFlags == 0x38 ? 1 : -1];
+typedef char BasePolyShape_alphas_check[(int)&((BasePolyShape *)0)->alphas == 0x7C ? 1 : -1];
+#endif
 
 /* PolyShape (0xC0, PolyShape_ctor 0x48A74) = BasePolyShape + 0x10 bytes;
  * PolyShape_display builds the F3DEX list (G_VTX batches of up to 32 points,
@@ -109,7 +119,9 @@ typedef struct MorphPoly {
 
 typedef char PolyShape_size_check[sizeof(PolyShape) == 0xC0 ? 1 : -1];
 typedef char MorphPoly_size_check[sizeof(MorphPoly) == 0xDC ? 1 : -1];
+#ifndef __cplusplus
 typedef char MorphPoly_updateList_check[(int)&((MorphPoly *)0)->updateList == 0xD0 ? 1 : -1];
 typedef char MorphPoly_updateCount_check[(int)&((MorphPoly *)0)->updateCount == 0xD8 ? 1 : -1];
+#endif
 
 #endif /* GDL_POLYSHAPE_H */
