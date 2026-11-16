@@ -2365,6 +2365,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_3DD28_DONOR := build/src/game_libs/game_libs_ncc_3DD28.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += SNodeItemType_newItem=$(GAMELIBS_3DD28_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DD28_DONOR)
+# balloon 1A8 = Balloon display: SNode_display (39E24) plus the bob (inline Cam::mul on a Cam & reference); NCC donor (agent-b run 627).
+BALLOON_1A8_DONOR := build/src/balloon_uso/balloon_uso_ncc_1A8.cpp.o
+build/src/balloon_uso/balloon_uso.c.o build/non_matching/src/balloon_uso/balloon_uso.c.o: private REPLACE_FUNC_BODY += balloon_uso_func_000001A8=$(BALLOON_1A8_DONOR)
+build/src/balloon_uso/balloon_uso.c.o build/non_matching/src/balloon_uso/balloon_uso.c.o: $(BALLOON_1A8_DONOR)
 # 49DBC = three textured-vertex builds (two-arg arg1 call, distinct base-0 a2/a3 symbols, no named scalar locals); NCC donor (agent-c run 153).
 GAMELIBS_49DBC_DONOR := build/src/game_libs/game_libs_ncc_49DBC.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += PolyShape_shade_00049DBC=$(GAMELIBS_49DBC_DONOR)

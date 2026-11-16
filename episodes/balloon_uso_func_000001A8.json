@@ -1,0 +1,33 @@
+{
+  "function_name": "balloon_uso_func_000001A8",
+  "project": "1080-agent-b",
+  "model": "claude-manual",
+  "start_time": "2026-11-16T21:03:23.707401+00:00",
+  "end_time": "2026-11-16T21:03:23.707422+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T21:03:23.707418+00:00",
+      "assistant_text": "Balloon display = SNode_display (39E24 NCC donor) + bob; inline Cam::mul on a Cam & reference keeps the GfxLib+0xA0 base.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 69,
+  "initial_m2c_source": null,
+  "final_source": "#include \"../../include/uso_call.h\"  /* NCC donors build without -I include */\n/* IDO 7.1 NCC (C++) donor for balloon_uso_func_000001A8 (Balloon display, 0x114), spliced into\n * balloon_uso.c.o via REPLACE_FUNC_BODY (agent-b run 627). It is SNode_display (game_libs 39E24,\n * game_libs_ncc_39E24.cpp) with the bob added: cull through cam_isSphereInView (kind 4), advance\n * the phase by the speed, s = fsin(phase), load the node matrix, scale the camera vector by the\n * GfxLib world scale through the inline Cam::mul on the `Cam &c` reference, then add amp * s (and\n * the SNode height on y). The reference / inline member are the 39E24 levers: a cfe decode folds\n * the GfxLib+0xA0 base into the offsets (lui v1; lwc1 0xD0(v1)) instead of the target's\n * lui/addiu v0,+0xA0; lwc1 0x30(v0). EXACT. */\ntypedef int s32; typedef unsigned int u32; typedef short s16; typedef unsigned short u16; typedef unsigned char u8; typedef float f32;\n#include \"../../include/gdl/mnode.h\" /* SNode: pos, height */\nextern \"C\" {\nint gl_proto_bal1A8(int, int, float, float, float, int, float); /* cam_isSphereInView */\nfloat gl_fsin_bal1A8(float);                                     /* fsin */\nvoid gl_func_00000000_bal1A8v(...);\nint gl_func_00000000(...);\n}\nstruct V3 { float x, y, z; };\nstruct G;\nstruct Cam { char pad[0x30]; V3 v; void mul(G &g); };\nstruct G { char pad[0xA0]; Cam cam; char padDC[0x128 - 0xDC]; V3 scale; char pad134[0x254 - 0x134]; int root; };\ninline void Cam::mul(G &g) { v.x *= g.scale.x; v.y *= g.scale.y; v.z *= g.scale.z; }\n/* Balloon (0x9C): SNode + the hostio \"x/y/z\" bob amplitude, the bob speed and its phase */\nstruct Balloon { SNode snode; V3 amp; float speed; float phase; };\nextern \"C\" G gGfxLib_bal1A8_g;\nextern \"C\" void balloon_uso_func_000001A8(Balloon *a0) {\n    float s;\n    if (XCALL(gl_proto_bal1A8, cam_isSphereInView)(gGfxLib_bal1A8_g.root, 4, a0->snode.pos[0], a0->snode.pos[1],\n                                                   a0->snode.pos[2], 0, 0.0f) != 0) {\n        a0->phase += a0->speed;\n        s = XCALL(gl_fsin_bal1A8, fsin)(a0->phase);\n        XCALL(gl_func_00000000_bal1A8v, gfx_loadMatrix_00047DD8)(&gGfxLib_bal1A8_g, (char *)a0 + 0x2C);\n        {\n            Cam &c = gGfxLib_bal1A8_g.cam;\n            c.mul(gGfxLib_bal1A8_g);\n            c.v.x += a0->amp.x * s;\n            c.v.y += a0->amp.y * s + a0->snode.height;\n            c.v.z += a0->amp.z * s;\n        }\n        CALL(Node_display)(a0);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/balloon_uso/balloon_uso_ncc_1A8.cpp",
+    "asm_path": "asm/nonmatchings/balloon_uso/balloon_uso/balloon_uso_func_000001A8.s",
+    "segment": "balloon_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "Byte-identical to the asm .word target; readability-gate PASS (ROM identical)."
+  }
+}

@@ -75,7 +75,11 @@ int *balloon_uso_func_00000140(char *self) {
     return (int *)self;
 }
 
-INCLUDE_ASM("asm/nonmatchings/balloon_uso/balloon_uso", balloon_uso_func_000001A8);
+/* balloon_uso_func_000001A8: Balloon display (cull, phase += speed, bob the camera
+ * vector by amp * fsin(phase)). EXACT via an IDO 7.1 NCC (C++) donor,
+ * src/balloon_uso/balloon_uso_ncc_1A8.cpp, REPLACE_FUNC_BODY-spliced over this placeholder. */
+void balloon_uso_func_000001A8(char *self) {
+}
 
 /* balloon_uso_func_000002BC: saveData: bob amplitude, bob speed, then the SNode part. */
 void balloon_uso_func_000002BC(char *self) {

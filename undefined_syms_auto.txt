@@ -5711,3 +5711,7 @@ gPolyFlags_3EEC4_tmpl_wr = 0x00000000;  /* balloon / checkpoint template create:
 gPolyGeomMode_3EEC8_tmpl = 0x00000000;  /* balloon / checkpoint template create: gPolyGeomMode pair alias (lui/addiu base, distinct from the flag word) */
 gCollObjMgr_tmpl = 0x00000000;  /* checkpoint template create: bootup Bss+0x10, the CollObjMgr pointer passed to CollObjMgr_addStatic (as bootup D_87A4_tail) */
 SNodeItemType_vtbl_fire = 0x00000000;  /* fire FireTmpl ctor: the inline SNodeItemType base vptr (bootup Data+0x1EFC0, SNodeItemType_vtbl), distinct from the module Data base */
+gGfxLib_bal1A8_g = 0x00000000;  /* balloon 1A8 NCC donor: GfxLib (bootup Bss+0x3C168) */
+gl_proto_bal1A8 = 0x00000000;  /* balloon 1A8 NCC donor: cam_isSphereInView 7-arg prototype */
+gl_fsin_bal1A8 = 0x00000000;  /* balloon 1A8 NCC donor: fsin (float -> float) */
+gl_func_00000000_bal1A8v = 0x00000000;  /* balloon 1A8 NCC donor: void callee alias */
