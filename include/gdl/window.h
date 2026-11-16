@@ -77,6 +77,15 @@ typedef struct Window {
     /* 0x134 */ void *hooks[4];      /* Window_addHook_0004EDEC / Window_runHooks_0004ED0C */
 } Window;
 
+/* Window +0x100 / +0x104 are one 8-byte member object: Window_ctor builds it as a unit (the
+ * new(8) fallback of an inline member ctor, both words zeroed) and Window_setDefaults copies it
+ * from gWindowDefaults +0x0 as a pair. WINCLEAR(p) views a pointer to it. */
+typedef struct WinClear {
+    /* 0x0 */ s32 unk0;              /* Window +0x100 */
+    /* 0x4 */ s32 clearFlags;        /* Window +0x104 */
+} WinClear;
+#define WINCLEAR(p) ((WinClear *)(p))
+
 typedef struct ScreenWindow {
     /* 0x000 */ Window win;
     /* 0x144 */ s32 fbIndex;          /* copy of the GfxLib frame index (gfx +0x204) */

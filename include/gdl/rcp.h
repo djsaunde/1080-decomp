@@ -46,7 +46,8 @@ typedef struct RcpMgr {
     /* 0x18 */ s32 unk18;
     /* 0x1C */ s32 rspBusy;
     /* 0x20 */ s32 rdpBusy;
-    /* 0x24 */ s32 unk24;
+    /* 0x24 */ s32 retraceCount;   /* ++ on each 'd' (VI retrace) message in RcpMgr_service;
+                                    * gfx_waitRetrace spins until it changes */
     /* 0x28 */ s32 taskCount;      /* post-incremented by RcpMgr_initTask */
     /* 0x2C */ s32 buf2C;          /* 0x400-byte buffer from the ctor */
     /* 0x30 */ s32 unk30[3];

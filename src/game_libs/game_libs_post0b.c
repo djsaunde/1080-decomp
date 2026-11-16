@@ -11431,11 +11431,11 @@ void FogParms_emit_00043F1C(short *a0) {
     CALL(gfx_emitFog)((((int *)gGfx->curWindow))[0x56], a0[9], a0[0xB], a0);
 }
 
-void FogParms_hostioParms(int *a0) {
+void FogParms_hostioParms(FogParms *a0) {
     CALL(hostio_beginGroup)(&gHostio, (int)(GL_DATA_STR(0x1FD20, "FogParms")), 0);
     CALL(gfx_declColourParm)(a0, 0);
-    CALL(hostio_addInt)(&gHostio, (int)(GL_DATA_STR(0x1FD2C, "Min")), (int)a0 + 16, 500, 1000, 1);
-    CALL(hostio_addInt)(&gHostio, (int)(GL_DATA_STR(0x1FD30, "Max")), (int)a0 + 20, 500, 1000, 1);
+    CALL(hostio_addInt)(&gHostio, (int)(GL_DATA_STR(0x1FD2C, "Min")), (int)&a0->min, 500, 1000, 1);
+    CALL(hostio_addInt)(&gHostio, (int)(GL_DATA_STR(0x1FD30, "Max")), (int)&a0->max, 500, 1000, 1);
     CALL(hostio_endGroup)(&gHostio);
 }
 
@@ -11488,17 +11488,16 @@ void gfx_loadQuadIntInt_00044034(void *a0) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-#define AF(p, o) (*(f32 *)((char *)(p) + (o)))
-void FogParms_lerp_0004406C(char *arg0, char *arg1, f32 arg2) {
+void FogParms_lerp_0004406C(FogParms *arg0, FogParms *arg1, f32 arg2) {
     f32 d;
     f32 temp_f0 = arg2 * arg2;
 
-    d = AF(arg0, 0x0); AF(arg0, 0x0) = (AF(arg1, 0x0) - d) * arg2 + d;
-    d = AF(arg0, 0x4); AF(arg0, 0x4) = (AF(arg1, 0x4) - d) * arg2 + d;
-    d = AF(arg0, 0x8); AF(arg0, 0x8) = (AF(arg1, 0x8) - d) * arg2 + d;
-    d = AF(arg0, 0xC); AF(arg0, 0xC) = (AF(arg1, 0xC) - d) * temp_f0 + d;
-    d = (f32) FW(arg0, 0x10); FW(arg0, 0x10) = (s32) ((((f32) FW(arg1, 0x10) - d) * temp_f0) + d);
-    d = (f32) FW(arg0, 0x14); FW(arg0, 0x14) = (s32) ((((f32) FW(arg1, 0x14) - d) * temp_f0) + d);
+    d = arg0->colour[0]; arg0->colour[0] = (arg1->colour[0] - d) * arg2 + d;
+    d = arg0->colour[1]; arg0->colour[1] = (arg1->colour[1] - d) * arg2 + d;
+    d = arg0->colour[2]; arg0->colour[2] = (arg1->colour[2] - d) * arg2 + d;
+    d = arg0->colour[3]; arg0->colour[3] = (arg1->colour[3] - d) * temp_f0 + d;
+    d = (f32) arg0->min; arg0->min = (s32) ((((f32) arg1->min - d) * temp_f0) + d);
+    d = (f32) arg0->max; arg0->max = (s32) ((((f32) arg1->max - d) * temp_f0) + d);
 }
 
 // GfxLib_hostioParms — STRUCTURAL PASS (0x36C / 220 words, no episode). Raw-.word
@@ -11812,14 +11811,14 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", GfxLib_reset);
 /* Poll until the three pending-work fields clear. Assigning the boolean
  * preserves IDO's sltu short-circuit chain at entry and on the back edge.
  * The callback takes no explicit arguments in the target (35 words). */
-void gfx_waitRcpIdle(int *arg0) {
-    int *state = *(int **)((char *)arg0 + 0x218);
+void gfx_waitRcpIdle(GfxLib *arg0) {
+    RcpMgr *state = arg0->rcp;
     int busy;
 
-    busy = state[7] != 0 || state[1] != 0 || state[3] != 0;
+    busy = state->rspBusy != 0 || state->queue != 0 || state->active != 0;
     while (busy) {
         CALL(gl_osYieldThread)();
-        busy = state[7] != 0 || state[1] != 0 || state[3] != 0;
+        busy = state->rspBusy != 0 || state->queue != 0 || state->active != 0;
     }
 }
 
@@ -11949,14 +11948,14 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gfx_addDdm);
  * (per docs/IDO_CODEGEN.md#feedback-ido-unused-arg-save — IDO -O2
  * defensively spills register args when the body contains a jal). */
 extern int gl_func_00000000();
-void gfx_callDdm(int *a0, int a1, int a2) {
-    CALL(gfx_ddmNop_00044534)(a0[a1 + 0xAB], a2);
+void gfx_callDdm(GfxLib *a0, int a1, int a2) {
+    CALL(gfx_ddmNop_00044534)(a0->ddm[a1], a2);
 }
 
 void gfx_emptyStub_00044DC4(int a0, int a1, int a2) {}
 
-int gfx_getDdm(int *a0, int a1) {
-    return a0[a1 + 0xAB];
+int gfx_getDdm(GfxLib *a0, int a1) {
+    return a0->ddm[a1];
 }
 
 // gfx_start — STRUCTURAL PASS (0xF4 / 62 words, no episode). Raw-.word
@@ -12001,26 +12000,26 @@ int gfx_getDdm(int *a0, int a1) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 extern int gGfxPhase_44DE4, D_44DE4_val;
-void gfx_start(char *arg0) {
+void gfx_start(GfxLib *arg0) {
     s32 i;
     char *e;
     char *vt;
-    char *q;
+    GfxMorphList *q;
 
     gGfxPhase_44DE4 = (int)(GL_DATA_STR(0x1FEB4, "Start"));
-    D_44DE4_val = FW(FW(arg0, 0x218), 0x24);
-    *(volatile int *)(arg0 + 0x244) = 0;
-    FW(arg0, 0x248) = 0;
-    FW(arg0, 0x258) = 0;
-    CALL(gfx_resetDLContext)(((int *)(FW(arg0, 0x240) + 0x198))[FW(arg0, 0x204)]);
-    CALL(gfx_resetDLContext)(((int *)(FW(arg0, 0x240) + 0x180))[FW(arg0, 0x204)]);
-    q = (char *)FW(arg0, 0x22C);
-    FW(q, 0xC) = 0;
+    D_44DE4_val = arg0->rcp->retraceCount;
+    *(volatile int *)&arg0->unk244 = 0;
+    arg0->unk248 = 0;
+    arg0->nWindows = 0;
+    CALL(gfx_resetDLContext)(arg0->mainWindow->setupDL[arg0->fbIndex]);
+    CALL(gfx_resetDLContext)(arg0->mainWindow->bgDL[arg0->fbIndex]);
+    q = arg0->morphs;
+    q->count = 0;
     CALL(prof_timerReset_0004DD4C)(GL_DATA_STR(0x1FEBC, "MHupd"));
     CALL(prof_timerReset_0004DD4C)(GL_DATA_STR(0x1FEC4, "Anm"));
-    FW(arg0, 0x1C0) = 0;
-    for (i = 0; i < FW(arg0, 0x15C); i++) {
-        e = ((char **)(arg0 + 0x148))[i];
+    arg0->nDrawUpdates = 0;
+    for (i = 0; i < arg0->nFrameStartCbs; i++) {
+        e = arg0->frameStartCbs[i];
         if (e != 0) {
             vt = (char *)FW(e, 0x5C);
             ((void (*)(char *, int))FW(vt, 0xC))(e + *(s16 *)(vt + 8), 0);
@@ -12086,59 +12085,59 @@ extern float gl_func_00000000_fret();
 extern char gGfxLib_44EDC_a, gGfxPhase_44EDC_b, gGfxLib_44EDC_c, gGfxLib_44EDC_d, D_44EDC_e, gGfxPhase_44EDC_f,
     gGfxPhase_44EDC_h, gSysLib_44EDC_i;
 extern int D_44EDC_g[];
-void gfx_end(char *arg0) {
+void gfx_end(GfxLib *arg0) {
     s32 k;
     s32 n;
     char *obj;
-    char *r;
+    GfxMorphList *r;
     s32 cond;
     s32 k2;
     char *w;
     char *e;
 
     *(char **)&gGfxPhase_44EDC_b = GL_DATA_STR(0x1FEC8, "End");
-    CALL(gfx_resetDLContext)(((s32 *) arg0)[GFXLIB(&gGfxLib_44EDC_a)->fbIndex + 0xA0]);
-    n = FW(arg0, 0x258);
+    CALL(gfx_resetDLContext)(arg0->oneFrameDL[GFXLIB(&gGfxLib_44EDC_a)->fbIndex]);
+    n = arg0->nWindows;
     k = 0;
     if (n != 0) {
         do {
-            CALL(gfx_submitFrame_0004CDB0)(((s32 *) arg0)[k + 0x97], (k + 1) == n);
-            n = FW(arg0, 0x258);
+            CALL(gfx_submitFrame_0004CDB0)(arg0->windows[k], (k + 1) == n);
+            n = arg0->nWindows;
             k++;
         } while ((u32) k < (u32) n);
     }
     CALL(prof_beginSection)(GL_DATA_STR(0x1FECC, "CPU"));
     obj = ((char *)GFXLIB(&gGfxLib_44EDC_c)->rcp);
-    while (FW(obj, 4) != 0 || FW(obj, 0xC) != 0) {
+    while (((RcpMgr *)obj)->queue != 0 || ((RcpMgr *)obj)->active != 0) {
         CALL(gl_osYieldThread)();
     }
     CALL(prof_timerStart)(GL_DATA_STR(0x1FED0, "MorphUpd"));
-    r = (char *) FW(arg0, 0x22C);
-    obj = *(char **)(r + 0x14);
-    ((VT_44EDC) FW(obj, 0xC))(*(s16 *)(obj + 8) + r);
+    r = arg0->morphs;
+    obj = r->vptr;
+    ((VT_44EDC) VT_SLOT(obj, 0).fn)(VT_SLOT(obj, 0).delta + (char *)r);
     CALL(prof_timerStop)(GL_DATA_STR(0x1FEDC, "MorphUpd"));
     obj = ((char *)GFXLIB(&gGfxLib_44EDC_d)->rcp);
-    cond = (FW(obj, 0x1C) != 0 || FW(obj, 4) != 0 || FW(obj, 0xC) != 0);
+    cond = (((RcpMgr *)obj)->rspBusy != 0 || ((RcpMgr *)obj)->queue != 0 || ((RcpMgr *)obj)->active != 0);
     while (cond) {
         CALL(gl_osYieldThread)();
-        cond = (FW(obj, 0x1C) != 0 || FW(obj, 4) != 0 || FW(obj, 0xC) != 0);
+        cond = (((RcpMgr *)obj)->rspBusy != 0 || ((RcpMgr *)obj)->queue != 0 || ((RcpMgr *)obj)->active != 0);
     }
     CALL(prof_timerStart)(GL_DATA_STR(0x1FEE8, "ADrawUpd"));
     k2 = 0;
-    FW(arg0, 0x254) = FW(arg0, 0x240);
-    if (FW(arg0, 0x1C0) > 0) {
+    arg0->curWindow = arg0->mainWindow;
+    if (arg0->nDrawUpdates > 0) {
         do {
-            w = *(char **)((char **) arg0)[k2 + 0x66];
-            e = ((char **) arg0)[k2 + 0x66];
-            ((VT_44EDC) FW(w, 0xC))(*(s16 *)(w + 8) + e);
+            w = *(char **)arg0->drawUpdates[k2];
+            e = arg0->drawUpdates[k2];
+            ((VT_44EDC) VT_SLOT(w, 0).fn)(VT_SLOT(w, 0).delta + e);
             k2++;
-        } while (k2 < FW(arg0, 0x1C0));
+        } while (k2 < arg0->nDrawUpdates);
     }
     CALL(prof_timerStop)(GL_DATA_STR(0x1FEF4, "ADrawUpd"));
     CALL(prof_timerStop)(GL_DATA_STR(0x1FF00, "1GFrame"));
     *(float *)&D_44EDC_e = XCALL(gl_func_00000000_fret, prof_timerRead_0004DD2C)(GL_DATA_STR(0x1FF08, "1GFrame"));
     *(char **)&gGfxPhase_44EDC_f = GL_DATA_STR(0x1FF10, "Swap");
-    while (FW(FW(arg0, 0x218), 0x24) == D_44EDC_g[0]) {
+    while (arg0->rcp->retraceCount == D_44EDC_g[0]) {
         CALL(gl_osYieldThread)();
     }
     CALL(gfx_swapBuffer)(arg0);
@@ -12419,9 +12418,9 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gfx_setupMatTextures_00045E2
  * value remains unchanged. Byte-exact: inlining the a0[0x218] reload (vs a
  * named `volatile int *v0` local) allocates the pointer to $t7 not $v0 to
  * match. jal-0 placeholder call = no episode. */
-void gfx_waitRetrace(int *a0) {
-    int initial = ((volatile int*)a0[0x218/4])[0x24/4];
-    while (initial == ((volatile int*)a0[0x218/4])[0x24/4]) {
+void gfx_waitRetrace(GfxLib *a0) {
+    int initial = ((volatile RcpMgr *)a0->rcp)->retraceCount;
+    while (initial == ((volatile RcpMgr *)a0->rcp)->retraceCount) {
         CALL(gl_osYieldThread)();
     }
 }
@@ -12438,8 +12437,8 @@ s32 gfx_drawText(void *arg0, u8 *arg1, s32 arg2) {
     return 0;
 }
 
-void gfx_setCpuDraw(int *a0, int a1) {
-    a0[163] = a1;
+void gfx_setCpuDraw(GfxLib *a0, int a1) {
+    a0->cpuDraw = a1;
 }
 
 // gfx_drawFbChar_00046790 — STRUCTURAL PASS (0x214 / 134 words, no episode). Raw-.word
@@ -12557,6 +12556,10 @@ void gfx_drawFbChar_00046790(char *o, unsigned char ch, int x, int y) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_000469A8)();
+#define SCRWIN(p) ((ScreenWindow *)(p))
+/* arg0->mainWindow read as an int: every load of it here must stay int-typed (IDO CSEs only same-typed
+ * loads; a pointer-typed read regrows the frame from 0x58 to 0xB0) */
+#define GFX_MAINWIN_I(g) (*(int *)&(g)->mainWindow)
 /* run 151 (agent-c, 64.91 -> 67.64) DECODE fixes read from the target: both vtable
  * deltas are s16 (`lh 96(v0)` / `lh 24(s0)`); self->0x240 is re-read after the
  * first vcall (the target reloads it, no sp spill); the 0x240 store goes to
@@ -12567,7 +12570,7 @@ typedef char *(*GP_000469A8)();
  * run 152 (agent-c, 67.64 -> 67.81, 380 -> 392 bytes toward 412): the first vcall result and the
  * second vtable pointer are ONE variable (target: `or s0,v0` copy, then s0 = vt); bit-4 test hoisted
  * above the bit-2 if. The held +0x100 / +0x78 pointers still fold into offsets. */
-void gfx_submitFrameTask_000469A8(char *arg0, s32 arg1) {
+void gfx_submitFrameTask_000469A8(GfxLib *arg0, s32 arg1) {
     s32 var_t0; /* agent-c run 191 lever-sweep hoist */
     volatile s32 pa, pb; /* agent-c run 191: two phantom homes give the target frame 0x58 (sp48 at 72) */
     volatile s32 sp48; /* run 179: the target's sp+72 home */
@@ -12582,40 +12585,40 @@ void gfx_submitFrameTask_000469A8(char *arg0, s32 arg1) {
     char *temp_v0_3;
     char *temp_v1;
 
-    arg1 = CALL(RcpMgr_queueTask)(FW(arg0, 0x218), 0);
-    temp_s1 = (char *)FW(((FW(arg0, 0x204) * 4) + FW(arg0, 0x240)), 0x180); /* agent-g run 257: index term first (operand-order lever): 95.12 -> 95.36 */
+    arg1 = CALL(RcpMgr_queueTask)(arg0->rcp, 0);
+    temp_s1 = (char *)SCRWIN((arg0->fbIndex * 4) + GFX_MAINWIN_I(arg0))->bgDL[0]; /* = mainWindow->bgDL[fbIndex], index term first (operand-order lever) */ /* agent-g run 257: index term first (operand-order lever): 95.12 -> 95.36 */
     CALL(gfx_resetDLContext)(temp_s1);
     /* agent-g run 281's code-free arg0->0x240 test here moved below the var_t0 store (agent-c run 320): here it made
      * the first 0x240 load a CSE'd expression coloured a1; without it the load is temp_v1 itself (v1, target) */
     if (temp_s1) {} /* agent-g run 278: code-free tests on temp_s1 after this call and after the temp_t6 read (random test search, 2 rounds): 95.36 -> 95.65, length = target */
-    temp_v1 = (char *)FW(arg0, 0x240);
-    temp_v0 = (char *)FW(temp_v1, 0x28);
+    temp_v1 = (char *)GFX_MAINWIN_I(arg0);
+    temp_v0 = (char *)SCRWIN(temp_v1)->win.node.vptr;
     /* agent-c run 322 (kit CDXII lever, agent-g run 321): the vcall result also held in a block-scoped rv, tested
      * once in the argument block, keeps v0 busy from the vcall to there (temp_v1 / p78 / the 0x148 reload / a6..a9
      * can no longer take v0); scope closes after the block, so no new home */
     { char *rv;
-    temp_s0 = rv = ((GP_000469A8)FW(temp_v0, 0x64))(*(s16 *)(temp_v0 + 0x60) + temp_v1);
-    temp_v1 = (char *)FW(arg0, 0x240);
+    temp_s0 = rv = ((GP_000469A8)VT_SLOT(temp_v0, 11).fn)(VT_SLOT(temp_v0, 11).delta + temp_v1);
+    temp_v1 = (char *)GFX_MAINWIN_I(arg0);
     /* agent-g run 281: code-free tests of two of the block's loads (temp_v1->0x148, ->0xC0) before the block (kit
      * CCCXL creation order; expression-test sweep): 96.02 -> 97.52, same length.
      * agent-c run 318: the 0x148 test moved from here to right after the a10 declaration below (the first 0x148
      * load becomes the target's ugen t6 / t8 pair, the a10 reload a coloured expression): 99.175 -> 99.369 */
-    if (FW(temp_v1, 0xC0)) {}
+    if (SCRWIN(temp_v1)->win.originX) {}
     {
         /* agent-c run 196: p100 / pDC from a re-read of arg0->0x240 (CSE'd load, unfolded
          * `addiu a2,v1,256` / `addiu t7,v1,220` held like the target; kit CLXX 5.) */
-        char *p100 = (char *)(FW(arg0, 0x240) + 0x100);
-        s32 p78 = (s32)(temp_v1 + 0x78) + 0 * arg1; /* agent-g run 279: p78 an int (pointer -> int conversion): the +0x78 base is held in a register like the target's t1 (`lw a3,0(t1)` / `lw t0,0(t1)`) instead of folding into 120(v1): 95.80 -> 95.87. agent-g run 206: folded counted use of arg1 (kit CXCIV grid): 94.24 -> 95.12, 408 -> 412 bytes = target */
+        char *p100 = (char *)(GFX_MAINWIN_I(arg0) + 0x100);
+        s32 p78 = (s32)&SCRWIN(temp_v1)->win.flags + 0 * arg1; /* agent-g run 279: p78 an int (pointer -> int conversion): the +0x78 base is held in a register like the target's t1 (`lw a3,0(t1)` / `lw t0,0(t1)`) instead of folding into 120(v1): 95.80 -> 95.87. agent-g run 206: folded counted use of arg1 (kit CXCIV grid): 94.24 -> 95.12, 408 -> 412 bytes = target */
         s32 m4;
-        sp48 = FW(FW(temp_v1, 0x148), 0xF0);
-        m4 = FW(p78, 0) & 4;
-        var_t0 = (FW(p100, 0x4) & 2) != 0;
-        if (FW(arg0, 0x240) + (FW(arg0, 0x240) | 1) + (FW(arg0, 0x240) ^ 2) + (FW(arg0, 0x240) & 3) + m4 + (m4 | 1) + (m4 ^ 2) + (m4 & 3) + (int)p100 + ((int)p100 | 1) + (int)temp_v1 + ((int)temp_v1 | 1) + ((int)temp_v1 ^ 2) + ((int)temp_v1 & 3) + ((int)temp_v1 - 4) + (m4 + 9) + ((m4 + 9) | 1) + ((m4 + 9) ^ 2)) {} /* agent-c run 320: agent-g run 281's arg0->0x240 test moved here, plus a temp_s0 test after the second vcall and the third temp_s1 test dropped (keeps temp_s0 coloured before temp_s1, s0/s1 like the target): 99.515 -> 99.660.
+        sp48 = (s32)SCRWIN(temp_v1)->fbOwner->win.zBuffer;
+        m4 = *(s32 *)p78 & 4;
+        var_t0 = (WINCLEAR(p100)->clearFlags & 2) != 0;
+        if (GFX_MAINWIN_I(arg0) + (GFX_MAINWIN_I(arg0) | 1) + (GFX_MAINWIN_I(arg0) ^ 2) + (GFX_MAINWIN_I(arg0) & 3) + m4 + (m4 | 1) + (m4 ^ 2) + (m4 & 3) + (int)p100 + ((int)p100 | 1) + (int)temp_v1 + ((int)temp_v1 | 1) + ((int)temp_v1 ^ 2) + ((int)temp_v1 & 3) + ((int)temp_v1 - 4) + (m4 + 9) + ((m4 + 9) | 1) + ((m4 + 9) ^ 2)) {} /* agent-c run 320: agent-g run 281's arg0->0x240 test moved here, plus a temp_s0 test after the second vcall and the third temp_s1 test dropped (keeps temp_s0 coloured before temp_s1, s0/s1 like the target): 99.515 -> 99.660.
              * agent-c run 322: distinct uses in this ONE test (kit CDXIII (b), no new block) raise the arg0->0x240 LR,
              * m4, p100 and temp_v1 above p78, and the CSE'd (m4 + 9) is a code-free expression LR in this block: with rv
              * on v0 they fill v1 / a0..a3 / t0 before p78, which takes the target's t1 */
         if (var_t0 != 0) {
-            var_t0 = (FW(p78, 0) & 2) != 0;
+            var_t0 = (*(s32 *)p78 & 2) != 0;
         }
         if ((var_t0 | 1) + (var_t0 ^ 2) + (var_t0 & 3) + (var_t0 - 4)) {} /* agent-c run 322: var_t0 coloured before the 0x148 reload (t0) */
         /* agent-c run 191: stack args 6..10 evaluated into locals before the call (the target loads
@@ -12624,17 +12627,17 @@ void gfx_submitFrameTask_000469A8(char *arg0, s32 arg1) {
         /* agent-g run 282: folded counted use of p100 in a10 (zero-use sweep re-run): p100's LR reaches the argument
          * block: 97.96 -> 98.06, same length; second sweep pass: a second counted use there (two refs in the
          * unit): 98.06 -> 98.20, same length */
-        { s32 a6 = FW(temp_v1, 0xC0), a7 = FW(temp_v1, 0xC4), a8 = FW(temp_v1, 0xB8), a9 = FW(temp_v1, 0xBC), a10 = FW(FW(temp_v1, 0x148), 0xB8) + 0 * (int)(p100); if (FW(temp_v1, 0x148)) {}
+        { s32 a6 = SCRWIN(temp_v1)->win.originX, a7 = SCRWIN(temp_v1)->win.originY, a8 = SCRWIN(temp_v1)->win.width, a9 = SCRWIN(temp_v1)->win.height, a10 = SCRWIN(temp_v1)->fbOwner->win.width + 0 * (int)(p100); if (SCRWIN(temp_v1)->fbOwner) {}
           if (rv) {} /* agent-c run 322: rv's one test (see the vcall) */
-          if (FW(temp_v1, 0xC0)) {} /* agent-g run 281: then a temp_v1 field test ahead of it (0xC0 / 0xC4 / 0xB8 / 0xBC equal): 97.86 -> 97.96 */
-          if (FW(arg0, 0x240)) {} /* agent-g run 281: code-free arg0 load test between the argument locals and the call (any arg0 field: 0x240 / 0x218 / 0x290 equal): 97.57 -> 97.86 */
+          if (SCRWIN(temp_v1)->win.originX) {} /* agent-g run 281: then a temp_v1 field test ahead of it (0xC0 / 0xC4 / 0xB8 / 0xBC equal): 97.86 -> 97.96 */
+          if (GFX_MAINWIN_I(arg0)) {} /* agent-g run 281: code-free arg0 load test between the argument locals and the call (any arg0 field: 0x240 / 0x218 / 0x290 equal): 97.57 -> 97.86 */
           /* agent-c run 318: the sixth argument written in the call (`temp_v1 + 0xDC`, no pDC local): the target's
            * `addiu t7,v1,220` is a ugen temp held across the var_t0 beqz (ours was a coloured local in ra) */
           /* agent-c run 322: a6..a9 raised above the 0x148 reload by one multi-use test (kit CDXIII (b)), and the
            * folded `0 * FW(temp_v1, 0x148)` on a10 keeps the reload's CSE'd LR live into the call block (argument
            * registers forbidden): it is coloured after a6..a9 and takes t5, a10 ra, like the target */
           if ((a6 | a7 | a8 | a9) + (a6 ^ a7 ^ a8 ^ a9) + (a6 & a7 & a8 & a9)) {}
-          CALL(gfx_clearScreen)(temp_s1, temp_s0, sp48, m4, var_t0, temp_v1 + 0xDC, a6, a7, a8, a9, a10 + 0 * FW(temp_v1, 0x148), FW(temp_v1, 0x1B0)); }
+          CALL(gfx_clearScreen)(temp_s1, temp_s0, sp48, m4, var_t0, SCRWIN(temp_v1)->win.clearColour, a6, a7, a8, a9, a10 + 0 * (int)SCRWIN(temp_v1)->fbOwner, SCRWIN(temp_v1)->clearAlpha); }
     }
     if (temp_s1) {}
     }
@@ -12643,27 +12646,27 @@ void gfx_submitFrameTask_000469A8(char *arg0, s32 arg1) {
      * read, with folded `0 * (int)&D` uses (kit CCCLXXII form): the loaded value is a ugen temp (t6) and &D the
      * coloured v1 like the target; with the in-call pDC above (one ugen ring slot) the second vcall keeps its
      * jalr delay fill, and the a10 fold drops to one p100 use: 98.786 -> 99.175, same length */
-    FW(*(char **)((int)&gGfxLib + 0x254) = (char *)FW(arg0, 0x240) + 0 * (int)&gGfxLib, 0x158) = (int)temp_s1 + 0 * (int)&gGfxLib;
+    (*(ScreenWindow **)((int)&gGfxLib + 0x254) = (ScreenWindow *)((char *)GFX_MAINWIN_I(arg0) + 0 * (int)&gGfxLib))->dl = (DLContext *)((int)temp_s1 + 0 * (int)&gGfxLib);
     if (temp_s0) {} /* agent-c run 318: code-free test of the vcall result after the store (random test search): temp_v0_2 takes v0 like the target, 99.369 -> 99.515 */
-    temp_v0_2 = (char *)FW(arg0, 0x290);
-    temp_s0 = (char *)FW(temp_v0_2, 0x28);
-    ((GP_000469A8)FW(temp_s0, 0x1C))(*(s16 *)(temp_s0 + 0x18) + temp_v0_2);
+    temp_v0_2 = (char *)arg0->unk290;
+    temp_s0 = (char *)NODE(temp_v0_2)->vptr;
+    ((GP_000469A8)VT_SLOT(temp_s0, 2).fn)(VT_SLOT(temp_s0, 2).delta + temp_v0_2);
     if (temp_s0) {} /* agent-c run 320 (see the var_t0 note) */
-    temp_a3 = (char *)FW(temp_s1, 0xC);
+    temp_a3 = (char *)DLCTX(temp_s1)->gfx.cur;
     /* agent-g run 278's third temp_s1 test (95.65 -> 95.80) dropped in agent-c run 320 */
-    temp_a1_2 = FW(temp_a3, 0x4);
-    FW(temp_a3, 0x4) = (s32) (temp_a1_2 + 1);
-    temp_v0_3 = (char *)(FW(FW(temp_s1, 0xC), 0x0) + temp_a1_2 * 8); /* agent-c run 294: agent-g run 280's comma-wrapped scaled index `(0, temp_a1_2 * 8)` dropped -- stale after the later tests / p100 folds (kit CCCLXI lever re-test): 98.204 -> 98.641, same length */
-    FW(temp_v0_3, 0x0) = 0xE9000000;
-    FW(temp_v0_3, 0x4) = 0;
+    temp_a1_2 = DLBUF(temp_a3)->count;
+    DLBUF(temp_a3)->count = (s32) (temp_a1_2 + 1);
+    temp_v0_3 = (char *)(DLCTX(temp_s1)->gfx.cur->base + temp_a1_2 * 8); /* agent-c run 294: agent-g run 280's comma-wrapped scaled index `(0, temp_a1_2 * 8)` dropped -- stale after the later tests / p100 folds (kit CCCLXI lever re-test): 98.204 -> 98.641, same length */
+    DLPKT(temp_v0_3)->w0 = 0xE9000000;
+    DLPKT(temp_v0_3)->w1 = 0;
     CALL(gfx_endDL)(temp_s1, temp_a1_2);
-    temp_s0 = (char *)FW(FW(temp_s1, 0xC), 0x4); /* agent-c run 175: s0's third role */
+    temp_s0 = (char *)DLCTX(temp_s1)->gfx.cur->count; /* agent-c run 175: s0's third role */
     /* agent-c run 304 (kit CCCLXXVIII variable reuse): the 0x60 argument assigned to temp_a3 inside the argument list --
      * temp_a3 (the target's a3 for the temp_s1->0xC web above) is reused for the later a3 argument, so its first web
      * colours a3 instead of v1; as an assignment expression in the call the load keeps its argument-order slot after
      * the a0 load (a separate statement issues it first): 98.641 -> 98.786, same length */
-    CALL(RcpMgr_initTask)(FW(arg0, 0x218), arg1, 0, (temp_a3 = (char *)FW(temp_s1, 0x60)), temp_s0, (char *)4);
-    CALL(RcpMgr_insert_0004DC08)(FW(arg0, 0x218), arg1);
+    CALL(RcpMgr_initTask)(arg0->rcp, arg1, 0, (temp_a3 = (char *)DLCTX(temp_s1)->frameStart), temp_s0, (char *)4);
+    CALL(RcpMgr_insert_0004DC08)(arg0->rcp, arg1);
 }
 
 extern int gl_func_00000000();
@@ -12683,13 +12686,13 @@ int gfx_thunk_00046B44() {
  * commute: writing `(int)a0[0x240/4] + *(short*)(vtable+0x60)` (ptr-value
  * textually FIRST) emits the target's `addu a0,t0,v0` (short-first).
  * EXACT (unwrapped run 95): func_00000000 is a real symbol at 0. */
-void gfx_swapBuffer(int *a0) {
+void gfx_swapBuffer(GfxLib *a0) {
     int *vtable;
     int rv;
-    ((int*)a0[0x240/4])[0x144/4] = (a0[0x204/4] ^= 1);
-    vtable = (int*)((int*)a0[0x240/4])[0x28/4];
+    a0->mainWindow->fbIndex = (a0->fbIndex ^= 1);
+    vtable = (int*)a0->mainWindow->win.node.vptr;
     rv = ((int(*)(int))vtable[0x64/4])(
-        (int)a0[0x240/4] + *(short*)((char*)vtable + 0x60));
+        (int)a0->mainWindow + *(short*)((char*)vtable + 0x60));
     FCALL(osViSwapBuffer)(rv);
     FCALL(gfx_waitRetrace)(a0);
 }
@@ -12984,16 +12987,16 @@ void gfx_setEnvColour(char *self, float *c) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gfx_setEnvColour);
 #endif
 
-void gfx_emitRenderState_00047644(int* a0, int* a1) {
-    CALL(gfx_emitCycleType)(((int**)a0[0x254/4])[0x158/4], a1);
+void gfx_emitRenderState_00047644(GfxLib *a0, int* a1) {
+    CALL(gfx_emitCycleType)(a0->curWindow->dl, a1);
     if (a1[1] & 0xF00) {
-        CALL(gfx_emitCombineMode)(((int**)a0[0x254/4])[0x158/4], a1);
+        CALL(gfx_emitCombineMode)(a0->curWindow->dl, a1);
     }
     if ((unsigned int)a1[1] >> 12) {
-        CALL(gfx_emitGeometryMode)(((int**)a0[0x254/4])[0x158/4], a1);
+        CALL(gfx_emitGeometryMode)(a0->curWindow->dl, a1);
     }
     if (a1[1] & 0xFF) {
-        CALL(gfx_emitRenderMode)(((int**)a0[0x254/4])[0x158/4], a1);
+        CALL(gfx_emitRenderMode)(a0->curWindow->dl, a1);
     }
 }
 
@@ -13031,29 +13034,29 @@ void gfx_emitRenderState_00047644(int* a0, int* a1) {
  * structs passed by value; the call takes their low halves (lh 34/38(sp)
  * from the homes) and a1 goes last. */
 typedef struct { short hi; short lo; } S476DC;
-void gfx_emitFogRange_000476DC(char *a0, int a1, S476DC a2, S476DC a3) {
-    CALL(gfx_emitFog)(*(void **)(*(char **)(a0 + 0x254) + 0x158), a2.lo, a3.lo, a1);
+void gfx_emitFogRange_000476DC(GfxLib *a0, int a1, S476DC a2, S476DC a3) {
+    CALL(gfx_emitFog)(a0->curWindow->dl, a2.lo, a3.lo, a1);
 }
 
 /* gfx_colorToRGB16_0004771C: float RGB [0,1] -> u16 triple at +0x1FC via (u32)(c * 255.0f). */
-void gfx_colorToRGB16_0004771C(char *a0, float *a1) {
-    *(unsigned short *)(a0 + 508) = (unsigned int)(a1[0] * 255.0f);
-    *(unsigned short *)(a0 + 510) = (unsigned int)(a1[1] * 255.0f);
-    *(unsigned short *)(a0 + 512) = (unsigned int)(a1[2] * 255.0f);
+void gfx_colorToRGB16_0004771C(GfxLib *a0, float *a1) {
+    a0->colour[0] = (unsigned int)(a1[0] * 255.0f);
+    a0->colour[1] = (unsigned int)(a1[1] * 255.0f);
+    a0->colour[2] = (unsigned int)(a1[2] * 255.0f);
 }
 
 /* Self-ref init: a0->0x1F4 = 1; a0->0xE0 = &a0->0x60. Register-exact from C
  * (1->$t6, a0+0x60->$t7); only the two stores trade positions (IDO fills the
  * jr delay with the 0x1F4 store, target with the 0xE0 store) — closed via a
  * 2-insn INSN_PATCH swap. */
-void gfx_matrixModeProjection_000478D8(char *a0) {
-    *(int *)(a0 + 0x1F4) = 1;
-    *(char **)(a0 + 0xE0) = a0 + 0x60;
+void gfx_matrixModeProjection_000478D8(GfxLib *a0) {
+    a0->mtxMode = 1;
+    a0->curMtx = a0->proj;
 }
 
-void gfx_matrixModeModelView_000478EC(char *a0) {
-    *(int *)(a0 + 0x1F4) = 0;
-    *(char **)(a0 + 0xE0) = a0 + 0xA0;
+void gfx_matrixModeModelView_000478EC(GfxLib *a0) {
+    a0->mtxMode = 0;
+    a0->curMtx = a0->modelView;
 }
 
 // gfx_selectLights_000478FC — STRUCTURAL PASS + BOUNDARY NOTE (0x228 / 145 words, no
@@ -13099,20 +13102,20 @@ void gfx_matrixModeModelView_000478EC(char *a0) {
 void gfx_selectLights_000478FC(char *arg0, char *arg1, s32 arg2, f32 arg3, s32 arg4) {
 }
 
-void gfx_setDirBytes_00047AB4(char *a0, char *a1) {
-    a0[0x1F8] = a1[0];
-    a0[0x1F9] = a1[1];
-    a0[0x1FA] = a1[2];
-    a0[0x1FB] = a1[3];
+void gfx_setDirBytes_00047AB4(GfxLib *a0, char *a1) {
+    a0->dir[0] = a1[0];
+    a0->dir[1] = a1[1];
+    a0->dir[2] = a1[2];
+    a0->dir[3] = a1[3];
 }
 
 // Convert a Vec3 (a1[0..2]) to 3 signed bytes at a0->0x1F8/0x1F9/0x1FA, scaled
 // by 127.0f (0x42FE0000). The (int) cast is required for trunc.w.s — a (char)
 // cast of a float pulls in the soft-float-to-int helper instead.
-void gfx_setDirFromVec_00047AD8(char *a0, float *a1) {
-    a0[0x1F8] = (int)(a1[0] * 127.0f);
-    a0[0x1F9] = (int)(a1[1] * 127.0f);
-    a0[0x1FA] = (int)(a1[2] * 127.0f);
+void gfx_setDirFromVec_00047AD8(GfxLib *a0, float *a1) {
+    a0->dir[0] = (int)(a1[0] * 127.0f);
+    a0->dir[1] = (int)(a1[1] * 127.0f);
+    a0->dir[2] = (int)(a1[2] * 127.0f);
 }
 
 /* gfx_setBlendColour (0x2B0, 172 words): the 6-word gfx_setBlendColour
@@ -13170,9 +13173,9 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gfx_setBlendColour);
 /* IDO picked $a3 not $a2 for the temp at offset 0x4/0x14 — INSN_PATCH overrides
  * those 2 words in the Makefile. */
 extern int gl_func_00000000();
-int gfx_loadMatrix_00047DD8(int *a0, int a1) {
-    int *self = a0;
-    return CALL(math_mtx4Copy)(a1, self[0x38]);
+int gfx_loadMatrix_00047DD8(GfxLib *a0, int a1) {
+    GfxLib *self = a0;
+    return CALL(math_mtx4Copy)(a1, self->curMtx);
 }
 
 
@@ -13238,8 +13241,8 @@ void gfx_multMatrix_00047E00(char *arg0, float (*a)[4]) {
  *   Loads *(int*)(a0 + 0xE0) and tail-calls a cross-segment function with
  *   that value as the single arg. */
 extern int func_00000000();
-int gfx_loadIdentity_00047F48(int *a0) {
-    return FCALL(math_mtx4Identity)(*(int*)((char*)a0 + 0xE0));
+int gfx_loadIdentity_00047F48(GfxLib *a0) {
+    return FCALL(math_mtx4Identity)(a0->curMtx);
 }
 
 /* gfx_setViewStage_00047F68: 13-insn 2-arm store dispatcher. A 2-case
@@ -13248,14 +13251,14 @@ int gfx_loadIdentity_00047F48(int *a0) {
  * prior pass split this into matched case-body stubs 00047F84/00047F90;
  * re-merged here as the one true function (the stubs were switch-case bodies
  * reached via the dispatch branches, not standalone functions). */
-void gfx_setViewStage_00047F68(int *a0, int a1) {
-    a0[0x188 / 4] = a1;
+void gfx_setViewStage_00047F68(GfxLib *a0, int a1) {
+    a0->viewStage = a1;
     switch (a1) {
     case 0:
-        a0[0x1E0 / 4] = 1;
+        a0->stageIsProj = 1;
         break;
     case 1:
-        a0[0x1E0 / 4] = 0;
+        a0->stageIsProj = 0;
         break;
     }
 }
@@ -13363,9 +13366,9 @@ void gfx_drawFbSplash_00048184(char *a0) {
  * splitting idx/writeback lets CSE feed idx+1 to the compare = -2 words).
  * EXACT: unwrapped 2026-10-16 (gl_func_00000000 and D_00000000 are both
  * symbols at 0). */
-void gfx_addWindow(char *a0, int a1) {
-    int idx = (*(int*)(a0 + 0x258))++; ((int*)(a0 + 0x25C))[idx] = a1;
-    if ((unsigned int)*(int*)(a0 + 0x258) >= 8) {
+void gfx_addWindow(GfxLib *a0, int a1) {
+    int idx = a0->nWindows++; a0->windows[idx] = (struct ScreenWindow *)a1;
+    if ((unsigned int)a0->nWindows >= 8) {
         CALL(sys_fatal)(GL_DATA_STR(0x1FF30, "too many windows"));
     }
 }
@@ -16697,8 +16700,8 @@ end:
 void gfx_initMtxBlock_0004E00C(int *s0) {
 }
 
-void gfx_setEvery4thFrameFlag(int a0) {
-    *(int *)a0 = (*(int *)((char *)&gSysLib + 0x14) & 3) == 0;
+void gfx_setEvery4thFrameFlag(GfxLib *a0) {
+    a0->every4thFrame = (*(int *)((char *)&gSysLib + 0x14) & 3) == 0;
 }
 
 /* Vtable-call wrapper. Promoted 97.5%->100% via IDO load-CSE trick:
@@ -16730,19 +16733,19 @@ void gfx_vcall_0004E150(char *a0) {
  * the simplest case: removing the local entirely. The "obvious"
  * idiomatic local was actually the blocker. See docs/IDO_CODEGEN.md. */
 extern int gl_func_00000000();
-void gfx_resetModelView_0004E180(char *a0) {
-    *(char**)(a0 + 0xE0) = a0 + 0xA0;
-    CALL(math_mtx4Identity)(a0 + 0xA0);
-    *(char**)(a0 + 0xE0) = a0 + 0xA0;
+void gfx_resetModelView_0004E180(GfxLib *a0) {
+    a0->curMtx = a0->modelView;
+    CALL(math_mtx4Identity)(a0->modelView);
+    a0->curMtx = a0->modelView;
 }
 
 /* gfx_queuePush_0004E1BC: 22-insn queue-append helper. If a0->[0x1C0] >= 10,
  * flush via gl_func(a0, a1). Then push a1 to a0->[0x198 + count*4] and
  * increment count at a0->[0x1C0]. */
-void gfx_queuePush_0004E1BC(int *a0, int a1) {
-    int *base = (int*)((char*)a0 + 0x198);
+void gfx_queuePush_0004E1BC(GfxLib *a0, int a1) {
+    int *base = (int *)a0->drawUpdates;
     int count;
-    if (a0[0x1C0/4] >= 10) {
+    if (a0->nDrawUpdates >= 10) {
         CALL(sys_staticArrayOverflow)(a0, a1);
     }
     count = base[0x28/4];
@@ -16755,16 +16758,16 @@ void gfx_queuePush_0004E1BC(int *a0, int a1) {
  * (gl_func_0004E234 = setter at +0x190, gl_func_0004E23C = getter at +0x190).
  * Expected treats them as part of this symbol; SUFFIX_BYTES appends the
  * 4 literal trailing words to byte-match. */
-void gfx_listAppend_0004E214(char *a0) {
-    CALL(list_append)(a0 + 0x18C);
+void gfx_listAppend_0004E214(GfxLib *a0) {
+    CALL(list_append)(&a0->lights);
 }
 
-void gfx_setShadowLight(char *a0, int a1) {
-    *(int*)(a0 + 0x190) = a1;
+void gfx_setShadowLight(GfxLib *a0, int a1) {
+    a0->shadowLight = (void *)a1;
 }
 
-int gfx_getShadowLight(char *a0) {
-    return *(int*)(a0 + 0x190);
+int gfx_getShadowLight(GfxLib *a0) {
+    return (int)a0->shadowLight;
 }
 
 // GfxObj_vfn0_0004E244 — STRUCTURAL PASS (0x134 / 80 words, no episode). Raw-.word

@@ -16,6 +16,16 @@ struct ScreenWindow;
 struct DLContext;
 struct RcpMgr;
 
+/* The GfxLib +0x22C morph list (GfxLib_init: `new L24`, capacity 10, a 40-byte item buffer). */
+typedef struct GfxMorphList {
+    /* 0x00 */ void **items;
+    /* 0x04 */ int unk04;
+    /* 0x08 */ int capacity;            /* 10 */
+    /* 0x0C */ int count;
+    /* 0x10 */ int unk10;
+    /* 0x14 */ char *vptr;              /* slot 0 = the per-frame update (gfx_end) */
+} GfxMorphList;
+
 typedef struct GfxLib {
     /* 0x000 */ int every4thFrame;      /* (frame counter & 3) == 0; gfx_setEvery4thFrameFlag */
     /* 0x004 */ int unk004[23];
@@ -32,11 +42,16 @@ typedef struct GfxLib {
     /* 0x13C */ int renderFlags;        /* GfxLib_reset: &= ~0x10000 / ~2 / ~0x1000, |= 1, 0x4000,
                                          * 0x8000, 0x20000, 0x80 */
     /* 0x140 */ int unk140[2];          /* 2-word copy source of Shadow_ctor_0004B0A8 */
-    /* 0x148 */ int unk148[16];
+    /* 0x148 */ void *frameStartCbs[5];  /* gfx_start calls vtable (+0x5C) slot 0 of each, arg 0 */
+    /* 0x15C */ int nFrameStartCbs;
+    /* 0x160 */ int unk160[10];
     /* 0x188 */ int viewStage;          /* 0 projection, 1 modelview (gfx_setViewStage_00047F68) */
     /* 0x18C */ void *lights;           /* light list head (Link {obj, next}): gfx_updateLights */
     /* 0x190 */ void *shadowLight;      /* MNode (position +0xA0): gfx_setShadowLight */
-    /* 0x194 */ int unk194[12];
+    /* 0x194 */ int unk194;
+    /* 0x198 */ void *drawUpdates[10];  /* gfx_queuePush_0004E1BC (sys_staticArrayOverflow at 10);
+                                         * gfx_end calls vtable (+0) slot 0 of each ("ADrawUpd") */
+    /* 0x1C0 */ int nDrawUpdates;       /* zeroed by gfx_start */
     /* 0x1C4 */ int flags;              /* bit 1 cleared by gfx_beginView; bit 2 = clear with a
                                          * zero quad */
     /* 0x1C8 */ void *unk1C8;
@@ -45,7 +60,8 @@ typedef struct GfxLib {
     /* 0x1E4 */ int unk1E4[4];
     /* 0x1F4 */ int mtxMode;            /* 1 projection, 0 modelview (gfx_matrixMode*) */
     /* 0x1F8 */ signed char dir[4];     /* s8 unit vector (float * 127) + pad */
-    /* 0x1FC */ int unk1FC[2];
+    /* 0x1FC */ unsigned short colour[3]; /* RGB 0..255 from floats: gfx_colorToRGB16_0004771C */
+    /* 0x202 */ unsigned short pad202;
     /* 0x204 */ int fbIndex;            /* frame-buffer index (0 / 1) */
     /* 0x208 */ unsigned short perspNorm; /* gfx_calcPerspNorm -> gfx_emitPerspNorm */
     /* 0x20A */ unsigned short pad20A;
@@ -57,15 +73,22 @@ typedef struct GfxLib {
     /* 0x220 */ int textY;              /* dbg_screenOverlay sets 0x32,0x50 with 8x8 cells,  */
     /* 0x224 */ int charW;              /* then 0x78,0x78 with 16x16 cells; sys_sprintf     */
     /* 0x228 */ int charH;              /* (0x61B30) sets them for its CPU-drawn text        */
-    /* 0x22C */ int unk22C;
+    /* 0x22C */ struct GfxMorphList *morphs; /* MorphPoly_display pushes itself; gfx_end runs its
+                                         * update ("MorphUpd"); gfx_start empties it */
     /* 0x230 */ int unk230;             /* zeroed by GfxLib_reset */
     /* 0x234 */ int unk234[3];
     /* 0x240 */ struct ScreenWindow *mainWindow; /* GfxLib_init; gfx_drawFbChar / gfx_clearFbRect */
-    /* 0x244 */ int unk244[2];
+    /* 0x244 */ int unk244;             /* zeroed by gfx_start */
+    /* 0x248 */ int unk248;             /* zeroed by gfx_start */
     /* 0x24C */ float unk24C;           /* GfxLib_hostioParms float parm; reset from a constant */
     /* 0x250 */ int unk250;             /* GfxLib_hostioParms parm; zeroed by GfxLib_reset */
     /* 0x254 */ struct ScreenWindow *curWindow; /* emitters append to curWindow->dl */
-    /* 0x258 */ int unk258[13];
+    /* 0x258 */ int nWindows;           /* gfx_addWindow ("too many windows" at 8); zeroed by gfx_start */
+    /* 0x25C */ struct ScreenWindow *windows[8]; /* this frame's windows: gfx_end submits each */
+    /* 0x27C */ int unk27C;
+    /* 0x280 */ struct DLContext *oneFrameDL[2]; /* GfxLib_init; per frame buffer (fbIndex),
+                                         * reset by gfx_end */
+    /* 0x288 */ int unk288;
     /* 0x28C */ int cpuDraw;            /* gfx_drawText / gfx_fillRect draw into the frame buffer */
     /* 0x290 */ int unk290;
     /* 0x294 */ int unk294[6];          /* passed by address to GfxLib_reset / hostioParms calls */
@@ -75,10 +98,19 @@ typedef struct GfxLib {
     /* 0x5D4 */ int unk5D4;
 } GfxLib;
 
+/* FogParms (0x18, parm group "FogParms"): FogParms_set / setDefault (white, 996..1000) / lerp /
+ * emit (gfx_emitFog: G_SETFOGCOLOR + G_MW_FOG; the emit reads the low halves of min / max). */
+typedef struct FogParms {
+    /* 0x00 */ float colour[4];         /* RGBA 0..1 */
+    /* 0x10 */ int min;                 /* hostio "Min" (500..1000) */
+    /* 0x14 */ int max;                 /* hostio "Max" (500..1000) */
+} FogParms;
+
 #define GFXLIB(p) ((GfxLib *)(p))
 /* the global itself (gGfxLib = D_00000000 + K sites, gl_data.h) */
 #define gGfx GFXLIB(&gGfxLib)
 
+typedef char FogParms_size_check[sizeof(FogParms) == 0x18 ? 1 : -1];
 typedef char GfxLib_size_check[sizeof(GfxLib) == 0x5D8 ? 1 : -1];
 #ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char GfxLib_extraMtx_check[(int)&((GfxLib *)0)->extraMtx == 0xE4 ? 1 : -1];
@@ -90,6 +122,12 @@ typedef char GfxLib_textX_check[(int)&((GfxLib *)0)->textX == 0x21C ? 1 : -1];
 typedef char GfxLib_mainWindow_check[(int)&((GfxLib *)0)->mainWindow == 0x240 ? 1 : -1];
 typedef char GfxLib_curWindow_check[(int)&((GfxLib *)0)->curWindow == 0x254 ? 1 : -1];
 typedef char GfxLib_cpuDraw_check[(int)&((GfxLib *)0)->cpuDraw == 0x28C ? 1 : -1];
+typedef char GfxLib_nFrameStartCbs_check[(int)&((GfxLib *)0)->nFrameStartCbs == 0x15C ? 1 : -1];
+typedef char GfxLib_drawUpdates_check[(int)&((GfxLib *)0)->drawUpdates == 0x198 ? 1 : -1];
+typedef char GfxLib_nDrawUpdates_check[(int)&((GfxLib *)0)->nDrawUpdates == 0x1C0 ? 1 : -1];
+typedef char GfxLib_morphs_check[(int)&((GfxLib *)0)->morphs == 0x22C ? 1 : -1];
+typedef char GfxLib_windows_check[(int)&((GfxLib *)0)->windows == 0x25C ? 1 : -1];
+typedef char GfxLib_oneFrameDL_check[(int)&((GfxLib *)0)->oneFrameDL == 0x280 ? 1 : -1];
 typedef char GfxLib_ddm_check[(int)&((GfxLib *)0)->ddm == 0x2AC ? 1 : -1];
 typedef char GfxLib_unk5D0_check[(int)&((GfxLib *)0)->unk5D0 == 0x5D0 ? 1 : -1];
 #endif
