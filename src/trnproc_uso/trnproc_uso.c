@@ -414,7 +414,54 @@ INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000B7
 
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000DD4);
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00001098);
+/* trnproc_uso_func_00001098: results-list scrolling with key repeat: up (0x8008) / down
+ * (0x2004) move the cursor (+0x100) through the lesson count (+0x108), scrolling the
+ * 12-row window top (+0x104); a move plays sound 1; the repeat timer (+0x10C) restarts at 8
+ * on the first press (+0x110) and 2 while held. */
+void trnproc_uso_func_00001098(char *self) {
+    int held;
+    int old;
+
+    old = *(int *)(self + 0x100);
+    held = 0;
+    if (CALL(input_checkHeld_00011ED4)(&D_00000000, 0x8008) != 0) {
+        held = 1;
+        if (*(int *)(self + 0x10C) == 0 && *(int *)(self + 0x100) < *(int *)(self + 0x108) - 1) {
+            (*(int *)(self + 0x100))++;
+            if (*(int *)(self + 0x100) - *(int *)(self + 0x104) >= 12
+                && *(int *)(self + 0x104) < *(int *)(self + 0x108) - 12) {
+                (*(int *)(self + 0x104))++;
+            }
+        }
+    }
+    if (CALL(input_checkHeld_00011ED4)(&D_00000000, 0x2004) != 0) {
+        held = 1;
+        if (*(int *)(self + 0x10C) == 0 && *(int *)(self + 0x100) > 0) {
+            (*(int *)(self + 0x100))--;
+            if (*(int *)(self + 0x100) - *(int *)(self + 0x104) < 0 && *(int *)(self + 0x104) > 0) {
+                (*(int *)(self + 0x104))--;
+            }
+        }
+    }
+    if (old != *(int *)(self + 0x100)) {
+        CALL(snd_postEvent)(1);
+    }
+    if (*(int *)(self + 0x10C) == 0 && held != 0) {
+        if (*(int *)(self + 0x110) != 0) {
+            *(int *)(self + 0x10C) = 8;
+        } else {
+            *(int *)(self + 0x10C) = 2;
+        }
+        *(int *)(self + 0x110) = 0;
+    }
+    if (held == 0) {
+        *(int *)(self + 0x10C) = 0;
+        *(int *)(self + 0x110) = 1;
+    }
+    if (*(int *)(self + 0x10C) != 0) {
+        (*(int *)(self + 0x10C))--;
+    }
+}
 
 /* trnproc_uso_func_00001228: TrnDataManager onCheckpoint: +0xF8 = (gate +0x88 < 21), arm the
  * trick lesson (+0xF4), show lesson +0xF0 (13C4), then RaceTracker_onCheckpoint. */
