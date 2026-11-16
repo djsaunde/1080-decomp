@@ -121,7 +121,7 @@ TRN_NCC_DONOR := build/src/trnproc_uso/trnproc_uso_ncc.cpp.o
 $(TRN_NCC_DONOR): src/trnproc_uso/trnproc_uso_ncc.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-TRN_NCC_FUNCS := trnproc_uso_func_00000DD4 trnproc_uso_func_000013C4 trnproc_uso_func_00001778 trnproc_uso_func_0000188C
+TRN_NCC_FUNCS := trnproc_uso_func_00000B78 trnproc_uso_func_00000DD4 trnproc_uso_func_000013C4 trnproc_uso_func_00001778 trnproc_uso_func_0000188C
 build/src/trnproc_uso/trnproc_uso.c.o build/non_matching/src/trnproc_uso/trnproc_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(TRN_NCC_FUNCS),$(f)=$(TRN_NCC_DONOR))
 build/src/trnproc_uso/trnproc_uso.c.o build/non_matching/src/trnproc_uso/trnproc_uso.c.o: $(TRN_NCC_DONOR)
 # 9F44: EXACT IDO 7.1 NCC donor (agent-h run 621): inline Parm<T>::get() + Vec3 operator=.

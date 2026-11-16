@@ -5790,7 +5790,9 @@ trn_ro_20 = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_u
 trn_ro_24 = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_uso.c) */
 trn_ro_28 = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_uso.c) */
 trn_ro_2C = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_uso.c) */
-trnproc_uso_func_00000DD4_rodata = 0x00000028;  /* trnproc RoData+0x28: DD4 NCC donor float literals (0.8f, 0.2f) */
+trnproc_uso_func_00000B78_rodata = 0x00000020;  /* trnproc RoData+0x20: B78 NCC donor float literals (0.2f, 0.8f at donor .rodata 0 / 4) */
+trnproc_uso_func_00000DD4_rodata = 0x00000020;  /* trnproc RoData+0x28: DD4 NCC donor float literals (0.8f, 0.2f at donor .rodata 8 / 0xC) */
+trn_sprites_F0 = 0x000000F0;  /* trnproc Bss+0xF0: second button sprite table (B78 NCC donor) */
 trn_sprites = 0x00000000;  /* trnproc Bss+0x0 sprite table pin (trnproc_uso.c B78) */
 ne_data = 0x00000000;  /* nameent.uso Data section base */
 ne_gGui = 0x00000000;  /* gui.uso Bss draw state (nameent import) */

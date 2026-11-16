@@ -16,6 +16,23 @@ extern "C" char trn_gGui;
 extern "C" char trn_bss[];
 extern "C" char trn_data[];
 
+/* the HUD sprites (RaceSprite in include/gdl/race.h): the image's width places the next one */
+struct RaceSpriteImage {
+    char pad0[0x20];
+    short w;                /* 0x20 */
+    int getWidth() { return w; }
+};
+struct RaceSprite {
+    char pad0[0x10];
+    RaceSpriteImage *image; /* 0x10 */
+    int fileId;             /* 0x14 */
+    int width() { return image->getWidth(); }
+};
+/* trnproc Bss+0x0 / +0xF0: the button sprite tables (entries 0..31 / 32..); the second is a
+ * symbol pinned at 0xF0, so edg keeps the -32 * 24 apart from its address */
+extern "C" RaceSprite trn_sprites[];
+extern "C" RaceSprite trn_sprites_F0[];
+
 /* an RGBA float colour (gui_setColor / gui_setPrimColor / gui_setColorEnvPrim take its address) */
 struct Colour {
     float r, g, b, a;
@@ -55,7 +72,12 @@ struct TrnDataManager {
     TrnRace *race;          /* 0xB8 */
     char padbc[0xD0 - 0xBC];
     int pulse;              /* 0xD0: the current lesson row's blinking alpha (-16 per frame) */
-    char padd4[0xF0 - 0xD4];
+    int frame;              /* 0xD4: lesson HUD frame counter */
+    int hudX;               /* 0xD8: lesson HUD layout (24, 8, -1, 40) */
+    int hudY;               /* 0xDC */
+    int hudDX;              /* 0xE0 */
+    int hudDY;              /* 0xE4 */
+    char pade8[0xF0 - 0xE8];
     int lesson;             /* 0xF0: current lesson (TrickTable index) */
     int armed;              /* 0xF4 */
     int course;             /* 0xF8: 1 = the restricted course, < 0 = no lesson */
@@ -201,12 +223,74 @@ extern "C" void trnproc_uso_func_0000188C(TrnDataManager *self) {
     gl_func_00000000(self); /* Node_update */
 }
 
+/* trnproc_uso_func_00000B78: TrnDataManager lesson HUD: the lesson title ("%d: %s" with the
+ * TrickTable entry name, red once the lesson's trick is done), then the input list (+0x118, -1
+ * terminated): 255 starts a new line, any other entry is a button sprite, with the "+" sprite
+ * (Bss+0x168) between two buttons on one line. The 0.2f / 0.8f literals are RoData 0x20 / 0x24
+ * (trnproc_uso_func_00000B78_rodata pinned at 0x20). Only the button draw goes through the
+ * int-returning import: its block then keeps the image pointer off v0 (a0, as the target). */
+extern "C" void trnproc_uso_func_00000B78(TrnDataManager *self) {
+    char buf[64];
+    int x;
+    int y;
+    int i;
+    float col[4];
+    int nl;
+    RaceSprite *spr;
+
+    gl_func_00000000(self->gui); /* gui_setupRenderMode_0000055C */
+    if (gl_func_00000000(self, self->lesson)) { /* trnproc_uso_func_000013A0 */
+        col[0] = 0.8f;
+        col[1] = 0.2f;
+        col[2] = 0.2f;
+        col[3] = 1.0f;
+    } else {
+        col[0] = 1.0f;
+        col[1] = 1.0f;
+        col[2] = 1.0f;
+        col[3] = 1.0f;
+    }
+    gl_func_00000000(&trn_gGui, 255, col); /* gui_setColor_00001A5C */
+    /* gl_sprintf "%d: %s" with TrickTable_getEntry_0000C344, then gui_drawString */
+    gl_func_00000000(buf, trn_data + 0x328, self->lesson + 1, gl_func_00000000(trn_gTrickTable, self->lesson));
+    gl_func_00000000(self->gui, 32, self->hudY + 8, buf);
+    self->frame++;
+    x = self->hudX + self->hudDX;
+    y = self->hudY + self->hudDY;
+    i = 0;
+    while (self->inputs[i] != -1) {
+        nl = 0;
+        if (self->inputs[i] != 255) {
+            if (self->inputs[i] < 32) {
+                spr = &trn_sprites[self->inputs[i]];
+            } else {
+                spr = &trn_sprites_F0[self->inputs[i] - 32];
+            }
+            gl_func_00000000_void(spr); /* gui_spriteRefresh */
+            gl_func_00000000_void(spr); /* gui_setCombine_00001794 */
+            gl_func_00000000(spr, x, y, 2); /* gui_drawSprite */
+            x += spr->width();
+        } else {
+            y += 28;
+            nl = 1;
+            x = self->hudX + self->hudDX;
+        }
+        i++;
+        if (self->inputs[i] != -1 && self->inputs[i] != 255 && nl == 0) {
+            gl_func_00000000_void(trn_bss + 0x168);
+            gl_func_00000000_void(trn_bss + 0x168);
+            gl_func_00000000_void(trn_bss + 0x168, x, y, 2);
+            x += ((RaceSprite *)(trn_bss + 0x168))->width();
+        }
+    }
+}
+
 /* trnproc_uso_func_00000DD4: TrnDataManager results screen: the header sprite (+0x180), then 12
  * rows from the window top (+0x104): "%d" right-aligned at 86 and the trick name at 90, red
  * (0.8, 0.2, 0.2) once the lesson is done (13A0); the current available lesson blinks
  * (alpha +0xD0), available ones are opaque, the rest alpha 64; then the cursor sprite (+0x198)
  * tinted (233, 255, 0) at the cursor row. The float literals are the RoData words at 0x28 /
- * 0x2C (the splice's trnproc_uso_func_00000DD4_rodata symbol is pinned at 0x28). */
+ * 0x2C (after B78's two in the donor .rodata: trnproc_uso_func_00000DD4_rodata is pinned at 0x20). */
 extern "C" void trnproc_uso_func_00000DD4(TrnDataManager *self) {
     Colour col;
     Colour hl(233, 255, 0, 255);

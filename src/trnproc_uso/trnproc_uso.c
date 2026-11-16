@@ -410,7 +410,9 @@ void trnproc_uso_func_00000B44(char *self) {
  * (+0x118, -1 terminated): 255 starts a new line, any other entry is a button sprite (0..31 in
  * the Bss table at +0x0, 32.. in the second table at +0xF0), with the "+" sprite between two
  * buttons on one line. */
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000B78);
+/* EXACT via the NCC (C++) donor src/trnproc_uso/trnproc_uso_ncc.cpp (REPLACE_FUNC_BODY). */
+void trnproc_uso_func_00000B78(char *self) {
+}
 
 /* trnproc_uso_func_00000DD4: TrnDataManager results screen (12 lesson rows, done ones red, the
  * cursor sprite). EXACT via the NCC (C++) donor src/trnproc_uso/trnproc_uso_ncc.cpp
