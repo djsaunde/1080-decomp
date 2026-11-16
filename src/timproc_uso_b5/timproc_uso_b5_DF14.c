@@ -87,11 +87,11 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         sub = child;
         if ((sub != 0) || ((sub = (char *) gen_imp_mem_new((char *)0x2B8)) != 0)) {
             gen_imp_Node_ctor(sub, &timproc_uso_b5_D_807FEF48[5848]);
-            *(char **)&NODE(sub)->vptr = &timproc_uso_b5_D_807FDB64;
+            NODE(sub)->vptr = (char *)&timproc_uso_b5_D_807FDB64;
             SelItemParms_ctor(&((SelItem *)sub)->parms);
             SelItemInfo_ctor(&((SelItem *)sub)->info);
         }
-        *(char **)&NODE(child)->vptr = &timproc_uso_b5_D_807FEF50[2468]; *(char **)&NODE(child)->name = &timproc_uso_b5_D_807FEF50[5856];
+        NODE(child)->vptr = &timproc_uso_b5_D_807FEF50[2468]; NODE(child)->name = &timproc_uso_b5_D_807FEF50[5856];
         SelItem_reset_00003890(child);
     }
     r = child;
@@ -111,12 +111,12 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
     child = (char *) gen_imp_mem_new((char *)0x144);
     if (child != 0) {
         gen_imp_QNode_ctor(child, &timproc_uso_b5_D_807FEF5C[5868], 0.0f, 0.0f, 0.0f);
-        *(char **)&NODE(child)->vptr = &timproc_uso_b5_D_807FEF64[1300]; *(char **)&NODE(child)->name = &timproc_uso_b5_D_807FEF64[5876];
+        NODE(child)->vptr = &timproc_uso_b5_D_807FEF64[1300]; NODE(child)->name = &timproc_uso_b5_D_807FEF64[5876];
         gsub = (char *) gen_imp_mem_new((char *)0x16C);
         if (gsub != 0) {
             gen_imp_QNode_ctor(gsub, &timproc_uso_b5_D_807FEF70[5888], 0.0f, 0.0f, 0.0f);
             t = *(f32 *)(&import_80807FB8 + 1020);
-            *(char **)&NODE(gsub)->vptr = &import_80087FB8[0]; ((LightTarget *)gsub)->mask = 1; /* run 216: one line = D884's store order (0x120 first) */ /* vptr: bootup LightTarget_vtbl (gl_data.h) */
+            NODE(gsub)->vptr = &import_80087FB8[0]; ((LightTarget *)gsub)->mask = 1; /* run 216: one line = D884's store order (0x120 first) */ /* vptr: bootup LightTarget_vtbl (gl_data.h) */
             ((LightTarget *)gsub)->unk108[0] = t;
             ((LightTarget *)gsub)->unk108[1] = t;
             ((LightTarget *)gsub)->unk108[2] = t;

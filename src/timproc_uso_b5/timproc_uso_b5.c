@@ -90,12 +90,12 @@ int *GenCourse_ctor(int *a0) {
         if (s1 == 0) goto after_node;
     }
     gen_imp_Node_ctor(s1, &timproc_uso_b5_D_807FD908 + 0x98);
-    *(char **)&NODE(s1)->vptr = &import_80073B18; /* vptr: bootup Process_vtbl (gl_data.h) */
+    NODE(s1)->vptr = (char *)&import_80073B18; /* vptr: bootup Process_vtbl (gl_data.h) */
 after_node:
-    *(char **)&NODE(s0)->vptr = &import_80073B80; /* vptr: bootup Process_vtbl_C3A0 (gl_data.h) */
+    NODE(s0)->vptr = (char *)&import_80073B80; /* vptr: bootup Process_vtbl_C3A0 (gl_data.h) */
 after_sub:
-    *(char **)&NODE(a0)->vptr = &timproc_uso_b5_D_807FD888;
-    *(char **)&NODE(a0)->name = &timproc_uso_b5_D_807FD888 + 0xA0;
+    NODE(a0)->vptr = (char *)&timproc_uso_b5_D_807FD888;
+    NODE(a0)->name = &timproc_uso_b5_D_807FD888 + 0xA0;
     a0[0x48 / 4] = import_000A5D38(0);
     import_000A5F40(a0[0x48 / 4], a0);
 
@@ -321,14 +321,14 @@ int *GenSelectChar_ctor(int *arg0, int arg1, int arg2, int arg3) {
         if (third == 0) goto after_node;
     }
     gen_imp_Node_ctor(third, &timproc_uso_b5_D_807FE84C + 0xFDC);
-    *(char **)&NODE(third)->vptr = &import_80073B18; /* vptr: bootup Process_vtbl (gl_data.h) */
+    NODE(third)->vptr = (char *)&import_80073B18; /* vptr: bootup Process_vtbl (gl_data.h) */
 
 after_node:
-    *(char **)&NODE(node)->vptr = &import_80073B80; /* vptr: bootup Process_vtbl_C3A0 (gl_data.h) */
+    NODE(node)->vptr = (char *)&import_80073B80; /* vptr: bootup Process_vtbl_C3A0 (gl_data.h) */
 
 after_sub:
-    *(char **)&NODE(arg0)->vptr = &timproc_uso_b5_D_807FD948;
-    *(char **)&NODE(arg0)->name = &timproc_uso_b5_D_807FD948 + 0xFE4;
+    NODE(arg0)->vptr = (char *)&timproc_uso_b5_D_807FD948;
+    NODE(arg0)->name = &timproc_uso_b5_D_807FD948 + 0xFE4;
 
     gen_imp_memtrack_begin(&timproc_uso_b5_D_807FE870 + 0x1000, 0);
     result0 = (int)gen_createScene_00008DB4(0, arg1);
@@ -598,8 +598,8 @@ int RoomModifier_ctor(int a0) {
     if (a0 == 0) goto end;
 init:
     CALL(Node_ctor)(a0, (char*)&D_00000000 + 0x106C);
-    *(char **)&NODE(a0)->vptr = (char *)&D_00000000;
-    *(char **)&NODE(a0)->name = ((char*)&D_00000000 + 0x1074);
+    NODE(a0)->vptr = (char *)&D_00000000;
+    NODE(a0)->name = ((char*)&D_00000000 + 0x1074);
     RMOD(a0)->wins[0] = 0;
     RMOD(a0)->wins[1] = 0;
     RMOD(a0)->unk30 = 0;
@@ -1099,8 +1099,8 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
     E = arg5;
     if ((arg0 != 0) || ((arg0 = (char *)gen_imp_mem_new(0x58)) != 0)) {
         gen_imp_Node_ctor(arg0, &timproc_uso_b5_D_807FE940 + 0x10D0);
-        *(char **)&NODE(arg0)->vptr = &timproc_uso_b5_D_807FE7E0;
-        *(char **)&NODE(arg0)->name = &timproc_uso_b5_D_807FE7E0 + 0x10D8;
+        NODE(arg0)->vptr = (char *)&timproc_uso_b5_D_807FE7E0;
+        NODE(arg0)->name = &timproc_uso_b5_D_807FE7E0 + 0x10D8;
         ((SelectionMgr *)arg0)->numPlayers = d;
         ((SelectionMgr *)arg0)->sceneSet = E;
         if (d == 1) {
@@ -1584,7 +1584,7 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
         w = (s32 *)gen_imp_mem_new(0xB4);
         if (w != 0) {
             gen_imp_Node_ctor(w, &timproc_uso_b5_D_807FE990 + 0x1120);
-            *(char **)&NODE(w)->vptr = &import_80086288; /* vptr: bootup MNode_vtbl (gl_data.h) */
+            NODE(w)->vptr = (char *)&import_80086288; /* vptr: bootup MNode_vtbl (gl_data.h) */
             v1t = &((MNode *)w)->mflags;
             if (((w != (s32 *)-0x2C) || ((v1t = (s32 *)gen_imp_mem_new(4)) != 0)) && (((q = (char *)v1t), (v1t != 0)) || ((q = (char *)gen_imp_mem_new(4)) != 0))) {
                 *(s32 *)q = 0; /* the inline MNode "Flags" sub-object ctor */
@@ -1599,7 +1599,7 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
         w = (s32 *)gen_imp_mem_new(0xB4);
         if (w != 0) {
             gen_imp_Node_ctor(w, &timproc_uso_b5_D_807FE998 + 0x1128);
-            *(char **)&NODE(w)->vptr = &D_00000000_a;
+            NODE(w)->vptr = (char *)&D_00000000_a;
             v1t = &((MNode *)w)->mflags;
             if (((w != (s32 *)-0x2C) || ((v1t = (s32 *)gen_imp_mem_new(4)) != 0)) && (((q = (char *)v1t), (v1t != 0)) || ((q = (char *)gen_imp_mem_new(4)) != 0))) {
                 *(s32 *)q = 0; /* the inline MNode "Flags" sub-object ctor */
@@ -2446,7 +2446,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         var_s0 = arg0;
         if ((var_s0 != NULL) || (temp_v0_2 = timproc_uso_b5_alias((char *)0x2C), var_s0 = temp_v0_2, (temp_v0_2 != NULL))) {
             timproc_uso_b5_alias(var_s0, ((char *)&D_00000000 + 0x1260));
-            *(char **)&NODE(var_s0)->vptr = (char *)&D_00000000;
+            NODE(var_s0)->vptr = (char *)&D_00000000;
         }
         SELWIN(arg0)->vptr = (void *)((s32)&D_00000000);
         var_s0 = (char *)&SELWIN(arg0)->parms;
@@ -2919,7 +2919,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
                 PI(spA8)->unk14 = 0;
             }
         }
-        *(char **)&NODE(arg0)->name = (char *)&D_00000000 + 0x12F8;
+        NODE(arg0)->name = (char *)&D_00000000 + 0x12F8;
         SELWIN(arg0)->eventFlags = arg11;
         SELWIN(arg0)->fadeProc = (char *)arg2;
         SELWIN(arg0)->itemsMgr = (SelItemsMgr *)arg7;
@@ -6062,7 +6062,7 @@ void *GenItemType_create_0000AB24(int *arg0) {
     p1 = (int*)gen_imp_mem_new(0x40);
     if (p1 != 0) {
         gen_imp_ColourItem_ctor(p1);
-        *(char **)&NODE(p1)->vptr = &import_8006ED80;
+        NODE(p1)->vptr = (char *)&import_8006ED80;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -7630,12 +7630,12 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
         if (obj != 0 ||
             (obj = (char *)gen_imp_mem_new((char *)0x2B8)) != 0) {
             gen_imp_Node_ctor(obj, &timproc_uso_b5_D_807FEE30 + 0x15C0);
-            *(char **)&NODE(obj)->vptr = &timproc_uso_b5_D_807FDB64;
+            NODE(obj)->vptr = (char *)&timproc_uso_b5_D_807FDB64;
             SelItemParms_ctor(obj + 0x2C);
             SelItemInfo_ctor(obj + 0x194);
         }
-        *(char **)&NODE(child)->vptr = &timproc_uso_b5_D_807FEE38 + 0x5E4;
-        *(char **)&NODE(child)->name = &timproc_uso_b5_D_807FEE38 + 0x15C8;
+        NODE(child)->vptr = &timproc_uso_b5_D_807FEE38 + 0x5E4;
+        NODE(child)->name = &timproc_uso_b5_D_807FEE38 + 0x15C8;
         SelItem_reset_00003890(child);
     }
     r = child;
@@ -7654,7 +7654,7 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
     if (child != 0) {
         gen_imp_QNode_ctor(child, &timproc_uso_b5_D_807FEE48 + 0x15D8,
                                    0.0f, 0.0f, 0.0f);
-        *(char **)&NODE(child)->vptr = &timproc_uso_b5_D_807FDDEC + 0x57C;
+        NODE(child)->vptr = &timproc_uso_b5_D_807FDDEC + 0x57C;
 
         gc = (char *)gen_imp_mem_new((char *)0x16C);
         if (gc != 0) {
@@ -7662,7 +7662,7 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
             gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEE54 + 0x15E4,
                                        0.0f, 0.0f, 0.0f);
             cf = *(float *)((char *)&import_80807FB8 + 0x3A0);
-            *(char **)&NODE(gc)->vptr = import_80087FB8; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
+            NODE(gc)->vptr = import_80087FB8; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
             FW(gc, 0x120) = 0xFFFF;
             *(float *)(gc + 0x108) = cf;
             *(float *)(gc + 0x10C) = cf;
@@ -7684,7 +7684,7 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
         p = (char *)gen_imp_mem_new((char *)0xB4);
         if (p != 0) {
             import_0010D33C(p, n);
-            *(char **)&NODE(p)->vptr = &timproc_uso_b5_D_807FDAB8 + 0x248;
+            NODE(p)->vptr = &timproc_uso_b5_D_807FDAB8 + 0x248;
             FW(p, 0xB0) = 0;
             gen_imp_AnimPlayer_reset(p);
         }

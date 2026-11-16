@@ -184,19 +184,19 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
 #define NEWS70(P, D, VT, VT2, NM, S) { n = MGR->dispItems; t = ALLOC(0x70); \
     if (t) { w = t; if (w || (w = ALLOC(0x70))) { \
         gen_imp_Node_ctor(w, D); SIL(w)->vptr = (VT); } \
-      SIL(t)->vptr = (VT2); *(char **)&NODE(t)->name = NM; SIL(t)->bg = (char *)WORLDREG(CFGS(S))->bgRoot; SIL(t)->fg = (char *)WORLDREG(CFGS(S))->fgRoot; \
+      SIL(t)->vptr = (VT2); NODE(t)->name = NM; SIL(t)->bg = (char *)WORLDREG(CFGS(S))->bgRoot; SIL(t)->fg = (char *)WORLDREG(CFGS(S))->fgRoot; \
        SIL(t)->mainGame = (char *)WORLDREG(CFGS(S))->mainGame; SIL(t)->dispItems = n; SIL(t)->count = 0;  } \
     P = t; }
 #define NEWPANEL(P, D, NM, VT) { w = ALLOC(0x2BC); \
     if (w) { _wp = w; if (_wp || (_wp = ALLOC(0x2B8))) { \
-        gen_imp_Node_ctor(_wp, D); *(char **)&NODE(_wp)->vptr = &timproc_uso_b5_D_807FDB64; \
+        gen_imp_Node_ctor(_wp, D); NODE(_wp)->vptr = (char *)&timproc_uso_b5_D_807FDB64; \
         SelItemParms_ctor(&((SelItem *)_wp)->parms); SelItemInfo_ctor(&((SelItem *)_wp)->info); } \
-      *(char **)&NODE(w)->vptr = VT; *(char **)&NODE(w)->name = NM; SelItem_reset_00003890(w); } \
+      NODE(w)->vptr = VT; NODE(w)->name = NM; SelItem_reset_00003890(w); } \
     P = (void *)w; }
 #define LT(p) ((LightTarget *)(p))
 #define TM(p) ((SelTesuriModel *)(p))
 #define W16C(P, D, F0) { _wp = ALLOC(0x16C); \
-    if (_wp) { gen_imp_QNode_ctor(_wp, D, 0.0f, 0.0f, 0.0f); fv = F0; *(char **)&NODE(_wp)->vptr = import_80087FB8; LT(_wp)->mask = 1; \
+    if (_wp) { gen_imp_QNode_ctor(_wp, D, 0.0f, 0.0f, 0.0f); fv = F0; NODE(_wp)->vptr = import_80087FB8; LT(_wp)->mask = 1; \
       LT(_wp)->unk108[0] = fv; LT(_wp)->unk108[1] = fv; LT(_wp)->unk108[2] = fv; LT(_wp)->scale = 1.0f; } \
     if (1) {} P = _wp; }
 /* three DIFFERENT spellings of 0: cfe passes float literals to uopt as text, so each spelling is its own
@@ -246,12 +246,12 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
     if (arg0 || (arg0 = (void **)ALLOC(0x60))) {
         gen_imp_Node_ctor(self, timproc_uso_b5_D_807FEBB8 + 0x1348);
         MGR->vptr = timproc_uso_b5_D_807FE5F4;
-        *(char **)&NODE(self)->name = timproc_uso_b5_D_807FE5F4 + 0x1350;
-        { char *p = ALLOC(0x30); w = p; if (w) { gen_imp_Node_ctor(w, timproc_uso_b5_D_807FEBCC + 0x135C); *(char **)&NODE(w)->vptr = timproc_uso_b5_D_807FEBD4; *(char **)&NODE(w)->name = timproc_uso_b5_D_807FEBD4 + 0x1364; ((SelCommonInfo *)w)->mgr = MGR; } MGR->commonInfo = w; }
+        NODE(self)->name = timproc_uso_b5_D_807FE5F4 + 0x1350;
+        { char *p = ALLOC(0x30); w = p; if (w) { gen_imp_Node_ctor(w, timproc_uso_b5_D_807FEBCC + 0x135C); NODE(w)->vptr = timproc_uso_b5_D_807FEBD4; NODE(w)->name = timproc_uso_b5_D_807FEBD4 + 0x1364; ((SelCommonInfo *)w)->mgr = MGR; } MGR->commonInfo = w; }
         ADD(self, MGR->commonInfo);
         CommonInfo_init_0000A928(self);
         { char *p = ALLOC(0x2C); char *q; if (p) { gen_imp_Node_ctor(p, timproc_uso_b5_D_807FEBE0 + 0x1370);
-            *(char **)&NODE(p)->vptr = timproc_uso_b5_D_807FEBE8 + 0xCC4; *(char **)&NODE(p)->name = timproc_uso_b5_D_807FEBE8 + 0x1378; }
+            NODE(p)->vptr = timproc_uso_b5_D_807FEBE8 + 0xCC4; NODE(p)->name = timproc_uso_b5_D_807FEBE8 + 0x1378; }
           q = MGR->fg; MGR->dispItems = p;  ADD(q, p); }
         if (INPUT_MGR(import_800200CC).nextFlowMode != 2) {
             NEWPANEL(TESURI(2), timproc_uso_b5_D_807FEBF4 + 0x1384, timproc_uso_b5_D_807FEBFC + 0x138C, timproc_uso_b5_D_807FEBFC + 0x8B4)
@@ -259,7 +259,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             w = ALLOC(0x168);
             if (w) {
                 gen_imp_QNode_ctor(w, timproc_uso_b5_D_807FEC08 + 0x1398, 0.0f, 0.0f, 0.0f);
-                *(char **)&NODE(w)->vptr = timproc_uso_b5_D_807FEC10 + 0x4AC; *(char **)&NODE(w)->name = timproc_uso_b5_D_807FEC10 + 0x13A0;
+                NODE(w)->vptr = timproc_uso_b5_D_807FEC10 + 0x4AC; NODE(w)->name = timproc_uso_b5_D_807FEC10 + 0x13A0;
                 W16C(TM(w)->head.inner, timproc_uso_b5_D_807FEC18 + 0x13A8, FF(&import_80807FB8, 0x23C))
                 gen_imp_MNode_addChild(w, TM(w)->head.inner);
                 SETI(t, TM(w)->head.inner)
@@ -300,7 +300,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             w = ALLOC(0x168);
             if (w) {
                 gen_imp_QNode_ctor(w, timproc_uso_b5_D_807FECF8 + 0x1488, 0.0f, 0.0f, 0.0f);
-                *(char **)&NODE(w)->vptr = timproc_uso_b5_D_807FED00 + 0x4AC; *(char **)&NODE(w)->name = timproc_uso_b5_D_807FED00 + 0x1490;
+                NODE(w)->vptr = timproc_uso_b5_D_807FED00 + 0x4AC; NODE(w)->name = timproc_uso_b5_D_807FED00 + 0x1490;
                 W16C(TM(w)->head.inner, timproc_uso_b5_D_807FED08 + 0x1498, FF(&import_80807FB8, 0x270))
                 gen_imp_MNode_addChild(w, TM(w)->head.inner);
                 SETI(_at, TM(w)->head.inner)
@@ -329,9 +329,9 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             w = ALLOC(0x168);
             if (w) {
                 gen_imp_QNode_ctor(w, timproc_uso_b5_D_807FED94 + 0x1524, 0.0f, 0.0f, 0.0f);
-                *(char **)&NODE(w)->vptr = timproc_uso_b5_D_807FED9C + 0x4AC; *(char **)&NODE(w)->name = timproc_uso_b5_D_807FED9C + 0x152C;
+                NODE(w)->vptr = timproc_uso_b5_D_807FED9C + 0x4AC; NODE(w)->name = timproc_uso_b5_D_807FED9C + 0x152C;
                 { _wp = ALLOC(0x16C);
-                  if (_wp) { gen_imp_QNode_ctor(_wp, timproc_uso_b5_D_807FEDA4 + 0x1534, 0.0f, 0.0f, 0.0f); *(char **)&NODE(_wp)->vptr = import_80087FB8; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
+                  if (_wp) { gen_imp_QNode_ctor(_wp, timproc_uso_b5_D_807FEDA4 + 0x1534, 0.0f, 0.0f, 0.0f); NODE(_wp)->vptr = import_80087FB8; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
                     LT(_wp)->unk108[0] = DF_2B0; LT(_wp)->unk108[1] = DF_2B4; LT(_wp)->unk108[2] = FF(timproc_uso_b5_D_807FEE6C, 0x2B8); LT(_wp)->mask = 1; LT(_wp)->scale = 1.0f; }
                   TM(w)->head.inner = _wp; }
                 gen_imp_MNode_addChild(w, TM(w)->head.inner);
@@ -394,7 +394,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         gen_imp_Node_Load(self, 1, arg1);
         gen_imp_Node_Load(MGR->commonInfo, 1, arg2);
         w = MGR->vptr; ((void (*)(void *))VT_SLOT(w, 3).fn)(VT_SLOT(w, 3).delta + self);
-        { char *m = MGR->dispItems; w = *(char **)&NODE(m)->vptr; ((void (*)(void *))VT_SLOT(w, 3).fn)(VT_SLOT(w, 3).delta + m); }
+        { char *m = MGR->dispItems; w = NODE(m)->vptr; ((void (*)(void *))VT_SLOT(w, 3).fn)(VT_SLOT(w, 3).delta + m); }
     }
     return arg0;
 }
