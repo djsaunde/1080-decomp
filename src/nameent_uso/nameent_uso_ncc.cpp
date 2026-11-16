@@ -186,6 +186,109 @@ struct NeOwner { char pad0[0x6C]; int entered; };
 /* input_getStickX_00011D78 returns a float: a typed alias of the blank import (pinned at 0) */
 extern "C" float ne_input_getStickX(void *input);
 
+/* gui_drawSpriteScroll_00003714 takes its two scales as floats: a typed alias of the blank
+ * import (pinned at 0) */
+extern "C" int ne_gui_drawSpriteScroll(char *spr, int x, int y, int idx, int h, float sx, float sy);
+
+/* nameent_uso_func_000009BC: the name-entry display: the board sprites fade in (+0xD0 += 0.05),
+ * the entered letters and the three cursor slots (the current one tinted +0x80), then the letter
+ * wheel: 2 * +0x50 + 1 letters around the wheel position, each scaled by its distance from the
+ * centre (x 160) and the centre letter enlarged (1.2) at full alpha, clipped to x 40..284.
+ * Frame: the colour is four member stores and the fade a plain `x = x + k` (an inline set() or a
+ * `+=` on self->fD0 takes an edg temporary word, which would push the loop-1 spill slot down);
+ * the two dead scratch words put the scales at sp+0x74 / +0x70. */
+extern "C" void nameent_uso_func_000009BC(NeEntry *self) {
+    char *spr;
+    Colour col;
+    float wheel;
+    int x0;
+    int i;
+    int j;
+    int k;
+    int x;
+    int alpha;
+    float fx;
+    float dist;
+    float d;
+    float a;
+    int scratch;
+    int scratch2;
+    float sx;
+    float sy;
+
+    scratch = 0;
+    scratch2 = 0;
+    col.r = 1.0f;
+    col.g = 1.0f;
+    col.b = 1.0f;
+    col.a = 1.0f;
+    if (self->fD0 < 1.0f) {
+        self->fD0 = self->fD0 + 0.05f;
+    }
+    gl_func_00000000(self->spr1);
+    gl_func_00000000(self->spr1, (int)(255.0f * self->fD0), &col, 255);
+    gl_func_00000000(self->spr1, self->w38, self->w3C, 3);
+    gl_func_00000000(self->spr0);
+    gl_func_00000000(self->spr0, (int)(255.0f * self->fD0), &self->cA0, 255);
+    gl_func_00000000(self->spr0, self->w40, self->w44, 3);
+    spr = self->spr2;
+    gl_func_00000000(spr);
+    gl_func_00000000(spr, (int)(255.0f * self->fD0), &col, 255);
+    for (i = 0; i < self->len; i++) {
+        if (self->name2[i] < 41) {
+            gl_func_00000000(self->spr2, self->w48 + i * self->w58 - 12, self->w4C - 12, self->name2[i] * 22 + 2, 20);
+        }
+    }
+    for (i = 0; i < 3; i++) {
+        if (i == self->len) {
+            gl_func_00000000(self->spr2, (int)(255.0f * self->fD0), &self->c80, 255);
+        } else {
+            gl_func_00000000(self->spr2, (int)(255.0f * self->fD0), &col, 255);
+        }
+        gl_func_00000000(self->spr2, self->w48 + i * self->w58 - 12, self->w4C - 12, 926, 20);
+    }
+    gl_func_00000000(self->spr2);
+    wheel = self->pos;
+    x0 = (int)((float)self->w38 - (wheel - (float)(int)wheel) * (float)self->w54);
+    gl_func_00000000(&ne_gGui, 40, 0, 284, 239); /* gui_setScissor */
+    for (j = -self->w50; j <= self->w50; j++) {
+        k = (int)self->pos + j;
+        if (k < 0) {
+            k += 42;
+        }
+        if (k >= 42) {
+            k -= 42;
+        }
+        x = x0 + j * self->w54;
+        fx = (float)x;
+        if (160.0f < fx) {
+            dist = -(160.0f - fx);
+        } else {
+            dist = 160.0f - fx;
+        }
+        d = dist / 160.0f;
+        a = 1.0f - d;
+        if (d > 1.0f) {
+            a = 0.0f;
+        }
+        alpha = (int)(64.0f * a * self->fD0);
+        if (alpha < 0) {
+            alpha = 0;
+        }
+        if (a > 0.92f) {
+            alpha = 255;
+            sx = 1.2f;
+            sy = 1.2f;
+        } else {
+            sx = 1.0f;
+            sy = 1.0f;
+        }
+        gl_func_00000000(self->spr2, alpha, &col, 255);
+        ne_gui_drawSpriteScroll(self->spr2, x, self->w3C, k * 22 + 2, 20, sx, sy);
+    }
+    gl_func_00000000(&ne_gGui, 0, 0, 319, 239);
+}
+
 /* nameent_uso_func_00000E44: the name-entry input: the letter wheel (42 entries: letters, 39 =
  * space, 40 = back, 41 = END) steps with 0x10000 / 0x4000 or the stick (auto-repeat), the
  * position eases toward the target (gain +0x7C, clamped to +-maxVel, wrapping at 42); 0x200
@@ -331,102 +434,4 @@ extern "C" void nameent_uso_func_00000E44(NeEntry *self) {
             self->done = 1;
         }
     }
-}
-
-/* gui_drawSpriteScroll_00003714 takes its two scales as floats: a typed alias of the blank
- * import (pinned at 0) */
-extern "C" int ne_gui_drawSpriteScroll(char *spr, int x, int y, int idx, int h, float sx, float sy);
-
-/* nameent_uso_func_000009BC: the name-entry display (NON_MATCHING: spliced into the NM object
- * only, 286 / 290 words): the board sprites fade in (+0xD0 += 0.05), the entered letters and
- * the three cursor slots (the current one tinted +0x80), then the letter wheel: 2 * +0x50 + 1
- * letters around the wheel position, each scaled by its distance from the centre (x 160) and
- * the centre letter enlarged (1.2) at full alpha, clipped to x 40..284.
- * Residual: the target spills the two scales at sp+0x74 / +0x70, 4 bytes lower: one more
- * named word above them and one edg temporary word fewer than here. */
-extern "C" void nameent_uso_func_000009BC(NeEntry *self) {
-    char *spr;
-    Colour col;
-    float wheel;
-    int x0;
-    int i;
-    int j;
-    int k;
-    int x;
-    int alpha;
-    float fx;
-    float dist;
-    float d;
-    float a;
-    int scratch;
-    float sx;
-    float sy;
-
-    scratch = 0;
-    col.set(1.0f, 1.0f, 1.0f, 1.0f);
-    if (self->fD0 < 1.0f) {
-        self->fD0 += 0.05f;
-    }
-    gl_func_00000000(self->spr1);
-    gl_func_00000000(self->spr1, (int)(255.0f * self->fD0), &col, 255);
-    gl_func_00000000(self->spr1, self->w38, self->w3C, 3);
-    gl_func_00000000(self->spr0);
-    gl_func_00000000(self->spr0, (int)(255.0f * self->fD0), &self->cA0, 255);
-    gl_func_00000000(self->spr0, self->w40, self->w44, 3);
-    spr = self->spr2;
-    gl_func_00000000(spr);
-    gl_func_00000000(spr, (int)(255.0f * self->fD0), &col, 255);
-    for (i = 0; i < self->len; i++) {
-        if (self->name2[i] < 41) {
-            gl_func_00000000(self->spr2, self->w48 + i * self->w58 - 12, self->w4C - 12, self->name2[i] * 22 + 2, 20);
-        }
-    }
-    for (i = 0; i < 3; i++) {
-        if (i == self->len) {
-            gl_func_00000000(self->spr2, (int)(255.0f * self->fD0), &self->c80, 255);
-        } else {
-            gl_func_00000000(self->spr2, (int)(255.0f * self->fD0), &col, 255);
-        }
-        gl_func_00000000(self->spr2, self->w48 + i * self->w58 - 12, self->w4C - 12, 926, 20);
-    }
-    gl_func_00000000(self->spr2);
-    wheel = self->pos;
-    x0 = (int)((float)self->w38 - (wheel - (float)(int)wheel) * (float)self->w54);
-    gl_func_00000000(&ne_gGui, 40, 0, 284, 239); /* gui_setScissor */
-    for (j = -self->w50; j <= self->w50; j++) {
-        k = (int)self->pos + j;
-        if (k < 0) {
-            k += 42;
-        }
-        if (k >= 42) {
-            k -= 42;
-        }
-        x = x0 + j * self->w54;
-        fx = (float)x;
-        if (160.0f < fx) {
-            dist = -(160.0f - fx);
-        } else {
-            dist = 160.0f - fx;
-        }
-        d = dist / 160.0f;
-        a = 1.0f - d;
-        if (d > 1.0f) {
-            a = 0.0f;
-        }
-        alpha = (int)(64.0f * a * self->fD0);
-        if (alpha < 0) {
-            alpha = 0;
-        }
-        if (a > 0.92f) {
-            alpha = 255;
-            sx = 1.2f;
-            sy = 1.2f;
-        } else {
-            sx = 1.0f;
-            sy = 1.0f;
-        }
-        gl_func_00000000(self->spr2, alpha, &col, 255);
-        ne_gui_drawSpriteScroll(self->spr2, x, self->w3C, k * 22 + 2, 20, sx, sy);
-    }
-    gl_func_00000000(&ne_gGui, 0, 0, 319, 239);
 }

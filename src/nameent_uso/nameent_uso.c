@@ -232,14 +232,9 @@ int nameent_uso_func_00000760(char *self, char *owner, int mode) {
 }
 
 /* nameent_uso_func_000009BC: the name-entry display (board sprites, letters, the letter wheel).
- * NM 286/290: the NCC (C++) donor src/nameent_uso/nameent_uso_ncc.cpp is spliced into the
- * NON_MATCHING object only; the residual is the two scale spill slots (4 bytes off). */
-#ifdef NON_MATCHING
+ * EXACT via the NCC (C++) donor src/nameent_uso/nameent_uso_ncc.cpp (REPLACE_FUNC_BODY). */
 void nameent_uso_func_000009BC(char *self) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_000009BC);
-#endif
 
 /* nameent_uso_func_00000E44: the name-entry input (the letter wheel). EXACT via the NCC (C++)
  * donor src/nameent_uso/nameent_uso_ncc.cpp (REPLACE_FUNC_BODY). */
