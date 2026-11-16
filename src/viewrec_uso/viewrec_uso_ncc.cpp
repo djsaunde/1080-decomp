@@ -6,6 +6,8 @@
 #include "../../include/uso_call.h"
 
 extern "C" int gl_func_00000000(...);
+/* void-returning alias of the placeholder (0-pinned): no dead v0 def to colour around */
+extern "C" void gl_func_00000000_vrv(...);
 
 /* gdl Node with its cfront vtable: the slots this module calls */
 struct VrNode {
@@ -25,7 +27,7 @@ struct VrProc : VrNode {
     /* 0x50 */ int *session;
     /* 0x54 */ char pad54[0x6C - 0x54];
     /* 0x6C */ int mode;
-    /* 0x70 */ int pad70;
+    /* 0x70 */ int nextMode;        /* the options mode the records menu picked (0x2000 / 0x4000) */
     /* 0x74 */ int flags;
 };
 
@@ -49,6 +51,20 @@ struct VrGameFlow {
 extern VrGameFlow gInputMgr_vrncc;      /* bootup Bss 0xF8 import */
 extern VrNode *sVrScreen;               /* viewrec Bss 0x880 */
 extern VrNode *sVrMenu;                 /* viewrec Bss 0x878 */
+extern VrProc *sVrProc;                 /* viewrec Bss 0x87C */
+
+/* the records menu screen (VrScreen60 in viewrec_uso.c, ctor 0x1B4C) */
+struct VrScreen60 : VrNode {
+    /* 0x2C */ char pad2C[0x50 - 0x2C];
+    /* 0x50 */ VrProc *proc;
+    /* 0x54 */ char pad54[0x6C - 0x54];
+    /* 0x6C */ int frame;
+    /* 0x70 */ char pad70[0x90 - 0x70];
+    /* 0x90 */ int state;           /* 0: picking a tab, 1: in the options grid */
+    /* 0x94 */ int tab;             /* 0..2 */
+    /* 0x98 */ int cursor;          /* the grid cell (0..7, two per row) */
+    /* 0x9C */ int minCursor;       /* the lowest selectable cell (2 on tab 0) */
+};
 
 /* the process update: until the fade-in has started, let the shown screen draw (slot 3); once it
  * has, wait for the shared Fader and then call onFadedIn (slot 11) */
@@ -125,3 +141,82 @@ extern "C" void viewrec_uso_func_000022A8(VrScreen *self) {
     }
 }
 
+
+/* 0x266C: the records menu input (proc mode 0x1000). State 0: left / right pick one of the three
+ * tabs, A enters the options grid for tabs 0 / 1 (the options mode they lead to is kept in
+ * proc->nextMode) or opens the arcade records (tab 2), B returns to the main menu (0x0) when the
+ * process was entered from it. State 1: the d-pad moves the cursor around the 2-wide grid, A shows
+ * the picked options screen, B goes back to the tabs. edg: `old` declared at function scope (a
+ * block-scope one takes a frame home 8 bytes higher), the state read through a local (v0, not
+ * v1), the void alias on the snd_postEvent(5) before each proc / tab read. */
+extern "C" void viewrec_uso_func_0000266C(VrScreen60 *self) {
+    int old;
+    int st = self->state;
+    switch (st) {
+    case 0:
+        if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x10001)) {
+            CALL(snd_postEvent)(1);
+            self->tab--;
+            if (self->tab < 0) self->tab = 2;
+        }
+        if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x4002)) {
+            CALL(snd_postEvent)(1);
+            self->tab++;
+            if (self->tab >= 3) self->tab = 0;
+        }
+        if (self->tab == 0) self->minCursor = 2; else self->minCursor = 0;
+        if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x100)) {
+            XCALL(gl_func_00000000_vrv, snd_postEvent)(5);
+            switch (self->tab) {
+            case 0:
+                self->proc->nextMode = 0x2000;
+                if (self->cursor < self->minCursor) self->cursor = self->minCursor;
+                self->state++;
+                break;
+            case 1:
+                self->proc->nextMode = 0x4000;
+                self->state++;
+                break;
+            case 2:
+                sVrProc->mode = 0x8000;
+                break;
+            }
+        }
+        if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x200)) {
+            CALL(snd_postEvent)(0x802);
+            if (self->proc->flags & 0x10000) {
+                CALL(viewrec_uso_func_00000000)();
+            }
+        }
+        break;
+    case 1:
+        old = self->cursor;
+        if (self->cursor > self->minCursor && CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x10001) &&
+            (self->cursor & 1)) {
+            CALL(snd_postEvent)(1);
+            self->cursor--;
+        }
+        if (self->cursor < 8 && CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x4002) && !(self->cursor & 1)) {
+            CALL(snd_postEvent)(1);
+            self->cursor++;
+        }
+        if (self->cursor - 2 >= self->minCursor && CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x2004)) {
+            CALL(snd_postEvent)(1);
+            self->cursor -= 2;
+        }
+        if (self->cursor + 2 < 8 && CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x8008)) {
+            CALL(snd_postEvent)(1);
+            self->cursor += 2;
+        }
+        if (old != self->cursor) self->frame = 0;
+        if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x100)) {
+            XCALL(gl_func_00000000_vrv, snd_postEvent)(5);
+            self->proc->mode = self->proc->nextMode;
+        }
+        if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x200)) {
+            CALL(snd_postEvent)(0x802);
+            self->state--;
+        }
+        break;
+    }
+}

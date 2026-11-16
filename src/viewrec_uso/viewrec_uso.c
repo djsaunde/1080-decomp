@@ -817,7 +817,9 @@ void viewrec_uso_func_00002468(ViewRecScreen *self) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000266C);
+/* EXACT via the NCC (C++) donor src/viewrec_uso/viewrec_uso_ncc.cpp: the records menu input. */
+void viewrec_uso_func_0000266C(ViewRecScreen *self) {
+}
 
 /* a record row's sprites: the rank number i (tinted, skipped when i < 0), rider and board at x + 26 / x + 60 */
 void viewrec_uso_func_000029B0(ViewRecScreen *self, s32 i, s32 x, s32 y, s32 rider, s32 board) {
