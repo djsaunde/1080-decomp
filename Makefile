@@ -6202,3 +6202,6 @@ build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_A_DONOR)
 VIEWREC_NM_B_DONOR := build/src/viewrec_uso/viewrec_uso_mp72_nm_3878.cpp.o
 build/non_matching/src/viewrec_uso/viewrec_uso.c.o: private REPLACE_FUNC_BODY += viewrec_uso_func_00003878=$(VIEWREC_NM_B_DONOR)
 build/non_matching/src/viewrec_uso/viewrec_uso.c.o: $(VIEWREC_NM_B_DONOR)
+# agent-b run 675: NON_MATCHING-only functions from agent-b's snoweffects donor (1E60: 300 words = target).
+SNOW_NM_B_FUNCS := snoweffects_uso_func_00001E60
+build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_B_FUNCS),$(f)=$(SNOW_B_DONOR))

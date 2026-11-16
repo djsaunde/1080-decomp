@@ -89,3 +89,59 @@ void SnowEffect::createB() {
     lnk(childB, grpB);
     childB->v11(16);
 }
+
+/* ---- NON_MATCHING-only (agent-b run 675): spliced on the non_matching build only (SNOW_NM_B_FUNCS in the
+ * Makefile); the matching build keeps INCLUDE_ASM. Calls go through the bare placeholder (callee named in a
+ * comment): the placeholder-call check only verifies donors spliced on the matching build. */
+#include "../game_libs/ncc_drafts/gbi_subset.h"
+extern "C" char snow_tex_5AC0[];  /* Data+0x5AC0 (USO reloc carries the offset, lo16 0) */
+struct SnowGCtxB;
+extern "C" void gl_func_00000000_snow_reset(SnowGCtxB *);  /* gfx_resetDLContext, void-typed blank jal */
+#define gDPLoadTextureTileB(pkt, timg, fmt, siz, width, height, uls, ult, lrs, lrt, pal, cms, cmt, masks, maskt, shifts, shiftt) \
+{ gDPSetTextureImage(pkt, fmt, siz, width, timg); \
+  gDPSetTile(pkt, fmt, siz, (((((lrs)-(uls)+1) * siz##_TILE_BYTES)+7)>>3), 0, G_TX_LOADTILE, 0, cmt, maskt, shiftt, cms, masks, shifts); \
+  gDPLoadSync(pkt); \
+  gDPLoadTile(pkt, G_TX_LOADTILE, (uls)<<G_TEXTURE_IMAGE_FRAC, (ult)<<G_TEXTURE_IMAGE_FRAC, (lrs)<<G_TEXTURE_IMAGE_FRAC, (lrt)<<G_TEXTURE_IMAGE_FRAC); \
+  gDPPipeSync(pkt); \
+  gDPSetTile(pkt, fmt, siz, (((((lrs)-(uls)+1) * siz##_LINE_BYTES)+7)>>3), 0, G_TX_RENDERTILE, pal, cmt, maskt, shiftt, cms, masks, shifts); \
+  gDPSetTileSize(pkt, G_TX_RENDERTILE, (uls)<<G_TEXTURE_IMAGE_FRAC, (ult)<<G_TEXTURE_IMAGE_FRAC, (lrs)<<G_TEXTURE_IMAGE_FRAC, (lrt)<<G_TEXTURE_IMAGE_FRAC) }
+#define gDPWordB(pkt, a, b) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = (a); _g->words.w1 = (unsigned int)(b); }
+struct SnowDListB { Gfx *buf; int count; };
+struct SnowGCtxB { char pad0[0xC]; SnowDListB *dl; Gfx *next() { int n = dl->count++; Gfx *g = &dl->buf[n]; return g; } };
+struct SnowTexB {
+    char pad00[0xC];
+    char *name;         /* 0x0C */
+    char pad10[0x2C - 0x10];
+    SnowGCtxB *dl;      /* 0x2C */
+    int pad30;
+    int w;              /* 0x34 */
+    int h;              /* 0x38 */
+};
+
+/* 0x1E60 (NM, 300 words = target, ~90 %): the 64 x 64 IA8 texture sprite init (Data+0x5AC0), agent-h's run-649
+ * draft: name Data+0x310, a 20-packet DL context (gfx_newDLContext + reset) at +0x2C, PipeSync, w = h = 64,
+ * the stock 2.0I gDPLoadTextureTile (mask 6), gSPTexture, cycle / persp / textfilt / dither, render mode,
+ * combine, prim colour, depth source, EndDL. The target fills the jr ra delay slot with the sp restore; this
+ * body did not (301 words) until the dead `switch (t->w) { case 1: break; }` before the prim colour: its
+ * switch-value load reaches as1 (which deletes it) and changes the block's scheduling so the slot fills.
+ * Left: the a1 / a2 / a3 packet-pointer rotation (live-unit layout, as 15D0 / 1A18 / 2310). */
+extern "C" void snoweffects_uso_func_00001E60(SnowTexB *t) {
+    t->name = D_00000000 + 0x310;
+    t->dl = (SnowGCtxB *)gl_func_00000000(/* gfx_newDLContext */ 0, D_00000000 + 0x328, 20, 0, 0, 0, 0);
+    gl_func_00000000_snow_reset(t->dl);
+    gDPPipeSync(t->dl->next());
+    t->w = 64;
+    t->h = 64;
+    gDPLoadTextureTileB(t->dl->next(), snow_tex_5AC0, G_IM_FMT_IA, G_IM_SIZ_8b, t->w, t->h, 0, 0, t->w - 1, t->h - 1, 0, 0, 0, 6, 6, 0, 0);
+    gDPWordB(t->dl->next(), 0xBB000001, 0x80008000);
+    gDPWordB(t->dl->next(), 0xBA001402, 0);
+    gDPWordB(t->dl->next(), 0xBA001301, 0);
+    gDPWordB(t->dl->next(), 0xBA000C02, 0);
+    gDPWordB(t->dl->next(), 0xBA000602, 0xC0);
+    gDPWordB(t->dl->next(), 0xB900031D, 0x00404A50);
+    gDPWordB(t->dl->next(), 0xFCFF9BFF, 0xFF377FBF);
+    switch (t->w) { case 1: break; }
+    gDPWordB(t->dl->next(), 0xFA000000, 0);
+    gDPWordB(t->dl->next(), 0xB9000201, 4);
+    gDPWordB(t->dl->next(), 0xB8000000, 0);
+}

@@ -437,9 +437,15 @@ void snoweffects_uso_func_00001A18(void) {
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00001A18);
 #endif
 
-/* 0x1E60: texture-sprite init (64 x 64 IA8, Data+0x5AC0), the 0x15D0 shape plus TextFilt / RGBDither packets;
- * NCC draft in snoweffects_uso_ncc_nm.cpp is 91 % lines but 301 words (jr ra delay slot unfilled). */
+/* 0x1E60: texture-sprite init (64 x 64 IA8, Data+0x5AC0), the 0x15D0 shape plus TextFilt / RGBDither packets.
+ * NCC donor in snoweffects_uso_ncc_b.cpp (agent-b run 675, 300 words = target, ~90 %), spliced over this
+ * placeholder on the non_matching build. */
+#ifdef NON_MATCHING
+void snoweffects_uso_func_00001E60(void) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00001E60);
+#endif
 
 #ifdef NON_MATCHING
 /* texture-sprite init: NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp (agent-h run 649),
