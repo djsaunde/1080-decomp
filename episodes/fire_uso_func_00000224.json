@@ -1,0 +1,33 @@
+{
+  "function_name": "fire_uso_func_00000224",
+  "project": "1080-decomp",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-11-16T20:37:59.035775+00:00",
+  "end_time": "2026-11-16T20:37:59.035794+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T20:37:59.035790+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 19,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n#include \"uso_call.h\"\n\nextern int gl_func_00000000();\nextern char D_00000000;\n\n/* fire.uso: the fire course object (an SNode subclass with a Sprite and two\n * gfx colour parms) and its ItemType template. Compiler: IDO 7.1 cfe -O2 matches\n * the members below; the module is libgdl C++ (vtables at Data+0x228C / 0x231C,\n * cfront-style this==0 allocating ctors), written here as C.\n *\n * Relocs (scripts/uso-imports.py sites fire): every `&D_00000000` is a zero\n * placeholder; the target is in the TextReloc. Imports from bootup.uso:\n * Bss+0x3C168 = GfxLib, Bss+0x3C768 = the hostio object. */\n\n/* fire_uso_func_00000000: FireTmpl ctor (0x68 bytes). not matched yet (an NM body scored 78%):\n * the whole control flow, the inlined 0x48-byte ItemType base ctor (name passed\n * by value) and the store order match; two residuals: the target keeps the\n * name copy at sp+0x1C (two more frame words, likely the inlined Colour::set's\n * materialised this/params) and reloads 255.0f for the alpha dividend instead\n * of reusing the divisor register (cfe, NCC and value-variants all CSE it).\n * The divides are not folded, so the colours come from an inline\n * set(r, g, b, a) dividing by 255.0f (C needs locals for that, which cost frame words). */\nINCLUDE_ASM(\"asm/nonmatchings/fire_uso/fire_uso\", fire_uso_func_00000000);\n\nint *fire_uso_func_00000270(char *self, int sprite);\n\n/* fire_uso_func_00000148: FireTmpl create: new Fire(tmpl->sprite), scale 1,\n * virtual handleMsg (vtable slot at +0x28) with message 19, then link into the\n * sprite's list. not matched yet (an NM body scored 74%): the target keeps the new object in v1\n * (v0 reused for the vtable), homes it at sp+0x28 with the message at sp+0x2C\n * (frame 0x38), reads tmpl->sprite from a0 before the home store and leaves the\n * jalr delay slot empty; cfe and NCC (real class + new) both give frame 0x30. */\nINCLUDE_ASM(\"asm/nonmatchings/fire_uso/fire_uso\", fire_uso_func_00000148);\n\n/* Fire_declColourParms: hostio colour parms for the env (0x48) and prim (0x58) colours. */\nvoid fire_uso_func_000001E4(char *self) {\n    CALL(gfx_declColourParm)(self + 0x48, &D_00000000 + 0x237C);\n    CALL(gfx_declColourParm)(self + 0x58, &D_00000000 + 0x2380);\n}\n\nvoid fire_uso_func_00000224(char *self) {\n    CALL(gfx_setPrimColour)(&D_00000000, self + 0x58);\n    CALL(gfx_setEnvColour)(&D_00000000, self + 0x48);\n    CALL(Node_display)(self);\n}\n\nint *fire_uso_func_00000270(char *self, int sprite) {\n    if (self != 0 || (self = (char *)CALL(mem_new)(0x94)) != 0) {\n        CALL(SNode_ctor)(self);\n        *(char **)(self + 0x28) = &D_00000000;\n        *(short *)(self + 0x8C) = 0;\n        *(float *)(self + 0x90) = 0.0f;\n        *(int *)(self + 0x88) = sprite;\n        *(float *)(self + 0x6C) = 6.0f;\n        CALL(Node_setUnk24)(self, 2);\n    }\n    return (int *)self;\n}\n\nvoid fire_uso_func_000002E8(char *self) {\n    *(short *)(*(char **)(self + 0x88) + 0xC0) = *(short *)(self + 0x8C);\n    *(float *)(*(char **)(self + 0x88) + 0xB0) = *(float *)(self + 0x70);\n    *(float *)(*(char **)(self + 0x88) + 0xB4) = *(float *)(self + 0x70);\n    *(short *)(self + 0x8C) = (*(short *)(self + 0x8C) + 1) & 7;\n    CALL(SNode_display)(self);\n}\n\nextern void gl_func_00000000_ff(void *, char *, void *, float, float, int);\nvoid fire_uso_func_00000338(char *self) {\n    CALL(hostio_beginGroup)(&D_00000000, &D_00000000 + 0x2388, 0);\n    XCALL(gl_func_00000000_ff, hostio_addFloat)(&D_00000000, &D_00000000 + 0x2390, self + 0x90, 0.0f, 1.0f, 0);\n    CALL(hostio_endGroup)(&D_00000000);\n    CALL(SNode_hostioParms)(self);\n}\n",
+  "metadata": {
+    "source_path": "src/fire_uso/fire_uso.c",
+    "asm_path": "asm/nonmatchings/fire_uso/fire_uso/fire_uso_func_00000224.s",
+    "segment": "fire_uso",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Byte-identical to the asm .word target; readability-gate PASS (ROM identical)."
+  }
+}
