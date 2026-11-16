@@ -1,22 +1,13 @@
-/* IDO 7.1 NCC (C++) draft for snoweffects.uso 0x7FE0 (agent-a runs 661 / 665 / 669), NOT spliced: 811 / 800
- * words (85.7 %), and a size change shifts the later functions of the non_matching object (0xA8D0 then drops
+/* IDO 7.1 NCC (C++) draft for snoweffects.uso 0x7FE0 (agent-a runs 661 / 665 / 669 / 677), NOT spliced:
+ * 799 / 800 words (objdiff 93.1 %; run 669 was 811 words, 85.7 %), and a size change shifts the later functions of the non_matching object (0xA8D0 then drops
  * to 41.7 %), so a donor body has to be exactly the target's length. 0xA10C moved to the exact donor
  * snoweffects_uso_ncc_a.cpp (run 677). Makefile SNOW_NM_A_FUNCS is empty until 0x7FE0 is 800 words.
  */
 #include "snoweffects_ncc.h"
-/* the callees, by name (a matching donor would call them through typed 0-pinned aliases); the
- * discarded-result ones are void (an int return leaves a dead v0 def) */
+/* the callees, by name (a matching donor would call them through typed 0-pinned aliases) */
 extern "C" {
-int ItemMgr_findType_0003EA98(...);
-void PolyShape_getNormal8(...);
-int PolyShape_getVertex(...);
 void snoweffects_uso_func_00004374(...);
 int snoweffects_uso_func_000046BC(...);
-void snoweffects_uso_func_00009768(...);
-void snoweffects_uso_func_00009884(...);
-void snoweffects_uso_func_00009BE8(...);
-void snoweffects_uso_func_00009C48(...);
-void snoweffects_uso_func_00009FE8(...);
 }
 
 /* ---- 0x7FE0 trail emitter update (decoded whole, first NCC draft: 789 / 800 instructions,
@@ -35,13 +26,27 @@ void snoweffects_uso_func_00009FE8(...);
  * 64.0f. Run 669: t->speed read once into v before the cam-speed test (target f0 at 0x8064): 85.49 -> 85.74.
  * Left at the |speed| compare: the target's zero for the +0x120 clears is a ugen f0 constant and the
  * ramp's 0.0f is rematerialised per arm into f24 (bc1tl + two mtc1 zero); here one 0.0f LR spans the
- * 0x4374 call in f20. ---- */
+ * 0x4374 call in f20.
+ * Run 677 (85.7 -> 93.1 %, 811 -> 799 words):
+ * - the +0x120..+0x134 clears through an int local (`int z = 0`): their zero is its own f0 web, and the
+ *   ramp zero becomes the f24 constant rematerialised per arm (agent-g's run 658 lever).
+ * - `speed < 60 || |v| < lo` as one condition: both s = 0 arms share one block (bc1tl into it).
+ * - s = +-1 as an if / else, not a ternary (the target assigns f16 in each arm).
+ * - d = c * |s| through a TV(const TV &, float) constructor: computed straight into d (-13 words of
+ *   op* return-temp / param-temp copy chain).
+ * - &t->v114 / &t->vFC as pointer locals before the loop (the target hoists a0+276 / a0+252).
+ * - the vtx t value computed before the s store (writeOfs loaded once for both).
+ * - the reversed-index test is `0 < s`.
+ * Left: one instruction short. The target copies p.y into f0 (mov.s) in the lerp, where p.x was
+ * reloaded from the sp+48 spill; here p.y is used in place. Then the register numbering, the frame
+ * (336 vs 384) and the hoisted sp addresses. ---- */
 extern "C" void SnowRing_setSlotState_00004714(void *, int, int, float);
 
 struct TV {
     float x, y, z;
     TV() {}
     TV(float a, float b, float c) { x = a; y = b; z = c; }
+    TV(const TV &v, float s) { x = v.x * s; y = v.y * s; z = v.z * s; }
     TV operator*(float s) const { TV r(x * s, y * s, z * s); return r; }
     /* by value: `p = t->mid` copies the source into the param temp as words (lw / sw through a3),
      * then member-wise as floats, as in the target (run 665: 79.0 -> 85.5 %) */
@@ -122,6 +127,7 @@ struct TTrail {
     /* 0x1EC */ int mode;
 };
 
+inline float fabs_(float x) { return x < 0.0f ? -x : x; }
 extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
     float s;
     float w;
@@ -131,24 +137,21 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
     } else {
         t->speed = t->cam->lean;
     }
-    t->a.x = 0.0f;
-    t->a.y = 0.0f;
-    t->a.z = 0.0f;
-    t->b.x = 0.0f;
-    t->b.y = 0.0f;
-    t->b.z = 0.0f;
+    { int z = 0; t->a.x = z; t->a.y = z; t->a.z = z; t->b.x = z; t->b.y = z; t->b.z = z; }
     t->f3C = t->f34;
     t->f40 = t->f38;
     snoweffects_uso_func_00004374(t);
     float v = t->speed;
-    if (t->cam->speed < 60.0f) {
+    if (t->cam->speed < 60.0f || fabs_(v) < t->lo) {
         s = 0.0f;
-    } else if ((v < 0.0f ? -v : v) < t->lo) {
-        s = 0.0f;
-    } else if (t->hi < (v < 0.0f ? -v : v)) {
-        s = v < 0.0f ? -1.0f : 1.0f;
+    } else if (t->hi < fabs_(v)) {
+        if (v < 0.0f) {
+            s = -1.0f;
+        } else {
+            s = 1.0f;
+        }
     } else {
-        float f = ((v < 0.0f ? -v : v) - t->lo) / (t->hi - t->lo);
+        float f = (fabs_(v) - t->lo) / (t->hi - t->lo);
         if (v < 0.0f) {
             s = -((1.0f - t->base) * f + t->base);
         } else {
@@ -162,7 +165,7 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
         t->hits = 0;
     }
     t->s = s;
-    if (t->cam->state != 97 || t->cam->speed < 60.0f || (s < 0.0f ? -s : s) == 0.0f) {
+    if (t->cam->state != 97 || t->cam->speed < 60.0f || fabs_(s) == 0.0f) {
         t->hits = 0;
     }
     t->on = snoweffects_uso_func_000046BC(t);
@@ -177,6 +180,8 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
         if (t->cam->state == 98) {
             fade = 0.0f;
         }
+        TV *v114 = &t->v114;
+        TV *vFC = &t->vFC;
         for (i = 0; i < t->stride; i++) {
             TV p;
             if (t->mode == 2) {
@@ -194,11 +199,11 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
             t->points[t->writeOfs + i].w[2] = w;
             t->points[t->writeOfs + i].w[3] = t->f16C;
             TV up = t->cam->up * t->f180;
-            TV a = up * (s < 0.0f ? -s : s);
-            TV b = t->v114 * ((float)(s < 0.0f ? t->stride - i - 1 : i) / (float)t->stride);
+            TV a = up * fabs_(s);
+            TV b = *v114 * ((float)(0.0f < s ? t->stride - i - 1 : i) / (float)t->stride);
             TV c = b * t->f184;
-            TV d = c * (s < 0.0f ? -s : s);
-            TV e = t->vFC * -1.0f;
+            TV d(c, fabs_(s));
+            TV e = *vFC * -1.0f;
             if (0.0f < s) {
                 d *= -1.0f;
             }
@@ -221,8 +226,9 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
             if (t->mode != 2) {
                 u *= 3.0f;
             }
+            float tv = ((t->writeOfs & t->stride) >> 2) * 31;
             t->vtx[t->writeOfs + i].s = u * 64.0f;
-            t->vtx[t->writeOfs + i].t = (float)(((t->writeOfs & t->stride) >> 2) * 31) * 64.0f;
+            t->vtx[t->writeOfs + i].t = tv * 64.0f;
             if (i == 1 || i == 2) {
                 t->vtx[t->writeOfs + i].rgba[0] = t->cam->rgb[0] + (255.0f - t->cam->rgb[0]) * fade;
                 t->vtx[t->writeOfs + i].rgba[1] = t->cam->rgb[1] + (255.0f - t->cam->rgb[1]) * fade;
