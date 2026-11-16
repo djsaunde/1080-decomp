@@ -1103,10 +1103,10 @@ void *h2h_createPauseMenu_00000FD0(void *a0, int *a1) {
         NODE(tmp)->unk04 = 1;
     }
     NODE(tmp)->parent = (int)a0;
-    CALL(gui_spriteLoad)(H2HWINS(a0)->sprites[0], *(int*)(base + 0x4C) | (0x1D << 16));
-    CALL(gui_spriteLoad)(H2HWINS(a0)->sprites[1], *(int*)(base + 0x54) | (0x1E << 16));
-    CALL(gui_spriteLoad)(H2HWINS(a0)->sprites[2], *(int*)(base + 0x58) | (0x1D << 16));
-    CALL(gui_spriteLoad)(H2HWINS(a0)->sprites[3], *(int*)(base + 0x60) | (0x1E << 16));
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[0], *(int*)(base + 0x4C) | (0x1D << 16));
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[1], *(int*)(base + 0x54) | (0x1E << 16));
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[2], *(int*)(base + 0x58) | (0x1D << 16));
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[3], *(int*)(base + 0x60) | (0x1E << 16));
 end:
     return a0;
 }
@@ -1272,60 +1272,60 @@ void h2h_WinsDisplay_display_00001360(int *self) {
     int gate;
     int *sub;
 
-    *(int*)((char*)self + 0x98) += 1;
-    v_call = (int*)*(int*)((char*)self + 0x34); if (1) {}
-    vtable = (int*)*(int*)((char*)v_call + 0x28);
-    ((void(*)(int))vtable[0x1C/4])((int)v_call + *(short*)((char*)vtable + 0x18));
+    H2HWINS(self)->frame += 1;
+    v_call = (int*)H2HWINS(self)->fader; if (1) {}
+    vtable = (int*)NODE(v_call)->vptr;
+    ((void(*)(int))VT_SLOT(vtable, 2).fn)((int)v_call + VT_SLOT(vtable, 2).delta);
 
-    gl_func_00000000_1360v(*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x568));
-    gl_func_00000000_1360v(*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x568));
+    gl_func_00000000_1360v(RACEPROC(H2HWINS(self)->race)->spriteSet);
+    gl_func_00000000_1360v(RACEPROC(H2HWINS(self)->race)->spriteSet);
 
-    gate = (*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x6B8) == 0)
-         ? *(int*)((char*)self + 0x98) : 0x10;
+    gate = (H2HRACE(H2HWINS(self)->race)->winner == 0)
+         ? H2HWINS(self)->frame : 0x10;
     if (gate & 0x10) {
         gl_func_00000000_1360v(scratch, &D_00000000 + 0x3FC);
-        retval = gl_func_00000000(*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x568), 80, scratch);
-        gl_func_00000000_1360v(*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x568), retval, 30, scratch);
+        retval = gl_func_00000000(RACEPROC(H2HWINS(self)->race)->spriteSet, 80, scratch);
+        gl_func_00000000_1360v(RACEPROC(H2HWINS(self)->race)->spriteSet, retval, 30, scratch);
         {
-            register int val = *(int*)*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x6A8);
+            register int val = ((int *)H2HRACE(H2HWINS(self)->race)->wins)[0];
             register int c;
             if (val != 1) c = 115; else c = 0;
             gl_func_00000000_1360v(scratch, &D_00000000 + 0x400, val, c);
         }
-        retval = gl_func_00000000(*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x568), 80, scratch);
-        gl_func_00000000_1360v(*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x568), retval, 80, scratch);
+        retval = gl_func_00000000(RACEPROC(H2HWINS(self)->race)->spriteSet, 80, scratch);
+        gl_func_00000000_1360v(RACEPROC(H2HWINS(self)->race)->spriteSet, retval, 80, scratch);
     }
 
-    gate = (*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x6B8) == 1)
-         ? *(int*)((char*)self + 0x98) : 0x10;
+    gate = (H2HRACE(H2HWINS(self)->race)->winner == 1)
+         ? H2HWINS(self)->frame : 0x10;
     if (gate & 0x10) {
         gl_func_00000000_1360v(scratch, &D_00000000 + 0x40C);
-        retval = gl_func_00000000(*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x568), 240, scratch);
-        gl_func_00000000_1360v(*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x568), retval, 30, scratch);
+        retval = gl_func_00000000(RACEPROC(H2HWINS(self)->race)->spriteSet, 240, scratch);
+        gl_func_00000000_1360v(RACEPROC(H2HWINS(self)->race)->spriteSet, retval, 30, scratch);
         {
-            register int val = *(int*)((char*)*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x6A8) + 4);
+            register int val = ((int *)H2HRACE(H2HWINS(self)->race)->wins)[1];
             register int c;
             if (val != 1) c = 115; else c = 0;
             gl_func_00000000_1360v(scratch, &D_00000000 + 0x410, val, c);
         }
-        retval = gl_func_00000000(*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x568), 240, scratch);
-        gl_func_00000000_1360v(*(int*)((char*)*(int*)((char*)self + 0x2C) + 0x568), retval, 80, scratch);
+        retval = gl_func_00000000(RACEPROC(H2HWINS(self)->race)->spriteSet, 240, scratch);
+        gl_func_00000000_1360v(RACEPROC(H2HWINS(self)->race)->spriteSet, retval, 80, scratch);
     }
 
     /* Tail */
     gl_func_00000000_1360v(&D_00000000);
-    sub = (int*)((char*)self + 0x38);
+    sub = (int*)&H2HWINS(self)->sprites[0];
     gl_func_00000000_1360v(sub);
     gl_func_00000000_1360v(sub, 60, 64, 3);
-    sub = (int*)((char*)self + 0x50);
+    sub = (int*)&H2HWINS(self)->sprites[1];
     gl_func_00000000_1360v(sub);
-    gl_func_00000000_1360v(sub, *(short*)((char*)*(int*)((char*)self + 0x48) + 0x20) + 68, 64, 3);
-    sub = (int*)((char*)self + 0x68);
+    gl_func_00000000_1360v(sub, *(short*)(H2HWINS(self)->sprites[0].image + 0x20) + 68, 64, 3);
+    sub = (int*)&H2HWINS(self)->sprites[2];
     gl_func_00000000_1360v(sub);
     gl_func_00000000_1360v(sub, 220, 64, 3);
-    sub = (int*)((char*)self + 0x80);
+    sub = (int*)&H2HWINS(self)->sprites[3];
     gl_func_00000000_1360v(sub);
-    gl_func_00000000_1360v(sub, *(short*)((char*)*(int*)((char*)self + 0x78) + 0x20) + 228, 64, 3);
+    gl_func_00000000_1360v(sub, *(short*)(H2HWINS(self)->sprites[2].image + 0x20) + 228, 64, 3);
     gl_func_00000000_1360v(self);
 }
 #else

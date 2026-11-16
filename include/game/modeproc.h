@@ -12,6 +12,7 @@
 
 #include "gdl/node.h"
 #include "gdl/race.h"
+#include "game/guimenu.h"
 
 /* ---- the course list (InputMgr.session +8; RaceProcess ctor arg 3) ----
  * arc_initCourses fills it with {2, 0, 3, 1, 4}; mgr_initMatchRace with 4..6
@@ -116,8 +117,8 @@ typedef char MgrRace_endingFrame_check[(int)&((MgrRace *)0)->endingFrame == 0x7E
 /* ---- H2HRace (H2HRaceProcess, alloc 0x6BC) ---- */
 typedef struct H2HRace {
     /* 0x000 */ RaceProcess race;
-    /* 0x6A8 */ s32 wins;            /* s32[2] per-player win tally (ctor arg 3; the
-                                      * WinsDisplay reads [0] / [1]) */
+    /* 0x6A8 */ s32 wins;            /* -> s32[2] per-player win tally (ctor arg 3; the
+                                      * WinsDisplay reads ((int *)wins)[0] / [1]) */
     /* 0x6AC */ s32 postMenu;        /* onRaceOver: the post-race menu (onTimeout waits for its
                                       * +0x34 ->0x3C alpha to reach 0xFF) */
     /* 0x6B0 */ s32 dataMgr;         /* H2HDataManager * (also InputMgr.dataMgr) */
@@ -171,10 +172,12 @@ typedef char TrkDataManager_ghost_check[(int)&((TrkDataManager *)0)->ghostReplay
  * five rows, ids 1 / 4 / 3 / 2 / 5), a WhiteFader and four 0x18-byte gui sprites (agent-h run 529). */
 typedef struct H2HWinsDisplay {
     /* 0x00 */ Node node;            /* vptr 0x28 */
-    /* 0x2C */ s32 race;             /* the H2HRace (ctor arg 2): display reads its winner / wins */
+    /* 0x2C */ s32 race;             /* the H2HRace (ctor arg 2): display reads its winner / wins / spriteSet;
+                                      * update its timeout (< 2 fades the fader in, else out) */
     /* 0x30 */ s32 menu;             /* GuiMenu (PauseMenu_create); its unk30 gets the gui_fontCreate font */
     /* 0x34 */ s32 fader;            /* h2h_WhiteFader_ctor; onTimeout waits for its alpha to reach 0xFF */
-    /* 0x38 */ char sprites[4][0x18]; /* gui_spriteLoad: base-data sprite words 0x4C / 0x54 / 0x58 / 0x60 */
+    /* 0x38 */ GuiSprite sprites[4]; /* gui_spriteLoad: base-data sprite words 0x4C / 0x54 / 0x58 / 0x60; display
+                                      * draws [0] / [1] (player 1) and [2] / [3] (player 2) */
     /* 0x98 */ s32 frame;            /* display: +1 per frame (bit 4 blinks the text) */
 } H2HWinsDisplay;
 
