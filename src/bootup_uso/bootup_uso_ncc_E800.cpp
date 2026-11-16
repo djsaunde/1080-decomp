@@ -32,7 +32,7 @@ extern "C" void SnowBoard_ctor(void) {
     func_00000000(&gSysLib_e800_g2, &sStr_rom_audio_wave_uso_8D48, &y);
     func_00000000(&gSysLib_e800_g3, &sStr_rom_audio_bank_uso_8D5C, &z);
     func_00000000(x, z, y);
-    func_00000000(&gSnowBoard_e800_g4); *(void **)(func_00000008 + 0x20) = &SnowBoard_vtbl_e800_v;
+    func_00000000(&gSnowBoard_e800_g4); *(void **)(func_00000008 + 0x20) = &SnowBoard_vtbl_e800_v; /* RAW: donor-mirror: NCC donor vptr store through a data alias (func_00000008 + 0x20) */
     root = (VO *)&D_00000000;
     root->f();
 }

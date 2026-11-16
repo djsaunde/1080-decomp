@@ -58,7 +58,7 @@ void *game_createProcessWindow(int a0, int a1) {
     p = (float *)result;
     q = &gSnowBoard_0000002C;
     func_00000000(q, p);
-    *(int *)(func_000000F0.ptr44 + 0x114) = result;
+    *(int *)(func_000000F0.ptr44 + 0x114) = result; /* RAW: unknown-object: GameFlow.game (the game world) +0x114; no struct for the game world yet */
     return (void *)result;
 }
 
