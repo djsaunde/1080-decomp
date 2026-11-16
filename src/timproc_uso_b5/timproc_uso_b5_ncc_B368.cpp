@@ -41,18 +41,20 @@ struct Quat {
 struct Obj {
     char pad0[0xDC]; V3 pos; f32 sE8, sEC, sF0; Quat q; char pad104[0x108 - 0x104]; void *m108;
     f32 f10C, f110, f114, f118; char p11C[0x124 - 0x11C]; s32 i124; f32 f128; s32 i12C;
+    char p130[0x13C - 0x130]; s32 unk13C; s32 unk140; /* SelCourseModel (game/select.h) */
 };
 extern "C" void SelCourseMap_display_0000B368(Obj *o) {
     V3 d = rel(o->pos, &sXY[0]);
     gen_imp_math_vec3Normalize(&d);
-    if (FW(o, 0x140) != 0) {
+    if (o->unk140 != 0) {
         V3 s240;
         f32 ang;
         V3 s224;
         o->q.x = 0.0f; o->q.y = 0.0f; o->q.z = 0.0f; o->q.w = 1.0f;
         { ang = o->f110; V3 a(1.0f, 0.0f, 0.0f); o->q.rot(&a, ang); }
         { f32 ang = o->f10C; { V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); } ang = o->f114; { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang); } }
-        if (FW(o, 0x13C) != 0) {
+        if (o->unk13C != 0) {
+
             s32 m7C[16];
             s32 m6C[4];
             gen_imp_math_mtx4Transpose((*(CamWindow **)&import_80087DA8)->cam->view, m7C); /* the active view camera */

@@ -725,6 +725,16 @@ typedef struct Note {
     /* 0xB0 */ NoteSampleState sampleState;
 } Note; /* size = 0xD0 */
 
+/* gAudioHeapInitSizes (bootup.uso Sym 1284): AudioLoad_Init clears heapSize bytes of
+ * gAudioHeap and passes initPoolSize to InitMainPools / permanentPoolSize to the
+ * initPool alloc; InitMainPools reads heapSize at +0x4. The leading word is unread. */
+typedef struct AudioHeapInitSizes {
+    /* 0x0 */ s32 unk0;
+    /* 0x4 */ s32 heapSize;
+    /* 0x8 */ s32 initPoolSize;
+    /* 0xC */ s32 permanentPoolSize;
+} AudioHeapInitSizes; /* size = 0x10 */
+
 typedef struct AudioContext {
     /* 0x0000 */ char unk_0000;
     /* 0x0001 */ s8 numSynthesisReverbs;              /* DoOneAudioUpdate */
@@ -1047,7 +1057,7 @@ typedef struct SoundObj {
     f32 unk04;              /* 0x04 */
     f32 unk08;              /* 0x08 */
     f32 unk0C;              /* 0x0C: 0..1 */
-    f32 unk10;              /* 0x10 */
+    f32 unk10;              /* 0x10: bootup snd_soundObjSetPan stores pan / D_68 here */
     u8 unk14;               /* 0x14: 1 -> Start plays event 0x29, else 0x2A */
     u8 unk15;               /* 0x15 */
     u8 flags;               /* 0x16: bit0 disabled, bit2 event pending, bit5 started (Start / Stop latch) */

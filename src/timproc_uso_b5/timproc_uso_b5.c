@@ -114,7 +114,8 @@ after_sub:
     goto l2; l2:
     tmp = a0[0x48 / 4];
     s0 = (int *)((int *)tmp)[0x28 / 4];
-    ((void (*)(int))s0[0x5C / 4])(*(short *)((char *)s0 + 0x58) + tmp);
+    ((void (*)(int))s0[0x5C / 4])(((SelVEntry *)s0)[11].delta + tmp);
+
 
     s0 = (int *)a0[0x48 / 4];
     s1 = (int *)((char *)a0 + 0x10);
@@ -2158,7 +2159,7 @@ void SelItem_loadData_00003ED8(char *a0) {
 
     CALL(Parms_load_00035C6C)(a0 + 0x2C);
     v = (char *)SELITEM(a0)->vptr;
-    (*(void(**)(char*))(v + 0x24))(a0 + *(short*)(v + 0x20));
+    ((void (*)(char *))SELVT(v)->base[3].fn)(a0 + SELVT(v)->base[3].delta);
 }
 
 /* Sibling of SelItem_loadData_00003ED8 — same vtable-call wrapper. MATCHED.
@@ -2173,7 +2174,7 @@ void SelItem_loadInfo_00003F18(char *a0) {
     char *v;
     CALL(Parms_load_00035C6C)(a0 + 0x194);
     v = (char *)SELITEM(a0)->vptr;
-    (*(void(**)(char*))(v + 0x24))(a0 + *(short*)(v + 0x20));
+    ((void (*)(char *))SELVT(v)->base[3].fn)(a0 + SELVT(v)->base[3].delta);
 }
 
 /* SelItem_update_00003F5C — VERIFIED EXACT 18/18 (2026-07-03, agent-e)
@@ -2203,7 +2204,7 @@ void SelItem_update_00003F5C(int *a0) {
     Vec3_F5C *v = (Vec3_F5C*)(SELITEM(a0)->node + 0xDC);
     (void)pad1;
     (void)pad2;
-    raw = *(Vec3_F5C*)((char*)a0 + 0x23C);
+    raw = *(Vec3_F5C*)SELITEM(a0)->info.pos.v;
     v->x = raw.x;
     v->y = raw.y;
     v->z = raw.z;
@@ -4574,7 +4575,7 @@ void SelectWin_state6_00007B2C(char *arg0) {
         tv0_2 = timproc_uso_b5_alias(arg0);
         ((GP_00007B2C)SELITEM(tv0_2)->vptr->setChosen.fn)(SELITEM(tv0_2)->vptr->setChosen.delta + tv0_2, 0);
         if (1) {
-            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (SELWIN(arg0)->stage * 4)), FW((arg0 + (SELWIN(arg0)->stage * 4)), 0x3D0) | *(int *)&SELWIN(arg0)->eventFlags);
+            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (SELWIN(arg0)->stage * 4)), SELWIN(arg0)->curItem[SELWIN(arg0)->stage] | *(int *)&SELWIN(arg0)->eventFlags);
         }
         timproc_uso_b5_alias(arg0);
         SELWIN(arg0)->state = 7;
@@ -4588,7 +4589,7 @@ void SelectWin_state6_00007B2C(char *arg0) {
         if (timproc_uso_b5_alias(arg0) == 0) {
             timproc_uso_b5_alias(arg0);
         } else {
-            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (SELWIN(arg0)->stage * 4)), FW((arg0 + (SELWIN(arg0)->stage * 4)), 0x3D0) | *(int *)&SELWIN(arg0)->eventFlags);
+            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (SELWIN(arg0)->stage * 4)), SELWIN(arg0)->curItem[SELWIN(arg0)->stage] | *(int *)&SELWIN(arg0)->eventFlags);
             tv0_4 = timproc_uso_b5_alias(arg0);
             ((GP_00007B2C)SELITEM(tv0_4)->vptr->confirm.fn)(SELITEM(tv0_4)->vptr->confirm.delta + tv0_4);
             SELWIN(arg0)->state = 0xA;
@@ -4713,7 +4714,7 @@ void SelectWin_state7_00007E34(char *arg0) {
         ((GP_00007E34)SELVT(temp_v1_2)->setChosen.fn)(SELVT(temp_v1_2)->setChosen.delta + temp_v0_2, 0);
         if (1) {
             temp_v0_3 = SELWIN(arg0)->stage * 4;
-            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + temp_v0_3), FW((arg0 + temp_v0_3), 0x3D0) | *(int *)&SELWIN(arg0)->eventFlags);
+            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + temp_v0_3), *(int *)((char *)SELWIN(arg0)->curItem + temp_v0_3) | *(int *)&SELWIN(arg0)->eventFlags);
         }
         if (timproc_uso_b5_alias(arg0) == 0) {
             timproc_uso_b5_alias((int)SELWIN(arg0)->owner);
@@ -4735,7 +4736,8 @@ void SelectWin_state7_00007E34(char *arg0) {
             timproc_uso_b5_alias(arg0);
         } else {
             temp_v0_5 = SELWIN(arg0)->stage * 4;
-            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE758 + temp_v0_5), FW((arg0 + temp_v0_5), 0x3D0) | *(int *)&SELWIN(arg0)->eventFlags);
+            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE758 + temp_v0_5), *(int *)((char *)SELWIN(arg0)->curItem + temp_v0_5) | *(int *)&SELWIN(arg0)->eventFlags);
+
             temp_v0_6 = timproc_uso_b5_alias(arg0);
             temp_v1_3 = (int)SELITEM(temp_v0_6)->vptr;
             ((GP_00007E34)SELVT(temp_v1_3)->confirm.fn)(SELVT(temp_v1_3)->confirm.delta + temp_v0_6);
@@ -4991,7 +4993,7 @@ void SelectWin_state9_00008468(char *arg0) {
         temp_v1 = (int)SELITEM(temp_v0)->vptr;
         ((GPv_8468)SELVT(temp_v1)->setChosen.fn)(SELVT(temp_v1)->setChosen.delta + temp_v0, 0);
         timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (SELWIN(arg0)->stage * 4)),
-                             FW(arg0 + (SELWIN(arg0)->stage * 4), 0x3D0) | *(int *)&SELWIN(arg0)->eventFlags);
+                             SELWIN(arg0)->curItem[SELWIN(arg0)->stage] | *(int *)&SELWIN(arg0)->eventFlags);
         if (timproc_uso_b5_alias(arg0) == 0) {
             timproc_uso_b5_alias((int)SELWIN(arg0)->owner);
             return;
@@ -5037,7 +5039,7 @@ void SelectWin_state10_000085E0(int *a0) {
     b = SELWIN(a0)->fadeTarget;
     if (b < o) {
         SELWIN(a0)->fade = o - SELWIN(a0)->parms.lsp.value;
-        if (*(volatile float *)((char *)a0 + 0x480) < b) {
+        if (*(volatile float *)&SELWIN(a0)->fade < b) {
             SELWIN(a0)->fade = b;
             SELWIN(a0)->state = 0;
             SELWIN(a0)->idleTimer = SELWIN(a0)->parms.lfw.value;
@@ -5260,7 +5262,7 @@ int SelectWin_callPrevStageBit_0000894C() {
 
 extern float D_b5_896C_2A0;
 void SelectWin_setGlobalFade_0000896C(char *a0) {
-    D_b5_896C_2A0 = *(float *)(a0 + 0x480) * 0.4f;
+    D_b5_896C_2A0 = SELWIN(a0)->fade * 0.4f;
 }
 
 /* SelectWin_findItem_00008988: 37-insn (0x94) array-scan loop. BOUNDARY
@@ -5966,7 +5968,7 @@ void CommonInfo_init_0000A928(int *a0) {
  * that the real build is byte-exact. (Twin: bootup_uso ...2088, same pair.) */
 int CommonInfo_add_0000A95C(int *a0, int a1) {
     int v1 = a0[0x3C / 4];
-    a0[0x3C / 4] = v1 + 1; *(int *)((char *)a0 + (v1 << 2) + 0x40) = a1;
+    a0[0x3C / 4] = v1 + 1; ((SelItemsMgr *)a0)->lists[v1] = (SelItemList *)a1;
     return a1;
 }
 
