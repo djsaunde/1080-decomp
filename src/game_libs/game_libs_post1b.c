@@ -5028,7 +5028,7 @@ void *SkinMgr_init(char *self, char *arg1, char *arg2) {
     }
     ((SkinMgr *)self)->bone = (MNode *)arg1;
     ((SkinMgr *)self)->bindVerts = (s16 (*)[3])CALL(mem_new)(BASEPOLY(arg2)->nVerts * 6);
-    ((SkinMgr *)self)->outVerts = CALL(mem_new)(BASEPOLY(arg2)->nVerts * 6);
+    ((SkinMgr *)self)->outVerts = (s16 (*)[3])CALL(mem_new)(BASEPOLY(arg2)->nVerts * 6);
     ((SkinMgr *)self)->weights = (s16 *)CALL(mem_new)(BASEPOLY(arg2)->nVerts * 2);
     ((SkinMgr *)self)->jitter = 0;
     i = 0;

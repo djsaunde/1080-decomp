@@ -37,7 +37,7 @@ typedef struct SkinMgr {
     /* 0x34 */ struct MorphPoly *shape; /* its +0x40 nVerts, +0x60 verts */
     /* 0x38 */ struct MNode *bone;  /* main bone; 0 = not initialised */
     /* 0x3C */ s16 (*bindVerts)[3]; /* copy of the shape's verts at init */
-    /* 0x40 */ s32 outVerts;       /* s16 (*)[3]: skinned verts handed to MorphPoly_setVerts */
+    /* 0x40 */ s16 (*outVerts)[3];  /* skinned verts handed to MorphPoly_setVerts */
     /* 0x44 */ s32 unk44;
     /* 0x48 */ s32 anims;          /* list head {SkinAnim *, next} (SkinMgr_addAnim) */
     /* 0x4C */ s32 lastFrame;      /* frame counter of the last update */
