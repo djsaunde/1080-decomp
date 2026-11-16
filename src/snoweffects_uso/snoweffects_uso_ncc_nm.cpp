@@ -3,10 +3,11 @@
  * INCLUDE_ASM). The four texture-sprite inits 0x15D0 / 0x1A18 / 0x1E60 / 0x2310: set the object's name,
  * create + reset a 20-packet display-list context (+0x2C), then record PipeSync, the stock 2.0I
  * gDPLoadTextureTile of an 8-bit Data texture (w = h set just before), gSPTexture, cycle / persp / render
- * mode / combine / prim colour / depth source and EndDL. Each packet is `ctx->next()`, the unnamed-index
- * append (`&dl->buf[dl->count++]`). gfx_resetDLContext must be a void-typed alias, or its v0 result
- * blocks v0 for the context temp. Left (all register colouring, 80-92 % lines): the per-packet pointers
- * rotate a1 / a2 where the target rotates a2 / a3 (live-unit layout), and 0x1E60 leaves the jr ra delay
+ * mode / combine / prim colour / depth source and EndDL. Each packet is `ctx->next()` with a named index and
+ * result (`int n = dl->count++; Gfx *g = &dl->buf[n]; return g;`: packets 1-2 and the w / h constant then
+ * colour like the target, 96 -> 66 diff lines on 0x15D0; run 660). gfx_resetDLContext must be a void-typed
+ * alias, or its v0 result blocks v0 for the context temp. Left (all register colouring): from packet 3 on
+ * the target's pointers skip a1 (a2 / a3 rotation, live-unit layout), and 0x1E60 leaves the jr ra delay
  * slot unfilled (301 vs 300 words). */
 #include "../game_libs/ncc_drafts/gbi_subset.h"
 extern "C" int gl_func_00000000(...);
@@ -26,7 +27,7 @@ extern "C" void gl_func_00000000_snow_reset(GCtx *);  /* gfx_resetDLContext, voi
   gDPSetTileSize(pkt, G_TX_RENDERTILE, (uls)<<G_TEXTURE_IMAGE_FRAC, (ult)<<G_TEXTURE_IMAGE_FRAC, (lrs)<<G_TEXTURE_IMAGE_FRAC, (lrt)<<G_TEXTURE_IMAGE_FRAC) }
 #define gDPWord(pkt, a, b) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = (a); _g->words.w1 = (unsigned int)(b); }
 typedef struct { Gfx *buf; int count; } DList;
-struct GCtx { char pad0[0xC]; DList *dl; Gfx *next() { return &dl->buf[dl->count++]; } };
+struct GCtx { char pad0[0xC]; DList *dl; Gfx *next() { int n = dl->count++; Gfx *g = &dl->buf[n]; return g; } };
 struct SnowTex {
     char pad00[0xC];
     char *name;
