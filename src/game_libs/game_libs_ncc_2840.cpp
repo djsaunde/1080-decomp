@@ -14,7 +14,11 @@
  * The run-139 .. 276 levers below are unchanged. */
 typedef int s32;
 typedef float f32;
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16; typedef unsigned int u32;
 #include "../../include/game/camera.h"
+#include "../../include/game/input.h"  /* D + 0x134 = InputMgr.game (bootup Bss 0xF8) */
+#include "../../include/game/course.h" /* the game world: WorldRegistry.windows */
+#include "../../include/gdl/window.h" /* Window.camera */
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 extern "C" {
 extern int D_00000000;
@@ -44,7 +48,7 @@ extern "C" void CourseGadget_drawMarker(char *arg0, s32 arg1, f32 arg2, f32 arg3
     char *p;
     volatile int py;
 
-    temp_v0 = (MCamera *)FW(FW(((*(s32*)((char*)&D_00000000 + 0x134)) + (arg1 * 4)), 0x108), 0x70);
+    temp_v0 = (MCamera *)((Window *)WORLDREG(INPUT_MGR(D_00000000).game)->windows[arg1])->camera; /* player arg1's camera window */
     f0 = temp_v0->view[0][2];
     f16 = temp_v0->mnode.world[3][0];
     f2 = temp_v0->view[2][2];

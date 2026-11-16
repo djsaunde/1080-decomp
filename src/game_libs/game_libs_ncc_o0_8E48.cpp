@@ -8,6 +8,7 @@ typedef long long s64; typedef unsigned long long u64;
 #define NULL 0
 }
 #include "../../include/gdl/node.h"  /* o is a Node: parented to gInputMgr (also a Node, children at +0x10) */
+#include "../../include/gdl/backup.h" /* *arg0 = the mode's BackupSession (ModeFlowProc.session, +0): its ghost */
 extern "C" {
 
 
@@ -53,14 +54,14 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
 
     sp34 = sp38 = (char *)gInputMgr_0000004C;
     gl_func_00000000(&gInputMgr, *(int *)((char *)&gProcUsoPaths_8FFC_base + 8));
-    if (FW(FW((*(int*)arg0), 0x8), 0x8) != 0) {
-        gInputMgr_00000181 = gl_func_00000000(FW((*(int*)arg0), 0x8));
+    if ((*(BackupSession **)arg0)->ghost->data != 0) {
+        gInputMgr_00000181 = gl_func_00000000((*(BackupSession **)arg0)->ghost);
         sp34 = (char *)(int)gInputMgr_00000181;
-        gInputMgr_00000182 = gl_func_00000000(FW((*(int*)arg0), 0x8));
-        gInputMgr_00000183 = gl_func_00000000(FW((*(int*)arg0), 0x8));
+        gInputMgr_00000182 = gl_func_00000000((*(BackupSession **)arg0)->ghost);
+        gInputMgr_00000183 = gl_func_00000000((*(BackupSession **)arg0)->ghost);
     }
     gl_func_00000000(sp38, sp34);
-    if (FW(FW((*(int*)arg0), 0x8), 0x8) != 0) {
+    if ((*(BackupSession **)arg0)->ghost->data != 0) {
         sp3C = (char *)gl_func_00000000(&gInputMgr, gInputMgr_00000064, 3, arg2);
     } else {
         sp3C = (char *)gl_func_00000000(&gInputMgr, gInputMgr_00000064, 2, arg2);

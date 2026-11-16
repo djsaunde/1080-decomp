@@ -36,6 +36,7 @@ typedef float f32;
 int func_00000000(...);
 extern int D_00000000;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
+#include "../../include/game/input.h"  /* INPUT_MGR: gInputMgr / gInputMgr_76F0 are bootup Bss 0xF8 */
 extern char gInputMgr_76F0;
 
 typedef struct GlObj76F0VtEnt {
@@ -125,7 +126,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                         self->unk550 = 0.0f;
                         self->unk548 = 160.0f;
                         self->unk54C = 120.0f;
-                        if (*(s32 *)((char *)&gInputMgr_76F0 + 0x34) == 2) {
+                        if (INPUT_MGR(gInputMgr_76F0).nextFlowMode == 2) {
                             self->unk54C = 60.0f;
                         }
                         break;
@@ -158,9 +159,9 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                 if ((s32)((u32)self->unk4F0 << 15) < 0) {
                     func_00000000((char *)self + 0x588);
                 }
-                *(s32 *)((char *)&gInputMgr + 0x78) = 0;
+                INPUT_MGR(gInputMgr).unk78 = 0;
                 self->unk4DC = 1;
-                func_00000000(*(s32 *)((char *)&gInputMgr + 0x138));
+                func_00000000(INPUT_MGR(gInputMgr).dataMgr);
             }
             if (self->unk4E4 < 1 - self->unk4E8) {
                 self->unk4E0 = 2;
@@ -226,7 +227,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
             if (D_76F0_fadeA < 1.0f) {
                 D_76F0_fadeA += 0.1f;
             }
-            if (*(s32 *)((char *)&gInputMgr_76F0 + 0x34) != 3) {
+            if (INPUT_MGR(gInputMgr_76F0).nextFlowMode != 3) {
                 if (D_76F0_fadeB < 1.0f) {
                     D_76F0_fadeB += 0.1f;
                 }
@@ -267,7 +268,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                     }
                 }
             }
-            if ((self->unk4F8 == 0) && (*(s32 *)((char *)&gInputMgr_76F0 + 0x34) == 3)) {
+            if ((self->unk4F8 == 0) && (INPUT_MGR(gInputMgr_76F0).nextFlowMode == 3)) {
                 if (D_76F0_fadeC < 1.0f) {
                     D_76F0_fadeC += 0.1f;
                 }
@@ -277,13 +278,13 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
     }
     if ((self->unk4DC != 2) && (self->unk4D8 == 0)) {
         if (self->unk30 == 0) {
-            if ((func_00000000(*(s32 *)((char *)&gInputMgr + 0x190)) != 0) && (self->unk48 != 0)) {
+            if ((func_00000000(INPUT_MGR(gInputMgr).fader) != 0) && (self->unk48 != 0)) {
                 temp = func_00000000((char *)&gInputMgr, 0x40000);
                 self->unk514 = temp;
                 if (temp != 0) {
                     ((VO76 *)self)->m17();
                     func_00000000(self);
-                    func_00000000(*(s32 *)((char *)&gInputMgr + 0x138));
+                    func_00000000(INPUT_MGR(gInputMgr).dataMgr);
                 }
             }
         } else {

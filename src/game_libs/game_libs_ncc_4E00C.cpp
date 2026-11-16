@@ -1,4 +1,5 @@
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+#include "../../include/gdl/gfxlib.h" /* s0 is the GfxLib (worldScale +0x128, gfx_setShadowLight(s0, 0)) */
 /* IDO 7.1 NCC (C++) donor for gfx_initMtxBlock_0004E00C (0x12C / 75 words), EXACT (agent-c run 181): the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 75.69; a second parameter empty test from round 2 gives 86.31).
  * REPLACE_FUNC_BODY-spliced over the empty placeholder in game_libs_post0b.c (both build trees).
  * agent-c run 160: the 0x144 mode word as five plain read-modify-write statements through the non-volatile base
@@ -49,9 +50,9 @@ extern "C" void gfx_initMtxBlock_0004E00C(int *s0) {
     v[1] = v[1] | 1;
     v[1] = v[1];
     v[1] = v[1] | 0x10;
-    *(float *)((char *)s0 + 0x130) = 1.0f;
-    *(float *)((char *)s0 + 0x12C) = 1.0f;
-    *(float *)((char *)s0 + 0x128) = 1.0f;
+    GFXLIB(s0)->worldScale[2] = 1.0f;
+    GFXLIB(s0)->worldScale[1] = 1.0f;
+    GFXLIB(s0)->worldScale[0] = 1.0f;
     CALL(math_mtx4Identity)((char *)s0 + 0xE8);
     CALL(math_mtxScaleRows)((char *)s0 + 0xE8, (char *)s0 + 0x128);
     s0[0x1CC / 4] = 0;
