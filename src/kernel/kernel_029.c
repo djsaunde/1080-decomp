@@ -1,70 +1,72 @@
 #include "common.h"
+#include "libultra/rmon.h"
 
 extern void func_800073F8(void*, s32, s32);
 
-typedef struct { s32 pad0; u8 type; char pad5; u16 flags; s32 pad8; s32 id; s32 count; } RmonHdr;
-typedef struct { s32 pad0; u8 type; char pad5[4]; u8 domain; char padA[2]; s32 id; } RmonMsg;
-
-/* __rmonGetRegionCount (rmonmem.c): rmon dispatchTable[12] */
-s32 __rmonGetRegionCount(RmonMsg* msg) {
-    RmonMsg* p = msg;
-    RmonHdr hdr;
-    hdr.type = p->type;
-    hdr.flags = 0;
-    hdr.id = p->id;
-    if (p->domain == 1) {
-        hdr.count = 2;
+/* __rmonGetRegionCount (rmonmem.c): rmon dispatchTable[12]. Typed on rmon.h (agent-a run 531;
+ * the private RmonMsg / RmonHdr were KKObjectRequest / KKNumberEvent). */
+s32 __rmonGetRegionCount(KKObjectRequest* msg) {
+    KKObjectRequest* p = msg;
+    KKNumberEvent hdr;
+    hdr.header.code = p->header.code;
+    hdr.header.error = TV_ERROR_NO_ERROR;
+    hdr.object = p->object;
+    if (p->header.method == RMON_RSP) {
+        hdr.number = 2;
     } else {
-        hdr.count = 5;
+        hdr.number = 5;
     }
-    func_800073F8(&hdr, 0x14, 1);
+    func_800073F8(&hdr, sizeof(hdr), KK_TYPE_REPLY);
     return 0;
 }
 
-/* __rmonGetRegions (rmonmem.c): rmon dispatchTable[13] */
+/* __rmonGetRegions (rmonmem.c): rmon dispatchTable[13]. The reply in __rmonUtilityBuffer is a
+ * KKRegionEvent: regions[0] SP DMEM, [1] SP IMEM, and for the CPU also [2] the RDRAM image
+ * 0x88200000 (0x6130 bytes), [3] 4 (0x200000 bytes), [4] 0x04002000 (0x800000), [5] 0x88206130
+ * (0x9000). flags = 1 read | 2 write | 4 execute. */
 extern s32 __rmonUtilityBuffer;
 
-s32 __rmonGetRegions(char* msg) {
-    char* p = msg;
-    char* buf = (char*)&__rmonUtilityBuffer;
+s32 __rmonGetRegions(KKObjectRequest* msg) {
+    KKObjectRequest* p = msg;
+    KKRegionEvent* buf = (KKRegionEvent*)&__rmonUtilityBuffer;
     s32 count;
 
-    if (*(u8*)(p + 9) == 1) {
+    if (p->header.method == RMON_RSP) {
         count = 2;
     } else {
         count = 6;
     }
-    *(s32*)(buf + 0x00) = count * 16 + 0x24;
-    *(u8*)(buf + 0x04) = *(u8*)(p + 4);
-    *(u16*)(buf + 0x06) = 0;
-    *(s32*)(buf + 0x0C) = *(s32*)(p + 0xC);
-    *(s32*)(buf + 0x10) = count;
-    *(s32*)(buf + 0x24) = 0x04001000;
-    *(s32*)(buf + 0x28) = 0x1000;
-    *(s16*)(buf + 0x2C) = 7;
-    *(s32*)(buf + 0x30) = 0x04001000;
-    *(s32*)(buf + 0x14) = 0x04000000;
-    *(s32*)(buf + 0x18) = 0x1000;
-    *(s16*)(buf + 0x1C) = 3;
-    *(s32*)(buf + 0x20) = 0x04000000;
+    buf->header.length = count * 16 + 0x24;
+    buf->header.code = p->header.code;
+    buf->header.error = TV_ERROR_NO_ERROR;
+    buf->object = p->object;
+    buf->number = count;
+    buf->regions[1].vaddr = 0x04001000;
+    buf->regions[1].size = 0x1000;
+    buf->regions[1].flags = 7;
+    buf->regions[1].paddr = 0x04001000;
+    buf->regions[0].vaddr = 0x04000000;
+    buf->regions[0].size = 0x1000;
+    buf->regions[0].flags = 3;
+    buf->regions[0].paddr = 0x04000000;
     if (count >= 3) {
-        *(s32*)(buf + 0x34) = (s32)0x88200000;
-        *(s32*)(buf + 0x38) = 0x6130;
-        *(s16*)(buf + 0x3C) = 5;
-        *(s32*)(buf + 0x40) = 0;
-        *(s32*)(buf + 0x44) = 4;
-        *(s32*)(buf + 0x48) = 0x200000;
-        *(s16*)(buf + 0x4C) = 3;
-        *(s32*)(buf + 0x50) = 0;
-        *(s32*)(buf + 0x54) = 0x04002000;
-        *(s32*)(buf + 0x58) = 0x800000;
-        *(s16*)(buf + 0x5C) = 3;
-        *(s32*)(buf + 0x60) = 0;
-        *(s32*)(buf + 0x64) = (s32)0x88206130;
-        *(s32*)(buf + 0x68) = 0x9000;
-        *(s16*)(buf + 0x6C) = 3;
-        *(s32*)(buf + 0x70) = 0;
+        buf->regions[2].vaddr = 0x88200000;
+        buf->regions[2].size = 0x6130;
+        buf->regions[2].flags = 5;
+        buf->regions[2].paddr = 0;
+        buf->regions[3].vaddr = 4;
+        buf->regions[3].size = 0x200000;
+        buf->regions[3].flags = 3;
+        buf->regions[3].paddr = 0;
+        buf->regions[4].vaddr = 0x04002000;
+        buf->regions[4].size = 0x800000;
+        buf->regions[4].flags = 3;
+        buf->regions[4].paddr = 0;
+        buf->regions[5].vaddr = 0x88206130;
+        buf->regions[5].size = 0x9000;
+        buf->regions[5].flags = 3;
+        buf->regions[5].paddr = 0;
     }
-    func_800073F8(buf, *(s32*)buf, 1);
+    func_800073F8(buf, buf->header.length, KK_TYPE_REPLY);
     return 0;
 }

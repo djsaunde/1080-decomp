@@ -1,4 +1,6 @@
 #include "common.h"
+#include "libultra/os_thread.h"
+#include "libultra/rmon.h"
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
@@ -125,9 +127,6 @@ extern OSEventState __osEventStateTab[];
  * order pins the stack-slot layout (frame 0x40), and the SP-range
  * `len + addr` summands plus `sp34 = len+0x10` ordered before `p =
  * &sp34` fix the addu commutativity + token-loop scheduling. */
-#ifndef FW
-#define FW(p, o) (*(s32 *)((char *)(p) + (o)))
-#endif
 extern void __rmonSendHeader(void *, s32, s32);
 extern s32 func_80004B30(u32);
 extern s32 func_800066F0(void *, s32, s32);
@@ -141,63 +140,61 @@ extern char __rmonUtilityBuffer;
  * func_80004B30. Then set the reply length (len+0x10), poll 4 bytes of the read
  * token (func_800066F0), send the header, and kick the transfer
  * (func_800074A0(addr, len)). */
-s32 __rmonReadMem(void *arg0) {
+s32 __rmonReadMem(KKReadRequest *arg0) {
     char *p;
     s32 sp38;
     s32 sp34;
-    void *sp30 = arg0;
-    char *sp2C = &__rmonUtilityBuffer;
+    KKReadRequest *sp30 = arg0;
+    KKBufferEvent *sp2C = (KKBufferEvent *)&__rmonUtilityBuffer;
     u32 addr;
     register s32 var_s0;
     register s32 var_s1;
 
-    *(u8 *)(sp2C + 4) = *(u8 *)((char *)arg0 + 4);
-    FW(sp2C, 0xC) = FW(sp30, 0xC);
-    *(s16 *)(sp2C + 6) = 0;
-    if ((u32) FW(sp30, 0x10) == 0xFFFFFFFFU) {
-        return -5;
+    sp2C->header.code = arg0->header.code;
+    sp2C->object = sp30->object;
+    sp2C->header.error = TV_ERROR_NO_ERROR;
+    if (sp30->addr == 0xFFFFFFFFU) {
+        return TV_ERROR_INVALID_ADDRESS;
     }
-    if ((u32) FW(sp30, 0x14) >= 0x401U) {
-        return -8;
+    if (sp30->nbytes >= 0x401U) {
+        return TV_ERROR_INVALID_CAPABILITY;
     }
-    if (*(u8 *)((char *)arg0 + 9) == 1) {
-        if (((u32) FW(sp30, 0x10) < 0x04001000U) || ((u32) (FW(sp30, 0x14) + FW(sp30, 0x10)) >= 0x04002000U)) {
+    if (arg0->header.method == RMON_RSP) {
+        /* (*sp30).f spelling in both range tests: sp30->f reorders the addu / sltu temps */
+        if (((*sp30).addr < 0x04001000U) || (((*sp30).nbytes + (*sp30).addr) >= 0x04002000U)) {
             var_s0 = 0;
         } else {
             var_s0 = 1;
         }
         if (var_s0 == 0) {
-            if (((u32) FW(sp30, 0x10) < 0x04000000U) || ((u32) (FW(sp30, 0x14) + FW(sp30, 0x10)) >= 0x04001000U)) {
+            if (((*sp30).addr < 0x04000000U) || (((*sp30).nbytes + (*sp30).addr) >= 0x04001000U)) {
                 var_s1 = 0;
             } else {
                 var_s1 = 1;
             }
             if (var_s1 == 0) {
-                return -5;
+                return TV_ERROR_INVALID_ADDRESS;
             }
         }
     } else {
-        if (func_80004B30(FW(sp30, 0x10)) == -1) {
-            return -5;
+        if (func_80004B30(sp30->addr) == -1) {
+            return TV_ERROR_INVALID_ADDRESS;
         }
     }
-    addr = FW(sp30, 0x10);
-    FW(sp2C, 0) = FW(sp30, 0x14) + 0x10;
-    sp34 = FW(sp30, 0x14) + 0x10;
+    addr = sp30->addr;
+    sp2C->header.length = sp30->nbytes + 0x10;
+    sp34 = sp30->nbytes + 0x10;
     p = (char *) &sp34;
     sp38 = 0;
     do {
         var_s0 = func_800066F0(p + sp38, 4 - sp38, 8);
         sp38 += var_s0;
     } while (sp38 < 4);
-    __rmonSendHeader(sp2C, 0x10, 1);
-    func_800074A0(addr, FW(sp30, 0x14));
+    __rmonSendHeader(sp2C, 0x10, KK_TYPE_REPLY);
+    func_800074A0(addr, sp30->nbytes);
     return 0;
 }
 
-#ifndef FW
-#define FW(p, o) (*(s32 *)((char *)(p) + (o)))
-#endif
 /* rmon memory-write command handler (write sibling of __rmonReadMem). Validate
  * the RDRAM address (func_80004B30) / length (<=0x400). For an SP-window address
  * (0x04000000..0x05000000): unaligned single-byte write -> read-modify-write
@@ -218,9 +215,9 @@ extern void func_80006A50(s32, s32);
 extern void func_80006AEC(s32, void *, s32);
 extern void func_800073F8(void *, s32, s32);
 
-s32 __rmonWriteMem(void *sp48) {
-    register void *arg0;
-    struct { s32 w0; u8 tag; u8 p5; s16 zero; s32 w8; s32 id; } sp34;
+s32 __rmonWriteMem(KKWriteRequest *sp48) {
+    register KKWriteRequest *arg0;
+    KKObjectEvent sp34;
     s32 sp30;
     s32 sp2C;
     u32 sp28;
@@ -228,56 +225,57 @@ s32 __rmonWriteMem(void *sp48) {
     register s32 var_s1;
 
     arg0 = sp48;
-    if ((*(u8 *)((char *) sp48 + 9) == 0) && (func_80004B30(FW(arg0, 0x10)) == -1)) {
-        return -5;
+    if ((sp48->writeHeader.header.method == RMON_CPU) && (func_80004B30(arg0->writeHeader.addr) == -1)) {
+        return TV_ERROR_INVALID_ADDRESS;
     }
-    if ((u32) FW(arg0, 0x14) >= 0x401U) {
-        return -8;
+    if (arg0->writeHeader.nbytes >= 0x401U) {
+        return TV_ERROR_INVALID_CAPABILITY;
     }
-    if (((u32) FW(arg0, 0x10) < 0x04000000U) || ((u32) (FW(arg0, 0x14) + FW(arg0, 0x10)) >= 0x05000000U)) {
+    /* (*arg0).f in the range test: the -> spelling reorders its addu / sltu temps */
+    if (((*arg0).writeHeader.addr < 0x04000000U) || (((*arg0).writeHeader.nbytes + (*arg0).writeHeader.addr) >= 0x05000000U)) {
         var_s1 = 0;
     } else {
         var_s1 = 1;
     }
     if (var_s1 != 0) {
-        sp30 = FW(arg0, 0x10) & 3;
+        sp30 = arg0->writeHeader.addr & 3;
         if (sp30 != 0) {
-            if (FW(arg0, 0x14) != 1) {
-                return -5;
+            if (arg0->writeHeader.nbytes != 1) {
+                return TV_ERROR_INVALID_ADDRESS;
             }
-            sp2C = func_80006A98(FW(arg0, 0x10) & ~3);
+            sp2C = func_80006A98(arg0->writeHeader.addr & ~3);
             if (sp30 == 1) {
-                sp2C = (*(u8 *)((char *) arg0 + 0x18) << 0x10) | (sp2C & 0xFF00FFFF);
+                sp2C = (arg0->buffer[0] << 0x10) | (sp2C & 0xFF00FFFF);
             } else if (sp30 == 2) {
-                sp2C = (*(u8 *)((char *) arg0 + 0x18) << 8) | (sp2C & 0xFFFF00FF);
+                sp2C = (arg0->buffer[0] << 8) | (sp2C & 0xFFFF00FF);
             } else {
-                sp2C = *(u8 *)((char *) arg0 + 0x18) | (sp2C & ~0xFF);
+                sp2C = arg0->buffer[0] | (sp2C & ~0xFF);
             }
-            func_80006A50(FW(arg0, 0x10) & ~3, sp2C);
+            func_80006A50(arg0->writeHeader.addr & ~3, sp2C);
             goto block_26;
         }
-        sp28 = (u32) FW(arg0, 0x14) >> 2;
-        sp24 = (s32 *)((char *) arg0 + 0x18);
-        if (FW(arg0, 0x14) & 3) {
-            return -5;
+        sp28 = arg0->writeHeader.nbytes >> 2;
+        sp24 = (s32 *)arg0->buffer;
+        if (arg0->writeHeader.nbytes & 3) {
+            return TV_ERROR_INVALID_ADDRESS;
         }
         var_s1 = sp28;
         sp28 -= 1;
         if (var_s1 != 0) {
             do {
-                func_80006A50(FW(arg0, 0x10), *sp24++);
-                FW(arg0, 0x10) = FW(arg0, 0x10) + 4;
+                func_80006A50(arg0->writeHeader.addr, *sp24++);
+                arg0->writeHeader.addr = arg0->writeHeader.addr + 4;
                 var_s1 = sp28;
                 sp28 -= 1;
             } while (var_s1 != 0);
         }
         goto block_26;
     }
-    func_80006AEC(FW(arg0, 0x10), (char *) arg0 + 0x18, FW(arg0, 0x14));
+    func_80006AEC(arg0->writeHeader.addr, arg0->buffer, arg0->writeHeader.nbytes);
 block_26:
-    sp34.tag = *(u8 *)((char *) arg0 + 4);
-    sp34.zero = 0;
-    sp34.id = FW(arg0, 0xC);
-    func_800073F8(&sp34, 0x10, 1);
+    sp34.header.code = arg0->writeHeader.header.code;
+    sp34.header.error = TV_ERROR_NO_ERROR;
+    sp34.object = arg0->writeHeader.object;
+    func_800073F8(&sp34, sizeof(sp34), KK_TYPE_REPLY);
     return 0;
 }

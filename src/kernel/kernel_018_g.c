@@ -1,4 +1,6 @@
 #include "common.h"
+#include "libultra/os_thread.h"
+#include "libultra/rmon.h"
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
@@ -127,12 +129,6 @@ extern OSEventState __osEventStateTab[];
  * hints + decl-order (buf/header/sp94 layout), shared SendHeader
  * epilogue (case 0 -> var_s1=1 -> wake), loop compare operand-order
  * (sp94->0xC != node->0x14) fixed temp-register numbering. */
-#ifndef FW
-#define FW(p, o) (*(s32 *)((char *)(p) + (o)))
-#endif
-#ifndef FHU
-#define FHU(p, o) (*(u16 *)((char *)(p) + (o)))
-#endif
 extern void func_80006A50(s32, s32);
 extern s32 func_80006A98(s32);
 extern s32 func_8000898C(s32, s32, s32);
@@ -140,7 +136,7 @@ extern void func_80008498(void);
 extern void func_800084AC(void);
 extern void func_80008D0C(void *);
 extern s32 func_80008C48(s32, s32);
-extern char *func_80009C30(void);
+extern OSThread *func_80009C30(void); /* __osGetActiveQueue */
 extern void func_8000A110(void *);
 extern u8 __rmonRcpAtBreak;
 /* rmon command dispatch on arg0->unk9. case 0: resume a thread - find it in the
@@ -150,53 +146,54 @@ extern u8 __rmonRcpAtBreak;
  * RCP single-step - arm/disarm the RCP break (func_80006A50 / func_8000898C /
  * __rmonRcpAtBreak), ack, and if stepping set the temp break
  * (func_80007A98 -> func_80008D0C -> 0x4C reply). default: -4. */
-s32 __rmonRunThread(void *arg0) {
+s32 __rmonRunThread(KKRunThreadRequest *arg0) {
     extern s32 func_80008430();
     extern void func_80007A98();
     extern void func_800073F8();
-    void *sp94 = arg0;
-    struct { s32 w0; u8 tag; u8 p5; s16 zero; s32 w8; s32 id; } sp84;
+    KKRunThreadRequest *sp94 = arg0;
+    KKObjectEvent sp84;
     u8 sp38[0x4C];
-    register void *var_s0;
+    register OSThread *var_s0;
     register s32 var_s1;
 
     var_s1 = 0;
-    switch (*(u8 *)((char *) arg0 + 9)) {
-    case 0:
-        var_s0 = (void *) func_80009C30();
-        if (FW(var_s0, 4) != -1) {
+    switch (arg0->header.method) {
+    case RMON_CPU:
+        var_s0 = func_80009C30();
+        if (var_s0->priority != -1) {
 loop_4:
-            if (FW(sp94, 0xC) != FW(var_s0, 0x14)) {
-                var_s0 = (void *) FW(var_s0, 0xC);
-                if (FW(var_s0, 4) != -1) {
+            /* (*var_s0).id, not var_s0->id: the -> spelling renumbers this compare's temps (t8/t9 swap) */
+            if (sp94->tid != (*var_s0).id) {
+                var_s0 = var_s0->tlnext;
+                if (var_s0->priority != -1) {
                     goto loop_4;
                 }
             }
         }
-        if (FW(var_s0, 4) == -1) {
-            return -2;
+        if (var_s0->priority == -1) {
+            return TV_ERROR_INVALID_ID;
         }
-        if (FHU(var_s0, 0x10) != 1) {
-            return -4;
+        if (var_s0->state != OS_STATE_STOPPED) {
+            return TV_ERROR_OPERATIONS_PROTECTED;
         }
-        FHU(var_s0, 0x12) = FHU(var_s0, 0x12) & ~3;
-        if (FW(sp94, 0x10) & 2) {
-            FW(var_s0, 0x11C) = FW(sp94, 0x14);
+        var_s0->flags = var_s0->flags & ~(OS_FLAG_CPU_BREAK | OS_FLAG_FAULT);
+        if (sp94->actions.flags & KK_RUN_SETPC) {
+            var_s0->context.pc = sp94->actions.vaddr;
         }
-        if ((FW(sp94, 0x10) & 1) && (func_80008C48(FW(sp94, 0xC), FW(var_s0, 0x11C)) == 0)) {
-            return -4;
+        if ((sp94->actions.flags & KK_RUN_SSTEP) && (func_80008C48(sp94->tid, var_s0->context.pc) == 0)) {
+            return TV_ERROR_OPERATIONS_PROTECTED;
         }
         var_s1 = 1;
         break;
-    case 1:
+    case RMON_RSP:
         if (func_80008430() != 0) {
-            return -4;
+            return TV_ERROR_OPERATIONS_PROTECTED;
         }
-        if (FW(sp94, 0x10) & 2) {
-            func_80006A50(0x04080000, FW(sp94, 0x14) + 0xFBFFF000);
+        if (sp94->actions.flags & KK_RUN_SETPC) {
+            func_80006A50(0x04080000, sp94->actions.vaddr + 0xFBFFF000);
         }
-        if (FW(sp94, 0x10) & 1) {
-            if (!(func_8000898C(1, 0x3E8, func_80006A98(0x04080000) + 0x04001000) & 3)) {
+        if (sp94->actions.flags & KK_RUN_SSTEP) {
+            if (!(func_8000898C(RMON_RSP, RMON_TID_RSP, func_80006A98(0x04080000) + 0x04001000) & 3)) {
                 func_80008498();
             }
             func_80008498();
@@ -205,24 +202,24 @@ loop_4:
             __rmonRcpAtBreak = 0;
             func_800084AC();
         }
-        sp84.tag = *(u8 *)((char *) sp94 + 4);
-        sp84.zero = 0;
-        sp84.id = FW(sp94, 0xC);
-        func_800073F8(&sp84, 0x10, 1);
-        if (FW(sp94, 0x10) & 1) {
-            func_80007A98(1, 0x3E8, sp38);
+        sp84.header.code = sp94->header.code;
+        sp84.header.error = TV_ERROR_NO_ERROR;
+        sp84.object = sp94->tid;
+        func_800073F8(&sp84, sizeof(sp84), KK_TYPE_REPLY);
+        if (sp94->actions.flags & KK_RUN_SSTEP) {
+            func_80007A98(RMON_RSP, RMON_TID_RSP, sp38);
             func_80008D0C(sp38);
-            func_800073F8(sp38, 0x4C, 2);
+            func_800073F8(sp38, 0x4C, KK_TYPE_EXCEPTION);
         }
         return 0;
     default:
-        return -4;
+        return TV_ERROR_OPERATIONS_PROTECTED;
     }
 
-    sp84.tag = *(u8 *)((char *) sp94 + 4);
-    sp84.zero = 0;
-    sp84.id = FW(sp94, 0xC);
-    func_800073F8(&sp84, 0x10, 1);
+    sp84.header.code = sp94->header.code;
+    sp84.header.error = TV_ERROR_NO_ERROR;
+    sp84.object = sp94->tid;
+    func_800073F8(&sp84, sizeof(sp84), KK_TYPE_REPLY);
     if (var_s1 != 0) {
         func_8000A110(var_s0);
     }
