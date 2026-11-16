@@ -109,7 +109,7 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
                 q = cur; cur += 1; BASEPOLY(arg0)->unk64 = *q;
                 break;
             case 7:
-                q = cur; cur += 1; BASEPOLY(arg0)->unk78 = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->triMarks = (u8 *)*q;
                 break;
             case 8:
                 q = cur; cur += 1; BASEPOLY(arg0)->alphas = (u8 *)*q;

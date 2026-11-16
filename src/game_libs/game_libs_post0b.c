@@ -19070,7 +19070,7 @@ void BasePolyShape_reset(BasePolyShape *arg0) {
     arg0->unk6C = 0;
     arg0->remap = 0;
     arg0->unk74 = 0;
-    arg0->unk78 = 0;
+    arg0->triMarks = 0;
     arg0->alphas = 0;
     arg0->unk80 = 0;
     arg0->unk98 = -1;
@@ -19185,18 +19185,19 @@ extern int D_00000000;
 /* 2026-10-17 agent-g (run 105) 82.1 -> EXACT: the clear loop is INSIDE the
  * alloc-if (the old body cleared every time), the second loop tests a u8,
  * and the final call takes no argument. */
-void ZoneShape_build(char *self) {
+/* agent-b run 566: over gdl/polyshape.h BasePolyShape (nTris, triMarks). */
+void ZoneShape_build(BasePolyShape *self) {
     u32 i;
     CALL(sys_imin)(GL_DATA_STR(0x20FC8, "ZoneShape()"));
-    if (*(char **)(self + 0x78) == 0) {
-        *(char **)(self + 0x78) = (char *)CALL(mem_new)(*(u32 *)(self + 0x44));
-        for (i = 0; i < *(u32 *)(self + 0x44); i++) {
-            (*(char **)(self + 0x78))[i] = 0;
+    if (self->triMarks == 0) {
+        self->triMarks = (u8 *)CALL(mem_new)(self->nTris);
+        for (i = 0; i < self->nTris; i++) {
+            self->triMarks[i] = 0;
         }
     }
     D_00000000 = 1;
-    for (i = 0; i < *(u32 *)(self + 0x44); i++) {
-        if ((*(u8 **)(self + 0x78))[i] == 0) {
+    for (i = 0; i < self->nTris; i++) {
+        if (self->triMarks[i] == 0) {
             CALL(Mesh_paint)(self, i);
         }
     }

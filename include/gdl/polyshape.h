@@ -45,7 +45,9 @@ typedef struct BasePolyShape {
     /* 0x6C */ s32 unk6C;
     /* 0x70 */ u16 *remap;         /* optional, 3 u16 per vertex */
     /* 0x74 */ s32 unk74;
-    /* 0x78 */ s32 unk78;
+    /* 0x78 */ u8 *triMarks;       /* one byte per triangle: parse cmd 7, or ZoneShape_build's
+                                    * alloc(nTris) + clear; Mesh_paint marks the triangles it
+                                    * paints, ZoneShape_build paints every unmarked one */
     /* 0x7C */ u8 *alphas;       /* parse cmd 8 (sets shapeFlags 0x8): one alpha byte per vertex */
     /* 0x80 */ s32 unk80;
     /* 0x84 */ struct BaseMat **mats; /* parse cmd 29: alloc(matCap * 4); PolyShape_clipToWindow_00049308 culls
