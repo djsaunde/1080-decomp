@@ -1,0 +1,31 @@
+# Reviewed exceptions for scripts/rom-coverage.py (run by scripts/readability-gate.sh --check).
+#
+# The audit gives every ROM byte one category from the ROM filesystem + the build.  A byte it
+# cannot attribute is a GAP and fails the gate.  An entry here assigns a reviewed category to
+# the GAP bytes of a range (it never overrides a real attribution) and MUST say why, like the
+# RAW: / UNNAMED: source tags.  An entry that no longer matches anything fails --check, so
+# delete it when the underlying split is fixed.
+#
+#   RANGE 0xSTART 0xEND <category> <reason>      categories: see scripts/rom-coverage.py
+#   HIDDEN <section-label> <reason>              accept a hidden-code scan hit
+
+# eddproc.uso Text+0x478: a 2-insn function (jr ra; sw a0,0(sp)) that report.json does not list.
+# Its jr ra is assembled from asm/nonmatchings/eddproc_uso/eddproc_uso/eddproc_uso_func_0000044C_pad.s
+# (a symbol-less "dead jr-ra pad"); PREFIX_BYTES starts the C segment at the Text record's flag
+# word, 4 bytes before the payload, so the delay slot (the payload's last word) lands in the
+# eddproc_uso_post bin.  Compare titproc's TitleDemoProcess_drawGui, the same stub as C.
+RANGE 0x59F8FC 0x59F904 code-asm/undecomp eddproc Text+0x478: unlisted 2-insn save-arg stub (jr ra from a _pad.s, delay slot in the post bin)
+
+# game_libs_text2_pre (bin, game_libs VRAM 0xEBF8..0x15364).  Its first 0x90 bytes are a CPU
+# function: addiu sp,-0x28; jal alloc(0x40); init; store vtable; list-insert into arg0+0x40;
+# jr ra.  It is an ItemType_create sibling (cf. edd_ItemType_create_000003BC) that splat left in
+# the bin, so it is in no unit and report.json does not count it.  TODO: split + decompile.
+RANGE 0xDF3CD0 0xDF3D60 code-asm/undecomp game_libs 0xEBF8: undecompiled 36-insn CPU function hidden in the game_libs_text2_pre bin
+RANGE 0xDF3D60 0xDF3D6C padding game_libs 0xEC88: 3 zero words between that function and the RSP code
+# The rest of text2_pre, and text2_mid / text2_tail, are RSP IMEM: COP2 vector ops, lqv/sqv,
+# j / jal targets in 0x04001xxx, no CPU prologues.  They sit between the three sm64-matching
+# F3DEX 1.23 IMEMs (game_libs_text2_*_imem) and pair with the DMEM images in
+# bootup_uso_ucodes_* (docs: tenshoe.yaml game_libs comment, issue #6).
+RANGE 0xDF3D6C 0xDFA43C ucode game_libs_text2_pre from 0xEC94: RSP IMEM (gfx ucode text without a public reference)
+RANGE 0xDFE0CC 0xDFF2DC ucode game_libs_text2_mid: RSP IMEM (gfx ucode text, unidentified: no public reference matches)
+RANGE 0xE006AC 0xE01ABC ucode game_libs_text2_tail: RSP IMEM (gfx ucode text, unidentified: no public reference matches)

@@ -21,6 +21,10 @@
 #      plus the plain-base-site ratchet that catches a merge dropping a GL_DATA_STR),
 #      and gameflow-import-sites.py check (every INPUT_MGR(tok) token's relocs target
 #      GameFlow, bootup Bss 0xF8, in the ROM).
+#   6. ROM coverage: scripts/rom-coverage.py --check assigns every baserom byte to one
+#      category (code-c / code-asm / data / asset / ucode / padding) from the ROM
+#      filesystem + linker map; fails on any unattributed byte, any USO Text without a
+#      code segment, or code shapes inside data (reviewed exceptions: rom-coverage.allow).
 #
 # REF defaults to HEAD (the last committed report.json). Scratch: $GATE_TMP
 # (default /tmp/claude-$UID/readability-gate-<worktree dir name>, private per
@@ -54,25 +58,25 @@ git show "$BASE:report.json" > "$TMP/base_report.json" || fail "no report.json a
 
 if [[ $CLEAN == 1 ]]; then rm -rf build tenshoe.z64; fi
 
-echo ">>> [1/5] full build + ROM verify"
+echo ">>> [1/6] full build + ROM verify"
 make RUN_CC_CHECK=0 -j"$JOBS" > "$TMP/make.log" 2>&1 || { tail -20 "$TMP/make.log"; fail "make (see $TMP/make.log)"; }
 grep -q "ROM OK (byte-identical" "$TMP/make.log" || fail "no 'ROM OK' line in make output"
 cmp -s tenshoe.z64 baserom.z64 || fail "tenshoe.z64 != baserom.z64"
 echo "    ROM OK (byte-identical)"
 
-echo ">>> [2/5] verify-blocks"
+echo ">>> [2/6] verify-blocks"
 make verify-blocks > "$TMP/blocks.log" 2>&1 || { tail -10 "$TMP/blocks.log"; fail "verify-blocks"; }
 nok=$(grep -c '^OK ' "$TMP/blocks.log" || true)
 [[ "$nok" == 6 ]] || fail "verify-blocks $nok/6"
 echo "    verify-blocks 6/6"
 
-echo ">>> [3/5] non_matching_objects"
+echo ">>> [3/6] non_matching_objects"
 make RUN_CC_CHECK=0 -j"$JOBS" non_matching_objects > "$TMP/nm.log" 2>&1 || { tail -20 "$TMP/nm.log"; fail "non_matching_objects"; }
 nerr=$(grep -E '(\bError\b|error:|\*\*\*)' "$TMP/nm.log" | grep -vc 'Warning' || true)
 [[ "$nerr" == 0 ]] || { grep -E '(\bError\b|error:|\*\*\*)' "$TMP/nm.log" | head; fail "non_matching_objects: $nerr error lines"; }
 echo "    non_matching_objects: 0 errors"
 
-echo ">>> [4/5] objdiff report"
+echo ">>> [4/6] objdiff report"
 objdiff-cli report generate -p . -o "$TMP/report.new.json" > "$TMP/objdiff.log" 2>&1 || fail "objdiff report generate"
 python3 - "$TMP/base_report.json" "$TMP/report.new.json" renames.tsv <<'PY' || fail "report comparison"
 import json, sys
@@ -140,7 +144,7 @@ if [[ $WRITE == 1 ]]; then
     cp "$TMP/report.new.json" report.json
     echo "    report.json refreshed"
 fi
-echo ">>> [5/5] source checks: named placeholder calls, data-site aliases, GameFlow imports"
+echo ">>> [5/6] source checks: named placeholder calls, data-site aliases, GameFlow imports"
 # both re-exec under the repo .venv (pyelftools, crunch64); ~5 s on the fresh build
 python3 scripts/name-placeholder-calls.py check > "$TMP/calls.log" 2>&1 || { grep -v '^check:' "$TMP/calls.log" | head -20; fail "name-placeholder-calls.py check (see $TMP/calls.log)"; }
 tail -1 "$TMP/calls.log" | sed 's/^/    /'
@@ -148,4 +152,7 @@ python3 scripts/uso-data-sites.py --no-build check > "$TMP/datasites.log" 2>&1 |
 echo "    uso-data-sites check: 0 mismatches ($(grep -c '' "$TMP/datasites.log") lines)"
 python3 scripts/gameflow-import-sites.py check > "$TMP/gameflow.log" 2>&1 || { grep -v '^check:' "$TMP/gameflow.log" | head -20; fail "gameflow-import-sites.py check (see $TMP/gameflow.log)"; }
 tail -1 "$TMP/gameflow.log" | sed 's/^/    /'
+echo ">>> [6/6] ROM coverage (every byte attributed; docs/ROM_COVERAGE.md)"
+python3 scripts/rom-coverage.py --check > "$TMP/romcov.log" 2>&1 || { sed -n '/^Gaps/,$p' "$TMP/romcov.log" | head -30; fail "rom-coverage.py --check (see $TMP/romcov.log)"; }
+grep -E 'honest decomp|^Gaps' "$TMP/romcov.log" | sed 's/^ */    /'
 echo "GATE PASS"
