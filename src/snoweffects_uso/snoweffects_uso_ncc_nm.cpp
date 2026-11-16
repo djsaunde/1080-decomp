@@ -134,8 +134,11 @@ struct SnowBV3 {
     SnowBV3() {}
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     SnowBV3 &operator=(SnowBV3 o) { x = o.x; y = o.y; z = o.z; return *this; }
+    SnowBV3 &operator+=(SnowBV3 o) { x += o.x; y += o.y; z += o.z; return *this; }
 };
 inline SnowBV3 operator-(const SnowBV3 &a, const SnowBV3 &b) { SnowBV3 r; r.set(a.x - b.x, a.y - b.y, a.z - b.z); return r; }
+inline SnowBV3 operator*(const SnowBV3 &a, float s) { SnowBV3 r; r.set(a.x * s, a.y * s, a.z * s); return r; }
+inline float dot(const SnowBV3 &a, const SnowBV3 &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 inline void xf(SnowBV3 *v, float (*m)[4]) {
     float nx = m[0][0] * v->x + m[1][0] * v->y + m[2][0] * v->z + m[3][0];
     float ny = m[0][1] * v->x + m[1][1] * v->y + m[2][1] * v->z + m[3][1];
@@ -143,7 +146,17 @@ inline void xf(SnowBV3 *v, float (*m)[4]) {
     v->x = nx; v->y = ny; v->z = nz;
 }
 struct SnowVEnt { short d; short pad; void (*fn)(void *); };
-struct SnowBCam { char pad[0x318]; SnowBV3 v318; char pad2[0x3B0 - 0x324]; SnowBV3 up; };
+struct SnowBCam {
+    char pad[0x318];
+    SnowBV3 v318;
+    char pad2[0x3B0 - 0x324];
+    SnowBV3 up;      /* 3B0 */
+    char pad3BC[0x3C8 - 0x3BC];
+    SnowBV3 v3C8;
+    char pad3D4[0xA58 - 0x3D4];
+    int flags;       /* A58 (bit 0x80 mirrors the 0x4E5C angle) */
+};
+struct SnowQuad { int a, b, c, d; };
 struct SnowBasis {
     char pad00[0x28];
     SnowVEnt *vptr;
@@ -151,14 +164,27 @@ struct SnowBasis {
     float (*m)[4];
     char pad34[0x3C - 0x34];
     float len;
-    char pad40[0xE4 - 0x40];
+    float u40;
+    char pad44[0x50 - 0x44];
+    float u50;
+    char pad54[0xB4 - 0x54];
+    SnowQuad uB4;    /* B4: 0x52D4 out-param of the p probe */
+    SnowQuad uC4;    /* C4: 0x52D4 out-param of the q probe */
+    SnowQuad uD4;    /* D4: copy of uC4 */
     SnowBV3 a;       /* E4 */
     SnowBV3 b;       /* F0 */
     SnowBV3 fwd;     /* FC */
     SnowBV3 v108;    /* 108 */
     SnowBV3 dir;     /* 114 */
-    char pad120[0x138 - 0x120];
+    SnowBV3 p;       /* 120 */
+    SnowBV3 q;       /* 12C */
     SnowBV3 c;       /* 138 */
+    int hits;        /* 144 */
+    float cosA;      /* 148 */
+    float d1;        /* 14C */
+    float d2;        /* 150 */
+    char pad154[0x15C - 0x154];
+    float maxDist;   /* 15C */
 };
 extern "C" void snoweffects_uso_func_00004374(SnowBasis *t) {
     t->a.x = t->len; t->a.y = 0.0f; t->a.z = 0.0f;
@@ -175,4 +201,44 @@ extern "C" void snoweffects_uso_func_00004374(SnowBasis *t) {
     xf(&t->c, t->m);
     t->vptr[14].fn((void *)((int)t->vptr[14].d + (int)t));
     t->vptr[15].fn((void *)((int)t->vptr[15].d + (int)t));
+}
+
+/* 0x4E5C (0x11C words, NM: every instruction matches, only the edg frame layout differs, 192 vs 216):
+ * the end points from the basis angle. ang = acos(-(dir . v108)), mirrored when the camera's v318 . v3C8
+ * is negative and again for camera flag 0x80; p = (-len cos, 0, -u40 u50 sin) and q = (len cos, 0,
+ * u40 u50 sin) through the world matrix; each is probed with 0x52D4 (hit distance into d1 / d2) and, on a
+ * hit nearer than maxDist, pushed back along the hit vector (hits++); uD4 = uC4. */
+extern "C" float gl_func_00000000_snow_ff(float);  /* math_acosf / fcos / fsin: float(float) blank jal */
+extern "C" float gl_func_00000000_snow_hitf(SnowBasis *, SnowBV3 *, SnowBV3 *, SnowQuad *);  /* 0x52D4 */
+extern "C" void snoweffects_uso_func_00004E5C(SnowBasis *t) {
+    float ang;
+    SnowBV3 hit;
+    t->cosA = -(t->dir.x * t->v108.x + t->dir.y * t->v108.y + t->dir.z * t->v108.z);
+    ang = gl_func_00000000_snow_ff(t->cosA);  /* math_acosf */
+    if (dot(t->cam->v318, t->cam->v3C8) < 0.0f) {
+        ang = -ang;
+    }
+    if (t->cam->flags & 0x80) {
+        ang = -ang;
+    }
+    t->hits = 0;
+    t->p.x = gl_func_00000000_snow_ff(ang) * -t->len;  /* fcos */
+    t->p.y = 0.0f;
+    t->p.z = gl_func_00000000_snow_ff(ang) * (-t->u40 * t->u50);  /* fsin */
+    xf(&t->p, t->m);
+    t->q.x = gl_func_00000000_snow_ff(ang) * t->len;  /* fcos */
+    t->q.y = 0.0f;
+    t->q.z = gl_func_00000000_snow_ff(ang) * (t->u40 * t->u50);  /* fsin */
+    xf(&t->q, t->m);
+    t->d1 = gl_func_00000000_snow_hitf(t, &t->p, &hit, &t->uB4);
+    if (t->d1 != 0.0f && t->d1 < t->maxDist) {
+        t->p += hit * -t->d1;
+        t->hits++;
+    }
+    t->d2 = gl_func_00000000_snow_hitf(t, &t->q, &hit, &t->uC4);
+    if (t->d2 != 0.0f && t->d2 < t->maxDist) {
+        t->q += hit * -t->d2;
+        t->hits++;
+    }
+    t->uD4 = t->uC4;
 }
