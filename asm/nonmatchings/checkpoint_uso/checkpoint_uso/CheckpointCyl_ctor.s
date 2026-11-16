@@ -1,6 +1,6 @@
-nonmatching checkpoint_uso_func_000000E0, 0x104
+nonmatching CheckpointCyl_ctor, 0x104
 
-glabel checkpoint_uso_func_000000E0
+glabel CheckpointCyl_ctor
     /* 7FAD5A 000000E0 27BDFFC8 */  .word 0x27BDFFC8
     /* 7FAD5E 000000E4 AFB00020 */  .word 0xAFB00020
     /* 7FAD62 000000E8 00808025 */  .word 0x00808025
@@ -66,4 +66,4 @@ glabel checkpoint_uso_func_000000E0
     /* 7FAE52 000001D8 8FB00020 */  .word 0x8FB00020
     /* 7FAE56 000001DC 03E00008 */  .word 0x03E00008
     /* 7FAE5A 000001E0 27BD0038 */  .word 0x27BD0038
-endlabel checkpoint_uso_func_000000E0
+endlabel CheckpointCyl_ctor

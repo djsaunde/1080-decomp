@@ -1,6 +1,6 @@
-nonmatching checkpoint_uso_func_0000063C, 0x2C
+nonmatching CheckpointBox_loadData, 0x2C
 
-glabel checkpoint_uso_func_0000063C
+glabel CheckpointBox_loadData
     /* 7FB2B6 0000063C 27BDFFE8 */  .word 0x27BDFFE8
     /* 7FB2BA 00000640 AFBF0014 */  .word 0xAFBF0014
     /* 7FB2BE 00000644 AFA40018 */  .word 0xAFA40018
@@ -12,4 +12,4 @@ glabel checkpoint_uso_func_0000063C
     /* 7FB2D6 0000065C 27BD0018 */  .word 0x27BD0018
     /* 7FB2DA 00000660 03E00008 */  .word 0x03E00008
     /* 7FB2DE 00000664 00000000 */  .word 0x00000000
-endlabel checkpoint_uso_func_0000063C
+endlabel CheckpointBox_loadData

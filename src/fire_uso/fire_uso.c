@@ -52,9 +52,9 @@ char *fire_uso_func_00000000(char *self, FireTag tag) {
     return self;
 }
 
-int *fire_uso_func_00000270(char *self, int sprite);
+int *Fire_ctor(char *self, int sprite);
 
-/* fire_uso_func_00000148: FireTmpl create: new Fire(tmpl->sprite), scale 1,
+/* FireTmpl_create: FireTmpl create: new Fire(tmpl->sprite), scale 1,
  * handleMsg (vtable slot 4) with tag 19, then attach the template's sprite node
  * under the new object (the SNodeItemType_newItem template, game_libs 3DD28).
  * Levers: the 12-byte NodeMsg plus one unused `volatile int pad` give frame 0x38
@@ -62,14 +62,14 @@ int *fire_uso_func_00000270(char *self, int sprite);
  * o off v0 (the target's `move v1,v0`, v0 reused for the vtable, empty jalr slot);
  * the second tmpl->sprite read is a fresh load.
  * The ctor jal field is 0 in the ROM (USO TextReloc), so it is called via CALL. */
-Node *fire_uso_func_00000148(char *tmpl) {
+Node *FireTmpl_create(char *tmpl) {
     NodeMsg msg;
     Node *o;
     Node *node;
     volatile int pad;
 
     node = *(Node **)(tmpl + 0x40);
-    o = (Node *)CALL(fire_uso_func_00000270)(0, (int)node);
+    o = (Node *)CALL(Fire_ctor)(0, (int)node);
     if (o) {}
     SNODE(o)->scale = 1.0f;
     msg.tag = 19;
@@ -84,18 +84,18 @@ Node *fire_uso_func_00000148(char *tmpl) {
 }
 
 /* Fire_declColourParms: hostio colour parms for the env (0x48) and prim (0x58) colours. */
-void fire_uso_func_000001E4(char *self) {
+void FireTmpl_declColourParms(char *self) {
     CALL(gfx_declColourParm)(self + 0x48, &D_00000000 + 0x237C);
     CALL(gfx_declColourParm)(self + 0x58, &D_00000000 + 0x2380);
 }
 
-void fire_uso_func_00000224(char *self) {
+void FireTmpl_display(char *self) {
     CALL(gfx_setPrimColour)(&D_00000000, self + 0x58);
     CALL(gfx_setEnvColour)(&D_00000000, self + 0x48);
     CALL(Node_display)(self);
 }
 
-int *fire_uso_func_00000270(char *self, int sprite) {
+int *Fire_ctor(char *self, int sprite) {
     if (self != 0 || (self = (char *)CALL(mem_new)(0x94)) != 0) {
         CALL(SNode_ctor)(self);
         *(char **)(self + 0x28) = &D_00000000;
@@ -108,7 +108,7 @@ int *fire_uso_func_00000270(char *self, int sprite) {
     return (int *)self;
 }
 
-void fire_uso_func_000002E8(char *self) {
+void Fire_display(char *self) {
     *(short *)(*(char **)(self + 0x88) + 0xC0) = *(short *)(self + 0x8C);
     *(float *)(*(char **)(self + 0x88) + 0xB0) = *(float *)(self + 0x70);
     *(float *)(*(char **)(self + 0x88) + 0xB4) = *(float *)(self + 0x70);
@@ -117,7 +117,7 @@ void fire_uso_func_000002E8(char *self) {
 }
 
 extern void gl_func_00000000_ff(void *, char *, void *, float, float, int);
-void fire_uso_func_00000338(char *self) {
+void Fire_hostioParms(char *self) {
     CALL(hostio_beginGroup)(&D_00000000, &D_00000000 + 0x2388, 0);
     XCALL(gl_func_00000000_ff, hostio_addFloat)(&D_00000000, &D_00000000 + 0x2390, self + 0x90, 0.0f, 1.0f, 0);
     CALL(hostio_endGroup)(&D_00000000);

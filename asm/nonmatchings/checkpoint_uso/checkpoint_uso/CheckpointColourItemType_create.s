@@ -1,6 +1,6 @@
-nonmatching checkpoint_uso_func_000008E8, 0x98
+nonmatching CheckpointColourItemType_create, 0x98
 
-glabel checkpoint_uso_func_000008E8
+glabel CheckpointColourItemType_create
     /* 7FB562 000008E8 27BDFFD8 */  .word 0x27BDFFD8
     /* 7FB566 000008EC AFBF0014 */  .word 0xAFBF0014
     /* 7FB56A 000008F0 AFA40028 */  .word 0xAFA40028
@@ -39,4 +39,4 @@ glabel checkpoint_uso_func_000008E8
     /* 7FB5EE 00000974 00000000 */  .word 0x00000000
     /* 7FB5F2 00000978 00000000 */  .word 0x00000000
     /* 7FB5F6 0000097C 00000000 */  .word 0x00000000
-endlabel checkpoint_uso_func_000008E8
+endlabel CheckpointColourItemType_create

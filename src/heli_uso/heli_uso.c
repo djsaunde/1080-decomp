@@ -60,14 +60,14 @@ typedef struct { int a, b, c; } HeliTri3i;
 typedef struct { int a, b, c, d; } HeliQuad4;
 
 /* heli_uso_func_00000000: read an int from the gdl file (cross-USO template, as checkpoint
- * checkpoint_uso_func_00000034 / game_uso stream_readS32_00000280). */
+ * checkpoint_gdlReadInt_00000034 / game_uso stream_readS32_00000280). */
 void heli_uso_func_00000000(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-/* heli_uso_func_0000003C: read a Vec3 from the gdl file (template, as balloon_uso_func_00000094 /
+/* heli_uso_func_0000003C: read a Vec3 from the gdl file (template, as balloon_gdlReadVec3_00000094 /
  * game_uso stream_readVec3_000001D4). */
 void heli_uso_func_0000003C(float *dst) {
     int pad_top[1];
@@ -82,7 +82,7 @@ void heli_uso_func_0000003C(float *dst) {
     dst[2] = *(float *)&tmp.c;
 }
 
-/* heli_uso_func_000000AC: read a float from the gdl file (template, as balloon_uso_func_00000104). */
+/* heli_uso_func_000000AC: read a float from the gdl file (template, as balloon_gdlReadFloat_00000104). */
 void heli_uso_func_000000AC(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);

@@ -1,6 +1,6 @@
-nonmatching checkpoint_uso_func_000002AC, 0x1B0
+nonmatching CheckpointCyl_handleMsg, 0x1B0
 
-glabel checkpoint_uso_func_000002AC
+glabel CheckpointCyl_handleMsg
     /* 7FAF26 000002AC 27BDFF88 */  .word 0x27BDFF88
     /* 7FAF2A 000002B0 AFBF0014 */  .word 0xAFBF0014
     /* 7FAF2E 000002B4 AFA5007C */  .word 0xAFA5007C
@@ -109,4 +109,4 @@ glabel checkpoint_uso_func_000002AC
     /* 7FB0CA 00000450 27BD0078 */  .word 0x27BD0078
     /* 7FB0CE 00000454 03E00008 */  .word 0x03E00008
     /* 7FB0D2 00000458 00000000 */  .word 0x00000000
-endlabel checkpoint_uso_func_000002AC
+endlabel CheckpointCyl_handleMsg

@@ -1,6 +1,6 @@
-nonmatching balloon_uso_func_0000032C, 0x100
+nonmatching Balloon_hostioParms, 0x100
 
-glabel balloon_uso_func_0000032C
+glabel Balloon_hostioParms
     /* 7E320A 0000032C 27BDFFD8 */  .word 0x27BDFFD8
     /* 7E320E 00000330 AFB10020 */  .word 0xAFB10020
     /* 7E3212 00000334 AFB0001C */  .word 0xAFB0001C
@@ -65,4 +65,4 @@ glabel balloon_uso_func_0000032C
     /* 7E32FE 00000420 8FB10020 */  .word 0x8FB10020
     /* 7E3302 00000424 03E00008 */  .word 0x03E00008
     /* 7E3306 00000428 27BD0028 */  .word 0x27BD0028
-endlabel balloon_uso_func_0000032C
+endlabel Balloon_hostioParms

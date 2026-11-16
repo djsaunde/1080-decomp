@@ -1,6 +1,6 @@
-nonmatching fire_uso_func_00000224, 0x4C
+nonmatching FireTmpl_display, 0x4C
 
-glabel fire_uso_func_00000224
+glabel FireTmpl_display
     /* 7F643E 00000224 27BDFFE8 */  .word 0x27BDFFE8
     /* 7F6442 00000228 AFA40018 */  .word 0xAFA40018
     /* 7F6446 0000022C 8FA50018 */  .word 0x8FA50018
@@ -20,4 +20,4 @@ glabel fire_uso_func_00000224
     /* 7F647E 00000264 27BD0018 */  .word 0x27BD0018
     /* 7F6482 00000268 03E00008 */  .word 0x03E00008
     /* 7F6486 0000026C 00000000 */  .word 0x00000000
-endlabel fire_uso_func_00000224
+endlabel FireTmpl_display

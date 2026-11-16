@@ -1,6 +1,6 @@
-nonmatching balloon_uso_func_00000104, 0x3C
+nonmatching balloon_gdlReadFloat_00000104, 0x3C
 
-glabel balloon_uso_func_00000104
+glabel balloon_gdlReadFloat_00000104
     /* 7E2FE2 00000104 27BDFFE0 */  .word 0x27BDFFE0
     /* 7E2FE6 00000108 AFA40020 */  .word 0xAFA40020
     /* 7E2FEA 0000010C AFBF0014 */  .word 0xAFBF0014
@@ -16,4 +16,4 @@ glabel balloon_uso_func_00000104
     /* 7E3012 00000134 27BD0020 */  .word 0x27BD0020
     /* 7E3016 00000138 03E00008 */  .word 0x03E00008
     /* 7E301A 0000013C 00000000 */  .word 0x00000000
-endlabel balloon_uso_func_00000104
+endlabel balloon_gdlReadFloat_00000104

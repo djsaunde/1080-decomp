@@ -1,6 +1,6 @@
-nonmatching checkpoint_uso_func_0000023C, 0x70
+nonmatching CheckpointCyl_hostioParms, 0x70
 
-glabel checkpoint_uso_func_0000023C
+glabel CheckpointCyl_hostioParms
     /* 7FAEB6 0000023C 27BDFFE0 */  .word 0x27BDFFE0
     /* 7FAEBA 00000240 AFBF001C */  .word 0xAFBF001C
     /* 7FAEBE 00000244 AFA40020 */  .word 0xAFA40020
@@ -29,4 +29,4 @@ glabel checkpoint_uso_func_0000023C
     /* 7FAF1A 000002A0 27BD0020 */  .word 0x27BD0020
     /* 7FAF1E 000002A4 03E00008 */  .word 0x03E00008
     /* 7FAF22 000002A8 00000000 */  .word 0x00000000
-endlabel checkpoint_uso_func_0000023C
+endlabel CheckpointCyl_hostioParms

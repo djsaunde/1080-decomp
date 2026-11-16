@@ -1,6 +1,6 @@
-nonmatching fire_uso_func_00000338, 0x78
+nonmatching Fire_hostioParms, 0x78
 
-glabel fire_uso_func_00000338
+glabel Fire_hostioParms
     /* 7F6552 00000338 27BDFFE0 */  .word 0x27BDFFE0
     /* 7F6556 0000033C AFA40020 */  .word 0xAFA40020
     /* 7F655A 00000340 AFBF001C */  .word 0xAFBF001C
@@ -31,4 +31,4 @@ glabel fire_uso_func_00000338
     /* 7F65BE 000003A4 27BD0020 */  .word 0x27BD0020
     /* 7F65C2 000003A8 03E00008 */  .word 0x03E00008
     /* 7F65C6 000003AC 00000000 */  .word 0x00000000
-endlabel fire_uso_func_00000338
+endlabel Fire_hostioParms

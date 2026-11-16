@@ -1,6 +1,6 @@
-nonmatching checkpoint_uso_func_000006F0, 0x104
+nonmatching CheckpointCylTmpl_create, 0x104
 
-glabel checkpoint_uso_func_000006F0
+glabel CheckpointCylTmpl_create
     /* 7FB36A 000006F0 27BDFFC0 */  .word 0x27BDFFC0
     /* 7FB36E 000006F4 AFBF001C */  .word 0xAFBF001C
     /* 7FB372 000006F8 AFB00018 */  .word 0xAFB00018
@@ -66,4 +66,4 @@ glabel checkpoint_uso_func_000006F0
     /* 7FB462 000007E8 8FB00018 */  .word 0x8FB00018
     /* 7FB466 000007EC 03E00008 */  .word 0x03E00008
     /* 7FB46A 000007F0 27BD0040 */  .word 0x27BD0040
-endlabel checkpoint_uso_func_000006F0
+endlabel CheckpointCylTmpl_create

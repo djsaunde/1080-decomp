@@ -32,16 +32,16 @@ void balloon_uso_func_00000000(int *a0) {
     (void)padC;
 }
 
-/* balloon_uso_func_00000060: write a float to the gdl file. */
-void balloon_uso_func_00000060(float *a0) {
+/* balloon_gdlWriteFloat_00000060: write a float to the gdl file. */
+void balloon_gdlWriteFloat_00000060(float *a0) {
     float pad, scratch;
     scratch = *a0;
     CALL(fs_gdlWriteFile)(&D_00000000, &scratch, 4);
 }
 
-/* balloon_uso_func_00000094: read a Vec3 from the gdl file (game_uso
+/* balloon_gdlReadVec3_00000094: read a Vec3 from the gdl file (game_uso
  * stream_readVec3_000001D4 template). */
-void balloon_uso_func_00000094(float *dst) {
+void balloon_gdlReadVec3_00000094(float *dst) {
     int pad_top[1];
     BalloonTri3i raw;
     int pad_mid[2];
@@ -54,15 +54,15 @@ void balloon_uso_func_00000094(float *dst) {
     dst[2] = *(float *)&tmp.c;
 }
 
-/* balloon_uso_func_00000104: read a float from the gdl file. */
-void balloon_uso_func_00000104(float *dst) {
+/* balloon_gdlReadFloat_00000104: read a float from the gdl file. */
+void balloon_gdlReadFloat_00000104(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-/* balloon_uso_func_00000140: Balloon ctor (0x9C bytes; cfront this==0 alloc). */
-int *balloon_uso_func_00000140(char *self) {
+/* Balloon_ctor: Balloon ctor (0x9C bytes; cfront this==0 alloc). */
+int *Balloon_ctor(char *self) {
     if (self != 0 || (self = (char *)CALL(mem_new)(0x9C)) != 0) {
         CALL(SNode_ctor)(self);
         *(char **)(self + 0x28) = &D_00000000; /* Data+0x4128: Balloon vtable */
@@ -75,29 +75,29 @@ int *balloon_uso_func_00000140(char *self) {
     return (int *)self;
 }
 
-/* balloon_uso_func_000001A8: Balloon display (cull, phase += speed, bob the camera
+/* Balloon_display: Balloon display (cull, phase += speed, bob the camera
  * vector by amp * fsin(phase)). EXACT via an IDO 7.1 NCC (C++) donor,
  * src/balloon_uso/balloon_uso_ncc_1A8.cpp, REPLACE_FUNC_BODY-spliced over this placeholder. */
-void balloon_uso_func_000001A8(char *self) {
+void Balloon_display(char *self) {
 }
 
-/* balloon_uso_func_000002BC: saveData: bob amplitude, bob speed, then the SNode part. */
-void balloon_uso_func_000002BC(char *self) {
+/* Balloon_saveData: saveData: bob amplitude, bob speed, then the SNode part. */
+void Balloon_saveData(char *self) {
     balloon_uso_func_00000000((int *)(self + 0x88));
-    balloon_uso_func_00000060((float *)(self + 0x94));
+    balloon_gdlWriteFloat_00000060((float *)(self + 0x94));
     CALL(SNode_saveData)(self);
 }
 
-/* balloon_uso_func_000002F4: loadData (mirror of saveData). */
-void balloon_uso_func_000002F4(char *self) {
-    balloon_uso_func_00000094((float *)(self + 0x88));
-    balloon_uso_func_00000104((float *)(self + 0x94));
+/* Balloon_loadData: loadData (mirror of saveData). */
+void Balloon_loadData(char *self) {
+    balloon_gdlReadVec3_00000094((float *)(self + 0x88));
+    balloon_gdlReadFloat_00000104((float *)(self + 0x94));
     CALL(SNode_loadData)(self);
 }
 
-/* balloon_uso_func_0000032C: hostioParms (group named by the node's name). */
+/* Balloon_hostioParms: hostioParms (group named by the node's name). */
 extern void gl_func_00000000_ff(void *, char *, void *, float, float, int);
-void balloon_uso_func_0000032C(char *self) {
+void Balloon_hostioParms(char *self) {
     char *name = *(char **)(self + 0xC); /* Node name */
 #define h (&D_00000000)
     CALL(hostio_beginGroup)(h, name, 0);
@@ -110,15 +110,15 @@ void balloon_uso_func_0000032C(char *self) {
 }
 #undef h
 
-/* balloon_uso_func_0000042C: handleMsg: messages 7 and 19 reset the bob phase. */
-void balloon_uso_func_0000042C(char *self, int *msg) {
+/* Balloon_handleMsg: handleMsg: messages 7 and 19 reset the bob phase. */
+void Balloon_handleMsg(char *self, int *msg) {
     CALL(SNode_handleMsg)(self, msg);
     if (*msg == 7 || *msg == 19) {
         *(float *)(self + 0x98) = 0.0f;
     }
 }
 
-/* balloon_uso_func_0000047C: BalloonTmpl create. Builds the template's PolyShape
+/* BalloonTmpl_create: BalloonTmpl create. Builds the template's PolyShape
  * on first use (gPolyFlags |= 8 and gPolyGeomMode = {0, 0xAA002} around the
  * PolyShape_ctor, as bootup TreeTmpl_create), then new Balloon, scale 10,
  * handleMsg (vtable slot 4) with tag 19 and attach the shape under it (the
@@ -128,7 +128,7 @@ void balloon_uso_func_0000042C(char *self, int *msg) {
  * The ctor jal field is 0 in the ROM (USO TextReloc), so it is called via CALL. */
 extern int gPolyFlags_3EEC4_tmpl_rd, gPolyFlags_3EEC4_tmpl_wr;
 extern int gPolyGeomMode_3EEC8_tmpl[2];
-Node *balloon_uso_func_0000047C(char *tmpl) {
+Node *BalloonTmpl_create(char *tmpl) {
     NodeMsg msg;
     Node *o;
     Node *shape;
@@ -141,7 +141,7 @@ Node *balloon_uso_func_0000047C(char *tmpl) {
         gPolyGeomMode_3EEC8_tmpl[0] = 0;
         *(Node **)(tmpl + 0x40) = (Node *)CALL(PolyShape_ctor)(0, &D_00000000 + 0x41A8, *(int *)(tmpl + 0x48), 0);
     }
-    o = (Node *)CALL(balloon_uso_func_00000140)(0);
+    o = (Node *)CALL(Balloon_ctor)(0);
     if (o) {}
     SNODE(o)->scale = 10.0f;
     msg.tag = 19;

@@ -1,6 +1,6 @@
-nonmatching checkpoint_uso_func_00000070, 0x34
+nonmatching checkpoint_gdlWriteInt_00000070, 0x34
 
-glabel checkpoint_uso_func_00000070
+glabel checkpoint_gdlWriteInt_00000070
     /* 7FACEA 00000070 27BDFFE0 */  .word 0x27BDFFE0
     /* 7FACEE 00000074 AFBF0014 */  .word 0xAFBF0014
     /* 7FACF2 00000078 8C8E0000 */  .word 0x8C8E0000
@@ -14,4 +14,4 @@ glabel checkpoint_uso_func_00000070
     /* 7FAD12 00000098 27BD0020 */  .word 0x27BD0020
     /* 7FAD16 0000009C 03E00008 */  .word 0x03E00008
     /* 7FAD1A 000000A0 00000000 */  .word 0x00000000
-endlabel checkpoint_uso_func_00000070
+endlabel checkpoint_gdlWriteInt_00000070

@@ -1,6 +1,6 @@
-nonmatching fire_uso_func_00000148, 0x9C
+nonmatching FireTmpl_create, 0x9C
 
-glabel fire_uso_func_00000148
+glabel FireTmpl_create
     /* 7F6362 00000148 27BDFFC8 */  .word 0x27BDFFC8
     /* 7F6366 0000014C AFBF0014 */  .word 0xAFBF0014
     /* 7F636A 00000150 AFA40038 */  .word 0xAFA40038
@@ -40,4 +40,4 @@ glabel fire_uso_func_00000148
     /* 7F63F2 000001D8 00601025 */  .word 0x00601025
     /* 7F63F6 000001DC 03E00008 */  .word 0x03E00008
     /* 7F63FA 000001E0 00000000 */  .word 0x00000000
-endlabel fire_uso_func_00000148
+endlabel FireTmpl_create

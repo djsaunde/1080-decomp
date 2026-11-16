@@ -1,5 +1,5 @@
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
-/* IDO 7.1 NCC (C++) donor for balloon_uso_func_000001A8 (Balloon display, 0x114), spliced into
+/* IDO 7.1 NCC (C++) donor for Balloon_display (Balloon display, 0x114), spliced into
  * balloon_uso.c.o via REPLACE_FUNC_BODY (agent-b run 627). It is SNode_display (game_libs 39E24,
  * game_libs_ncc_39E24.cpp) with the bob added: cull through cam_isSphereInView (kind 4), advance
  * the phase by the speed, s = fsin(phase), load the node matrix, scale the camera vector by the
@@ -23,7 +23,7 @@ inline void Cam::mul(G &g) { v.x *= g.scale.x; v.y *= g.scale.y; v.z *= g.scale.
 /* Balloon (0x9C): SNode + the hostio "x/y/z" bob amplitude, the bob speed and its phase */
 struct Balloon { SNode snode; V3 amp; float speed; float phase; };
 extern "C" G gGfxLib_bal1A8_g;
-extern "C" void balloon_uso_func_000001A8(Balloon *a0) {
+extern "C" void Balloon_display(Balloon *a0) {
     float s;
     if (XCALL(gl_proto_bal1A8, cam_isSphereInView)(gGfxLib_bal1A8_g.root, 4, a0->snode.pos[0], a0->snode.pos[1],
                                                    a0->snode.pos[2], 0, 0.0f) != 0) {

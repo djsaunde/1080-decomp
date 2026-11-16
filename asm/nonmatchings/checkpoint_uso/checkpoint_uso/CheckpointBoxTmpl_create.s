@@ -1,6 +1,6 @@
-nonmatching checkpoint_uso_func_000007F4, 0xF4
+nonmatching CheckpointBoxTmpl_create, 0xF4
 
-glabel checkpoint_uso_func_000007F4
+glabel CheckpointBoxTmpl_create
     /* 7FB46E 000007F4 27BDFFC0 */  .word 0x27BDFFC0
     /* 7FB472 000007F8 AFBF001C */  .word 0xAFBF001C
     /* 7FB476 000007FC AFB10018 */  .word 0xAFB10018
@@ -62,4 +62,4 @@ glabel checkpoint_uso_func_000007F4
     /* 7FB556 000008DC 8FB10018 */  .word 0x8FB10018
     /* 7FB55A 000008E0 03E00008 */  .word 0x03E00008
     /* 7FB55E 000008E4 27BD0040 */  .word 0x27BD0040
-endlabel checkpoint_uso_func_000007F4
+endlabel CheckpointBoxTmpl_create

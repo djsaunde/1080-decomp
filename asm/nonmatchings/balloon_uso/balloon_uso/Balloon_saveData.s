@@ -1,6 +1,6 @@
-nonmatching balloon_uso_func_000002BC, 0x38
+nonmatching Balloon_saveData, 0x38
 
-glabel balloon_uso_func_000002BC
+glabel Balloon_saveData
     /* 7E319A 000002BC 27BDFFE8 */  .word 0x27BDFFE8
     /* 7E319E 000002C0 AFBF0014 */  .word 0xAFBF0014
     /* 7E31A2 000002C4 AFA40018 */  .word 0xAFA40018
@@ -15,4 +15,4 @@ glabel balloon_uso_func_000002BC
     /* 7E31C6 000002E8 27BD0018 */  .word 0x27BD0018
     /* 7E31CA 000002EC 03E00008 */  .word 0x03E00008
     /* 7E31CE 000002F0 00000000 */  .word 0x00000000
-endlabel balloon_uso_func_000002BC
+endlabel Balloon_saveData

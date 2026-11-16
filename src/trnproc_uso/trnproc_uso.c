@@ -64,14 +64,14 @@ void trnproc_uso_func_00000214(void) {
 }
 
 /* trnproc_uso_func_00000268: read an int from the gdl file (cross-USO template, as checkpoint
- * checkpoint_uso_func_00000034 / game_uso stream_readS32_00000280). */
+ * checkpoint_gdlReadInt_00000034 / game_uso stream_readS32_00000280). */
 void trnproc_uso_func_00000268(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-/* trnproc_uso_func_000002A4: read a float from the gdl file (template, as balloon_uso_func_00000104). */
+/* trnproc_uso_func_000002A4: read a float from the gdl file (template, as balloon_gdlReadFloat_00000104). */
 void trnproc_uso_func_000002A4(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
@@ -86,7 +86,7 @@ void trnproc_uso_func_000002E0(TrnQuad4 *dst) {
     *dst = buf;
 }
 
-/* trnproc_uso_func_00000338: read a Vec3 from the gdl file (template, as balloon_uso_func_00000094 /
+/* trnproc_uso_func_00000338: read a Vec3 from the gdl file (template, as balloon_gdlReadVec3_00000094 /
  * game_uso stream_readVec3_000001D4). */
 void trnproc_uso_func_00000338(float *dst) {
     int pad_top[1];

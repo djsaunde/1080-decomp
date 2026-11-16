@@ -1,6 +1,6 @@
-nonmatching balloon_uso_func_00000140, 0x68
+nonmatching Balloon_ctor, 0x68
 
-glabel balloon_uso_func_00000140
+glabel Balloon_ctor
     /* 7E301E 00000140 27BDFFE8 */  .word 0x27BDFFE8
     /* 7E3022 00000144 14800005 */  .word 0x14800005
     /* 7E3026 00000148 AFBF0014 */  .word 0xAFBF0014
@@ -27,4 +27,4 @@ glabel balloon_uso_func_00000140
     /* 7E307A 0000019C 00801025 */  .word 0x00801025
     /* 7E307E 000001A0 03E00008 */  .word 0x03E00008
     /* 7E3082 000001A4 00000000 */  .word 0x00000000
-endlabel balloon_uso_func_00000140
+endlabel Balloon_ctor

@@ -1,6 +1,6 @@
-nonmatching fire_uso_func_000001E4, 0x40
+nonmatching FireTmpl_declColourParms, 0x40
 
-glabel fire_uso_func_000001E4
+glabel FireTmpl_declColourParms
     /* 7F63FE 000001E4 27BDFFE8 */  .word 0x27BDFFE8
     /* 7F6402 000001E8 AFBF0014 */  .word 0xAFBF0014
     /* 7F6406 000001EC AFA40018 */  .word 0xAFA40018
@@ -17,4 +17,4 @@ glabel fire_uso_func_000001E4
     /* 7F6432 00000218 27BD0018 */  .word 0x27BD0018
     /* 7F6436 0000021C 03E00008 */  .word 0x03E00008
     /* 7F643A 00000220 00000000 */  .word 0x00000000
-endlabel fire_uso_func_000001E4
+endlabel FireTmpl_declColourParms
