@@ -85,7 +85,11 @@ void AudioThread_ProcessChannelCmd(SequenceChannel *channel, AudioCmd *cmd) {
         channel->combFilterGain = cmd->arg.asUShort;
         return;
     case 14: /* SET_STEREO */
+#ifdef PORT
+        channel->stereo.asByte = port_stereo_from_ido(cmd->arg.asUbyte);
+#else
         channel->stereo.asByte = cmd->arg.asUbyte;
+#endif
         return;
     }
 }

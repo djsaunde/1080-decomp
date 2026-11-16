@@ -349,7 +349,11 @@ void AudioSeq_SequenceChannelProcessScript(gl_2BB7C_Channel *channel) {
                     } else {
                         channel->stereoHeadsetEffects = false;
                     }
+#ifdef PORT
+                    channel->stereo.asByte = port_stereo_from_ido(cmd & 0x7F);
+#else
                     channel->stereo.asByte = cmd & 0x7F;
+#endif
                     break;
 
                 case 0xD1:

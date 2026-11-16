@@ -273,7 +273,11 @@ void AudioSynth_DisableSampleStates(int a0, int a1) {
         if (((ElemFlags1CF68 *)elem)->b1) {
             break;
         }
+#ifdef PORT
+        *(unsigned char *)elem &= ~AUDIO_FLAGBIT(0); /* NoteSampleState.enabled */
+#else
         *(unsigned char *)elem = *(unsigned char *)elem & 0xFF7F;
+#endif
         v0++;
     }
 }
@@ -7643,7 +7647,11 @@ void AudioThread_PreNMIInternal(void) {
  * `char *q` inner pointer. Sibling of AudioThread_SetFadeInTimer. */
 int AudioThread_GetChannelIO(int a0, int a1, int a2) {
     char *p = (char *)&gAudioContext + a0 * 352;
+#ifdef PORT
+    if (*(unsigned int *)&((AudioContext *)p)->seqPlayers[0] & AUDIO_WORDBIT(0)) { /* enabled */
+#else
     if ((unsigned int)*(int *)&((AudioContext *)p)->seqPlayers[0] >> 31) {
+#endif
         char *q = (char *)((int *)(p + 0x2D38))[a1];
         return ((SequenceChannel *)q)->seqScriptIO[a2];
     }
@@ -7946,11 +7954,19 @@ int AudioThread_GetLayerSamplesLeft(int a0, int a1, int a2) {
     int end;
     int start;
     /* `word >> 31` = the `enabled` bitfield (bit 31) of each struct's flag word */
+#ifdef PORT
+    if (!(*(unsigned int *)player & AUDIO_WORDBIT(0))) {
+#else
     if (!(*(unsigned int *)player >> 31)) {
+#endif
         goto ret0;
     }
     channel = player->channels[a1];
+#ifdef PORT
+    if (!(*(unsigned int *)channel & AUDIO_WORDBIT(0))) {
+#else
     if (!(*(unsigned int *)channel >> 31)) {
+#endif
         goto ret0;
     }
     layer = channel->layers[a2];
@@ -7958,14 +7974,22 @@ int AudioThread_GetLayerSamplesLeft(int a0, int a1, int a2) {
         return 0;
     }
     flags = *(int *)layer;
+#ifdef PORT
+    if (!((unsigned int)flags & AUDIO_WORDBIT(0))) {
+#else
     if (!((unsigned int)flags >> 31)) {
+#endif
         goto ret0;
     }
     q = (char *)layer->note;
     if (q == 0) {
         return 0;
     }
+#ifdef PORT
+    if (!((unsigned int)flags & AUDIO_WORDBIT(4))) { /* layer->bit3 clear */
+#else
     if ((flags << 3 << 1) >= 0) { /* layer->bit3 (bit 27) clear */
+#endif
         return 0;
     }
     q2 = q;
@@ -8191,7 +8215,11 @@ void Audio_NoteInit(Note *note) {
     }
     f60 = note->playbackState.adsr.action.asByte;
     note->playbackState.unk_04 = 0;
+#ifdef PORT
+    note->playbackState.adsr.action.asByte = (f60 & ~0xF0) | 0x10; /* action.s.state = 1 (state:4 is the high nibble on the host) */
+#else
     note->playbackState.adsr.action.asByte = (f60 & 0xFFFF & ~0xF) | 1;
+#endif
     tmpl = (int *)&D_00000000;
     {
         struct Blk8 { int w[8]; };
@@ -8220,7 +8248,11 @@ void Audio_NoteDisable(char *a0) {
     ((volatile NoteSampleState *)&NOTE->sampleState)->finished = 0;
     NOTE->playbackState.parentLayer = (SequenceLayer *)-1; /* NO_LAYER */
     NOTE->playbackState.prevParentLayer = (SequenceLayer *)-1;
+#ifdef PORT
+    NOTE->playbackState.adsr.action.asByte &= ~0xF0; /* action.s.state = 0 (the high nibble on the host) */
+#else
     NOTE->playbackState.adsr.action.asByte &= ~0x0F; /* action.s.state = 0 (ADSR_STATE_DISABLED) */
+#endif
     NOTE->playbackState.adsr.current = 0.0f;
 }
 #undef NOTE
@@ -8729,7 +8761,11 @@ void Audio_SeqLayerDecayRelease(gl_28604_Layer *layer, s32 target) {
         return;
     }
 
+#ifdef PORT
+    layer->bits0 &= ~AUDIO_FLAGBIT(4); /* SequenceLayer.bit3 */
+#else
     layer->bits0 &= ~8;
+#endif
 
     if (layer->note == NULL) {
         return;
@@ -9579,10 +9615,17 @@ typedef struct { unsigned b0:8; int f80:1; unsigned rest:23; } BF1_000295BC;
  * The tests keep the matched spellings (see above): freqScale a signed 1-bit field read (lb),
  * volume / pan word shifts of word 0 (bits 22 / 21). */
 #define CH_CHANGES(c) (*(u8 *)((char *)(c) + 0x1))
+#ifdef PORT
+#define CH_CHANGE_FREQSCALE AUDIO_FLAGBIT(8)
+#define CH_CHANGED_FREQSCALE(c) (((BF1_000295BC *)(c))->f80)
+#define CH_CHANGED_VOLUME(c) ((FW(c, 0x0) & AUDIO_WORDBIT(9)) != 0)
+#define CH_CHANGED_PAN(c) ((FW(c, 0x0) & AUDIO_WORDBIT(10)) != 0)
+#else
 #define CH_CHANGE_FREQSCALE 0x80
 #define CH_CHANGED_FREQSCALE(c) (((BF1_000295BC *)(c))->f80)
 #define CH_CHANGED_VOLUME(c) ((FW(c, 0x0) << 8 << 1) < 0)
 #define CH_CHANGED_PAN(c) ((FW(c, 0x0) << 9 << 1) < 0)
+#endif
 typedef struct { unsigned p0:2; unsigned b29:1; unsigned rest:29; } BF_000295BC;
 #ifndef FF
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
@@ -9621,11 +9664,19 @@ void Audio_SequenceChannelProcessSound(char *arg0, s32 arg1, s32 arg2) {
         temp_v1 = (char *)((SequenceChannel *)(arg0 + arg2))->layers[0]; /* layers[arg2 / 4] */
         if ((temp_v1 != 0) && LAYER->enabled && (LAYER->note != 0)) {
             b = *(u8*)temp_v1;
+#ifdef PORT
+            if (b & AUDIO_FLAGBIT(7)) { /* layer->notePropertiesNeedInit */
+#else
             if (b & 1) {
+#endif
                 LAYER->noteFreqScale = LAYER->freqScale * var_f0_2;
                 LAYER->noteVelocity = LAYER->velocitySquare * CH->appliedVolume;
                 LAYER->notePan = (s32) ((LAYER->pan * (0x80 - CH->panChannelWeight)) + *(int *)&CH->pan) >> 7;
+#ifdef PORT
+                *(u8*)temp_v1 = b & ~AUDIO_FLAGBIT(7);
+#else
                 *(u8*)temp_v1 = b & 0xFFFE;
+#endif
             } else {
                 if (CH_CHANGED_FREQSCALE(arg0)) {
                     LAYER->noteFreqScale = LAYER->freqScale * var_f0_2;
@@ -9723,7 +9774,11 @@ void Audio_SequencePlayerProcessSound(char *obj) {
     }
     for (s0 = 0, p = obj; s0 != 64; s0 += 4) {
         char *e = (char *)((SequencePlayer *)p)->channels[0]; /* p is obj shifted s0 bytes: channels[s0 / 4] */
+#ifdef PORT
+        if (*(unsigned int *)e & AUDIO_WORDBIT(0)) { /* channel->enabled */
+#else
         if (((unsigned)*(int *)e >> 31) == 1) {
+#endif
             gl_ref_0003DC30(e, ((Fl_2978C *)obj)->f4, ((Fl_2978C *)obj)->f1);
         }
         p += 4;
@@ -10389,8 +10444,13 @@ void AudioSeq_SequenceChannelDisable(unsigned char *obj) {
         gl_ref_0003EB78(obj, i);
     }
     CALL(Audio_NotePoolClear)(obj + 0x94);  /* real callee: jal-0 USO placeholder (sub-block init) */
+#ifdef PORT
+    obj[0] &= ~AUDIO_FLAGBIT(0); /* enabled = 0 */
+    obj[0] |= AUDIO_FLAGBIT(1);  /* finished = 1 */
+#else
     obj[0] = (obj[0] & 0xFF7F) & 0xFFFF;
     obj[0] = obj[0] | 0x40;
+#endif
 }
 
 /* Required in undefined_syms_auto.txt:
@@ -11673,7 +11733,11 @@ void AudioSeq_InitSequencePlayers(void) {
     do {
         p += 0x80;
         ((AudioContext *)p)->sequenceLayers[-1].channel = 0; /* p runs one layer (0x80) ahead */
+#ifdef PORT
+        *(unsigned char *)&((AudioContext *)p)->sequenceLayers[-1] &= ~AUDIO_FLAGBIT(0); /* enabled = 0 */
+#else
         *(unsigned char *)&((AudioContext *)p)->sequenceLayers[-1] &= 0xFF7F; /* enabled = 0 */
+#endif
     } while (p < end);
     s0 = (char*)&gAudioContext + 0x2D00; end2 = (char*)&gAudioContext + 0x3280;
     do {

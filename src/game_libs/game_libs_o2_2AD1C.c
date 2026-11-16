@@ -173,7 +173,11 @@ s32 AudioSeq_SeqLayerProcessScriptStep2(gl_2AD1C_Layer *layer) {
                 break;
 
             case 0xCD:
+#ifdef PORT
+                layer->stereo.asByte = port_stereo_from_ido(AudioSeq_ScriptReadU8(state));
+#else
                 layer->stereo.asByte = AudioSeq_ScriptReadU8(state);
+#endif
                 break;
 
             case 0xCE:
