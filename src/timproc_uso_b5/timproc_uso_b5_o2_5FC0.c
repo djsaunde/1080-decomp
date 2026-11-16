@@ -28,8 +28,6 @@
 #include "game/select.h"
 #include "game/input.h"
 
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-
 extern char D_00000000;
 extern char import_80020098;
 extern char import_800200CC;
@@ -120,46 +118,46 @@ void SelectWin_update_00005FC0(char *arg0) {
     }
     if (SELWIN(arg0)->prevItemActive != 0) {
         v0 = (char *)SelectWin_prevFocusItem_00008AD4(arg0);
-        v1 = (char *)FW(v0, 0x28);
-        ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, FW(arg0, 0x480));
+        v1 = NODE(v0)->vptr;
+        ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, *(int *)&SELWIN(arg0)->fade);
     }
     v0 = (char *)SelectWin_curItem_00008A38(arg0);
-    v1 = (char *)FW(v0, 0x28);
-    ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, FW(arg0, 0x480));
+    v1 = NODE(v0)->vptr;
+    ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, *(int *)&SELWIN(arg0)->fade);
     v1 = (char *)SELWIN(arg0)->itemsMgr->tesuri[0];
-    v0 = (char *)FW(v1, 0x28);
-    ((FPv)SELVT(v0)->setAlpha.fn)(SELVT(v0)->setAlpha.delta + v1, FW(arg0, 0x480));
+    v0 = NODE(v1)->vptr;
+    ((FPv)SELVT(v0)->setAlpha.fn)(SELVT(v0)->setAlpha.delta + v1, *(int *)&SELWIN(arg0)->fade);
     v0 = (char *)SELWIN(arg0)->itemsMgr->tesuri[1];
-    v1 = (char *)FW(v0, 0x28);
-    ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, FW(arg0, 0x480));
+    v1 = NODE(v0)->vptr;
+    ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, *(int *)&SELWIN(arg0)->fade);
     if (INPUT_MGR(import_800200CC).nextFlowMode != 2) {
         v0 = (char *)SELWIN(arg0)->itemsMgr->tesuri[2];
-        v1 = (char *)FW(v0, 0x28);
-        ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, FW(arg0, 0x480));
+        v1 = NODE(v0)->vptr;
+        ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, *(int *)&SELWIN(arg0)->fade);
     }
     if (SELWIN(arg0)->state == 5) {
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
-        SelectWin_lerpCamToItemZoom_0000396C(sp2C, (int)SELWIN(arg0)->scene->target, arg0 + 0x4C4,
-            gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1BC) * *(f32 *)(arg0 + 0x4BC)),
+        SelectWin_lerpCamToItemZoom_0000396C(sp2C, (int)SELWIN(arg0)->scene->target, (char *)SELWIN(arg0)->camPos,
+            gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1BC) * *(f32 *)&SELWIN(arg0)->transition),
             SELWIN(arg0)->parms.voy.value);
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SELWIN(arg0)->fovTarget =
             SELWIN(arg0)->fovBase +
-            gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1C0) * *(f32 *)(arg0 + 0x480)) *
-            *(f32 *)(sp2C + 0x14C);
+            gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1C0) * *(f32 *)&SELWIN(arg0)->fade) *
+            *(f32 *)&SELITEM(sp2C)->parms.cf2.value;
     } else {
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
-        SelectWin_lerpCamToItem_000038B0(sp2C, (int)SELWIN(arg0)->scene->target, arg0 + 0x4C4,
-            gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1C4) * *(f32 *)(arg0 + 0x4BC)),
+        SelectWin_lerpCamToItem_000038B0(sp2C, (int)SELWIN(arg0)->scene->target, (char *)SELWIN(arg0)->camPos,
+            gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1C4) * *(f32 *)&SELWIN(arg0)->transition),
             SELWIN(arg0)->parms.voy.value);
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SELWIN(arg0)->fovTarget =
             SELWIN(arg0)->fovBase +
-            gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1C8) * *(f32 *)(arg0 + 0x480)) *
-            *(f32 *)(sp2C + 0x134);
+            gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1C8) * *(f32 *)&SELWIN(arg0)->fade) *
+            *(f32 *)&SELITEM(sp2C)->parms.cfv.value;
     }
     SELWIN_CAMERA(SELWIN(arg0))->fov =
         SELWIN(arg0)->fovFrom +
         (SELWIN(arg0)->fovTarget - SELWIN(arg0)->fovFrom) *
-        gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1CC) * *(f32 *)(arg0 + 0x4BC));
+        gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1CC) * *(f32 *)&SELWIN(arg0)->transition);
 }

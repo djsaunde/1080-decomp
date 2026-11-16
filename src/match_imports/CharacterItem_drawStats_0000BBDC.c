@@ -38,24 +38,24 @@ void CharacterItem_drawStats_0000BBDC(TimB5EntryFields *a0, B5TimingScreen *a1) 
         v = v1;
         if (a1->numPlayers == 1) {
             SelItem_drawStatBar_00003A4C(
-                (int)a0,
+                (char *)a0,
                 a0->xp0,
                 i * a1->ysp + *(int *)((char *)a0 + 0xBC), /* yp0; a0->yp0 changes the bytes */
-                (int)tbl,
+                tbl,
                 v1,
-                (int)idxp[i],
-                (int)p230,
+                (f32 *)idxp[i],
+                (f32 *)p230,
                 (char *)a1);
         } else {
             v1 = 0;
             SelItem_drawStatBarRight_00003C8C(
-                (int)a0,
+                (char *)a0,
                 a0->xp0,
                 i * a1->ysp + *(int *)((char *)a0 + 0xBC), /* yp0; a0->yp0 changes the bytes */
-                (char *)tbl,
+                tbl,
                 v,
-                (int)idxp[i],
-                (int)p230,
+                (f32 *)idxp[i],
+                (f32 *)p230,
                 (char *)a1);
         }
         cp++;

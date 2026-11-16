@@ -1983,7 +1983,8 @@ void SelectWin_setCamToItem_00003A28(int *a0, int *a1, int a2) {
  *
  * Multi-tick decomp; structural wrap only this tick. INCLUDE_ASM keeps
  * ROM byte-correct. */
-extern void import_0024E608();
+extern void import_0024E608(void *ctx, s32 alpha, f32 *rgba); /* sprite colour: the (ctx, alpha 0..0xFF, RGBA 0..1)
+                                                              * call of gui_setColor_00001A5C (SelItem_drawSpriteColor) */
 extern void import_0024F2C8();
 extern void import_0024F34C();
 extern void import_0024F75C();
@@ -2010,7 +2011,7 @@ struct B5Tbl3A4C { int w[11]; };
  * shared dp/dw deref locals (v0/v1 coloring + the +0x10 frame to -0xB0),
  * tail role-swap with sz=*pB inside the block, assignment-expr addu operand
  * pins ((dp=arg1)/(dw=arg2)/(sz=arg1)/(pB=arg2)). See 3C8C notes below. */
-void SelItem_drawStatBar_00003A4C(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, char *arg7) {
+void SelItem_drawStatBar_00003A4C(char *arg0, int arg1, int arg2, char *arg3, int arg4, f32 *arg5, f32 *arg6, char *arg7) {
     struct B5Tbl3A4C sp84 = *(struct B5Tbl3A4C *)&timproc_uso_b5_D_807FEA20;
     struct B5Tbl3A4C sp58 = *(struct B5Tbl3A4C *)&timproc_uso_b5_D_807FEA4C;
     int *pA;
@@ -2102,7 +2103,7 @@ void SelItem_drawStatBar_00003A4C(int arg0, int arg1, int arg2, int arg3, int ar
 //       fixes the *pA-last association/load order.
 extern char timproc_uso_b5_D_807FEA78;
 extern char timproc_uso_b5_D_807FEAA4;
-void SelItem_drawStatBarRight_00003C8C(int arg0, int arg1, int arg2, char *arg3, int arg4, int arg5, int arg6, char *arg7) {
+void SelItem_drawStatBarRight_00003C8C(char *arg0, int arg1, int arg2, char *arg3, int arg4, f32 *arg5, f32 *arg6, char *arg7) {
     struct B5Tbl3A4C sp84 = *(struct B5Tbl3A4C *)&timproc_uso_b5_D_807FEA78;
     struct B5Tbl3A4C sp58 = *(struct B5Tbl3A4C *)&timproc_uso_b5_D_807FEAA4;
     int *pA;
@@ -2225,7 +2226,7 @@ void SelItem_drawSpriteWhite_00003FF8(int arg1, int arg2, int arg3, int arg4, in
     CALL(gui_drawSprite)(arg4, arg2, arg3, 3);
 }
 
-void SelItem_drawSpriteColor_00004068(int a0, int a1, int a2, f32 *a3, int arg5, int arg6) {
+void SelItem_drawSpriteColor_00004068(char *a0, int a1, int a2, f32 *a3, char *arg5, int arg6) {
     (void)a0;
     CALL(gui_setColor_00001A5C)(&D_00000000, arg6, a3);
     CALL(gui_spriteRefresh)(arg5);
@@ -3352,7 +3353,7 @@ void SelectWin_display_00006394(char *arg0) {
         }
         sp40 = (char *)&timproc_uso_b5_D_807FF5E0 + 0x160;
         sp40 = sp40 + timproc_uso_b5_D_807FE728[gen_stageBitToIndex_000087A0(arg0, SELWIN(arg0)->stageBit)] * 0x18;
-        import_0024E608(&import_8024CAF8, SELWIN(arg0)->parms.ctf.value, (int)&SELWIN(arg0)->parms.cc[5].rgba);
+        import_0024E608(&import_8024CAF8, SELWIN(arg0)->parms.ctf.value, SELWIN(arg0)->parms.cc[5].rgba);
         import_0024F2C8(sp40);
         import_0024F34C(sp40, 0xA0, sp44, 3);
         if (SELWIN(arg0)->busy != 1) {
@@ -3362,7 +3363,7 @@ void SelectWin_display_00006394(char *arg0) {
                 SELWIN(arg0)->blink = (s32) (temp_v0_2 + 1);
                 if (temp_v0_2 & 8) {
                     if (SelectWin_canScrollNext_00006900(arg0) != 0) {
-                        import_0024E608(&import_8024CAF8, 0xFF, (int)&SELWIN(arg0)->parms.cc[6].rgba);
+                        import_0024E608(&import_8024CAF8, 0xFF, SELWIN(arg0)->parms.cc[6].rgba);
                         import_0024F2C8((char *)&timproc_uso_b5_D_807FF5B0 + 0x130);
                         temp_v1 = (char *)&timproc_uso_b5_D_807FF5B0;
                         temp_v1 += 0x130;
@@ -3371,7 +3372,7 @@ void SelectWin_display_00006394(char *arg0) {
                         import_0024F34C(temp_v1, (s32) (((temp_v0 / 2) + 0xA0) - (tmpl_w * 0.25f)), sp44, 2);
                     }
                     if (SelectWin_canScrollPrev_0000687C((int *)arg0) != 0) {
-                        import_0024E608(&import_8024CAF8, 0xFF, (int)&SELWIN(arg0)->parms.cc[6].rgba);
+                        import_0024E608(&import_8024CAF8, 0xFF, SELWIN(arg0)->parms.cc[6].rgba);
                         import_0024F2C8((char *)&timproc_uso_b5_D_807FF5C8 + 0x148);
                         temp_v1 = (char *)&timproc_uso_b5_D_807FF5C8;
                         temp_v1 += 0x148;
@@ -3393,16 +3394,16 @@ void SelectWin_display_00006394(char *arg0) {
                 if (SELWIN(arg0)->frame & 8) {
                     temp_v0_4 = (char *)SelectWin_curItem_00008A38(arg0);
                     temp_v1_2 = (int)SELITEM(temp_v0_4)->vptr;
-                    ((GP_00006394)SELVT(temp_v1_2)->drawLabel.fn)(SELVT(temp_v1_2)->drawLabel.delta + temp_v0_4, arg0, (int)&SELWIN(arg0)->parms.cc[8].rgba, (int)&SELWIN(arg0)->parms.c12.rgba);
+                    ((GP_00006394)SELVT(temp_v1_2)->drawLabel.fn)(SELVT(temp_v1_2)->drawLabel.delta + temp_v0_4, arg0, SELWIN(arg0)->parms.cc[8].rgba, SELWIN(arg0)->parms.c12.rgba);
                 }
             } else if (temp_v0_3 == 8) {
                 temp_v0_5 = (char *)SelectWin_curItem_00008A38(arg0);
                 temp_v1_3 = (int)SELITEM(temp_v0_5)->vptr;
-                ((GP_00006394)SELVT(temp_v1_3)->drawLabel.fn)(SELVT(temp_v1_3)->drawLabel.delta + temp_v0_5, arg0, (int)&SELWIN(arg0)->parms.cc9.rgba, (int)&SELWIN(arg0)->parms.c11.rgba);
+                ((GP_00006394)SELVT(temp_v1_3)->drawLabel.fn)(SELVT(temp_v1_3)->drawLabel.delta + temp_v0_5, arg0, SELWIN(arg0)->parms.cc9.rgba, SELWIN(arg0)->parms.c11.rgba);
             } else {
                 temp_v0_6 = (char *)SelectWin_curItem_00008A38(arg0);
                 temp_v1_4 = (int)SELITEM(temp_v0_6)->vptr;
-                ((GP_00006394)SELVT(temp_v1_4)->drawLabel.fn)(SELVT(temp_v1_4)->drawLabel.delta + temp_v0_6, arg0, (int)&SELWIN(arg0)->parms.cc[8].rgba, (int)&SELWIN(arg0)->parms.c12.rgba);
+                ((GP_00006394)SELVT(temp_v1_4)->drawLabel.fn)(SELVT(temp_v1_4)->drawLabel.delta + temp_v0_6, arg0, SELWIN(arg0)->parms.cc[8].rgba, SELWIN(arg0)->parms.c12.rgba);
             }
             if (INPUT_MGR(import_800200CC).nextFlowMode == 2) {
                 temp_v0_7 = SELWIN(arg0)->state;
@@ -5942,10 +5943,10 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
 }
 
 void CommonInfo_init_0000A928(int *a0) {
-    /* D+0x134 = GameFlow.game (the WorldRegistry) */
-    ((SelItemsMgr *)a0)->bg = (char *)WORLDREG(*(int *)((char *)&D_00000000 + 0x134))->bgRoot;
-    ((SelItemsMgr *)a0)->fg = (char *)WORLDREG(*(int *)((char *)&D_00000000 + 0x134))->fgRoot;
-    ((SelItemsMgr *)a0)->mainGame = (char *)WORLDREG(*(int *)((char *)&D_00000000 + 0x134))->mainGame;
+    /* INPUT_MGR(D_00000000) = GameFlow (bootup Bss 0xF8); .game = the WorldRegistry */
+    ((SelItemsMgr *)a0)->bg = (char *)WORLDREG(INPUT_MGR(D_00000000).game)->bgRoot;
+    ((SelItemsMgr *)a0)->fg = (char *)WORLDREG(INPUT_MGR(D_00000000).game)->fgRoot;
+    ((SelItemsMgr *)a0)->mainGame = (char *)WORLDREG(INPUT_MGR(D_00000000).game)->mainGame;
     ((SelItemsMgr *)a0)->count = 0;
 }
 
@@ -6527,24 +6528,24 @@ void CharacterItem_drawStats_0000BBDC(int *a0, int *a1) {
         v = v1;
         if (SELWIN(a1)->numPlayers == 1) {
             SelItem_drawStatBar_00003A4C(
-                (int)a0,
+                (char *)a0,
                 SELITEM(a0)->parms.xp0.value,
                 i * SELWIN(a1)->parms.ysp.value + SELITEM(a0)->parms.yp0.value,
-                (int)tbl,
+                tbl,
                 v1,
-                (int)*ip,
-                (int)p230,
+                (f32 *)*ip,
+                (f32 *)p230,
                 (char *)a1);
         } else {
             v1 = 0;
             SelItem_drawStatBarRight_00003C8C(
-                (int)a0,
+                (char *)a0,
                 SELITEM(a0)->parms.xp0.value,
                 i * SELWIN(a1)->parms.ysp.value + SELITEM(a0)->parms.yp0.value,
-                (char *)tbl,
+                tbl,
                 v,
-                (int)*ip,
-                (int)p230,
+                (f32 *)*ip,
+                (f32 *)p230,
                 (char *)a1);
         }
         cp++;
