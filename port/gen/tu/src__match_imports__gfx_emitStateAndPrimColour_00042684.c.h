@@ -204,7 +204,3 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
-/* port-bind: gfx_emitStateAndPrimColour_00042684 gl_42684_call_56FF4 gfx_emitCombineMode */
-/* port-bind: gfx_emitStateAndPrimColour_00042684 gl_42684_call_5703C gfx_emitGeometryMode */
-/* port-bind: gfx_emitStateAndPrimColour_00042684 gl_42684_call_57104 gfx_emitRenderMode */
-/* port-bind: gfx_emitStateAndPrimColour_00042684 gl_42684_call_57194 gfx_emitCycleType */

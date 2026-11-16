@@ -48,4 +48,3 @@
 /* port-local: _asmpp_large_func42 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func43 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func44 */ /* asm-processor stub from the context header */
-/* port-bind: boot_checkStacks_00066AF0 gl_import_66AF0_report sys_fatal */

@@ -48,5 +48,3 @@
 /* port-local: _asmpp_large_func42 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func43 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func44 */ /* asm-processor stub from the context header */
-/* port-bind: fs_readBytes_00066264 gl_66264_copy gl_bcopy */
-/* port-bind: fs_readBytes_00066264 gl_66264_transfer dma_readChunked_00066720 */

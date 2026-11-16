@@ -90,17 +90,54 @@ def selection_check(lib):
             "dups": dups, "nglobal": len(gdefs)}
 
 
-def undefined(lib, tmp):
+def load_aliases(path):
+    """[(name, expression, symbol the expression names)] of an implicit linker script of
+    `name = expr;` lines (port/gen/aliases.ld)"""
+    out = []
+    if os.path.exists(path):
+        for line in open(path):
+            m = re.match(r"\s*(\w+)\s*=\s*([^;]+);", line)
+            if m:
+                out.append((m.group(1), m.group(2).strip(), re.match(r"\w+", m.group(2).strip()).group(0)))
+    return out
+
+
+def undefined(lib, tmp, extra=(), aliases=()):
+    """extra: more archives (the port/uso library ...); aliases: load_aliases().  An alias whose
+    target the inputs do not define resolves its name; the target is then counted instead."""
     stripped = os.path.join(tmp, "g.a")
     rel = os.path.join(tmp, "r.o")
     p = run(["objcopy", "--strip-debug", lib, stripped])
     if p.returncode:
         raise SystemExit(p.stderr)
+    inputs = [stripped]
+    for k, e in enumerate(extra):
+        inputs.append(os.path.join(tmp, "x%d.a" % k))
+        p = run(["objcopy", "--strip-debug", os.path.abspath(e), inputs[-1]])
+        if p.returncode:
+            raise SystemExit(p.stderr)
+    alias_und = collections.Counter()
+    if aliases:
+        defs = set()
+        for i in inputs:
+            defs |= {l.split()[-1] for l in run(["nm", "--defined-only", i]).stdout.splitlines()
+                     if len(l.split()) == 3 and l.split()[1].isupper()}
+        script = os.path.join(tmp, "aliases.ld")
+        with open(script, "w") as fh:
+            for name, expr, sym in aliases:
+                if sym in defs:
+                    fh.write("%s = %s;\n" % (name, expr))
+                else:
+                    alias_und[sym] += 1
+        inputs.append(script)
     p = run(["ld", "-m", "elf_i386", "-r", "--gc-sections", "--gc-keep-exported",
-             "--whole-archive", stripped, "-o", rel])
+             "--whole-archive"] + inputs + ["-o", rel])
     if p.returncode:
         raise SystemExit(p.stderr)
+    aliased = {a[0] for a in aliases}
     und = [l.split()[-1] for l in run(["nm", "-u", rel]).stdout.splitlines() if l.strip()]
+    und = [u for u in und if u not in aliased]
+    und += sorted(set(alias_und) - set(und))
     refs = collections.defaultdict(collections.Counter)
     out = subprocess.run(["objdump", "-r", rel], capture_output=True, text=True, timeout=300).stdout
     sec = ""
@@ -113,6 +150,8 @@ def undefined(lib, tmp):
             sym = re.sub(r"[+-]0x[0-9a-f]+$", "", parts[2])
             kind = "call" if parts[1] in ("R_386_PC32", "R_386_PLT32") and sec.startswith(".text") else "data"
             refs[sym][kind] += 1
+    for sym, n in alias_und.items():
+        refs[sym]["call"] += n      # named by an alias (a call target, or a shim entry point)
     return und, refs
 
 
@@ -145,6 +184,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("lib")
     ap.add_argument("-o", "--out", default=str(ROOT / "port/undefined.txt"))
+    ap.add_argument("--extra", action="append", default=[],
+                    help="another archive linked with the library (the port/uso library)")
+    ap.add_argument("--aliases", default=str(ROOT / "port/gen/aliases.ld"),
+                    help="implicit linker script of token aliases ('' for none)")
     args = ap.parse_args()
     lib = os.path.abspath(args.lib)
 
@@ -176,7 +219,7 @@ def main():
     kernel_funcs = {r[0] for r in read_tsv(ROOT / "port/gen/excluded.tsv") if r[1] == "kernel"}
 
     with tempfile.TemporaryDirectory(dir="/tmp/claude-1000") as tmp:
-        und, refs = undefined(lib, tmp)
+        und, refs = undefined(lib, tmp, args.extra, load_aliases(args.aliases) if args.aliases else ())
     groups = collections.defaultdict(list)
     for s in und:
         groups[classify(s, refs[s], autosyms, kernel_funcs, bindnames)].append(s)

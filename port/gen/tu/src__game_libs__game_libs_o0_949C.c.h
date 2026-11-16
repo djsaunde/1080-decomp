@@ -2,10 +2,3 @@
 /* src/game_libs/game_libs_o0_949C.c: 4 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak ColourItem_create_0000959C
 /* port-drop: ColourItem_create_0000959C */ /* placeholder copy; shipped body in src/game_libs/game_libs_ncc_o0_959C.cpp */
-/* port-bind: Parm_read_0000949C gl_ref_0001CFB0 fs_gdlReadInt_00008944 */
-/* port-bind: Parm_read_0000949C gl_ref_0001CFFC fs_gdlReadQuad_00008990 */
-/* port-bind: Parm_read_000094DC gl_ref_0001CFB0 fs_gdlReadInt_00008944 */
-/* port-bind: Parm_read_0000951C gl_ref_0001CFB0 fs_gdlReadInt_00008944 */
-/* port-bind: Parm_read_0000951C gl_ref_0001D060 fs_gdlReadFloat_000089F4 */
-/* port-bind: Parm_read_0000955C gl_ref_0001CFB0 fs_gdlReadInt_00008944 */
-/* port-bind: Parm_read_0000955C gl_ref_0001D0AC fs_gdlReadVec3_00008A40 */

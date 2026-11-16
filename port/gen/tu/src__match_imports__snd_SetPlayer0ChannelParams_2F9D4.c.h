@@ -50,6 +50,3 @@
 /* port-local: _asmpp_large_func179 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func180 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func2 */ /* asm-processor stub from the context header */
-/* port-bind: snd_SetPlayer0ChannelParams_2F9D4 gl_2F9D4_byte AudioThread_QueueCmdS8 */
-/* port-bind: snd_SetPlayer0ChannelParams_2F9D4 gl_2F9D4_float AudioThread_QueueCmdF32 */
-/* port-bind: snd_SetPlayer0ChannelParams_2F9D4 gl_2F9D4_word AudioThread_QueueCmdF32 */

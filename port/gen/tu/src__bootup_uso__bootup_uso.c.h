@@ -52,13 +52,26 @@
 /* port-drop: item_registerTemplates */ /* placeholder copy; shipped body in src/bootup_uso/bootup_uso_ncc_55A0.cpp */
 #pragma weak map_addEntry_00007204
 /* port-drop: map_addEntry_00007204 */ /* placeholder copy; shipped body in src/bootup_uso/bootup_uso_ncc_7204.cpp */
-/* port-bind: Mountain_hostioParms func_477c_reg hostio_addFloat */
-/* port-bind: SnowBCollider_ctor func_8b44_init Friction_ctor_00063DC4 */
-/* port-bind: SnowBoarder_createColliders_0000CCE0 func_cce0 SnowBCollider_ctor */
-/* port-bind: Tv1Tmpl_blitFrame_000077D0 func_411c_rf sys_randf */
-/* port-bind: Tv1Tmpl_stepPicture_00007D04 func_7D04_randf sys_randf */
-/* port-bind: game_setupDemoSolo func_3734_r1 game_createPlayers */
-/* port-bind: game_setupReplay func_3b78_r game_createPlayers */
-/* port-bind: game_setupSolo func_38c0_r game_createPlayers */
-/* port-bind: game_setupVsGhost func_39d8_r game_createPlayers */
+/* port-bind: SnowBoard_InitInstance D_00000000_a port_bootup_bss+0xF8 */
+/* port-bind: SnowBoard_InitInstance D_00000000_b port_bootup_bss+0xF8 */
+/* port-bind: SnowBoarder_createColliders_0000CCE0 D_bu_ro_pool port_bootup_rodata+0x0 */
+/* port-bind: Snower_display D_00000000_a port_bootup_bss+0x20 */
+/* port-bind: game_create3DWindow D_00000030 port_bootup_bss+0x3EC50 */
+/* port-bind: item_createBa2 D_00000000_a port_bootup_data+0x1EFC0 */
+/* port-bind: item_createBa2 D_00000000_b port_balloon_data+0x18 */
+/* port-bind: item_createBa2 D_00000000_c port_balloon_data+0x38E4 */
+/* port-bind: item_createBal D_00000000_a port_bootup_data+0x1EFC0 */
+/* port-bind: item_createBal D_00000000_b port_balloon_data+0x18 */
+/* port-bind: item_createBal D_00000000_c port_balloon_data+0xBC0 */
+/* port-bind: item_createChk D_00000000_a port_bootup_data+0x1EFC0 */
+/* port-bind: item_createChk D_00000000_b port_checkpoint_data+0xA8 */
+/* port-bind: item_createChk D_00000000_c port_checkpoint_data+0x448 */
+/* port-bind: item_createGtl D_00000000_a port_bootup_data+0x1EFC0 */
+/* port-bind: item_createGtl D_00000000_b port_checkpoint_data+0x138 */
+/* port-bind: item_createGtl D_00000000_c port_checkpoint_data+0x2DDC */
+/* port-bind: item_createGtr D_00000000_a port_bootup_data+0x1EFC0 */
+/* port-bind: item_createGtr D_00000000_b port_checkpoint_data+0x138 */
+/* port-bind: item_createGtr D_00000000_c port_checkpoint_data+0x1D14 */
+/* port-bind: snd_calcEmitterDistPan_000003F8 D_00000050 port_bootup_rodata+0x50 */
+/* port-bind: snd_soundObjSetPan_00000B2C D_00000068 port_bootup_rodata+0x68 */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

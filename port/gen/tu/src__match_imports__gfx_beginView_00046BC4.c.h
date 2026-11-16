@@ -204,6 +204,3 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
-/* port-bind: gfx_beginView_00046BC4 gl_46BC4_first gfx_updateLights_00047F9C */
-/* port-bind: gfx_beginView_00046BC4 gl_46BC4_second gfx_resetModelView_0004E180 */
-/* port-bind: gfx_beginView_00046BC4 gl_46BC4_third gfx_matrixModeModelView_000478EC */

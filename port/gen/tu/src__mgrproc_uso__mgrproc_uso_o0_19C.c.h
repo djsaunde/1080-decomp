@@ -4,13 +4,4 @@
 /* port-drop: mgr_initMatchRace_00000700 */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp */
 #pragma weak mgr_prepareReplay_00000A14
 /* port-drop: mgr_prepareReplay_00000A14 */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp */
-/* port-bind: mgr_procMain import_000A5B9C QuitProcess_ctor */
-/* port-bind: mgr_procMain import_000A8094 settings_setBit_00012244 */
-/* port-bind: mgr_procMain import_000B2FA0 app_launchGenProc */
-/* port-bind: mgr_procMain import_000B3268 app_launchViewRec */
-/* port-bind: mgr_procMain import_000B34B8 app_createGame_00008FFC */
-/* port-bind: mgr_procMain mgrproc_uso_func_0118E4 game_loadUso */
-/* port-bind: mgr_procMain mgrproc_uso_func_0120A8 snd_playSeq_000120A8 */
-/* port-bind: mgr_procMain mgrproc_uso_func_01DA48 app_runProcess */
-/* port-bind: mgr_procMain mgrproc_uso_func_07ACE0 list_append */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

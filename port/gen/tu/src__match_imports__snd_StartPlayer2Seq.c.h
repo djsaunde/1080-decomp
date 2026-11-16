@@ -50,6 +50,3 @@
 /* port-local: _asmpp_large_func179 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func180 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func2 */ /* asm-processor stub from the context header */
-/* port-bind: snd_StartPlayer2Seq gl_30A20_clear snd_RequestCue2 */
-/* port-bind: snd_StartPlayer2Seq gl_30A20_pair snd_PlayPlayer2Seq */
-/* port-bind: snd_StartPlayer2Seq gl_30A20_set snd_RequestCue2Prio */

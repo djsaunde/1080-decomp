@@ -69,8 +69,3 @@
 #pragma weak stream_readVec3_00000080
 /* port-drop: stream_readVec3_00000080 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
 /* port-local: _asmpp_func13 */ /* asm-processor stub from the context header */
-/* port-bind: FogTmpl_create boot8124_alloc mem_new */
-/* port-bind: FogTmpl_create boot8124_child Parms_addParm */
-/* port-bind: FogTmpl_create boot8124_link list_append */
-/* port-bind: FogTmpl_create boot8124_object_init ColourItem_ctor */
-/* port-bind: FogTmpl_create boot8124_tail_init FogParms_setDefault_00043EAC */

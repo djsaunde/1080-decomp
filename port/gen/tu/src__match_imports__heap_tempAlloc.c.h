@@ -204,5 +204,3 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
-/* port-bind: heap_tempAlloc gl_337AC_print sys_fatal */
-/* port-bind: heap_tempAlloc gl_41148_alloc_5B070 Mem_allocLow */

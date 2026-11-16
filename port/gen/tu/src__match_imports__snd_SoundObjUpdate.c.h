@@ -52,12 +52,4 @@
 /* port-local: _asmpp_large_func179 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func180 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func2 */ /* asm-processor stub from the context header */
-/* port-bind: snd_SoundObjUpdate gl_E354_emitf snd_SetPlayer0ChannelParams_2F9D4 */
-/* port-bind: snd_SoundObjUpdate gl_E354_setf AudioThread_QueueCmdF32 */
-/* port-bind: snd_SoundObjUpdate gl_E354_v AudioThread_QueueCmdU16 */
-/* port-bind: snd_SoundObjUpdate gl_func_000428FC snd_SoundObjEventIndex */
-/* port-bind: snd_SoundObjUpdate gl_func_00043824 snd_FindNearestF32_2F1B8 */
-/* port-bind: snd_SoundObjUpdate gl_func_000438F4 snd_SoundObjUpdateChannel */
-/* port-bind: snd_SoundObjUpdate gl_func_00043BE4 snd_SoundObjPlay */
-/* port-bind: snd_SoundObjUpdate gl_func_00044C38 snd_SetPlayer0Channel8Pan_305CC */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

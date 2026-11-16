@@ -21,4 +21,3 @@
 #pragma weak hud_initSprites_0000E53C
 /* port-drop: hud_initSprites_0000E53C */ /* helper copy; shipped body in src/game_libs/game_libs_tail.c */
 /* port-local: _asmpp_func3 */ /* asm-processor stub from the context header */
-/* port-bind: RaceTracker_findGates gl_d0d0_import_3EAE0 ItemMgr_queryType */

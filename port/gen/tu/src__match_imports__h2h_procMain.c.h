@@ -6,12 +6,3 @@
 /* port-drop: fs_gdlReadQuad_h2h_00000558 */ /* helper copy; shipped body in src/h2hproc_uso/h2hproc_uso.c */
 #pragma weak h2h_WinsDisplay_update_00001204
 /* port-drop: h2h_WinsDisplay_update_00001204 */ /* helper copy; shipped body in src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp */
-/* port-bind: h2h_procMain h2hproc_2C_call_0000020C h2h_openSession_0000020C */
-/* port-bind: h2h_procMain h2hproc_2C_call_00000274 h2h_closeSession_00000274 */
-/* port-bind: h2h_procMain h2hproc_2C_call_00000620 H2HRaceProcess_ctor */
-/* port-bind: h2h_procMain h2hproc_2C_import_10 snd_playSeq_000120A8 */
-/* port-bind: h2h_procMain h2hproc_2C_import_11 app_createGame_00009204 */
-/* port-bind: h2h_procMain h2hproc_2C_import_13 app_runProcess */
-/* port-bind: h2h_procMain h2hproc_2C_import_15 QuitProcess_ctor */
-/* port-bind: h2h_procMain h2hproc_2C_import_16 list_append */
-/* port-bind: h2h_procMain h2hproc_2C_import_9 app_launchGenProc */

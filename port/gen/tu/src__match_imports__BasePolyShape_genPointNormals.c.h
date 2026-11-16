@@ -204,4 +204,3 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
-/* port-bind: BasePolyShape_genPointNormals gl_4F9E4_report sys_fatal */

@@ -6,6 +6,3 @@
 /* port-drop: fs_gdlReadQuad_tit_00000514 */ /* helper copy; shipped body in src/titproc_uso/titproc_uso.c */
 /* port-local: _asmpp_func8 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func9 */ /* asm-processor stub from the context header */
-/* port-bind: KeyMessage_display import_0024E608 gui_setColor_00001A5C */
-/* port-bind: KeyMessage_display import_0024F2C8 gui_spriteRefresh */
-/* port-bind: KeyMessage_display import_0024F34C gui_drawSprite */

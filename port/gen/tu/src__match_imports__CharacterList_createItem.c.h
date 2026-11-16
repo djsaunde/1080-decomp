@@ -28,12 +28,4 @@
 /* port-drop: gen_streamReadQuad_000003A8 */ /* helper copy; shipped body in src/timproc_uso_b5/timproc_uso_b5.c */
 /* port-local: _asmpp_func1 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func73 */ /* asm-processor stub from the context header */
-/* port-bind: CharacterList_createItem gen_imp_AnimPlayer_reset AnimPlayer_reset */
-/* port-bind: CharacterList_createItem gen_imp_AnimPlayer_start AnimPlayer_start */
-/* port-bind: CharacterList_createItem gen_imp_MNode_addChild MNode_addChild */
-/* port-bind: CharacterList_createItem gen_imp_Node_ctor Node_ctor */
-/* port-bind: CharacterList_createItem gen_imp_QNode_ctor QNode_ctor */
-/* port-bind: CharacterList_createItem gen_imp_SnowBoarder_loadBoardModel_0000B1B4 SnowBoarder_loadBoardModel_0000B1B4 */
-/* port-bind: CharacterList_createItem gen_imp_list_append list_append */
-/* port-bind: CharacterList_createItem import_0010D33C AnimPlayer_ctor */
-/* port-bind: CharacterList_createItem timproc_uso_b5_d14c_alloc mem_new */
+/* port-bind: CharacterList_createItem import_80087FB8 port_bootup_data+0x207D8 */

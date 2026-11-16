@@ -4,38 +4,6 @@
 /* port-drop: MgrNameEntry_drawCongrats_00002B7C */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_2B7C.cpp */
 #pragma weak mgr_drawResults_000023FC
 /* port-drop: mgr_drawResults_000023FC */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_23FC.cpp */
-/* port-bind: MGRRaceProcess_ctor import_000A5D38 PauseMenu_create */
-/* port-bind: MGRRaceProcess_ctor import_000A5F40 gui_initRows_000100F0 */
-/* port-bind: MGRRaceProcess_ctor import_000A5FBC gui_centerRows_0001016C */
-/* port-bind: MGRRaceProcess_ctor import_000A69BC gui_addRowSub_00010B6C */
-/* port-bind: MGRRaceProcess_ctor import_000A7ECC input_setActivePad_0001207C */
-/* port-bind: MGRRaceProcess_ctor import_000AE700 ColourParms_ctor */
-/* port-bind: MGRRaceProcess_ctor import_000B0DBC RaceProcess_init */
-/* port-bind: MGRRaceProcess_ctor import_000B6C40 RaceTracker_ctor */
-/* port-bind: MGRRaceProcess_endTimerEnabled import_000B72F4 hud_loadRecords_0000CE38 */
-/* port-bind: MGRRaceProcess_onEndTimerDone import_000A8114 settings_stepSequence_000122C4 */
-/* port-bind: MGRRaceProcess_onRaceOver import_000B2888 RaceProcess_createReplayCam */
-/* port-bind: MGRRaceProcess_updateSub2 import_00096228 snd_setPlayer3FreqScaleFromStick */
-/* port-bind: MGRRaceProcess_updateSub2 import_000A7B90 input_getPad_00011D40 */
-/* port-bind: MGRRaceProcess_updateSub2 import_000B2888 RaceProcess_createReplayCam */
-/* port-bind: MgrNameEntry_drawBlinkBanner_00002E3C import_0024E388 gui_setColorEnvPrim_000017DC */
-/* port-bind: MgrNameEntry_drawBlinkBanner_00002E3C import_0024F2C8 gui_spriteRefresh */
-/* port-bind: MgrNameEntry_drawBlinkBanner_00002E3C import_0024F34C gui_drawSprite */
-/* port-bind: mgr_DataManager_update import_000B1284 RaceProcess_finishCourse */
-/* port-bind: mgr_DataManager_update import_000B12B4 RaceProcess_endResult3_00006DF8 */
-/* port-bind: mgr_DataManager_update import_000B1334 RaceProcess_endResult2_00006E78 */
-/* port-bind: mgr_DataManager_update import_000B139C RaceProcess_endResult4_00006EE0 */
-/* port-bind: mgr_DataManager_update import_000B14CC RaceProcess_timeUp */
-/* port-bind: mgr_DataManager_update import_000B7058 RaceTracker_checkTimeLimit */
-/* port-bind: mgr_DataManager_update import_000B70AC RaceTracker_update */
-/* port-bind: mgr_loadSprites_0000119C import_0024F228 gui_spriteLoad */
-/* port-bind: mgr_loadSprites_0000119C import_0024F278 gui_spriteInit */
-/* port-bind: mgr_pauseQuit_00000C14 import_000A5938 Process_resume_0000FAE8 */
-/* port-bind: mgr_pauseQuit_00000C14 import_000A5A1C Process_setWindowFlag8_0000FBCC */
-/* port-bind: mgr_pauseRetry_00000B5C import_000A5938 Process_resume_0000FAE8 */
-/* port-bind: mgr_pauseRetry_00000B5C import_000A5A1C Process_setWindowFlag8_0000FBCC */
-/* port-bind: mgr_restartForEnding_00001B58 import_000B7FF0 RaceTracker_sendEndingMsg */
-/* port-bind: mgr_startEnding_00001BE4 mgrproc_1BE4_call_1B58 mgr_restartForEnding_00001B58 */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int mgrproc_uso_func_00001BD4(); /* CALL placeholder token: file-scope K&R declaration */
 int mgrproc_uso_func_000148(); /* CALL placeholder token: file-scope K&R declaration */

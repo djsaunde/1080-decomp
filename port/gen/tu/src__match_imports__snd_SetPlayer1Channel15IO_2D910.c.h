@@ -50,5 +50,3 @@
 /* port-local: _asmpp_large_func179 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func180 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func2 */ /* asm-processor stub from the context header */
-/* port-bind: snd_SetPlayer1Channel15IO_2D910 gl_2D910_set_control AudioThread_QueueCmdS8 */
-/* port-bind: snd_SetPlayer1Channel15IO_2D910 gl_2D910_set_control_byte AudioThread_QueueCmdS8 */

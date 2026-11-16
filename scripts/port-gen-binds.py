@@ -20,13 +20,27 @@ Targets that are not a plain symbol are listed, not bound:
   mid-entry   `sym+0xK` (a jal into the middle of a build symbol: libultra entry points);
   sentinel    a module's Text+0 function (`*_00000000`);
   unresolved  no ROM reloc at the site.
-Writes port/gen/binds.tsv (unit, function, token, target, sites) and port/gen/binds-left.tsv.
+Data references (HI16 / LO16 / R_MIPS_32 relocs against a token the port leaves undefined) are
+resolved the same way, to the target module's blob: `port_<mod>_data+0xK` / `_rodata` / `_bss`
+(port/uso, plan section 16.5); K = the Sym value + the token's matching-link value (the port
+asm keeps the source's own addend).  A jal into a libultra copy the port does not compile
+(`gl_osSetIntMask+0x8`) becomes the host entry point `gl_osSetIntMask_plus8` (port/ultra).
+A jal through a Text-base Sym is resolved from its instruction field.
+
+A token whose every ROM site (in every proven function, calls and data) is one target gets a
+global alias instead (port/gen/aliases.ld, `tok = target;`, an implicit linker script); the
+per-function binds are only for tokens with several targets (gl_func_00000000, D_00000000 ...).
+The CALL-named subtraction runs on C and C++ units (the scanner is lexical).
+Writes port/gen/binds.tsv (unit, function, token, target, sites), port/gen/binds-left.tsv
+and port/gen/aliases.ld.
 """
 import argparse
 import collections
 import importlib.util
 import os
 import re
+import struct
+import subprocess
 import sys
 from pathlib import Path
 
@@ -44,35 +58,121 @@ def read_tsv(path):
             if l.strip() and not l.startswith(("#", "function\t"))]
 
 
-def func_at(md, off):
-    """name of the function at Text offset off; `name+0xK` inside one; None outside"""
-    for v, sz, nm in md.funcs:
-        if v == off:
-            return nm
-    for v, sz, nm in md.funcs:
-        if v < off < v + max(sz, 4):
-            return "%s+0x%X" % (nm, off - v)
+SEC_SYM = {"Data": "data", "RoData": "rodata", "Bss": "bss"}
+R_MIPS = {2: "word", 4: "jal", 5: "hi", 6: "lo"}
+
+
+def blob_sym(short, sec):
+    """the port/uso blob holding a module's section (port/tools/gen-uso-blobs.py)"""
+    return "port_%s_%s" % (short, SEC_SYM[sec])
+
+
+def obj_relocs(path):
+    """[(offset, type, symbol name)] of an object's .text relocations against named symbols"""
+    with open(path, "rb") as f:
+        e = npc.ELFFile(f)
+        st = e.get_section_by_name(".symtab")
+        out = []
+        for sec in e.iter_sections():
+            if sec.name in (".rel.text", ".rela.text"):
+                for r in sec.iter_relocations():
+                    s = st.get_symbol(r["r_info_sym"])
+                    if s.name and not s.name.startswith(".") and r["r_info_type"] in R_MIPS:
+                        out.append((r["r_offset"], r["r_info_type"], s.name))
+        return out
+
+
+class RomTargets:
+    """ROM side of a reloc site: the module's TextReloc entry at a Text offset, resolved to the
+    exporting module's section and value (USO_FORMAT sections 6 and 7)"""
+
+    def __init__(self, rom):
+        self.rom, self.byid, self._rel = rom, {m.id: m for m in rom.mods}, {}
+
+    def site(self, md, off):
+        if md.short not in self._rel:
+            self._rel[md.short] = {o: (f1 & 7, f1 >> 4) for f1, o, _ in md.relocs("Text")}
+        return self._rel[md.short].get(off)
+
+    def raw(self, md, idx):
+        """-> (module, section, value) of Sym idx (imports followed to the exporter), or None"""
+        if idx >= len(md.syms):
+            return None
+        info, v, w3 = md.syms[idx]
+        info >>= 16
+        if info & 7 == 1:
+            ex = self.byid.get(info >> 4)
+            return self.raw(ex, w3 >> 16) if ex is not None and ex is not md else None
+        sec = npc.UI.SEC_OF_TAG.get((info >> 4) & 0xF)
+        if info & 7 not in (2, 4) or sec is None:
+            return None
+        return md, sec, (v if info & 7 == 2 else 0)
+
+    def target(self, md, off, pin=0):
+        """the port spelling of what the ROM reloc at Text offset off points at, or None:
+        a function name (`f`, `f+0xK` mid-entry, `Text+0xK` unnamed) or `port_<mod>_<sec>+0xK`.
+        pin is the matching link's value of the token: the instruction field holds pin + the
+        source's addend, which the port asm keeps, so the token stands for base + value + pin."""
+        r = self.site(md, off)
+        if r is None:
+            return None
+        typ, idx = r
+        t = self.raw(md, idx)
+        if t is None:
+            return None
+        ex, sec, v = t
+        if sec == "Text":
+            if typ == 1:     # R_MIPS_26: the jal field holds the offset (sym value + field << 2)
+                ins = struct.unpack_from(">I", md.secs["Text"], off)[0]
+                return ex.name_text(v + ((ins & 0x3FFFFFF) << 2))
+            return ex.name_text(v + pin)
+        return "%s+0x%X" % (blob_sym(ex.short, sec), v + pin)
+
+
+def load_pins():
+    """token -> its matching-link value (undefined_syms_auto.txt; absolute symbols of the link)"""
+    pins = {}
+    for line in open("undefined_syms_auto.txt", errors="replace"):
+        m = re.match(r"\s*(\w+)\s*=\s*(0x[0-9A-Fa-f]+|\d+)\s*;", line)
+        if m:
+            pins[m.group(1)] = int(m.group(2), 0)
+    return pins
+
+
+def port_defined(lib):
+    """global symbols libgame.a defines"""
+    out = subprocess.run(["nm", "--defined-only", lib], capture_output=True, text=True).stdout
+    return {l.split()[-1] for l in out.splitlines() if len(l.split()) == 3 and l.split()[1].isupper()}
+
+
+def shim_entry(target, excluded):
+    """`gl_osSetIntMask+0x8` (a jal into a libultra copy the port does not compile) -> the host
+    entry point `gl_osSetIntMask_plus8` that port/ultra implements, else None"""
+    m = re.fullmatch(r"(\w+)\+0x([0-9A-F]+)", target or "")
+    if m and m.group(1) in excluded:
+        return "%s_plus%s" % (m.group(1), m.group(2).lower())
     return None
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--undefined", default="port/undefined.txt")
+    ap.add_argument("--lib", default="/tmp/claude-1000/port-build/libgame.a",
+                    help="the port library (its undefined symbols are the tokens to bind)")
     a = ap.parse_args()
-    undef = {r[0] for r in read_tsv(a.undefined) if len(r) > 1 and r[1] in ("call", "both")}
     excluded = {r[0] for r in read_tsv("port/gen/excluded.tsv")}
+    defined = port_defined(a.lib)
     by_src = collections.defaultdict(list)
     for r in read_tsv("port/sourcemap.tsv"):
         if r[0] not in excluded:
             by_src[r[2]].append(r[0])
-
-    pinned = {}
-    for line in open("undefined_syms_auto.txt", errors="replace"):
-        m = re.match(r"\s*(\w+)\s*=\s*(0x[0-9A-Fa-f]+|\d+)\s*;", line)
-        if m:
-            pinned[m.group(1)] = int(m.group(2), 0)
+    shipped = {f for fs in by_src.values() for f in fs}
+    pins = load_pins()
     rom, mv = npc.Rom(), npc.MakeVars()
-    binds, left = [], []
+    rt = RomTargets(rom)
+    calls = []          # (src, fn, tok, Counter(target)) after the CALL-named subtraction
+    data = []           # (src, fn, tok, Counter(target))
+    gcall = collections.defaultdict(collections.Counter)   # every ROM jal site, per token
+    gdata = collections.defaultdict(collections.Counter)
     stats = collections.Counter()
     for src in sorted(by_src):
         obj = npc.obj_of(src)
@@ -83,15 +183,15 @@ def main():
         if md is None or not md.funcs:
             stats["no module"] += 1
             continue
-        rfuncs, rrel = npc.elf_info(obj)
+        rfuncs, _ = npc.elf_info(obj)
         rall = npc.reloc_offsets(obj)
+        orel = [r for r in obj_relocs(obj) if r[2] not in defined]
         # sites the source already names (CALL macros) call the real name in the port object:
-        # take their callees out of the ROM multiset first
+        # take their callees out of the ROM multiset first (C and C++: the scanner is lexical)
         named = collections.defaultdict(collections.Counter)
-        if src.endswith(".c"):
-            for st in npc.scan(open(src, errors="replace").read())[0]:
-                if st.name is not None:
-                    named[(st.func, st.tok)][npc.current_name(st.name) or st.name] += 1
+        for st in npc.scan(open(src, errors="replace").read())[0]:
+            if st.name is not None:
+                named[(st.func, st.tok)][npc.current_name(st.name) or st.name] += 1
         for fn in by_src[src]:
             fo = fn if fn in rfuncs else ("gl_" + fn) if ("gl_" + fn) in rfuncs else None
             if fo is None:
@@ -102,34 +202,64 @@ def main():
                 stats["function not proven"] += 1
                 continue
             per = collections.defaultdict(collections.Counter)
-            for off, sym in rrel.items():
-                if rv <= off < rv + rsz and sym in undef:
-                    t = rom.jal_target(md, base + off - rv)
-                    if t is not None and t.endswith("_00000000") and pinned.get(sym):
-                        # a self-relocation: the jal field holds the Text offset (the token's
-                        # pinned address), the reloc only adds the module base
-                        t = md.name_at(pinned[sym]) if hasattr(md, "name_at") else func_at(md, pinned[sym])
+            perd = collections.defaultdict(collections.Counter)
+            for off, typ, sym in orel:
+                if not rv <= off < rv + rsz:
+                    continue
+                t = rt.target(md, base + off - rv, pins.get(sym, 0))
+                if typ == 4:
                     per[sym][t] += 1
+                    gcall[sym][t] += 1
+                elif typ != 6:      # count a HI16 / LO16 pair once
+                    perd[sym][t] += 1
+                    gdata[sym][t] += 1
             for tok in list(per):
                 per[tok] -= named.get((fn, tok), collections.Counter())
-                if not per[tok]:
-                    del per[tok]
-            for tok, tg in sorted(per.items()):
-                n = sum(tg.values())
-                if len(tg) > 1:
-                    left.append((src, fn, tok, "ambiguous", " ".join("%s*%d" % kv for kv in tg.items() if kv[0]), n))
-                    continue
-                target = next(iter(tg))
-                if target is None:
-                    kind = "unresolved"
-                elif "+" in target:
-                    kind = "mid-entry"
-                elif target.endswith("_00000000"):
-                    kind = "sentinel"
-                else:
-                    binds.append((src, fn, tok, target, n))
-                    continue
-                left.append((src, fn, tok, kind, target or "", n))
+                if per[tok]:
+                    calls.append((src, fn, tok, per[tok]))
+            for tok, tg in perd.items():
+                data.append((src, fn, tok, tg))
+
+    def usable(t):
+        return t is not None and not t.startswith("Text+") and not t.endswith("_00000000") and \
+            ("+" not in t or t.startswith("port_"))
+
+    # global aliases: every ROM site of the token, in every proven function, is one target
+    aliases = {}
+    for tok, tg in list(gcall.items()) + list(gdata.items()):
+        if tok in aliases:
+            continue
+        both = gcall.get(tok, collections.Counter()) + gdata.get(tok, collections.Counter())
+        if len(both) == 1:
+            t = next(iter(both))
+            host = shim_entry(t, excluded)
+            if host:
+                aliases[tok] = host
+            elif usable(t) and (t.startswith("port_") or t in shipped or t in excluded or t in defined):
+                aliases[tok] = t
+    binds, left = [], []
+    for kind, rows in (("call", calls), ("data", data)):
+        for src, fn, tok, tg in rows:
+            n = sum(tg.values())
+            if tok in aliases:
+                continue
+            if len(tg) > 1:
+                left.append((src, fn, tok, "ambiguous", " ".join("%s*%d" % kv for kv in tg.items() if kv[0]), n))
+                continue
+            target = next(iter(tg))
+            host = shim_entry(target, excluded)
+            if host:
+                binds.append((src, fn, tok, host, n))
+            elif target is None:
+                left.append((src, fn, tok, "unresolved", "", n))
+            elif target.startswith("Text+"):
+                left.append((src, fn, tok, "unnamed", target, n))
+            elif "+" in target and not target.startswith("port_"):
+                left.append((src, fn, tok, "mid-entry", target, n))
+            elif target.endswith("_00000000"):
+                left.append((src, fn, tok, "sentinel", target, n))
+            else:
+                binds.append((src, fn, tok, target, n))
     with open("port/gen/binds.tsv", "w") as fh:
         fh.write("# generated by scripts/port-gen-binds.py: unit\tfunction\ttoken\ttarget\tsites\n")
         for r in binds:
@@ -138,10 +268,15 @@ def main():
         fh.write("# generated by scripts/port-gen-binds.py: unit\tfunction\ttoken\tkind\ttarget(s)\tsites\n")
         for r in left:
             fh.write("\t".join(map(str, r)) + "\n")
+    with open("port/gen/aliases.ld", "w") as fh:
+        fh.write("/* generated by scripts/port-gen-binds.py: placeholder / alias tokens whose every ROM\n"
+                 "   site is one target (an implicit linker script of the port link) */\n")
+        for tok in sorted(aliases):
+            fh.write("%s = %s;\n" % (tok, aliases[tok]))
     kinds = collections.Counter(r[3] for r in left)
-    print("bound %d (function, token) pairs, %d sites, %d tokens; left %d: %s; %s" % (
-        len(binds), sum(r[4] for r in binds), len({r[2] for r in binds}), len(left),
-        dict(kinds), dict(stats)))
+    print("aliases %d (call %d, data %d); bound %d (function, token) pairs, %d sites; left %d: %s; %s" % (
+        len(aliases), sum(1 for t in aliases if t in gcall), sum(1 for t in aliases if t not in gcall),
+        len(binds), sum(r[4] for r in binds), len(left), dict(kinds), dict(stats)))
     return 0
 
 

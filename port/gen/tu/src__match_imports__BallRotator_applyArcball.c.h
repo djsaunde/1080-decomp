@@ -202,10 +202,3 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
-/* port-bind: BallRotator_applyArcball gl_36224_between math_vec3CrossDot */
-/* port-bind: BallRotator_applyArcball gl_36224_conjugate math_quatConjugate */
-/* port-bind: BallRotator_applyArcball gl_36224_direction math_arcballPoint */
-/* port-bind: BallRotator_applyArcball gl_36224_matrix math_mtx4Transpose */
-/* port-bind: BallRotator_applyArcball gl_36224_product math_quatMul */
-/* port-bind: BallRotator_applyArcball gl_36224_rotation math_quatToMtx */
-/* port-bind: BallRotator_applyArcball gl_36224_translate math_mtxAddTranslation */

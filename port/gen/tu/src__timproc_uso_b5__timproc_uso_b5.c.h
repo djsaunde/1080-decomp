@@ -22,75 +22,8 @@
 /* port-drop: SelectionMgr_setSplit_00001DB0 */ /* placeholder copy; shipped body in src/timproc_uso_b5/timproc_uso_b5_ncc_1DB0.cpp */
 #pragma weak SelectionMgr_update_00001F14
 /* port-drop: SelectionMgr_update_00001F14 */ /* placeholder copy; shipped body in src/timproc_uso_b5/timproc_uso_b5_ncc_1F14.cpp */
-/* port-bind: GenCourse_ctor gen_imp_Fader_start Fader_start */
-/* port-bind: GenCourse_ctor gen_imp_Node_ctor Node_ctor */
-/* port-bind: GenCourse_ctor gen_imp_list_append list_append */
-/* port-bind: GenCourse_ctor gen_imp_mem_new mem_new */
-/* port-bind: GenCourse_ctor import_000A5D38 PauseMenu_create */
-/* port-bind: GenCourse_ctor import_000A5F40 gui_initRows_000100F0 */
-/* port-bind: GenCourse_ctor import_000A5FBC gui_centerRows_0001016C */
-/* port-bind: GenCourse_ctor import_000A6900 gui_addRow_00010AB0 */
-/* port-bind: GenCourse_ctor import_0024CCF4 gui_fontCreate */
-/* port-bind: GenCourse_update_0000024C gen_imp_dbg_printf dbg_printf */
-/* port-bind: GenCourse_update_0000024C gen_imp_input_checkPressed_00011E00 input_checkPressed_00011E00 */
-/* port-bind: GenItemType_create_0000AB24 gen_imp_ColourItem_ctor ColourItem_ctor */
-/* port-bind: GenItemType_create_0000AB24 gen_imp_list_append list_append */
-/* port-bind: GenItemType_create_0000AB24 gen_imp_mem_new mem_new */
-/* port-bind: GenSelectChar_ctor gen_imp_Fader_start Fader_start */
-/* port-bind: GenSelectChar_ctor gen_imp_Node_ctor Node_ctor */
-/* port-bind: GenSelectChar_ctor gen_imp_input_setRacePadsActive input_setRacePadsActive */
-/* port-bind: GenSelectChar_ctor gen_imp_list_append list_append */
-/* port-bind: GenSelectChar_ctor gen_imp_mem_new mem_new */
-/* port-bind: GenSelectChar_ctor gen_imp_memtrack_begin memtrack_begin */
-/* port-bind: GenSelectChar_ctor gen_imp_memtrack_end memtrack_end */
-/* port-bind: GenSelectChar_initLabels_00000778 import_0024F228 gui_spriteLoad */
-/* port-bind: GenSelectChar_initLabels_00000778 import_0024F278 gui_spriteInit */
-/* port-bind: SelItem_drawStatBarRight_00003C8C import_0024E608 gui_setColor_00001A5C */
-/* port-bind: SelItem_drawStatBarRight_00003C8C import_0024F2C8 gui_spriteRefresh */
-/* port-bind: SelItem_drawStatBarRight_00003C8C import_0024F34C gui_drawSprite */
-/* port-bind: SelItem_drawStatBarRight_00003C8C import_0024F75C gui_drawSpriteIA8Clip_00002BB0 */
-/* port-bind: SelItem_drawStatBar_00003A4C import_0024E608 gui_setColor_00001A5C */
-/* port-bind: SelItem_drawStatBar_00003A4C import_0024F2C8 gui_spriteRefresh */
-/* port-bind: SelItem_drawStatBar_00003A4C import_0024F34C gui_drawSprite */
-/* port-bind: SelItem_drawStatBar_00003A4C import_0024F75C gui_drawSpriteIA8Clip_00002BB0 */
-/* port-bind: SelectWin_commitSelection_00006C00 gen_imp_Process_fadeOut_0000F954 Process_fadeOut_0000F954 */
-/* port-bind: SelectWin_commitSelection_00006C00 import_000A53B4 Node_clearFlag8_0000F564 */
-/* port-bind: SelectWin_display_00006394 gen_imp_Node_display Node_display */
-/* port-bind: SelectWin_display_00006394 import_0024E608 gui_setColor_00001A5C */
-/* port-bind: SelectWin_display_00006394 import_0024F2C8 gui_spriteRefresh */
-/* port-bind: SelectWin_display_00006394 import_0024F34C gui_drawSprite */
-/* port-bind: SelectWin_state1_000072D0 gen_imp_input_checkPressed_00011E00 input_checkPressed_00011E00 */
-/* port-bind: SelectWin_state5_000079A4 gen_imp_input_checkPressed_00011E00 input_checkPressed_00011E00 */
-/* port-bind: SelectWin_state8_000080F4 gen_imp_input_checkPressed_00011E00 input_checkPressed_00011E00 */
-/* port-bind: SelectWin_state8_000080F4 gen_imp_snd_sendEvent snd_sendEvent */
-/* port-bind: SelectWin_state8_000080F4 import_000A7ECC input_setActivePad_0001207C */
-/* port-bind: SelectionMgr_ctor gen_imp_Node_ctor Node_ctor */
-/* port-bind: SelectionMgr_ctor gen_imp_list_append list_append */
-/* port-bind: SelectionMgr_ctor gen_imp_mem_new mem_new */
-/* port-bind: SelectionMgr_finish_00001C08 gen_imp_snd_sendEvent snd_sendEvent */
-/* port-bind: gen_buildRoom_0000131C gen_imp_AnimDataMgr_releaseFrames AnimDataMgr_releaseFrames */
-/* port-bind: gen_buildRoom_0000131C gen_imp_Node_ctor Node_ctor */
-/* port-bind: gen_buildRoom_0000131C gen_imp_list_append list_append */
-/* port-bind: gen_buildRoom_0000131C gen_imp_mem_new mem_new */
-/* port-bind: gen_createCamera_0000283C gen_imp_MCamera_ctor MCamera_ctor */
-/* port-bind: gen_createCamera_0000283C gen_imp_MNode_initMatrices MNode_initMatrices */
-/* port-bind: gen_createCamera_0000283C gen_imp_Node_ctor Node_ctor */
-/* port-bind: gen_createCamera_0000283C gen_imp_game_create3DWindow game_create3DWindow */
-/* port-bind: gen_createCamera_0000283C gen_imp_input_addPad_00011C70 input_addPad_00011C70 */
-/* port-bind: gen_createCamera_0000283C gen_imp_list_append list_append */
-/* port-bind: gen_createCamera_0000283C gen_imp_math_mtxAddTranslation math_mtxAddTranslation */
-/* port-bind: gen_createCamera_0000283C gen_imp_mem_new mem_new */
-/* port-bind: gen_createCamera_0000283C gen_imp_pad_open pad_open */
-/* port-bind: gen_createScene_00008DB4 gen_imp_Node_ctor Node_ctor */
-/* port-bind: gen_createScene_00008DB4 gen_imp_game_initDdm_00002C94 game_initDdm_00002C94 */
-/* port-bind: gen_createScene_00008DB4 gen_imp_game_setParams_00002060 game_setParams_00002060 */
-/* port-bind: gen_createScene_00008DB4 gen_imp_list_append list_append */
-/* port-bind: gen_createScene_00008DB4 gen_imp_mem_new mem_new */
-/* port-bind: gen_createVRBox_00001658 gen_imp_BGBox_ctor BGBox_ctor */
-/* port-bind: gen_createVRBox_00001658 gen_imp_U64BGWall_ctor U64BGWall_ctor */
-/* port-bind: gen_createVRBox_00001658 gen_imp_list_append list_append */
-/* port-bind: gen_createVRBox_00001658 gen_imp_memtrack_begin memtrack_begin */
-/* port-bind: gen_createVRBox_00001658 gen_imp_memtrack_end memtrack_end */
+/* port-bind: SelectWin_state3_00007430 D_00000000_a port_bootup_bss+0xF8 */
+/* port-bind: gen_createCamera_0000283C D_00000000_a port_bootup_data+0x1EAA8 */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int timproc_uso_b5_func_00003F58(); /* CALL placeholder token: file-scope K&R declaration */

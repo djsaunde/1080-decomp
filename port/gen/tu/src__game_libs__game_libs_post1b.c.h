@@ -52,24 +52,8 @@
 /* port-drop: pad_update */ /* placeholder copy; shipped body in src/game_libs/game_libs_o2_675A4.c */
 #pragma weak str_fill
 /* port-drop: str_fill */ /* placeholder copy; shipped body in src/game_libs/game_libs_ncc_67D50.cpp */
-/* port-bind: BinFileMgr_loadData func_7C860 fs_gdlReadInt_000681F4 */
-/* port-bind: BinFileMgr_loadFile_000683D4 func_7C860 fs_gdlReadInt_000681F4 */
-/* port-bind: BinFile_load_00068350 gl_ref_0007C89C fs_gdlReadVec3_00068230 */
-/* port-bind: DNode_handleMsg gl_add_position_65C54 QNode_translate */
-/* port-bind: DNode_handleMsg gl_dispatch_event_65C54 MNode_handleMsg */
-/* port-bind: SkinAnim_ctor alloc mem_new */
-/* port-bind: hostio_readFloatParm_00065DDC gl_ref_00077DB0 fs_gdlReadInt_00063744 */
-/* port-bind: hostio_readFloatParm_00065DDC gl_ref_00077DEC fs_gdlReadFloat_00063780 */
-/* port-bind: hostio_readIntParm_00065EB4 func_00077DB0 fs_gdlReadInt_00063744 */
-/* port-bind: hostio_readQuadParm_0006370C gl_ref_00076488 fs_gdlReadInt_00061E1C */
-/* port-bind: hostio_readQuadParm_0006370C gl_ref_00076584 fs_gdlReadQuad_00061F18 */
-/* port-bind: hostio_readQuadParm_00065E84 gl_ref_00077DB0 fs_gdlReadInt_00063744 */
-/* port-bind: hostio_readQuadParm_00065E84 gl_ref_00077E98 fs_gdlReadQuad_0006382C */
-/* port-bind: hostio_readQuadParm_00069C58 gl_ref_0007D594 fs_gdlReadInt_00068F28 */
-/* port-bind: hostio_readQuadParm_00069C58 gl_ref_0007D5D0 fs_gdlReadQuad_00068F64 */
-/* port-bind: hostio_readVec3Parm_00065E0C gl_ref_00077DB0 fs_gdlReadInt_00063744 */
-/* port-bind: hostio_readVec3Parm_00065E0C gl_ref_00077E28 fs_gdlReadVec3_000637BC */
-/* port-bind: math_atan2s_00068044 gl_ref_0007C650 math_atanLookup_00067FE4 */
+/* port-bind: fs_piXfer_0006612C gl_func_00062F64_6612c fs_piReadWord_00066210 */
+/* port-bind: pad_setPause_00067470 gl_data_00000000 port_bootup_bss+0x3C740 */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int gl_func_00062F64_65250(); /* CALL placeholder token: file-scope K&R declaration */
 int gl_func_00062F64_652D8(); /* CALL placeholder token: file-scope K&R declaration */

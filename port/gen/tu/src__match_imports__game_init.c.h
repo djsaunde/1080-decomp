@@ -69,19 +69,3 @@
 #pragma weak stream_readVec3_00000080
 /* port-drop: stream_readVec3_00000080 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
 /* port-local: _asmpp_func13 */ /* asm-processor stub from the context header */
-/* port-bind: game_init bootup_27E8_func_002014 WorldRegistry_getCourse_00002014 */
-/* port-bind: game_init bootup_27E8_func_002060 game_setParams_00002060 */
-/* port-bind: game_init bootup_27E8_func_002080 game_clearWindows_00002080 */
-/* port-bind: game_init bootup_27E8_func_0020A4 game_clearPlayers_000020A4 */
-/* port-bind: game_init bootup_27E8_func_002C94 game_initDdm_00002C94 */
-/* port-bind: game_init bootup_27E8_func_002DA4 game_setupMode */
-/* port-bind: game_init bootup_27E8_func_002F90 game_createLights */
-/* port-bind: game_init bootup_27E8_func_006808 game_createMap */
-/* port-bind: game_init bootup_27E8_func_0118E4 game_loadUso */
-/* port-bind: game_init bootup_27E8_func_048E7C dbg_printf */
-/* port-bind: game_init bootup_27E8_func_0497D0 sys_getTime */
-/* port-bind: game_init bootup_27E8_func_04C678 Node_ctor */
-/* port-bind: game_init bootup_27E8_func_050E80 CollObjMgr_ctor */
-/* port-bind: game_init bootup_27E8_func_074710 memtrack_begin */
-/* port-bind: game_init bootup_27E8_func_074840 memtrack_end */
-/* port-bind: game_init bootup_27E8_func_07ACE0 list_append */

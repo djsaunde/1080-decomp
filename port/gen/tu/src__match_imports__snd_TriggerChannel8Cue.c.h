@@ -50,4 +50,3 @@
 /* port-local: _asmpp_large_func179 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func180 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func2 */ /* asm-processor stub from the context header */
-/* port-bind: snd_TriggerChannel8Cue gl_3061C_emit AudioThread_QueueCmdS8 */

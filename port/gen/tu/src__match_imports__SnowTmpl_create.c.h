@@ -69,8 +69,3 @@
 #pragma weak stream_readVec3_00000080
 /* port-drop: stream_readVec3_00000080 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
 /* port-local: _asmpp_func13 */ /* asm-processor stub from the context header */
-/* port-bind: SnowTmpl_create bootup_84A0_func_04A188 Parms_addParm */
-/* port-bind: SnowTmpl_create bootup_84A0_func_051C28 ColourItem_ctor */
-/* port-bind: SnowTmpl_create bootup_84A0_func_055750 mem_new */
-/* port-bind: SnowTmpl_create bootup_84A0_func_074E8 FallingSnow_create */
-/* port-bind: SnowTmpl_create bootup_84A0_func_07ACE0 list_append */

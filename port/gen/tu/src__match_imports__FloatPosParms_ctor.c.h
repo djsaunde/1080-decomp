@@ -8,5 +8,3 @@
 /* port-drop: func_00000000 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
 #pragma weak stream_readQuad_00013CE8
 /* port-drop: stream_readQuad_00013CE8 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso_tail4.c */
-/* port-bind: FloatPosParms_ctor bootup_1438C_alloc mem_new */
-/* port-bind: FloatPosParms_ctor bootup_1438C_init Parms_addParm */

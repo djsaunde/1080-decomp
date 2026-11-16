@@ -34,4 +34,3 @@
 /* port-local: _asmpp_func51 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func55 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func74 */ /* asm-processor stub from the context header */
-/* port-bind: RiderAnim_readTrickInput_0000E5C8 game_uso_e5c8_eaf4 RiderAnim_readStickSpin_0000EAF4 */

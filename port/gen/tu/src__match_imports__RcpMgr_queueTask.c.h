@@ -204,5 +204,3 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
-/* port-bind: RcpMgr_queueTask gl_4DC44_print sys_fatal */
-/* port-bind: RcpMgr_queueTask gl_4DC44_remove RcpMgr_removeTask */

@@ -202,11 +202,3 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
-/* port-bind: Mat_draw gl_437C0_enable_430D8 gfx_setLightDirs_000430D8 */
-/* port-bind: Mat_draw gl_437C0_finish_57700 gfx_endDL */
-/* port-bind: Mat_draw gl_437C0_init_517E4 BaseMat_init_000517E4 */
-/* port-bind: Mat_draw gl_437C0_light_45CB0 gfx_emitOneLight_00045CB0 */
-/* port-bind: Mat_draw gl_437C0_link_43BEC BaseMat_emitDisplayLists_00043BEC */
-/* port-bind: Mat_draw gl_437C0_physical_6C384 gl_osVirtualToPhysical */
-/* port-bind: Mat_draw gl_437C0_reset_56814 gfx_resetDLContext */
-/* port-bind: Mat_draw gl_437C0_update_454C4 gfx_emitLights_000454C4 */

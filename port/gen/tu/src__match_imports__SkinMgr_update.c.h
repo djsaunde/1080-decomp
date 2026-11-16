@@ -50,6 +50,3 @@
 /* port-local: _asmpp_large_func42 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func43 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func44 */ /* asm-processor stub from the context header */
-/* port-bind: SkinMgr_update gl_697C4_finish MorphPoly_setVerts_0004AA90 */
-/* port-bind: SkinMgr_update gl_697C4_modifier SkinAnim_skinVerts */
-/* port-bind: SkinMgr_update gl_697C4_report sys_fatal */

@@ -8,9 +8,17 @@
 /* port-drop: trk_main */ /* placeholder copy; shipped body in src/timproc_uso_b3/timproc_uso_b3_o0_B0.c */
 #pragma weak trk_openSession_000005A4
 /* port-drop: trk_openSession_000005A4 */ /* placeholder copy; shipped body in src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c */
-/* port-bind: TrkDataManager_init_000019CC gl_proto_19cc PointsPopup_setPosScale */
-/* port-bind: TrkDataManager_update_00001C68 gl_proto_1c94 CourseGadget_setFloat2_0000254C */
-/* port-bind: TrkMenu_handleInput_00002C98 trk_imp_input_checkPressed input_checkPressed_00011E00 */
-/* port-bind: TrkMenu_handleInput_00002C98 trk_imp_replay_saveGhost replay_saveGhost */
-/* port-bind: TrkMenu_handleInput_00002C98 trk_imp_snd_postEvent snd_postEvent */
+/* port-bind: TrkMenu_rowChangeBoard sTimPauseMenu_208 port_trkproc_bss+0x208 */
+/* port-bind: TrkMenu_rowChangeBoard sTimPauseProc_20C port_trkproc_bss+0x20C */
+/* port-bind: TrkMenu_rowChangeCharacter sTimPauseMenu_208 port_trkproc_bss+0x208 */
+/* port-bind: TrkMenu_rowChangeCharacter sTimPauseProc_20C port_trkproc_bss+0x20C */
+/* port-bind: TrkMenu_rowChangeCourse sTimPauseMenu_208 port_trkproc_bss+0x208 */
+/* port-bind: TrkMenu_rowChangeCourse sTimPauseProc_20C port_trkproc_bss+0x20C */
+/* port-bind: TrkMenu_rowGhost_000021F4 sTimPauseMenu_208 port_trkproc_bss+0x208 */
+/* port-bind: TrkMenu_rowGhost_000021F4 sTimPauseProc_20C port_trkproc_bss+0x20C */
+/* port-bind: TrkMenu_rowQuit_00002388 sTimPauseMenu_208 port_trkproc_bss+0x208 */
+/* port-bind: TrkMenu_rowQuit_00002388 sTimPauseProc_20C port_trkproc_bss+0x20C */
+/* port-bind: TrkMenu_rowRetry_000021B0 sTimPauseMenu_208 port_trkproc_bss+0x208 */
+/* port-bind: TrkMenu_rowRetry_000021B0 sTimPauseProc_20C port_trkproc_bss+0x20C */
+/* port-bind: TrkRace_drawResultExtra D_b3_1240_base port_gui_bss+0x8 */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

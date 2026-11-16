@@ -28,6 +28,3 @@
 /* port-drop: gen_streamReadQuad_000003A8 */ /* helper copy; shipped body in src/timproc_uso_b5/timproc_uso_b5.c */
 /* port-local: _asmpp_func1 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func73 */ /* asm-processor stub from the context header */
-/* port-bind: gen_createLights_00001460 gen_imp_BaseLight_ctor BaseLight_ctor */
-/* port-bind: gen_createLights_00001460 gen_imp_gfx_listAppend_0004E214 gfx_listAppend_0004E214 */
-/* port-bind: gen_createLights_00001460 gen_imp_list_append list_append */

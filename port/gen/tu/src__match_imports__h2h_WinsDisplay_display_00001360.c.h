@@ -8,12 +8,3 @@
 /* port-drop: h2h_WinsDisplay_update_00001204 */ /* helper copy; shipped body in src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp */
 #pragma weak h2h_readVec3Parm_00001AFC
 /* port-drop: h2h_readVec3Parm_00001AFC */ /* helper copy; shipped body in src/h2hproc_uso/h2hproc_uso.c */
-/* port-bind: h2h_WinsDisplay_display_00001360 h2hproc_1360_import_157 gui_setupRenderMode_0000055C */
-/* port-bind: h2h_WinsDisplay_display_00001360 h2hproc_1360_import_158 gui_setPrimColorClamped_000008C0 */
-/* port-bind: h2h_WinsDisplay_display_00001360 h2hproc_1360_import_159 gl_sprintf */
-/* port-bind: h2h_WinsDisplay_display_00001360 h2hproc_1360_import_160 gui_centerStringX */
-/* port-bind: h2h_WinsDisplay_display_00001360 h2hproc_1360_import_161 gui_drawString */
-/* port-bind: h2h_WinsDisplay_display_00001360 h2hproc_1360_import_162 gui_setCombine_00001794 */
-/* port-bind: h2h_WinsDisplay_display_00001360 h2hproc_1360_import_163 gui_spriteRefresh */
-/* port-bind: h2h_WinsDisplay_display_00001360 h2hproc_1360_import_164 gui_drawSprite */
-/* port-bind: h2h_WinsDisplay_display_00001360 h2hproc_1360_import_165 Node_display */

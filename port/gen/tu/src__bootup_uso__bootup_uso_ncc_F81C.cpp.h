@@ -2,3 +2,4 @@
 /* src/bootup_uso/bootup_uso_ncc_F81C.cpp: 1 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak func_00000000
 /* port-drop: func_00000000 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
+/* port-bind: game_createProcessWindow D_00000030 port_bootup_bss+0x3EC50 */

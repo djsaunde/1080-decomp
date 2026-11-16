@@ -50,5 +50,3 @@
 /* port-local: _asmpp_large_func179 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func180 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func2 */ /* asm-processor stub from the context header */
-/* port-bind: AudioSeq_InitSequencePlayer gl_2D224_init_links Audio_InitNoteLists */
-/* port-bind: AudioSeq_InitSequencePlayer gl_2D224_reset_record AudioSeq_ResetSequencePlayer */
