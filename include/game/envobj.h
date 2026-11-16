@@ -152,7 +152,7 @@ typedef struct Tv1 {
     f32 scale;                  /* 0x70 */
     f32 rot[3];                 /* 0x74: rotX / rotY / rotZ (degrees) */
     f32 radius;                 /* 0x80: cull radius (Tv1Tmpl_create: RoData 0x5EC) */
-    s32 next;                   /* 0x84: SNode item chain */
+    struct SNode *next;         /* 0x84: SNode item chain */
 } Tv1;
 
 #define TV1(p) ((Tv1 *)(p))
@@ -207,7 +207,7 @@ typedef struct Tree {
 typedef struct TreeTmpl {
     Node node;                  /* 0x00 */
     s32 tag;                    /* 0x2C: ItemType tag ("tr1" ..) */
-    s32 next;                   /* 0x30: ItemMgr type list */
+    struct ItemType *next;      /* 0x30: ItemMgr type list (gdl/item.h ItemType.next) */
     struct SNode *items;        /* 0x34: the Trees, chained through SNode.next */
     s32 unk38;                  /* 0x38: 1 (item_registerTemplates) */
     s32 unk3C;

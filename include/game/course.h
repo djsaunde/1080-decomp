@@ -171,7 +171,7 @@ typedef struct CourseMarkerParms {
  * unk40 node is set it becomes the item's child. */
 typedef struct ColourSubItem {
     char node[0x28];            /* 0x00: Node */
-    s32 vptr;                   /* 0x28: import_8006ED80 */
+    char *vptr;                 /* 0x28: import_8006ED80 */
     s32 link;                   /* 0x2C: ColourItem link */
     f32 pos[3];                 /* 0x30 */
     s32 unk3C;                  /* 0x3C: 0 after the ctor; no reader in game.uso */
@@ -181,7 +181,7 @@ typedef struct ColourSubItem {
  * libgdl ColourItem (0x3C): Node + vptr + link + position. */
 typedef struct CourseMarker {
     char node[0x28];            /* 0x00: Node */
-    s32 vptr;                   /* 0x28 */
+    char *vptr;                 /* 0x28: Data 0x578 */
     struct CourseMarker *link;  /* 0x2C: ColourItem +0x2C (0 after the ctor): the next marker; a marker and
                                    its link form one path segment (SnowAI_scanSegments); also the marker
                                    used instead when MARKER_F_REDIRECT and the second finish test of

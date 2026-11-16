@@ -1797,7 +1797,7 @@ int *CourseMarkerTmpl_create(int a0) {
     if (1) { void *q = &t1; q = &t2; q = &t3; q = &x; }
     if ((x = (char *)game_uso_func_055750(0x8C)) != 0) {
         game_uso_func_051C28(x);
-        ((CourseMarker *)x)->vptr = (s32)&game_uso_D_807FEB68;
+        ((CourseMarker *)x)->vptr = &game_uso_D_807FEB68;
         obj = x + 0x3C;
         if (obj != 0 || (obj = (char *)game_uso_func_055750(0x50)) != 0) {
             b = obj;

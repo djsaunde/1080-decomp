@@ -14,7 +14,7 @@
 typedef struct Sprite {
     char node[0x2C];        /* 0x00: Node; vptr at +0x28 */
     s32 unk2C[0x16];
-    s32 children;           /* 0x84 */
+    void **children;        /* 0x84: element array (gdl/sprite.h) */
     s32 unk88[10];
     f32 scaleX;             /* 0xB0 */
     f32 scaleY;             /* 0xB4 */
