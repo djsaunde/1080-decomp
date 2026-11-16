@@ -205,7 +205,40 @@ void nameent_uso_func_000004D0(char *self) {
 void nameent_uso_func_000005AC(int a0) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_000005B4);
+/* nameent_uso_func_000005B4: board frame sprites: the left (+0xA4) and right (+0xBC) edge
+ * columns every 32 px, and the top piece (+0x8C) along rows y 8 / 136 / 168 / 200 every 64 px.
+ * The right column's `!=` test (the target's held-232 bnel) also leaves self homed in memory
+ * (each sprite address is a fresh `lw; addiu`). */
+void nameent_uso_func_000005B4(int *self) {
+    char *spr;
+    int i;
+
+    CALL(gui_setCombine_00001794)(&ne_gGui);
+    spr = (char *)&self[0xA4 / 4];
+    CALL(gui_spriteRefresh)(spr);
+    for (i = 8; i < 232; i += 32) {
+        CALL(gui_drawSprite)(spr, 0, i, 0);
+    }
+    spr = (char *)&self[0xBC / 4];
+    CALL(gui_spriteRefresh)(spr);
+    for (i = 8; i != 232; i += 32) {
+        CALL(gui_drawSprite)(spr, 256, i, 0);
+    }
+    spr = (char *)&self[0x8C / 4];
+    CALL(gui_spriteRefresh)(spr);
+    for (i = 64; i < 256; i += 64) {
+        CALL(gui_drawSprite)(spr, i, 8, 0);
+    }
+    for (i = 64; i < 256; i += 64) {
+        CALL(gui_drawSprite)(spr, i, 136, 0);
+    }
+    for (i = 64; i < 256; i += 64) {
+        CALL(gui_drawSprite)(spr, i, 168, 0);
+    }
+    for (i = 64; i < 256; i += 64) {
+        CALL(gui_drawSprite)(spr, i, 200, 0);
+    }
+}
 
 /* nameent_uso_func_00000710: empty one-argument function (a no-op virtual). */
 void nameent_uso_func_00000710(int a0) {
