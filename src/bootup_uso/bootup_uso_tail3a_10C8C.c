@@ -3,6 +3,7 @@
 #include "gdl/node.h"
 #include "game/input.h"
 #include "gdl/backup.h"
+#include "game/modeproc.h"
 #include "uso_call.h"
 
 /* bootup_uso 0x10C8C..0x116C7 remainder of the former tail3a mid-section,
@@ -124,7 +125,6 @@ void GameFlow_create(int *arg0, int arg1) {
  * promotes the comma value to $s0 instead -- wrong). The 20 downstream
  * t0/t1 FIFO knock-ons collapsed with it. See docs/IDO_CODEGEN.md
  * "-O0 scalar-vs-deref equality eval order" (comma-lever addendum). */
-typedef int (*FN10FEC)();
 
 extern char D_0000C550;
 extern char sFmt_num_C604;
@@ -197,9 +197,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             if (q != 0 || (q = (char *)FCALL(mem_new)(8)) != 0) {
                 r = q;
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
-                    *(int *)(r + 4) = (int)&D_0000C550;
+                    FLOWPROC(r)->vptr = &D_0000C550; /* base vtable */
                 }
-                *(int *)(q + 4) = (int)&D_00000000;
+                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -209,9 +209,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             if (q != 0 || (q = (char *)FCALL(mem_new)(8)) != 0) {
                 r = q;
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
-                    *(int *)(r + 4) = (int)&D_0000C550;
+                    FLOWPROC(r)->vptr = &D_0000C550; /* base vtable */
                 }
-                *(int *)(q + 4) = (int)&D_00000000;
+                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -221,9 +221,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             if (q != 0 || (q = (char *)FCALL(mem_new)(0xC)) != 0) {
                 r = q;
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
-                    *(int *)(r + 4) = (int)&D_0000C550;
+                    FLOWPROC(r)->vptr = &D_0000C550; /* base vtable */
                 }
-                *(int *)(q + 4) = (int)&D_00000000;
+                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -233,9 +233,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             if (q != 0 || (q = (char *)FCALL(mem_new)(0xC)) != 0) {
                 r = q;
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
-                    *(int *)(r + 4) = (int)&D_0000C550;
+                    FLOWPROC(r)->vptr = &D_0000C550; /* base vtable */
                 }
-                *(int *)(q + 4) = (int)&D_00000000;
+                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -245,9 +245,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             if (q != 0 || (q = (char *)FCALL(mem_new)(8)) != 0) {
                 r = q;
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
-                    *(int *)(r + 4) = (int)&D_0000C550;
+                    FLOWPROC(r)->vptr = &D_0000C550; /* base vtable */
                 }
-                *(int *)(q + 4) = (int)&D_00000000;
+                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -257,9 +257,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             if (q != 0 || (q = (char *)FCALL(mem_new)(0xC)) != 0) {
                 r = q;
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
-                    *(int *)(r + 4) = (int)&D_0000C550;
+                    FLOWPROC(r)->vptr = &D_0000C550; /* base vtable */
                 }
-                *(int *)(q + 4) = (int)&D_00000000;
+                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -269,9 +269,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             if (q != 0 || (q = (char *)FCALL(mem_new)(8)) != 0) {
                 r = q;
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
-                    *(int *)(r + 4) = (int)&D_0000C550;
+                    FLOWPROC(r)->vptr = &D_0000C550; /* base vtable */
                 }
-                *(int *)(q + 4) = (int)&D_00000000;
+                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -281,9 +281,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             if (q != 0 || (q = (char *)FCALL(mem_new)(8)) != 0) {
                 r = q;
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
-                    *(int *)(r + 4) = (int)&D_0000C550;
+                    FLOWPROC(r)->vptr = &D_0000C550; /* base vtable */
                 }
-                *(int *)(q + 4) = (int)&D_00000000;
+                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -293,9 +293,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             if (q != 0 || (q = (char *)FCALL(mem_new)(8)) != 0) {
                 r = q;
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
-                    *(int *)(r + 4) = (int)&D_0000C550;
+                    FLOWPROC(r)->vptr = &D_0000C550; /* base vtable */
                 }
-                *(int *)(q + 4) = (int)&D_00000000;
+                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -305,9 +305,10 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
         FCALL(app_setHeapMode)(sp28);
     }
 
-    (*(FN10FEC)*(int *)(p + 0xC))(
+    /* <pfx>_procMain(flowProc, arg2): vtable entry 0 of the flow object */
+    VT_SLOT(p, 0).fn(
         (int)GAMEFLOW(arg0)->flowProc +
-            *(short *)((p = *(char **)(GAMEFLOW(arg0)->flowProc + 4)) + 8),
+            VT_SLOT(p = FLOWPROC(GAMEFLOW(arg0)->flowProc)->vptr, 0).delta,
         arg2);
     GAMEFLOW(arg0)->flowMode = arg1;
     FCALL(heap_printStats)();
