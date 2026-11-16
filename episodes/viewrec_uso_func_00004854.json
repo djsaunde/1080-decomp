@@ -1,0 +1,32 @@
+{
+  "function_name": "viewrec_uso_func_00004854",
+  "project": "1080-decomp",
+  "model": "claude-manual",
+  "start_time": "2026-11-16T22:32:41.026439+00:00",
+  "end_time": "2026-11-16T22:32:41.026456+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T22:32:41.026451+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 79,
+  "initial_m2c_source": null,
+  "final_source": "/* the 0x98-byte screen's ctor: Node -> Process -> screen, as the erase screen's 0x36B4; here every\n * constant field store follows the Process_stop call, made through the void alias so that no v0 def\n * sits at the call and the shared constant 76 colours v0 (lever from agent-g) */\nextern char vr_vtNode_4854[], vr_vtProc_4854[], vr_vtScreen_4854[];\nViewRecScreen *viewrec_uso_func_00004854(ViewRecScreen *self, ViewRecProc *proc) {\n    char *o1;\n    char *o2;\n\n    if (self != 0 || (self = (ViewRecScreen *)CALL(mem_new)(0x98)) != 0) {\n        o1 = (char *)self;\n        if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {\n            o2 = o1;\n            if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o2, &D_00000000 + 0x474); NODE(o2)->vptr = vr_vtNode_4854; }\n            NODE(o1)->vptr = vr_vtProc_4854;\n        }\n        self->node.vptr = vr_vtScreen_4854;\n        self->node.name = &D_00000000 + 0x47C;\n        self->proc = proc;\n        *(s32 *)((char *)self + 0x54) = proc->font;\n        XCALL(gl_func_00000000_vrv, Process_stop)(self);\n        *(s32 *)((char *)self + 0x60) = 76;\n        *(s32 *)((char *)self + 0x58) = 83;\n        *(s32 *)((char *)self + 0x64) = 173;\n        *(s32 *)((char *)self + 0x5C) = 32;\n        *(s32 *)((char *)self + 0x6C) = 38;\n        *(s32 *)((char *)self + 0x70) = 57;\n        *(s32 *)((char *)self + 0x68) = 24;\n        *(s32 *)((char *)self + 0x78) = 111;\n        *(s32 *)((char *)self + 0x74) = 15;\n        *(s32 *)((char *)self + 0x7C) = 76;\n        *(s32 *)((char *)self + 0x84) = 0;\n        *(s32 *)((char *)self + 0x30) = 1;\n        *(s32 *)((char *)self + 0x2C) = 0;\n        *(s32 *)((char *)self + 0x48) = 0;\n    }\n    return self;\n}\n",
+  "metadata": {
+    "source_path": "src/viewrec_uso/viewrec_uso.c",
+    "asm_path": "asm/nonmatchings/viewrec_uso/viewrec_uso/viewrec_uso_func_00004854.s",
+    "segment": "viewrec_uso",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2"
+  }
+}
