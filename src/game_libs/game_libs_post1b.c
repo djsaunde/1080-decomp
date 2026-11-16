@@ -8,6 +8,10 @@
 #include "gdl/binfile.h"
 #include "gdl/polyshape.h"
 #include "gdl/sysapi.h"
+#include "gdl/nodelist.h"
+#include "gdl/mnode.h"
+#include "libultra/os_task.h"
+#include "libultra/os_message.h"
 #include "uso_call.h"
 extern int D_00000000;
 extern int gl_data_00000000;
@@ -4573,7 +4577,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", skin_cmdSkinMgr);
  * ROM; real table = 0x41310 per reloc data) so it is spelled via the =0
  * placeholder &D_00000000; the calls (real targets USO-resolved at load) go
  * through the =0 placeholder gl_func_00000000 so jal links to 0x0C000000. */
-void skin_cmdSkinAnim(int *self) {
+void skin_cmdSkinAnim(NodeListState *self) {
     int **bufp;
     int *saved;
     int *p;
@@ -4581,26 +4585,26 @@ void skin_cmdSkinAnim(int *self) {
     int h;
     short *entry;
 
-    bufp = (int **)self[0];
+    bufp = self->cursor;
     p = *bufp;
     *bufp = p + 1;
     a1 = p[0];
-    self[1] = a1;
+    self->cmd = a1;
     saved = (int *)((int *)&gProcNodeList_41700)[a1];
     if (saved == 0) {
         CALL(sys_fatal)(GL_DATA_STR(0x2C550, "No skinmgr for skinanim"));
     }
 
-    bufp = (int **)self[0];
+    bufp = self->cursor;
     p = *bufp;
     *bufp = p + 1;
     a1 = p[0];
-    self[1] = a1;
+    self->cmd = a1;
 
     entry = (short *)(saved[0x90 / 4] + a1 * 8);
     h = entry[0];
     if (*(int *)(entry + 2) != 0) {
-        CALL(SkinMgr_addAnim)(saved, CALL(SkinAnim_ctor)(0, h, *(int *)(entry + 2), *(int *)(self[15] + 0xC)));
+        CALL(SkinMgr_addAnim)(saved, CALL(SkinAnim_ctor)(0, h, *(int *)(entry + 2), self->parent->mnode));
     }
 }
 
@@ -4634,7 +4638,7 @@ void skin_cmdSkinAnim(int *self) {
 #endif
 typedef int (*GP_00068DD4)();
 extern void gl_func_00000000_68dd4v(void);
-void skin_cmdSkinShape(char *arg0) {
+void skin_cmdSkinShape(NodeListState *arg0) {
     int *p;
     s32 sp30;
     char *sp2C;
@@ -4649,38 +4653,38 @@ void skin_cmdSkinShape(char *arg0) {
     int B;
 
     XCALL(gl_func_00000000_68dd4v, nodelist_checkPrevMNode)();
-    x = (char *)FW(FW(arg0, 0x3C), 0xC);
-    FW(x, 0xB0) = 8;
-    A = *(int *)arg0;
+    x = arg0->parent->mnode;
+    MNODE(x)->mtxMode = 8;
+    A = (int)arg0->cursor;
     q = *(int **)A;
     *(int **)A = q + 1;
     B = *q;
-    FW(arg0, 4) = B;
+    arg0->cmd = B;
     sp30 = (&gProcNodeList_41700)[B];
-    B = *(int *)arg0;
+    B = (int)arg0->cursor;
     A = *(int *)B;
     *(int *)B = A + 4;
     v = *(int *)A;
-    FW(arg0, 4) = v;
+    arg0->cmd = v;
     sp2C = (char *)CALL(BasePolyShape_ctor)(0, GL_DATA_STR(0x2C568, "SkinShape"), v, 0);
     CALL(mem_new)(FW(sp2C, 0x44) * 8);
     o = (char *)CALL(MorphPoly_ctor)(0, GL_DATA_STR(0x2C574, "SkinShape"), 0, sp2C);
-    FW(arg0, 0x28) = (int)o;
-    FW(arg0, 0x10) = (int)o;
+    arg0->obj = o;
+    arg0->node = o;
     p = (int *)(o + 0x30);
     goto mid;
 mid:
     *p &= ~0x400;
-    x = (char *)FW(arg0, 0x28) + 0x30;
+    x = arg0->obj + 0x30;
     *(int *)x &= ~0x800;
     if (sp30 == 0) {
         CALL(sys_fatal)(GL_DATA_STR(0x2C580, "no skinmgr"));
     }
-    b = (char *)FW(FW(FW(arg0, 0x3C), 0x3C), 0xC);
+    b = arg0->parent->parent->mnode;
     x = (char *)FW(b, 0x28);
     ((GP_00068DD4)FW(x, 0x14))(*(s16 *)(x + 0x10) + b);
-    sp24 = (char *)CALL(SkinMgr_init)(sp30, FW(FW(arg0, 0x3C), 0xC), FW(arg0, 0x28));
-    CALL(MNode_addChild)(FW(FW(arg0, 0x3C), 0xC), sp24);
+    sp24 = (char *)CALL(SkinMgr_init)(sp30, arg0->parent->mnode, arg0->obj);
+    CALL(MNode_addChild)(arg0->parent->mnode, sp24);
     CALL(MorphPoly_init)(sp24);
 }
 
@@ -5399,10 +5403,10 @@ float fsin(float x) {
     return ret;
 }
 
-/* gl__VirtualToPhysicalTask: pointer-relocation fixup driver. Gets the fixed object at
- * segment offset 0x41710, calls the init/register cb (a0, obj, 0x40), then for
- * each of 7 pointer fields (0x10/0x18/0x20/0x28/0x2C/0x30/0x38) if non-null
- * replaces it with cb(field), returns obj.
+/* gl__VirtualToPhysicalTask = libultra _VirtualToPhysicalTask (sptask.c): bcopy the task
+ * into the static tmp_task at segment offset 0x41710, then osVirtualToPhysical each non-null
+ * pointer field (ucode, ucode_data, dram_stack, output_buff, output_buff_size, data_ptr,
+ * yield_data_ptr; libultra/os_task.h), and return tmp_task.
  * LANDED 2026-07-08 via REPLACE_FUNC_BODY donor splice: the target is plain
  * IDO 7.1 -O1 (0x6A09C..0x6BAD4 -O1 island) — obj sp-homed at 0x1C and
  * reloaded per field, exactly the shape the old "-O2 constant-folds every
@@ -5410,34 +5414,34 @@ float fsin(float x) {
  * plumbing was done: D_00041710 (= 0x41710, undefined_syms_auto.txt) gives
  * the baked lui 0x4/addiu 0x1710 base. Real C lives in the -O1 donor unit
  * game_libs_o1_6A304.c (71/71), spliced over this -O2 stand-in. */
-extern char D_00041710[];
-int gl__VirtualToPhysicalTask(int a0) {
-    char *obj;
+extern char D_00041710[]; /* libultra's static tmp_task (an OSTask_t) */
+int gl__VirtualToPhysicalTask(OSTask_t *intp) {
+    OSTask_t *tp;
 
-    obj = D_00041710;
-    gl_func_00000000(a0, obj, 0x40);
-    if (*(int *)(obj + 0x10)) {
-        *(int *)(obj + 0x10) = gl_func_00000000(*(int *)(obj + 0x10));
+    tp = (OSTask_t *)D_00041710;
+    gl_func_00000000(intp, tp, sizeof(OSTask_t)); /* bcopy */
+    if (tp->ucode) {
+        tp->ucode = (u64 *)gl_func_00000000(tp->ucode); /* osVirtualToPhysical */
     }
-    if (*(int *)(obj + 0x18)) {
-        *(int *)(obj + 0x18) = gl_func_00000000(*(int *)(obj + 0x18));
+    if (tp->ucode_data) {
+        tp->ucode_data = (u64 *)gl_func_00000000(tp->ucode_data);
     }
-    if (*(int *)(obj + 0x20)) {
-        *(int *)(obj + 0x20) = gl_func_00000000(*(int *)(obj + 0x20));
+    if (tp->dram_stack) {
+        tp->dram_stack = (u64 *)gl_func_00000000(tp->dram_stack);
     }
-    if (*(int *)(obj + 0x28)) {
-        *(int *)(obj + 0x28) = gl_func_00000000(*(int *)(obj + 0x28));
+    if (tp->output_buff) {
+        tp->output_buff = (u64 *)gl_func_00000000(tp->output_buff);
     }
-    if (*(int *)(obj + 0x2C)) {
-        *(int *)(obj + 0x2C) = gl_func_00000000(*(int *)(obj + 0x2C));
+    if (tp->output_buff_size) {
+        tp->output_buff_size = (u64 *)gl_func_00000000(tp->output_buff_size);
     }
-    if (*(int *)(obj + 0x30)) {
-        *(int *)(obj + 0x30) = gl_func_00000000(*(int *)(obj + 0x30));
+    if (tp->data_ptr) {
+        tp->data_ptr = (u64 *)gl_func_00000000(tp->data_ptr);
     }
-    if (*(int *)(obj + 0x38)) {
-        *(int *)(obj + 0x38) = gl_func_00000000(*(int *)(obj + 0x38));
+    if (tp->yield_data_ptr) {
+        tp->yield_data_ptr = (u64 *)gl_func_00000000(tp->yield_data_ptr);
     }
-    return (int)obj;
+    return (int)tp;
 }
 
 /* osSpTaskLoad = libultra osSpTaskLoad (sptask.c). The function is
@@ -5775,34 +5779,34 @@ void gl___osLeoAbnormalResume(int *a0) {
     ((void(*)(void))0x807EC)();
     *(volatile int*)0xA4600010 = 2;
 }
-/* gl___osLeoResume: 59-insn ring-buffer append with notify callback (frame
- * 0x30, saves s0). Ring singleton at &D+0x40, value at &D+0x44; drop if head
- * null or count>=cap; slot = (base + count) % cap (signed-div with IDO break
- * guards); slots[slot] = value; count++; if head->first->next fire
- * cb2(&D, cb1(head)).
+/* gl___osLeoResume = libultra __osLeoResume: post __osEventStateTab[OS_EVENT_PI]'s message
+ * on its queue (dropped when there is no queue or it is full) and wake the first waiting
+ * thread.
  * LANDED 2026-07-08 via REPLACE_FUNC_BODY donor splice: target is plain IDO
  * 7.1 -O1 (0x6A09C..0x6BAD4 -O1 island). Real C lives in the -O1 donor unit
  * game_libs_o1_6B880.c (59/59 standalone), spliced over this -O2 stand-in.
  * Donor levers: fused (head = load) == 0 || count >= cap guard (keeps the
  * load reg live across the beq), NESTED-IF tail (early return breaks the
  * jal-delay `or a0,t6` head reuse), register res = s0. */
+typedef struct {
+    OSMesgQueue *messageQueue;
+    OSMesg msg;
+} __OSEventState; /* libultra __osEventStateTab entry */
 void gl___osLeoResume(void) {
-    int *bufp;
-    char *head;
-    int slot;
-    register int res;
+    __OSEventState *es;
+    OSMesgQueue *mq;
+    s32 last;
 
-    bufp = (int *)((char *)&gl___osEventStateTab + 0x40);
-    if ((head = *(char **)((char *)&gl___osEventStateTab + 0x40)) == 0 ||
-        *(int *)(head + 8) >= *(int *)(head + 0x10)) {
+    es = (__OSEventState *)&gl___osEventStateTab + 8; /* OS_EVENT_PI */
+    if ((mq = es->messageQueue) == NULL || mq->validCount >= mq->msgCount) {
         return;
     }
-    slot = (*(int *)(head + 0xC) + *(int *)(head + 8)) % *(int *)(head + 0x10);
-    *(int *)(*(char **)(head + 0x14) + slot * 4) = bufp[1];
-    *(int *)(head + 8) = *(int *)(head + 8) + 1;
-    if (**(int ***)head != 0) {
-        res = gl_func_00000000(head);
-        gl_func_00000000((char *)&gl___osRunQueue, res);
+    last = (mq->first + mq->validCount) % mq->msgCount;
+    mq->msg[last] = es->msg;
+    mq->validCount++;
+    if (mq->mtqueue->next != NULL) {
+        /* osStartThread(__osPopThread(&mq->mtqueue)) */
+        gl_func_00000000((char *)&gl___osRunQueue, gl_func_00000000(mq));
     }
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006B880_pad.s")

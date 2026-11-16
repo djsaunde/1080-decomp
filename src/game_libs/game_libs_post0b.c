@@ -18,6 +18,7 @@
 #include "gdl/gfxlib.h"
 #include "gdl/texload.h"
 #include "gdl/sysapi.h"
+#include "gdl/nodelist.h"
 #include "libultra/os_thread.h"
 #include "game/camera.h"
 #include "uso_call.h"
@@ -3082,7 +3083,7 @@ extern int D_00000000;
  * registration call returns nothing -- declared void via the alias
  * gl_func_00000000_37AF0v (its dead int return held v0). */
 extern void gl_func_00000000_37AF0v();
-void MNode_def(int a0) {
+void MNode_def(NodeListState *a0) {
     int tmp;
     volatile int padA[4];
     float zero[3];
@@ -3112,10 +3113,10 @@ void MNode_def(int a0) {
         zero[2] = 0.0f;
         CALL(math_mtxAddTranslation)(o + 0x30, zero);
     }
-    *(char **)(a0 + 0xC) = o;
-    *(char **)(a0 + 0x10) = o;
-    if (*(int *)(a0 + 0x38) != 0) {
-        XCALL(gl_func_00000000_37AF0v, list_append)((tmp = *(int *)(*(char **)(a0 + 0x3C) + 0x10)) + 0x10, o);
+    a0->mnode = o;
+    a0->node = o;
+    if (a0->linkNodes != 0) {
+        XCALL(gl_func_00000000_37AF0v, list_append)((tmp = (int)a0->parent->node) + 0x10, o);
         if (MNODE(o)->node.parent != 0) {
             MNODE(o)->node.unk04 = 1;
         }
@@ -3170,15 +3171,15 @@ void MNode_def(int a0) {
 extern int D_00000000;
 extern int gl_func_00000000();
 extern void gl_func_00000000_37bec(void *, void *);
-void Node_def(char *p) {
+void Node_def(NodeListState *p) {
     char *lst;
     char *n;
     CALL(nodelist_checkPrevNode)(p);
-    *(char **)(p + 0x10) = (char *)CALL(Node_ctor)(0, GL_DATA_STR(0x1EBF0, "DefNode"));
-    *(int *)(p + 0x0C) = 0;
-    if (*(int *)(p + 0x38) != 0) {
-        lst = *(char **)(*(char **)(p + 0x3C) + 0x10);
-        n = *(char **)(p + 0x10);
+    p->node = (char *)CALL(Node_ctor)(0, GL_DATA_STR(0x1EBF0, "DefNode"));
+    p->mnode = 0;
+    if (p->linkNodes != 0) {
+        lst = p->parent->node;
+        n = p->node;
         XCALL(gl_func_00000000_37bec, list_append)(lst + 0x10, n);
         if (*(int *)(n + 0x14) != 0) {
             *(int *)(n + 0x04) = 1;
@@ -18111,15 +18112,15 @@ s32 BasePolyShape_emitTriPosUv_000510F0(s32 arg0, volatile s32 arg1, Obj_510F0 *
  * shift its spill slot). If unflippable, an 8-word INSN_PATCH is
  * possible but borderline (regalloc, not a ≤2-word scheduling cap).
  * Real C preserved. */
-void light_addDefault_000513CC(int* a0) {
+void light_addDefault_000513CC(NodeListState *a0) {
     int* a3;
     int* r2;
     CALL(nodelist_checkPrevNode)(a0);
     r2 = (int*)CALL(BaseLight_ctor)(0, GL_DATA_STR(0x20E5C, "DefLight"));
-    a0[11] = (int)r2;
-    a0[3] = (int)r2;
-    a0[4] = (int)r2;
-    a3 = (int*)((int*)a0[15])[4];
+    a0->light = (char *)r2;
+    a0->mnode = (char *)r2;
+    a0->node = (char *)r2;
+    a3 = (int *)a0->parent->node;
     CALL(list_append)(a3 + 4, r2);
     if (r2[5] != 0) {
         r2[1] = 1;
@@ -18167,7 +18168,7 @@ extern int D_00000000;
  * (`o->m120 = (o->vt = &vt, 0xFFFF)`, cfront's comma-expression shape): ugen evaluates the vtable
  * address first (t6), then 0xFFFF (t7), and the stores issue 0x120 first. */
 extern void gl_func_00000000_51448v();
-void shape_cmdLightTarget(char *a0) {
+void shape_cmdLightTarget(NodeListState *a0) {
     extern int gl_func_00000000f3(void *, void *, float, float, float);
     extern int LightTarget_vtbl_51448_vt;
     char *l;
@@ -18185,10 +18186,10 @@ void shape_cmdLightTarget(char *a0) {
         o->unk108[2] = k;
         o->scale = 1.0f;
     }
-    *(LightTarget **)(a0 + 0x28) = o;
-    *(LightTarget **)(a0 + 0xC) = o;
-    *(LightTarget **)(a0 + 0x10) = o;
-    l = *(char **)(*(char **)(a0 + 0x3C) + 0x10);
+    a0->obj = (char *)o;
+    a0->mnode = (char *)o;
+    a0->node = (char *)o;
+    l = a0->parent->node;
     {
     XCALL(gl_func_00000000_51448v, list_append)(l + 0x10, (n = o, o = 0, n));
     if (n->node.parent != 0) {
@@ -18208,28 +18209,28 @@ void shape_cmdLightTarget(char *a0) {
  * the first call so v's first web colours v0 ahead of the cursor p (v1). */
 extern int gl_func_00000000();
 extern int D_00000000;
-void shape_cmdShape_00051520(char *a0) {
+void shape_cmdShape_00051520(NodeListState *a0) {
     char *v;
     int *p;
     int x;
     CALL(nodelist_checkPrevMNode)(a0);
     while (0) { v = 0; p = 0; }
-    v = *(char **)a0;
+    v = (char *)a0->cursor;
     p = *(int **)v;
     *(int **)v = p + 1;
     x = *p;
-    *(int *)(a0 + 4) = x;
+    a0->cmd = x;
     v = (char *)CALL(gfx_newPolyShape_00046F80)(&gGfxLib, GL_DATA_STR(0x20E74, "<Shape>"), x);
-    *(char **)(a0 + 0x28) = v;
-    *(char **)(a0 + 0x10) = v;
-    *(int *)(a0 + 0xC) = 0;
-    CALL(MNode_addChild)(*(int *)(*(char **)(a0 + 0x3C) + 0xC), v);
-    if (*(int *)(a0 + 0x34) != 0) {
-        v = *(char **)(*(char **)(a0 + 0x3C) + 0xC);
-        *(int *)(v + 0xB0) = 3;
+    a0->obj = v;
+    a0->node = v;
+    a0->mnode = 0;
+    CALL(MNode_addChild)(a0->parent->mnode, v);
+    if (a0->op113 != 0) {
+        v = a0->parent->mnode;
+        MNODE(v)->mtxMode = 3;
     } else {
-        v = *(char **)(*(char **)(a0 + 0x3C) + 0xC);
-        *(int *)(v + 0xB0) = 6;
+        v = a0->parent->mnode;
+        MNODE(v)->mtxMode = 6;
     }
 }
 
@@ -20363,29 +20364,29 @@ int CMod_callbackInvoke_000551E0(char *a0) {
 }
 
 extern int gl_func_00000000();
-void nodelist_checkPrevNode(char *a0) {
-    if (*(int*)(*(int*)(a0 + 0x3C) + 0x10) == 0) {
+void nodelist_checkPrevNode(NodeListState *a0) {
+    if (a0->parent->node == 0) {
         CALL(sys_fatal)((GL_DATA(0x21144)));
     }
 }
 
 extern int gl_func_00000000();
-void nodelist_checkPrevMNode(char *a0) {
-    if (*(int*)(*(int*)(a0 + 0x3C) + 0xC) == 0) {
+void nodelist_checkPrevMNode(NodeListState *a0) {
+    if (a0->parent->mnode == 0) {
         CALL(sys_fatal)((GL_DATA_STR(0x21160, "ProcNodeList() No Prev MNode")));
     }
 }
 
 extern int gl_func_00000000();
-void nodelist_checkNode(int *a0) {
-    if (a0[4] == 0) {
+void nodelist_checkNode(NodeListState *a0) {
+    if (a0->node == 0) {
         CALL(sys_fatal)((GL_DATA_STR(0x21180, "ProcNodeList() No Node")));
     }
 }
 
 extern int gl_func_00000000();
-void nodelist_checkMNode(int *a0) {
-    if (a0[3] == 0) {
+void nodelist_checkMNode(NodeListState *a0) {
+    if (a0->mnode == 0) {
         CALL(sys_fatal)((GL_DATA_STR(0x21198, "ProcNodeList() No MNode")));
     }
 }
@@ -20608,42 +20609,20 @@ void nodelist_dispatchList_000558A0(char *arg0) {
  * supplies the 8 frame bytes below s (frame 0xB0, s at 0x60).
  * The old 1-insn residual (`or t2,v0,zero`: the a3 home reload copied into a
  * fresh copy-loop base) closed by reading a3 THROUGH the home slot,
- * `((Gl5591CArg **)&a0)[3]` (a varargs-style read): the reload then is an
+ * `((NodeListState **)&a0)[3]` (a varargs-style read): the reload then is an
  * expression temp that uopt uses destructively as the induction base (lw t9).
  * The t5/t6 swap closed by storing s.opt1016 = 1 AFTER s.unk14 = a2. See
  * docs/IDO_CODEGEN.md#param-read-via-home-slot-coalesces-copy-base-5591c. */
 extern int gl_data_00000000;
-typedef struct Gl5591CArg {      /* the ProcNodeList interpreter state (agent-b run 500: the field
-                                  * meanings are the nodelist_dispatch donor's Strm, game_libs_ncc_55470.cpp,
-                                  * and docs/1080_GAME_CLASSES.md section 20) */
-    int *cursor;  /* 0x00: points at the list-pointer home (&a0); commands are read as *(*cursor)++ */
-    int cmd;      /* 0x04: current command word, (nargs << 16) | op */
-    int unk08;
-    int mnode;    /* 0x0C: = a1; nodelist_checkMNode; zeroed for a 1003 node-def sub-call */
-    int node;     /* 0x10: = a1; the current node (its virtual slot 7 gets the non-interpreter ops) */
-    int unk14;    /* 0x14: = a2 */
-    int unk18;    /* = 0 */
-    int unk1C;
-    int unk20;
-    int unk24;
-    int unk28;    /* = 0 */
-    int unk2C;
-    int unk30;
-    int op113;    /* 0x34: = 0; node op 113 sets it */
-    int opt1016;  /* 0x38: = 1; op 1016 sets it */
-    int parent;   /* 0x3C: = 0; the calling state of a 1003 sub-call (nodelist_checkPrevNode / PrevMNode) */
-    int character;/* 0x40: op 1010 runs its block only when the argument equals it */
-    int boardIdx; /* 0x44: op 1011 likewise */
-    int mask;     /* 0x48: op 1012 runs its block only when (mask & argument) */
-} Gl5591CArg;   /* 0x4C */
+/* the interpreter state: NodeListState, include/gdl/nodelist.h (agent-b runs 500 / 537) */
 int ProcNodeList(a0, a1, a2, a3)
 int *a0;
 int a1;
 int a2;
-Gl5591CArg *a3;
+NodeListState *a3;
 {
-    Gl5591CArg *p5591C;
-    Gl5591CArg s;
+    NodeListState *p5591C;
+    NodeListState s;
     int v0;
     /* Setup call: fmt/handle at D+0x211B8 */
     gl_func_00000000((char*)&gl_data_00000000 + 0x211B8);
@@ -20667,16 +20646,16 @@ Gl5591CArg *a3;
     if (v0 != 0) {
         gl_func_00000000((char*)&gl_data_00000000 + 0x211C8);
     }
-    if (((Gl5591CArg **)&a0)[3] != 0) s = *((Gl5591CArg **)&a0)[3];
-    s.cursor = (int *)&a0;
-    s.unk28 = 0;
+    if (((NodeListState **)&a0)[3] != 0) s = *((NodeListState **)&a0)[3];
+    s.cursor = (int **)&a0;
+    s.obj = 0;
     s.unk18 = 0;
     s.op113 = 0;
     s.parent = 0;
-    s.mnode = a1;
-    s.node = a1;
-    s.unk14 = a2;
-    s.opt1016 = 1;
+    s.mnode = (char *)a1;
+    s.node = (char *)a1;
+    s.animMgr = (char *)a2;
+    s.linkNodes = 1;
     gl_func_00000000(s);
     gl_func_00000000();
     return 1;
@@ -26247,24 +26226,24 @@ int anim_formatId(int arg0) {
  * delay slot, promoting self to s0); (2) the 0x22040 assert arg is address-style
  * (&D+0x22040 -> lui+addiu), not a literal (lui+ori); (3) inline `related` (no
  * named local) to color its temp t8 not t1. 70.3% -> 100%. */
-void anim_createAnimator(int *arg0) {
-    int *self = arg0;
+void anim_createAnimator(NodeListState *arg0) {
+    NodeListState *self = arg0;
     int **ptrptr;
     int *p;
     int val;
     int result;
     CALL(nodelist_checkPrevNode)(arg0);
-    if (self[0x14 / 4] == 0) {
+    if (self->animMgr == 0) {
         CALL(sys_fatal)(GL_DATA_STR(0x22040, "Null AnimatorMgr specified"));
     }
-    ptrptr = (int**)self[0];
+    ptrptr = self->cursor;
     p = *ptrptr;
     *ptrptr = p + 1;
     val = *p;
-    self[0x4 / 4] = val;
-    result = (int)CALL(Animator_ctor)(0, ((int*)self[0x3C / 4])[0x10 / 4], self[0x14 / 4], 0, val);
-    self[0x10 / 4] = result;
-    self[0xC / 4] = 0;
+    self->cmd = val;
+    result = (int)CALL(Animator_ctor)(0, self->parent->node, self->animMgr, 0, val);
+    self->node = (char *)result;
+    self->mnode = 0;
 }
 
 /* Quad4 reader template — 4th in this loop's mass-match pass after
