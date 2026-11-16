@@ -510,15 +510,28 @@ typedef struct SequenceChannel {
  * at +0x70 registered on layerFreeList). Named: the flag word (the
  * game_libs_o2_2BB7C.c donor's enabled/finished bits), adsr 0x18 (copied from
  * channel->adsr by AudioSeq_SeqChannelSetLayer), channel 0x50 (SetLayer),
- * scriptState 0x54 (2BB7C donor), listItem 0x70. The rest differs from OoT's
- * layer and stays padding until verified. */
+ * scriptState 0x54 (2BB7C donor), listItem 0x70; note 0x2C, noteVelocity 0x40, tunedSample
+ * 0x4C and the bit3 / notePropertiesNeedInit bits from Audio_NoteInitForLayer, which is OoT's
+ * body field for field (agent-c run 535). The rest stays padding until verified. */
 typedef struct SequenceLayer {
     /* 0x00 */ u32 enabled : 1;
     /* 0x00 */ u32 finished : 1;
-    /* 0x00 */ u32 rest : 30;
+    /* 0x00 */ u32 stopSomething : 1;          /* bits 2, 3, 5, 6: OoT's names, unverified here */
+    /* 0x00 */ u32 continuousNotes : 1;
+    /* 0x00 */ u32 bit3 : 1;                   /* set by Audio_NoteInitForLayer */
+    /* 0x00 */ u32 ignoreDrumPan : 1;
+    /* 0x00 */ u32 bit1 : 1;
+    /* 0x00 */ u32 notePropertiesNeedInit : 1; /* set by Audio_NoteInitForLayer */
+    /* 0x01 */ u32 rest : 24;                  /* byte 0x02 is OoT's u8 instOrWave (0xFF = take the
+                                                * channel's); Audio_NoteInitForLayer reads it as a byte */
     /* 0x04 */ char unk_04[0x18 - 0x04];
     /* 0x18 */ AdsrSettings adsr;
-    /* 0x20 */ char unk_20[0x50 - 0x20];
+    /* 0x20 */ char unk_20[0x2C - 0x20];
+    /* 0x2C */ struct Note *note;              /* Audio_NoteInitForLayer */
+    /* 0x30 */ char unk_30[0x40 - 0x30];
+    /* 0x40 */ f32 noteVelocity;               /* Audio_NoteInitForLayer (= 0) */
+    /* 0x44 */ char unk_44[0x4C - 0x44];
+    /* 0x4C */ TunedSample *tunedSample;       /* Audio_NoteInitForLayer -> note sampleState */
     /* 0x50 */ SequenceChannel *channel;
     /* 0x54 */ SeqScriptState scriptState;
     /* 0x70 */ AudioListItem listItem;
@@ -905,6 +918,9 @@ AUDIO_ASSERT_MEMBER(SequenceChannel, seqScriptIO, 0xD4);
 AUDIO_ASSERT_MEMBER(SequenceChannel, filter, 0xDC);
 AUDIO_ASSERT_MEMBER(SequenceChannel, stereo, 0xE0);
 AUDIO_ASSERT_MEMBER(SequenceLayer, adsr, 0x18);
+AUDIO_ASSERT_MEMBER(SequenceLayer, note, 0x2C);
+AUDIO_ASSERT_MEMBER(SequenceLayer, noteVelocity, 0x40);
+AUDIO_ASSERT_MEMBER(SequenceLayer, tunedSample, 0x4C);
 AUDIO_ASSERT_MEMBER(SequenceLayer, channel, 0x50);
 AUDIO_ASSERT_MEMBER(SequenceLayer, scriptState, 0x54);
 AUDIO_ASSERT_MEMBER(SequenceLayer, listItem, 0x70);

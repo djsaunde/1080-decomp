@@ -9205,44 +9205,46 @@ PrioObj28E14 *Audio_FindNodeWithPrioLessThan(PrioNode28E14 *head, int lim) {
  * and obj+0xB0 are named at the TOP so uopt rematerializes them after the
  * first call (addiu v0,a0,48 kept as a base instead of folded offsets); the
  * 12-byte unused local supplies the target's 0x38 frame / v1 spill at 0x1C. */
-typedef struct { unsigned x0:4; unsigned ready:1; unsigned x1:2; unsigned active:1; unsigned rest:24; } Gl28E94Desc;
-typedef struct { unsigned b0:8; unsigned mode:3; unsigned x:2; unsigned flag:1; unsigned rest:18; int w4, w8, wc; int w10; } Gl28E94Xf;
 extern int gl_func_0003C36C();
 extern int gl_func_0003CF18();
+#define NL_NOTE ((Note *)obj)        /* agent-c run 535: OoT Audio_NoteInitForLayer(Note *, SequenceLayer *) */
+#define NL_LAYER ((SequenceLayer *)d)
 void Audio_NoteInitForLayer(char *obj, char *d) {
-    Gl28E94Xf *xf;
-    char *b30;
+    NoteSampleState *xf;
+    NotePlaybackState *b30;
     char pad[12];
     int id;
-    b30 = obj + 0x30;
-    xf = (Gl28E94Xf *)(obj + 0xB0);
-    *(int *)(obj + 0x40) = -1;
-    *(int *)(obj + 0x44) = (int)d;
-    *(unsigned char *)b30 = *(unsigned char *)(*(char **)(d + 0x50) + 5);
-    *(int *)(d + 0x2C) = (int)obj;
-    ((Gl28E94Desc *)d)->active = 1;
-    ((Gl28E94Desc *)d)->ready = 1;
-    *(int *)(*(char **)(d + 0x50) + 0x40) = (int)obj;
-    *(int *)(*(char **)(d + 0x50) + 0x44) = (int)d;
-    *(float *)(d + 0x40) = 0.0f;
+    b30 = &NL_NOTE->playbackState;
+    xf = &NL_NOTE->sampleState;
+    NL_NOTE->playbackState.prevParentLayer = (SequenceLayer *)-1; /* NO_LAYER */
+    NL_NOTE->playbackState.parentLayer = NL_LAYER;
+    b30->priority = NL_LAYER->channel->notePriority;
+    NL_LAYER->note = NL_NOTE;
+    NL_LAYER->notePropertiesNeedInit = 1;
+    NL_LAYER->bit3 = 1;
+    NL_LAYER->channel->noteUnused = NL_NOTE;
+    NL_LAYER->channel->layerUnused = NL_LAYER;
+    NL_LAYER->noteVelocity = 0.0f;
     gl_func_0003C36C(obj, d);
     id = *(unsigned char *)(d + 2);
     if (id == 0xFF) {
-        id = *(short *)(*(char **)(d + 0x50) + 0x24);
+        id = NL_LAYER->channel->instOrWave;
     }
-    xf->w10 = *(int *)(d + 0x4C);
+    xf->tunedSample = NL_LAYER->tunedSample;
     if (id >= 128 && id < 192) {
-        xf->flag = 1;
+        xf->isSyntheticWave = 1;
     } else {
-        xf->flag = 0;
+        xf->isSyntheticWave = 0;
     }
-    if (xf->flag) {
+    if (xf->isSyntheticWave) {
         gl_func_0003CF18(obj, d, id);
     }
-    *(unsigned char *)(b30 + 3) = *(unsigned char *)(*(char **)(d + 0x50) + 7);
-    *(unsigned char *)(b30 + 5) = (unsigned int)(**(int **)(d + 0x50) << 5) >> 31;
-    xf->mode = *(unsigned char *)(*(char **)(d + 0x50) + 8) & 3;
+    b30->fontId = NL_LAYER->channel->fontId;
+    b30->stereoHeadsetEffects = NL_LAYER->channel->stereoHeadsetEffects;
+    xf->reverbIndex = NL_LAYER->channel->reverbIndex & 3;
 }
+#undef NL_NOTE
+#undef NL_LAYER
 
 void Audio_NoteInterTrack(int *a0, int a1) {
     volatile int **vp0 = (volatile int **)&a0;
@@ -9321,6 +9323,10 @@ end:
 extern int gl_func_00000000();
 extern int gl_ref_0003D480();
 extern int gl_ref_0003D638();
+/* agent-c run 535: OoT Audio_AllocNoteFromActive(NotePool *pool = a0, SequenceLayer *layer = a1):
+ * the key is layer->channel->notePriority, the lists are pool->releasing (+0x20) / active (+0x30). */
+#define AN_NOTE(p) ((Note *)(p))
+#define AN_LAYER(p) ((SequenceLayer *)(p))
 int Audio_AllocNoteFromActive(char *a0, char *a1) {
     char *v1;
     int pad;
@@ -9329,14 +9335,14 @@ int Audio_AllocNoteFromActive(char *a0, char *a1) {
     char *p20;
     t2 = 16; t3 = 16;
 
-    { int k = *(unsigned char *)(*(char **)(a1 + 0x50) + 5);
+    { int k = AN_LAYER(a1)->channel->notePriority;
     v1 = (char *)gl_ref_0003D480(p20 = a0 + 0x20, k); }
     if (v1 != 0) {
-        t3 = *(unsigned char *)(v1 + 0x30);
+        t3 = AN_NOTE(v1)->playbackState.priority;
     }
-    a0 = (char *)gl_ref_0003D480(a0 + 0x30, *(unsigned char *)(*(char **)(a1 + 0x50) + 5));
+    a0 = (char *)gl_ref_0003D480(a0 + 0x30, AN_LAYER(a1)->channel->notePriority);
     if (a0 != 0) {
-        t2 = *(unsigned char *)(a0 + 0x30);
+        t2 = AN_NOTE(a0)->playbackState.priority;
     }
     if (v1 == 0 && a0 == 0) {
         return 0;
@@ -9345,13 +9351,15 @@ int Audio_AllocNoteFromActive(char *a0, char *a1) {
         CALL(Audio_AudioListRemove)(a0);
         gl_ref_0003D638(a0, a1);
         CALL(AudioSeq_AudioListPushBack)(p20, a0);
-        *(unsigned char *)(a0 + 0x30) = *(unsigned char *)(*(char **)(a1 + 0x50) + 5);
+        AN_NOTE(a0)->playbackState.priority = AN_LAYER(a1)->channel->notePriority;
         return (int)a0;
     }
-    *(char **)(v1 + 0x48) = a1;
-    *(unsigned char *)(v1 + 0x30) = *(unsigned char *)(*(char **)(a1 + 0x50) + 5);
+    AN_NOTE(v1)->playbackState.wantedParentLayer = AN_LAYER(a1);
+    AN_NOTE(v1)->playbackState.priority = AN_LAYER(a1)->channel->notePriority;
     return (int)v1;
 }
+#undef AN_NOTE
+#undef AN_LAYER
 
 // Audio_AllocNote — STRUCTURAL PASS (0x2D4 / 181 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
