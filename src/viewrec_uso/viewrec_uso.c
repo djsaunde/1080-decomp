@@ -1325,9 +1325,125 @@ void viewrec_uso_func_000047B0(ViewRecScreen *self) {
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004854);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004990);
+/* 0x4990: the sound options screen's pad handling (up / down move the row, left / right step the BGM /
+ * SE / voice level or the sound mode, B / Start save and go back). EXACT via the MIPSpro 7.2.1 donor
+ * src/viewrec_uso/viewrec_uso_mp72_4990.cpp (REPLACE_FUNC_BODY): its 4-label switches are 4-entry jump
+ * tables, which only EDG 2.29 emits. This placeholder's text is dropped by the splice. */
+void viewrec_uso_func_00004990(void *self) {
+}
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004DEC);
+/* the sound options screen (proc+0x58, ctor 0x4854): BGM / SE / voice levels (0..10) and the sound
+ * mode; 0x4990 handles its pad, 0x4DEC draws it */
+typedef struct VrSoundOptions {
+    /* 0x00 */ Node node;
+    /* 0x2C */ char pad2C[0x50 - 0x2C];
+    /* 0x50 */ ViewRecProc *proc;
+    /* 0x54 */ s32 font;
+    /* 0x58 */ s32 modeStep;         /* x step between the three sound-mode labels */
+    /* 0x5C */ s32 unk5C;
+    /* 0x60 */ s32 modeX;
+    /* 0x64 */ s32 modeY;
+    /* 0x68 */ s32 rowStep;          /* y step between the level rows */
+    /* 0x6C */ s32 labelX;
+    /* 0x70 */ s32 unk70;
+    /* 0x74 */ s32 barStep;          /* x step between the level bar cells */
+    /* 0x78 */ s32 barX;
+    /* 0x7C */ s32 rowY;
+    /* 0x80 */ s32 blink;            /* -16 per frame: the highlighted row's alpha */
+    /* 0x84 */ s32 cursor;           /* rows 0..2 the levels, 3 the sound mode */
+    /* 0x88 */ s32 mode;             /* options flags & 3 */
+    /* 0x8C */ s32 levels[3];        /* options +0x12..+0x14 */
+} VrSoundOptions;
+
+/* 0x7E0 (sVrLabels[63..65]): the three level-row labels. Indexed by the row, so a separate static
+ * (the target folds 0x7E0 into the reloc). */
+extern RaceSprite sVrLabels_7E0[3];
+
+/* 0x4DEC: the sound options draw: the records draws, the colours, title label 41 at (160, 37); per
+ * level row its label (sVrLabels_7E0[i]), the bar ends 48 / 49 and ten bar cells (50), the cell at the
+ * current level in onBar's red; the highlighted row (cursor) blinks; then the three sound-mode labels
+ * 51..53, the current one white (blinking when the cursor is on row 3), the others grey. `unused` /
+ * `unused2` keep the 0x100 frame and the homes (white at sp+0xEC); `&sVrLabels_7E0[i]` with no pointer
+ * local is a strength-reduced uopt temp spilled to sp+0x64, as in the target; `if (1) {}` lets d take
+ * white's f0. */
+void viewrec_uso_func_00004DEC(VrSoundOptions *self) {
+    s32 unused;
+    f32 white[4];
+    f32 hiBar[4];
+    f32 onBar[4];
+    f32 hiLabel[4];
+    f32 grey[4];
+    f32 on[4];
+    f32 d;
+    f32 w, g, r;
+    s32 i, j;
+    s32 a;
+    s32 unused2[4];
+
+    white[0] = 1.0f;
+    white[1] = 1.0f;
+    white[2] = 1.0f;
+    white[3] = 1.0f;
+    if (1) {}
+    d = 255.0f;
+    w = 255 / d;
+    g = 100 / d;
+    on[0] = w;
+    on[1] = w;
+    on[2] = w;
+    on[3] = w;
+    grey[3] = w;
+    grey[0] = g;
+    grey[1] = g;
+    grey[2] = g;
+    CALL(viewrec_uso_func_000011B4)(self->proc);
+    CALL(viewrec_uso_func_000014DC)(self->proc);
+    CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, 255, sVrPrimColour, sVrEnvColour);
+    CALL(gui_spriteRefresh)(&sVrLabels[41]);
+    CALL(gui_drawSprite)(&sVrLabels[41], 160, 37, 3);
+    r = 50 / d;
+    self->blink -= 16;
+    for (i = 0; i < 3; i++) {
+        a = 255;
+        if (i == self->cursor) {
+            a = self->blink;
+            hiBar[0] = w; hiBar[1] = w; hiBar[2] = w; hiBar[3] = w;
+            onBar[0] = r; onBar[1] = r; onBar[2] = r; onBar[3] = w;
+            hiLabel[0] = w; hiLabel[1] = w; hiLabel[2] = w; hiLabel[3] = w;
+        } else {
+            hiBar[0] = g; hiBar[1] = g; hiBar[2] = g; hiBar[3] = w;
+            onBar[0] = r; onBar[1] = r; onBar[2] = r; onBar[3] = w;
+            hiLabel[0] = g; hiLabel[1] = g; hiLabel[2] = g; hiLabel[3] = w;
+        }
+        CALL(gui_spriteRefresh)(&sVrLabels_7E0[i]);
+        CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels_7E0[i], a, on, 255);
+        CALL(gui_drawSprite)(&sVrLabels_7E0[i], self->labelX, self->rowY + self->rowStep * i, 2);
+        CALL(gui_spriteRefresh)(&sVrLabels[48]);
+        CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[48], a, hiLabel, 255);
+        CALL(gui_drawSprite)(&sVrLabels[48], self->barX, self->rowY + self->rowStep * i, 3);
+        CALL(gui_spriteRefresh)(&sVrLabels[49]);
+        CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[49], a, hiLabel, 255);
+        CALL(gui_drawSprite)(&sVrLabels[49], self->barX + self->barStep * 11, self->rowY + self->rowStep * i, 3);
+        CALL(gui_spriteRefresh)(&sVrLabels[50]);
+        CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[50], 255, hiBar, 255);
+        for (j = 0; j != 10; j++) {
+            if (j == self->levels[i]) {
+                CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[50], 255, onBar, 255);
+            }
+            CALL(gui_drawSprite)(&sVrLabels[50], self->barX + self->barStep * (j + 1), self->rowY + self->rowStep * i, 3);
+        }
+    }
+    a = (self->cursor == 3) ? self->blink : 255;
+    for (j = 0; j < 3; j++) {
+        CALL(gui_spriteRefresh)(&sVrLabels[51 + j]);
+        if (j != self->mode) {
+            CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[51 + j], 255, grey, 255);
+        } else {
+            CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[51 + j], a, on, 255);
+        }
+        CALL(gui_drawSprite)(&sVrLabels[51 + j], self->modeX + j * self->modeStep, self->modeY, 3);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00005200);
 
@@ -1374,7 +1490,39 @@ void viewrec_uso_func_00005318(VrScreen5C *self) {
     CALL(Node_update)(self);
 }
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00005440);
+/* 0x5440: VrScreen5C draw: the records draws, the colours, label sprite 42 at (160, 37), then
+ * the two choice labels 66 / 67 at (90, 126) / (220, 126). The chosen one (flag 0 -> 66,
+ * flag 1 -> 67) blinks through the unk6C fade counter (-16 per frame, the alpha wraps through
+ * the low byte); the other is drawn at 128. `unused` keeps the 0x48 frame (col at sp+0x38). */
+void viewrec_uso_func_00005440(VrScreen5C *self) {
+    f32 col[4];
+    s32 unused[5];
+
+    col[0] = 1.0f;
+    col[1] = 1.0f;
+    col[2] = 1.0f;
+    col[3] = 1.0f;
+    CALL(viewrec_uso_func_000011B4)(self->proc);
+    CALL(viewrec_uso_func_000014DC)(self->proc);
+    self->unk6C -= 16;
+    CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, 255, sVrPrimColour, sVrEnvColour);
+    CALL(gui_spriteRefresh)(&sVrLabels[42]);
+    CALL(gui_drawSprite)(&sVrLabels[42], 160, 37, 3);
+    CALL(gui_spriteRefresh)(&sVrLabels[66]);
+    if (self->flag == 0) {
+        CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[66], self->unk6C, col, 255);
+    } else {
+        CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[66], 128, col, 255);
+    }
+    CALL(gui_drawSprite)(&sVrLabels[66], 90, 126, 3);
+    CALL(gui_spriteRefresh)(&sVrLabels[67]);
+    if (self->flag != 0) {
+        CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[67], self->unk6C, col, 255);
+    } else {
+        CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[67], 128, col, 255);
+    }
+    CALL(gui_drawSprite)(&sVrLabels[67], 220, 126, 3);
+}
 
 void viewrec_uso_func_000055A4(int a0) {
 }
