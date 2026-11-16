@@ -10378,7 +10378,7 @@ int memtrack_heapUsed() {
     return CALL(Mem_getUsed)(gl_func_00000000);
 }
 
-/* app_newListHead_000422AC: alloc-if-null + conditional sub-alloc. p = a0 ?:
+/* GfxDdm_ctor: alloc-if-null + conditional sub-alloc. p = a0 ?:
  * alloc(12); if(!p) return p; q = p+4; if (p == (void*)-4) { q =
  * alloc(8); if(!q) return p; } q[1]=0; q[0]=0; return p.
  * Lever: reuse the `a0` parameter as the resource (no fresh `void *p =
@@ -10388,7 +10388,7 @@ int memtrack_heapUsed() {
 extern int gl_func_00000000();
 /* agent-b run 591: this is GfxDdm's element ctor (include/gdl/gfxlib.h): app_staticInit_000412E8 passes
  * its address (TextReloc HI16 / LO16 at Text 0x55ABC / 0x55AC0) to __vec_new for GfxLib.ddmPool[50]. */
-GfxDdm *app_newListHead_000422AC(GfxDdm *a0) {
+GfxDdm *GfxDdm_ctor(GfxDdm *a0) {
     GfxDdmState *q;
     if (a0 == 0) {
         a0 = (GfxDdm *)gl_func_00000000(12);
@@ -10406,7 +10406,7 @@ end:
 }
 
 /* game_libs_func_0004230C (folded 2026-10-24 agent-c run 150): 10 all-zero pad words, now an
- * all-zero SUFFIX_BYTES_FORCE on app_newListHead_000422AC; expected/ symbol deleted, app_newListHead_000422AC grown by 40. */
+ * all-zero SUFFIX_BYTES_FORCE on GfxDdm_ctor; expected/ symbol deleted, GfxDdm_ctor grown by 40. */
 
 /* app_orthoZero_00042338: 16-insn FP-zero-init wrapper. MATCHED.
  * Body: gl_func_00000000(&buf, 0.0f x7).

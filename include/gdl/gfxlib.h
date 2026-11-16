@@ -30,7 +30,7 @@ typedef struct GfxMorphList {
  * pool of 50 (ddmPool, count nDdms): gfx_addDdm (0x44CE8) takes the next one (sys_staticArrayOverflow at
  * 50), stores it in ddm[id], clears state.flags and calls gfx_initDdm, which records the static DL's Gfx
  * count in dlIndex and builds the render state {0, flags} in place. Its Cfront element ctor is
- * app_newListHead_000422AC (= El::El, passed to __vec_new(&ddmPool, 50, 12, ctor) by the static
+ * GfxDdm_ctor (= El::El, passed to __vec_new(&ddmPool, 50, 12, ctor) by the static
  * initializer app_staticInit_000412E8: bootup.uso TextReloc HI16 / LO16 at Text 0x55ABC / 0x55AC0 ->
  * 0x422AC): it zeroes the state member, which has a ctor of its own (the `new(8)` fallback).
  * agent-b run 591. */

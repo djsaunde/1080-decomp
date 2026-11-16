@@ -1,6 +1,6 @@
-nonmatching app_newListHead_000422AC, 0x60
+nonmatching GfxDdm_ctor, 0x60
 
-glabel app_newListHead_000422AC
+glabel GfxDdm_ctor
     /* E27384 000422AC 27BDFFE8 */  .word 0x27BDFFE8
     /* E27388 000422B0 AFBF0014 */  .word 0xAFBF0014
     /* E2738C 000422B4 14800005 */  .word 0x14800005
@@ -25,4 +25,4 @@ glabel app_newListHead_000422AC
     /* E273D8 00042300 00A01025 */  .word 0x00A01025
     /* E273DC 00042304 03E00008 */  .word 0x03E00008
     /* E273E0 00042308 00000000 */  .word 0x00000000
-endlabel app_newListHead_000422AC
+endlabel GfxDdm_ctor

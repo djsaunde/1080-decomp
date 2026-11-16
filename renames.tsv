@@ -5369,3 +5369,4 @@ gl_44144_key_FDA4	sKey_44144_RcpStatusFmt
 gl_44144_key_FDD4	sKey_44144_GfxStatusFmt
 gl_44144_key_F970	gAutoLights_1F970_44144
 DynArr_init_000665A4	DynArrPool_init
+app_newListHead_000422AC	GfxDdm_ctor

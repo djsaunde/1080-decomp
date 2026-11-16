@@ -1435,7 +1435,7 @@ void dbg_hostioHexDump(void);
 extern int gl_func_00000000();
 int memtrack_heapUsed();
 extern int gl_func_00000000();
-void* app_newListHead_000422AC(void *a0);
+void* GfxDdm_ctor(void *a0);
 void _asmpp_func91(void);
 extern void gl_func_00000000_42338(void*, float, float, float, float, float, float, float);
 void app_orthoZero_00042338(void);

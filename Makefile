@@ -509,8 +509,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # game_libs_func_00035E5C (2 words) / game_libs_func_0004230C (10 words): all-zero inter-function pads
 # folded into their exact predecessors as zero SUFFIX words (agent-c run 150; expected/ symbols deleted
 # with scripts/elf-symtab-delete.py, predecessors grown; .text + relocs unchanged).
-build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += Parms_skipRecords=0x00000000,0x00000000 app_newListHead_000422AC=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += Parms_skipRecords=0x00000000,0x00000000 app_newListHead_000422AC=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += Parms_skipRecords=0x00000000,0x00000000 GfxDdm_ctor=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += Parms_skipRecords=0x00000000,0x00000000 GfxDdm_ctor=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
 # hostio_readQuadParm_00055B10: byte-correct real-def, IDO trailing jr-delay nop -> symbol 0x30
 # vs target 0x2c (nop is baserom alignment). Resize non_matching symbol to 0x2c so
 # objdiff scores 11w not 12w. ROM-neutral (non_matching .o only). (Same class as EBC8.)
