@@ -2247,7 +2247,7 @@ void *ColourParms_ctor(char *arg0) {
         var_v1 = arg0;
         if ((arg0 != 0) || (temp_v0_2 = FCALL(mem_new)(8), var_v1 = temp_v0_2, (temp_v0_2 != 0))) {
             PARMS(var_v1)->name = (s32)&sStr_Colour_Parms_CF80;
-        PARMS(var_v1)->unk04 = 0; } u1_a.x = 1.0f; u1_a.y = 1.0f; u1_a.z = 1.0f; u1_c.x = 1.0f; u1_c.y = 1.0f; u1_c.z = 1.0f; u1_c.w = 1.0f; u1_a.w = 0.0f; u1_b.x = 0.0f; u1_b.y = 0.0f; u1_b.z = 0.0f; u1_b.w = 0.0f; u1_f.v = sTag_rdP_CF90; sp78 = u1_a; var_a0 = arg0 + 8; sp68 = u1_b; sp58 = u1_c; sp54 = u1_f; if ((arg0 != (void *)-8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0 = temp_v0_2, (temp_v0_2 != 0))) {
+        PARMS(var_v1)->unk04 = 0; } u1_a.x = 1.0f; u1_a.y = 1.0f; u1_a.z = 1.0f; u1_c.x = 1.0f; u1_c.y = 1.0f; u1_c.z = 1.0f; u1_c.w = 1.0f; u1_a.w = 0.0f; u1_b.x = 0.0f; u1_b.y = 0.0f; u1_b.z = 0.0f; u1_b.w = 0.0f; u1_f.v = sTag_rdP_CF90; sp78 = u1_a; var_a0 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_RD][0]; sp68 = u1_b; sp58 = u1_c; sp54 = u1_f; if ((arg0 != (void *)-8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0, arg0, sp54, 1);
             PARMRGBA(var_a0)->type = (s32)((char *)&D_00000000_cd58_u1 + 0xCD58);
             PARMRGBA(var_a0)->unk20 = 0;
@@ -2267,7 +2267,7 @@ void *ColourParms_ctor(char *arg0) {
         u2_c.w = 1.0f;
         u2_f.v = sTag_rdE_CF94;
         sp78 = u2_a;
-        var_a0_2 = arg0 + 0x2C;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_RD][1];
         sp68 = u2_b;
         sp58 = u2_c;
         sp54 = u2_f;
@@ -2291,7 +2291,7 @@ void *ColourParms_ctor(char *arg0) {
         u3_c.w = 1.0f;
         u3_f.v = sTag_32P_CF98;
         sp78 = u3_a;
-        var_a0_2 = arg0 + 0x50;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_32][0];
         sp68 = u3_b;
         sp58 = u3_c;
         sp54 = u3_f;
@@ -2315,7 +2315,7 @@ void *ColourParms_ctor(char *arg0) {
         u4_c.w = 1.0f;
         u4_f.v = sTag_32E_CF9C;
         sp78 = u4_a;
-        var_a0_2 = arg0 + 0x74;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_32][1];
         sp68 = u4_b;
         sp58 = u4_c;
         sp54 = u4_f;
@@ -2338,7 +2338,7 @@ void *ColourParms_ctor(char *arg0) {
         u5_a.y = kRo_ColourParms_ctor_D0C;
         u5_f.v = sTag_goP_CFA0; u5_a.z = kRo_ColourParms_ctor_D10;
         sp78 = u5_a;
-        var_a0_2 = arg0 + 0x98;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_GO][0];
         sp68 = u5_b;
         sp58 = u5_c;
         sp54 = u5_f;
@@ -2361,7 +2361,7 @@ void *ColourParms_ctor(char *arg0) {
         u6_c.w = 1.0f;
         u6_a.z = kRo_ColourParms_ctor_D14; u6_f.v = sTag_goE_CFA4;
         sp78 = u6_a;
-        var_a0_2 = arg0 + 0xBC;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_GO][1];
         sp68 = u6_b;
         sp58 = u6_c;
         sp54 = u6_f;
@@ -2384,7 +2384,7 @@ void *ColourParms_ctor(char *arg0) {
         u7_a.y = kRo_ColourParms_ctor_D18;
         u7_f.v = sTag_glP_CFA8; u7_a.z = kRo_ColourParms_ctor_D1C;
         sp78 = u7_a;
-        var_a0_2 = arg0 + 0xE0;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_GL][0];
         sp68 = u7_b;
         sp58 = u7_c;
         sp54 = u7_f;
@@ -2407,7 +2407,7 @@ void *ColourParms_ctor(char *arg0) {
         u8_c.w = 1.0f;
         u8_a.z = kRo_ColourParms_ctor_D20; u8_f.v = sTag_glE_CFAC;
         sp78 = u8_a;
-        var_a0_2 = arg0 + 0x104;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_GL][1];
         sp68 = u8_b;
         sp58 = u8_c;
         sp54 = u8_f;
@@ -2430,7 +2430,7 @@ void *ColourParms_ctor(char *arg0) {
         u9_a.y = kRo_ColourParms_ctor_D24;
         u9_f.v = sTag_lsP_CFB0; u9_a.z = kRo_ColourParms_ctor_D28;
         sp78 = u9_a;
-        var_a0_2 = arg0 + 0x128;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_LS][0];
         sp68 = u9_b;
         sp58 = u9_c;
         sp54 = u9_f;
@@ -2453,7 +2453,7 @@ void *ColourParms_ctor(char *arg0) {
         u10_c.w = 1.0f;
         u10_a.z = kRo_ColourParms_ctor_D2C; u10_f.v = sTag_lsE_CFB4;
         sp78 = u10_a;
-        var_a0_2 = arg0 + 0x14C;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_LS][1];
         sp68 = u10_b;
         sp58 = u10_c;
         sp54 = u10_f;
@@ -2476,7 +2476,7 @@ void *ColourParms_ctor(char *arg0) {
         u11_a.y = kRo_ColourParms_ctor_D30;
         u11_f.v = sTag_rtP_CFB8; u11_a.z = kRo_ColourParms_ctor_D34;
         sp78 = u11_a;
-        var_a0_2 = arg0 + 0x170;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_RT][0];
         sp68 = u11_b;
         sp58 = u11_c;
         sp54 = u11_f;
@@ -2499,7 +2499,7 @@ void *ColourParms_ctor(char *arg0) {
         u12_c.w = 1.0f;
         u12_a.z = kRo_ColourParms_ctor_D38; u12_f.v = sTag_rtE_CFBC;
         sp78 = u12_a;
-        var_a0_2 = arg0 + 0x194;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_RT][1];
         sp68 = u12_b;
         sp58 = u12_c;
         sp54 = u12_f;
@@ -2522,7 +2522,7 @@ void *ColourParms_ctor(char *arg0) {
         u13_a.y = kRo_ColourParms_ctor_D3C;
         u13_f.v = sTag_toP_CFC0; u13_a.z = kRo_ColourParms_ctor_D40;
         sp78 = u13_a;
-        var_a0_2 = arg0 + 0x1B8;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_TO][0];
         sp68 = u13_b;
         sp58 = u13_c;
         sp54 = u13_f;
@@ -2545,7 +2545,7 @@ void *ColourParms_ctor(char *arg0) {
         u14_c.w = 1.0f;
         u14_a.z = kRo_ColourParms_ctor_D44; u14_f.v = sTag_toE_CFC4;
         sp78 = u14_a;
-        var_a0_2 = arg0 + 0x1DC;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_TO][1];
         sp68 = u14_b;
         sp58 = u14_c;
         sp54 = u14_f;
@@ -2568,7 +2568,7 @@ void *ColourParms_ctor(char *arg0) {
         u15_a.y = kRo_ColourParms_ctor_D48;
         u15_f.v = sTag_rnP_CFC8; u15_a.z = kRo_ColourParms_ctor_D4C;
         sp78 = u15_a;
-        var_a0_2 = arg0 + 0x200;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_RN][0];
         sp68 = u15_b;
         sp58 = u15_c;
         sp54 = u15_f;
@@ -2591,7 +2591,7 @@ void *ColourParms_ctor(char *arg0) {
         u16_a.x = kRo_ColourParms_ctor_D50;
         u16_f.v = sTag_rnE_CFCC; u16_a.y = kRo_ColourParms_ctor_D54;
         sp78 = u16_a;
-        var_a0_2 = arg0 + 0x224;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_RN][1];
         sp68 = u16_b;
         sp58 = u16_c;
         sp54 = u16_f;
@@ -2614,7 +2614,7 @@ void *ColourParms_ctor(char *arg0) {
         u17_a.y = kRo_ColourParms_ctor_D5C;
         u17_f.v = sTag_rsP_CFD0; u17_a.z = kRo_ColourParms_ctor_D60;
         sp78 = u17_a;
-        var_a0_2 = arg0 + 0x248;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_RS][0];
         sp68 = u17_b;
         sp58 = u17_c;
         sp54 = u17_f;
@@ -2637,7 +2637,7 @@ void *ColourParms_ctor(char *arg0) {
         u18_c.w = 1.0f;
         u18_a.z = kRo_ColourParms_ctor_D64; u18_f.v = sTag_rsE_CFD4;
         sp78 = u18_a;
-        var_a0_2 = arg0 + 0x26C;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_RS][1];
         sp68 = u18_b;
         sp58 = u18_c;
         sp54 = u18_f;
@@ -2660,7 +2660,7 @@ void *ColourParms_ctor(char *arg0) {
         u19_c.w = 1.0f;
         u19_a.x = kRo_ColourParms_ctor_D68; u19_f.v = sTag_nrP_CFD8;
         sp78 = u19_a;
-        var_a0_2 = arg0 + 0x290;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_NR][0];
         sp68 = u19_b;
         sp58 = u19_c;
         sp54 = u19_f;
@@ -2683,7 +2683,7 @@ void *ColourParms_ctor(char *arg0) {
         u20_a.x = kRo_ColourParms_ctor_D6C;
         u20_f.v = sTag_nrE_CFDC; u20_a.y = kRo_ColourParms_ctor_D70;
         sp78 = u20_a;
-        var_a0_2 = arg0 + 0x2B4;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_NR][1];
         sp68 = u20_b;
         sp58 = u20_c;
         sp54 = u20_f;
@@ -2706,7 +2706,7 @@ void *ColourParms_ctor(char *arg0) {
         u21_a.y = kRo_ColourParms_ctor_D78;
         u21_f.v = sTag_adP_CFE0; u21_a.z = kRo_ColourParms_ctor_D7C;
         sp78 = u21_a;
-        var_a0_2 = arg0 + 0x2D8;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_AD][0];
         sp68 = u21_b;
         sp58 = u21_c;
         sp54 = u21_f;
@@ -2729,7 +2729,7 @@ void *ColourParms_ctor(char *arg0) {
         u22_a.y = kRo_ColourParms_ctor_D84;
         u22_f.v = sTag_adE_CFE4; u22_a.z = kRo_ColourParms_ctor_D88;
         sp78 = u22_a;
-        var_a0_2 = arg0 + 0x2FC;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_AD][1];
         sp68 = u22_b;
         sp58 = u22_c;
         sp54 = u22_f;
@@ -2752,7 +2752,7 @@ void *ColourParms_ctor(char *arg0) {
         u23_a.y = kRo_ColourParms_ctor_D8C;
         u23_f.v = sTag_csP_CFE8; u23_a.z = kRo_ColourParms_ctor_D90;
         sp78 = u23_a;
-        var_a0_2 = arg0 + 0x320;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_CS][0];
         sp68 = u23_b;
         sp58 = u23_c;
         sp54 = u23_f;
@@ -2777,7 +2777,7 @@ void *ColourParms_ctor(char *arg0) {
         u24_a.z = temp_f0;
         u24_f.v = sTag_csE_CFEC;
         sp78 = u24_a;
-        var_a0_2 = arg0 + 0x344;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_CS][1];
         sp68 = u24_b;
         sp58 = u24_c;
         sp54 = u24_f;
@@ -2800,7 +2800,7 @@ void *ColourParms_ctor(char *arg0) {
         u25_a.y = kRo_ColourParms_ctor_DA0;
         u25_f.v = sTag_grP_CFF0; u25_a.z = kRo_ColourParms_ctor_DA4;
         sp78 = u25_a;
-        var_a0_2 = arg0 + 0x368;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_GR][0];
         sp68 = u25_b;
         sp58 = u25_c;
         sp54 = u25_f;
@@ -2823,7 +2823,7 @@ void *ColourParms_ctor(char *arg0) {
         u26_a.y = kRo_ColourParms_ctor_DAC;
         u26_f.v = sTag_grE_CFF4; u26_a.z = kRo_ColourParms_ctor_DB0;
         sp78 = u26_a;
-        var_a0_2 = arg0 + 0x38C;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_GR][1];
         sp68 = u26_b;
         sp58 = u26_c;
         sp54 = u26_f;
@@ -2846,7 +2846,7 @@ void *ColourParms_ctor(char *arg0) {
         u27_a.y = kRo_ColourParms_ctor_DB8;
         u27_f.v = sTag_dwP_CFF8; u27_a.z = kRo_ColourParms_ctor_DBC;
         sp78 = u27_a;
-        var_a0_2 = arg0 + 0x3B0;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_DW][0];
         sp68 = u27_b;
         sp58 = u27_c;
         sp54 = u27_f;
@@ -2869,7 +2869,7 @@ void *ColourParms_ctor(char *arg0) {
         u28_a.y = kRo_ColourParms_ctor_DC4;
         u28_f.v = sTag_dwE_CFFC; u28_a.z = kRo_ColourParms_ctor_DC8;
         sp78 = u28_a;
-        var_a0_2 = arg0 + 0x3D4;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_DW][1];
         sp68 = u28_b;
         sp58 = u28_c;
         sp54 = u28_f;
@@ -2892,7 +2892,7 @@ void *ColourParms_ctor(char *arg0) {
         u29_a.y = kRo_ColourParms_ctor_DCC;
         u29_f.v = sTag_ctt_D000; u29_a.z = kRo_ColourParms_ctor_DD0;
         sp78 = u29_a;
-        var_a0_2 = arg0 + 0x3F8;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->ctt;
         sp68 = u29_b;
         sp58 = u29_c;
         sp54 = u29_f;
@@ -2917,7 +2917,7 @@ void *ColourParms_ctor(char *arg0) {
         u30_a.z = temp_f0_2;
         u30_f.v = sTag_cnm_D004;
         sp78 = u30_a;
-        var_a0_2 = arg0 + 0x41C;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->cnm;
         sp68 = u30_b;
         sp58 = u30_c;
         sp54 = u30_f;
@@ -2940,7 +2940,7 @@ void *ColourParms_ctor(char *arg0) {
         u31_a.y = kRo_ColourParms_ctor_DE0;
         u31_f.v = sTag_ccl_D008; u31_a.z = kRo_ColourParms_ctor_DE4;
         sp78 = u31_a;
-        var_a0_2 = arg0 + 0x440;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->ccl;
         sp68 = u31_b;
         sp58 = u31_c;
         sp54 = u31_f;
@@ -2964,7 +2964,7 @@ void *ColourParms_ctor(char *arg0) {
         u32_c.w = 1.0f;
         u32_f.v = sTag_clg_D00C;
         sp78 = u32_a;
-        var_a0_2 = arg0 + 0x464;
+        var_a0_2 = (char *)&((RaceColourParms *)arg0)->clg;
         sp68 = u32_b;
         sp58 = u32_c;
         sp54 = u32_f;
