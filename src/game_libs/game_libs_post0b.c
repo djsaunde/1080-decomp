@@ -3968,13 +3968,25 @@ void Node_update(char *o) {
  * `if (tag != 2) return; goto L2;`. With `if (tag == 2) goto L2; return;`
  * IDO pulls the L2 block up as the fall-through (bnel to the epilogue);
  * the inverted test keeps L2 last, giving the target's beql + b epilogue. */
+/* The payload NodeMsg.arg.payload points at for the three payload tags: SET_FLAG80 reads
+ * v.on (the int at +4), FIND_NAME passes name (+0) to the compare callback with Node.name,
+ * FIND_SERIAL compares v.serial (the s16 at +4) with Node.serial (read as `*(short *)&...v.serial`:
+ * the plain member read swaps the t1 / t2 / t3 colouring of that arm and of the 0x2 arm). */
+typedef struct NodeMsgPayload {
+    /* 0x0 */ char *name;
+    /* 0x4 */ union {
+        s32 on;                    /* NODEMSG_SET_FLAG80: set / clear doFlags 0x80 */
+        s16 serial;                /* NODEMSG_FIND_SERIAL */
+    } v;
+} NodeMsgPayload;
+
 void Node_handleMsg(o, c, tag)
 Node *o;
 NodeMsg *c;
 int tag;
 {
     int *flags;
-    char *pl;
+    NodeMsgPayload *pl;
     int pv;
     tag = c->tag;
     if (c) {}
@@ -3984,8 +3996,8 @@ int tag;
     if (tag != NODEMSG_SET_ACTIVE) return;
     goto L2;
 L12:
-    pl = c->arg.payload;
-    pv = *(int *)(pl + 0x4);
+    pl = (NodeMsgPayload *)c->arg.payload;
+    pv = pl->v.on;
     flags = &o->doFlags;
     if (pv != 0) {
         *flags |= 0x80;
@@ -3994,12 +4006,12 @@ L12:
     }
     return;
 L13:
-    if (gl_func_00000000((char *)o->name, *(int *)c->arg.payload) == 0) {
+    if (gl_func_00000000((char *)o->name, ((NodeMsgPayload *)c->arg.payload)->name) == 0) {
         c->reply = o;
     }
     return;
 L14:
-    if (o->serial == *(short *)(c->arg.payload + 0x4)) {
+    if (o->serial == *(short *)&((NodeMsgPayload *)c->arg.payload)->v.serial) {
         c->reply = o;
     }
     return;
@@ -16681,19 +16693,32 @@ void DisplayMgr_display(int *a0) {
  * Same goto-end alloc-if-null double-cascade as Backup_ctor. */
 extern int gl_func_00000000();
 extern int D_00000000;
+/* GfxObj (0x18): a 0x14-byte base (its inline ctor has the alloc(20) fallback) holding a
+ * 5-entry pointer array, then the Cfront vptr as the last member. */
+typedef struct GfxObjBase {
+    /* 0x00 */ void **items;      /* mem_new(20): 5 words */
+    /* 0x04 */ s32 unk04;
+    /* 0x08 */ s32 cap;           /* 5 */
+    /* 0x0C */ s32 unk0C;         /* 0 */
+    /* 0x10 */ s32 unk10;
+} GfxObjBase;
+typedef struct GfxObj {
+    /* 0x00 */ GfxObjBase base;
+    /* 0x14 */ char *vptr;        /* GfxObj_vtbl */
+} GfxObj;
 void GfxObj_ctor_0004DF90(int *a0) {
-    void *obj = (void*)CALL(mem_new)(24);
-    void *v1;
+    GfxObj *obj = (GfxObj *)CALL(mem_new)(24);
+    GfxObjBase *v1;
     if (obj == 0) goto end;
-    *(int*)((char*)obj + 0x14) = (int)&GfxObj_vtbl;
-    v1 = obj;
+    obj->vptr = (char *)&GfxObj_vtbl;
+    v1 = &obj->base;
     if (v1 == 0) {
-        v1 = (void*)CALL(mem_new)(20);
+        v1 = (GfxObjBase *)CALL(mem_new)(20);
         if (v1 == 0) goto end;
     }
-    *(int*)((char*)v1 + 8) = 5;
-    *(int*)((char*)v1 + 0xC) = 0;
-    *(int*)((char*)v1 + 0) = (int)CALL(mem_new)(20);
+    v1->cap = 5;
+    v1->unk0C = 0;
+    v1->items = (void **)CALL(mem_new)(20);
 end:
     *(int*)((char*)a0 + 0x134) = (int)obj;
 }
@@ -17229,8 +17254,8 @@ void Window_display(Window *arg0) {
     XCALL(gl_func_00034458_4EB54, gfx_beginView_00046BC4)((char*)&gGfxLib);
     temp_v1 = arg0->camera;
     if (temp_v1 != 0) {
-        temp_v0 = (char*)FW(temp_v1, 0x28);
-        ((GP_0004EB54)FW(temp_v0, 0x64))(*(s16*)(temp_v0 + 0x60) + temp_v1);
+        temp_v0 = NODE(temp_v1)->vptr; /* the camera: vtable slot 11 */
+        VT_SLOT(temp_v0, 11).fn(VT_SLOT(temp_v0, 11).delta + temp_v1);
         temp_f0 = 85.0f / ((MCamera *)arg0->camera)->fov;
         for (i = 0; i < 5; i++) {
             arg0->drawDistFov[i] = arg0->drawDist[i] * temp_f0;
@@ -17245,7 +17270,7 @@ void Window_display(Window *arg0) {
     XCALL(gl_func_00034458_4EB54, gfx_loadIdentity_00047F48)((char*)&gGfxLib);
     XCALL(gl_func_00034458_4EB54, gfx_emitProjection)((char*)&gGfxLib);
     temp_v0_3 = (char *)arg0->node.vptr;
-    ((GP_0004EB54)FW(temp_v0_3, 0x6C))(*(s16*)(temp_v0_3 + 0x68) + (int)arg0);
+    VT_SLOT(temp_v0_3, 12).fn(VT_SLOT(temp_v0_3, 12).delta + (char *)arg0); /* own slot 12 */
     if (arg0->flags & 0x20) {
         XCALL(gl_func_00034458_4EB54, prof_endSection)((GL_DATA_STR(0x205E0, "CPU")));
         XCALL(gl_func_00034458_4EB54, prof_endSection)((GL_DATA_STR(0x205E4, "Display()")));
