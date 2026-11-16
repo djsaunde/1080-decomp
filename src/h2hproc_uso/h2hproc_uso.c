@@ -653,7 +653,7 @@ void H2HRaceProcess_onRaceOver(H2HRace *a0) {
 void H2HRaceProcess_onTimeout(H2HRace *a0) {
     int v0, v1;
 
-    if (*(int*)((char*)*(int**)((char*)a0->postMenu + 0x34) + 0x3C) < 0xFF) {
+    if (WFADER(H2HWINS(a0->postMenu)->fader)->alpha < 0xFF) {
         a0->race.timeout = 1;
         return;
     }
@@ -1067,46 +1067,46 @@ void *h2h_createPauseMenu_00000FD0(void *a0, int *a1) {
                                      `or v0,zero,zero` return-0 path */
     }
     CALL(Node_ctor)(a0, base + 0x3F4);
-    *(int*)((char*)a0 + 0x28) = (int)base;
-    *(int*)((char*)a0 + 0x2C) = (int)a1;
-    *(int*)((char*)a0 + 0x34) = CALL(h2h_WhiteFader_ctor)(0);
-    *(int*)((char*)a0 + 0x30) = CALL(PauseMenu_create)(0);
+    NODE(a0)->vptr = (int)base;
+    H2HWINS(a0)->race = (int)a1;
+    H2HWINS(a0)->fader = CALL(h2h_WhiteFader_ctor)(0);
+    H2HWINS(a0)->menu = CALL(PauseMenu_create)(0);
     /* sub = self->0x30 is NOT cached and packed = (*base+3)<<16 is NOT hoisted —
      * the target re-materializes both at each call (per-call lui/lw/sll/ori +
      * lw a0,0x30(self)); a hoisted local spills (sw 60(sp)) and burns a 2nd
      * saved reg, growing the frame -0x30→-0x50. Inline-recompute lever
      * (feedback_remove_local_recompute_inline_lever). */
-    tmp = (int*)*(int*)((char*)a0 + 0x2C);
-    CALL(gui_initRows_000100F0)(*(int*)((char*)a0 + 0x30), tmp);
-    CALL(gui_addRowSub_00010B6C)(*(int*)((char*)a0 + 0x30), ((*(int*)base + 3) << 16) | 0x1, -1, base);
-    CALL(gui_addRowSub_00010B6C)(*(int*)((char*)a0 + 0x30), ((*(int*)base + 3) << 16) | 0x4, -1, base);
-    CALL(gui_addRowSub_00010B6C)(*(int*)((char*)a0 + 0x30), ((*(int*)base + 3) << 16) | 0x3, -1, base);
-    CALL(gui_addRowSub_00010B6C)(*(int*)((char*)a0 + 0x30), ((*(int*)base + 3) << 16) | 0x2, -1, base);
-    CALL(gui_addRowSub_00010B6C)(*(int*)((char*)a0 + 0x30), ((*(int*)base + 3) << 16) | 0x5, -1, base);
-    *(int*)((char*)*(int*)((char*)a0 + 0x30) + 0x30) = CALL(gui_fontCreate)(0, base, 72, 221, 3, 13);
+    tmp = (int*)H2HWINS(a0)->race;
+    CALL(gui_initRows_000100F0)(H2HWINS(a0)->menu, tmp);
+    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)base + 3) << 16) | 0x1, -1, base);
+    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)base + 3) << 16) | 0x4, -1, base);
+    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)base + 3) << 16) | 0x3, -1, base);
+    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)base + 3) << 16) | 0x2, -1, base);
+    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)base + 3) << 16) | 0x5, -1, base);
+    GUIMENU(H2HWINS(a0)->menu)->unk30 = CALL(gui_fontCreate)(0, base, 72, 221, 3, 13);
     /* void-prototyped alias (=0x0): the unused K&R int return of these two
      * calls left a dead $v0 def that excluded $v0 from tmp2's web (colored
      * $v1). Void callee -> no dead def -> tmp2 colors $v0 (docs/IDO_CODEGEN
      * void-callee-kills-dead-v0-def; alias precedent arcproc_uso_tail1). */
-    XCALL(gl_func_00000000_void, gui_centerRows_0001016C)(*(int*)((char*)a0 + 0x30));
-    XCALL(gl_func_00000000_void, gui_centerAt_000102A4)(*(int*)((char*)a0 + 0x30), 174);
-    tmp2 = (int*)*(int*)((char*)a0 + 0x30);
+    XCALL(gl_func_00000000_void, gui_centerRows_0001016C)(H2HWINS(a0)->menu);
+    XCALL(gl_func_00000000_void, gui_centerAt_000102A4)(H2HWINS(a0)->menu, 174);
+    tmp2 = (int*)H2HWINS(a0)->menu;
     /* nested ptr named into the SAME `tmp` local (332B4 same-name web reuse):
      * tmp's later webs are a1-precolored (call arg) then a2 (post-spill
      * reload); this web joins the family and colors a2, matching target.
      * A separate `nst` local colored a1. Its dead decl below stays (frame map). */
-    tmp = (int*)tmp2[0x28/4];
-    (**(void(**)(int))((char*)tmp + 0x5C))(*(short*)((char*)tmp + 0x58) + (int)tmp2);
-    tmp = (int*)*(int*)((char*)a0 + 0x30);
+    tmp = (int*)NODE(tmp2)->vptr;
+    ((void (*)(int))VT_SLOT(tmp, 10).fn)(VT_SLOT(tmp, 10).delta + (int)tmp2);
+    tmp = (int*)H2HWINS(a0)->menu;
     CALL(list_append)((char*)a0 + 0x10, tmp);
-    if (tmp[0x14/4] != 0) {
-        tmp[0x4/4] = 1;
+    if (NODE(tmp)->parent != 0) {
+        NODE(tmp)->unk04 = 1;
     }
-    tmp[0x14/4] = (int)a0;
-    CALL(gui_spriteLoad)((char*)a0 + 0x38, *(int*)(base + 0x4C) | (0x1D << 16));
-    CALL(gui_spriteLoad)((char*)a0 + 0x50, *(int*)(base + 0x54) | (0x1E << 16));
-    CALL(gui_spriteLoad)((char*)a0 + 0x68, *(int*)(base + 0x58) | (0x1D << 16));
-    CALL(gui_spriteLoad)((char*)a0 + 0x80, *(int*)(base + 0x60) | (0x1E << 16));
+    NODE(tmp)->parent = (int)a0;
+    CALL(gui_spriteLoad)(H2HWINS(a0)->sprites[0], *(int*)(base + 0x4C) | (0x1D << 16));
+    CALL(gui_spriteLoad)(H2HWINS(a0)->sprites[1], *(int*)(base + 0x54) | (0x1E << 16));
+    CALL(gui_spriteLoad)(H2HWINS(a0)->sprites[2], *(int*)(base + 0x58) | (0x1D << 16));
+    CALL(gui_spriteLoad)(H2HWINS(a0)->sprites[3], *(int*)(base + 0x60) | (0x1E << 16));
 end:
     return a0;
 }

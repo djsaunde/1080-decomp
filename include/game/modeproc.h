@@ -166,6 +166,22 @@ typedef char TrkDataManager_ghost_check[(int)&((TrkDataManager *)0)->ghostReplay
 
 #define TRKDATAMGR(p) ((TrkDataManager *)(p))
 
+/* ---- H2HWinsDisplay (h2hproc, alloc 0x9C; h2h_createPauseMenu_00000FD0, h2h_WinsDisplay_update / display) ----
+ * The head-to-head post-race overlay (H2HRace.postMenu): a Node with the race, a GuiMenu (PauseMenu_create:
+ * five rows, ids 1 / 4 / 3 / 2 / 5), a WhiteFader and four 0x18-byte gui sprites (agent-h run 529). */
+typedef struct H2HWinsDisplay {
+    /* 0x00 */ Node node;            /* vptr 0x28 */
+    /* 0x2C */ s32 race;             /* the H2HRace (ctor arg 2): display reads its winner / wins */
+    /* 0x30 */ s32 menu;             /* GuiMenu (PauseMenu_create); its unk30 gets the gui_fontCreate font */
+    /* 0x34 */ s32 fader;            /* h2h_WhiteFader_ctor; onTimeout waits for its alpha to reach 0xFF */
+    /* 0x38 */ char sprites[4][0x18]; /* gui_spriteLoad: base-data sprite words 0x4C / 0x54 / 0x58 / 0x60 */
+    /* 0x98 */ s32 frame;            /* display: +1 per frame (bit 4 blinks the text) */
+} H2HWinsDisplay;
+
+typedef char H2HWinsDisplay_size_check[sizeof(H2HWinsDisplay) == 0x9C ? 1 : -1];
+
+#define H2HWINS(p) ((H2HWinsDisplay *)(p))
+
 /* ---- GameDemoProcess (titproc, alloc 0x6C8) ----
  * The attract-mode race: a RaceProcess with the title overlays on top. */
 typedef struct GameDemoProcess {
