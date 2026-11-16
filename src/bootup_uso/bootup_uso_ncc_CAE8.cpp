@@ -38,7 +38,7 @@ extern "C" void SnowBoarder_reset(char *st) {
     FCALL(Node_Load)(st, 1, gPlayerBinPaths_cae8_ta[RIDER(st)->character]);
     FCALL(Node_Load)(st + 0x3EC, 1, gBoardBinPaths_cae8_tb[RIDER(st)->boardBin[RIDER(st)->board - 1]]);
     if (RIDER(st)->flags & SNOWB_FLAG_MIRROR) FCALL(SnowBoarder_mirrorFlip_0000E124)(st);
-    func_00000000(st + 0x90C, (st + 0x17C) - st);
+    func_00000000(st + 0x90C, (st + 0x17C) - st); /* UNNAMED: mid-entry gl_bzero+0xC (TextReloc T+0xCB60 -> Text+0x7F6C0 sym587, 0xC into gl_bzero): a bzero(ptr, len) entry with no symbol of its own */
     RIDER(st)->groundDist = bu_cae8_k958;
     RIDER(st)->maxSpeed = RIDER(st)->parms.max.value;
     int mode = gInputMgr_cae8_mode;

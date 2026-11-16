@@ -41,25 +41,25 @@ extern "C" void h2h_WinsDisplay_display_00001360(Self *self) {
     unsigned char c;
     self->counter++;
     self->obj->v3();
-    gl_func_00000000(self->ctx->f568);
-    gl_func_00000000(self->ctx->f568);
+    gl_func_00000000(self->ctx->f568); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gui_setupRenderMode_0000055C (TextReloc order; reset() / move() = gui_spriteRefresh / gui_drawSprite) */
+    gl_func_00000000(self->ctx->f568); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gui_setPrimColorClamped_000008C0 */
     if (((self->ctx->f6B8 == 0) ? self->counter : 16) & 0x10) {
-        gl_func_00000000(buf, D_00000000 + 0x3FC);
-        r = gl_func_00000000(self->ctx->f568, 80, buf);
-        gl_func_00000000(self->ctx->f568, r, 30, buf);
-        v = self->ctx->f6A8[0]; if (v != 1) c = 115; else c = 0; gl_func_00000000(buf, D_00000000 + 0x400, v, c);
-        r = gl_func_00000000(self->ctx->f568, 80, buf);
-        gl_func_00000000(self->ctx->f568, r, 80, buf);
+        gl_func_00000000(buf, D_00000000 + 0x3FC); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gl_sprintf */
+        r = gl_func_00000000(self->ctx->f568, 80, buf); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gui_centerStringX */
+        gl_func_00000000(self->ctx->f568, r, 30, buf); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gui_drawString */
+        v = self->ctx->f6A8[0]; if (v != 1) c = 115; else c = 0; gl_func_00000000(buf, D_00000000 + 0x400, v, c); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gl_sprintf */
+        r = gl_func_00000000(self->ctx->f568, 80, buf); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gui_centerStringX */
+        gl_func_00000000(self->ctx->f568, r, 80, buf); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gui_drawString */
     }
     if (((self->ctx->f6B8 == 1) ? self->counter : 16) & 0x10) {
-        gl_func_00000000(buf, D_00000000 + 0x40C);
-        r = gl_func_00000000(self->ctx->f568, 240, buf);
-        gl_func_00000000(self->ctx->f568, r, 30, buf);
-        v = self->ctx->f6A8[1]; if (v != 1) c = 115; else c = 0; gl_func_00000000(buf, D_00000000 + 0x410, v, c);
-        r = gl_func_00000000(self->ctx->f568, 240, buf);
-        gl_func_00000000(self->ctx->f568, r, 80, buf);
+        gl_func_00000000(buf, D_00000000 + 0x40C); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gl_sprintf */
+        r = gl_func_00000000(self->ctx->f568, 240, buf); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gui_centerStringX */
+        gl_func_00000000(self->ctx->f568, r, 30, buf); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gui_drawString */
+        v = self->ctx->f6A8[1]; if (v != 1) c = 115; else c = 0; gl_func_00000000(buf, D_00000000 + 0x410, v, c); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gl_sprintf */
+        r = gl_func_00000000(self->ctx->f568, 240, buf); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gui_centerStringX */
+        gl_func_00000000(self->ctx->f568, r, 80, buf); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gui_drawString */
     }
-    gl_func_00000000(D_00000000);
+    gl_func_00000000(D_00000000); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gui_setCombine_00001794 */
     it = &self->a;
     it->reset();
     it->move(60, 64, 3);
@@ -72,5 +72,5 @@ extern "C" void h2h_WinsDisplay_display_00001360(Self *self) {
     it = &self->d;
     it->reset();
     it->move((r = self->c.font->w) + 228, 64, 3);
-    gl_func_00000000(self);
+    gl_func_00000000(self); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is Node_display */
 }

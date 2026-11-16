@@ -109,7 +109,8 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
  * (lw v0,0x34); `register int *obj` keeps it in s1 (no home), and a plain
  * `int *obj` regresses to 85.5% (loses the s1 deref allocation). Plus -O0 temp
  * reg-renumber. Real wrap, correct logic; stays NM. */
-extern int D_00000008, gInputMgr_0000004C, D_00000050, gInputMgr_00000064;
+extern int D_00000008, gInputMgr_0000004C, gInputMgr_00000064;
+extern int D_00000050; /* UNNAMED: data-base D_00000050 = 0x50 is Bss sym272 +0x50 here (the &= 0x20 in app_createGame_00008FFC) but RoData +0x50 in bootup_uso.c (snd_calcEmitterDistPan_000003F8); one pinned value for two objects, so a pure rename would merge them: it needs a per-site split */
 extern unsigned char gInputMgr_0000017D;
 /* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
  * src/game_libs/game_libs_ncc_o0_8FFC.cpp (the NM body that was here, compiled

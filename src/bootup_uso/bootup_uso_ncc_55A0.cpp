@@ -205,7 +205,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
         /* actor 2 (0x74) */
         /* agent-g run 241: a dead nested call-result temp grows edg's pool here, so the dead-stored call-result
          * vreg is homed above vec2 (vec2 sp+0x28 = target) instead of below it */
-        if (0) { func_00000000(func_00000000(0)); }
+        if (0) { func_00000000(func_00000000(0)); } /* UNNAMED: no-reloc dead if (0) call kept for the frame layout: it emits no jal */
         v2 = sTag_tr3_7E3C;
         p1 = v2;
         obj = (char *)FCALL(mem_new)(0x74);

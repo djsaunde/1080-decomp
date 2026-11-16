@@ -24,7 +24,7 @@ extern char D_00000000;
  * eddproc_uso_func_00000000, n64proc_uso_func_00000000, h2hproc_uso_func_00000000. */
 void arcproc_uso_func_00000000(int *dst) {
     int buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    gl_func_00000000(&D_00000000, buf, 4); /* UNNAMED: sentinel this gl_func_00000000 must stay: the ROM jal (T+0x1C) is fs_gdlReadFile, but the check attributes T+0x1C to no build function (the post-cc PREFIX_BYTES trampoline of this entry-0 function), so CALL(fs_gdlReadFile) fails the gate */
     *dst = buf[0];
 }
 

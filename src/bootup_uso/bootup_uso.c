@@ -2254,7 +2254,7 @@ void game_setupVsGhost(char *s2, int a1) {
     if (o2 != 0) {
         FCALL(pad_open)(o2, 1);   /* alloc-fail SKIPS ONLY THIS (target beqz +4, 38C0 recipe) */
     }
-    if (0) { func_00000000(&o1); }  /* address-escape: o1 memory-homed at 0x4C */
+    if (0) { func_00000000(&o1); }  /* address-escape: o1 memory-homed at 0x4C */ /* UNNAMED: no-reloc dead if (0) call kept for the frame layout: it emits no jal */
     o1 = o2;  /* carrier ($s1) -> home store at the branch join */
     o2 = (char*)FCALL(mem_new)(0x80);
     if (o2 != 0) {
@@ -2775,7 +2775,7 @@ extern char gStrHeliUso_7D94;
 struct OneI { int x; };
 void item_createHel(int a0) {
     FCALL(game_loadUsoOnce)(&gStrHeliUso_7D94);
-    func_00000000(0, *(struct OneI*)&a0);
+    func_00000000(0, *(struct OneI*)&a0); /* UNNAMED: unknown-role jal -> heli.uso Text+0x1D4 (import mod48 sym409); heli.uso is not split (no symbols): the item module entry called with (0, a0) after game_loadUsoOnce loads it */
 }
 
 /* 33-insn / 0x84 init+alloc+populate.
@@ -3178,7 +3178,7 @@ void *item_createGtl(Box53E8 arg) {
 extern char sStr_rom_fire_uso_7E10;
 void item_createCfr(int a0) {
     FCALL(game_loadUsoOnce)(&sStr_rom_fire_uso_7E10);
-    func_00000000(0, *(struct OneI*)&a0);
+    func_00000000(0, *(struct OneI*)&a0); /* UNNAMED: unknown-role jal -> fire.uso Text+0x0 (import mod49 sym422); fire.uso is not split (no symbols): the item module entry called with (0, a0) after game_loadUsoOnce loads it */
 }
 
 extern char FogTmpl_vtbl_78D8;

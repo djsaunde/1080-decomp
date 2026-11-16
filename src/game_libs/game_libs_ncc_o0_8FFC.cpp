@@ -9,7 +9,7 @@ extern "C" {
 int gl_func_00000000(...);
 extern char D_00000000;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
-extern int gInputMgr_0000004C, D_00000050, gInputMgr_00000064;
+extern int gInputMgr_0000004C, D_00000050, gInputMgr_00000064; /* UNNAMED: data-base D_00000050 = 0x50 is Bss sym272 +0x50 here (the &= 0x20 in app_createGame_00008FFC) but RoData +0x50 in bootup_uso.c (snd_calcEmitterDistPan_000003F8); one pinned value for two objects, so a pure rename would merge them: it needs a per-site split */
 extern unsigned char gInputMgr_0000017D;
 extern unsigned char gInputMgr_00000179, gInputMgr_0000017A, gInputMgr_0000017B, gInputMgr_00000181, gInputMgr_00000182, gInputMgr_00000183;
 extern char gProcUsoPaths_8FFC_base;

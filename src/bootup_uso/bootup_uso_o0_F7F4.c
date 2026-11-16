@@ -27,7 +27,7 @@ void Process_display(char *a0) {
 }
 
 void Process_exit(int a0) {
-    D_00000030 = (void*)func_00000000;
+    D_00000030 = (void*)func_00000000; /* UNNAMED: no-reloc not a call, so no jal: stores &GameFlow_restart_000116C8 (hi/lo TextReloc T+0xF7D4 / F7D8); CALL names only R_MIPS_26 jals */
 }
 
 void Process_onQuit(int a0) {}

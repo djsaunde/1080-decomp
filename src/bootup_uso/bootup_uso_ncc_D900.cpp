@@ -51,7 +51,7 @@ extern "C" void SnowBoarder_handleMsg(SnowBoarder *self, Ev *ev) {
         if (self->msgCooldown == 0) {
             p = ev->data;
             if (p->speed < kRo_SnowBoarder_handleMsg_988 && p->o->id == 0x74) {
-                func_00000000(self->sound);
+                func_00000000(self->sound); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is SndHandle_setFlag1A (TextReloc order, 15 jals = 15 sites) */
                 return;
             }
             k = clampf(p->speed, 0.0f, 50.0f);
@@ -72,7 +72,7 @@ extern "C" void SnowBoarder_handleMsg(SnowBoarder *self, Ev *ev) {
         }
         break;
     case 9:
-        func_00000000(self);
+        func_00000000(self); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is SnowBoarder_reset */
         break;
     case 6: {
         Vec3 v = ev->data->vel;
@@ -90,20 +90,20 @@ extern "C" void SnowBoarder_handleMsg(SnowBoarder *self, Ev *ev) {
     case 1000:
         self->raceResult = 1;
         self->flags |= 4;
-        func_00000000(self->ai);
-        func_00000000(bu_d900_aec + 0x4C);
+        func_00000000(self->ai); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is SnowAI_onWin */
+        func_00000000(bu_d900_aec + 0x4C); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is dbg_printf */
         break;
     case 1001:
         self->raceResult = 2;
         self->flags |= 4;
-        func_00000000(self->ai);
-        func_00000000(bu_d900_aec + 0x54);
+        func_00000000(self->ai); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is SnowAI_onLose */
+        func_00000000(bu_d900_aec + 0x54); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is dbg_printf */
         break;
     case 1003:
         self->raceResult = 3;
         self->flags |= 4;
-        func_00000000(bu_d900_b44 + 0x4);
-        func_00000000(self->ai);
+        func_00000000(bu_d900_b44 + 0x4); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is dbg_printf */
+        func_00000000(self->ai); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is SnowAI_onTimeout */
         break;
     case 1002:
         self->raceResult = 4;
@@ -115,24 +115,24 @@ extern "C" void SnowBoarder_handleMsg(SnowBoarder *self, Ev *ev) {
     case 1006:
     case 1007:
         self->raceResult = 6;
-        func_00000000(bu_d900_b44 + 0x10);
+        func_00000000(bu_d900_b44 + 0x10); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is dbg_printf */
         if (self->controller == 2) {
             sp84 = (S4 *)(bu_d900_b44 + 0x24);
-            func_00000000(self->anim);
+            func_00000000(self->anim); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is RiderAnim_startEndingCpu_00011258 */
         } else {
             sp84 = (S4 *)(bu_d900_b44 + 0x28);
-            func_00000000(self->anim);
+            func_00000000(self->anim); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is RiderAnim_startEnding_000112E0 */
         }
         sp8C.w = sp84->w;
-        int r = func_00000000(D_00000000, sp8C, 0, self);
+        int r = func_00000000(D_00000000, sp8C, 0, self); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is ItemMgr_firstItemOfType */
         if (r != 0) {
-            func_00000000(self, r + 0x30);
+            func_00000000(self, r + 0x30); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is DNode_resetXform_00065360 */
             return;
         }
-        func_00000000(bu_d900_b44 + 0x2C, sp84);
+        func_00000000(bu_d900_b44 + 0x2C, sp84); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is sys_fatal */
         break;
     default:
-        func_00000000(self);
+        func_00000000(self); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is DNode_handleMsg */
         break;
     }
 }

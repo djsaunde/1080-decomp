@@ -1001,8 +1001,8 @@ sw_end:
             if (SNOWB(arg0)->flags & 1) {
                 var_s0 = ((char *) NODE(sp160)->vptr); 
                 ((Vfn_ff)VT_SLOT(var_s0, 10).fn)(VT_SLOT(var_s0, 10).delta + sp160, ((s32) SNOWB(arg0)->trails), ((s32) SNOWB(arg0)->dispSpray), arg0, 0xC, (s32)temp_s1, *(f32 *)(kRo_SnowBoarder_ctor_8BC + kRoF_SnowBoarder_ctor_8BC), 100.0f);
-                func_00000000(sp164);
-                func_00000000(sp164);
+                func_00000000(sp164); /* UNNAMED: unknown-role jal T+0xAFE0 -> import mod60 sym120; module id 60 is past the 59-entry USO table (ids 0-58) uso-imports reads, so the exporter and its symbol are unknown */
+                func_00000000(sp164); /* UNNAMED: unknown-role jal T+0xAFE8 -> import mod60 sym122; module id 60 is past the 59-entry USO table (ids 0-58) uso-imports reads, so the exporter and its symbol are unknown */
             }
             var_s0 = (char *)gNodeGlobals_90cc_d08_01.f2C;
             temp_v0_51 = (s32)var_s0;
