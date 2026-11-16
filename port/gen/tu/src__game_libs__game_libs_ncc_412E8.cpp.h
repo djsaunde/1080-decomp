@@ -6,4 +6,5 @@
 /* port-dropdata: gHostio_412E8_m */ /* the ROM object is in the module blob */
 /* port-dropdata: gSysLib_412E8_i */ /* the ROM object is in the module blob */
 /* port-dropdata: gSysLib_412E8_l */ /* the ROM object is in the module blob */
+/* port-bind: app_staticInit_000412E8 gl_func_00000000 mem_new */
 /* port-bind: app_staticInit_000412E8 D_412E8_h+0 GfxDdm_ctor */

@@ -6,7 +6,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/* 243 callees: 240 from a definition, 0 from a header declaration, 3 by hand, 0 fallback int f(...) */
+/* 279 callees: 276 from a definition, 0 from a header declaration, 3 by hand, 0 fallback int f(...) */
 int AnimDataMgr_lookup(void *, int, ...);
 int /*void*/ AnimPlayer_advance(void *, ...);
 int /*void*/ AnimPlayer_start(void *, int, int, int, int, int, ...);
@@ -48,6 +48,8 @@ int /*void*/ DNode_solveContacts(void *, ...);
 #endif
 int /*void*/ DynArrPool_init(void *, int, ...);
 int /*void*/ Fader_buildTexture(void *, ...);
+int Fader_isDone_00013980(void *, ...);
+int /*void*/ FogParms_emit_00043F1C(void *, ...);
 int /*void*/ FogParms_setDefault_00043EAC(int, ...);
 int /*void*/ FogParms_set_00043EF0(void *, void *, int, int, ...);
 int /*void*/ GfxLib_reset(void *, ...);
@@ -57,9 +59,11 @@ int ItemMgr_registerTemplate(int, void *, ...);
 void * ItemType_ctor(...);
 int /*void*/ ItemType_setNext(void *, int, ...);
 int /*void*/ MNode_display(void *, ...);
+int /*void*/ MNode_initMatrices(void *, ...);
 #ifndef PORT_NODECL_MNode_update
 int MNode_update(void *, ...);
 #endif
+int /*void*/ MainLogo_reset(void *, ...);
 #ifndef PORT_NODECL_Mat_clone_0004FBA4
 void * Mat_clone_0004FBA4(void *, void *, ...);
 #endif
@@ -69,6 +73,7 @@ int /*void*/ Node_Load(void *, int, void *, ...);
 #ifndef PORT_NODECL_Node_broadcastMsg
 int /*void*/ Node_broadcastMsg(void *, void *, ...);
 #endif
+int /*void*/ Node_clearFlag8_0000F564(void *, ...);
 void * Node_ctor(void *, int, ...);
 #ifndef PORT_NODECL_Node_display
 int /*void*/ Node_display(void *, ...);
@@ -76,8 +81,13 @@ int /*void*/ Node_display(void *, ...);
 int Node_getDisplayMask(...);
 int /*void*/ Node_hostioLink(void *, ...);
 int /*void*/ Node_hostioParms(void *, ...);
+int /*void*/ Node_pauseUpdate_0000E464(void *, ...);
 #ifndef PORT_NODECL_Node_printContents
 int /*void*/ Node_printContents(void *, int, ...);
+#endif
+int /*void*/ Node_resumeUpdate_0000E450(void *, ...);
+#ifndef PORT_NODECL_Node_update
+int /*void*/ Node_update(void *, ...);
 #endif
 int /*void*/ PolyShape_addFace_00048510(void *, void *, void *, void *, int, ...);
 int PolyShape_allocLightDL_000435FC(void *, int, ...);
@@ -93,6 +103,10 @@ void * PolyShape_getVertex(void *, int, ...);
 int PolyShape_getVertexRef_0005318C(void *, int, ...);
 int /*void*/ PolyShape_stub_0004C20C(void *, int, ...);
 int ProcNodeList(void *, int, int, void *, ...);
+int /*void*/ Process_fadeOut_0000F954(void *, int, int, ...);
+int /*void*/ Process_pause_0000F9E8(void *, ...);
+int /*void*/ Process_stop(void *, ...);
+int /*void*/ RaceProcess_leave(void *, ...);
 #ifndef PORT_NODECL_RcpMgr_ctor
 void * RcpMgr_ctor(void *, ...);
 #endif
@@ -115,6 +129,7 @@ int /*void*/ SelItem_drawSpriteColor_00004068(void *, int, int, void *, void *, 
 int /*void*/ SelItem_drawSpriteWhite_00003FF8(int, int, int, int, int, ...);
 int /*void*/ SnowAI_reset(void *, ...);
 int /*void*/ SnowBoarder_mirrorFlip_0000E124(void *, ...);
+int /*void*/ Window_display(void *, ...);
 int Window_projectPoint(void *, void *, int, void *, ...);
 int /*void*/ absrot_matrix4(void *, int, float, int, ...);
 int /*void*/ anim_unpackKey(int, void *, void *, ...);
@@ -134,8 +149,16 @@ int fs_gdlFileInfo(int, int, int, ...);
 int fs_gdlSeekFile(void *, int, int, ...);
 int game_isUsoLoaded(int, ...);
 int /*void*/ game_loadUso(void *, int, ...);
+int /*void*/ gfx_addWindow(void *, int, ...);
+int gfx_calcPerspNorm_000453D8(int, float, float, ...);
 int /*void*/ gfx_clearFbRect_00043468(int, int, int, int, ...);
+int /*void*/ gfx_clearScreen(void *, int, int, int, int, void *, int, int, int, int, int, int, ...);
 int /*void*/ gfx_copyBytes3_00046DA0(int, void *, void *, ...);
+int /*void*/ gfx_dlMarkBegin_00044460(void *, void *, ...);
+int /*void*/ gfx_dlMarkEnd_00044474(void *, ...);
+#ifndef PORT_NODECL_gfx_drawFbChar_00046790
+int /*void*/ gfx_drawFbChar_00046790(void *, int, int, int, ...);
+#endif
 #ifndef PORT_NODECL_gfx_drawText
 int gfx_drawText(void *, void *, int, ...);
 #endif
@@ -154,6 +177,7 @@ int /*void*/ gfx_endDL(void *, ...);
 int /*void*/ gfx_fillRect(void *, int, int, int, int, int, ...);
 #endif
 int gfx_findFaceVtxs_0004880C(int, int, ...);
+int gfx_findVtx_00048720(void *, int, int, ...);
 int /*void*/ gfx_floatToS8x3_00046D4C(int, void *, void *, ...);
 int gfx_getDdm(void *, int, ...);
 int /*void*/ gfx_initDdm(void *, int, ...);
@@ -164,6 +188,7 @@ int /*void*/ gfx_loadTexture(void *, void *, int, ...);
 #endif
 int /*void*/ gfx_makeLookAt_00042F4C(void *, void *, void *, ...);
 int /*void*/ gfx_makeVtx_00048104(int, void *, void *, void *, short, void *, ...);
+void * gfx_newDLChild_0005AB84(void *, void *, void *, ...);
 void * gfx_newDLContext(void *, int, int, int, int, int, int, ...);
 int /*void*/ gfx_setCpuDraw(void *, int, ...);
 int /*void*/ gfx_setDepthImage(void *, int, ...);
@@ -172,6 +197,7 @@ int /*void*/ gfx_setScreenSize(int, int, ...);
 int /*void*/ gfx_setScreenSize2_00044CB0(int, int, ...);
 int /*void*/ gfx_setShadowLight(void *, int, ...);
 int /*void*/ gfx_setVideoMode(int, ...);
+int /*void*/ gfx_setupMatTextures_00045E20(void *, void *, void *, ...);
 int /*void*/ gfx_start(void *, ...);
 int /*void*/ gfx_swapBuffer(void *, ...);
 #ifndef PORT_NODECL_gfx_transformLightDirs_000432BC
@@ -182,6 +208,7 @@ int /*void*/ gfx_vtxBatchBegin_000483A0(void *, ...);
 int /*void*/ gfx_waitRcpIdle(void *, ...);
 int /*void*/ gfx_waitRetrace(void *, ...);
 int /*void*/ gl_osContGetReadData(void *, ...);
+int /*void*/ gl_osCreateMesgQueue(void *, int, int, ...);
 int /*void*/ gl_osCreateThread(void *, int, int, int, int, int, ...);
 int gl_osEPiLinkHandle(void *, ...);
 int gl_osMotorStop(void *, ...);
@@ -216,6 +243,7 @@ int /*void*/ gui_setEnvPrimColor_00001EF4(void *, int, void *, void *, ...);
 #endif
 int /*void*/ gui_spriteInit(void *, int, ...);
 int /*void*/ gui_spriteRefresh(void *, ...);
+int /*void*/ gui_spriteRelease(void *, ...);
 int gui_stringWidth_00001514(void *, void *, ...);
 #ifndef PORT_NODECL_gui_texRect_00004568
 int /*void*/ gui_texRect_00004568(void *, int, int, int, int, int, int, ...);
@@ -227,16 +255,30 @@ int /*void*/ hostio_addFlag(void *, int, void *, int, ...);
 int /*void*/ hostio_addHeading(int, ...);
 int /*void*/ hostio_addInt(int, int, void *, int, int, int, ...);
 int /*void*/ hostio_addIntVar(void *, int, void *, int, ...);
+int /*void*/ hostio_addLink(int, int, int, ...);
 int /*void*/ hostio_addText(int, ...);
 int /*void*/ hostio_beginGroup(int, int, int, ...);
+int /*void*/ hostio_beginTreeNode(int, int, int, int, ...);
 int /*void*/ hostio_connect(void *, ...);
 int /*void*/ hostio_endGroup(int, ...);
+int /*void*/ hostio_endTreeNode(int, ...);
 int /*void*/ hostio_msg21_0003FB38(int, ...);
 int hostio_recv(int, ...);
 int hostio_send(int, ...);
+#ifndef PORT_NODECL_hostio_sendNodeTree
+int /*void*/ hostio_sendNodeTree(void *, ...);
+#endif
 int /*void*/ hostio_start(...);
+#ifndef PORT_NODECL_input_checkPressed_00011E00
+int input_checkPressed_00011E00(void *, int, ...);
+#endif
+#ifndef PORT_NODECL_input_checkReleased_00011FA8
+int input_checkReleased_00011FA8(void *, int, ...);
+#endif
+int /*void*/ input_setRacePadsActive(void *, int, ...);
 int /*void*/ light_setF124_000550A0(void *, float, ...);
 int /*void*/ list_append(void *, int, ...);
+int /*void*/ list_removeKey_00066620(void *, int, ...);
 int /*void*/ math_mtx4Copy(void *, void *, ...);
 int /*void*/ math_mtx4Identity(void *, ...);
 int /*void*/ math_mtx4Inverse(int, void *, ...);
@@ -287,11 +329,13 @@ int /*void*/ prof_beginSection(int, ...);
 float prof_timerRead_0004DD3C(int, ...);
 int /*void*/ prof_timerStart(int, ...);
 int /*void*/ prof_timerStop(int, ...);
+int /*void*/ settings_save_00012150(void *, ...);
 int snd_AudioUpdate(...);
 int /*void*/ snd_FrameUpdate(...);
 int /*void*/ snd_Init(int, int, int, ...);
 int /*void*/ snd_PlayPlayer0Seq0(...);
 int /*void*/ snd_PreNMI(...);
+int /*void*/ snd_postEvent(...);
 int /*void*/ snd_soundObjSetPan_00000B2C(void *, float, ...);
 int /*void*/ snd_soundObjSetReverb(void *, int, ...);
 #ifndef PORT_NODECL_sqrtf
@@ -310,6 +354,8 @@ int /*void*/ sys_printStub_00067AE8(int, ...);
 float sys_randf(...);
 int sys_staticArrayOverflow(...);
 int /*void*/ sys_writebackDCacheAll(...);
+int /*void*/ tit_langMenuInput_00001BB8(int, ...);
+int tit_nextDemo_000000C0(int, ...);
 #ifdef __cplusplus
 }
 #endif

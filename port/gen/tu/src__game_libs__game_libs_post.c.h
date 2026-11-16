@@ -54,7 +54,6 @@
 /* port-drop: snd_TickChannel8Fade */ /* placeholder copy; shipped body in src/game_libs/game_libs_ncc_307A8.cpp */
 #pragma weak snd_dispatchEvent
 /* port-drop: snd_dispatchEvent */ /* placeholder copy; shipped body in src/game_libs/game_libs_o2_2FB74.c */
-/* port-bind: AudioHeap_AllocTemporarySampleCacheEntry gl_func_00000000 AudioHeap_Alloc */
 /* port-bind: AudioHeap_Init gl_func_00000000 gl_osSetIntMask */
 /* port-bind: AudioSeq_InitSequencePlayerChannels gl_alloc_2D130 AudioHeap_AllocZeroed */
 /* port-bind: Audio_InvalDCache gl_func_00000000 gl_osSetIntMask */
