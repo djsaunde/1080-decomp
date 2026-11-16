@@ -5727,6 +5727,7 @@ sVrLabels = 0x000001F8;  /* viewrec Bss static */
 sVrLabels_378 = 0x00000378;  /* viewrec Bss static */
 sVrPrimColour = 0x00000858;  /* viewrec Bss static */
 sVrEnvColour = 0x00000868;  /* viewrec Bss static */
+viewrec_uso_func_00000290_bss = 0x00000858;  /* viewrec NCC donor: its static prim (+0) / env (+0x10) colours (.bss reloc renamed by the splice) */
 sVrMenu = 0x00000878;  /* viewrec Bss static */
 sVrProc = 0x0000087C;  /* viewrec Bss static */
 sVrScreen = 0x00000880;  /* viewrec Bss static */

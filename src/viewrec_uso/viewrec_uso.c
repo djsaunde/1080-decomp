@@ -122,7 +122,9 @@ void viewrec_uso_func_00000280(void) {
 void viewrec_uso_func_00000288(void) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00000290);
+/* EXACT via the NCC (C++) donor src/viewrec_uso/viewrec_uso_ncc.cpp (static colour objects). */
+void viewrec_uso_func_00000290(void) {
+}
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000002D0);
 

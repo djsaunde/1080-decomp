@@ -38,3 +38,23 @@ extern "C" void viewrec_uso_func_00001664(VrProc *self) {
         self->onFadedIn();
     }
 }
+
+/* The prim / env colours (viewrec Bss 0x858 / 0x868; sVrPrimColour / sVrEnvColour in viewrec_uso.c).
+ * They are file-local statics in the original: as1 shares one `lui at` across accesses only for the
+ * same static symbol (IDO_CODEGEN kit LX), and each access through its own block-scope reference
+ * keeps uopt from CSEing the base, which gives the target's one `lui at` per pair of stores. The
+ * splice renames this donor's .bss reloc to viewrec_uso_func_00000290_bss (pinned to 0x858). */
+static float sPrimColour[4];
+static float sEnvColour[4];
+
+/* 0x290: reset both colours to white (env green 0) */
+extern "C" void viewrec_uso_func_00000290() {
+    { float &r = sPrimColour[0]; r = 1.0f; }
+    { float &r = sPrimColour[1]; r = 1.0f; }
+    { float &r = sPrimColour[2]; r = 1.0f; }
+    { float &r = sPrimColour[3]; r = 1.0f; }
+    { float &r = sEnvColour[0]; r = 1.0f; }
+    { float &r = sEnvColour[1]; r = 0; }
+    { float &r = sEnvColour[2]; r = 1.0f; }
+    { float &r = sEnvColour[3]; r = 1.0f; }
+}

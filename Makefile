@@ -142,7 +142,7 @@ VIEWREC_NCC_DONOR := build/src/viewrec_uso/viewrec_uso_ncc.cpp.o
 $(VIEWREC_NCC_DONOR): src/viewrec_uso/viewrec_uso_ncc.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/src/viewrec_uso/viewrec_uso.c.o build/non_matching/src/viewrec_uso/viewrec_uso.c.o: private REPLACE_FUNC_BODY += viewrec_uso_func_00001664=$(VIEWREC_NCC_DONOR)
+build/src/viewrec_uso/viewrec_uso.c.o build/non_matching/src/viewrec_uso/viewrec_uso.c.o: private REPLACE_FUNC_BODY += viewrec_uso_func_00001664=$(VIEWREC_NCC_DONOR) viewrec_uso_func_00000290=$(VIEWREC_NCC_DONOR)
 build/src/viewrec_uso/viewrec_uso.c.o build/non_matching/src/viewrec_uso/viewrec_uso.c.o: $(VIEWREC_NCC_DONOR)
 build/src/h2hproc_uso/h2hproc_uso.c.o: SUFFIX_BYTES_FORCE := h2h_closeSession_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
 build/src/h2hproc_uso/h2hproc_uso.c.o: TRUNCATE_TEXT := 0x1B30
