@@ -15,9 +15,9 @@ void snd_SetPlayer1Channel15IO_2D910(int a0, int a1, int a2, int a3)
   {
     return;
   }
-  if (D_0001C1BC.field_1C1BC != (*primary_input_home))
+  if (D_0001C1BC.field_1C1BC != (*primary_input_home)) /* UNNAMED: data-base D_0001C1BC is the game_libs Data base placeholder (link value 0, field_1C1BC = Data+0x1C1BC; ROM HI/LO Data(base)) */
   {
-    if ((D_0001C1CC.field_1C1CC == 0) && (a0 == 0))
+    if ((D_0001C1CC.field_1C1CC == 0) && (a0 == 0)) /* UNNAMED: data-base D_0001C1CC is the game_libs Data base placeholder (link value 0, field_1C1CC = Data+0x1C1CC; ROM HI/LO Data(base)) */
     {
       gl_2D910_set_control(0x06010F00, 2);
       D_0001C1CC_b.field_1C1CC = -1;
@@ -30,7 +30,7 @@ void snd_SetPlayer1Channel15IO_2D910(int a0, int a1, int a2, int a3)
     }
   }
   else
-    if (D_0001C1C0.field_1C1C0 != (*secondary_input_home))
+    if (D_0001C1C0.field_1C1C0 != (*secondary_input_home)) /* UNNAMED: data-base D_0001C1C0 is the game_libs Data base placeholder (link value 0, field_1C1C0 = Data+0x1C1C0; ROM HI/LO Data(base)) */
   {
     if ((1 == D_0001C1CC_d.field_1C1CC) && (a1 == 0))
     {
@@ -44,18 +44,18 @@ void snd_SetPlayer1Channel15IO_2D910(int a0, int a1, int a2, int a3)
       D_0001C1CC_f.field_1C1CC = 1;
     }
   }
-  v0 = D_0001C1C4.field_1C1C4;
+  v0 = D_0001C1C4.field_1C1C4; /* UNNAMED: data-base D_0001C1C4 is the game_libs Data base placeholder (link value 0, field_1C1C4 = Data+0x1C1C4; ROM HI/LO Data(base)) */
   D_0001C1BC_b.field_1C1BC = a0;
   D_0001C1C0_b.field_1C1C0 = a1;
   v0 = (v0 + a2) / 2;
-  D_0001C1C8_b.field_1C1C8 = (D_0001C1C8.field_1C1C8 + a3) / 2;
-  if (D_0001C1D4.field_1C1D4 == 0)
+  D_0001C1C8_b.field_1C1C8 = (D_0001C1C8.field_1C1C8 + a3) / 2; /* UNNAMED: data-base D_0001C1C8 is the game_libs Data base placeholder (link value 0, field_1C1C8 = Data+0x1C1C8; ROM HI/LO Data(base)) */
+  if (D_0001C1D4.field_1C1D4 == 0) /* UNNAMED: data-base D_0001C1D4 is the game_libs Data base placeholder (link value 0, field_1C1D4 = Data+0x1C1D4; ROM HI/LO Data(base)) */
   {
     D_0001C1CC_g.field_1C1CC = -1;
     if (v0 < (-8))
     {
       D_0001C1D4_b.field_1C1D4 = -1;
-      D_0001C1D0.field_1C1D0 = v0;
+      D_0001C1D0.field_1C1D0 = v0; /* UNNAMED: data-base D_0001C1D0 is the game_libs Data base placeholder (link value 0, field_1C1D0 = Data+0x1C1D0; ROM HI/LO Data(base)) */
     }
     D_0001C1C4_b.field_1C1C4 = v0;
     if (v0 >= 9)

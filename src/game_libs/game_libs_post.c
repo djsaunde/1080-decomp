@@ -1333,7 +1333,7 @@ extern gl_e134_Acmd *gl_e134_ApplyHaasEffect(gl_e134_Acmd *, NoteSampleState *, 
 #define AudioSynth_ProcessEnvelope gl_e134_ProcessEnvelope
 #define AudioSynth_ApplyHaasEffect gl_e134_ApplyHaasEffect
 #define NoteSynthesisState gl_e134_SynthState
-#define D_8012FBA8 gl_e134_D_8012FBA8
+#define gInvalidAdpcmCodeBook gl_e134_D_8012FBA8 /* OoT D_8012FBA8 (MM gInvalidAdpcmCodeBook): the codebook loaded for bookOffset 1 */
 
 gl_e134_Acmd *AudioSynth_ProcessNote(s32 noteIndex, NoteSampleState *sampleState, NoteSynthesisState *synthState, s16 *aiBuf,
                        s32 aiBufLen, gl_e134_Acmd *cmd, s32 updateIndex) {
@@ -1453,7 +1453,7 @@ gl_e134_Acmd *AudioSynth_ProcessNote(s32 noteIndex, NoteSampleState *sampleState
 
                     switch (bookOffset) {
                         case 1:
-                            gAudioCtx.curLoadedBook = &D_8012FBA8[1];
+                            gAudioCtx.curLoadedBook = &gInvalidAdpcmCodeBook[1];
                             break;
                         case 2:
                         case 3:
@@ -1786,7 +1786,7 @@ gl_e134_Acmd *AudioSynth_ProcessNote(s32 noteIndex, NoteSampleState *sampleState
 #undef AudioSynth_ProcessEnvelope
 #undef AudioSynth_ApplyHaasEffect
 #undef NoteSynthesisState
-#undef D_8012FBA8
+#undef gInvalidAdpcmCodeBook
 
 // AudioSynth_FinalResample — STRUCTURAL PASS (0xA8 / 42 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
@@ -3663,9 +3663,9 @@ void AudioHeap_Init(void) {
     XCALL(gl_func_00000000_21498v, AudioLoad_InitSlowLoads)();
     G.h4 = 0x1000;
     XCALL(gl_func_00000000_21498v, AudioLoad_LoadPermanentSamples)();
-    v = gl_func_00000000(1);
-    gl_func_00000000_21498v();
-    gl_func_00000000_21498v(v);
+    v = gl_func_00000000(1); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x36350; the symbol starts at 2 pad words) */
+    gl_func_00000000_21498v(); /* UNNAMED: mid-entry osWritebackDCacheAll = gl_osWritebackDCacheAll+0x4 (ROM TextReloc 0x36358; 1 pad word) */
+    gl_func_00000000_21498v(v); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x36360) */
 }
 #undef G
 
@@ -6751,7 +6751,7 @@ void AudioLoad_RelocateFontAndPreloadSamples(s32 fontId, void *fontData, SampleB
     if (gAudioCtx.preloadSampleStackTop != 0) {
         preloadInProgress = 1;
     } else {
-        D_8016B780 = 0;
+        D_8016B780 = 0; /* UNNAMED: unknown-role OoT load.c D_8016B780 (no upstream name): an s32 zeroed when no preload is in progress, never read in OoT, no read in the 1080 sources either; module word at 0x2B0 */
     }
 
     gAudioCtx.numUsedSamples = 0;
@@ -7966,9 +7966,9 @@ int AudioThread_InitMesgQueues() {
 
 extern int gl_func_00000000();
 void Audio_InvalDCache(int a0, int a1) {
-    int r = gl_func_00000000(1);
+    int r = gl_func_00000000(1); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x3BD80; the symbol starts at 2 pad words) */
     CALL(gl_osInvalDCache)(a0, a1);
-    gl_func_00000000(r);
+    gl_func_00000000(r); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x3BD98) */
 }
 
 // Audio_WritebackDCache — STRUCTURAL PASS (0xB4 / 45 words, no episode).
@@ -8004,9 +8004,9 @@ void Audio_InvalDCache(int a0, int a1) {
 //   USO placeholder.
 extern int gl_func_00000000();
 void Audio_WritebackDCache(int a0, int a1) {
-    int r1 = gl_func_00000000(1);
-    gl_func_00000000(a0, a1);
-    gl_func_00000000(r1);
+    int r1 = gl_func_00000000(1); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x3BDC0; the symbol starts at 2 pad words) */
+    gl_func_00000000(a0, a1); /* UNNAMED: mid-entry osWritebackDCache = gl_osWritebackDCache+0x4 (ROM TextReloc 0x3BDD0; 1 pad word) */
+    gl_func_00000000(r1); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x3BDD8) */
 }
 
 /* osAiSetNextBuffer = libultra osAiSetNextBuffer (2.0I aisetnextbuf.c
@@ -9506,7 +9506,7 @@ null_return:
  * gAudioContext_345c0_1CC98; count +0x2070, recs +0x2CFC stride 0xD0): copy the 0x20-byte template
  * element (bootup.uso Data sym1243 @0x197A4 -> own zero alias D_197a4_29494) into rec->e,
  * clear the state bytes/halves, set the three handles to -1, f58 = 0.0f, then
- * rec->w1C = sym1276(&G.tbl2198, 0x1C0) through the gl_func_00000000 blank.
+ * rec->w1C = AudioHeap_AllocDmaMemory(&G.tbl2198, 0x1C0) (sym1276; ROM TextReloc 0x3DBD8).
  * Oracle: section 0x3DB00 exported (sym1301, TextReloc ref @0x35F48). BYTE-EXACT 74/74.
  * The old NM (71.3) hand-wrote `off += 0xD0`, 8 FW() word copies and a hoisted zero.
  * The -1 into the +0x44 pointer slot goes through an int lvalue: a pointer-typed
@@ -9532,7 +9532,7 @@ void Audio_NoteInitAll(void) {
         r->h82 = 0;
         r->h84 = 0;
         r->b35 = 0;
-        r->w1C = gl_func_00000000(gAudioContext_345c0_1CC98.tbl2198, 0x1C0);
+        r->w1C = CALL(AudioHeap_AllocDmaMemory)(gAudioContext_345c0_1CC98.tbl2198, 0x1C0);
     }
 }
 
@@ -11787,7 +11787,7 @@ void snd_UpdateTimers(void) {
         d -= SND_CUEQ_AT_BASE(D_2D37C_f360l).rampStep;
         SND_CUEQ_AT_BASE(D_2D37C_f35Cw).rampValue = d;
         i = (int)d;
-        if (0) { gl_func_00000000(&i); } /* agent-g run 226/227: i homed at its decl slot (frame 0x28, i at 0x1c = target) */
+        if (0) { gl_func_00000000(&i); } /* UNNAMED: no-reloc dead if (0) call, never emitted (no jal; a homing lever for i). agent-g run 226/227: i homed at its decl slot (frame 0x28, i at 0x1c = target) */
         CALL(AudioThread_QueueCmdS32)(0x4E010000, i);
         fr = SND_CUEQ_AT_BASE(D_2D37C_f358l).rampBase; /* agent-g run 228: the post-call 0x358 reload is fr (target f2, not a fresh f0 temp) */
         XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x4D010000, ((f32)i + fr) / fr);
@@ -15529,14 +15529,14 @@ void snd_FrameUpdate(void) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_00032D84(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4); /* gSysLib = ROM HI/LO Bss+0x3C740 (sym73) */
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadQuad_00032DC0(Quad4 *dst) {
     Quad4 scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16); /* gSysLib = ROM HI/LO Bss+0x3C740 (sym73) */
     *dst = scratch;
 }
 
