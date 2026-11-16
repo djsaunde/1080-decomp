@@ -1,7 +1,7 @@
 /*
  * port/audio/mixer.c: clean-room CPU implementation of 1080's audio ABI.
  * See mixer.h for the model and sources, and docs/1080_PC_PORT_PLAN.md
- * section 13 for which opcodes are verified against 1080's own aspMain.
+ * (section "M1: audio mixer") for which opcodes are verified against 1080's own aspMain.
  *
  * Notation in the comments: "ucode 0xNNNN" is the IMEM address of the
  * handler in 1080's aspMain (text at ROM 0xE16EDC loads at IMEM 0x1000;
@@ -287,7 +287,7 @@ void mix_clearbuff(Mixer *m, uint16_t dmem, uint16_t count) {
  *              vmadn  B[k]     = clamp_low(2 * y * x)
  * This is a distortion / ring-mod style effect, not a no-op (SoH treats it
  * as a no-op). Read straight off the disassembly; still wants an emulator
- * capture (section 13). */
+ * capture (PC_PORT_PLAN "M1: audio mixer"). */
 void mix_unk3(Mixer *m, uint16_t dmem_a, uint16_t dmem_b, uint16_t count) {
     int32_t n = count;
     uint32_t a = dmem_a, b = dmem_b;
@@ -339,7 +339,7 @@ void mix_addmixer(Mixer *m, uint16_t count, uint16_t dmem_in, uint16_t dmem_out)
  *   flag 2:  s[0], s[2] at in - 4 (2:1 decimated history);
  *   flag 4:  s[0] s[0] s[1] s[1] s[2] s[2] s[3] s[3] at in - 16.
  * Flags 2 / 4 are read off the ucode but unused by 1080, and whether they
- * also change the stepping is unverified (section 13). */
+ * also change the stepping is unverified (PC_PORT_PLAN "M1: audio mixer"). */
 void mix_resample(Mixer *m, uint8_t flags, uint16_t pitch, uint32_t state_addr) {
     int16_t st[16];
     uint32_t pos;
@@ -426,7 +426,7 @@ void mix_resample_zoh(Mixer *m, uint16_t pitch, uint16_t pitch_accu) {
  *            zeroes the state first. y[i] = clamp((sum_j x[i-7+j] *
  *            c[7-j] + 0x4000) >> 15).
  * NOT yet checked against the 1080 ucode (handler 0x1CAC): rounding and
- * the averaging are from the public behaviour description (section 13). */
+ * the averaging are from the public behaviour description (PC_PORT_PLAN "M1: audio mixer"). */
 void mix_filter(Mixer *m, uint8_t flags, uint16_t count_or_dmem, uint32_t addr) {
     if (flags > 1) {
         const void *src = dram(m, addr);
