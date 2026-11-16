@@ -5761,6 +5761,12 @@ trn_func_00000A2C_v = 0x00000000;  /* void-typed call alias (trnproc_uso.c 3A8) 
 trnproc_uso_func_000001B0_ref = 0x00000000;  /* Text-reloc callback address pin (trnproc_uso.c 3A8) */
 trnproc_uso_func_000001E4_ref = 0x00000000;  /* Text-reloc callback address pin (trnproc_uso.c 3A8) */
 trnproc_uso_func_00000214_ref = 0x00000000;  /* Text-reloc callback address pin (trnproc_uso.c 3A8) */
+trn_gGui = 0x00000000;  /* gui.uso Bss+0x8 (trnproc import) */
+trn_ro_20 = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_uso.c) */
+trn_ro_24 = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_uso.c) */
+trn_ro_28 = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_uso.c) */
+trn_ro_2C = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_uso.c) */
+trn_sprites = 0x00000000;  /* trnproc Bss+0x0 sprite table pin (trnproc_uso.c B78) */
 ne_data = 0x00000000;  /* nameent.uso Data section base */
 snow_ro_20 = 0x00000020;  /* snoweffects RoData+0x20 float (0x3EE4 emitter default, own lui) */
 snow_ro_24 = 0x00000024;  /* snoweffects RoData+0x24 float (0x3EE4 emitter default, own lui) */

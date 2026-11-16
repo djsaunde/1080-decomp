@@ -22,6 +22,15 @@ extern char trn_bss[];
 extern char trn_data[];
 /* game.uso Bss+0x8: the TrickTable (TrickTable_getCount / getEntry / getInputMask). */
 extern char *trn_gTrickTable;
+/* gui.uso Bss+0x8: the gui colour state (gui_setColor_00001A5C's first argument). */
+extern char trn_gGui;
+/* trnproc Bss+0x0: the TrnRace HUD sprites (cards / buttons, the "+" at [15], the header at
+ * +0x180 and the extra at +0x198 are spelled off trn_bss). */
+extern RaceSprite trn_sprites[];
+/* trnproc.uso RoData floats: the in-place addend is the RoData offset (0x20.., after the
+ * procMain jumptable and its pad), one 0-pinned symbol per load so each keeps its own lui. */
+#define TRN_RO(sym, off) (*(float *)((char *)&sym + (off)))
+extern char trn_ro_20, trn_ro_24, trn_ro_28, trn_ro_2C;
 
 /* trnproc_uso_func_00000000 / 00000008: empty functions. */
 void trnproc_uso_func_00000000(void) {
@@ -247,7 +256,29 @@ char *trnproc_uso_func_000003A8(char *obj, int a1, int a2) {
     return obj;
 }
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_000006CC);
+/* trnproc_uso_func_000006CC: TrnRace initLabels: the HUD sprites in trnproc Bss (the lesson
+ * header at +0x180, the 16 trick-lesson cards 0x330001..0x330010 at +0x0 step 0x18, and
+ * 0x7000C at +0x198). self is unused (cfe still homes it). */
+void trnproc_uso_func_000006CC(char *self) {
+    CALL(gui_spriteInit)(trn_bss + 0x180, (trn_gRowBase + 0x36) << 16);
+    CALL(gui_spriteInit)(trn_bss + 0x0, 0x00330001);
+    CALL(gui_spriteInit)(trn_bss + 0x18, 0x00330002);
+    CALL(gui_spriteInit)(trn_bss + 0x30, 0x00330003);
+    CALL(gui_spriteInit)(trn_bss + 0x48, 0x00330004);
+    CALL(gui_spriteInit)(trn_bss + 0x60, 0x00330005);
+    CALL(gui_spriteInit)(trn_bss + 0x78, 0x00330006);
+    CALL(gui_spriteInit)(trn_bss + 0x90, 0x00330007);
+    CALL(gui_spriteInit)(trn_bss + 0xA8, 0x00330008);
+    CALL(gui_spriteInit)(trn_bss + 0xC0, 0x00330009);
+    CALL(gui_spriteInit)(trn_bss + 0xD8, 0x0033000A);
+    CALL(gui_spriteInit)(trn_bss + 0xF0, 0x0033000B);
+    CALL(gui_spriteInit)(trn_bss + 0x108, 0x0033000C);
+    CALL(gui_spriteInit)(trn_bss + 0x120, 0x0033000D);
+    CALL(gui_spriteInit)(trn_bss + 0x138, 0x0033000E);
+    CALL(gui_spriteInit)(trn_bss + 0x150, 0x0033000F);
+    CALL(gui_spriteInit)(trn_bss + 0x168, 0x00330010);
+    CALL(gui_spriteInit)(trn_bss + 0x198, 0x0007000C);
+}
 
 /* trnproc_uso_func_00000858: TrnRace onPauseSelect (as TimRace_onPauseSelect, plus the
  * dataManager +0xFC guard). */
@@ -322,7 +353,47 @@ void trnproc_uso_func_000009F0(char *self) {
     CALL(RaceProcess_callGlobalSlot11_00008674)(self);
 }
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000A2C);
+/* trnproc_uso_func_00000A2C: TrnDataManager init (TimDataManager_init's shape): name, owner race
+ * (+0xB8), HUD layout words, lesson count (+0x108) from the TrickTable, first lesson (180C from
+ * -1) shown through 13C4; with a pause menu, the points-gadget list and white HUD colour; then
+ * virtual slot 10. */
+void trnproc_uso_func_00000A2C(char *self, char *race, int spriteSet) {
+    int cur;
+    NODE(self)->name = (const char *)(trn_data + 0x31C);
+    *(char **)(self + 0xB8) = race;
+    *(int *)(self + 0xAC) = 0;
+    *(int *)(self + 0xD8) = 24;
+    *(int *)(self + 0xDC) = 8;
+    *(int *)(self + 0xE0) = -1;
+    *(int *)(self + 0xE4) = 40;
+    *(int *)(self + 0xE8) = 270;
+    *(int *)(self + 0xEC) = 215;
+    *(int *)(self + 0xD4) = 0;
+    *(int *)(self + 0x108) = CALL(TrickTable_getCount_0000C3E8)(trn_gTrickTable);
+    *(int *)(self + 0x100) = 0;
+    cur = CALL(trnproc_uso_func_0000180C)(self, -1);
+    *(int *)(self + 0xF0) = cur;
+    *(int *)(self + 0xF4) = 0;
+    *(int *)(self + 0xFC) = 0;
+    *(int *)(self + 0x10C) = 0;
+    *(int *)(self + 0x110) = 1;
+    *(int *)(self + 0x198) = 0;
+    CALL(trnproc_uso_func_000013C4)(self, cur);
+    if ((RACEPROC(*(char **)(self + 0xB8))->flags << 15) < 0) {
+        *(int *)(self + 0x54) = spriteSet;
+        *(int *)(self + 0xCC) = 0xFF;
+        *(int *)(self + 0xD0) = 0;
+        *(float *)(self + 0xC8) = 1.0f;
+        *(float *)(self + 0xC4) = 1.0f;
+        *(float *)(self + 0xC0) = 1.0f;
+        *(float *)(self + 0xBC) = 1.0f;
+        CALL(hud_addPointsGadgetList)(self);
+    }
+    {
+        char *vt = (char *)NODE(self)->vptr;
+        ((void (*)(int))VT_SLOT(vt, 10).fn)(VT_SLOT(vt, 10).delta + (int)self);
+    }
+}
 
 /* trnproc_uso_func_00000B44: TrnDataManager reset: clear the trick state, then RaceTracker_reset. */
 void trnproc_uso_func_00000B44(char *self) {
@@ -334,6 +405,11 @@ void trnproc_uso_func_00000B44(char *self) {
     CALL(RaceTracker_reset)(self);
 }
 
+/* trnproc_uso_func_00000B78: TrnDataManager HUD draw: the current lesson's title ("%d: %s"
+ * with the TrickTable entry name; red once the lesson's trick is done), then its input list
+ * (+0x118, -1 terminated): 255 starts a new line, any other entry is a button sprite (0..31 in
+ * the Bss table at +0x0, 32.. in the second table at +0xF0), with the "+" sprite between two
+ * buttons on one line. */
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000B78);
 
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000DD4);
@@ -393,9 +469,60 @@ int trnproc_uso_func_000013A0(char *self, int idx) {
 
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_000013C4);
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_000016C8);
+/* trnproc_uso_func_000016C8: stick direction bits (input & 0xF0) -> direction sprite 1..8
+ * (0 = none). self is unused. */
+int trnproc_uso_func_000016C8(char *self, int input) {
+    int d = input & 0xF0;
+    if (d == 0x40) {
+        return 1;
+    }
+    if (d == 0x60) {
+        return 2;
+    }
+    if (d == 0x20) {
+        return 3;
+    }
+    if (d == 0xA0) {
+        return 4;
+    }
+    if (d == 0x80) {
+        return 5;
+    }
+    if (d == 0x90) {
+        return 6;
+    }
+    if (d == 0x10) {
+        return 7;
+    }
+    if (d == 0x50) {
+        return 8;
+    }
+    return 0;
+}
 
+/* NM 32/37: the target reloads the spilled mask into t6 before the race +0x44 chain (t7..t9);
+ * cfe evaluates the chain first in every operand order / unsigned / volatile spelling tried.
+ * trnproc_uso_func_00001778: is lesson idx available: its trick's unlock mask (TrickTable
+ * field 0x34) against the player's unlocked bits (race +0x44 -> [0] -> +0x8C0); on the
+ * restricted course (+0xF8 == 1) a trick flagged 4 is excluded. */
+#ifdef NON_MATCHING
+int trnproc_uso_func_00001778(char *self, int idx) {
+    int mask = gl_func_00000000(trn_gTrickTable, idx);  /* TrickTable_getField34_0000C394 */
+    int flags = gl_func_00000000(trn_gTrickTable, idx); /* TrickTable_getFlags_0000C3B0 */
+    if (*(int *)(**(char ***)(self + 0x44) + 0x8C0) & mask) {
+        if (*(int *)(self + 0xF8) == 1) {
+            if (flags & 4) {
+                return 0;
+            }
+            return 1;
+        }
+        return 1;
+    }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00001778);
+#endif
 
 /* trnproc_uso_func_0000180C: next lesson after cur (wrapping at the count +0x108) that 1778
  * accepts; cur itself if none. */
@@ -415,7 +542,26 @@ int trnproc_uso_func_0000180C(char *self, int cur) {
 
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_0000188C);
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00001A98);
+/* trnproc_uso_func_00001A98: TrnDataManager display: the results screen (DD4) once the course
+ * is over (+0xFC); else while the race is not paused (+0x30) and a lesson is set (+0xF8 >= 0),
+ * the lesson panel (+0x150) and its header (+0x180) at (+0xE8, +0xEC), and the lesson HUD (B78)
+ * while armed; then RaceTracker_display. */
+void trnproc_uso_func_00001A98(char *self) {
+    if (*(int *)(self + 0xFC) != 0) {
+        CALL(trnproc_uso_func_00000DD4)(self);
+    } else if (*(int *)(*(char **)(self + 0xB8) + 0x30) == 0 && *(int *)(self + 0xF8) >= 0) {
+        CALL(gui_spriteRefresh)(trn_bss + 0x150);
+        CALL(gui_setCombine_00001794)(trn_bss + 0x150);
+        CALL(gui_drawSprite)(trn_bss + 0x150, *(int *)(self + 0xE8), *(int *)(self + 0xEC), 2);
+        CALL(gui_spriteRefresh)(trn_bss + 0x180);
+        CALL(gui_setCombine_00001794)(trn_bss + 0x180);
+        CALL(gui_drawSprite)(trn_bss + 0x180, *(int *)(self + 0xE8) - 4, *(int *)(self + 0xEC), 6);
+        if (*(int *)(*(char **)(self + 0xB8) + 0x30) == 0 && *(int *)(self + 0xF4) != 0) {
+            CALL(trnproc_uso_func_00000B78)(self);
+        }
+    }
+    CALL(RaceTracker_display)(self);
+}
 
 /* trnproc_uso_func_00001B84: Parm<Int>::read: skip the tag int, read the value at +0x10
  * (template, as tit_readIntParm). */
