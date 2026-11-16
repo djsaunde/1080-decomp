@@ -1150,13 +1150,21 @@ void TimMenu_rowRetry_00001FA0(void) {
  * (The 2-word "orphan" after it at 0x2028 is the next function's own
  * hoisted first load; it is now part of TimMenu_rowToggle_00002028.)
  * Per feedback_unique_extern_with_offset_cast_breaks_cse.md. */
+/* timproc's own Bss +0x208 / +0x20C (as h2hproc's Bss +4 / +0: H2HPauseBss): the pause menu and
+ * the race the menu-row callbacks act on (TimMenu_update_00002740 stores race->menu and race
+ * there before calling the row). The aliases are 0, so the offsets stay in the C. */
+typedef struct TimPauseBss {
+    /* 0x0 */ int menu;             /* GuiMenu (Process_stop) */
+    /* 0x4 */ int race;             /* the TimRace (Process_fadeOut) */
+} TimPauseBss;
+#define TIM_PAUSE(sym) ((TimPauseBss *)((char *)&(sym) + 0x208))
 extern char D_b1_1FE4_a;
 extern char D_b1_1FE4_b;
 extern char D_b1_1FE4_c;
 void TimMenu_rowGhost_00001FE4(void) {
-    CALL(Process_stop)(*(int*)((char*)&D_b1_1FE4_a + 0x208));
+    CALL(Process_stop)(TIM_PAUSE(D_b1_1FE4_a)->menu);
     INPUT_MGR(D_b1_1FE4_b).procState = 6;
-    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_b1_1FE4_c + 0x20C), -1, 0);
+    CALL(Process_fadeOut_0000F954)(TIM_PAUSE(D_b1_1FE4_c)->race, -1, 0);
 }
 
 /* Dual-branch state setter (twin of TrkMenu_rowToggle_00002238).

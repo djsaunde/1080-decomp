@@ -479,36 +479,36 @@ void MGRRaceProcess_onEndTimerDone(int *a0) {
     int spill;          /* stack 0x24(sp) */
     int *s0 = a0;
     spill = 0;
-    if (a0[0x4F8 / 4] == 0) {
-        if (mgr_isLastCourse_00000140(a0[0x6A8 / 4]) != 0) {
+    if (MGRRACE(a0)->race.result == 0) {
+        if (mgr_isLastCourse_00000140(MGRRACE(a0)->courseList) != 0) {
             spill = 1;
             INPUT_MGR(import_800200DC).nextProcState = 7;
             if (*(volatile int *)0xA0000200 == (int)0xAC290000) {
-                import_000A8114(&import_80020100, *(int *)((char *)&import_80020100_b + 0x68) - 1);
+                import_000A8114(&import_80020100, INPUT_MGR(import_80020100_b).level - 1);
             } else {
-                s0[0x7C8 / 4] = 0;
+                MGRRACE(s0)->retries = 0;
             }
         }
         goto term;
     }
     /* a0[0x4F8] != 0 */
-    if (mgr_noRetriesLeft_00000170(s0[0x6A8 / 4]) == 0) goto term;
+    if (mgr_noRetriesLeft_00000170(MGRRACE(s0)->courseList) == 0) goto term;
     spill = 1;
-    INPUT_MGR(import_800200D8).procState = *(int *)((char *)&import_800200DC_b + 0x44);
-    *(int *)((char *)&import_800200DC_c + 0x44) = 7;
+    INPUT_MGR(import_800200D8).procState = INPUT_MGR(import_800200DC_b).nextProcState;
+    INPUT_MGR(import_800200DC_c).nextProcState = 7;
 term:
-    if (s0[0x7C8 / 4] != 0) {
-        if (mgr_noRetriesLeft_00000170(s0[0x6A8 / 4]) == 0) goto storestate;
+    if (MGRRACE(s0)->retries != 0) {
+        if (mgr_noRetriesLeft_00000170(MGRRACE(s0)->courseList) == 0) goto storestate;
     }
-    if (XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)(((int **)s0)[0x6AC / 4][0x4C / 4]) == 0) {
+    if (XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)(MGRDATAMGR(MGRRACE(s0)->dataMgr)->base.session) == 0) {
         INPUT_MGR(import_800200D8).procState = 7;
         spill = 0;
     } else {
         INPUT_MGR(import_800200D8).procState = 5;
-        s0[0x7D8 / 4] = 1;
+        MGRRACE(s0)->nameEntryMode = 1;
     }
 storestate:
-    s0[0x504 / 4] = (spill != 0) ? 0 : 4;
+    MGRRACE(s0)->race.unk504 = (spill != 0) ? 0 : 4;
     return;
 }
 

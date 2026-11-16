@@ -155,15 +155,24 @@ void h2h_closeSession_00000274(int *a0) {
  * h2h_closeSession_00000274 (Makefile) — a 1-word GLOBAL_ASM pad block emits
  * 2 words (+4 segment length drift, the documented trap). */
 
+/* h2hproc's own Bss +0 / +4 (the _a / _c aliases relocate to Bss(base); the ROM words carry the
+ * offsets): the race and its pause menu that the pause-menu row callbacks act on. H2HRaceProcess_
+ * onPauseSelect stores the race before calling the row callback; h2h_WinsDisplay_update stores
+ * WinsDisplay.race / .menu. The row callbacks stop the menu process and fade the race out. */
+typedef struct H2HPauseBss {
+    /* 0x0 */ char *race;           /* H2HRace */
+    /* 0x4 */ int menu;             /* GuiMenu (Process_stop / resume) */
+} H2HPauseBss;
+#define H2HPAUSE(sym) ((H2HPauseBss *)&(sym))
 extern char *D_h2h_2A4_a;       /* call 1 base, *(D+4) */
 extern char *D_h2h_2A4_b;       /* GameFlow (bootup Bss 0xF8 import): procState; replay_freeRecord arg */
 extern int  *D_h2h_2A4_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
 void h2h_pauseRetry(void) {
-    CALL(Process_stop)(*(int*)((char*)&D_h2h_2A4_a + 4));
+    CALL(Process_stop)(H2HPAUSE(D_h2h_2A4_a)->menu);
     INPUT_MGR(D_h2h_2A4_b).procState = 5;
     CALL(replay_freeRecord)(&D_h2h_2A4_b);
-    *(int*)((char*)D_h2h_2A4_c + 0x30) = 0;
+    RACEPROC(D_h2h_2A4_c)->unk030 = 0;
     CALL(Process_fadeOut_0000F954)(D_h2h_2A4_c, -1, 0);
 }
 
@@ -172,10 +181,10 @@ extern char *D_h2h_2FC_b;       /* call 2 a0 + store +0x40 */
 extern int  *D_h2h_2FC_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
 void h2h_pauseChangeCharacter(void) {
-    CALL(Process_stop)(*(int*)((char*)&D_h2h_2FC_a + 4));
+    CALL(Process_stop)(H2HPAUSE(D_h2h_2FC_a)->menu);
     INPUT_MGR(D_h2h_2FC_b).procState = 2;
     CALL(replay_freeRecord)(&D_h2h_2FC_b);
-    *(int*)((char*)D_h2h_2FC_c + 0x30) = 0;
+    RACEPROC(D_h2h_2FC_c)->unk030 = 0;
     CALL(Process_fadeOut_0000F954)(D_h2h_2FC_c, -1, 0);
 }
 
@@ -184,10 +193,10 @@ extern char *D_h2h_354_b;       /* call 2 a0 + store +0x40 */
 extern int  *D_h2h_354_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
 void h2h_pauseChangeBoard(void) {
-    CALL(Process_stop)(*(int*)((char*)&D_h2h_354_a + 4));
+    CALL(Process_stop)(H2HPAUSE(D_h2h_354_a)->menu);
     INPUT_MGR(D_h2h_354_b).procState = 3;
     CALL(replay_freeRecord)(&D_h2h_354_b);
-    *(int*)((char*)D_h2h_354_c + 0x30) = 0;
+    RACEPROC(D_h2h_354_c)->unk030 = 0;
     CALL(Process_fadeOut_0000F954)(D_h2h_354_c, -1, 0);
 }
 
@@ -196,10 +205,10 @@ extern char *D_h2h_3AC_b;       /* call 2 a0 + store +0x40 */
 extern int  *D_h2h_3AC_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
 void h2h_pauseChangeCourse(void) {
-    CALL(Process_stop)(*(int*)((char*)&D_h2h_3AC_a + 4));
+    CALL(Process_stop)(H2HPAUSE(D_h2h_3AC_a)->menu);
     INPUT_MGR(D_h2h_3AC_b).procState = 4;
     CALL(replay_freeRecord)(&D_h2h_3AC_b);
-    *(int*)((char*)D_h2h_3AC_c + 0x30) = 0;
+    RACEPROC(D_h2h_3AC_c)->unk030 = 0;
     CALL(Process_fadeOut_0000F954)(D_h2h_3AC_c, -1, 0);
 }
 
@@ -208,10 +217,10 @@ extern char *D_h2h_404_b;       /* call 2 a0 + store +0x40 */
 extern int  *D_h2h_404_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
 void h2h_pauseQuit(void) {
-    CALL(Process_stop)(*(int*)((char*)&D_h2h_404_a + 4));
+    CALL(Process_stop)(H2HPAUSE(D_h2h_404_a)->menu);
     INPUT_MGR(D_h2h_404_b).procState = 6;
     CALL(replay_freeRecord)(&D_h2h_404_b);
-    *(int*)((char*)D_h2h_404_c + 0x30) = 0;
+    RACEPROC(D_h2h_404_c)->unk030 = 0;
     CALL(Process_fadeOut_0000F954)(D_h2h_404_c, -1, 0);
 }
 
