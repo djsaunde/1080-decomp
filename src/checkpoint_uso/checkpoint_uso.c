@@ -46,43 +46,33 @@ void checkpoint_uso_func_000000A4(int *dst) {
  * alloc): SNode_ctor, vptr Data+0x3E20, two inline CollObj box ctors at +0x8C / +0xCC
  * (coll_boxCtor + CollObj vptr, bootup Data+0x1EDF8), +0x88 = 20, then both become
  * cylinders (CollObj_initCylinder(c, self, 100, 100.0f, 1000.0f)).
- * NOT MATCHED (agent-b run 627): every instruction and stack slot matches (c1 / c2 /
- * the shared inline-ctor `p` at sp+0x30 / 0x2C / 0x34) except the frame size, 0x40
- * vs 0x38 (two words of 65). Without the named `p` the frame is 0x38 but the slots
- * sit one word lower; block-scoped / reordered / partial `p` variants are worse.
- * The NM body calls the placeholders unnamed (mem_new x3, SNode_ctor, coll_boxCtor_0003CAA0
- * x2, CollObj_initCylinder x2): the matching object has no relocs to check CALL names against. */
+ * Frame lever: only the inline ctor's `p` is a named local (its home is sp+0x34);
+ * the two CollObj addresses are plain `self + K` expressions, CSE'd by uopt into
+ * spill temps (sp+0x30 / 0x2C). Named c1 / c2 locals each add a dead home word
+ * (frame 0x40 instead of 0x38). */
 extern char CollObj_vtbl_chkE0;
 extern void gl_func_00000000_chkcyl(char *, char *, int, float, float);
-#ifdef NON_MATCHING
 int *checkpoint_uso_func_000000E0(char *self) {
-    char *c2;
-    char *c1;
     char *p;
-    if (self != 0 || (self = (char *)gl_func_00000000(0x10C)) != 0) {
-        gl_func_00000000(self); /* SNode_ctor */
+    if (self != 0 || (self = (char *)CALL(mem_new)(0x10C)) != 0) {
+        CALL(SNode_ctor)(self);
         NODE(self)->vptr = &D_00000000;
-        c1 = self + 0x8C;
-        p = c1;
-        if (p != 0 || (p = (char *)gl_func_00000000(0x40)) != 0) {
-            gl_func_00000000(p); /* coll_boxCtor_0003CAA0 */
+        p = self + 0x8C;
+        if (p != 0 || (p = (char *)CALL(mem_new)(0x40)) != 0) {
+            CALL(coll_boxCtor_0003CAA0)(p);
             *(char **)(p + 0x30) = &CollObj_vtbl_chkE0;
         }
-        c2 = self + 0xCC;
-        p = c2;
-        if (p != 0 || (p = (char *)gl_func_00000000(0x40)) != 0) {
-            gl_func_00000000(p); /* coll_boxCtor_0003CAA0 */
+        p = self + 0xCC;
+        if (p != 0 || (p = (char *)CALL(mem_new)(0x40)) != 0) {
+            CALL(coll_boxCtor_0003CAA0)(p);
             *(char **)(p + 0x30) = &CollObj_vtbl_chkE0;
         }
         *(s32 *)(self + 0x88) = 20;
-        gl_func_00000000_chkcyl(c1, self, 100, 100.0f, 1000.0f);
-        gl_func_00000000_chkcyl(c2, self, 100, 100.0f, 1000.0f);
+        XCALL(gl_func_00000000_chkcyl, CollObj_initCylinder)(self + 0x8C, self, 100, 100.0f, 1000.0f);
+        XCALL(gl_func_00000000_chkcyl, CollObj_initCylinder)(self + 0xCC, self, 100, 100.0f, 1000.0f);
     }
     return (int *)self;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_000000E0);
-#endif
 
 /* checkpoint_uso_func_000001E4: cylinder checkpoint loadData (int at 0x88). */
 void checkpoint_uso_func_000001E4(char *self) {
@@ -105,11 +95,65 @@ void checkpoint_uso_func_0000023C(char *self) {
     CALL(SNode_hostioParms)(self);
 }
 
-INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_000002AC);
+/* checkpoint_uso_func_000002AC: cylinder checkpoint handleMsg: after
+ * SNode_handleMsg, messages 7 (move) and 19 (rebuild) place the two gate posts
+ * at (-/+ r, 0, 0) through the SNode's 3x4 Mtx (+0x2C, rows of 4) plus pos,
+ * r = 117 / GfxLib.worldScale[0]; posts stored at +0xA4 and +0xE4.
+ * Levers: the zero is `z = 0.0` (a double literal keeps the live `mul.s` by an
+ * mtc1 zero; `0.0f` folds the terms away); each sum is spelled right-nested
+ * (IDO evaluates the right operand first); `m` declared before the two Vec3
+ * temps gives their homes (sp+0x5C / 0x50). */
+typedef struct { float x, y, z; } ChkVec3;
+void checkpoint_uso_func_000002AC(char *self, int *msg) {
+    float r;
+    float z;
+    float nr;
+    float *m;
+    ChkVec3 a;
+    ChkVec3 b;
+
+    CALL(SNode_handleMsg)(self, msg);
+    if (*msg == 7 || *msg == 19) {
+        r = 117.0f / *(float *)(&D_00000000 + 0x128); /* GfxLib.worldScale[0] */
+        z = 0.0;
+        nr = -r;
+        m = (float *)SNODE(self)->mtx;
+        a.x = m[12] + (m[8] * z + (m[4] * z + m[0] * nr));
+        a.y = m[13] + (m[9] * z + (m[5] * z + m[1] * nr));
+        a.z = m[14] + (m[10] * z + (m[6] * z + m[2] * nr));
+        *(float *)(self + 0xA4) = a.x;
+        *(float *)(self + 0xA8) = a.y;
+        *(float *)(self + 0xAC) = a.z;
+        b.x = m[12] + (m[8] * z + (m[4] * z + m[0] * r));
+        b.y = m[13] + (m[9] * z + (m[5] * z + m[1] * r));
+        b.z = m[14] + (m[10] * z + (m[6] * z + m[2] * r));
+        *(float *)(self + 0xE4) = b.x;
+        *(float *)(self + 0xE8) = b.y;
+        *(float *)(self + 0xEC) = b.z;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_0000045C);
 
-INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_0000058C);
+/* checkpoint_uso_func_0000058C: box Checkpoint ctor (0xCC bytes, cfront this==0
+ * alloc), the E0 shape with one CollObj: SNode_ctor, vptr Data+0x3E80, inline
+ * CollObj ctor at +0x88, CollObj_initCylinder(c, self, 100, 20.0f, 500.0f), then
+ * +0xC8 = arg (the template's +0x48 word). Same frame lever as E0. */
+int *checkpoint_uso_func_0000058C(char *self, int arg) {
+    char *p;
+    if (self != 0 || (self = (char *)CALL(mem_new)(0xCC)) != 0) {
+        CALL(SNode_ctor)(self);
+        NODE(self)->vptr = &D_00000000;
+        p = self + 0x88;
+        if (p != 0 || (p = (char *)CALL(mem_new)(0x40)) != 0) {
+            CALL(coll_boxCtor_0003CAA0)(p);
+            *(char **)(p + 0x30) = &CollObj_vtbl_chkE0;
+        }
+        XCALL(gl_func_00000000_chkcyl, CollObj_initCylinder)(self + 0x88, self, 100, 20.0f, 500.0f);
+        *(int *)(self + 0xC8) = arg;
+    }
+    return (int *)self;
+}
 
 /* checkpoint_uso_func_0000063C: box checkpoint loadData (int at 0xC8). */
 void checkpoint_uso_func_0000063C(char *self) {
