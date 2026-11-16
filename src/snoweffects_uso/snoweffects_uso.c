@@ -530,7 +530,10 @@ void SnowFall_buildFrustum_0000374C(SnowFall *this) {
     this->nPlanes = ((char *)pl - (char *)this->planes) / 16;
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000039C4);
+/* SnowFall fill: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc.cpp
+ * (RoData+0x14..+0x1C literal pin), REPLACE_FUNC_BODY-spliced over this placeholder. */
+void snoweffects_uso_func_000039C4(SnowFall *this) {
+}
 
 void ParmFloat_read_snow_00003CA4(char *a0) {
     int tag;

@@ -68,8 +68,27 @@ struct SnowPool {
 struct SnowFall {
     char pad00[0x30];
     /* 0x30 */ SnowParticle *items;
-    char pad34[0xB8 - 0x34];
+    char pad34[0x40 - 0x34];
+    /* 0x40 */ int unk40;            /* flakes to spawn in 0x39C4 */
+    char pad44[0x50 - 0x44];
+    /* 0x50 */ float camRotT[3][3];  /* camera rotation, transposed (0x3620) */
+    /* 0x74 */ float camRot[3][3];
+    /* 0x98 */ float unk98[3];       /* camera position * world scale (0x39C4) */
+    char padA4[0xB8 - 0xA4];
     /* 0xB8 */ int count;
 };
+
+/* the libgdl globals reached through the blank D_00000000 (C side: GfxLib / Window, gdl/gfxlib.h) */
+struct SnowCamera { char pad[0xA0]; float pos[3]; };
+struct SnowWindow { char pad[0x70]; SnowCamera *camera; };
+struct SnowGfxLib {
+    char pad000[0x128];
+    /* 0x128 */ float worldScale[3];
+    char pad134[0x254 - 0x134];
+    /* 0x254 */ SnowWindow *curWindow;
+};
+
+/* typed blank (0) alias of the sys_randf import (float return) */
+extern "C" float gl_func_00000000_snow_randf(void);
 
 #endif
