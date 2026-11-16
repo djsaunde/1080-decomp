@@ -118,7 +118,7 @@ typedef struct CamFollow {
     MCamera *cam;           /* 0x14: Node parent */
     char pad18[0x2C - 0x18];
     CamVec3 unk2C;          /* 0x2C: cleared by the ctor */
-    void *owner;            /* 0x38: +0xB4 pad, +0xD4..0xDC pan vector, +0x110 window */
+    struct GdlInput *owner; /* 0x38: the debug input (include/gdl/pad.h): pad, pan vector, window */
 } CamFollow;
 
 /* one 0x18-byte float parm (the same layout as snowboarder.h SnowBParm) */

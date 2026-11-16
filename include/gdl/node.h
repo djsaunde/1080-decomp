@@ -52,6 +52,26 @@ typedef struct GdlVtEnt {
  * NODE(c)->parent = (int)this;`. Lowers to the same base + offset access as the raw form. */
 #define NODE(p) ((Node *)(p))
 
+/* A Node message, the second argument of the handleMsg / doCommand vtable slots (Node_handleMsg
+ * 0x38830, MNode/SNode/QNode handlers): a tag, an int or payload-pointer argument and a reply word.
+ * Node_handleMsg answers four tags: 0xC sets/clears doFlags bit 0x80 from payload +4; 0xD stores
+ * this node in `reply` when its name compares equal (callback(name, *payload) == 0); 0xE does
+ * the same when serial == (s16)payload +4; 0x2 sets/clears DoDisplay (0x4) and DoUpdate (0x8). */
+typedef struct NodeMsg {
+    /* 0x0 */ s32 tag;
+    /* 0x4 */ s32 arg;             /* an int, or a pointer to the tag's payload */
+    /* 0x8 */ s32 reply;           /* the answering Node (find tags 0xD / 0xE) */
+} NodeMsg;
+
+#define NODEMSG_SET_ACTIVE  0x2    /* arg != 0: set DoDisplay | DoUpdate, else clear both */
+#define NODEMSG_SET_FLAG80  0xC
+#define NODEMSG_FIND_NAME   0xD
+#define NODEMSG_FIND_SERIAL 0xE
+
+#ifndef __cplusplus
+typedef char NodeMsg_reply_check[(int)&((NodeMsg *)0)->reply == 0x8 ? 1 : -1];
+#endif
+
 /* The libgdl application object (App_main, 0x415A4, sets its name to "App").
  * Only the fields the App_* bodies touch are known. */
 typedef struct App {

@@ -19,6 +19,7 @@
 #include "gdl/texload.h"
 #include "gdl/sysapi.h"
 #include "gdl/nodelist.h"
+#include "gdl/pad.h"
 #include "libultra/os_thread.h"
 #include "game/camera.h"
 #include "uso_call.h"
@@ -2492,9 +2493,9 @@ typedef struct S36C08 {
     char padAC[0xF4 - 0xAC];
     struct S36C08 *child;                           /* 0xF4 */
 } S36C08;
-void CamFollow_update(char *o) {
-    S36C08 *ctx = (S36C08 *)((CamFollow *)o)->cam;
-    char *st = *(char **)((char *)((CamFollow *)o)->owner + 0xB4);
+void CamFollow_update(CamFollow *o) {
+    S36C08 *ctx = (S36C08 *)o->cam;
+    PadCtl *st = o->owner->pad;
     float p[3];
     float q[3];
     float r[3];
@@ -2507,12 +2508,12 @@ void CamFollow_update(char *o) {
     p[2] = 0.0f;
     p[1] = 0.0f;
     p[0] = 0.0f;
-    if (*(int *)(st + 0x10) & 0x200) {
-        p[0] = *(float *)((char *)((CamFollow *)o)->owner + 0xD4) * -10.0f;
-        p[1] = *(float *)((char *)((CamFollow *)o)->owner + 0xD8) * 10.0f;
-        p[2] = *(float *)((char *)((CamFollow *)o)->owner + 0xDC) * 30.0f;
+    if (st->held & 0x200) {
+        p[0] = o->owner->pan[0] * -10.0f;
+        p[1] = o->owner->pan[1] * 10.0f;
+        p[2] = o->owner->pan[2] * 30.0f;
     }
-    CALL(math_mtx4MulVec3)(p, ((CamWindow *)*(char **)((char *)((CamFollow *)o)->owner + 0x110))->cam->view); /* p turned into the view frame */
+    CALL(math_mtx4MulVec3)(p, ((CamWindow *)o->owner->window)->cam->view); /* p turned into the view frame */
     t = *pc;
     CALL(math_mtxAddTranslation)(t->child->pos, p);
     t = *pc;
@@ -2521,16 +2522,16 @@ void CamFollow_update(char *o) {
     q[0] = 0.0f;
     q[1] = 0.0f;
     q[2] = 0.0f;
-    if (*(int *)(st + 0x10) & 1) {
+    if (st->held & 1) {
         q[1] = -2.0f;
     }
-    if (*(int *)(st + 0x10) & 2) {
+    if (st->held & 2) {
         q[1] = 2.0f;
     }
-    if (*(int *)(st + 0x10) & 4) {
+    if (st->held & 4) {
         q[0] = -2.0f;
     }
-    if (*(int *)(st + 0x10) & 8) {
+    if (st->held & 8) {
         q[0] = 2.0f;
     }
 
@@ -2547,9 +2548,9 @@ void CamFollow_update(char *o) {
     t = *pc;
     CALL(absrot_matrix4)(t->pos, 1, *(int *)&q[1], 0);
 
-    u[0] = ((CamWindow *)*(char **)((char *)((CamFollow *)o)->owner + 0x110))->cam->view[0][0];
-    u[1] = ((CamWindow *)*(char **)((char *)((CamFollow *)o)->owner + 0x110))->cam->view[1][0];
-    u[2] = ((CamWindow *)*(char **)((char *)((CamFollow *)o)->owner + 0x110))->cam->view[2][0];
+    u[0] = ((CamWindow *)o->owner->window)->cam->view[0][0];
+    u[1] = ((CamWindow *)o->owner->window)->cam->view[1][0];
+    u[2] = ((CamWindow *)o->owner->window)->cam->view[2][0];
     t = *pc;
     CALL(math_mtxRotateAxis)(t->pos, u, *(int *)&q[0]);
 
@@ -3960,24 +3961,24 @@ void Node_update(char *o) {
  * IDO pulls the L2 block up as the fall-through (bnel to the epilogue);
  * the inverted test keeps L2 last, giving the target's beql + b epilogue. */
 void Node_handleMsg(o, c, tag)
-char *o;
-char *c;
+Node *o;
+NodeMsg *c;
 int tag;
 {
     int *flags;
     char *pl;
     int pv;
-    tag = *(int *)c;
+    tag = c->tag;
     if (c) {}
-    if (tag == 0xC) goto L12;
-    if (tag == 0xD) goto L13;
-    if (tag == 0xE) goto L14;
-    if (tag != 0x2) return;
+    if (tag == NODEMSG_SET_FLAG80) goto L12;
+    if (tag == NODEMSG_FIND_NAME) goto L13;
+    if (tag == NODEMSG_FIND_SERIAL) goto L14;
+    if (tag != NODEMSG_SET_ACTIVE) return;
     goto L2;
 L12:
-    pl = *(char **)(c + 0x4);
+    pl = (char *)c->arg;
     pv = *(int *)(pl + 0x4);
-    flags = (int *)(o + 0x18);
+    flags = &o->doFlags;
     if (pv != 0) {
         *flags |= 0x80;
     } else {
@@ -3985,24 +3986,24 @@ L12:
     }
     return;
 L13:
-    if (gl_func_00000000(*(char **)(o + 0x0C), **(int ***)(c + 0x4)) == 0) {
-        *(char **)(c + 0x8) = o;
+    if (gl_func_00000000((char *)o->name, *(int *)c->arg) == 0) {
+        c->reply = (s32)o;
     }
     return;
 L14:
-    if (*(int *)(o + 0x1C) == *(short *)(*(char **)(c + 0x4) + 0x4)) {
-        *(char **)(c + 0x8) = o;
+    if (o->serial == *(short *)((char *)c->arg + 0x4)) {
+        c->reply = (s32)o;
     }
     return;
 L2:
-    pv = *(int *)(c + 0x4);
-    flags = (int *)(o + 0x18);
+    pv = c->arg;
+    flags = &o->doFlags;
     if (pv != 0) {
         *flags |= 0x4;
     } else {
         *flags &= ~0x4;
     }
-    pv = *(int *)(c + 0x4);
+    pv = c->arg;
     if (pv != 0) {
         *flags |= 0x8;
     } else {
@@ -6045,9 +6046,9 @@ end:
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-typedef char *(*GP_0003C86C)();
-#define SH_3C86C(p, o) (*(s16 *)((char *)(p) + (o)))
-/* contact-result scratch: a CollContact (include/gdl/coll.h; normal at +0x00, partner at +0x28,
+/* Each pair test is vtable slot 0 (the hit test: this, other, &contact) and each hit report slot 1
+   (this, &contact), called Cfront-style through VT_SLOT (include/gdl/node.h).
+   contact-result scratch: a CollContact (include/gdl/coll.h; normal at +0x00, partner at +0x28,
    0x40 total; frame math: two of these at sp+0x40/sp+0x80 tile the 0xC0 frame exactly).
    agent-b run 500: in the field form the mask tests are spelled `hitMask & category` -- the raw
    `SH(other, 0x16) & SH(self, 0x14)` order, kept as written, swaps the two lh (cfe orders the
@@ -6066,11 +6067,11 @@ void CollObjMgr_update(char *arg0) {
                 do {
                     if (var_s0 != var_s1) {
                         vt = (char *)COLLOBJ(var_s1)->vptr;
-                        if (((GP_0003C86C) FW(vt, 0xC))(SH_3C86C(vt, 8) + var_s1, var_s0, &sp80) != 0) {
+                        if (VT_SLOT(vt, 0).fn(VT_SLOT(vt, 0).delta + var_s1, var_s0, &sp80) != 0) {
                             if (COLLOBJ(var_s1)->hitMask & COLLOBJ(var_s0)->category) {
                                 sp80.other = COLLOBJ(var_s0);
                                 vt = (char *)COLLOBJ(var_s1)->vptr;
-                                ((GP_0003C86C) FW(vt, 0x14))(SH_3C86C(vt, 0x10) + var_s1, &sp80);
+                                VT_SLOT(vt, 1).fn(VT_SLOT(vt, 1).delta + var_s1, &sp80);
                             }
                             if (COLLOBJ(var_s0)->hitMask & COLLOBJ(var_s1)->category) {
                                 sp80.other = COLLOBJ(var_s1);
@@ -6078,7 +6079,7 @@ void CollObjMgr_update(char *arg0) {
                                 sp80.normal[1] *= -1.0f;
                                 sp80.normal[2] *= -1.0f;
                                 vt = (char *)COLLOBJ(var_s0)->vptr;
-                                ((GP_0003C86C) FW(vt, 0x14))(SH_3C86C(vt, 0x10) + var_s0, &sp80);
+                                VT_SLOT(vt, 1).fn(VT_SLOT(vt, 1).delta + var_s0, &sp80);
                             }
                         }
                     }
@@ -6095,11 +6096,11 @@ void CollObjMgr_update(char *arg0) {
             if (var_s0 != 0) {
                 do {
                     vt = (char *)COLLOBJ(var_s1)->vptr;
-                    if (((GP_0003C86C) FW(vt, 0xC))(SH_3C86C(vt, 8) + var_s1, var_s0, &sp40) != 0) {
+                    if (VT_SLOT(vt, 0).fn(VT_SLOT(vt, 0).delta + var_s1, var_s0, &sp40) != 0) {
                         if (COLLOBJ(var_s1)->hitMask & COLLOBJ(var_s0)->category) {
                             sp40.other = COLLOBJ(var_s0);
                             vt = (char *)COLLOBJ(var_s1)->vptr;
-                            ((GP_0003C86C) FW(vt, 0x14))(SH_3C86C(vt, 0x10) + var_s1, &sp40);
+                            VT_SLOT(vt, 1).fn(VT_SLOT(vt, 1).delta + var_s1, &sp40);
                         }
                         if (COLLOBJ(var_s0)->hitMask & COLLOBJ(var_s1)->category) {
                             sp40.other = COLLOBJ(var_s1);
@@ -6107,7 +6108,7 @@ void CollObjMgr_update(char *arg0) {
                             sp40.normal[1] *= -1.0f;
                             sp40.normal[2] *= -1.0f;
                             vt = (char *)COLLOBJ(var_s0)->vptr;
-                            ((GP_0003C86C) FW(vt, 0x14))(SH_3C86C(vt, 0x10) + var_s0, &sp40);
+                            VT_SLOT(vt, 1).fn(VT_SLOT(vt, 1).delta + var_s0, &sp40);
                         }
                     }
                     var_s0 = (char *)COLLOBJ(var_s0)->next;
@@ -13486,15 +13487,15 @@ int gfx_findVtx_00048720(int *a0, int a1, int a2) {
         hdr = *a0;
         do {
             int rec = *(volatile int *)(*(volatile int *)(hdr + 0x1C)) + (i * 16);
-            if (*(short *)a2 == *(short *)rec &&
-                *(short *)(a2 + 2) == *(short *)(rec + 2) &&
-                *(short *)(a2 + 4) == *(short *)(rec + 4) &&
-                *(short *)(a2 + 8) == *(short *)(rec + 8) &&
-                *(short *)(a2 + 0xA) == *(short *)(rec + 0xA)) {
+            if (GDLVTX(a2)->ob[0] == GDLVTX(rec)->ob[0] &&
+                GDLVTX(a2)->ob[1] == GDLVTX(rec)->ob[1] &&
+                GDLVTX(a2)->ob[2] == GDLVTX(rec)->ob[2] &&
+                GDLVTX(a2)->tc[0] == GDLVTX(rec)->tc[0] &&
+                GDLVTX(a2)->tc[1] == GDLVTX(rec)->tc[1]) {
                 if (a1 != 0) {
-                    if (*(unsigned char *)(a2 + 0xC) == *(unsigned char *)(rec + 0xC) &&
-                        *(unsigned char *)(a2 + 0xD) == *(unsigned char *)(rec + 0xD) &&
-                        *(unsigned char *)(a2 + 0xE) == *(unsigned char *)(rec + 0xE)) {
+                    if (GDLVTX(a2)->cn[0] == GDLVTX(rec)->cn[0] &&
+                        GDLVTX(a2)->cn[1] == GDLVTX(rec)->cn[1] &&
+                        GDLVTX(a2)->cn[2] == GDLVTX(rec)->cn[2]) {
                         return i;
                     }
                 } else {
@@ -17604,30 +17605,30 @@ extern int gl_func_00034458_4F85C(); /* blank alias (= 0): ROM jal words are jal
  * inits the 0x1C/0x20/0x22/0x24 fields from spec (halfwords via lw+sh). */
 extern int BaseMat_vtbl_4F85C_a;
 extern int Mat_vtbl_4F85C_b;
-char *Mat_fromFrameBuffer_0004F85C(char *self, char *spec) {
+char *Mat_fromFrameBuffer_0004F85C(char *self, Window *spec) {
     char *s;
     char *s2;
-    char *m;
+    s32 *m;
 
     if (self != 0 || (self = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(0x90)) != 0) {
         if ((s = self) != 0 || (s = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(0x90)) != 0) {
             if ((s2 = s) != 0 || (s2 = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(0x60)) != 0) {
-                *(char **)(s2 + 0x5C) = (char *)&BaseMat_vtbl_4F85C_a;
-                if ((m = s2 + 0x34) != 0 || (m = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(8)) != 0) {
-                    *(int *)(m + 4) = 0;
-                    *(int *)(m + 0) = 0;
+                ((BaseMat *)s2)->vptr = (s32)&BaseMat_vtbl_4F85C_a;
+                if ((m = &((BaseMat *)s2)->unk34) != 0 || (m = (s32 *)XCALL(gl_func_00034458_4F85C, mem_new)(8)) != 0) {
+                    m[1] = 0;
+                    m[0] = 0;
                 }
-                if ((m = s2 + 0x58) != 0 || (m = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(4)) != 0) {
-                    *(int *)(m + 0) = 0;
+                if ((m = &((BaseMat *)s2)->unk58) != 0 || (m = (s32 *)XCALL(gl_func_00034458_4F85C, mem_new)(4)) != 0) {
+                    m[0] = 0;
                 }
                 XCALL(gl_func_00034458_4F85C, BaseMat_init_000517E4)(s2);
             }
-            *(char **)(s + 0x5C) = (char *)&Mat_vtbl_4F85C_b;
+            ((BaseMat *)s)->vptr = (s32)&Mat_vtbl_4F85C_b;
         }
-        *(int *)(self + 0x24) = 0x110;
-        *(int *)(self + 0x1C) = *(int *)(spec + 0xF4);
-        *(short *)(self + 0x20) = *(int *)(spec + 0xB8);
-        *(short *)(self + 0x22) = *(int *)(spec + 0xBC);
+        ((BaseMat *)self)->format = MAT_FMT_RGBA16;
+        ((BaseMat *)self)->texels = spec->colorBuf[0];
+        ((BaseMat *)self)->width = spec->width;
+        ((BaseMat *)self)->height = spec->height;
     }
     return self;
 }
@@ -22857,28 +22858,28 @@ void math_mtx4Adjugate(void *arg0, void *arg1) {
     m4 = M[4]; m6 = M[6]; m7 = M[7]; m5 = M[5];
     m8 = M[8]; m10 = M[10]; m11 = M[11]; m9 = M[9];
     m12 = M[12]; m13 = M[13]; m14 = M[14]; m15 = M[15];
-#define H gl_func_00000000_5be20
-    O[0]  =  H(m5, m9, m13, m6,  m10, m14, m7,  m11, m15);
-    O[4]  = -H(m4, m8, m12, m6,  m10, m14, m7,  m11, m15);
-    O[8]  =  H(m4, m8, m12, m5,  m9,  m13, m7,  m11, m15);
-    O[12] = -H(m4, m8, m12, m5,  m9,  m13, m6,  m10, m14);
-    O[1]  = -H(m1, m9, m13, m2,  m10, m14, m3,  m11, m15);
-    O[5]  =  H(m0, m8, m12, m2,  m10, m14, m3,  m11, m15);
-    O[9]  = -H(m0, m8, m12, m1,  m9,  m13, m3,  m11, m15);
-    O[13] =  H(m0, m8, m12, m1,  m9,  m13, m2,  m10, m14);
-    O[2]  =  H(m1, m5, m13, m2,  m6,  m14, m3,  m7,  m15);
-    O[6]  = -H(m0, m4, m12, m2,  m6,  m14, m3,  m7,  m15);
-    O[10] =  H(m0, m4, m12, m1,  m5,  m13, m3,  m7,  m15);
-    O[14] = -H(m0, m4, m12, m1,  m5,  m13, m2,  m6,  m14);
-    O[3]  = -H(m1, m5, m9,  m2,  m6,  m10, m3,  m7,  m11);
-    O[7]  =  H(m0, m4, m8,  m2,  m6,  m10, m3,  m7,  m11);
-    O[11] = -H(m0, m4, m8,  m1,  m5,  m9,  m3,  m7,  m11);
-    O[15] =  H(m0, m4, m8,  m1,  m5,  m9,  m2,  m6,  m10);
-#undef H
+#define DET3 XCALL(gl_func_00000000_5be20, math_det3x3) /* 3x3 determinant of 9 floats */
+    O[0]  =  DET3(m5, m9, m13, m6,  m10, m14, m7,  m11, m15);
+    O[4]  = -DET3(m4, m8, m12, m6,  m10, m14, m7,  m11, m15);
+    O[8]  =  DET3(m4, m8, m12, m5,  m9,  m13, m7,  m11, m15);
+    O[12] = -DET3(m4, m8, m12, m5,  m9,  m13, m6,  m10, m14);
+    O[1]  = -DET3(m1, m9, m13, m2,  m10, m14, m3,  m11, m15);
+    O[5]  =  DET3(m0, m8, m12, m2,  m10, m14, m3,  m11, m15);
+    O[9]  = -DET3(m0, m8, m12, m1,  m9,  m13, m3,  m11, m15);
+    O[13] =  DET3(m0, m8, m12, m1,  m9,  m13, m2,  m10, m14);
+    O[2]  =  DET3(m1, m5, m13, m2,  m6,  m14, m3,  m7,  m15);
+    O[6]  = -DET3(m0, m4, m12, m2,  m6,  m14, m3,  m7,  m15);
+    O[10] =  DET3(m0, m4, m12, m1,  m5,  m13, m3,  m7,  m15);
+    O[14] = -DET3(m0, m4, m12, m1,  m5,  m13, m2,  m6,  m14);
+    O[3]  = -DET3(m1, m5, m9,  m2,  m6,  m10, m3,  m7,  m11);
+    O[7]  =  DET3(m0, m4, m8,  m2,  m6,  m10, m3,  m7,  m11);
+    O[11] = -DET3(m0, m4, m8,  m1,  m5,  m9,  m3,  m7,  m11);
+    O[15] =  DET3(m0, m4, m8,  m1,  m5,  m9,  m2,  m6,  m10);
+#undef DET3
 }
 
 /* math_mtx4Determinant - 4x4 matrix DETERMINANT by cofactor expansion along row 0
- * through the 3x3-determinant helper dbg_printThreads (the same float-typed
+ * through the 3x3-determinant helper math_det3x3 (the same float-typed
  * alias as math_mtx4Adjugate). EXACT 2026-10-17. Frame homes follow the
  * column-wise declaration order (5BE20 rule); M is declared FIRST (its unused
  * home is the top word, 124). The three cofactors go through named temps
@@ -22899,12 +22900,12 @@ float math_mtx4Determinant(void *arg0) {
     m4 = M[4]; m5 = M[5]; m6 = M[6]; m7 = M[7];
     m8 = M[8]; m9 = M[9]; m10 = M[10]; m11 = M[11];
     m12 = M[12]; m13 = M[13]; m14 = M[14]; m15 = M[15];
-#define H gl_func_00000000_5be20
-    a = H(m4, m8, m12, m6, m10, m14, m7, m11, m15);
-    b = H(m4, m8, m12, m5, m9, m13, m7, m11, m15);
-    c = H(m4, m8, m12, m5, m9, m13, m6, m10, m14);
-    return m0 * H(m5, m9, m13, m6, m10, m14, m7, m11, m15) - m1 * a + m2 * b - m3 * c;
-#undef H
+#define DET3 XCALL(gl_func_00000000_5be20, math_det3x3) /* 3x3 determinant of 9 floats */
+    a = DET3(m4, m8, m12, m6, m10, m14, m7, m11, m15);
+    b = DET3(m4, m8, m12, m5, m9, m13, m7, m11, m15);
+    c = DET3(m4, m8, m12, m5, m9, m13, m6, m10, m14);
+    return m0 * DET3(m5, m9, m13, m6, m10, m14, m7, m11, m15) - m1 * a + m2 * b - m3 * c;
+#undef DET3
 }
 
 /* math_det3x3: cross-of-callee-results. cb(float,float,int,int)->float

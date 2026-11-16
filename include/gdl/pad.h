@@ -147,4 +147,30 @@ typedef char InputFrame_size_check[sizeof(InputFrame) == 4 ? 1 : -1];
 #define PADDEV(p) ((PadDev *)(p))
 #define PADCTL(p) ((PadCtl *)(p))
 
+/* GdlInput: the debug input object the libgdl debug controllers keep a pointer to (CamFollow.owner +0x38,
+ * BallRotator.input +0x1CC). Only the fields those two read are known (agent-b run 542): the pad, the
+ * cursor's previous / current screen points (BallRotator), a pan vector and the 3D window whose camera
+ * CamFollow pans along (CamFollow_update). */
+typedef struct GdlInput {
+    /* 0x000 */ char pad00[0xB4];
+    /* 0x0B4 */ PadCtl *pad;                /* held (+0x10): CamFollow buttons 1/2/4/8/0x200, BallRotator buttonMask */
+    /* 0x0B8 */ int unkB8;
+    /* 0x0BC */ float prevPoint[3];         /* previous cursor screen point */
+    /* 0x0C8 */ char padC8[0xD4 - 0xC8];
+    /* 0x0D4 */ float pan[3];               /* CamFollow: times (-10, 10, 30) while button 0x200 */
+    /* 0x0E0 */ char padE0[0xF8 - 0xE0];
+    /* 0x0F8 */ float curPoint[3];          /* current cursor screen point */
+    /* 0x104 */ int unk104;
+    /* 0x108 */ int enable;                 /* BallRotator drags only while set */
+    /* 0x10C */ int unk10C;
+    /* 0x110 */ void *window;               /* the 3D window (CamWindow: camera at +0x70) */
+} GdlInput;
+
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
+typedef char GdlInput_pad_check[(int)&((GdlInput *)0)->pad == 0xB4 ? 1 : -1];
+typedef char GdlInput_window_check[(int)&((GdlInput *)0)->window == 0x110 ? 1 : -1];
+#endif
+
+#define GDLINPUT(p) ((GdlInput *)(p))
+
 #endif /* GDL_PAD_H */

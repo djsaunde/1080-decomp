@@ -74,6 +74,20 @@ typedef struct PolyNormal {
     /* 0x0 */ f32 x, y, z;
 } PolyNormal;
 
+/* one F3DEX vertex (libultra Vtx_t, 16 bytes): the strip vertex buffers PolyShape_addFace_00048510
+ * (Strip::add(Vtx *, ...)) appends to, and the records gfx_findVtx_00048720 compares (position,
+ * texture coordinates and, when asked, the colour / normal bytes; `flag` is not compared). */
+typedef struct GdlVtx {
+    /* 0x0 */ s16 ob[3];
+    /* 0x6 */ u16 flag;
+    /* 0x8 */ s16 tc[2];
+    /* 0xC */ u8 cn[4];
+} GdlVtx;
+
+#define GDLVTX(p) ((GdlVtx *)(p))
+
+typedef char GdlVtx_size_check[sizeof(GdlVtx) == 0x10 ? 1 : -1];
+
 #define POLYVERT(p) ((PolyVert *)(p))
 #define POLYNORMAL(p) ((PolyNormal *)(p))
 #define POLYTRI(p) ((PolyTri *)(p))
