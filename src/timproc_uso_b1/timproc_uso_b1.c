@@ -126,6 +126,7 @@ tim_main(a0, a1) int * a0; int a1; {
 
 extern int gInputMgr_backup_148;
 extern int gInputMgr_session_14C;
+/* UNNAMED: data-base D_00000068 = 0x68 is RoData +0x68 in bootup snd_soundObjSetPan_00000B2C but InputMgr +0x68 (import mod0) in the arcproc / timproc b1 / b3 openSession helpers; a pure rename would merge them, it needs a per-site split. */
 extern int D_00000068;
 
 /* 46-insn -O0 allocator-wrapper (0xB8). LANDED 2026-05-25 via splice-import-

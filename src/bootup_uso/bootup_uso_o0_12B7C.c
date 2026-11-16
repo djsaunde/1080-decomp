@@ -8,7 +8,6 @@
 
 extern int func_00000000();
 extern int D_00000000;
-extern int D_A0000200;
 
 /* settings_set8_00012818: 99.73% NON_MATCHING. Sole diff (0x5C/0x64): the
  * `if (D_A0000200 == 0xAC290000)` value-load. IDO -O0 emits

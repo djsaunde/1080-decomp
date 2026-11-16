@@ -5,6 +5,7 @@
 extern int gl_func_00000000();
 extern int gInputMgr_backup_148;
 extern int gInputMgr_session_14C;
+/* UNNAMED: data-base D_00000068 = 0x68 is RoData +0x68 in bootup snd_soundObjSetPan_00000B2C but InputMgr +0x68 (import mod0) in the arcproc / timproc b1 / b3 openSession helpers; a pure rename would merge them, it needs a per-site split. */
 extern int D_00000068;
 
 void tim_openSession_000005A4(int **arg0, int arg1, int arg2) {

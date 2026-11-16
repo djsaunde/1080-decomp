@@ -33,6 +33,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * tenshoe.ld. Its 11-way switch jumptable .rodata is pinned NOLOAD at VMA 0 so
  * the reloc-form dispatch (lui at,0; lw at,0(at)) bakes byte-exact. */
 
+/* UNNAMED: data-base D_00000068 = 0x68 is RoData +0x68 in bootup snd_soundObjSetPan_00000B2C but InputMgr +0x68 (import mod0) in the arcproc / timproc b1 / b3 openSession helpers; a pure rename would merge them, it needs a per-site split. */
 extern int gInputMgr_backup_148, gInputMgr_session_14C, D_00000068;
 /* arc_openSession_000005C8: 48-insn (0xC0) -O0 alloc wrapper. MATCHED 2026-07-10
  * via REPLACE_FUNC_BODY donor arcproc_uso_o0_5C8.c (real -O0 output). This tail1

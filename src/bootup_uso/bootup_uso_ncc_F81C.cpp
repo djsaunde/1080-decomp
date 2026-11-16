@@ -14,6 +14,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * at VRAM 0, so `extern D_00000030` produces the same lui/addiu words as the
  * target's %hi/%lo(stream_readS32_00000008 + 0x28) — the F7D0 trick, addend baked in
  * the addiu (form-a LO16-fold, unreachable via struct-member address-of). */
+/* UNNAMED: data-base D_00000030 = 0x30 is one pinned value for two Bss objects (sym324 +0x30 in game_create3DWindow / game_createProcessWindow, sym326 +0x30 in Process_exit); a pure rename would merge them, it needs a per-site split. */
 extern float D_00000030[4];    /* == stream_readS32_00000008 + 0x28: Vec4f zeroed slot */
 extern char gSnowBoard_0000002C;        /* == stream_readS32_00000008 + 0x24 */
 typedef struct {

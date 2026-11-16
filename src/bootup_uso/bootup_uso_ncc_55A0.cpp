@@ -30,7 +30,6 @@ extern int sStr_light01_7E48, sTag_lig_7E54, sTag_gol_7E58, sTag_st0_7E5C, sTag_
 extern char ColourItem_vtbl_75A0_type_7600;
 extern void Tv1Tmpl_update(int *a0);
 extern int sTag_pyr_7E20, D_55A0_it0; /* arg1==1 list-init globals (decode 2026-06-26; the list table is blank in the target) */
-extern int D_00007E34; /* actor-0 sub-init preload value (decode 2026-06-26) */
 extern char TreeTmpl_vtbl_7AB8; /* actor-0 obj+0x28 symbol store (decode 2026-06-26) */
 #define DROOT ((int *)D_55A0_root)
 #define DI(o) (*(int *)((char *)&D_00000000 + (o)))

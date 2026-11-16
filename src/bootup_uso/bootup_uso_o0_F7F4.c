@@ -6,6 +6,7 @@
  * See project_1080_bootup_uso_o0_runs.md + feedback_ido_o0_empty_stub.md. */
 
 extern int func_00000000();
+/* UNNAMED: data-base D_00000030 = 0x30 is one pinned value for two Bss objects (sym324 +0x30 in game_create3DWindow / game_createProcessWindow, sym326 +0x30 in Process_exit); a pure rename would merge them, it needs a per-site split. */
 extern void *D_00000030;
 extern char D_00000000;
 

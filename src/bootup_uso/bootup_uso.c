@@ -20,7 +20,7 @@
  * `(char *)&SndHandle_triggerEvent3_00000940 + OFF` cast materialized the function address). */
 extern float D_bu_ro_pool[];
 extern double D_bu_ro_dpool[];  /* same base, f64 view (8-aligned pool offsets) */
-extern f32 D_00000128, kRo_SnowBoarder_ctor_868, kRo_SnowBoarder_ctor_86C, kRo_SnowBoarder_ctor_870, kRo_SnowBoarder_ctor_874, kRo_SnowBoarder_ctor_878, kRo_SnowBoarder_ctor_87C, kRo_SnowBoarder_ctor_880, kRo_SnowBoarder_ctor_884, kRo_SnowBoarder_ctor_888, kRo_SnowBoarder_ctor_88C, kRo_SnowBoarder_ctor_890, kRo_SnowBoarder_ctor_894, kRo_SnowBoarder_ctor_898, kRo_SnowBoarder_ctor_89C, kRo_SnowBoarder_ctor_8A0, kRo_SnowBoarder_ctor_8A4, kRo_SnowBoarder_ctor_8A8, kRo_SnowBoarder_ctor_8AC, kRo_SnowBoarder_ctor_8B0, kRo_SnowBoarder_ctor_8B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, kRo_SnowBoarder_procColl_938, kRo_SnowBoarder_procColl_93C, D_00000940, D_00000944, D_00000948, D_0000094C;
+extern f32 kRo_SnowBoarder_ctor_868, kRo_SnowBoarder_ctor_86C, kRo_SnowBoarder_ctor_870, kRo_SnowBoarder_ctor_874, kRo_SnowBoarder_ctor_878, kRo_SnowBoarder_ctor_87C, kRo_SnowBoarder_ctor_880, kRo_SnowBoarder_ctor_884, kRo_SnowBoarder_ctor_888, kRo_SnowBoarder_ctor_88C, kRo_SnowBoarder_ctor_890, kRo_SnowBoarder_ctor_894, kRo_SnowBoarder_ctor_898, kRo_SnowBoarder_ctor_89C, kRo_SnowBoarder_ctor_8A0, kRo_SnowBoarder_ctor_8A4, kRo_SnowBoarder_ctor_8A8, kRo_SnowBoarder_ctor_8AC, kRo_SnowBoarder_ctor_8B0, kRo_SnowBoarder_ctor_8B4, kRo_SnowBoarder_procColl_938, kRo_SnowBoarder_procColl_93C;
 
 /* func_00000000 is splat's synthetic symbol for unrelocated JAL target 0x0.
  * Raw bytes are `jr $ra; nop`. IDO -O2 emits exactly that for an empty
@@ -186,6 +186,7 @@ void snd_setPlayer3FreqScaleFromStick(void) {
  * the f32 at stream_readF32_00000044+0xC (D_00000050). */
 typedef struct { f32 x, y, z; } V3_3F8;
 extern f32 func_00000000_3F8_f(f32);
+/* UNNAMED: data-base D_00000050 = 0x50 is RoData +0x50 here (snd_calcEmitterDistPan_000003F8 distance scale) but Bss sym272 +0x50 in game_libs app_createGame_00008FFC; a pure rename would merge them, it needs a per-site split. */
 extern f32 D_00000050;
 void snd_calcEmitterDistPan_000003F8(V3_3F8 *pos, f32 *dist, s32 *proj, char *obj) {
     V3_3F8 d;
@@ -514,6 +515,7 @@ void snd_soundObjSetReverb(int **a0, int a1) {
     }
 }
 
+/* UNNAMED: data-base D_00000068 = 0x68 is RoData +0x68 in bootup snd_soundObjSetPan_00000B2C but InputMgr +0x68 (import mod0) in the arcproc / timproc b1 / b3 openSession helpers; a pure rename would merge them, it needs a per-site split. */
 extern float D_00000068;
 void snd_soundObjSetPan_00000B2C(void **a0, float a1) {
     a1 = a1 / D_00000068;
@@ -1963,6 +1965,7 @@ void *cam_create(int a0, int mode, char *parent, char *a3v, int p4) {
  * store precedes the publish call (it lands in that jal's delay slot). */
 extern char sStr_3DWindow_74D0;
 extern f32 kRo_game_create3DWindow_538, kRo_game_create3DWindow_53C, kRo_game_create3DWindow_540;
+/* UNNAMED: data-base D_00000030 = 0x30 is one pinned value for two Bss objects (sym324 +0x30 in game_create3DWindow / game_createProcessWindow, sym326 +0x30 in Process_exit); a pure rename would merge them, it needs a per-site split. */
 extern float D_00000030[4];
 extern char gSnowBoard_0000002C;
 extern void stream_readS32_00000008();  /* used as data-symbol base */
