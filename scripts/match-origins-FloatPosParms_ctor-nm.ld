@@ -9,7 +9,7 @@ SECTIONS {
  .sbss 0x0 : SUBALIGN(4) { *(.sbss) *(.sbss.*) }
  /DISCARD/ : { *(.mdebug) *(.reginfo) *(.pdr) *(.comment) *(.MIPS.abiflags) *(.options) }
 }
-D_0000C83C = 0x0;
+FloatParm_vtbl_C83C = 0x0;
 bootup_1438C_alloc = 0x0;
 bootup_1438C_init = 0x0;
 sTimeGadgetParmsTags_CACC = 0x0;

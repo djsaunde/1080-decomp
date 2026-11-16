@@ -430,7 +430,7 @@ glabel SnowBoarder_procColl
     /* DDD29C 0000C830 2602093C */  addiu      $v0, $s0, 0x93C
     /* DDD2A0 0000C834 46025203 */  div.s      $f8, $f10, $f2
     /* DDD2A4 0000C838 46023483 */  div.s      $f18, $f6, $f2
-  alabel D_0000C83C
+  alabel FloatParm_vtbl_C83C
     /* DDD2A8 0000C83C E608093C */  swc1       $f8, 0x93C($s0)
     /* DDD2AC 0000C840 C6080968 */  lwc1       $f8, 0x968($s0)
     /* DDD2B0 0000C844 46024183 */  div.s      $f6, $f8, $f2

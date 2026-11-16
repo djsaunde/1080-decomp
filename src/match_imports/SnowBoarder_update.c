@@ -122,7 +122,7 @@ void SnowBoarder_update(BootupState *st) {
         if (fl != 0) {
             bootup_D440_000610(a0_2, &st->field_DC, st->field_348,
                           -st->field_968.x, st->field_968.z,
-                          st->field_9D0 + D_00000980,
+                          st->field_9D0 + kRo_SnowBoarder_update_980,
                           (int)st->field_9A2, (char *)fl, st->field_A58);
         }
         bootup_D440_062388(bootup_D440_desc9 + 0x44);

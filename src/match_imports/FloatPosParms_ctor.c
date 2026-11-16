@@ -24,7 +24,7 @@ char *FloatPosParms_ctor(char *arg0) {
     c = arg0 + 8;
     if (c != 0 || (c = bootup_1438C_alloc(0x18)) != 0) {
         bootup_1438C_init(c, arg0, p, 1);
-        PARMF(c)->type = &D_0000C83C; /* float parm type */
+        PARMF(c)->type = &FloatParm_vtbl_C83C; /* float parm type */
         PARMF(c)->unk14 = 0;
         PARMF(c)->value = 30.0f;
     }
@@ -33,7 +33,7 @@ char *FloatPosParms_ctor(char *arg0) {
     c = arg0 + 0x20;
     if (c != 0 || (c = bootup_1438C_alloc(0x18)) != 0) {
         bootup_1438C_init(c, arg0, p, 1);
-        PARMF(c)->type = &D_0000C83C; /* float parm type */
+        PARMF(c)->type = &FloatParm_vtbl_C83C; /* float parm type */
         PARMF(c)->unk14 = 0;
         PARMF(c)->value = 30.0f;
     }

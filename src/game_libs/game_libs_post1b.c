@@ -5414,14 +5414,14 @@ float fsin(float x) {
  * IDO 7.1 -O1 (0x6A09C..0x6BAD4 -O1 island) — obj sp-homed at 0x1C and
  * reloaded per field, exactly the shape the old "-O2 constant-folds every
  * field into absolute lui/lw" cap note described. The predicted symbol
- * plumbing was done: D_00041710 (= 0x41710, undefined_syms_auto.txt) gives
+ * plumbing was done: gl_tmp_task (= 0x41710, undefined_syms_auto.txt) gives
  * the baked lui 0x4/addiu 0x1710 base. Real C lives in the -O1 donor unit
  * game_libs_o1_6A304.c (71/71), spliced over this -O2 stand-in. */
-extern char D_00041710[]; /* libultra's static tmp_task (an OSTask_t) */
+extern char gl_tmp_task[]; /* libultra's static tmp_task (an OSTask_t) */
 int gl__VirtualToPhysicalTask(OSTask_t *intp) {
     OSTask_t *tp;
 
-    tp = (OSTask_t *)D_00041710;
+    tp = (OSTask_t *)gl_tmp_task;
     CALL(gl_bcopy)(intp, tp, sizeof(OSTask_t)); /* bcopy */
     if (tp->ucode) {
         tp->ucode = (u64 *)CALL(gl_osVirtualToPhysical)(tp->ucode); /* osVirtualToPhysical */

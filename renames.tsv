@@ -5559,3 +5559,10 @@ D_A4600008	gPiRdLenReg
 D_A460000C	gPiWrLenReg
 D_A4600010	gPiStatusReg
 D_A4040010	gSpStatusReg
+D_00041710	gl_tmp_task
+D_00007878	Fog_vtbl_7878
+D_00007968	Snower_vtbl_7968
+D_00007540	FloatParm_vtbl_7540
+D_0000C83C	FloatParm_vtbl_C83C
+D_00007FD0	sTag_rng_7FD0
+D_00000980	kRo_SnowBoarder_update_980

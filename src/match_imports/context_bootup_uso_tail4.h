@@ -366,7 +366,7 @@ void TimeGadget_display_000140C4(char *s0);
 void BestGadget_display_00014228(char *s0);
 extern int sTimeGadgetParmsTags_CACC[];
 extern Val13D40 sFloatParmsTags_CAE8[];
-extern char D_0000C83C;
+extern char FloatParm_vtbl_C83C;
 extern char *bootup_1438C_alloc(s32);
 extern char *bootup_1438C_init(char *, char *, Val13D40, int);
 char *FloatPosParms_ctor(char *arg0);

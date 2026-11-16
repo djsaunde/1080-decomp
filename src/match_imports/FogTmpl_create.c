@@ -17,7 +17,7 @@ BootObject90 *FogTmpl_create(BootContext44 *arg0) {
     if (o != 0) {
         base = o;
         boot8124_object_init(base);
-        o->f28 = &D_00007878;
+        o->f28 = &Fog_vtbl_7878;
         u = (BootGroup38 *)((char *)o + 0x3C);
         if (u != 0 || (u = boot8124_alloc(0x38)) != 0) {
             s = u;
@@ -32,18 +32,18 @@ BootObject90 *FogTmpl_create(BootContext44 *arg0) {
                 group = u;
                 mode = 1;
                 boot8124_child(c, group, p, mode);
-                c->base.f0C = &D_00007540;
+                c->base.f0C = &FloatParm_vtbl_7540;
                 c->f14 = 0;
                 c->f10 = 200.0f;
             }
-            second.x = D_00007FD0.x;
+            second.x = sTag_rng_7FD0.x;
             p = second;
             c = (BootChild18 *)((char *)u + 0x20);
             if (c != 0 || (c = boot8124_alloc(0x18)) != 0) {
                 group = u;
                 mode = 1;
                 boot8124_child(c, group, p, mode);
-                c->base.f0C = &D_00007540;
+                c->base.f0C = &FloatParm_vtbl_7540;
                 c->f14 = 0;
                 c->f10 = 300.0f;
             }

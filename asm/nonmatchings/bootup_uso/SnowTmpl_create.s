@@ -19,8 +19,8 @@ glabel SnowTmpl_create
     /* DD8F44 000084D8 00408025 */   or        $s0, $v0, $zero
     /* DD8F48 000084DC 0C000000 */  jal        func_00000000
     /* DD8F4C 000084E0 00402025 */   or        $a0, $v0, $zero
-    /* DD8F50 000084E4 3C0F0000 */  lui        $t7, %hi(D_00007968)
-    /* DD8F54 000084E8 25EF7968 */  addiu      $t7, $t7, %lo(D_00007968)
+    /* DD8F50 000084E4 3C0F0000 */  lui        $t7, %hi(Snower_vtbl_7968)
+    /* DD8F54 000084E8 25EF7968 */  addiu      $t7, $t7, %lo(Snower_vtbl_7968)
     /* DD8F58 000084EC 2401FFC4 */  addiu      $at, $zero, -0x3C
     /* DD8F5C 000084F0 AE0F0028 */  sw         $t7, 0x28($s0)
     /* DD8F60 000084F4 16010005 */  bne        $s0, $at, .L0000850C
@@ -68,8 +68,8 @@ glabel SnowTmpl_create
     /* DD8FF8 0000858C 3C014396 */  lui        $at, (0x43960000 >> 16)
     /* DD8FFC 00008590 44812000 */  mtc1       $at, $f4
     /* DD9000 00008594 8FA50044 */  lw         $a1, 0x44($sp)
-    /* DD9004 00008598 3C0A0000 */  lui        $t2, %hi(D_00007540)
-    /* DD9008 0000859C 254A7540 */  addiu      $t2, $t2, %lo(D_00007540)
+    /* DD9004 00008598 3C0A0000 */  lui        $t2, %hi(FloatParm_vtbl_7540)
+    /* DD9008 0000859C 254A7540 */  addiu      $t2, $t2, %lo(FloatParm_vtbl_7540)
     /* DD900C 000085A0 AC8A000C */  sw         $t2, 0xC($a0)
     /* DD9010 000085A4 AC800014 */  sw         $zero, 0x14($a0)
     /* DD9014 000085A8 E4840010 */  swc1       $f4, 0x10($a0)

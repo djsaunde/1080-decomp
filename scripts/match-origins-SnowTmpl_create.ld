@@ -9,8 +9,8 @@ SECTIONS {
  .sbss 0x0 : SUBALIGN(4) { *(.sbss) *(.sbss.*) }
  /DISCARD/ : { *(.mdebug) *(.reginfo) *(.pdr) *(.comment) *(.MIPS.abiflags) *(.options) }
 }
-D_00007540 = 0x0;
-D_00007968 = 0x0;
+FloatParm_vtbl_7540 = 0x0;
+Snower_vtbl_7968 = 0x0;
 sStr_Parms_7FE4 = 0x0;
 sTag_rng_7FEC = 0x0;
 sTag_sta_7FF0 = 0x0;

@@ -44,8 +44,8 @@ glabel FloatPosParms_ctor
     /* DE4E88 0001441C 8FA40028 */  lw         $a0, 0x28($sp)
     /* DE4E8C 00014420 3C0141F0 */  lui        $at, (0x41F00000 >> 16)
     /* DE4E90 00014424 44812000 */  mtc1       $at, $f4
-    /* DE4E94 00014428 3C080001 */  lui        $t0, %hi(D_0000C83C)
-    /* DE4E98 0001442C 2508C83C */  addiu      $t0, $t0, %lo(D_0000C83C)
+    /* DE4E94 00014428 3C080001 */  lui        $t0, %hi(FloatParm_vtbl_C83C)
+    /* DE4E98 0001442C 2508C83C */  addiu      $t0, $t0, %lo(FloatParm_vtbl_C83C)
     /* DE4E9C 00014430 AC88000C */  sw         $t0, 0xC($a0)
     /* DE4EA0 00014434 AC800014 */  sw         $zero, 0x14($a0)
     /* DE4EA4 00014438 E4840010 */  swc1       $f4, 0x10($a0)
@@ -71,8 +71,8 @@ glabel FloatPosParms_ctor
     /* DE4EEC 00014480 8FA40028 */  lw         $a0, 0x28($sp)
     /* DE4EF0 00014484 3C0141F0 */  lui        $at, (0x41F00000 >> 16)
     /* DE4EF4 00014488 44813000 */  mtc1       $at, $f6
-    /* DE4EF8 0001448C 3C0C0001 */  lui        $t4, %hi(D_0000C83C)
-    /* DE4EFC 00014490 258CC83C */  addiu      $t4, $t4, %lo(D_0000C83C)
+    /* DE4EF8 0001448C 3C0C0001 */  lui        $t4, %hi(FloatParm_vtbl_C83C)
+    /* DE4EFC 00014490 258CC83C */  addiu      $t4, $t4, %lo(FloatParm_vtbl_C83C)
     /* DE4F00 00014494 AC8C000C */  sw         $t4, 0xC($a0)
     /* DE4F04 00014498 AC800014 */  sw         $zero, 0x14($a0)
     /* DE4F08 0001449C E4860010 */  swc1       $f6, 0x10($a0)

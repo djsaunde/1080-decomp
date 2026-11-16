@@ -9,7 +9,7 @@ SECTIONS {
  .sbss 0x0 : SUBALIGN(4) { *(.sbss) *(.sbss.*) }
  /DISCARD/ : { *(.mdebug) *(.reginfo) *(.pdr) *(.comment) *(.MIPS.abiflags) *(.options) }
 }
-D_00000980 = 0x0;
+kRo_SnowBoarder_update_980 = 0x0;
 bootup_D440_000610 = 0x0;
 bootup_D440_000A50 = 0x0;
 bootup_D440_000A94 = 0x0;

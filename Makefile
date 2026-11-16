@@ -1573,7 +1573,7 @@ GAMELIBS_6AF0C_DONOR := build/src/game_libs/game_libs_o1_6AF0C.c.o
 # 0x6A09C..0x6BAD4 -O1 island batch (2026-07-08): plain -O1 donors (no -g3, so
 # the normal asm-processor rule works — only "-O1 -g3" is rejected). Each is
 # byte-exact standalone at -O1; spliced over the -O2 stand-ins in post1b like
-# 6AF0C. A304's donor carries real HI16/LO16 relocs vs D_00041710 (=0x41710 in
+# 6AF0C. A304's donor carries real HI16/LO16 relocs vs gl_tmp_task (=0x41710 in
 # undefined_syms_auto.txt) which link to the target's baked lui 4/addiu 0x1710.
 GAMELIBS_6A304_DONOR := build/src/game_libs/game_libs_o1_6A304.c.o
 GAMELIBS_6A420_DONOR := build/src/game_libs/game_libs_o1_6A420.c.o

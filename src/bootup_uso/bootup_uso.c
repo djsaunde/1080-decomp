@@ -4416,12 +4416,12 @@ void Fog_readParms(char *a0) {
 /* FogTmpl_create - verified structural decode (0x1D4, 117 insns).
  * NEAR-SIBLING of FloatPosParms_ctor / SnowTmpl_create (bootup_uso
  * get-or-create constructor + child sub-objects family); variant
- * params: object 0x90, init datum D_00007878, child descriptor
- * sStr_Parms_7FC4, child type D_00007540, child->0x10 = 200.0f
+ * params: object 0x90, init datum Fog_vtbl_7878, child descriptor
+ * sStr_Parms_7FC4, child type FloatParm_vtbl_7540, child->0x10 = 200.0f
  * (0x43480000), and FP/&D constants from sTag_fin_7FCC/0x7FD0.
  *   void *FogTmpl_create(void *a0) {
  *       o = a0 ? a0 : alloc(0x90); if (!o) return 0;
- *       init(o, &D_00007878);
+ *       init(o, &Fog_vtbl_7878);
  *       o->0x28 = &D_desc;
  *       s = alloc(0x38);
  *       c = alloc(8);                              // defensive arm
@@ -4431,21 +4431,21 @@ void Fog_readParms(char *a0) {
  *           c2 = alloc(0x18);
  *           if (c2) {
  *               init2(c2, s, v, 1);                // func_00000000
- *               c2->0xC  = &D_00007540;            // type/vtable
+ *               c2->0xC  = &FloatParm_vtbl_7540;            // type/vtable
  *               c2->0x14 = 0;
  *               c2->0x10 = 200.0f;                 // 0x43480000
  *           }
  *       }
- *       ... (further child from D_00007FD0, same family shape)
+ *       ... (further child from sTag_rng_7FD0, same family shape)
  *   }
  * Struct-typing reference (same as FloatPosParms_ctor): o = 0x90-byte
- * object, o->0x28 (40) descriptor (&D_00007878). s = 0x38-byte
+ * object, o->0x28 (40) descriptor (&Fog_vtbl_7878). s = 0x38-byte
  * sub; c = 8-byte aux (c->0x0 = &sStr_Parms_7FC4 descriptor, c->0x4=0);
- * c2 = 0x18-byte child: c2->0xC (12) type ptr (&D_00007540),
+ * c2 = 0x18-byte child: c2->0xC (12) type ptr (&FloatParm_vtbl_7540),
  * c2->0x10 (16) f32 = 200.0 / 300.0, c2->0x14 (20) = 0. The u !=
  * -0x3C / -0x8 / -0x20 / -0x74 tests are the `c = u+k; if (c != 0
  * || alloc)` get-or-create guards folded by IDO. sTag_fin_7FCC /
- * D_00007FD0 = global init values feeding the children.
+ * sTag_rng_7FD0 = global init values feeding the children.
  * 2026-07-30 agent-g: 13D40 recipe applied (69.5 -> 94.5,
  * 116/117 insns, locals+frame-slot layout fully matched: p home
  * 0x24, w(c-save) 0x2C, int A[5] dead stores 0x40/0x3C base 0x30,
@@ -4468,11 +4468,11 @@ void Fog_readParms(char *a0) {
  * schedule, and the tail loads the parent into v0 before copying it to s0/a1
  * (the 7204 inline-member separation; a cfe temp copy lengthens it by 4). */
 typedef struct { int v; } Val8124;
-extern char D_00007878;
+extern char Fog_vtbl_7878;
 extern char sStr_Parms_7FC4;
 extern int sTag_fin_7FCC;
-extern int D_00007FD0;
-extern char D_00007540;
+extern int sTag_rng_7FD0;
+extern char FloatParm_vtbl_7540;
 char *FogTmpl_create(char *arg0) {
     char *v;
     char *o;
@@ -4486,7 +4486,7 @@ char *FogTmpl_create(char *arg0) {
     o = (char *)func_00000000(0x90);
     if (o != 0) {
         func_00000000(o);
-        NODE(o)->vptr = (char *)(&D_00007878);
+        NODE(o)->vptr = (char *)(&Fog_vtbl_7878);
         u = o + 0x3C;
         if (u != 0 || (u = (char *)func_00000000(0x38)) != 0) {
             c = u;
@@ -4499,16 +4499,16 @@ char *FogTmpl_create(char *arg0) {
             if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(w = c, u, p, 1);
                 c = w;
-                *(char **)(c + 0xC) = &D_00007540;
+                *(char **)(c + 0xC) = &FloatParm_vtbl_7540;
                 *(int *)(c + 0x14) = 0;
                 *(float *)(c + 0x10) = 200.0f;
             }
-            p.v = D_00007FD0; A[3] = p.v;
+            p.v = sTag_rng_7FD0; A[3] = p.v;
             c = u + 0x20;
             if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(w = c, u, p, 1);
                 c = w;
-                *(char **)(c + 0xC) = &D_00007540;
+                *(char **)(c + 0xC) = &FloatParm_vtbl_7540;
                 *(int *)(c + 0x14) = 0;
                 *(float *)(c + 0x10) = 300.0f;
             }
@@ -4635,7 +4635,7 @@ void Snower_readParms(char *a0) {
  *       if (g->0x40 != 0) return;                 // already built
  *       func_00000000(g);                          // pre-init
  *       o = alloc(0x74); if (!o) return;
- *       init(o, &D_00007968);
+ *       init(o, &Snower_vtbl_7968);
  *       o->0x28 = &D_desc;
  *       s = alloc(0x38); if (!s) return;
  *       c = alloc(8);                              // defensive arm
@@ -4646,12 +4646,12 @@ void Snower_readParms(char *a0) {
  *           if (c2) init2(c2, s, v, 1);            // func_00000000
  *       }
  *       ... (chain continues: more sub-allocs, FP 300.0f
- *           (0x43960000) param, &sTag_sta_7FF0/D_00007540 datums,
+ *           (0x43960000) param, &sTag_sta_7FF0/FloatParm_vtbl_7540 datums,
  *           EnvSettings_setSnow helper - same shape as the family).
  *   }
  * Struct-typing reference: D_root global -> g, g->0x40 (64) =
  * built-once latch (nonzero = skip). o = 0x74-byte object,
- * o->0x28 (40) descriptor (&D_00007968 init datum). s = 0x38-byte
+ * o->0x28 (40) descriptor (&Snower_vtbl_7968 init datum). s = 0x38-byte
  * sub-object; c = 8-byte aux (c->0x0 = &sStr_Parms_7FE4 descriptor,
  * c->0x4 = 0); c2 = 0x18-byte child init'd from the global
  * sTag_rng_7FEC value. The `u != -0x3C / -0x8 / -0x20` tests are the
@@ -4674,11 +4674,11 @@ void Snower_readParms(char *a0) {
  * NM wrap per policy. */
 #ifdef NON_MATCHING
 typedef struct { int v; } Val84A0;
-extern char D_00007968;
+extern char Snower_vtbl_7968;
 extern char sStr_Parms_7FE4;
 extern int sTag_rng_7FEC;
 extern int sTag_sta_7FF0;
-extern char D_00007540;
+extern char FloatParm_vtbl_7540;
 char *SnowTmpl_create(char *arg0) {
     char *o;
     char *v;
@@ -4698,7 +4698,7 @@ char *SnowTmpl_create(char *arg0) {
     o = (char *)func_00000000(0x74);
     if (o != 0) {
         func_00000000(o);
-        NODE(o)->vptr = (char *)(&D_00007968);
+        NODE(o)->vptr = (char *)(&Snower_vtbl_7968);
         u = o + 0x3C;
         if (u != 0 || (u = (char *)func_00000000(0x38)) != 0) {
             s = u;
@@ -4711,7 +4711,7 @@ char *SnowTmpl_create(char *arg0) {
             if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(w = c, u, p, 1);
                 c = w;
-                ((CourseFParm *)c)->vptr = &D_00007540;
+                ((CourseFParm *)c)->vptr = &FloatParm_vtbl_7540;
                 ((CourseFParm *)c)->value2 = 0;
                 ((CourseFParm *)c)->value = 300.0f;
             }
@@ -5898,7 +5898,7 @@ void SnowBoarder_display(char *st) {
 extern void func_d440_f0call(int, int, float);
 extern void func_d440_final(int, int, float, float, float, float, int, int, int);
 extern float func_d440_frnd(void *);  /* float-return alias: result -> cvt.d.s */
-extern float D_00000980;
+extern float kRo_SnowBoarder_update_980;
 /* Distinct folded-table action-record symbols (= stream_readVec3_00008A7C/AEC + N). Naming
  * each one distinctly defeats IDO's CSE of the shared %hi(stream_readVec3_00008A7C) base
  * into a spilled saved-reg — forces per-site lui+addiu rematerialization to
@@ -6128,7 +6128,7 @@ void SnowBoarder_update(char *st) {
         if (t5 != 0) {
             func_d440_final(a0_2, st + 0xDC, SNOWB(st)->dnode.speed,
                           -SNOWB(st)->contactDepth, SNOWB(st)->edge,
-                          SNOWB(st)->groundDist + D_00000980,
+                          SNOWB(st)->groundDist + kRo_SnowBoarder_update_980,
                           (int)SNOWB(st)->surface, t5, (int)SNOWB(st)->flags);
         }
         func_00000000(&D_00008B30);

@@ -97,7 +97,7 @@ glabel Fog_display
     /* DD8A34 00007FC8 8C890014 */  lw         $t1, 0x14($a0)
   alabel sTag_fin_7FCC
     /* DD8A38 00007FCC AD090014 */  sw         $t1, 0x14($t0)
-  alabel D_00007FD0
+  alabel sTag_rng_7FD0
     /* DD8A3C 00007FD0 AE02008C */  sw         $v0, 0x8C($s0)
   .L00007FD4:
     /* DD8A40 00007FD4 3C040000 */  lui        $a0, %hi(snd_startPlayer2Seq_0000027C + 0x18)

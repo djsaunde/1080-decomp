@@ -46,7 +46,7 @@ glabel Tv1Tmpl_blitFrame_000077D0
     /* DD82D8 0000786C 00A01025 */  or         $v0, $a1, $zero
     /* DD82DC 00007870 24A50002 */  addiu      $a1, $a1, 0x2
     /* DD82E0 00007874 A4590000 */  sh         $t9, 0x0($v0)
-  alabel D_00007878
+  alabel Fog_vtbl_7878
     /* DD82E4 00007878 946A0014 */  lhu        $t2, 0x14($v1)
     /* DD82E8 0000787C 00A01025 */  or         $v0, $a1, $zero
     /* DD82EC 00007880 24A50002 */  addiu      $a1, $a1, 0x2
@@ -114,7 +114,7 @@ glabel Tv1Tmpl_blitFrame_000077D0
     /* DD83C8 0000795C 1490FFEE */  bne        $a0, $s0, .L00007918
     /* DD83CC 00007960 A4590000 */   sh        $t9, 0x0($v0)
     /* DD83D0 00007964 24C60001 */  addiu      $a2, $a2, 0x1
-  alabel D_00007968
+  alabel Snower_vtbl_7968
     /* DD83D4 00007968 14D1FFEA */  bne        $a2, $s1, .L00007914
     /* DD83D8 0000796C 24630500 */   addiu     $v1, $v1, 0x500
     /* DD83DC 00007970 10000031 */  b          .L00007A38

@@ -30,7 +30,7 @@ glabel FallingSnow_create
     /* DD7FA0 00007534 AFA20020 */   sw        $v0, 0x20($sp)
     /* DD7FA4 00007538 8FA60020 */  lw         $a2, 0x20($sp)
     /* DD7FA8 0000753C 1040000B */  beqz       $v0, .L0000756C
-  alabel D_00007540
+  alabel FloatParm_vtbl_7540
     /* DD7FAC 00007540 00402025 */   or        $a0, $v0, $zero
   .L00007544:
     /* DD7FB0 00007544 3C050000 */  lui        $a1, %hi(sStr_Node_7FBC)

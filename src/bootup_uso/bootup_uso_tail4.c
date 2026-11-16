@@ -583,7 +583,7 @@ void BestGadget_display_00014228(char *s0) {
  *           c = alloc(0x18);
  *           if (c) {
  *               init(c, o, v, 1);                 // func_00000000
- *               c->0xC  = &D_0000C83C;            // descriptor
+ *               c->0xC  = &FloatParm_vtbl_C83C;            // descriptor
  *               c->0x14 = 0;
  *               c->0x10 = 30.0f;                  // 0x41F00000
  *           }
@@ -593,7 +593,7 @@ void BestGadget_display_00014228(char *s0) {
  *           c = alloc(0x18);
  *           if (c) {
  *               init(c, o, v, 1);
- *               c->0xC  = &D_0000C83C;
+ *               c->0xC  = &FloatParm_vtbl_C83C;
  *               c->0x14 = 0;
  *               c->0x10 = 30.0f;
  *           }
@@ -603,7 +603,7 @@ void BestGadget_display_00014228(char *s0) {
  * Struct-typing reference: o = 0x38-byte object (get-or-create).
  * s1 = 8-byte Parms head: s1->0x0 (0) = the name (&sTimeGadgetParmsTags_CACC[3] =
  * Data 0xCAD8 "TimeGadget::Parms"), s1->0x4 (4) = 0. child = 0x18-byte sub-object: child->0xC
- * (12) descriptor ptr (&D_0000C83C), child->0x10 (16) f32 = 30.0,
+ * (12) descriptor ptr (&FloatParm_vtbl_C83C), child->0x10 (16) f32 = 30.0,
  * child->0x14 (20) = 0; built twice with the parm tags "xps" / "yps"
  * (sFloatParmsTags_CAE8[1] / [2]). The children are GdlParmF (gdl/gadget.h): a
  * second "TimeGadget::Parms" (Data 0xCAD8) with two float parms (default 30).
@@ -627,14 +627,14 @@ void BestGadget_display_00014228(char *s0) {
  * void *func_00000000(...);
  * extern int sTimeGadgetParmsTags_CACC[];
  * extern int sFloatParmsTags_CAE8[];
- * extern char D_0000C83C;
+ * extern char FloatParm_vtbl_C83C;
  * }
  * struct Val { int v; Val(int x) { v = x; } };
  * struct B0 { void *vt; int x; B0() { vt = &sTimeGadgetParmsTags_CACC[3]; x = 0; } };
  * struct Base { char pad[0xC]; Base(void *owner, Val p, int k); };
  * struct D : Base {
  *     void *vt2; float f; int z;
- *     D(void *owner, Val p) : Base(owner, p, 1) { vt2 = &D_0000C83C; z = 0; f = 30.0f; }
+ *     D(void *owner, Val p) : Base(owner, p, 1) { vt2 = &FloatParm_vtbl_C83C; z = 0; f = 30.0f; }
  * };
  * struct Obj {
  *     B0 b;
@@ -646,7 +646,7 @@ void BestGadget_display_00014228(char *s0) {
  */
 extern int sFloatParmsTags_CAE8[];  /* Data 0xCAE8: [1] "xps", [2] "yps" (the parm tags after this
                                      * Parms' name at Data 0xCAD8) */
-extern char D_0000C83C;
+extern char FloatParm_vtbl_C83C;
 char *FloatPosParms_ctor(char *arg0) {
     char *o;
     char *s;
@@ -671,7 +671,7 @@ char *FloatPosParms_ctor(char *arg0) {
     if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
         func_00000000(w = c, o, p, 1);
         c = w;
-        *(char **)(c + 0xC) = &D_0000C83C;
+        *(char **)(c + 0xC) = &FloatParm_vtbl_C83C;
         *(int *)(c + 0x14) = 0;
         *(float *)(c + 0x10) = 30.0f;
     }
@@ -680,7 +680,7 @@ char *FloatPosParms_ctor(char *arg0) {
     if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
         func_00000000(w = c, o, p, 1);
         c = w;
-        *(char **)(c + 0xC) = &D_0000C83C;
+        *(char **)(c + 0xC) = &FloatParm_vtbl_C83C;
         *(int *)(c + 0x14) = 0;
         *(float *)(c + 0x10) = 30.0f;
     }

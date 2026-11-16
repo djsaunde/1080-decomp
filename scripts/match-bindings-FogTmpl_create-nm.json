@@ -4,12 +4,12 @@
   "renames": {
     "boot8124_alloc": "snw_port_func_00008124_boot8124_alloc",
     "boot8124_object_init": "snw_port_func_00008124_boot8124_object_init",
-    "D_00007878": "snw_port_func_00008124_D_00007878",
+    "Fog_vtbl_7878": "snw_port_func_00008124_D_00007878",
     "sStr_Parms_7FC4": "snw_port_func_00008124_D_00007FC4",
     "sTag_fin_7FCC": "snw_port_func_00008124_D_00007FCC",
     "boot8124_child": "snw_port_func_00008124_boot8124_child",
-    "D_00007540": "snw_port_func_00008124_D_00007540",
-    "D_00007FD0": "snw_port_func_00008124_D_00007FD0",
+    "FloatParm_vtbl_7540": "snw_port_func_00008124_D_00007540",
+    "sTag_rng_7FD0": "snw_port_func_00008124_D_00007FD0",
     "boot8124_tail_init": "snw_port_func_00008124_boot8124_tail_init",
     "boot8124_link": "snw_port_func_00008124_boot8124_link"
   },

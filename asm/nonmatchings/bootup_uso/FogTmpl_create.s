@@ -11,8 +11,8 @@ glabel FogTmpl_create
     /* DD8BAC 00008140 00408025 */   or        $s0, $v0, $zero
     /* DD8BB0 00008144 0C000000 */  jal        func_00000000
     /* DD8BB4 00008148 00402025 */   or        $a0, $v0, $zero
-    /* DD8BB8 0000814C 3C0E0000 */  lui        $t6, %hi(D_00007878)
-    /* DD8BBC 00008150 25CE7878 */  addiu      $t6, $t6, %lo(D_00007878)
+    /* DD8BB8 0000814C 3C0E0000 */  lui        $t6, %hi(Fog_vtbl_7878)
+    /* DD8BBC 00008150 25CE7878 */  addiu      $t6, $t6, %lo(Fog_vtbl_7878)
     /* DD8BC0 00008154 2401FFC4 */  addiu      $at, $zero, -0x3C
     /* DD8BC4 00008158 AE0E0028 */  sw         $t6, 0x28($s0)
     /* DD8BC8 0000815C 16010005 */  bne        $s0, $at, .L00008174
@@ -61,14 +61,14 @@ glabel FogTmpl_create
     /* DD8C60 000081F4 3C014348 */  lui        $at, (0x43480000 >> 16)
     /* DD8C64 000081F8 44812000 */  mtc1       $at, $f4
     /* DD8C68 000081FC 8FA50044 */  lw         $a1, 0x44($sp)
-    /* DD8C6C 00008200 3C090000 */  lui        $t1, %hi(D_00007540)
-    /* DD8C70 00008204 25297540 */  addiu      $t1, $t1, %lo(D_00007540)
+    /* DD8C6C 00008200 3C090000 */  lui        $t1, %hi(FloatParm_vtbl_7540)
+    /* DD8C70 00008204 25297540 */  addiu      $t1, $t1, %lo(FloatParm_vtbl_7540)
     /* DD8C74 00008208 AC89000C */  sw         $t1, 0xC($a0)
     /* DD8C78 0000820C AC800014 */  sw         $zero, 0x14($a0)
     /* DD8C7C 00008210 E4840010 */  swc1       $f4, 0x10($a0)
   .L00008214:
-    /* DD8C80 00008214 3C0A0000 */  lui        $t2, %hi(D_00007FD0)
-    /* DD8C84 00008218 8D4A7FD0 */  lw         $t2, %lo(D_00007FD0)($t2)
+    /* DD8C80 00008214 3C0A0000 */  lui        $t2, %hi(sTag_rng_7FD0)
+    /* DD8C84 00008218 8D4A7FD0 */  lw         $t2, %lo(sTag_rng_7FD0)($t2)
     /* DD8C88 0000821C 2401FFE0 */  addiu      $at, $zero, -0x20
     /* DD8C8C 00008220 24A40020 */  addiu      $a0, $a1, 0x20
     /* DD8C90 00008224 AFAA003C */  sw         $t2, 0x3C($sp)
@@ -89,8 +89,8 @@ glabel FogTmpl_create
     /* DD8CC8 0000825C 8FA4002C */  lw         $a0, 0x2C($sp)
     /* DD8CCC 00008260 3C014396 */  lui        $at, (0x43960000 >> 16)
     /* DD8CD0 00008264 44813000 */  mtc1       $at, $f6
-    /* DD8CD4 00008268 3C0D0000 */  lui        $t5, %hi(D_00007540)
-    /* DD8CD8 0000826C 25AD7540 */  addiu      $t5, $t5, %lo(D_00007540)
+    /* DD8CD4 00008268 3C0D0000 */  lui        $t5, %hi(FloatParm_vtbl_7540)
+    /* DD8CD8 0000826C 25AD7540 */  addiu      $t5, $t5, %lo(FloatParm_vtbl_7540)
     /* DD8CDC 00008270 AC8D000C */  sw         $t5, 0xC($a0)
     /* DD8CE0 00008274 AC800014 */  sw         $zero, 0x14($a0)
     /* DD8CE4 00008278 E4860010 */  swc1       $f6, 0x10($a0)

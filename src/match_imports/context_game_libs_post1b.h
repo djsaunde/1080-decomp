@@ -846,7 +846,7 @@ extern Thread_69E04 *gl_69F64_running;
 int gl_osRecvMesg(OSMesgQueue_69E04 *mq, void **msg, int flags);
 void _asmpp_func39(void);
 float fsin(float x);
-extern char D_00041710[];
+extern char gl_tmp_task[];
 int gl__VirtualToPhysicalTask(int a0);
 extern int gl_osPiGetCmdQueue(f32, f32);
 typedef char *(*GP_0006A420)();

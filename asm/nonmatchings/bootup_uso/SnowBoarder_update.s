@@ -288,7 +288,7 @@ glabel SnowBoarder_update
     /* DDE2EC 0000D880 0C000000 */  jal        func_00000000
     /* DDE2F0 0000D884 8E060A14 */   lw        $a2, 0xA14($s0)
     /* DDE2F4 0000D888 8E0308DC */  lw         $v1, 0x8DC($s0)
-    /* DDE2F8 0000D88C 3C010000 */  lui        $at, %hi(D_00000980)
+    /* DDE2F8 0000D88C 3C010000 */  lui        $at, %hi(kRo_SnowBoarder_update_980)
     /* DDE2FC 0000D890 10600013 */  beqz       $v1, .L0000D8E0
     /* DDE300 0000D894 00000000 */   nop
     /* DDE304 0000D898 C6080970 */  lwc1       $f8, 0x970($s0)
@@ -296,7 +296,7 @@ glabel SnowBoarder_update
     /* DDE30C 0000D8A0 8E060348 */  lw         $a2, 0x348($s0)
     /* DDE310 0000D8A4 E7A80010 */  swc1       $f8, 0x10($sp)
     /* DDE314 0000D8A8 C60409D0 */  lwc1       $f4, 0x9D0($s0)
-    /* DDE318 0000D8AC C4300980 */  lwc1       $f16, %lo(D_00000980)($at)
+    /* DDE318 0000D8AC C4300980 */  lwc1       $f16, %lo(kRo_SnowBoarder_update_980)($at)
     /* DDE31C 0000D8B0 46003487 */  neg.s      $f18, $f6
     /* DDE320 0000D8B4 8FA40048 */  lw         $a0, 0x48($sp)
     /* DDE324 0000D8B8 46102280 */  add.s      $f10, $f4, $f16

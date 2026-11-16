@@ -19,7 +19,7 @@ BootupObjectBase *SnowTmpl_create(BootContext44 *arg0) {
     if (o != 0) {
         base = o;
         bootup_84A0_func_051C28(base);
-        o->field_28 = &D_00007968;
+        o->field_28 = &Snower_vtbl_7968;
         u = (BootGroup38 *)((char *)o + 0x3C);
         if (u != 0 || (u = bootup_84A0_func_055750(0x38)) != 0) {
             s = u;
@@ -33,7 +33,7 @@ BootupObjectBase *SnowTmpl_create(BootContext44 *arg0) {
                 group = u;
                 mode = 1;
                 bootup_84A0_func_04A188(c, group, p, mode);
-                c->base.f0C = &D_00007540;
+                c->base.f0C = &FloatParm_vtbl_7540;
                 c->f14 = 0;
                 c->f10 = 300.0f;
             }
