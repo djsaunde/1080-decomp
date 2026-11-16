@@ -29,6 +29,8 @@ extern int gl_func_00000000();
 extern int D_00000000;
 extern char sFmt_Global_out_of_range_1EC6C[], sFmt_Global_out_of_range_1EC84[], sFmt_unknown_Node_cmd_for_1EC9C[];
 
+#define CMD(c) ((NodeMsg *)(c))
+
 void Node_doCommand(char *o, char *c) {
     unsigned int key;
     int code;
@@ -37,20 +39,20 @@ void Node_doCommand(char *o, char *c) {
     int *p;
     switch (code = *(int *)c) {
         case 0x64:
-            /* RAW: data-table: c + 4 is the command-stream read cursor of the node command buffer, not a struct field */
-            key = *(unsigned int *)(c + 0x4);
-            *(unsigned int *)(c + 0x4) = key + 4; /* RAW: data-table (as above) */
+            /* c is the NodeMsg (node.h): tag = opcode, arg.cursor = the stream read cursor */
+            key = (unsigned int)CMD(c)->arg.cursor;
+            CMD(c)->arg.cursor = (s32 *)(key + 4);
             NODE(o)->handle = *(int *)key;
             return;
         case 0x65:
-            p = *(int **)(c + 0x4); /* RAW: data-table (as above) */
-            *(int **)(c + 0x4) = p + 1; /* RAW: data-table (as above) */
+            p = (int *)CMD(c)->arg.cursor;
+            CMD(c)->arg.cursor = (s32 *)(p + 1);
             key = *p;
             NODE(o)->name = (const char *)key;
             return;
         case 0x66:
-            p = *(int **)(c + 0x4); /* RAW: data-table (as above) */
-            *(int **)(c + 0x4) = p + 1; /* RAW: data-table (as above) */
+            p = (int *)CMD(c)->arg.cursor;
+            CMD(c)->arg.cursor = (s32 *)(p + 1);
             key = *p;
             if (key >= 40) {
                 CALL(sys_fatal)(sFmt_Global_out_of_range_1EC6C, key);
@@ -63,8 +65,8 @@ void Node_doCommand(char *o, char *c) {
             NODE(o)->parent = NODE(r);
             return;
         case 0x67:
-            p = *(int **)(c + 0x4); /* RAW: data-table (as above) */
-            *(int **)(c + 0x4) = p + 1; /* RAW: data-table (as above) */
+            p = (int *)CMD(c)->arg.cursor;
+            CMD(c)->arg.cursor = (s32 *)(p + 1);
             key = *p;
             if (key >= 40) {
                 CALL(sys_fatal)(sFmt_Global_out_of_range_1EC84, key);

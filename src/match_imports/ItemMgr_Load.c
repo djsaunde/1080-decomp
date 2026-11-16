@@ -1,5 +1,6 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post0b_o2_3E39C.c. Target bytes unchanged. */
 #include "context_game_libs_post0b_o2_3E39C.h"
+#include "gdl/node.h"
 void ItemMgr_Load(GLLoadObject *arg0) {
     int comparison_word;
     GLLoadKey key;
@@ -40,9 +41,9 @@ void ItemMgr_Load(GLLoadObject *arg0) {
         if (child == 0) gl_E39C_missing(gl_E39C_data + 0x1F2FC, &key);
         if (child != 0 && (arg0->field_34 & child->field_44)) {
             methods = child->base_00.methods_28;
-            (*(void (**)(char *))((char *)methods + 0x4C))(
-                /* RAW: data-table: Cfront vtable entry (s16 this-delta at +0x48, fn at +0x4C) */
-                *(short *)((char *)methods + 0x48) + (char *)child);
+            /* the loaded type's vtable slot 8 (VT_SLOT, node.h: delta +0x48, fn +0x4C) on the child */
+            (*(void (**)(char *))&VT_SLOT(methods, 8).fn)(
+                VT_SLOT(methods, 8).delta + (char *)child);
         } else {
             gl_E39C_seek(gl_E39C_stream, 1, count);
         }

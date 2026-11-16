@@ -1,5 +1,8 @@
 /* Native original-compiler source port from src/game_uso/game_uso.c. Target bytes unchanged. */
 #include "context_game_uso.h"
+/* one record of the game.uso Data float-pair tables table_pair walks (Data+0x638.., 8 bytes, indexed by
+ * field_58): the two values stored to the output's field_44 / field_48 */
+typedef struct { f32 out44; f32 out48; } SnowAIOutPair;
 void SnowAI_applyStickInput(int *a0, int arg1) {
     GameEventStateLayout *arg0 = (GameEventStateLayout *)a0;
     f32 temp_f12;
@@ -59,8 +62,7 @@ void SnowAI_applyStickInput(int *a0, int arg1) {
             output_48 = 1.0f;
             suppress_direction = 1;
             arg0->field_50 = 8;
-            /* RAW: data-table: table_pair walks a (stick, output) float pair table; arg0 + 0x6C is a volatile read of an AI field not in the port's struct */
-            active_mask = *(volatile int *)((char *)arg0 + 0x6C);
+            active_mask = *(volatile int *)&arg0->field_6C; /* a volatile re-read of the mode mask */
         } else if (arg1 & 0x20) {
             arg0->field_6C = (s32) (active_mask | 0x20);
             arg0->field_4C = 0x26;
@@ -117,8 +119,8 @@ void SnowAI_applyStickInput(int *a0, int arg1) {
             if (arg1 >= 0x1F) {
                 table_pair = (char*)&game_uso_D_807FEC28 + 0x638;
                 if (1) { table_pair += arg0->field_58 * 8; }
-                output_44 = *(float *)table_pair;
-                output_48 = *(float *)(table_pair + 4); /* RAW: data-table (as above) */
+                output_44 = ((SnowAIOutPair *)table_pair)->out44;
+                output_48 = ((SnowAIOutPair *)table_pair)->out48;
             }
             arg0->field_4C = (s32) (arg1 - 1);
         }
@@ -150,8 +152,8 @@ void SnowAI_applyStickInput(int *a0, int arg1) {
             }
             table_pair = (char*)&game_uso_D_807FEC28 + 0x638;
             if (1) { table_pair += arg0->field_58 * 8; }
-            output_44 = *(float *)table_pair;
-            output_48 = *(float *)(table_pair + 4); /* RAW: data-table (as above) */
+            output_44 = ((SnowAIOutPair *)table_pair)->out44;
+            output_48 = ((SnowAIOutPair *)table_pair)->out48;
         }
         if (1) { temp_a2 = arg0->field_44; }
         temp_a1_6 = temp_a3_2 + 1;

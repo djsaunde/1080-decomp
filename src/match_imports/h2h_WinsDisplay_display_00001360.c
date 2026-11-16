@@ -8,7 +8,7 @@ extern char snw_h2h_1360_text_data;
 extern char snw_h2h_1360_import149;
 void h2h_WinsDisplay_display_00001360(int *self) {
     char scratch[64];
-    int *vtable;
+    int *img;
     int *v_call;
     int retval;
     int gate;
@@ -48,19 +48,18 @@ void h2h_WinsDisplay_display_00001360(int *self) {
     h2hproc_1360_import_164(v_call, 60, 64, 3);
     v_call = (int*)&H2HWINS(self)->sprites[1];
     h2hproc_1360_import_163(v_call);
-    vtable = (int *)H2HWINS(self)->sprites[0].image;
+    img = (int *)H2HWINS(self)->sprites[0].image;
     if (1) {}
-    /* RAW: data-table: Cfront vtable entry (s16 this-delta at +0x20) */
-    retval = *(short*)((char*)vtable + 0x20);
+    retval = ((RaceSpriteImage *)img)->width; /* the sprite image width (race.h): player 1 / 2 text sits at x + width + 4 */
     h2hproc_1360_import_164(v_call, retval + 68, 64, 3);
     v_call = (int*)&H2HWINS(self)->sprites[2];
     h2hproc_1360_import_163(v_call);
     h2hproc_1360_import_164(v_call, 220, 64, 3);
     v_call = (int*)&H2HWINS(self)->sprites[3];
     h2hproc_1360_import_163(v_call);
-    vtable = (int *)H2HWINS(self)->sprites[2].image;
+    img = (int *)H2HWINS(self)->sprites[2].image;
     if (1) {}
-    retval = *(short*)((char*)vtable + 0x20); /* RAW: data-table (as above) */
+    retval = ((RaceSpriteImage *)img)->width;
     h2hproc_1360_import_164(v_call, retval + 228, 64, 3);
     h2hproc_1360_import_165(self);
 }

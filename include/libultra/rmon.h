@@ -95,6 +95,14 @@ typedef struct KKSetBkptRequest {     /* ultralib rmon: set-breakpoint request *
     /* 0x14 */ u32 nbytes;
 } KKSetBkptRequest; /* size 0x18 */
 
+/* One breakpoint-table slot (ultralib rmon BREAKINFO, 8 bytes): rmon_breakpoints / rmon_RCPbreakpoints
+ * hold 16 each (slot 0 unused; __rmonSetBreak scans slots 1..15, the BREAK code is slot + 0x10).
+ * kernel_021.c (__rmonClearBreak side) spells the same layout locally. */
+typedef struct BreakInfo {
+    /* 0x0 */ u32 *breakAddress;        /* 0 = free */
+    /* 0x4 */ u32 oldInstruction;       /* the word the BREAK replaced */
+} BreakInfo; /* size 0x8 */
+
 typedef struct KKBkptEvent {          /* ultralib rmon: set-breakpoint reply */
     /* 0x00 */ KKHeader header;
     /* 0x0C */ TVid object;

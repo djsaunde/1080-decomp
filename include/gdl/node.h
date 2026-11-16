@@ -69,6 +69,8 @@ typedef struct NodeMsg {
     /* 0x4 */ union {
         s32 value;                 /* NODEMSG_SET_ACTIVE: the on / off flag */
         char *payload;             /* SET_FLAG80 / FIND_NAME / FIND_SERIAL: the tag's payload */
+        s32 *cursor;               /* doCommand (tag = opcode 0x64..): the command stream's read
+                                    * cursor; each operand read post-increments it by one word */
     } arg;
     /* 0x8 */ Node *reply;         /* the answering Node (find tags 0xD / 0xE) */
 } NodeMsg;

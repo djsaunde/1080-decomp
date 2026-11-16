@@ -30,6 +30,9 @@ extern int D_00000000;
 
 typedef struct { s32 w[4]; } Quad_51AD8;
 typedef struct { s32 a, b; } Pair_51AD8;
+/* a 12-byte DDM record (gfx_getDdm; snowboarder.h SnowBRec3): a DL count, then the GdlRenderState
+ * (dlctx.h: unk0, flags) that gfx_initDdm builds in place; m below is a copy of that state */
+typedef struct { s32 dlCount; Pair_51AD8 state; } Ddm_51AD8;
 
 typedef struct {
     Quad_51AD8 q;      /* 0x00 */
@@ -99,8 +102,7 @@ void gfx_decodeMatCmd(State_51AD8 *out, Strm_51AD8 *s) {
         p = s->cur; s->cur = p + 1; q = (s32 *)*p;
         r = (s32 *)CALL(gfx_getDdm)(&gGfxLib, q);
         out->w48 = r;
-        /* RAW: data-table: reads a word pair from the material command stream (r + 1) */
-        out->m = *(Pair_51AD8 *)(r + 1);
+        out->m = ((Ddm_51AD8 *)r)->state; /* the DDM's render state */
         break;
     case 207:
         q = s->cur; s->cur = q + 1; out->m.a = *q;

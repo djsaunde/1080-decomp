@@ -2,6 +2,7 @@
 #include "uso_call.h"
 #include "gdl/dlctx.h" /* DLContext / DLBuf: the gui's current display-list context */
 #include "gdl/race.h"  /* RaceSprite: the gui sprite (handle +0x10, file id +0x14) */
+#include "game/guifont.h" /* GuiFont / GuiGlyph */
 
 #define GUISPRITE(p) ((RaceSprite *)(p))
 
@@ -170,8 +171,7 @@ void gui_drawString(int *a0, int a1, int a2, unsigned char *a3) {
             g0 = g[0]; g1 = g[1]; w = g[2];
             CALL(gui_loadTileIA8)(a0[0x24 / 4], a0[4 / 4], a0[0x18 / 4], a0[0x1C / 4], g0, g1, w, h, 0);
             CALL(gui_texRect_00004568)(a0[0x24 / 4], a1, a2, w, h, (w << 10) / w, (h << 10) / h);
-            /* RAW: data-table: font glyph table (a0[8], stride bytes per glyph, advance at +8) */
-            a1 += *(int *)(a0[0x20 / 4] + gi * stride + 8);
+            a1 += ((GuiGlyph *)(a0[0x20 / 4] + gi * stride))->width; /* GuiFont.glyphs[gi] (game/guifont.h) */
         } else {
             a1 += a0[8 / 4];
         }
@@ -281,11 +281,10 @@ void gui_drawString_00000D04(int *a0, int *a1, int a2, char *a3) {
                                  gu, gv, gw, scale, 0);
                 goff = gi * 0x14;
                 px = x;
-                /* RAW: data-table: font glyph table (a0[8], 20-byte glyph records) */
-                px += *(int *)((char *)a0[0x20 / 4] + goff + 16);
+                px += ((GuiGlyph *)((char *)a0[0x20 / 4] + goff))->leftBearing; /* GuiFont.glyphs[gi] (game/guifont.h) */
                 CALL(gui_texRect_00004568)(a0[0x24 / 4], px,
                                  a2, gw, scale, (gw * 1024) / gw, sd);
-                x += *(int *)((char *)a0[0x20 / 4] + goff + 12); /* RAW: data-table (as above) */
+                x += ((GuiGlyph *)((char *)a0[0x20 / 4] + goff))->advance;
             } else {
                 x += ((int *)a0[0x20 / 4])[3];
             }
@@ -424,10 +423,9 @@ int gui_stringWidth(char *a0, unsigned char *a1) {
             c = *p;
             if (c != 0x20) {
                 key = gl_func_00000000(c);
-                /* RAW: data-table: font glyph table (a0 + 0x20, 20-byte glyph records, advance at +8); a0 + 0x8 is the untyped font's spacing */
-                total += *(int*)(*(char**)(a0 + 0x20) + key * 20 + 8);
+                total += ((GuiFont *)a0)->glyphs[key].width; /* game/guifont.h */
             } else {
-                total += *(int*)(a0 + 0x8); /* RAW: data-table (as above) */
+                total += ((GuiFont *)a0)->spaceWidth;
             }
             p++;
             i++;

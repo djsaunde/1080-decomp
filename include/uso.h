@@ -37,8 +37,17 @@ typedef struct UsoModuleSlot {
     /* 0x9A */ u8 pad9A[2];
 } UsoModuleSlot; /* size 0x9C */
 
+/* One Sym-section entry (secData[USO_SEC_SYM], secSize = the entry count; 12 bytes, USO_FORMAT.md):
+ * uso_callEntry calls entry gUsoEntryIndex's value as the module entry point. */
+typedef struct UsoSym {
+    /* 0x0 */ s32 name;                    /* the symbol's name */
+    /* 0x4 */ s32 value;                   /* its address once loaded */
+    /* 0x8 */ s32 size;
+} UsoSym; /* size 0xC */
+
 /* compile-time layout checks (IDO cfe accepts negative-size typedefs as errors) */
 typedef char UsoModuleSlot_size_check[sizeof(UsoModuleSlot) == 0x9C ? 1 : -1];
+typedef char UsoSym_size_check[sizeof(UsoSym) == 0xC ? 1 : -1];
 #ifndef __cplusplus /* edg (C++ donors): &((T *)0)->f is not an integral constant expression */
 typedef char UsoModuleSlot_secData_check[(int)&((UsoModuleSlot *)0)->secData == 0x38 ? 1 : -1];
 typedef char UsoModuleSlot_id_check[(int)&((UsoModuleSlot *)0)->id == 0x70 ? 1 : -1];

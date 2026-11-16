@@ -851,8 +851,7 @@ s32 uso_callEntry(void) {
          * (2026-06-10 kernel relayout audit; was the last kernel_000
          * non-reloc word diff.) */
         s32 t;
-        /* RAW: data-table: Sym section entries (12 bytes: name, value, size); +4 is the entry's address */
-        UsoFunc fn = (UsoFunc)*(s32*)((t = funcTable) + funcIndex * 12 + 4);
+        UsoFunc fn = (UsoFunc)((UsoSym *)(t = funcTable))[funcIndex].value; /* the Sym entry's address (uso.h UsoSym) */
         gUsoEntryResult = fn(&gUsoCtx);
     }
     return 0;
