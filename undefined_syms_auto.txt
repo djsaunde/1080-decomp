@@ -5746,6 +5746,7 @@ heli_ro_60 = 0x00000000;
 heli_ro_64 = 0x00000000;
 heli_ro_68 = 0x00000000;
 heli_ro_6C = 0x00000000;
+heli_itemMgr = 0x00000000;  /* heli 0x980: the ItemMgr pointer (bootup Data+0x776C) */
 gl_func_00000000_heli_euler = 0x00000000;  /* heli 0x4C0: typed blank jal math_eulerToQuat (ptr, 3 floats) */
 trn_bss = 0x00000000;  /* trnproc.uso Bss section base (trnproc_uso.c gTrnRace etc.) */
 trn_data = 0x00000000;  /* trnproc.uso Data section base */

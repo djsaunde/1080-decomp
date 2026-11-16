@@ -336,7 +336,49 @@ void heli_uso_func_000008A8(char *self) {
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000008A8);
 #endif
 
+/* heli_uso_func_00000980: place the Heli at its "hem" marker: look the "hem" ItemType up in
+ * the ItemMgr (bootup Data+0x776C) and walk its items (cursor / next iterator, as game_libs
+ * hud_findMarkers_000029F8); a marker with id (+0x3C) 8 gives the combined position
+ * (cvqs.trans = marker rgb +0x30, raised by RoData+0x78).
+ * NM ~80%: the loop is written rotated (do-while, dy in the preheader) so the RoData+0x78
+ * load hoists as in the target, but the first iterator result lands in v1 directly where the
+ * target computes it in v0 and copies (`or v1,v0`), and the Vec3 temp sits 4 bytes high. */
+typedef struct HeliIterNode {
+    char *data;
+    struct HeliIterNode *next;
+} HeliIterNode;
+#define HELI_ITER_NEXT(it) \
+    (((it)[0] = (it)[1], (it)[1] != 0) ? ((it)[1] = (it)[1]->next, (it)[0]->data) : 0)
+extern char *heli_itemMgr;
+#ifdef NON_MATCHING
+void heli_uso_func_00000980(char *self) {
+    HeliTypeTag key;
+    char padA[0x10];
+    HeliIterNode *it[2];
+    char padB[0x8];
+    HeliTri3i t;
+    char *type;
+    char *item;
+    key.v = *(int *)(&heli_data_00000000 + 0xCBA8); /* "hem" */
+    type = (char *)gl_func_00000000 /* ItemMgr_findType_0003EA98 */(heli_itemMgr, key);
+    if (type != 0) {
+        float dy;
+        it[1] = *(HeliIterNode **)(type + 0x10);
+        item = HELI_ITER_NEXT(it);
+        if (item != 0) {
+            dy = HELI_RODATA_F(0x78);
+            do {
+                if (*(int *)(item + 0x3C) == 8) {
+                    HELI_VEC3_SET(self + 0xDC, item + 0x30, t);
+                    *(float *)(self + 0xE0) += dy;
+                }
+            } while ((item = HELI_ITER_NEXT(it)) != 0);
+        }
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000980);
+#endif
 
 /* heli_uso_func_00000A70: Heli display: when the combined position (cvqs.trans) is in view,
  * update the channel-10 sound emitter there, set a white prim colour, draw the QNode. */
