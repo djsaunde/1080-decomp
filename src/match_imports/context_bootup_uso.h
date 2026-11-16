@@ -1725,7 +1725,7 @@ extern char D_00000000_a;
 extern char D_00000000_b;
 void SnowBoard_InitInstance(char *arg0);
 extern int gInputMgr_00000190;
-void SnowBoard_fadeOut_0000EAF8(int a0);
+void SnowBoard_onPreNmi(int a0);
 void boot_readFloatParm_0000EB28(char *a0);
 void boot_readVec3Parm_0000EB58(char *a0);
 void boot_readQuadParm_0000EB88(char *a0);

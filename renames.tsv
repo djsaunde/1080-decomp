@@ -5474,3 +5474,4 @@ D_00000610	kRo_MGRRaceProcess_drawResultExtra_610
 ColourItemType_vtbl_7600	ColourItem_vtbl_75A0_type_7600
 sStr_rom_heli_uso_7D94	gStrHeliUso_7D94
 sStr_BG_7EF8	gStrBG_7EF8
+SnowBoard_fadeOut_0000EAF8	SnowBoard_onPreNmi

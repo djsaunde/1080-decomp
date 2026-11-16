@@ -1,6 +1,6 @@
-nonmatching SnowBoard_fadeOut_0000EAF8, 0x30
+nonmatching SnowBoard_onPreNmi, 0x30
 
-glabel SnowBoard_fadeOut_0000EAF8
+glabel SnowBoard_onPreNmi
     /* DDF564 0000EAF8 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DDF568 0000EAFC AFA40018 */  sw         $a0, 0x18($sp)
     /* DDF56C 0000EB00 AFBF0014 */  sw         $ra, 0x14($sp)
@@ -13,4 +13,4 @@ glabel SnowBoard_fadeOut_0000EAF8
     /* DDF588 0000EB1C 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DDF58C 0000EB20 03E00008 */  jr         $ra
     /* DDF590 0000EB24 00000000 */   nop
-endlabel SnowBoard_fadeOut_0000EAF8
+endlabel SnowBoard_onPreNmi

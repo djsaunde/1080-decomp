@@ -6842,7 +6842,7 @@ void SnowBoard_InitInstance(char *arg0) {
 }
 
 extern int gInputMgr_00000190;
-void SnowBoard_fadeOut_0000EAF8(int a0) {
+void SnowBoard_onPreNmi(int a0) {
     FCALL(Fader_start)(gInputMgr_00000190, 3, 0);
 }
 
