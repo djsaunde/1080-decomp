@@ -2681,6 +2681,8 @@ GAMELIBS_26790_DONOR := build/src/game_libs/game_libs_o2_26790.c.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioThread_ProcessGlobalCmd=$(GAMELIBS_26790_DONOR)
 # 28A68 = pool init: link 0xD0-byte records into a list (NCC operand order: int value, pointer address); NCC donor.
 GAMELIBS_28A68_DONOR := build/src/game_libs/game_libs_ncc_28A68.cpp.o
+# audio.h -> libultra/os_message.h includes "libultra/os_thread.h", which edg resolves only via -I include.
+$(GAMELIBS_28A68_DONOR): NCC_CFLAGS += -I include
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += Audio_InitNoteFreeList=$(GAMELIBS_28A68_DONOR)
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_28A68_DONOR)
 # 308AC = mode setter over a module-LOCAL static block (merged head 308AC + body 308C8, 62 words); NCC donor.

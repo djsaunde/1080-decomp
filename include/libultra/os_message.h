@@ -24,6 +24,7 @@ typedef struct OSMesgQueue_s {
 #define OS_MESG_NOBLOCK 0
 #define OS_MESG_BLOCK 1
 
+#ifndef __cplusplus /* edg (C++ donors) rejects the &((T *)0)->f constant form */
 /* compile-time offset checks (array size -1 => error) */
 #define OS_MESG_ASSERT_OFFSET(field, off) \
     typedef char os_mesg_assert_##off[(int)&((OSMesgQueue *)0)->field == (off) ? 1 : -1]
@@ -33,5 +34,6 @@ OS_MESG_ASSERT_OFFSET(first, 0x0C);
 OS_MESG_ASSERT_OFFSET(msgCount, 0x10);
 OS_MESG_ASSERT_OFFSET(msg, 0x14);
 typedef char os_mesg_assert_size[sizeof(OSMesgQueue) == 0x18 ? 1 : -1];
+#endif /* !__cplusplus */
 
 #endif /* LIBULTRA_OS_MESSAGE_H */

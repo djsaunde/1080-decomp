@@ -47,6 +47,7 @@ typedef struct OSThread_s {
 #define OS_FLAG_CPU_BREAK 1 /* break exception has occurred */
 #define OS_FLAG_FAULT     2 /* CPU fault has occurred */
 
+#ifndef __cplusplus /* edg (C++ donors) rejects the &((T *)0)->f constant form */
 /* compile-time offset checks (array size -1 => error) */
 #define OS_THREAD_ASSERT_OFFSET(field, off) \
     typedef char os_thread_assert_##off[(int)&((OSThread *)0)->field == (off) ? 1 : -1]
@@ -57,5 +58,6 @@ OS_THREAD_ASSERT_OFFSET(context.sr, 0x118);
 OS_THREAD_ASSERT_OFFSET(context.pc, 0x11C);
 OS_THREAD_ASSERT_OFFSET(context.rcp, 0x128);
 OS_THREAD_ASSERT_OFFSET(context.fpcsr, 0x12C);
+#endif /* !__cplusplus */
 
 #endif /* LIBULTRA_OS_THREAD_H */

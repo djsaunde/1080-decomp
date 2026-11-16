@@ -28,7 +28,9 @@ typedef struct {
     /* 0x3C */ u32 yield_data_size;
 } OSTask_t;
 
+#ifndef __cplusplus /* edg (C++ donors) rejects the &((T *)0)->f constant form */
 typedef char OSTask_t_size_check[sizeof(OSTask_t) == 0x40 ? 1 : -1];
 typedef char OSTask_t_data_ptr_check[(int)&((OSTask_t *)0)->data_ptr == 0x30 ? 1 : -1];
+#endif /* !__cplusplus */
 
 #endif /* LIBULTRA_OS_TASK_H */

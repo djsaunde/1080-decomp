@@ -8930,47 +8930,9 @@ void Audio_InitNoteLists(char *a0) {
     *(int*)(a0 + 0x3C) = (int)a0;
 }
 
-// Audio_InitNoteFreeList — STRUCTURAL PASS (0xA4 / 41 words, no episode).
-// Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
-// bundle). The bulk record-array INITIALIZER of the sprite subsystem.
-//
-//   void Audio_InitNoteFreeList(void) {
-//     (*setup)(&D_5378);                                // jal 0 USO
-//     S *g = &D_0;
-//     int n = g->w_2070;                                 // record count
-//     if (n <= 0) return;
-//     for (int i = 0, off = 0; i < n; i++, off += 0xD0) { // 0xD0 stride
-//       R *rec = (char*)*(R**)(&D_0 + 0x2CFC) + off;
-//       rec->w_8 = rec;                                    // self-ptr
-//       rec->w_0 = 0;                                       // clear
-//       (*initRec)(rec);                                    // jal 0 USO
-//     }
-//   }
-//
-// Struct-typing reference: iterates the SAME primary sprite record
-//   table as AudioSynth_ProcessNote / AudioHeap_DiscardFont / Audio_ProcessNotes —
-//   live count word &D_0+0x2070, record-table pointer &D_0+0x2CFC —
-//   here with a per-record stride of 0xD0. For every record it writes
-//   a self-referential pointer at +0x8, zeroes word +0x0, and calls a
-//   USO-relocated per-record initializer (`jal 0` slot). A leading
-//   USO-reloc setup call is passed the &D_5378 fn-ptr/string table
-//   (the same auxiliary table AudioHeap_DiscardFont uses). This is the
-//   one-time "construct/clear every sprite record" pass that primes
-//   the subsystem before AudioHeap_ResetStep drives it per-frame.
-// Caps (DEFERRED): raw-word USO + record-init loop with jal-0
-//   USO-reloc — byte-match needs USO mnemonic disasm + reloc-pad jal
-//   infra. Real-C STRUCTURAL body below per the analysis (placeholder
-//   calls / fields). Byte-match deferred.
-//   Name pre-checked: no extern reuse (collision-safe).
-// 2026-10-16 agent-c: NM 95.61 -> 1 word. The target computes rec twice
-//   with OPPOSITE addu operand orders (value `addu t7,s0,v0`, address
-//   `addu t8,v0,s0`), so they must be two non-CSE'd expressions: value =
-//   pointer add `(int)(off + base)` (local base: written order kept),
-//   address = int add `(int)base + off + 8` (int adds come out base-first
-//   whatever the source order). RESIDUAL: the call arg `addu a1,s0,t1`
-//   (build t1,s0): with the reload inline IDO evaluates the load first in
-//   every spelling (off+X, X+off, &X[off], (int) casts, struct-array
-//   &recs[i]); a reassigned named local gets the order but colours v0.
+/* Audio_InitNoteFreeList (OoT's): Audio_InitNoteLists(&noteFreeLists), then every Note of
+ * notes[numNotes] gets listItem.u.value = itself, listItem.prev = NULL and is pushed onto
+ * noteFreeLists.disabled. The body is in the donor (C++ operand order). */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_28A68.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
 void Audio_InitNoteFreeList(void) {

@@ -820,6 +820,7 @@ typedef struct AudioContext {
     /* 0x53CC */ void *threadCmdProcQueueP;           /* ScheduleProcessCmds */
 } AudioContext; /* size >= 0x53D0 (later fields not yet modelled) */
 
+#ifndef __cplusplus /* edg (the NCC donors) rejects the &((T *)0)->f constant form */
 #define AUDIO_ASSERT_OFFSET(field, off) \
     typedef char audio_ctx_assert_##off[(int)&((AudioContext *)0)->field == (off) ? 1 : -1]
 AUDIO_ASSERT_OFFSET(curLoadedBook, 0x0010);
@@ -963,6 +964,7 @@ typedef char audio_instrument_size_assert[sizeof(Instrument) == 0x20 ? 1 : -1];
 typedef char audio_drum_size_assert[sizeof(Drum) == 0x10 ? 1 : -1];
 typedef char audio_soundfont_size_assert[sizeof(SoundFont) == 0x14 ? 1 : -1];
 typedef char audio_envelope_size_assert[sizeof(AdsrEnvelope) == 0x4 ? 1 : -1];
+#endif /* !__cplusplus */
 
 /*
  * SoundObj: the game-side 0x64-byte sound object of the glue layer (game_libs 0x2DF98..0x31608,
@@ -1023,6 +1025,7 @@ typedef struct SoundObj {
     u8 pan[4];              /* 0x60: pan bytes (SetAngle writes 0x60) */
 } SoundObj;
 
+#ifndef __cplusplus /* edg (the NCC donors) rejects the &((T *)0)->f constant form */
 AUDIO_ASSERT_MEMBER(SoundObj, flags, 0x16);
 AUDIO_ASSERT_MEMBER(SoundObj, kind, 0x21);
 AUDIO_ASSERT_MEMBER(SoundObj, eventType, 0x30);
@@ -1030,6 +1033,7 @@ AUDIO_ASSERT_MEMBER(SoundObj, unk48, 0x48);
 AUDIO_ASSERT_MEMBER(SoundObj, volScale, 0x54);
 AUDIO_ASSERT_MEMBER(SoundObj, pan, 0x60);
 typedef char audio_soundobj_size_assert[sizeof(SoundObj) == 0x64 ? 1 : -1];
+#endif /* !__cplusplus */
 
 /* bootup's handle around a SoundObj (the bootup wrappers 0x85C..0xA94 take it) */
 typedef struct SndHandle {
@@ -1083,11 +1087,13 @@ typedef struct SndCueQueues {
     /* 0x30 */ SndCueQueue queue[3]; /* snd_RequestCue(i) = queue[i]; snd_RequestCue2 = queue[2] */
     char pad15C[0x160 - 0x15C];
 } SndCueQueues;
+#ifndef __cplusplus /* edg (the NCC donors) rejects the &((T *)0)->f constant form */
 AUDIO_ASSERT_MEMBER(SndCueQueue, pending, 0x5C);
 AUDIO_ASSERT_MEMBER(SndCueQueue, cue, 0x62);
 AUDIO_ASSERT_MEMBER(SndCueQueues, downStep, 0x1C);
 AUDIO_ASSERT_MEMBER(SndCueQueues, queue, 0x30);
 typedef char audio_sndcuequeues_size_assert[sizeof(SndCueQueues) == 0x160 ? 1 : -1];
+#endif /* !__cplusplus */
 #define SND_CUEQ(sym)          (*(SndCueQueues *)&(sym))
 #define SND_CUEQ_AT_BASE(sym)  (*(SndCueQueues *)((char *)&(sym) + 0x338))
 
