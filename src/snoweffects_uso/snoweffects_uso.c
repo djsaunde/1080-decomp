@@ -1126,10 +1126,10 @@ void snoweffects_uso_func_0000973C(char *a0) {
 void snoweffects_uso_func_00009768(void *self) {
 }
 
-/* 0x9884: snow light vertex list rebuild (restore colours, collect up to 64 vertices within the
- * radius, MorphPoly_genUpdateList). NM: an NCC draft at 203 / 217 words is kept in
- * ncc_drafts/snoweffects_nm_e.cpp (agent-e run 650); only the light-position slot left. */
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009884);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 653),
+ * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
+void snoweffects_uso_func_00009884(void *self) {
+}
 
 void snoweffects_uso_func_00009BE8(char *this, char *src) {
     SnowRGBA *cols = *(SnowRGBA **)(src + 0x50);

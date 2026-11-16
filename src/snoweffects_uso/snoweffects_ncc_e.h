@@ -70,4 +70,41 @@ struct SnowTargetE {
  * reloc carries the offset) */
 extern "C" int snowDirtyFlag_A30;
 
+/* typed blank jal for the sqrtf import (float in $f12, float out $f0) */
+extern "C" float gl_func_00000000_snow_sqrtf(float);
+
+/* the libgdl Vec3 as 0x9884 uses it: value temporaries (by-value operator-), in-place scale, length */
+struct SnowLV {
+    float x, y, z;
+    SnowLV() {}
+    SnowLV(float a, float b, float c) { x = a; y = b; z = c; }
+    SnowLV &operator*=(const SnowLV &o) { x *= o.x; y *= o.y; z *= o.z; return *this; }
+    float length() const { return XCALL(gl_func_00000000_snow_sqrtf, sqrtf)(x * x + y * y + z * z); }
+};
+inline SnowLV operator-(const SnowLV &a, const SnowLV &b) { return SnowLV(a.x - b.x, a.y - b.y, a.z - b.z); }
+
+/* a MorphPoly mesh as 0x9884 reads it: vertex count +0x40, RGBA colour array +0x50 */
+struct SnowMesh {
+    char pad00[0x40];
+    /* 0x40 */ unsigned int nverts;
+    char pad44[0x50 - 0x44];
+    /* 0x50 */ unsigned char (*cols)[4];
+};
+
+/* a snow light (0x9884): position +0x5C, up to 64 lit vertex indices (+0xAC) with their saved colours
+ * (+0x12C, alpha = falloff), count +0x22C, MorphPoly update list +0x230, radius +0x258, height +0x270 */
+struct SnowGlowE {
+    char pad00[0x5C];
+    /* 0x5C */ SnowLV pos;
+    char pad68[0xAC - 0x68];
+    /* 0x0AC */ short vtx[0x40];
+    /* 0x12C */ unsigned char col[0x40][4];
+    /* 0x22C */ int n;
+    /* 0x230 */ void *updateList;
+    char pad234[0x258 - 0x234];
+    /* 0x258 */ float radius;
+    char pad25C[0x270 - 0x25C];
+    /* 0x270 */ float yofs;
+};
+
 #endif

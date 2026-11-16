@@ -59,3 +59,59 @@ extern "C" void snoweffects_uso_func_00009768(SnowTargetE *t) {
         t->drawPos.z = p->z;
     }
 }
+
+/* 0x9884 (0x364): rebuild a snow light's lit-vertex list. Restore the saved vertex colours and free the
+ * old MorphPoly update list, then scale the light position by gGfxLib's scale (bootup Bss+0x3C168 +
+ * 0x128), lift it by +0x270 and collect up to 64 mesh vertices with 0.1 < |pos - v| < radius: index
+ * into +0xAC, falloff (1 - d / radius) * 255 into the alpha of +0x12C, then MorphPoly_genUpdateList.
+ * Frame: the restore loop and the vertex loop have their own function-scope counters, declared with
+ * the scale pointer before the two Vec3 locals, and the vertex local is declared before the position
+ * (target position sp+0xB8 under the vertex sp+0xC4). The scale reference binds through the pointer
+ * assignment (keeps the lui / addiu 0x128 pair). The 0.1f literal is RoData+0xF0
+ * (snoweffects_uso_func_00009884_rodata). */
+extern "C" void snoweffects_uso_func_00009884(SnowGlowE *t, SnowMesh *m) {
+    unsigned char (*cols)[4] = m->cols;
+    SnowLV *gp;
+    int i;
+    unsigned int j;
+    if (t->updateList != 0) {
+        for (i = 0; i < t->n; i++) {
+            int idx = t->vtx[i];
+            cols[idx][0] = t->col[i][0];
+            cols[idx][1] = t->col[i][1];
+            cols[idx][2] = t->col[i][2];
+        }
+        CALL(MorphPoly_applyUpdateList_0004A9F0)(m, m->cols, t->updateList);
+        CALL(mem_delete)(t->updateList);
+    }
+    t->updateList = 0;
+    t->n = 0;
+    SnowLV vf;
+    SnowLV p;
+    p.x = t->pos.x;
+    p.y = t->pos.y;
+    p.z = t->pos.z;
+    const SnowLV &g = *(gp = (SnowLV *)(D_00000000 + 0x128));
+    p *= g;
+    p.y += t->yofs;
+    for (j = 0; j < m->nverts; j++) {
+        short *v = (short *)CALL(PolyShape_getVertex)(m, j);
+        vf.x = v[0];
+        vf.y = v[1];
+        vf.z = v[2];
+        SnowLV dd = p - vf;
+        float len = dd.length();
+        if (0.1f < len && len < t->radius) {
+            float f = 1.0f - len / t->radius;
+            t->vtx[t->n] = j;
+            t->col[t->n][3] = (unsigned int)(f * 255.0f);
+            t->n++;
+            if (t->n == 64) {
+                j = m->nverts;
+            }
+        }
+    }
+    if (t->n > 0) {
+        t->updateList = (void *)CALL(MorphPoly_genUpdateList)(m, t->n, t->vtx);
+    }
+}
