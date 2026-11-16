@@ -55,9 +55,9 @@
 #pragma weak snd_dispatchEvent
 /* port-drop: snd_dispatchEvent */ /* placeholder copy; shipped body in src/game_libs/game_libs_o2_2FB74.c */
 /* port-bind: AudioHeap_AllocTemporarySampleCacheEntry gl_func_00000000 AudioHeap_Alloc */
-/* port-bind: AudioHeap_Init gl_func_00000000 gl_osSetIntMask_plus8 */
+/* port-bind: AudioHeap_Init gl_func_00000000 gl_osSetIntMask */
 /* port-bind: AudioSeq_InitSequencePlayerChannels gl_alloc_2D130 AudioHeap_AllocZeroed */
-/* port-bind: Audio_InvalDCache gl_func_00000000 gl_osSetIntMask_plus8 */
+/* port-bind: Audio_InvalDCache gl_func_00000000 gl_osSetIntMask */
 /* port-bind: sys_fatalSwapBuffer_00034180 gl_func_00000000 osViGetCurrentLine */
 /* port-bind: snd_ApplyPlayer0VolumeLevel D_2D870_X port_bootup_data+0x1C0D8 */
 /* port-bind: snd_ApplyPlayer1VolumeLevel D_2D870_X port_bootup_data+0x1C0D4 */

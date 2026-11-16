@@ -145,11 +145,43 @@ def port_defined(lib):
     return {l.split()[-1] for l in out.splitlines() if len(l.split()) == 3 and l.split()[1].isupper()}
 
 
-def shim_entry(target, excluded):
-    """`gl_osSetIntMask+0x8` (a jal into a libultra copy the port does not compile) -> the host
-    entry point `gl_osSetIntMask_plus8` that port/ultra implements, else None"""
+def asm_pad(sourcemap):
+    """excluded asm function -> the bytes of alignment padding its build symbol starts with
+    (splat starts a libultra .s copy at the zero words that pad the preceding object, so the
+    real entry point is `sym+pad`; the shim defines the function itself)"""
+    pad = {}
+    for r in sourcemap:
+        if r[2].endswith(".s") and os.path.exists(r[2]):
+            n, inside = 0, False
+            for line in open(r[2], errors="replace"):
+                code = line.split("#")[0].strip()
+                if code.startswith("glabel ") and code.split()[1] == r[0]:
+                    inside = True
+                elif inside and code:
+                    if code != "nop":
+                        break
+                    n += 1
+            pad[r[0]] = 4 * n
+    return pad
+
+
+def shim_defined():
+    """the placeholder names port/ultra and the host layer define themselves (PORT_ALIAS):
+    the shim's definition wins, aliases.ld must not name them again"""
+    names = set()
+    for f in list(Path("port/ultra").glob("*.c")) + list(Path("port").glob("*.c")):
+        names |= set(re.findall(r"PORT_ALIAS\(\s*\w+\s*,\s*(\w+)\s*\)", f.read_text(errors="replace")))
+    return names
+
+
+def shim_entry(target, excluded, pad=None):
+    """`gl_osSetIntMask+0x8` (a jal into a libultra copy the port does not compile) -> the shim's
+    `gl_osSetIntMask` when the offset only skips the copy's leading alignment padding, else the
+    host entry point `gl_osSetIntMask_plus8` (not provided: a real mid-function entry), else None"""
     m = re.fullmatch(r"(\w+)\+0x([0-9A-F]+)", target or "")
     if m and m.group(1) in excluded:
+        if pad and pad.get(m.group(1)) == int(m.group(2), 16):
+            return m.group(1)
         return "%s_plus%s" % (m.group(1), m.group(2).lower())
     return None
 
@@ -162,7 +194,10 @@ def main():
     excluded = {r[0] for r in read_tsv("port/gen/excluded.tsv")}
     defined = port_defined(a.lib)
     by_src = collections.defaultdict(list)
-    for r in read_tsv("port/sourcemap.tsv"):
+    smap = read_tsv("port/sourcemap.tsv")
+    pad = asm_pad(smap)
+    shimdef = shim_defined()
+    for r in smap:
         if r[0] not in excluded:
             by_src[r[2]].append(r[0])
     shipped = {f for fs in by_src.values() for f in fs}
@@ -227,12 +262,12 @@ def main():
     # global aliases: every ROM site of the token, in every proven function, is one target
     aliases = {}
     for tok, tg in list(gcall.items()) + list(gdata.items()):
-        if tok in aliases:
+        if tok in aliases or tok in shimdef:
             continue
         both = gcall.get(tok, collections.Counter()) + gdata.get(tok, collections.Counter())
         if len(both) == 1:
             t = next(iter(both))
-            host = shim_entry(t, excluded)
+            host = shim_entry(t, excluded, pad)
             if host:
                 aliases[tok] = host
             elif usable(t) and (t.startswith("port_") or t in shipped or t in excluded or t in defined):
@@ -241,13 +276,13 @@ def main():
     for kind, rows in (("call", calls), ("data", data)):
         for src, fn, tok, tg in rows:
             n = sum(tg.values())
-            if tok in aliases:
+            if tok in aliases or tok in shimdef:
                 continue
             if len(tg) > 1:
                 left.append((src, fn, tok, "ambiguous", " ".join("%s*%d" % kv for kv in tg.items() if kv[0]), n))
                 continue
             target = next(iter(tg))
-            host = shim_entry(target, excluded)
+            host = shim_entry(target, excluded, pad)
             if host:
                 binds.append((src, fn, tok, host, n))
             elif target is None:

@@ -123,6 +123,10 @@ def undefined(lib, tmp, extra=(), aliases=()):
             defs |= {l.split()[-1] for l in run(["nm", "--defined-only", i]).stdout.splitlines()
                      if len(l.split()) == 3 and l.split()[1].isupper()}
         script = os.path.join(tmp, "aliases.ld")
+        twice = sorted(name for name, _, _ in aliases if name in defs)
+        if twice:
+            raise SystemExit("aliases.ld names %d symbols the inputs also define: %s" % (
+                len(twice), " ".join(twice[:20])))
         with open(script, "w") as fh:
             for name, expr, sym in aliases:
                 if sym in defs:
@@ -135,7 +139,13 @@ def undefined(lib, tmp, extra=(), aliases=()):
     if p.returncode:
         raise SystemExit(p.stderr)
     aliased = {a[0] for a in aliases}
-    und = [l.split()[-1] for l in run(["nm", "-u", rel]).stdout.splitlines() if l.strip()]
+    weak = set()
+    und = []
+    for l in run(["nm", "-u", rel]).stdout.splitlines():
+        if l.strip():
+            und.append(l.split()[-1])
+            if l.split()[0] in "wv":
+                weak.add(l.split()[-1])
     und = [u for u in und if u not in aliased]
     und += sorted(set(alias_und) - set(und))
     refs = collections.defaultdict(collections.Counter)
@@ -152,7 +162,7 @@ def undefined(lib, tmp, extra=(), aliases=()):
             refs[sym][kind] += 1
     for sym, n in alias_und.items():
         refs[sym]["call"] += n      # named by an alias (a call target, or a shim entry point)
-    return und, refs
+    return und, refs, weak
 
 
 def classify(sym, kref, autosyms, kernel_funcs, bindnames=frozenset()):
@@ -186,6 +196,8 @@ def main():
     ap.add_argument("-o", "--out", default=str(ROOT / "port/undefined.txt"))
     ap.add_argument("--extra", action="append", default=[],
                     help="another archive linked with the library (the port/uso library)")
+    ap.add_argument("--extra-objects", nargs="*", default=[],
+                    help="object files linked with the library (port/main.c, the host layer)")
     ap.add_argument("--aliases", default=str(ROOT / "port/gen/aliases.ld"),
                     help="implicit linker script of token aliases ('' for none)")
     args = ap.parse_args()
@@ -216,13 +228,26 @@ def main():
     bindnames = set()
     for jf in glob.glob(str(ROOT / "scripts/match-bindings-*.json")):
         bindnames.update(json.load(open(jf)).get("renames", {}))
+    # the host libc the port's own code uses (port/port_libc.h declares it for builds without
+    # 32-bit libc headers), plus what gcc emits calls to
+    host_libc = set(re.findall(r"\b(\w+)\s*\(", open(ROOT / "port/port_libc.h").read().split(
+        "PORT_LIBC_DECLS_ONLY", 2)[-1])) | {"stdout", "stderr", "memcpy", "memmove", "memset",
+                                             "strcmp", "sqrtf", "sqrt", "fabsf"}
     kernel_funcs = {r[0] for r in read_tsv(ROOT / "port/gen/excluded.tsv") if r[1] == "kernel"}
 
     with tempfile.TemporaryDirectory(dir="/tmp/claude-1000") as tmp:
-        und, refs = undefined(lib, tmp, args.extra, load_aliases(args.aliases) if args.aliases else ())
+        und, refs, weak = undefined(lib, tmp, args.extra + args.extra_objects, load_aliases(args.aliases) if args.aliases else ())
     groups = collections.defaultdict(list)
     for s in und:
-        groups[classify(s, refs[s], autosyms, kernel_funcs, bindnames)].append(s)
+        if s in weak:
+            g = "weak: optional hooks (resolve to 0 when absent; game-side PORT work defines them)"
+        elif not refs[s]["call"] + refs[s]["data"]:
+            g = "unreferenced: named only by sections --gc-sections drops (no link error)"
+        elif s in host_libc:
+            g = "host libc / libm"
+        else:
+            g = classify(s, refs[s], autosyms, kernel_funcs, bindnames)
+        groups[g].append(s)
 
     def how(s):
         k = refs[s]

@@ -112,8 +112,6 @@ src/game_libs/game_libs_ncc_41820.cpp	App_softReset	import_80000310	unresolved		
 src/game_libs/game_libs_ncc_445AC.cpp	GfxLib_init	D_445AC_ga	ambiguous	port_bootup_data+0x1F974*1 port_bootup_data+0x1FC8C*1	2
 src/game_libs/game_libs_ncc_445AC.cpp	GfxLib_init	D_445AC_gb	ambiguous	port_bootup_data+0x1F978*1 port_bootup_data+0x1FC90*1	2
 src/game_libs/game_libs_o2_26214.c	AudioThread_UpdateImpl	gl_26214_aspMainTextStart	unnamed	Text+0x46470	1
-src/game_libs/game_libs_o2_44B78.c	gfx_setVideoMode	D_00000000_tvtype	unresolved		1
-src/game_libs/game_libs_post.c	AudioLoad_Init	gl_24378_osTvType	unresolved		1
 src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DEX	D_00000000_a	unnamed	Text+0x2AE00	1
 src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DEX_NoN	D_00000000_a	unnamed	Text+0x28F10	1
 src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DLP_Rej	D_00000000_a	unnamed	Text+0x2D4A0	1

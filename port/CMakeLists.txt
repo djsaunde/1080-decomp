@@ -73,21 +73,50 @@ add_library(uso STATIC uso/uso.c ${PORT_GEN}/uso_modules.c ${CMAKE_CURRENT_BINAR
 target_include_directories(uso PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/uso)
 target_compile_options(uso PRIVATE ${PORT_ARCH_FLAGS})
 
+# port/ultra (the libultra shim, plan section 17) and the host side (main loop, headless host,
+# trace logger).  Without PORT_LINK (no 32-bit libc on the machine) they are still compiled, with
+# PORT_LIBC_DECLS_ONLY (port_libc.h declares the libc functions by hand), so the undefined
+# target can check the whole link.
+set(PORT_ULTRA_SOURCES ultra/thread.c ultra/message.c ultra/vi.c ultra/pi.c ultra/si.c
+    ultra/ai_sp.c ultra/misc.c)
+set(PORT_HOST_SOURCES main.c host_headless.c trace.c)
+set(PORT_HOST_FLAGS ${PORT_ARCH_FLAGS} -std=gnu99 -fno-math-errno)
+set(PORT_HOST_DEFS PORT)
+if(NOT PORT_LINK)
+  list(APPEND PORT_HOST_DEFS PORT_LIBC_DECLS_ONLY)
+endif()
+add_library(ultra STATIC ${PORT_ULTRA_SOURCES})
+add_library(porthost OBJECT ${PORT_HOST_SOURCES})
+foreach(t ultra porthost)
+  target_compile_definitions(${t} PRIVATE ${PORT_HOST_DEFS})
+  target_include_directories(${t} PRIVATE ${GAME_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
+  target_compile_options(${t} PRIVATE ${PORT_HOST_FLAGS})
+endforeach()
+
 if(PORT_LINK)
-  add_executable(tenshoe main.c)
-  target_compile_options(tenshoe PRIVATE ${PORT_ARCH_FLAGS})
+  add_executable(tenshoe $<TARGET_OBJECTS:porthost>)
   target_link_options(tenshoe PRIVATE -m32 -no-pie -Wl,--gc-sections)
   # whole-archive: every shipped body is a root; the shim (port/ultra, port/uso)
   # resolves port/undefined.txt.
   # port/gen/aliases.ld: the token aliases (scripts/port-gen-binds.py), an implicit linker script
-  target_link_libraries(tenshoe PRIVATE -Wl,--whole-archive game uso -Wl,--no-whole-archive
-                        ${PORT_GEN}/aliases.ld)
+  target_link_libraries(tenshoe PRIVATE -Wl,--whole-archive game uso ultra -Wl,--no-whole-archive
+                        ${PORT_GEN}/aliases.ld m)
+
+  # the shim's self-test (plan 17.6): no game code, no ROM
+  add_executable(test_ultra ultra/test_ultra.c host_headless.c)
+  target_compile_definitions(test_ultra PRIVATE PORT)
+  target_include_directories(test_ultra PRIVATE ${GAME_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
+  target_compile_options(test_ultra PRIVATE ${PORT_HOST_FLAGS})
+  target_link_options(test_ultra PRIVATE -m32 -no-pie)
+  target_link_libraries(test_ultra PRIVATE ultra m)
 endif()
 
 # port/undefined.txt: what the library needs from outside (no 32-bit libc needed).
 add_custom_target(undefined
   COMMAND ${Python3_EXECUTABLE} ${GAME_ROOT}/scripts/port-undefined.py $<TARGET_FILE:game>
-          --extra $<TARGET_FILE:uso> -o ${CMAKE_CURRENT_SOURCE_DIR}/undefined.txt
-  DEPENDS game uso
+          --extra $<TARGET_FILE:uso> --extra $<TARGET_FILE:ultra>
+          --extra-objects "$<TARGET_OBJECTS:porthost>" -o ${CMAKE_CURRENT_SOURCE_DIR}/undefined.txt
+  DEPENDS game uso ultra porthost
+  COMMAND_EXPAND_LISTS
   WORKING_DIRECTORY ${GAME_ROOT}
   VERBATIM)
