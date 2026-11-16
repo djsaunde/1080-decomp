@@ -1611,7 +1611,7 @@ extern char D_arc251C_reg[];/* registration slot base */
 extern int D_arc251C_id;    /* packed-id read */
 extern char D_arc251C_f[];  /* packed-id call a3 */
 extern char D_arc251C_g[];  /* 6-arg call a1 */
-extern char D_arc251C_h[];  /* *(&sym+400) linked-set parent */
+extern char D_arc251C_h[];  /* the InputMgr (GameFlow import): its +0x190 fader is linked under the menu process */
 char *ARCMenuProcess_ctor(char *arg0) {
     char *a3;   /* level-2 (80) + vt + registration node (shared home) */
     char *a0;   /* level-3 (44) */
@@ -1652,13 +1652,13 @@ char *ARCMenuProcess_ctor(char *arg0) {
             NODE(a3)->unk04 = 1;
         }
         NODE(a3)->parent = (Node *)arg0;
-        a3 = *(char **)(D_arc251C_h + 400);
+        a3 = (char *)INPUT_MGR(D_arc251C_h).fader;
         CALL(list_append)(arg0 + 16, a3);
         if (NODE(a3)->parent != 0) {
             NODE(a3)->unk04 = 1;
         }
         NODE(a3)->parent = (Node *)arg0;
-        CALL(Fader_start)(*(int *)(D_arc251C_h + 400), 1, 0);
+        CALL(Fader_start)(INPUT_MGR(D_arc251C_h).fader, 1, 0);
         MENUPROC(arg0)->state = 0;
         MENUPROC(arg0)->unk30 = 1;
         MENUPROC(arg0)->unk2C = 0;

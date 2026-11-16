@@ -1355,7 +1355,7 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
     int *src;
     int *sub1, *sub2, *sub3;
     char *self_p10;
-    self->base.name = (int)(base + 0x41C);
+    self->base.name = base + 0x41C;
     self->race = (int)a1;
     self->beepTimer = 0;
     self->base.pointsListArg = a2;

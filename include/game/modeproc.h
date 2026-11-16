@@ -226,7 +226,7 @@ typedef char H2HWinsDisplay_size_check[sizeof(H2HWinsDisplay) == 0x9C ? 1 : -1];
 typedef struct GameDemoProcess {
     /* 0x000 */ RaceProcess race;
     /* 0x6A8 */ s32 unused6A8;        /* no titproc access (tim / trk keep their DataManager here) */
-    /* 0x6AC */ s32 dataMgr;         /* a plain DataManager (the base ctor, import 0xB6C40, with 0) */
+    /* 0x6AC */ struct RaceTracker *dataMgr; /* a plain DataManager (the base ctor, import 0xB6C40, with 0) */
     /* 0x6B0 */ s32 keyMessage;      /* KeyMessage_ctor; only built when flags bit 25 is clear */
     /* 0x6B4 */ s32 mainLogo;        /* MainLogo_ctor; 0 when flags bit 25 is set */
     /* 0x6B8 */ s32 langMenu;        /* LangMenu_ctor; only built with the menu (flags bit 23) */
@@ -249,11 +249,11 @@ typedef struct TitleDemoProcess {
     /* 0x40 */ s32 state;            /* TitleDemoProcess_handleInput's switch (the ctor starts at 0 or 1) */
     /* 0x44 */ char unk44[0x50 - 0x44];
     /* 0x50 */ struct RaceTracker *dataMgr; /* plain DataManager (also InputMgr.dataMgr) */
-    /* 0x54 */ s32 keyMessage;       /* KeyMessage_ctor */
-    /* 0x58 */ s32 mainLogo;         /* MainLogo_ctor */
-    /* 0x5C */ s32 menu;             /* the title menu */
-    /* 0x60 */ s32 langMenu;         /* LangMenu_ctor */
-    /* 0x64 */ s32 whiteFader;       /* tit_WhiteFader_ctor */
+    /* 0x54 */ struct KeyMessage *keyMessage; /* KeyMessage_ctor */
+    /* 0x58 */ struct MainLogo *mainLogo;     /* MainLogo_ctor */
+    /* 0x5C */ struct GuiMenu *menu;          /* the title menu (import 0xA5D38, a GuiMenu) */
+    /* 0x60 */ struct Node *langMenu;         /* LangMenu_ctor (a Node; no struct yet) */
+    /* 0x64 */ struct WhiteFader *whiteFader; /* tit_WhiteFader_ctor */
     /* 0x68 */ s32 keyDelay;         /* 40 on entering state 1; counts down, then the keyMessage is shown */
     /* 0x6C */ s32 unk6C;            /* 5 (seconds; timer = x * 30) */
     /* 0x70 */ s32 unk70;            /* 0x48 (seconds; timer = x * 30) */

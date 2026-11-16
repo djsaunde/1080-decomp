@@ -1003,7 +1003,7 @@ void TrkDataManager_init_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
     volatile int pad4;
     float denom = 255.0f;
 
-    DATAMGR(arg0)->name = (int)(&D_b3_19CC_0C + 0x3E4);
+    DATAMGR(arg0)->name = &D_b3_19CC_0C + 0x3E4;
     TIMDATAMGR(arg0)->race = (int)arg1;
     DATAMGR(arg0)->owner = (RaceProcess *)arg1;
     DATAMGR(arg0)->session = (BackupSession *)arg3;

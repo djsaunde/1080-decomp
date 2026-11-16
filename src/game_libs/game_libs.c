@@ -2996,18 +2996,18 @@ void RaceProcess_init(RaceProcess *arg0, s32 arg1, s32 arg2, s32 arg3) {
             arg0->spriteSet = temp_v0;
             (char*)FCALL(gui_fontAdjustAdvance)(temp_v0, (char *)-8);
         }
-        (char*)FCALL(gui_spriteLoad)((int)&arg0->sprites[0], (char *)0x60000);
-        (char*)FCALL(gui_spriteLoad)((int)&arg0->sprites[1], (char *)0x60003);
-        (char*)FCALL(gui_spriteLoad)((int)&arg0->sprites[2], (char *)0x60004);
-        (char*)FCALL(gui_spriteLoad)((int)&arg0->sprites[3], (char *)0x60005);
-        (char*)FCALL(gui_spriteLoad)((int)&arg0->sprites[4], (char *)0x60001);
-        (char*)FCALL(gui_spriteInit)((int)&arg0->sprites[5], (char *)0x60002);
-        (char*)FCALL(gui_spriteInit)((int)&arg0->sprites[6], (char *)0x60006);
-        (char*)FCALL(gui_spriteInit)((int)&arg0->sprites[7], (char *)0x60007);
-        (char*)FCALL(gui_spriteInit)((int)&arg0->sprites[9], (char *)0x60008);
-        (char*)FCALL(gui_spriteInit)((int)&arg0->sprites[10], (char *)0x60009);
-        (char*)FCALL(gui_spriteInit)((int)&arg0->sprites[11], (char *)0x6000A);
-        (char*)FCALL(gui_spriteInit)((int)&arg0->sprites[8], (char *)0x6000B);
+        (char*)FCALL(gui_spriteLoad)(&arg0->sprites[0], 0x60000);
+        (char*)FCALL(gui_spriteLoad)(&arg0->sprites[1], 0x60003);
+        (char*)FCALL(gui_spriteLoad)(&arg0->sprites[2], 0x60004);
+        (char*)FCALL(gui_spriteLoad)(&arg0->sprites[3], 0x60005);
+        (char*)FCALL(gui_spriteLoad)(&arg0->sprites[4], 0x60001);
+        (char*)FCALL(gui_spriteInit)(&arg0->sprites[5], 0x60002);
+        (char*)FCALL(gui_spriteInit)(&arg0->sprites[6], 0x60006);
+        (char*)FCALL(gui_spriteInit)(&arg0->sprites[7], 0x60007);
+        (char*)FCALL(gui_spriteInit)(&arg0->sprites[9], 0x60008);
+        (char*)FCALL(gui_spriteInit)(&arg0->sprites[10], 0x60009);
+        (char*)FCALL(gui_spriteInit)(&arg0->sprites[11], 0x6000A);
+        (char*)FCALL(gui_spriteInit)(&arg0->sprites[8], 0x6000B);
     }
     arg0->subState = 0;
     (char*)FCALL(Node_Load)(arg0, (char *)1, GL_DATA_STR(0xD010, "rom/racecol.bin"));
@@ -3493,9 +3493,9 @@ void RaceProcess_drawGui(RaceProcess *arg0) {
                         CALL(gui_drawSprite)(sp8C, 0xA0, 0xA0, 3);
                     }
                     if (sp3C != 0) {
-                        CALL(gui_spriteRefresh)((int)&arg0->sprites[4]);
-                        CALL(gui_setEnvPrimColor_00001EF4)((int)&arg0->sprites[4], 0xFF, (int)arg0->colours.pair[RACECOL_RD][0].value, (int)arg0->colours.pair[RACECOL_RD][1].value);
-                        CALL(gui_drawSprite)((int)&arg0->sprites[4], 0xA8, 0x50, 3);
+                        CALL(gui_spriteRefresh)(&arg0->sprites[4]);
+                        CALL(gui_setEnvPrimColor_00001EF4)(&arg0->sprites[4], 0xFF, (int)arg0->colours.pair[RACECOL_RD][0].value, (int)arg0->colours.pair[RACECOL_RD][1].value);
+                        CALL(gui_drawSprite)(&arg0->sprites[4], 0xA8, 0x50, 3);
                     }
                 }
             }

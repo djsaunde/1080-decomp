@@ -8,6 +8,7 @@
 #include "audio.h"
 #include "game/input.h"
 #include "gdl/node.h"
+#include "gdl/item.h"
 #include "gdl/light.h"
 #include "game/envobj.h"
 #include "uso_call.h"
@@ -555,7 +556,7 @@ void *func_00000C10(int *arg0) {
     p1 = (int*)FCALL(mem_new)(0x40);
     if (p1 != 0) {
         FCALL(ColourItem_ctor)(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
+        NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -1268,7 +1269,7 @@ int *boot_ItemType_create_00002244(int *caller_a0) {
     int *p;
     if ((p = (int*)FCALL(mem_new)(0x40)) != 0) {
         FCALL(ColourItem_ctor)(p);
-        p[0x28/4] = (int)&ColourItem_vtbl_75A0;
+        NODE(p)->vptr = (char *)&ColourItem_vtbl_75A0;
         p[0x3C/4] = 0;
     }
     ret = p;
@@ -1336,7 +1337,7 @@ CamDirector *CamDirector_ctor(CamDirector *a0, int pad, int rider, int window, i
         if (a0 == 0) goto end;
     }
     FCALL(Node_ctor)(a0, &sStr_Node_731C); /* Node init, "<Node>" */
-    *(int*)((char*)a0 + 0x28) = (int)&CamDirector_vtbl; /* vptr (Data 0x6FD8) */
+    NODE(a0)->vptr = (char *)&CamDirector_vtbl; /* vptr (Data 0x6FD8) */
     a0->pad = (struct RiderInput *)pad;
     a0->rider = (SnowBoarder *)rider;
     a0->window = (CamWindow *)window;
@@ -2868,7 +2869,7 @@ int item_createHem(int a0) {
   if (p != 0)
   {
     FCALL(ColourItemType_ctor)(p, *(S50A0*)&saved_a0, *((int *) (&D_00000000)), &buf[1]);
-    *((int *) (((char *) p) + 0x28)) = (int) (&D_00000000);
+    NODE(p)->vptr = (char *)&D_00000000;
   }
   return (int) p;
 }
@@ -2910,6 +2911,24 @@ extern char D_00000000_c;
  * comes from folding the get-or-create into one condition
  * (`o2 != 0 || (o2 = alloc(0x48)) != 0`); tail addiu order = temp-first `t = &c`;
  * obj-reload placement = call+store on ONE source line. Standalone -O2 44/44 exact. */
+/* The USO item types item_createBal / Ba2 / Chk (alloc 0x4C) and item_createGtr / Gtl (alloc 0x50) build
+ * (agent-h run 567): an ItemType (0x48; its vptr gets D_00000000_b) plus one more vtable pointer
+ * (D_00000000_c), at 0x48, or at 0x4C after a side word (Gtr 0, Gtl 1). The extra pointer after
+ * the subclass's own data is the Cfront layout of a second base class's vptr. */
+typedef struct BootItemType {
+    /* 0x00 */ ItemType type;
+    /* 0x48 */ char *vptr2;          /* D_00000000_c */
+} BootItemType;
+
+typedef struct BootGateItemType {
+    /* 0x00 */ ItemType type;
+    /* 0x48 */ s32 side;             /* item_createGtr 0, item_createGtl 1 */
+    /* 0x4C */ char *vptr2;          /* D_00000000_c */
+} BootGateItemType;
+
+typedef char BootItemType_size_check[sizeof(BootItemType) == 0x4C ? 1 : -1];
+typedef char BootGateItemType_size_check[sizeof(BootGateItemType) == 0x50 ? 1 : -1];
+
 typedef struct { int v; } Box5124;
 void *item_createBal(Box5124 arg) {
     volatile int p0;
@@ -2929,7 +2948,7 @@ void *item_createBal(Box5124 arg) {
             FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (char *)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
-        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); ((BootItemType *)obj)->vptr2 = t; }
     }
     return obj;
 }
@@ -2983,7 +3002,7 @@ void *item_createBa2(Box51D4 arg) {
             FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (char *)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
-        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); ((BootItemType *)obj)->vptr2 = t; }
     }
     return obj;
 }
@@ -3036,7 +3055,7 @@ void *item_createChk(Box5284 arg) {
             FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (char *)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
-        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); ((BootItemType *)obj)->vptr2 = t; }
     }
     return obj;
 }
@@ -3088,7 +3107,7 @@ void *item_createGtr(Box5334 arg) {
             FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (char *)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
-        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); *(char **)(obj + 0x4C) = t; *(int *)(obj + 0x48) = 0; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); ((BootGateItemType *)obj)->vptr2 = t; ((BootGateItemType *)obj)->side = 0; }
     }
     return obj;
 }
@@ -3142,7 +3161,7 @@ void *item_createGtl(Box53E8 arg) {
             FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (char *)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); store order b,1,c = temp numbering t0/t1/t2; whole tail on ONE line (multi-line tail perturbs the li/addiu schedule) */
-        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); *(int *)(obj + 0x48) = 1; *(char **)(obj + 0x4C) = t; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); ((BootGateItemType *)obj)->side = 1; ((BootGateItemType *)obj)->vptr2 = t; }
     }
     return obj;
 }
@@ -3175,7 +3194,7 @@ int *item_createFog(struct OneI arg0) {
     p = (int*)FCALL(mem_new)(0x58);
     if (p == 0) goto end;
     FCALL(ColourItemType_ctor)(p, *(struct OneI*)&saved_a0, *(int*)&D_54D8_init_value, &D_54D8_init_arg);
-    p[10] = (int)&D_000078D8;
+    NODE(p)->vptr = (char *)&D_000078D8;
 end:
     return p;
 }
@@ -3203,7 +3222,7 @@ int *item_createSnow(struct OneI arg0) {
     p = (int*)FCALL(mem_new)(0x58);
     if (p == 0) goto end;
     FCALL(ColourItemType_ctor)(p, *(struct OneI*)&saved_a0, *(int*)&D_553C_init_value, &D_553C_init_arg);
-    p[10] = (int)&D_000079C8;
+    NODE(p)->vptr = (char *)&D_000079C8;
 end:
     return p;
 }
@@ -3392,7 +3411,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
         FCALL(math_mtxAddTranslation)(s + 0x30, (z[1] = 0.0f, z[2] = 0.0f, z));
     }
     NODE(a0)->vptr = (char *)(&MapProp_vtbl);
-    *(void**)(a0 + 0xC) = &sStr_Course_7E7C;
+    NODE(a0)->name = (const char *)&sStr_Course_7E7C;
     ((MapProp *)a0)->shape = a1;
     FCALL(MNode_addChild)(a0, a1);
     if (*(int*)((char*)((MapProp *)a0)->shape + 0xA0) == 0) /* shp->pGrid != NULL */
@@ -3796,7 +3815,7 @@ void FallingSnow_create(char *a0) {
     FCALL(list_append)(head + 0x10, r);
     if (NODE(r)->parent != 0) NODE(r)->unk04 = 1;
     NODE(r)->parent = (Node *)head;
-    v = (int *)NODE(*(char**)(a0 + 0x40))->vptr;
+    v = (int *)NODE(ENVSET(a0)->fallingSnow)->vptr;
     ((void (*)(char*, int))VT_SLOT(v, 10).fn)(
         (char *)ENVSET(a0)->fallingSnow + VT_SLOT(v, 10).delta,
         0x96);
@@ -3958,12 +3977,12 @@ void Tv1Tmpl_func_000077D0(char *arg0, u16 *dst, s32 arg2) {
     if (tbl == NULL) {
         return;
     }
-    mode = *(s32 *)(arg0 + 0x58);
+    mode = ((Tv1Tmpl *)arg0)->scroll;
     c = mode;
     if (arg2 != 0) {
         c = mode + 0x60;
     }
-    mode = *(s32 *)(arg0 + 0x5C);
+    mode = ((Tv1Tmpl *)arg0)->state;
     i = 0;
     stride = 0x140;
     if (mode == 0) goto m0;
@@ -6797,7 +6816,7 @@ void SnowBoard_InitInstance(char *arg0) {
     int saved;
 
     (void)pad;
-    *(int *)(arg0 + 0xC) = (int)&sStr_SnowBoard_8D70;
+    NODE(arg0)->name = (const char *)&sStr_SnowBoard_8D70;
     FCALL(fs_readRecord_00041F90)(arg0, &sStr_rom_version_bin_8D7C);
     saved = FCALL(app_setHeapMode)(0);
     *(int *)&D_00000000 = FCALL(AnimDataMgr_ctor)(0, &sStr_rom_anims_bin_8D8C, 0x20, 0xC);
@@ -6863,7 +6882,7 @@ int *boot_ItemType_create_0000EBE8(int *caller_a0) {
     int *p;
     if ((p = (int*)func_00000000(0x40)) != 0) {
         func_00000000(p);
-        p[0x28/4] = (int)&ColourItem_vtbl_75A0;
+        NODE(p)->vptr = (char *)&ColourItem_vtbl_75A0;
         p[0x3C/4] = 0;
     }
     ret = p;
@@ -6956,7 +6975,7 @@ void *boot_ItemType_create_0000EE8C(void *caller_a0) {
   if (p != 0)
   {
     func_00000000(p);
-    *((int *) (((char *) p) + 0x28)) = (int) (&ColourItem_vtbl_75A0);
+    NODE(p)->vptr = (char *)&ColourItem_vtbl_75A0;
     *((int *) (((char *) p) + 0x3C)) = 0;
   }
   ret = p;

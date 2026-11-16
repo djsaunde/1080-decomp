@@ -263,7 +263,7 @@ typedef char RaceEntry_gate_check[(int)&((RaceEntry *)0)->gate == 0x4C ? 1 : -1]
 
 typedef struct RaceTracker {
     /* 0x00 */ char unk00[0xC];
-    /* 0x0C */ s32 name;                 /* Node name: "DataManager"; h2hDataManager_ctor stores base + 0x41C */
+    /* 0x0C */ const char *name;         /* Node name: "DataManager"; h2hDataManager_ctor stores base + 0x41C */
     /* 0x10 */ char children[0x18];      /* node child list (address taken only) */
     /* 0x28 */ char *vptr;               /* Cfront vtable (Data+0xD678 + ...), as Node.vptr */
     /* 0x2C */ s32 active;               /* RaceTracker_update runs while set */

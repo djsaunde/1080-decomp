@@ -470,7 +470,7 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
     NODE(sub)->parent = (Node *)root;
-    TITLEDEMO(root)->keyMessage = (s32)(XCALL(titproc_uso_func_0015F4, KeyMessage_ctor)(0));
+    TITLEDEMO(root)->keyMessage = (KeyMessage *)(XCALL(titproc_uso_func_0015F4, KeyMessage_ctor)(0));
 
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->keyMessage);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
@@ -481,22 +481,22 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
         ((void (*)(int))VT_SLOT(sub, 10).fn)(
             VT_SLOT(sub, 10).delta + (int)child);
     }
-    TITLEDEMO(root)->mainLogo = (s32)(XCALL(titproc_uso_func_001840, MainLogo_ctor)(0));
+    TITLEDEMO(root)->mainLogo = (MainLogo *)(XCALL(titproc_uso_func_001840, MainLogo_ctor)(0));
 
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->mainLogo);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
     NODE(sub)->parent = (Node *)root;
-    TITLEDEMO(root)->langMenu = (s32)(XCALL(titproc_uso_func_001B10, LangMenu_ctor)(0));
+    TITLEDEMO(root)->langMenu = (Node *)(XCALL(titproc_uso_func_001B10, LangMenu_ctor)(0));
 
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->langMenu);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
     NODE(sub)->parent = (Node *)root;
-    TITLEDEMO(root)->whiteFader = (s32)(XCALL(titproc_uso_func_001D7C, tit_WhiteFader_ctor)(0));
+    TITLEDEMO(root)->whiteFader = (WhiteFader *)(XCALL(titproc_uso_func_001D7C, tit_WhiteFader_ctor)(0));
 
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->whiteFader);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
     NODE(sub)->parent = (Node *)root;
-    TITLEDEMO(root)->menu = (s32)(import_000A5D38(0));
+    TITLEDEMO(root)->menu = (GuiMenu *)import_000A5D38(0);
 
     import_000A5F40((void *)TITLEDEMO(root)->menu, root);
     XCALL(titproc_uso_func_00101C, TitleDemoProcess_buildMenu)(root);
@@ -530,7 +530,7 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
         TITLEDEMO(root)->timer = TITLEDEMO(root)->unk70 * 30;
         TITLEDEMO(root)->keyDelay = 0;
         MAINLOGO(TITLEDEMO(root)->mainLogo)->phase = 1;
-        *(int *)((char *)(void *)TITLEDEMO(root)->mainLogo + 0x2C) = 0;
+        TITLEDEMO(root)->mainLogo->alpha = 0;
         child = (void *)TITLEDEMO(root)->mainLogo;
         sub = (void *)NODE(child)->vptr;
         ((void (*)(int))VT_SLOT(sub, 10).fn)(
@@ -568,7 +568,7 @@ void TitleDemoProcess_buildMenu(int *a0) {
     CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 7, 5, &D_t_arg5_101C);
     CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 5, 6, &D_t_arg6_101C);
     if (CALL(pad_isConnected)(*(int*)((char*)&D_t_target_101C + 0xC4)) == 0) {
-        *(int*)((char*)(int *)TITLEDEMO(a0)->menu + 0x128) = 0;
+        TITLEDEMO(a0)->menu->rows[4].enabled = 0; /* 0x84 + 4 * 0x28 + 4: no pad 2, no row 4 */
     }
 }
 
@@ -634,9 +634,9 @@ int *a0;
     {
       goto common;
     }
- } gl_func_00000000(tmp, ((char *) (&titproc_uso_D_00048C)) + 0x4C4); *((int *) (((char *) tmp) + 0x28)) = (int) (&import_00073B18);
+ } gl_func_00000000(tmp, ((char *) (&titproc_uso_D_00048C)) + 0x4C4); NODE(tmp)->vptr = (char *)&import_00073B18;
   common:
-  *((int *) (((char *) a0) + 0x28)) = (int) (&titproc_uso_D_000194);
+  NODE(a0)->vptr = (char *)&titproc_uso_D_000194;
 
   *((int **) (((char *) a0) + 0xC)) = (int *) (((char *) (&titproc_uso_D_00048C)) + 0x4CC);
   KEYMSG(a0)->alpha = 0;
@@ -839,7 +839,7 @@ void *MainLogo_ctor(void *self) {
         if (sub == 0) goto skip;
     }
     XCALL(titproc_uso_func_04C678, Node_ctor)(sub, (char*)&titproc_uso_D_00048C + 0x4D8);
-    *(int*)((char*)sub + 0x28) = (int)&import_00073B18;
+    NODE(sub)->vptr = (char *)&import_00073B18;
 skip:
     NODE(self)->vptr = (char *)&titproc_uso_D_0001FC;
     NODE(self)->name = (const char *)((char*)&titproc_uso_D_00048C + 0x4E0);
@@ -1008,9 +1008,9 @@ void *LangMenu_ctor(void *self) {
       goto common;
     }
   }
-  XCALL(titproc_uso_func_04C678, Node_ctor)(sub, base + 0x4EC); *((int *) (((char *) sub) + 0x28)) = (int) (&import_00073B18);
+  XCALL(titproc_uso_func_04C678, Node_ctor)(sub, base + 0x4EC); NODE(sub)->vptr = (char *)&import_00073B18;
   common:
-  *((int *) (((char *) self) + 0x28)) = (int) (&titproc_uso_D_000264);
+  NODE(self)->vptr = (char *)&titproc_uso_D_000264;
   *((int *) (((char *) self) + 0x0C)) = (int) (base + 0x4F4);
   XCALL(titproc_uso_func_00F4CC, Process_stop)(self);
   *((int *) (((char *) self) + 0x3C)) = 0;
@@ -1167,7 +1167,7 @@ void *tit_WhiteFader_ctor(void *self) {
     {
       goto common;
     }
- } XCALL(titproc_uso_func_04C678, Node_ctor)(sub, base + 0x500); *((int *) (((char *) sub) + 0x28)) = (int) (&import_00073B18); common: *((int *) (((char *) self) + 0x28)) = (int) (&titproc_uso_D_0002CC);
+ } XCALL(titproc_uso_func_04C678, Node_ctor)(sub, base + 0x500); NODE(sub)->vptr = (char *)&import_00073B18; common: NODE(self)->vptr = (char *)&titproc_uso_D_0002CC;
   *((int *) (((char *) self) + 0x0C)) = (int) (base + 0x508);
   WFADER(self)->alpha = 0;
   WFADER(self)->colour[0] = 1.0f;
@@ -1258,14 +1258,14 @@ extern char titproc_uso_D_000334;
         fourth = (int *)XCALL(titproc_uso_func_055750, mem_new)(0x2C);
         if (fourth == 0) goto after_fourth;
     }
-    XCALL(titproc_uso_func_04C678, Node_ctor)(fourth, (char *)&titproc_uso_D_00048C + 0x514); fourth[0x28 / 4] = (int)&import_00073B18;
+    XCALL(titproc_uso_func_04C678, Node_ctor)(fourth, (char *)&titproc_uso_D_00048C + 0x514); NODE(fourth)->vptr = (char *)&import_00073B18;
 after_fourth:
-    third[0x28 / 4] = (int)&import_00073B80;
+    NODE(third)->vptr = (char *)&import_00073B80;
 after_third:
-    node[0x28 / 4] = (int)&import_000745F8;
+    NODE(node)->vptr = (char *)&import_000745F8;
     import_000AE700((char *)node + 0x50);
 after_node:
-    arg0[0x28 / 4] = (int)&titproc_uso_D_000334;
+    NODE(arg0)->vptr = (char *)&titproc_uso_D_000334;
     arg0[0x568 / 4] = 0;
     import_000B0DBC(arg0, arg1, (char *)&titproc_uso_D_00048C + 0x51C, arg2);
     arg0[0x528 / 4] = arg3;

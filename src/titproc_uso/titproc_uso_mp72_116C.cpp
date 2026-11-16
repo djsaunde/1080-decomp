@@ -24,12 +24,12 @@ typedef struct TitleDemoProcess {
     /* 0x3C */ int timer;
     /* 0x40 */ int state;
     /* 0x44 */ char unk44[0x50 - 0x44];
-    /* 0x50 */ int dataMgr;
-    /* 0x54 */ int keyMessage;
-    /* 0x58 */ int mainLogo;
-    /* 0x5C */ int menu;
-    /* 0x60 */ int langMenu;
-    /* 0x64 */ int whiteFader;
+    /* 0x50 */ struct DataManager *dataMgr;
+    /* 0x54 */ struct KeyMessage *keyMessage;
+    /* 0x58 */ struct MainLogo *mainLogo;
+    /* 0x5C */ struct GuiMenu *menu;
+    /* 0x60 */ Node *langMenu;
+    /* 0x64 */ struct WhiteFader *whiteFader;
     /* 0x68 */ int keyDelay;
     /* 0x6C */ int unk6C;
     /* 0x70 */ int unk70;
@@ -45,6 +45,11 @@ typedef struct GuiMenu { char head[0x7C]; int cursor; int locked; GuiRow rows[16
 typedef struct RaceEntry { char pad00[0x34]; int finished; } RaceEntry;
 typedef struct DataManager { char pad00[0x44]; RaceEntry *entries; } DataManager;
 #define DATAMGR(p) ((DataManager *)(p))
+/* import_00263D30 (game_libs 0x80263D30): the shared 0x18-byte gui sprite table the title overlays draw from
+ * (KeyMessage_display +0x0 / +0x18, MainLogo_display +0x60 / +0x78 / +0x90), then a word at +0xA8 that this
+ * function sets to the TitleDemoProcess just before it runs the picked row's callback (the menu callbacks'
+ * owner process). */
+typedef struct GuiSpriteTable { char sprites[7][0x18]; char *menuOwner; } GuiSpriteTable;
 
 extern "C" {
 extern int gl_func_00000000(...);
@@ -222,7 +227,7 @@ fire:
                 if (1) {}
                 if (1) {}
                 if (GUIMENU(v1)->rows[GUIMENU(v1)->cursor].arg != 0) {
-                    *(char **)((char *)&import_00263D30 + 0xA8) = s0;
+                    ((GuiSpriteTable *)&import_00263D30)->menuOwner = s0;
                     *(int *)((char *)&import_00020098 + 0x84) = GUIMENU(TITLEDEMO(s0)->menu)->cursor;
                     v1 = (char *)TITLEDEMO(s0)->menu;
                     if (1) {}
