@@ -219,6 +219,8 @@ typedef char TimRace_labels_check[(int)&((TimRace *)0)->labels[2] == 0x6E4 ? 1 :
  * The race-progress / HUD object: per-rider entries, the time limit, and the
  * HUD gadgets (hud_add<X>Gadget, include/gdl/hud.h: Hud is this type). Each mode
  * derives a DataManager from it (TimDataManager etc., 0xE0). */
+struct RaceGate; /* include/game/course.h (only pointers here) */
+
 typedef struct RaceEntry {
     /* 0x00 */ s32 rider;               /* the rider Node (key of RaceTracker_findEntry) */
     /* 0x04 */ s32 flags;               /* bit 0: active */
@@ -238,10 +240,10 @@ typedef struct RaceEntry {
     /* 0x34 */ s32 finished;            /* frames at 100 % */
     /* 0x38 */ s32 rank[3];             /* record ranks (3 = none), hud_loadRecords */
     /* 0x44 */ char unk44[8];
-    /* 0x4C */ s32 gate;                /* next gate object (+0x64 f32 position, +0x84 next) */
+    /* 0x4C */ struct RaceGate *gate;   /* next "chk" gate (include/game/course.h: +0x64 z, +0x84 next) */
     /* 0x50 */ s32 unk50;
-    /* 0x54 */ s32 gateA;               /* the two candidate gates after a fork */
-    /* 0x58 */ s32 gateB;
+    /* 0x54 */ struct RaceGate *gateA;  /* the two candidate gates after a fork ("gtl" / "gtr", ordered by */
+    /* 0x58 */ struct RaceGate *gateB;  /* z distance; RaceTracker_passGates promotes gateB / the next gate) */
     /* 0x5C */ s32 unk5C;
 } RaceEntry;
 

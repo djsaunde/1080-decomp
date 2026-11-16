@@ -2085,14 +2085,15 @@ void *RaceTracker_ctor(RaceTracker *arg0) {
         arg0->numEntries = 0;
         arg0->entries = (RaceEntry *)CALL(mem_new)(0x300);
         for (v1 = 0; v1 != 0x300; v1 += 0x180) {
-            *(int *)((char *)arg0->entries + v1) = 0;
-            *(int *)((char *)arg0->entries + v1 + 4) = 0;
-            *(int *)((char *)arg0->entries + v1 + 0x60) = 0;
-            *(int *)((char *)arg0->entries + v1 + 0x64) = 0;
-            *(int *)((char *)arg0->entries + v1 + 0xC0) = 0;
-            *(int *)((char *)arg0->entries + v1 + 0xC4) = 0;
-            *(int *)((char *)arg0->entries + v1 + 0x120) = 0;
-            *(int *)((char *)arg0->entries + v1 + 0x124) = 0;
+            /* four entries per pass: rider = 0, flags = 0 */
+            RACE_ENTRY_AT(arg0, v1)[0].rider = 0;
+            RACE_ENTRY_AT(arg0, v1)[0].flags = 0;
+            RACE_ENTRY_AT(arg0, v1)[1].rider = 0;
+            RACE_ENTRY_AT(arg0, v1)[1].flags = 0;
+            RACE_ENTRY_AT(arg0, v1)[2].rider = 0;
+            RACE_ENTRY_AT(arg0, v1)[2].flags = 0;
+            RACE_ENTRY_AT(arg0, v1)[3].rider = 0;
+            RACE_ENTRY_AT(arg0, v1)[3].flags = 0;
         }
         CALL(RaceTracker_reset)(arg0);
         CALL(game_forEachPlayer_000020D8)(*(int *)&GAMEFLOW(&gInputMgr)->game, arg0);
@@ -2671,53 +2672,56 @@ void RaceTracker_onCheckpoint(RaceTracker *a0, int *a1) {
 }
 
 extern int gl_func_00000000();
-void RaceTracker_passGates(int *arg0) {
-    int *e;
-    int *mgr = (int *)arg0[0x44 / 4];
-    int *cur = (int *)mgr[0x54 / 4];
-    int *tmp;
-    int *alt;
+/* The gate's +0x5C (compared with the entry's posX) and +0xC8 (bit 0 flips the
+ * comparison) are read raw: RaceGate (include/game/course.h, checkpoint.uso) does
+ * not name them. */
+void RaceTracker_passGates(RaceTracker *arg0) {
+    RaceTracker *e;
+    RaceEntry *mgr = arg0->entries;
+    RaceGate *cur = mgr->gateA;
+    RaceGate *tmp;
+    RaceGate *alt;
     float f0;
     e = arg0;
     arg0 = 0;
     if (cur == 0) return;
-    f0 = *(float *)((char *)mgr + 0xC);
-    if (!(*(float *)((char *)cur + 0x64) <= f0)) return;
+    f0 = mgr->progress;
+    if (!(cur->z <= f0)) return;
     {
-        alt = (int *)cur[0x84 / 4];
+        alt = cur->next;
         tmp = cur;
         if (alt == 0) {
-            cur = (int *)mgr[0x58 / 4];
+            cur = mgr->gateB;
             if (cur == 0) {
-                mgr[0x54 / 4] = 0;
+                mgr->gateA = 0;
             } else {
-                mgr[0x54 / 4] = (int)cur;
-                ((int *)e[0x44 / 4])[0x58 / 4] = 0;
+                mgr->gateA = cur;
+                e->entries->gateB = 0;
             }
         } else {
-            cur = (int *)mgr[0x58 / 4];
-            if ((*(float *)((char *)alt + 0x64) - f0) < (*(float *)((char *)cur + 0x64) - f0)) {
-                mgr[0x54 / 4] = (int)alt;
+            cur = mgr->gateB;
+            if ((alt->z - f0) < (cur->z - f0)) {
+                mgr->gateA = alt;
             } else {
-                mgr[0x54 / 4] = (int)cur;
-                ((int *)e[0x44 / 4])[0x58 / 4] = (int)alt;
+                mgr->gateA = cur;
+                e->entries->gateB = alt;
             }
         }
     }
     if (tmp) {}
-    if (tmp[0xC8 / 4] & 1) {
-        if (*(float *)((char *)e[0x44 / 4] + 8) <= *(float *)((char *)tmp + 0x5C)) {
-            CALL(RaceTracker_onGateCleared)((int *)((int)e | (int)arg0), tmp, e);
+    if (*(int *)((char *)tmp + 0xC8) & 1) {
+        if (e->entries->posX <= *(float *)((char *)tmp + 0x5C)) {
+            CALL(RaceTracker_onGateCleared)((RaceTracker *)((int)e | (int)arg0), tmp, e);
             return;
         }
-        CALL(RaceTracker_onGateMissed)((int *)((int)e | (int)arg0), tmp, e);
+        CALL(RaceTracker_onGateMissed)((RaceTracker *)((int)e | (int)arg0), tmp, e);
         return;
     }
-    if (*(float *)((char *)tmp + 0x5C) <= *(float *)((char *)e[0x44 / 4] + 8)) {
-        CALL(RaceTracker_onGateCleared)((int *)((int)e | (int)arg0), tmp, e);
+    if (*(float *)((char *)tmp + 0x5C) <= e->entries->posX) {
+        CALL(RaceTracker_onGateCleared)((RaceTracker *)((int)e | (int)arg0), tmp, e);
         return;
     }
-    CALL(RaceTracker_onGateMissed)((int *)((int)e | (int)arg0), tmp, e);
+    CALL(RaceTracker_onGateMissed)((RaceTracker *)((int)e | (int)arg0), tmp, e);
 }
 
 /* === EXACT MATCH 76/76 (in-tree, clean rebuild x2, 2026-07-03 agent-e) ===
