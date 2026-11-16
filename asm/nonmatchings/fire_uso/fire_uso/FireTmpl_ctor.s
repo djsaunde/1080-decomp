@@ -1,6 +1,6 @@
-nonmatching fire_uso_func_00000000, 0x148
+nonmatching FireTmpl_ctor, 0x148
 
-glabel fire_uso_func_00000000
+glabel FireTmpl_ctor
     /* 7F621A 00000000 27BDFFD8 */  .word 0x27BDFFD8
     /* 7F621E 00000004 AFBF0014 */  .word 0xAFBF0014
     /* 7F6222 00000008 AFA5002C */  .word 0xAFA5002C
@@ -83,4 +83,4 @@ glabel fire_uso_func_00000000
     /* 7F6356 0000013C 00E01025 */  .word 0x00E01025
     /* 7F635A 00000140 03E00008 */  .word 0x03E00008
     /* 7F635E 00000144 00000000 */  .word 0x00000000
-endlabel fire_uso_func_00000000
+endlabel FireTmpl_ctor

@@ -12,9 +12,9 @@ extern char D_00000000;
  * checkpoint): bootup Bss+0x3C740 = the gdl file system object, Bss+0x3C768 =
  * the hostio object. */
 
-/* checkpoint_uso_func_00000000: write an int to the gdl file (cross-USO
+/* checkpoint_gdlWriteInt: write an int to the gdl file (cross-USO
  * template, as game_libs fs_gdlWriteInt_0003D000). */
-void checkpoint_uso_func_00000000(int *a0) {
+void checkpoint_gdlWriteInt(int *a0) {
     int pad, scratch;
     scratch = *a0;
     CALL(fs_gdlWriteFile)(&D_00000000, &scratch, 4);
@@ -82,7 +82,7 @@ void CheckpointCyl_loadData(char *self) {
 
 /* CheckpointCyl_saveData: cylinder checkpoint saveData. */
 void CheckpointCyl_saveData(char *self) {
-    checkpoint_uso_func_00000000((int *)(self + 0x88));
+    checkpoint_gdlWriteInt((int *)(self + 0x88));
     CALL(SNode_saveData)(self);
 }
 

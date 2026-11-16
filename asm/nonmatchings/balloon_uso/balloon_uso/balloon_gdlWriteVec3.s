@@ -1,6 +1,6 @@
-nonmatching balloon_uso_func_00000000, 0x60
+nonmatching balloon_gdlWriteVec3, 0x60
 
-glabel balloon_uso_func_00000000
+glabel balloon_gdlWriteVec3
     /* 7E2EDE 00000000 27BDFFB8 */  .word 0x27BDFFB8
     /* 7E2EE2 00000004 AFBF0014 */  .word 0xAFBF0014
     /* 7E2EE6 00000008 8C980000 */  .word 0x8C980000
@@ -25,4 +25,4 @@ glabel balloon_uso_func_00000000
     /* 7E2F32 00000054 27BD0048 */  .word 0x27BD0048
     /* 7E2F36 00000058 03E00008 */  .word 0x03E00008
     /* 7E2F3A 0000005C 00000000 */  .word 0x00000000
-endlabel balloon_uso_func_00000000
+endlabel balloon_gdlWriteVec3

@@ -16,9 +16,9 @@ typedef struct { int a, b, c; } BalloonTri3i;
  * the hostio object, Bss+0x3C168 = GfxLib. Object fields: 0x88 Vec3 bob
  * amplitude (hostio "x/y/z" +-500), 0x94 float bob speed, 0x98 float phase. */
 
-/* balloon_uso_func_00000000: write a Vec3 to the gdl file (the cross-USO
+/* balloon_gdlWriteVec3: write a Vec3 to the gdl file (the cross-USO
  * template, same body as game_libs fs_gdlWriteVec3_00037D48). */
-void balloon_uso_func_00000000(int *a0) {
+void balloon_gdlWriteVec3(int *a0) {
     volatile int padA[1];
     float fbuf[3];
     volatile int padB[2];
@@ -83,7 +83,7 @@ void Balloon_display(char *self) {
 
 /* Balloon_saveData: saveData: bob amplitude, bob speed, then the SNode part. */
 void Balloon_saveData(char *self) {
-    balloon_uso_func_00000000((int *)(self + 0x88));
+    balloon_gdlWriteVec3((int *)(self + 0x88));
     balloon_gdlWriteFloat_00000060((float *)(self + 0x94));
     CALL(SNode_saveData)(self);
 }

@@ -18,7 +18,7 @@ extern int gPolyGeomMode_3EEC8_tmpl[2];
  * placeholder; the target is in the TextReloc. Imports from bootup.uso:
  * Bss+0x3C168 = GfxLib, Bss+0x3C768 = the hostio object. */
 
-/* fire_uso_func_00000000: FireTmpl ctor (0x68 bytes, cfront this==0 alloc). The
+/* FireTmpl_ctor: FireTmpl ctor (0x68 bytes, cfront this==0 alloc). The
  * 0x48-byte SNodeItemType base is constructed inline (its own this==0 alloc,
  * ItemType_ctor(base, tag, 0) with the 4-byte tag by value, then the
  * SNodeItemType vptr, bootup Data+0x1EFC0); then the FireTmpl vptr (Data+0x228C),
@@ -32,7 +32,7 @@ extern int gPolyGeomMode_3EEC8_tmpl[2];
 typedef struct { s32 w; } FireTag;
 extern char SNodeItemType_vtbl_fire;
 #define FIRE_SETCOLOUR(c, r, g, b, a) { d = 255.0f; (c)[0] = (r) / d; (c)[1] = (g) / d; (c)[2] = (b) / d; (c)[3] = (a) / d; }
-char *fire_uso_func_00000000(char *self, FireTag tag) {
+char *FireTmpl_ctor(char *self, FireTag tag) {
     float d;
     if (self != 0 || (self = (char *)CALL(mem_new)(0x68)) != 0) {
         ItemType *base = (ItemType *)self;
