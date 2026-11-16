@@ -20,6 +20,7 @@
 #include "gdl/sysapi.h"
 #include "gdl/nodelist.h"
 #include "gdl/pad.h"
+#include "gdl/gdlfile.h"
 #include "libultra/os_thread.h"
 #include "game/camera.h"
 #include "uso_call.h"
@@ -1094,35 +1095,35 @@ int sys_getResetType(int a0) {
  * fs_gdlSeekFile -- unsigned selector, nested-!= goto chain for the 1, 0, 2
  * compare order (docs/IDO_CODEGEN.md #nested-ne-goto-chain-35648). */
 extern int gl_ref_0003B8E8; /* baked counter word 0x3B8E8 (pinned) */
-int fs_gdlOpenFile(char *o, int a1) {
+int fs_gdlOpenFile(GdlFile *o, int a1) {
     int r;
-    unsigned k = *(int *)(o + 4);
-    if (k != 1) {
-        if (k != 0) {
-            if (k != 2) {
+    unsigned k = o->kind;
+    if (k != GDLFILE_LOCAL) {
+        if (k != GDLFILE_REMOTE) {
+            if (k != GDLFILE_SRAM) {
             } else goto c2;
         } else goto c0;
     } else goto c1;
     goto end;
 c1:
     r = SYSAPI->fileOpen(a1);
-    *(int *)(o + 0x20) = r;
+    o->handle = r;
     if (r == 0) {
         CALL(sys_fatal)(GL_DATA_STR(0x1E578, "OpenFile Error '%s': %d"), a1, CALL(fs_func_0003593C)(o));
     }
     goto end;
 c0:
     r = CALL(hostio_openFile)(&D_00000000, a1);
-    *(int *)(o + 0x20) = r;
+    o->handle = r;
     if (r == 0) {
         CALL(dbg_printf)(GL_DATA_STR(0x1E590, "Remote OpenFile fail '%s'\n"), a1);
     }
     goto end;
 c2:
     gl_ref_0003B8E8 = 0x08000000;
-    *(int *)(o + 0x20) = 1;
+    o->handle = 1;
 end:
-    return *(int *)(o + 0x20);
+    return o->handle;
 }
 
 /* fs_gdlReadFile: EXACT (0x160 / 88 words). Kind dispatch on o->0x04, the
@@ -1158,15 +1159,15 @@ typedef struct {
     int a2;
     int rest[6];
 } Msg35440;
-int fs_gdlReadFile(char *o, int a1, int a2) {
+int fs_gdlReadFile(GdlFile *o, int a1, int a2) {
     int r = 0;
-    int k = *(int *)(o + 4);
-    if (k == 1) goto L1;
-    if (k == 0) goto L0;
-    if (k != 2) goto end;
+    int k = o->kind;
+    if (k == GDLFILE_LOCAL) goto L1;
+    if (k == GDLFILE_REMOTE) goto L0;
+    if (k != GDLFILE_SRAM) goto end;
     goto L2;
 L1:
-    r = SYSAPI->fileRead(*(int *)(o + 0x20), a1, a2);
+    r = SYSAPI->fileRead(o->handle, a1, a2);
     goto end;
 L0:
     r = CALL(hostio_readFile)(&D_00000000, a1, a2);
@@ -1240,13 +1241,13 @@ end:
 /* EXACT 2026-10-17 agent-c run 106 (87.9 -> 100): vtable slot 0x60 called
  * inline, its result passed straight to the second call with a2, and the
  * error string is &D + 0x1E5F0 (not the literal 0x1E5F0). */
-int fs_gdlReadFileAsync(char *o, int a1, int a2) {
+int fs_gdlReadFileAsync(GdlFile *o, int a1, int a2) {
     int r; /* unused: homes the sp+28 word so v lands at sp+24 */
     int v;
-    if (*(int *)(o + 4) != 1) {
+    if (o->kind != GDLFILE_LOCAL) {
         CALL(sys_fatal)(GL_DATA_STR(0x1E5F0, "read async local only"));
     }
-    v = CALL(dma_readAsync)(a1, SYSAPI->fileRomAddr(*(int *)(o + 0x20)), a2);
+    v = CALL(dma_readAsync)(a1, SYSAPI->fileRomAddr(o->handle), a2);
     CALL(fs_gdlSeekFile)(o, 1, a2);
     return v;
 }
@@ -1314,18 +1315,18 @@ void fs_gdlWaitFile(int a0, int a1) {
  * The counter word 0x3B8E8 is accessed through per-site pins (load and two
  * stores and the final read each lui separately). */
 extern int gl_ref_0003B8E8, gl_ref_0003B8E8_35648_ld, gl_ref_0003B8E8_35648_st, gl_ref_0003B8E8_35648_rd;
-int fs_gdlSeekFile(char *o, int a1, int a2) {
+int fs_gdlSeekFile(GdlFile *o, int a1, int a2) {
     int r;
-    unsigned k = *(int *)(o + 4);
-    if (k != 1) {
-        if (k != 0) {
-            if (k != 2) {
+    unsigned k = o->kind;
+    if (k != GDLFILE_LOCAL) {
+        if (k != GDLFILE_REMOTE) {
+            if (k != GDLFILE_SRAM) {
             } else goto c2;
         } else goto c0;
     } else goto c1;
     goto end;
 c1:
-    r = SYSAPI->fileSeek(*(int *)(o + 0x20));
+    r = SYSAPI->fileSeek(o->handle);
     goto end;
 c0:
     r = CALL(hostio_seekFile)(&D_00000000);
@@ -1411,11 +1412,11 @@ end:
  * returns the callback directly, kind 2 returns a2. The queue send passes 1. */
 extern int D_00000000;
 extern char sStr_Cant_write_to_Local_1E608, sFmt_SRAM_write_to_1E61C, sStr_bad_SRAM_DMA_align_1E638;
-int fs_gdlWriteFile(char *o, int a1, int a2) {
-    int k = *(int *)(o + 4);
-    if (k == 1) goto L1;
-    if (k == 0) goto L0;
-    if (k != 2) goto end;
+int fs_gdlWriteFile(GdlFile *o, int a1, int a2) {
+    int k = o->kind;
+    if (k == GDLFILE_LOCAL) goto L1;
+    if (k == GDLFILE_REMOTE) goto L0;
+    if (k != GDLFILE_SRAM) goto end;
     goto L2;
 L1:
     CALL(sys_fatal)(&sStr_Cant_write_to_Local_1E608);
@@ -1448,8 +1449,8 @@ end:
     return 0;
 }
 
-void fs_setHandle(int *a0, int a1) {
-    a0[8] = a1;
+void fs_setHandle(GdlFile *a0, int a1) {
+    a0->handle = a1;
 }
 
 /* fs_gdlFileInfo: 24-insn fn-ptr dispatch with conditional assert.
@@ -1516,8 +1517,8 @@ int fs_gdlFileInfo(int a0, int a1, int a2) {
 }
 
 extern int gl_func_00000000();
-int fs_gdlFileSize(int *a0) {
-    if (a0[1] == 0) {
+int fs_gdlFileSize(GdlFile *a0) {
+    if (a0->kind == GDLFILE_REMOTE) {
         return CALL(hostio_fileSize)(gl_func_00000000);
     }
     CALL(sys_fatal)((GL_DATA_STR(0x1E660, "FileSize on local")));
@@ -1531,13 +1532,13 @@ int fs_gdlFileSize(int *a0) {
  * `if (k == 1) goto L1; if (k != 0) return; goto L0;` with the two case blocks
  * laid out L1, L0. Both calls pass a0 as their 2nd arg (the hoisted
  * `or a1,a0,zero`); the vtable call is written as one expression (t6/t9). */
-void fs_gdlCloseFile(char *a0) {
-    int k = *(int *)(a0 + 4);
-    if (k == 1) goto L1;
-    if (k != 0) return;
+void fs_gdlCloseFile(GdlFile *a0) {
+    int k = a0->kind;
+    if (k == GDLFILE_LOCAL) goto L1;
+    if (k != GDLFILE_REMOTE) return;
     goto L0;
 L1:
-    SYSAPI->fileClose(*(int *)(a0 + 0x20), a0);
+    SYSAPI->fileClose(a0->handle, a0);
     return;
 L0:
     CALL(hostio_closeFile)(&D_00000000, a0);
@@ -1597,16 +1598,16 @@ L0:
 /* EXACT 2026-10-17 agent-c run 106: the type word goes through a named
  * local assigned inside the condition (lw v0 + bnel with v0 = 0 in the
  * delay); the vtable call is spelled inline so IDO calls through t9. */
-int fs_func_0003593C(char *o) {
+int fs_func_0003593C(GdlFile *o) {
     int r;
-    if ((r = *(int *)(o + 4)) == 1) {
-        return SYSAPI->fileError(*(int *)(o + 0x20));
+    if ((r = o->kind) == GDLFILE_LOCAL) {
+        return SYSAPI->fileError(o->handle);
     }
     return 0;
 }
 
-int fs_getHandle(int *a0) {
-    return a0[8];
+int fs_getHandle(GdlFile *a0) {
+    return a0->handle;
 }
 
 /* Returns 0 (sibling of matched _0003D538). */
