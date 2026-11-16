@@ -26,6 +26,15 @@ typedef struct GdlPmf {
     } u;
 } GdlPmf;
 
+/* GdlFunctor (vFP1): a one-argument function object. Its base vtable Data+0x1FC24 has the "vFP1" stub
+ * vFP1_call (fatal: pure virtual) in slot 0; the derived vtable Data+0x1FC3C has vFP1_invokeFn_0004D084
+ * there, which calls fn(arg, this) (docs/1080_ENGINE_CORE.md). */
+typedef struct GdlFunctor {
+    /* 0x0 */ void *vptr;
+    /* 0x4 */ int (*fn)();
+    /* 0x8 */ int arg;
+} GdlFunctor;
+
 typedef struct GdlPmfCallback {
     /* 0x00 */ void *vptr;
     /* 0x04 */ char *obj;               /* the target object (this before pmf.delta) */

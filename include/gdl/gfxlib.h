@@ -50,7 +50,8 @@ typedef struct GfxLib {
     /* 0x13C */ int renderFlags;        /* GfxLib_reset: &= ~0x10000 / ~2 / ~0x1000, |= 1, 0x4000,
                                          * 0x8000, 0x20000, 0x80 */
     /* 0x140 */ int unk140[2];          /* 2-word copy source of Shadow_ctor_0004B0A8 */
-    /* 0x148 */ void *frameStartCbs[5];  /* gfx_start calls vtable (+0x5C) slot 0 of each, arg 0 */
+    /* 0x148 */ void *frameStartCbs[5];  /* BaseMats (bootup ScreenThumbMat): gfx_start calls
+                                         * slot 0 of each one's vtable (BaseMat.vptr, +0x5C), arg 0 */
     /* 0x15C */ int nFrameStartCbs;
     /* 0x160 */ int unk160[10];         /* a table SnowBoarder_ctor fills (agent-h) */
     /* 0x188 */ int viewStage;          /* 0 projection, 1 modelview (gfx_setViewStage_00047F68) */

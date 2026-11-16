@@ -21,8 +21,9 @@ typedef struct ItemType {
     /* 0x38 */ s32 searchDown;     /* 0 at ctor; SNodeItemType_vslot15 (nearest item by key +0x64):
                                     * set = the largest key below ref, clear = the smallest above */
     /* 0x3C */ s32 unk3C;          /* 0 at ctor; ItemMgr_removeItems clears it with the item list */
-    /* 0x40 */ s32 unk40;          /* ctor arg 2; SNodeItemType_newItem attaches this Node under each
-                                    * new SNode item (game_uso.c reads it too, so the name stays) */
+    /* 0x40 */ s32 unk40;          /* ctor arg 2; SNodeItemType_newItem and MNode_ctor (the MNode item
+                                    * type's newItem) attach this Node under each new item
+                                    * (game_uso.c reads it too, so the name stays) */
     /* 0x44 */ s32 typeId;         /* -1 at ctor; ItemMgr_addType arg 2: the type's class bit
                                     * (item_registerTemplates passes 4, ...); ItemMgr_Load loads
                                     * a type only when it shares a bit with ItemMgr.classMask */

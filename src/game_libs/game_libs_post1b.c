@@ -1284,11 +1284,11 @@ void *DNode_ctor(void *arg0, void *arg1) {
         }
         if ((base = (char *)&DNODE(arg0)->attached) != 0 ||
             (base = (char *)CALL(mem_new)(4)) != 0) {
-            FW64(base, 0) = 0; /* RAW: unknown-object: Cfront inline member ctor; base may be a fresh new(8), 64-bit zero store */
+            ((GdlList *)base)->head = 0;
         }
         if ((base = (char *)&DNODE(arg0)->unk3A0) != 0 ||
             (base = (char *)CALL(mem_new)(4)) != 0) {
-            FW64(base, 0) = 0; /* RAW: unknown-object: Cfront inline member ctor; base may be a fresh new(8), 64-bit zero store */
+            ((GdlList *)base)->head = 0;
         }
         CALL(DNode_init_00065060)(arg0);
     }
@@ -1883,7 +1883,7 @@ void DNode_handleMsg(char *self, int *event) {
     tag = event[0];
     do {
         if (tag == 6) {
-            *(Vec3 *)position = *(Vec3 *)((char *)event[1] + 0xEC); /* RAW: unknown-object: message 6 payload is the sender node; its +0xEC Vec3 (sender class not pinned) */
+            *(Vec3 *)position = *(Vec3 *)((char *)event[1] + 0xEC); /* RAW: unknown-object: message 6 payload +0xEC Vec3 (a translation); checked: no NodeMsg with tag 6 is built in any C/C++ source and handleMsg is reached only through vtable slot 4, and +0xEC is not a Vec3 start in QNode / DNode (cvqs.scale[1]), so the payload class is unproven */
             args[0] = position[0]; args[1] = position[1]; args[2] = position[2];
             gl_add_position_65C54(self, args[0], args[1], args[2]);
             DNODE(self)->angVel[0] = 0.0f;
@@ -4603,8 +4603,10 @@ void skin_cmdSkinAnim(NodeListState *self) {
 
     entry = (short *)(saved[0x90 / 4] + a1 * 8);
     h = entry[0];
-    if (*(int *)(entry + 2) != 0) { /* RAW: data-table: SkinMgr anim table, 8-byte records {s16 handle, pad, anim} indexed as short * */
-        CALL(SkinMgr_addAnim)(saved, CALL(SkinAnim_ctor)(0, h, *(int *)(entry + 2), self->parent->mnode)); /* RAW: data-table: SkinMgr anim table, 8-byte records {s16 handle, pad, anim} indexed as short * */
+    if (*(int *)&((SkinBone *)entry)->weights != 0) { /* entry = &SkinMgr.boneTable[a1] (gdl/skin.h SkinBone), read as short *;
+                                                           * the *(int *)& spelling keeps the bytes (a pointer-typed
+                                                           * read recolours the t registers) */
+        CALL(SkinMgr_addAnim)(saved, CALL(SkinAnim_ctor)(0, h, *(int *)&((SkinBone *)entry)->weights, self->parent->mnode));
     }
 }
 

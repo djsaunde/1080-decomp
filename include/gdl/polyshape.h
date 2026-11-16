@@ -59,7 +59,9 @@ typedef struct BasePolyShape {
     /* 0x98 */ s32 unk98;          /* -1 after reset */
     /* 0x9C */ f32 unk9C;          /* 1.0f after reset */
     /* 0xA0 */ struct CollGrid *collGrid; /* parse cmd 35: the XZ cell grid (gdl/coll.h) that
-                                  * CollShape_query looks the point up in; 0 = linear scan */
+                                  * CollShape_query looks the point up in; 0 = linear scan.
+                                  * The source name is pGrid: bootup MapProp_ctor asserts
+                                  * "shp->pGrid != NULL" (mapprop.cpp:0x3E4) on its shape +0xA0 */
     /* 0xA4 */ s32 unkA4;          /* -1 after reset */
     /* 0xA8 */ s32 skinInvBone;     /* f32 (*)[4]: SkinMgr_init stores the inverse main-bone
                                      * matrix (SkinMgr.invBone); 0 = not skinned. The display
@@ -87,6 +89,32 @@ typedef struct GdlVtx {
 } GdlVtx;
 
 #define GDLVTX(p) ((GdlVtx *)(p))
+
+/* Strip (0x59C): the Cfront class `Strip` whose `void Strip::add(Vtx *, s16 *, int *, u16 *)` is
+ * PolyShape_addFace_00048510 (its exact donor src/game_libs/game_libs_ncc_48510.cpp declares the
+ * same layout). PolyShape_shade_00049DBC and PolyShape_vslot12_0004A308 pass the same object (their
+ * arg2) to Strip::add and to gfx_findFaceVtxs_0004880C, which loops gfx_findVtx_00048720 over the
+ * three face vertices: findVtx searches Vtx i of mesh->vtx.cur for i in [vtxBase, vtxBase + nv)
+ * (word 0 is the DLContext, a0[1] / a0[3] the range). mode == 2 compares the colour / normal bytes
+ * on every vertex, otherwise only on the first. A class with virtuals of its own puts the vptr
+ * after its data (Strip::add calls flush() through vtbl + 8). */
+typedef struct Strip {
+    /* 0x000 */ struct DLContext *mesh; /* the vertex pool: vtx.cur->base holds the Vtx (GdlVtx) */
+    /* 0x004 */ s32 nv;                 /* vertices in the strip */
+    /* 0x008 */ s32 nt;                 /* triangles in the strip (flush at 200) */
+    /* 0x00C */ s32 vtxBase;            /* first pool index gfx_findVtx_00048720 searches */
+    /* 0x010 */ s32 unk10;
+    /* 0x014 */ s16 tris[200][3];       /* pool indices per triangle */
+    /* 0x4C4 */ u16 ids[(0x590 - 0x4C4) / 2]; /* the vertex ids Strip::add records */
+    /* 0x590 */ s32 maxVtx;             /* flush when nv + 1 > maxVtx - 1 */
+    /* 0x594 */ s32 mode;               /* 2: match colour / normal on all three face vertices */
+    /* 0x598 */ void *vptr;             /* Cfront vtable pointer (slot flush) */
+} Strip;
+
+#ifndef __cplusplus
+typedef char Strip_size_check[sizeof(Strip) == 0x59C ? 1 : -1];
+typedef char Strip_mode_check[(int)&((Strip *)0)->mode == 0x594 ? 1 : -1];
+#endif
 
 typedef char GdlVtx_size_check[sizeof(GdlVtx) == 0x10 ? 1 : -1];
 

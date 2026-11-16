@@ -91,10 +91,10 @@ typedef struct DNode {
     /* 0x364 */ char pad364[0x38C - 0x364];
     /* 0x38C */ s32 unk38C;         /* DNode_init 0xFFFF; SnowBoarder_ctor 1 */
     /* 0x390 */ f32 unk390[3];      /* DNode_init (1, 1, 1) */
-    /* 0x39C */ s32 attached;       /* list of attached Frictions ({data, next} cells): DNode_updateAttached
+    /* 0x39C */ s32 attached;       /* GdlList (gdl/mem.h) of attached Frictions ({data, next} cells): DNode_updateAttached
                                      * sets each one's contactPoint to its cvqs.trans plus vel and keeps
                                      * the frame delta (contactDelta) and previous value (prevContact) */
-    /* 0x3A0 */ s32 unk3A0;         /* 0 at ctor */
+    /* 0x3A0 */ s32 unk3A0;         /* a second GdlList (gdl/mem.h), head 0 at ctor (inline member ctor) */
     /* 0x3A4 */ f32 unk3A4[3];      /* SnowBoarder: startPos */
     /* 0x3B0 */ f32 axes[3][3];     /* rotation matrix of cvqs.quat (DNode_quatToMtx_00065B40);
                                      * SnowBoarder calls the rows up / side / dir */

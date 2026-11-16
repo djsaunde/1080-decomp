@@ -84,14 +84,23 @@ typedef char NodeMsg_reply_check[(int)&((NodeMsg *)0)->reply == 0x8 ? 1 : -1];
 
 /* The libgdl application object (App_main, 0x415A4, sets its name to "App").
  * Only the fields the App_* bodies touch are known. */
+/* the 0x44-byte version record (fs_readRecord_00041F90 reads "rom_version.bin" into App.version;
+ * sys_formatVersion / sys_copyName_000618D0 print it); its fields are not decoded */
+typedef struct AppVersion {
+    s32 w[17];
+} AppVersion;
+
 typedef struct App {
     /* 0x00 */ Node node;
     /* 0x2C */ s32 unk2C;
     /* 0x30 */ s32 unk30;          /* cleared by the vtable method App_restart */
+    /* 0x34 */ s32 unk34[2];
+    /* 0x3C */ AppVersion version; /* SnowBoard_InitInstance -> fs_readRecord_00041F90(this, "rom_version.bin") */
 } App;
 
 #ifndef __cplusplus
 typedef char App_unk30_check[(int)&((App *)0)->unk30 == 0x30 ? 1 : -1];
+typedef char App_version_check[(int)&((App *)0)->version == 0x3C ? 1 : -1];
 #endif
 
 #endif

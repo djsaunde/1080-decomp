@@ -108,6 +108,20 @@ typedef struct DynArrPool {
     /* 0x8 */ s32 nChunks;          /* DynArrs created */
 } DynArrPool;
 
+/* GdlList: a singly linked list of 8-byte cells {data, next}, the slots list_allocNode_000665B4
+ * takes from a DynArrPool; list_append(&list->head, data) appends, list_removeKey_00066620 unlinks
+ * by data. The head is a 4-byte Cfront class whose inline ctor zeroes it: DNode_ctor builds two in
+ * place (`this + 0x39C != 0 || (p = new(4))`, then `p->head = 0`), DNode.attached (+0x39C, walked by
+ * DNode_updateAttached as {Friction *, next} cells) and DNode.unk3A0. */
+typedef struct GdlListCell {
+    /* 0x0 */ char *data;
+    /* 0x4 */ struct GdlListCell *next;
+} GdlListCell;
+
+typedef struct GdlList {
+    /* 0x0 */ GdlListCell *head;
+} GdlList;
+
 typedef char DynArr_size_check[sizeof(DynArr) == 0xC ? 1 : -1];
 
 #define DYNARR(p) ((DynArr *)(p))

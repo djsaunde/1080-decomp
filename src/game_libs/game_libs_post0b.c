@@ -25,6 +25,7 @@
 #include "gdl/parm.h"
 #include "gdl/pmf.h"
 #include "gdl/smallnode.h"
+#include "gdl/gadget.h"
 #include "libultra/os_thread.h"
 #include "game/camera.h"
 #include "uso_call.h"
@@ -810,13 +811,16 @@ int dma_invalCache(void *a0, void *a1) {
  * `if (flags & 4) v1 |= 0x80; store; return 1;`. EXACT: unwrapped
  * 2026-10-16 -- the table base &D_00000000+0x11FA links to the ROM words
  * because D_00000000 is an absolute symbol at 0. */
-int pad_decodeButtonMap_00034CC8(int a0, char *a1) {
-    signed char *t = (signed char *)((char *)&D_00000000 + 0x11FA + *(int *)(a1 + 0x34) * 6); /* RAW: unknown-object: a1 is the caller's button-map record (+0x34 map index, +0x10 decoded mask); class not identified */
+/* a1 is the PadCtl (its only caller is pad_update(PadCtl *p)); the table is the PadDev conts[]
+ * (gSysDevBlock_3A4E8, Sym 1505; conts at +0x1200, so +0x11FA + port * 6 = conts[port - 1], port being
+ * 1-based) holding the libultra OSContPad the pad thread last read. */
+int pad_decodeButtonMap_00034CC8(int a0, PadCtl *a1) {
+    signed char *t = (signed char *)((char *)&gSysDevBlock_3A4E8 + 0x11FA + a1->port * 6);
     int v1 = 0;
     int v0;
     int flags;
-    a1[8] = t[2];
-    a1[9] = t[3];
+    a1->rawStickX = t[2];
+    a1->rawStickY = t[3];
     flags = *(unsigned short *)t;
     if (flags & 0x20) v1 = 0x800;
     if (flags & 0x10) v1 |= 0x1000;
@@ -832,7 +836,7 @@ int pad_decodeButtonMap_00034CC8(int a0, char *a1) {
     if (flags & 0x1) v1 |= 0x20;
     if (flags & 0x8) v1 |= 0x40;
     if (flags & 0x4) v1 |= 0x80;
-    *(int *)(a1 + 0x10) = v1; /* RAW: unknown-object: a1 is the caller's button-map record (+0x34 map index, +0x10 decoded mask); class not identified */
+    a1->held = v1;
     return 1;
 }
 
@@ -3672,7 +3676,7 @@ void Node_hostioLink(int *arg0) {
             v1[1] = (int)arg0;
             {
                 extern int D_3829C_1EA30[];
-                *(Pair3829C *)(v1 + 2) = *(Pair3829C *)D_3829C_1EA30; /* RAW: data-table: 8-byte hostio parm-pair template copied into the inline parm record words 2..3 */
+                ((GdlPmfCallback *)v1)->pmf = *(GdlPmf *)D_3829C_1EA30; /* the member-function constant (Data+0x1EA30) */
             }
         }
         *a2 = (int)(GL_DATA(0x1EB40));
@@ -3744,7 +3748,7 @@ void Node_hostioParms(char *arg0) {
                 *a1 = (int)(GL_DATA(0x1EB10));
             }
             v1[1] = (int)arg0;
-            *(Pair38360 *)(v1 + 2) = *(Pair38360 *)(GL_DATA(0x1EA38)); /* RAW: data-table: 8-byte hostio parm-pair template copied into the inline parm record words 2..3 */
+            ((GdlPmfCallback *)v1)->pmf = *(GdlPmf *)GL_DATA(0x1EA38); /* the "Save" member-function constant */
         }
         *a2 = (int)(GL_DATA(0x1EB40));
     }
@@ -3760,7 +3764,7 @@ void Node_hostioParms(char *arg0) {
                     *v1b = (int)(GL_DATA(0x1EB10));
                 }
                 a1[1] = (int)arg0;
-                *(Pair38360 *)(a1 + 2) = *(Pair38360 *)(GL_DATA(0x1EA40)); /* RAW: data-table: 8-byte hostio parm-pair template copied into the inline parm record words 2..3 */
+                ((GdlPmfCallback *)a1)->pmf = *(GdlPmf *)GL_DATA(0x1EA40); /* the member-function constant (Data+0x1EA40) */
             }
         }
         a2[0] = (int)(GL_DATA(0x1EB58));
@@ -4530,7 +4534,7 @@ void MNode_handleMsg(int *a0, int *a1) {
     switch (cmd) {
     case 6:
         if (a0[0x18/4] & 0x40) {
-            *(struct GL396V *) scratch = *(struct GL396V *) ((char *) a1[0x4/4] + 0xEC); /* RAW: unknown-object: message 6 payload is the sender node; its +0xEC Vec3 (sender class not pinned) */
+            *(struct GL396V *) scratch = *(struct GL396V *) ((char *) a1[0x4/4] + 0xEC); /* RAW: unknown-object: message 6 payload +0xEC Vec3 (a translation); checked: no NodeMsg with tag 6 is built in any C/C++ source and handleMsg is reached only through vtable slot 4, and +0xEC is not a Vec3 start in QNode / DNode (cvqs.scale[1]), so the payload class is unproven */
             CALL(math_mtxAddTranslation)((char*)a0 + 0x30, scratch);
             CALL(math_mtxAddTranslation)((char*)a0 + 0x70, scratch);
         }
@@ -5454,8 +5458,8 @@ void coll_offsetPointsByMtx(char *a0, f32 *m) {
     V3_3B1A8 t;
     f32 pad[3];
     f32 X, Y, Z;
-    for (i = 0; i < (*(L3B1A8 **)(a0 + 0x8C))->n; ) { /* RAW: unknown-object: a0 +0x8C is the point list; not CollObj (0x34 bytes), perhaps CollShape.unk8C (coll.h), no caller in C to prove it */
-        t = (*(L3B1A8 **)(a0 + 0x8C))->buf[i].v; /* RAW: unknown-object: a0 +0x8C is the point list; not CollObj (0x34 bytes), perhaps CollShape.unk8C (coll.h), no caller in C to prove it */
+    for (i = 0; i < (*(L3B1A8 **)(a0 + 0x8C))->n; ) { /* RAW: unknown-object: a0 +0x8C is a point list {+0x2C n, +0x30 buf of 0x28-byte records, Vec3 at +4}; checked: no TextReloc caller (uso-data-sites calls --to), no vtable entry or C/C++ caller; not CollObj (0x34), CollShape.unk8C unproven */
+        t = (*(L3B1A8 **)(a0 + 0x8C))->buf[i].v; /* RAW: unknown-object: a0 +0x8C is a point list {+0x2C n, +0x30 buf of 0x28-byte records, Vec3 at +4}; checked: no TextReloc caller (uso-data-sites calls --to), no vtable entry or C/C++ caller; not CollObj (0x34), CollShape.unk8C unproven */
         q = &p;
         q->x = t.x; q->y = t.y; q->z = t.z;
         X = m[12] + (m[8] * q->z + (m[4] * q->y + m[0] * q->x));
@@ -5465,7 +5469,7 @@ void coll_offsetPointsByMtx(char *a0, f32 *m) {
         q->x = X;
         q->z = Z;
         {
-            V3_3B1A8 *d = &(*(L3B1A8 **)(a0 + 0x8C))->buf[i].v; /* RAW: unknown-object: a0 +0x8C is the point list; not CollObj (0x34 bytes), perhaps CollShape.unk8C (coll.h), no caller in C to prove it */
+            V3_3B1A8 *d = &(*(L3B1A8 **)(a0 + 0x8C))->buf[i].v; /* RAW: unknown-object: a0 +0x8C is a point list {+0x2C n, +0x30 buf of 0x28-byte records, Vec3 at +4}; checked: no TextReloc caller (uso-data-sites calls --to), no vtable entry or C/C++ caller; not CollObj (0x34), CollShape.unk8C unproven */
             i++;
             d->x = d->x + q->x;
             d->y = d->y + q->y;
@@ -7448,7 +7452,10 @@ void *MNode_ctor(char *arg0) {
         zero[2] = 0.0f;
         CALL(math_mtxAddTranslation)(o + 0x30, zero);
     }
-    { int x = *(int *)(arg0 + 0x40); p2 = (int *)o; o = 0; CALL(MNode_addChild)(tmp = (char *)p2, x); } /* RAW: unknown-object: arg0 is the parent passed to MNode_addChild; its +0x40 class not identified */
+    /* arg0 is the ItemType: MNode_ctor is slot 10 (newItem) of the MNode item type vtable D+0x1F050
+     * (docs/1080_SYSTEM_LAYER.md), and like SNodeItemType_newItem it attaches the type's unk40 Node
+     * under the new item. */
+    { int x = ((ItemType *)arg0)->unk40; p2 = (int *)o; o = 0; CALL(MNode_addChild)(tmp = (char *)p2, x); }
     return tmp;
 }
 
@@ -9486,7 +9493,7 @@ void QNode_handleMsg(char *a0, int *a1) {
 
     switch (*a1) {
     case 6: {
-        d = *(V3_40CAC *)((char *)a1[1] + 0xEC); /* RAW: unknown-object: message 6 payload is the sender node; its +0xEC Vec3 (sender class not pinned) */
+        d = *(V3_40CAC *)((char *)a1[1] + 0xEC); /* RAW: unknown-object: message 6 payload +0xEC Vec3 (a translation); checked: no NodeMsg with tag 6 is built in any C/C++ source and handleMsg is reached only through vtable slot 4, and +0xEC is not a Vec3 start in QNode / DNode (cvqs.scale[1]), so the payload class is unproven */
         QNODE(a0)->cvqs.trans[0] = QNODE(a0)->cvqs.trans[0] + d.x;
         QNODE(a0)->cvqs.trans[1] = QNODE(a0)->cvqs.trans[1] + d.y;
         QNODE(a0)->cvqs.trans[2] = QNODE(a0)->cvqs.trans[2] + d.z;
@@ -9904,7 +9911,7 @@ void App_main(O415A4 *self) {
     WindowDefaults *t;
     float *v;
 
-    *(int *)((char *)&D_415A4_z + 0x3C160) = 0; /* RAW: data-table: Bss placeholder symbol + addend (USO reloc addend) / gConsoleNode inline member at +0x34 */
+    *(int *)((char *)&D_415A4_z + 0x3C160) = 0; /* RAW: data-table: Bss+0x3C160 (section-base site inside Sym 1761 at Bss+0x3C154, +0xC; object unnamed) through the distinct placeholder D_415A4_z + USO addend */
     CALL(sys_getRegion_00034BDC)(gSysLib_415A4_s1, &a, &b);
     if (1) {}
     CALL(Mem_init)(gMainHeap_415A4_s2, a, a + b);
@@ -9952,7 +9959,7 @@ void App_main(O415A4 *self) {
     if (p != 0) {
         CALL(pad_open)(p, 1);
     }
-    *(char **)(gConsoleNode_3EF04_415A4_g4 + 0x34) = p; /* RAW: data-table: Bss placeholder symbol + addend (USO reloc addend) / gConsoleNode inline member at +0x34 */
+    ((ConsoleMgr *)gConsoleNode_3EF04_415A4_g4)->input = (s32)p; /* gConsoleNode holds the ConsoleMgr_ctor(0) result (above); p is the pad_open'd pad state */
     p = (char *)self->vt;
     ((VT415A4 *)p)->fn6C(((VT415A4 *)p)->off68 + (char *)self); /* agent-g run 257: the vtable held in the dead p (its alloc web sits in a2) -- the target loads vt into a2 and self into v0: 95.27 -> 95.53 */
     CALL(app_run)(gSysLib_415A4_s6, self);
@@ -10227,19 +10234,20 @@ void App_Display(void *self) {
  * sandwich) cracked the E6E8-family "frame-alignment cap" here. */
 extern int gl_func_00000000();
 extern int D_00000000, gSysLib_41f_o0, gSysLib_41f_o1, gSysLib_41f_o2, gSysLib_41f_o3;
-typedef struct { int w[17]; } B68;
+/* obj is the App (SnowBoard_InitInstance passes its SnowBoard, an App subclass, and "rom_version.bin"):
+ * the 0x44-byte file lands in App.version. */
 void fs_readRecord_00041F90(char *obj, int a1) {
     volatile int pad;
-    B68 buf;
+    AppVersion buf;
     char buf2[64];
     CALL(sys_setWord4_00061D80)(&gSysLib_41f_o0, 1);
     if (CALL(fs_gdlOpenFile)(&gSysLib_41f_o1, a1, GL_DATA(0x1F6E0)) != 0) {
         CALL(fs_gdlReadFile)(&gSysLib_41f_o2, &buf, 68);
-        *(B68 *)(obj + 60) = buf; /* RAW: unknown-object: 68-byte record stored at obj +60; owner class not identified */
+        ((App *)obj)->version = buf;
         CALL(fs_gdlCloseFile)(&gSysLib_41f_o3);
-        CALL(sys_formatVersion)(obj + 60, buf2);
+        CALL(sys_formatVersion)(&((App *)obj)->version, buf2);
         CALL(dbg_printf)(GL_DATA_STR(0x1F6E4, "%s\n"), buf2);
-        CALL(sys_copyName_000618D0)(obj + 60, buf2);
+        CALL(sys_copyName_000618D0)(&((App *)obj)->version, buf2);
         CALL(dbg_printf)(GL_DATA_STR(0x1F6E8, "%s\n"), buf2);
     }
 }
@@ -10384,8 +10392,8 @@ void* app_newListHead_000422AC(void *a0) {
         q = (void*)gl_func_00000000(8);
         if (q == 0) goto end;
     }
-    *(int*)(q + 4) = 0; /* RAW: unknown-object: fresh 8-byte list head from alloc(8), words zeroed (no list-head type in the headers) */
-    *(int*)(q + 0) = 0; /* RAW: unknown-object: fresh 8-byte list head from alloc(8), words zeroed (no list-head type in the headers) */
+    *(int*)(q + 4) = 0; /* RAW: unknown-object: the 12-byte owner's inline 8-byte member at +4 (Cfront ctor zeroes both words, new(8) fallback); checked: no TextReloc / vtable / C caller, and it is not a GdlList (4 bytes), so neither class is proven */
+    *(int*)(q + 0) = 0; /* RAW: unknown-object: the 12-byte owner's inline 8-byte member at +4 (Cfront ctor zeroes both words, new(8) fallback); checked: no TextReloc / vtable / C caller, and it is not a GdlList (4 bytes), so neither class is proven */
 end:
     return a0;
 }
@@ -11405,7 +11413,9 @@ void BaseMat_emitDisplayLists_00043BEC(char *arg0, char *arg1) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", BaseMat_emitDisplayLists_00043BEC);
 #endif
 
-void gfx_copyField64_00043D2C(int *a0, int *a1) { *(int*)((char*)a0 + 0x64) = *(int*)((char*)a1 + 0x64); } /* RAW: unknown-object: two objects of an unidentified class, word +0x64 copied */
+/* a0 / a1 are Mats: the only caller, PolyShape_vfn10_0004CFD4, passes two entries of the shape's
+ * mats[] (BasePolyShape +0x84), and +0x64 is past BaseMat (0x60): Mat.stateDL. */
+void gfx_copyField64_00043D2C(int *a0, int *a1) { ((Mat *)a0)->stateDL = ((Mat *)a1)->stateDL; }
 
 // PolyShape_clipRows_00043D38 — STRUCTURAL PASS (0x170 / 93 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x38
@@ -12075,7 +12085,7 @@ void gfx_start(GfxLib *arg0) {
     for (i = 0; i < arg0->nFrameStartCbs; i++) {
         e = arg0->frameStartCbs[i];
         if (e != 0) {
-            vt = (char *)FW(e, 0x5C); /* RAW: unknown-object: frame-start callback object, vptr at +0x5C; class not identified */
+            vt = BASEMAT(e)->vptr; /* the entries are BaseMats (bootup_uso_ncc_B1B4.cpp: Bb4Reg::add(Bb4Base *)) */
             ((void (*)(char *, int))VT_SLOT(vt, 0).fn)(e + VT_SLOT(vt, 0).delta, 0);
         }
     }
@@ -13560,7 +13570,9 @@ int gfx_findVtx_00048720(int *a0, int a1, int a2) {
     return -1;
 }
 
-/* gfx_findFaceVtxs_0004880C: per-item cb loop over a0->0x594 entries.
+/* gfx_findFaceVtxs_0004880C: a0 is a Strip (include/gdl/polyshape.h; the object PolyShape_shade /
+ * PolyShape_vslot12 also pass to Strip::add): gfx_findVtx_00048720 per face vertex, normals compared
+ * on all of them when mode == 2, else on the first only; 0 when one is not in the pool.
  * 99.19% (2026-06-02, was 88.24%). The +4-insn count gap is FIXED by two
  * structural levers: (1) wrap the loop in `if (v1 > 0) { ... } return 1;`
  * (not `if (v1<=0) return 1;` up top) — collapses the early-exit into the
@@ -13577,17 +13589,17 @@ int gfx_findVtx_00048720(int *a0, int a1, int a2) {
  * Entry-copy ORDER is region placement, not allocno scheduling. */
 extern int gl_func_00000000();
 int gfx_findFaceVtxs_0004880C(int a0, int a1) {
-    int v1 = *(int *)(a0 + 0x594); /* RAW: unknown-object: a0 (int) is a shape object with a face count at +0x594; class not identified */
+    int v1 = ((Strip *)a0)->mode;
     int i = 0;
     int p;
     if (v1 > 0) {
         p = a1;
         do {
-            int flag = (i == 0) || (*(int *)(a0 + 0x594) == 2); /* RAW: unknown-object: a0 (int) is a shape object with a face count at +0x594; class not identified */
+            int flag = (i == 0) || (((Strip *)a0)->mode == 2);
             if (CALL(gfx_findVtx_00048720)(a0, flag, p) < 0) {
                 return 0;
             }
-            v1 = *(int *)(a0 + 0x594); /* RAW: unknown-object: a0 (int) is a shape object with a face count at +0x594; class not identified */
+            v1 = ((Strip *)a0)->mode;
             p += 0x10;
             i++;
         } while (i < v1);
@@ -16126,7 +16138,7 @@ extern int gl_func_00000000();
 void vFP1_call(int a0) { CALL(sys_fatal)(GL_DATA_STR(0x201B0, "vFP1")); (void)a0; }
 
 void vFP1_invokeFn_0004D084(int *a0) {
-    (*(int(**)())((char*)a0 + 0x4))(*(int*)((char*)a0 + 0x8), a0); /* RAW: unknown-object: callback record {?, fn at +4, arg at +8}; class not identified */
+    ((GdlFunctor *)a0)->fn(((GdlFunctor *)a0)->arg, a0);
 }
 /* RcpTask_ctor (history) + its 1-word leading pad: the pad sat between two
  * matched C fns (no emission host; a standalone 1-word block emits +4),
@@ -18105,7 +18117,10 @@ s32 BasePolyShape_subdivide(void) {
  * declared = highest slot) plus an unused s32 pad[4] for the 216-byte
  * frame; x, y, z store order; and `volatile s32 arg1`: the target passes
  * arg1 by reloading its home slot (lw a0,220(sp)) instead of a move from
- * a1 -- a plain, char *, K&R or (&arg0)[1] param all give `or a0,a1`. */
+ * a1 -- a plain, char *, K&R or (&arg0)[1] param all give `or a0,a1`.
+ * arg4 is the output BasePolyShape: BasePolyShape_subdivide passes it on as the `Mesh *m` of
+ * BasePolyShape_addPoints (donor ncc_50444: n +0x40, pos +0x60, uv +0x64 = nVerts / verts / unk64)
+ * and BasePolyShape_addTri, so its nVerts is the start index. */
 typedef struct { f32 x, y, z; } V3_510F0;
 typedef struct { s16 x, y; } UV_510F0;
 typedef struct { s16 x, y, z; } P_510F0;
@@ -18146,7 +18161,7 @@ s32 BasePolyShape_emitTriPosUv_000510F0(s32 arg0, volatile s32 arg1, Obj_510F0 *
     p2.x = ((P_510F0 *)q)->x;
     p2.y = ((P_510F0 *)q)->y;
     p2.z = ((P_510F0 *)q)->z;
-    CALL(BasePolyShape_subdivide)(arg1, *(s32 *)(arg4 + 0x40), arg0, arg4, arg5, arg6, (o->tri + idx)->h0, p0, p1, p2, t0, t1, t2); /* RAW: unknown-object: arg4 is an untyped shape pointer (s32) passed through; +0x40 vertex count */
+    CALL(BasePolyShape_subdivide)(arg1, ((BasePolyShape *)arg4)->nVerts, arg0, arg4, arg5, arg6, (o->tri + idx)->h0, p0, p1, p2, t0, t1, t2);
     return arg0;
 }
 
@@ -18507,8 +18522,8 @@ void BaseMat_hostioParms(char *arg0) {
                 if (o3 != 0 || (o3 = (void **)XCALL(gl_func_00034458_5185C, mem_new)(4)) != 0) {
                     *o3 = (char *)&D_00000000_a[0] + 0x20740;
                 }
-                *(Pair2 *)((o2[1] = arg0, o2) + 2) = /* RAW: data-table: 8-byte hostio parm-pair template copied into the inline parm record words 2..3 */
-                    *(Pair2 *)((char *)&D_00000000_b[0] + 0x20638);
+                ((GdlPmfCallback *)(o2[1] = arg0, o2))->pmf = /* the member-function constant (Data+0x20638) */
+                    *(GdlPmf *)((char *)&D_00000000_b[0] + 0x20638);
             }
             *o1 = (char *)&D_00000000_d + 0x20D88;
         }
@@ -18572,8 +18587,8 @@ void Mat_print(char *self) {
                 if ((v1 != 0) || (a0p = (int *)CALL(mem_new)(4), (a0p != 0))) {
                     *a0p = (int)(GL_DATA(0x20740));
                 }
-                *(Pair519A4 *)((v1[1] = (int)self, v1) + 2) = /* RAW: data-table: 8-byte hostio parm-pair template copied into the inline parm record words 2..3 */
-                    *(Pair519A4 *)(GL_DATA(0x20630));
+                ((GdlPmfCallback *)(v1[1] = (int)self, v1))->pmf = /* the member-function constant (Data+0x20630) */
+                    *(GdlPmf *)GL_DATA(0x20630);
             }
             *a2 = (int)(GL_DATA(0x20D88));
         }
@@ -20000,7 +20015,7 @@ s32 *BaseLight_ctor(char *self, int arg1) {
             ((Node *)s1)->vptr = (char *)&MNode_vtbl_546E8_a;
             if (((v1 = (char *)&MNODE(s1)->mflags) != 0 || (v1 = (char *)CALL(mem_new)(4)) != 0) &&
                 ((m = v1) != 0 || (m = (char *)CALL(mem_new)(4)) != 0)) {
-                FW(m, 0) = 0; /* RAW: unknown-object: Cfront inline member ctors (m may be a fresh new(4) / new(0x24)) and the col tag read through its placeholder + addend */
+                *(s32 *)m = 0; /* Cfront inline ctor of the s32 member MNode.mflags (m = its address, or a fresh new(4)) */
             }
             CALL(MNode_initMatrices)(s1);
             zv.x = 0.0f;
@@ -20011,14 +20026,14 @@ s32 *BaseLight_ctor(char *self, int arg1) {
         sp20 = (int *)s1;
         if ((s1 != 0 || (s1 = (char *)CALL(mem_new)(4)) != 0) &&
             ((v1 = s1) != 0 || (v1 = (char *)CALL(mem_new)(4)) != 0)) {
-            FW(v1, 0) = 0; /* RAW: unknown-object: Cfront inline member ctors (m may be a fresh new(4) / new(0x24)) and the col tag read through its placeholder + addend */
+            *(s32 *)v1 = 0; /* likewise for the s32 member BaseLight.flags */
         }
         if ((s1 = (char *)&BL_546E8->parms) != 0 || (s1 = (char *)CALL(mem_new)(0x2C)) != 0) {
             if ((v1 = s1) != 0 || (v1 = (char *)CALL(mem_new)(8)) != 0) {
                 ((BaseLightParms *)v1)->name = &sStr_Parms_21084 + 0x21084;
                 ((BaseLightParms *)v1)->first = 0;
             }
-            u1.v = *(int *)(&sTag_col_2108C + 0x2108C); /* RAW: unknown-object: Cfront inline member ctors (m may be a fresh new(4) / new(0x24)) and the col tag read through its placeholder + addend */
+            u1.v = *(int *)(&sTag_col_2108C + 0x2108C); /* RAW: data-table: the "col" GdlParmTag word, Data+0x2108C read through its own placeholder + USO addend (the distinct symbol is the CSE lever) */
             sp94.x = 0.0f;
             sp94.y = 0.0f;
             sp94.z = 0.0f;
@@ -20038,8 +20053,8 @@ s32 *BaseLight_ctor(char *self, int arg1) {
             if ((m = (char *)&((BaseLightParms *)s1)->colParm) != 0 || (m = (char *)CALL(mem_new)(0x24)) != 0) {
                 CALL(Parms_addParm)(m, s1, t, 1);
                 ((GdlParmBase *)m)->type = &gl_ref_546E8_e + 0x20758;
-                FW(m, 0x20) = 0; /* RAW: unknown-object: Cfront inline member ctors (m may be a fresh new(4) / new(0x24)) and the col tag read through its placeholder + addend */
-                *(struct V4_546E8 *)(m + 0x10) = sp48; /* RAW: unknown-object: Cfront inline member ctors (m may be a fresh new(4) / new(0x24)) and the col tag read through its placeholder + addend */
+                ((GdlParmRGBA *)m)->unk20 = 0; /* m = &parms.colParm (GdlParmRGBA layout, gdl/gadget.h), or a fresh new(0x24) */
+                *(struct V4_546E8 *)((GdlParmRGBA *)m)->value = sp48;
             }
         }
         BL_546E8->node.flags |= 0x20;
@@ -22090,8 +22105,8 @@ void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 *ar
         rgba = DLBUF((char *)cnt)->count;
         DLBUF((char *)cnt)->count = rgba + 1;
         cnt = (s32)((char *)DLCTX(arg0)->gfx.cur->base + rgba * 8); /* agent-g run 307: the next base in p (reuse-map walk, 99.678 -> 99.712) */
-        *(s32 *)((char *)cnt + 0) = 0xF7000000; /* RAW: data-table: raw RDP Gfx command words (w0 / w1) written into the DL buffer */
-        *(s32 *)((char *)cnt + 4) = 0xFFFCFFFC; /* RAW: data-table: raw RDP Gfx command words (w0 / w1) written into the DL buffer */
+        DLPKT((char *)cnt)->w0 = 0xF7000000; /* G_SETFILLCOLOR */
+        DLPKT((char *)cnt)->w1 = 0xFFFCFFFC;
         p = (char *)DLCTX(arg0)->gfx.cur;
         c2 = DLBUF(p)->count;
         DLBUF(p)->count = c2 + 1;
@@ -22110,8 +22125,8 @@ void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 *ar
         /* agent-g run 308: this packet pointer is g (cast both ways; g's colour value is dead here and g is always
          * written before this read): the target's t1 = g + this pointer (zdbug:5/6 replay -> g t1, const 0xE700 t2) */
         g = (s32)((char *)DLCTX(arg0)->gfx.cur->base + cnt * 8);
-        *(s32 *)((char *)g + 0) = 0xE7000000; /* RAW: data-table: raw RDP Gfx command words (w0 / w1) written into the DL buffer */
-        *(s32 *)((char *)g + 4) = 0; /* RAW: data-table: raw RDP Gfx command words (w0 / w1) written into the DL buffer */
+        DLPKT((char *)g)->w0 = 0xE7000000; /* G_RDPPIPESYNC */
+        DLPKT((char *)g)->w1 = 0;
         XCALL(func_00000000_5a2c4v, gfx_setColorImage)(arg0, arg1, arg10); /* agent-c run 260: void (discarded result) */
         base = (char *)DLCTX(arg0)->gfx.cur;
         cnt = DLBUF(base)->count;
