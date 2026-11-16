@@ -126,7 +126,7 @@ typedef struct PhysQNode {
     /* 0x0B4 */ AnimPose vqs;
     /* 0x0DC */ AnimPose cvqs;
     /* 0x104 */ s32 unk104;
-    /* 0x108 */ s32 owner;          /* DNode * (ctor arg 1) */
+    /* 0x108 */ DNode *owner;       /* ctor arg 1 */
     /* 0x10C */ f32 probeA[3];      /* ctor arg 2 */
     /* 0x118 */ f32 probeB[3];      /* ctor arg 3 */
 } PhysQNode;
@@ -159,7 +159,7 @@ typedef struct Friction {
     /* 0x160 */ s32 unk160;         /* 0 at reset */
     /* 0x164 */ f32 offsetLen;      /* |ctor offset| */
     /* 0x168 */ s32 unk168;         /* 256 at reset */
-    /* 0x16C */ s32 owner;          /* DNode * (ctor arg 1) */
+    /* 0x16C */ DNode *owner;       /* ctor arg 1 */
 } Friction;
 
 typedef char PhysQNode_size_check[sizeof(PhysQNode) == 0x124 ? 1 : -1];

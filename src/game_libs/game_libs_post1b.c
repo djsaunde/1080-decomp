@@ -521,7 +521,7 @@ void *PhysQNode_ctor_00063884(void *a0, int a1, int *a2, int *a3) {
     PHYSQNODE(a0)->probeB[0] = *(float*)&tmp.a;
     PHYSQNODE(a0)->probeB[1] = *(float*)&tmp.b;
     PHYSQNODE(a0)->probeB[2] = *(float*)&tmp.c;
-    PHYSQNODE(a0)->owner = a1;
+    PHYSQNODE(a0)->owner = (DNode *)a1;
 end:
     return a0;
 }
@@ -570,7 +570,7 @@ void *Friction_ctor_00063DC4(void *s0, int a1, float a2, float a3, float a4) {
     if (s0 != 0 || (s0 = (void*)CALL(mem_new)(368)) != 0) {
         XCALL(aD63DC4_5, QNode_ctor)(s0, GL_DATA_STR(0x22390, "<QNode>"), 0.0f, 0.0f, 0.0f);
         FRICTION(s0)->mnode.node.vptr = (char *)&Friction_vtbl;
-        FRICTION(s0)->owner = a1;
+        FRICTION(s0)->owner = (DNode *)a1;
         XCALL(aD63DC4_4, QNode_translate)(s0, a2, a3, a4);
         CALL(Friction_reset_00064124)(s0);
         FRICTION(s0)->offsetLen =
