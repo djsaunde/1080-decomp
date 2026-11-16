@@ -5,7 +5,9 @@
  * agent-g run 543: the Node vptr / name stores spelled through include/gdl/node.h (NODE(p)->vptr / ->name; relative
  * include, its offset asserts are C-only). Same bytes.
  * agent-g run 546: QuitProcess unk44 / menu (local view) and PauseMenu on game/guimenu.h GuiMenu (locked, the two
- * row-colour quads in unk4C). Same bytes. */
+ * row-colour quads in unk4C). Same bytes.
+ * agent-g run 558: the quads are GuiMenu.selColour / rowColour (agent-h run 556); s walks each as an f32[4].
+ * Same bytes. */
 typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
 typedef signed char s8; typedef signed short s16; typedef signed int s32; typedef float f32; typedef double f64;
 #include "../../include/gdl/node.h"
@@ -220,15 +222,15 @@ void *PauseMenu_create(char *a0) {
         d = &sStr_PauseMenu_C5C4;
         NODE(s)->name = (const char *)d;
         s = (char *)GUIMENU(a0)->selColour;   /* 0x4C: the cursor row's colour (PauseMenu_display's q4C) */
-        *(float *)(s + 0) = (float)(0, 119) / 255.0f;
-        *(float *)(s + 4) = (float)(0, 117) / 255.0f;
-        *(float *)(s + 8) = (float)(0, 229) / 255.0f;
-        *(float *)(s + 12) = (float)(0, 255) / 255.0f;
+        ((f32 *)s)[0] = (float)(0, 119) / 255.0f;
+        ((f32 *)s)[1] = (float)(0, 117) / 255.0f;
+        ((f32 *)s)[2] = (float)(0, 229) / 255.0f;
+        ((f32 *)s)[3] = (float)(0, 255) / 255.0f;
         s = (char *)GUIMENU(a0)->rowColour;   /* 0x5C: the other rows' colour (PauseMenu_display's q5C) */
-        *(float *)(s + 0) = (float)(0, 192) / 255.0f;
-        *(float *)(s + 4) = (float)(0, 194) / 255.0f;
-        *(float *)(s + 8) = (float)(0, 229) / 255.0f;
-        *(float *)(s + 12) = (float)(0, 255) / 255.0f;
+        ((f32 *)s)[0] = (float)(0, 192) / 255.0f;
+        ((f32 *)s)[1] = (float)(0, 194) / 255.0f;
+        ((f32 *)s)[2] = (float)(0, 229) / 255.0f;
+        ((f32 *)s)[3] = (float)(0, 255) / 255.0f;
         GUIMENU(a0)->locked = 0;
         func_00000000(a0);
     }

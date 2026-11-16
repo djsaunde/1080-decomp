@@ -109,12 +109,27 @@ typedef struct FallingSnow {
 
 /* "tv1" item template (vtbl Data 0x7788; Tv1Tmpl_create 7C74 builds Tv1 instances of 0x88 with
  * +0x80 = a RoData float). Tv1Tmpl_func_00007D04 steps a 3-state picture cycle. */
+/* Tv1Tmpl's 16-byte member-function callback (the bootup twin of game/sun.h's MemberCallback), built in
+ * place by item_registerTemplates as a 3-level cfront cascade: the Callback base stores vptr Data 0x7528
+ * (slot 1 = __pure_virtual_called), the member level stores obj and pmf, then the concrete class stores
+ * vptr Data 0x7770 (slot 1 = MemberCallback_invoke_00007BF4, which calls obj->*pmf). agent-g run 558. */
+typedef struct Tv1CallbackPmf {
+    s32 a;                      /* 0x0: delta 0 / index -1 (0x0000FFFF: a non-virtual member) */
+    s32 b;                      /* 0x4: the member function */
+} Tv1CallbackPmf;
+typedef struct Tv1Callback {
+    void *vptr;                 /* 0x0 */
+    void *obj;                  /* 0x4: the Tv1Tmpl */
+    Tv1CallbackPmf pmf;         /* 0x8: Data 0x7520 = {0x0000FFFF, Tv1Tmpl_func_00007D04} (the picture step) */
+} Tv1Callback;
+
 typedef struct Tv1Tmpl {
     Node node;                  /* 0x00 */
     char unk2C[0x40 - 0x2C];
     s32 model;                  /* 0x40: the template's model node (each new instance adopts it); its
                                  * +0x84 table holds the two screen nodes */
-    char unk44[0x58 - 0x44];
+    char unk44[0x48 - 0x44];
+    Tv1Callback stepCallback;   /* 0x48: obj = this, pmf = Tv1Tmpl_func_00007D04 */
     s32 scroll;                 /* 0x58: state 0: -= 10 per step; state 2: 0x18 */
     s32 state;                  /* 0x5C: 0 / 1 / 2 (state 2 picks the next one at random) */
     s32 timer;                  /* 0x60: steps in the state (0x3E / 0x20 / 0x5C) */
@@ -214,6 +229,8 @@ ENVOBJ_ASSERT(FogItem, rng, 0x5C);
 ENVOBJ_ASSERT(SnowItem, sta, 0x5C);
 ENVOBJ_ASSERT(FallingSnow, unkBC, 0xBC);
 ENVOBJ_ASSERT(Tv1Tmpl, displayCount, 0x68);
+ENVOBJ_ASSERT(Tv1Tmpl, stepCallback, 0x48);
+typedef char envobj_size_Tv1Callback[sizeof(Tv1Callback) == 0x10 ? 1 : -1];
 ENVOBJ_ASSERT(TreeTmpl, shapeData, 0x48);
 ENVOBJ_ASSERT(TreeTmpl, fog, 0x5C);
 typedef char TreeTmpl_size_check[sizeof(TreeTmpl) == 0x74 ? 1 : -1];

@@ -5,7 +5,8 @@
  * addresses in undefined_syms_auto.txt.
  * agent-g run 543: the vptr stores spelled NODE(p)->vptr (include/gdl/node.h, relative include). Same bytes.
  * agent-g run 546: the tree types' fields on envobj.h TreeTmpl (colour, fog, unk38, shapeData) and the tv1 type's
- * on Tv1Tmpl (scroll / state / timer / unk64 / displayCount). Same bytes. */
+ * on Tv1Tmpl (scroll / state / timer / unk64 / displayCount). Same bytes.
+ * agent-g run 558: Tv1Tmpl.stepCallback (+0x48) built through envobj.h's Tv1Callback. Same bytes. */
 typedef unsigned char u8;
 typedef signed short s16;
 typedef unsigned short u16;
@@ -55,8 +56,7 @@ extern S4_55A0 sTag_tr1_7E34, sTag_tr2_7E38, sTag_tr3_7E3C, sTag_tv1_7E44;
 extern char SNodeItemType_vtbl_55A0_s28_0, SNodeItemType_vtbl_55A0_s28_1, SNodeItemType_vtbl_55A0_s28_2, SNodeItemType_vtbl_55A0_s28_3;
 extern char D_55A0_o28_0, D_55A0_o28_1, D_55A0_o28_2, D_55A0_o28_3;
 extern char D_55A0_o48_0, D_55A0_o48_1, D_55A0_o48_2;
-typedef struct { int a, b; } P8_55A0;
-extern P8_55A0 D_55A0_pair;
+extern Tv1CallbackPmf D_55A0_pair; /* Data 0x7520: {0x0000FFFF, Tv1Tmpl_func_00007D04} */
 extern char D_55A0_la, D_55A0_lb, D_55A0_n4, D_55A0_n2;
 extern char D_55A0_tb, SNodeItemType_vtbl_55A0_o28_4, SNodeItemType_vtbl_55A0_s28_5, D_55A0_o28_5;
 extern int D_55A0_g5, D_55A0_g6, D_55A0_g7, D_55A0_g8, D_55A0_g9, D_55A0_g10;
@@ -240,17 +240,18 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
                 NODE(sub)->vptr = (char *)&SNodeItemType_vtbl_55A0_s28_3;
             }
             NODE(obj)->vptr = (char *)&D_55A0_o28_3;
-            n2 = obj + 0x48;
+            /* the in-place Tv1Callback cascade (envobj.h): base vptr, obj / pmf, concrete vptr */
+            n2 = (char *)&((Tv1Tmpl *)obj)->stepCallback;
             if (n2 != 0 || (n2 = (char *)func_00000000(0x10)) != 0) {
                 n3 = n2;
                 if (n3 != 0 || (n3 = (char *)func_00000000(0x10)) != 0) {
                     n4 = n3;
                     if (n4 != 0 || (n4 = (char *)func_00000000(4)) != 0) {
-                        OI(n4, 0) = (int)&D_55A0_n4;
+                        ((Tv1Callback *)n4)->vptr = &D_55A0_n4;
                     }
-                    OI(n3, 0x4) = (int)obj; *(P8_55A0 *)(n3 + 8) = D_55A0_pair;
+                    ((Tv1Callback *)n3)->obj = obj; ((Tv1Callback *)n3)->pmf = D_55A0_pair;
                 }
-                OI(n2, 0) = (int)&D_55A0_n2;
+                ((Tv1Callback *)n2)->vptr = &D_55A0_n2;
             }
             DI(0) = 0;
             ((Tv1Tmpl *)obj)->state = 2;
