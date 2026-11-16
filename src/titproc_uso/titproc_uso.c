@@ -2,6 +2,8 @@
 #include "game/input.h"
 #include "game/modeproc.h"
 #include "game/guimenu.h"
+#include "game/course.h"
+#include "game/snowboarder.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -66,37 +68,37 @@ int tit_nextDemo_000000C0(counter)
     int v;
     int idx;
 
-    *(int*)((char*)&import_00020098 + 0x6C) =
-        *(int*)((char*)&import_00020098 + 0x6C) + 1;
-    counter = *(int*)((char*)&import_00020098 + 0x6C);
+    INPUT_MGR(import_00020098).demoIndex =
+        INPUT_MGR(import_00020098).demoIndex + 1;
+    counter = INPUT_MGR(import_00020098).demoIndex;
     if (counter >= 5) {
-        *(int*)((char*)&import_00020098 + 0x6C) = 0;
+        INPUT_MGR(import_00020098).demoIndex = 0;
         counter = 0;
     }
 
     if (counter == 0) {
-        counter = *(int*)((char*)&import_00020098 + 0x148) + 4;
+        counter = (int)INPUT_MGR(import_00020098).backup + 4;
         v = titproc_uso_func_01EEE4(counter);
         if (v != 2) {
-            *(int*)((char*)&import_00020098 + 0x6C) =
-                *(int*)((char*)&import_00020098 + 0x6C) + 1;
+            INPUT_MGR(import_00020098).demoIndex =
+                INPUT_MGR(import_00020098).demoIndex + 1;
         }
-        counter = *(int*)((char*)&import_00020098 + 0x6C);
+        counter = INPUT_MGR(import_00020098).demoIndex;
     }
     if (counter == 1) {
-        counter = *(int*)((char*)&import_00020098 + 0x148) + 4;
+        counter = (int)INPUT_MGR(import_00020098).backup + 4;
         v = titproc_uso_func_01EEE4(counter);
         if (v != 1) {
-            *(int*)((char*)&import_00020098 + 0x6C) =
-                *(int*)((char*)&import_00020098 + 0x6C) + 1;
+            INPUT_MGR(import_00020098).demoIndex =
+                INPUT_MGR(import_00020098).demoIndex + 1;
         }
-        counter = *(int*)((char*)&import_00020098 + 0x6C);
+        counter = INPUT_MGR(import_00020098).demoIndex;
     }
 
     while (0) { idx = counter * 4; }
     idx = counter * 4;
-    *(int*)((char*)&import_00020098 + 0x40) = 4;
-    *(int*)((char*)&import_00020098 + 0x44) = *(int*)((char*)titproc_uso_D_0000EC + idx);
+    INPUT_MGR(import_00020098).procState = 4;
+    INPUT_MGR(import_00020098).nextProcState = *(int*)((char*)titproc_uso_D_0000EC + idx);
     return *(int*)((char*)titproc_uso_D_000100 + idx);
 }
 extern char D_00000194_A;
@@ -107,9 +109,9 @@ extern char D_00000194_A;
  * .s (0x48->0x50, starts 0x18C) and removed the pad pragma+.s. (The 0x1E4
  * orphan lives in the separate func_000001DC.s, fixed when 0x1E4 lands.) */
 void tit_menuMultiRace(void) {
-    *(int*)((char*)&D_00000000 + 0x34) = 3;
-    *(int*)((char*)&D_00000000 + 0x40) = 0;
-    *(int*)((char*)&D_00000000 + 0x13C) = 3;
+    INPUT_MGR(D_00000000).nextFlowMode = 3;
+    INPUT_MGR(D_00000000).procState = 0;
+    INPUT_MGR(D_00000000).seq = 3;
     CALL(snd_sendEvent)(0xC, 0);
     CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_00000194_A + 0xA8), -1, 0);
 }
@@ -120,9 +122,9 @@ extern char D_000001E4_A;
  * v0,0` (&D base) was the separate fake-fn func_000001DC; merged into this fn's
  * .s (0x4C->0x54, starts 0x1DC), orphan-fn + its INCLUDE_ASM removed. */
 void tit_menuTimeAttack(void) {
-    *(int*)((char*)&D_00000000 + 0x34) = 4;
-    *(int*)((char*)&D_00000000 + 0x40) = 0;
-    *(int*)((char*)&D_00000000 + 0x13C) = 3;
+    INPUT_MGR(D_00000000).nextFlowMode = 4;
+    INPUT_MGR(D_00000000).procState = 0;
+    INPUT_MGR(D_00000000).seq = 3;
     CALL(snd_sendEvent)(12, 1);
     CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_000001E4_A + 0xA8), -1, 0);
 }
@@ -130,9 +132,9 @@ void tit_menuTimeAttack(void) {
 extern char D_00000230_A;
 
 void tit_menuTrick(void) {
-    *(int*)((char*)&D_00000000 + 0x34) = 6;
-    *(int*)((char*)&D_00000000 + 0x40) = 0;
-    *(int*)((char*)&D_00000000 + 0x13C) = 3;
+    INPUT_MGR(D_00000000).nextFlowMode = 6;
+    INPUT_MGR(D_00000000).procState = 0;
+    INPUT_MGR(D_00000000).seq = 3;
     CALL(snd_sendEvent)(12, 2);
     CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_00000230_A + 0xA8), -1, 0);
 }
@@ -145,9 +147,9 @@ extern char D_0000028C_A;
  * entry 00000284 + restored the prefix words; the C (mirror of matched
  * sibling 00000230) then matches. */
 void tit_menuArcade(void) {
-    *(int*)((char*)&D_00000000 + 0x34) = 5;
-    *(int*)((char*)&D_00000000 + 0x40) = 0;
-    *(int*)((char*)&D_00000000 + 0x13C) = 3;
+    INPUT_MGR(D_00000000).nextFlowMode = 5;
+    INPUT_MGR(D_00000000).procState = 0;
+    INPUT_MGR(D_00000000).seq = 3;
     CALL(snd_sendEvent)(12, 3);
     CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_0000028C_A + 0xA8), -1, 0);
 }
@@ -158,9 +160,9 @@ extern char D_000002D8_A;
  * `lui $v0; addiu $v0` prologue 8 bytes earlier, attributed to 0x28C's
  * trailing bytes). Per feedback_splat_prologue_stolen_by_predecessor.md. */
 void tit_menuHead2Head(void) {
-    *(int*)((char*)&D_00000000 + 0x34) = 2;
-    *(int*)((char*)&D_00000000 + 0x40) = 0;
-    *(int*)((char*)&D_00000000 + 0x13C) = 3;
+    INPUT_MGR(D_00000000).nextFlowMode = 2;
+    INPUT_MGR(D_00000000).procState = 0;
+    INPUT_MGR(D_00000000).seq = 3;
     CALL(snd_sendEvent)(12, 4);
     CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_000002D8_A + 0xA8), -1, 0);
 }
@@ -171,9 +173,9 @@ extern char D_0000032C_A;
  * `lui $v0; addiu $v0` prologue 8 bytes earlier, attributed to 0x2E0's
  * trailing bytes). Per feedback_splat_prologue_stolen_by_predecessor.md. */
 void tit_menuTraining(void) {
-    *(int*)((char*)&D_00000000 + 0x34) = 7;
-    *(int*)((char*)&D_00000000 + 0x40) = 0;
-    *(int*)((char*)&D_00000000 + 0x13C) = 3;
+    INPUT_MGR(D_00000000).nextFlowMode = 7;
+    INPUT_MGR(D_00000000).procState = 0;
+    INPUT_MGR(D_00000000).seq = 3;
     CALL(snd_sendEvent)(12, 5);
     CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_0000032C_A + 0xA8), -1, 0);
 }
@@ -185,9 +187,9 @@ extern char D_00000380_A;
  * 0x334's trailing bytes). Per feedback_splat_prologue_stolen_by_predecessor.md.
  * Signature is `void f(void)` — no args; $v0 = &D_00000000 via prologue. */
 void tit_startTitleDemo_00000380(void) {
-    *(int*)((char*)&D_00000000 + 0x34) = 1;
-    *(int*)((char*)&D_00000000 + 0x40) = 1;
-    *(int*)((char*)&D_00000000 + 0x44) = 2;
+    INPUT_MGR(D_00000000).nextFlowMode = 1;
+    INPUT_MGR(D_00000000).procState = 1;
+    INPUT_MGR(D_00000000).nextProcState = 2;
     CALL(snd_postEvent)(9);
     CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_00000380_A + 0xA8), -1, 0);
 }
@@ -195,9 +197,9 @@ void tit_startTitleDemo_00000380(void) {
 extern char D_000003D0_A;
 
 void tit_menuEditors(void) {
-    *(int*)((char*)&D_00000000 + 0x34) = 8;
-    *(int*)((char*)&D_00000000 + 0x40) = 0;
-    *(int*)((char*)&D_00000000 + 0x44) = 2;
+    INPUT_MGR(D_00000000).nextFlowMode = 8;
+    INPUT_MGR(D_00000000).procState = 0;
+    INPUT_MGR(D_00000000).nextProcState = 2;
     CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_000003D0_A + 0xA8), -1, 0);
 }
 
@@ -473,11 +475,11 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->keyMessage);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
     NODE(sub)->parent = (int)root;
-    if (*(int *)((char *)&import_00020098 + 0x18C) != 0) {
+    if (INPUT_MGR(import_00020098).locked != 0) {
         child = (void *)TITLEDEMO(root)->keyMessage;
         sub = (void *)NODE(child)->vptr;
-        ((void (*)(int))((void **)sub)[0x5C / 4])(
-            *(short *)((char *)sub + 0x58) + (int)child);
+        ((void (*)(int))VT_SLOT(sub, 10).fn)(
+            VT_SLOT(sub, 10).delta + (int)child);
     }
     TITLEDEMO(root)->mainLogo = (s32)(XCALL(titproc_uso_func_001840, MainLogo_ctor)(0));
 
@@ -498,13 +500,13 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
 
     import_000A5F40((void *)TITLEDEMO(root)->menu, root);
     XCALL(titproc_uso_func_00101C, TitleDemoProcess_buildMenu)(root);
-    *(int *)((char *)(void *)TITLEDEMO(root)->menu + 0x30) =
+    GUIMENU(TITLEDEMO(root)->menu)->unk30 =
         import_0024CCF4(0, &titproc_uso_D_00052C, 0x48, 0xDD, 3, 0xD);
-    *(float *)((char *)(void *)TITLEDEMO(root)->menu + 0x74) = 17.0f;
+    GUIMENU(TITLEDEMO(root)->menu)->rowHeight = 17.0f;
     import_000A5FBC(TITLEDEMO(root)->menu);
     XCALL(titproc_uso_func_00F4CC, Process_stop)(TITLEDEMO(root)->menu);
-    *(int *)((char *)(void *)TITLEDEMO(root)->menu + 0x7C) =
-        *(int *)((char *)&import_00020098 + 0x84);
+    GUIMENU(TITLEDEMO(root)->menu)->cursor =
+        INPUT_MGR(import_00020098).unk84;
 
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->menu);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
@@ -520,22 +522,22 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
     TITLEDEMO(root)->unk70 = 0x48;
     TITLEDEMO(root)->unk74 = 15000;
 
-    if (*(int *)((char *)&import_00020098 + 0x88) != 0) {
+    if (INPUT_MGR(import_00020098).unk88 != 0) {
         TITLEDEMO(root)->state = 0;
         TITLEDEMO(root)->timer = TITLEDEMO(root)->unk6C * 30;
     } else {
         TITLEDEMO(root)->state = 1;
         TITLEDEMO(root)->timer = TITLEDEMO(root)->unk70 * 30;
         TITLEDEMO(root)->keyDelay = 0;
-        *(int *)((char *)(void *)TITLEDEMO(root)->mainLogo + 0x38) = 1;
+        MAINLOGO(TITLEDEMO(root)->mainLogo)->phase = 1;
         *(int *)((char *)(void *)TITLEDEMO(root)->mainLogo + 0x2C) = 0;
         child = (void *)TITLEDEMO(root)->mainLogo;
         sub = (void *)NODE(child)->vptr;
-        ((void (*)(int))((void **)sub)[0x5C / 4])(
-            *(short *)((char *)sub + 0x58) + (int)child);
+        ((void (*)(int))VT_SLOT(sub, 10).fn)(
+            VT_SLOT(sub, 10).delta + (int)child);
     }
 
-    *(int *)((char *)&import_00020098 + 0x88) = 0;
+    INPUT_MGR(import_00020098).unk88 = 0;
     import_000A7ECC(&import_00020098, 0);
     *(int *)((char *)root + 0x2C) = 0;
     *(int *)((char *)root + 0x48) = 0;
@@ -758,7 +760,7 @@ void KeyMessage_display(char *s0) {
     (void)pad;
     one = 1.0f;
     ones[0] = one; ones[1] = one; ones[2] = one; ones[3] = one;
-    if (*(int *)((char *)&import_00020098 + 0x18C) != 0) {
+    if (INPUT_MGR(import_00020098).locked != 0) {
         t = *(float *)((char *)&import_00263E00 + 0x40);
         vec[1] = one; vec[4] = one; vec[2] = t; vec[3] = t;
         t = (float)KEYMSG(s0)->alpha / 255.0f;
@@ -1270,7 +1272,7 @@ after_node:
     XCALL(titproc_uso_func_000000, titproc_uso_func_00000000)();
     XCALL(titproc_uso_func_074710, memtrack_begin)((char *)&titproc_uso_D_00048C + 0x530, 0);
     import_000A7ECC(&import_00020098, 0);
-    *(int *)((char *)&import_00020098 + 0x138) = arg0[0x6AC / 4] = (int)import_000B6C40(0);
+    *(int *)&INPUT_MGR(import_00020098).dataMgr = arg0[0x6AC / 4] = (int)import_000B6C40(0);
     import_000B88CC(arg0[0x6AC / 4]);
     node = (int *)arg0[0x6AC / 4];
     XCALL(titproc_uso_func_07ACE0, list_append)(slot = (int *)((char *)arg0 + 0x10), node);
@@ -1286,7 +1288,7 @@ after_node:
         rtemp = (int *)XCALL(titproc_uso_func_0015F4, KeyMessage_ctor)(0);
         arg0[0x6B0 / 4] = (int)rtemp;
         node = (int *)rtemp[0x28 / 4];
-        ((void (*)(int))node[0x5C / 4])(*(short *)((char *)node + 0x58) + (int)rtemp);
+        ((void (*)(int))VT_SLOT(node, 10).fn)(VT_SLOT(node, 10).delta + (int)rtemp);
         node = (int *)arg0[0x6B0 / 4];
         XCALL(titproc_uso_func_07ACE0, list_append)(slot, node);
         if (node[0x14 / 4] != 0) {
@@ -1299,7 +1301,7 @@ after_node:
         ((int *)arg0[0x6B4 / 4])[0x2C / 4] = 0;
         rtemp = (int *)arg0[0x6B4 / 4];
         node = (int *)rtemp[0x28 / 4];
-        ((void (*)(int))node[0x5C / 4])(*(short *)((char *)node + 0x58) + (int)rtemp);
+        ((void (*)(int))VT_SLOT(node, 10).fn)(VT_SLOT(node, 10).delta + (int)rtemp);
         node = (int *)arg0[0x6B4 / 4];
         XCALL(titproc_uso_func_07ACE0, list_append)(slot, node);
         if (node[0x14 / 4] != 0) {
@@ -1334,7 +1336,7 @@ after_node:
         *(float *)((char *)arg0[0x6C0 / 4] + 0x74) = 17.0f;
         import_000A5FBC(arg0[0x6C0 / 4]);
         XCALL(titproc_uso_func_00F4CC, Process_stop)(arg0[0x6C0 / 4]);
-        *(int *)((char *)arg0[0x6C0 / 4] + 0x7C) = *(int *)((char *)&import_00020098 + 0x84);
+        *(int *)((char *)arg0[0x6C0 / 4] + 0x7C) = INPUT_MGR(import_00020098).unk84;
         node = (int *)arg0[0x6C0 / 4];
         XCALL(titproc_uso_func_07ACE0, list_append)(slot, node);
         if (node[0x14 / 4] != 0) {
@@ -1617,8 +1619,8 @@ void GameDemoProcess_handleInput(GameDemoProcess *s0) {
     a1 = s0->race.flags;
     if ((a1 << 14) < 0) {
         XCALL(titproc_uso_func_01B0F8, RaceProcess_restart)(s0);
-        p3c = *(int**)(INPUT_MGR(import_00020098).game + 0xC4);
-        arg = *(int*)((char*)p3c + 0x800);
+        p3c = (int *)WORLDREG(INPUT_MGR(import_00020098).game)->players[0].rider;
+        arg = (int)SNOWB(p3c)->input;
         XCALL(titproc_uso_func_07BA68, pad_reset_000673FC)(arg, 0);
         a1 = s0->race.session->ghost->data;
         XCALL(titproc_uso_func_07C07C, pad_startPlay_00067A10)(arg, a1,
