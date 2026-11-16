@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* SnowAI_aimAlongSegment: EXACT donor, cfront-style C for IDO 7.1 cfe -O2 (agent-c
  * runs 230-231, from agent-g's run 229 port c7c7.c), REPLACE_FUNC_BODY-spliced over
  * the placeholder in src/game_uso/game_uso.c on both build paths (GAMEUSO_7C1C_DONOR).
@@ -131,16 +132,16 @@ Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
         *out = 0.0f;
     }
     if (b == 0) {
-        XZV(p, t38c, &a->pos, game_uso_func_055750)
-        SUB2(q, p, t348, t38c, pos, game_uso_func_055750)
+        XZV(p, t38c, &a->pos, XCALL(game_uso_func_055750, mem_new))
+        SUB2(q, p, t348, t38c, pos, XCALL(game_uso_func_055750, mem_new))
         R = t348;
         d = R;
         result.y = 0.0f;
         result.x = d.x; result.z = d.z;
     } else {
         mode = 0;
-        XZU2(p, t328, &b->pos, game_uso_func_055750)
-        SUB2VS(q, pB, t2b4, t328, &a->pos, game_uso_func_055750)
+        XZU2(p, t328, &b->pos, XCALL(game_uso_func_055750, mem_new))
+        SUB2VS(q, pB, t2b4, t328, &a->pos, XCALL(game_uso_func_055750, mem_new))
         R = t2b4; t334 = R;
         seg = t334;
         if (s->w->other != 0) {
@@ -155,8 +156,8 @@ Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
             }
             active = s->active;
             if (active == 1 && DOTV <= *(float *)((char *)&SnowAI_aimAlongSegment_rodata + 0xFC)) {
-                XZV(p, t280, &s->w->other->pos, game_uso_func_055750)
-                SUB2VS(q, p, t274, t280, &a->pos, game_uso_func_055750)
+                XZV(p, t280, &s->w->other->pos, XCALL(game_uso_func_055750, mem_new))
+                SUB2VS(q, p, t274, t280, &a->pos, XCALL(game_uso_func_055750, mem_new))
                 R = t274;
                 e = R;
                 if (seg.x * e.z <= seg.z * e.x) {
@@ -166,11 +167,11 @@ Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
                 }
             }
         }
-        XZG2S(q, vp, t268, seg.z, -seg.x, game_uso_func_055750)
+        XZG2S(q, vp, t268, seg.z, -seg.x, XCALL(game_uso_func_055750, mem_new))
         R = t268; dir = R;
-        game_uso_func_071028(&dir);
-        XZU2(p, t31c, &b->pos, game_uso_func_055750)
-        SUB2S(q, p, t25c, t31c, pos, game_uso_func_055750)
+        XCALL(game_uso_func_071028, math_vec3Normalize)(&dir);
+        XZU2(p, t31c, &b->pos, XCALL(game_uso_func_055750, mem_new))
+        SUB2S(q, p, t25c, t31c, pos, XCALL(game_uso_func_055750, mem_new))
         R = t25c;
         rd = R;
         R = rd;
@@ -192,7 +193,7 @@ Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
             P3 = r3b; V3b = P3;
             result.x -= V3b.x; result.y -= V3b.y; result.z -= V3b.z;
         }
-        METV = game_uso_func_082880(rd.x * rd.x + rd.z * rd.z);
+        METV = XCALL(game_uso_func_082880, sqrtf)(rd.x * rd.x + rd.z * rd.z);
         THRV = b->width * 250.0f;
         hit = 0;
         if (THRV < METV) {
@@ -201,16 +202,16 @@ Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
         }
         n = b->next;
         for (; n != 0; n = n->next + 0 * (int)(n->next)) { if (1) {}
-            p = &t170; pC = &t134; pB = &t140; XZV(q, t170, &n->pos, game_uso_func_055750)
-            SUBQ2(pB, t170, &b->pos, game_uso_func_055750)
+            p = &t170; pC = &t134; pB = &t140; XZV(q, t170, &n->pos, XCALL(game_uso_func_055750, mem_new))
+            SUBQ2(pB, t170, &b->pos, XCALL(game_uso_func_055750, mem_new))
             R = t140;
             lbind = R;
-            XZGPS(pC, lbind.z, -lbind.x, game_uso_func_055750)
+            XZGPS(pC, lbind.z, -lbind.x, XCALL(game_uso_func_055750, mem_new))
             P2 = t134;
             ldir = P2;
-            game_uso_func_071028(&ldir);
-            XZV(p, t164, &n->pos, game_uso_func_055750)
-            SUB2S(q, p, t128, t164, pos, game_uso_func_055750)
+            XCALL(game_uso_func_071028, math_vec3Normalize)(&ldir);
+            XZV(p, t164, &n->pos, XCALL(game_uso_func_055750, mem_new))
+            SUB2S(q, p, t128, t164, pos, XCALL(game_uso_func_055750, mem_new))
             R = t128;
             lrd = R;
             R = lrd;
@@ -235,7 +236,7 @@ Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
             if ((unsigned)((hit != 0) == 0) ||
                 ((hitC.x * hitA.z <= hitC.z * hitA.x) &&
                  (hitC.z * hitB.x <= hitC.x * hitB.z))) {
-                M2V = game_uso_func_082880(lrd.x * lrd.x + lrd.z * lrd.z);
+                M2V = XCALL(game_uso_func_082880, sqrtf)(lrd.x * lrd.x + lrd.z * lrd.z);
                 if (n->width * 250.0f < M2V) {
                     math_rotateXZPair_00003FAC(&fA.x, &fB.x, &lrd.x, M2V, n->width * 250.0f);
                     if (hit != 0) {
@@ -258,14 +259,14 @@ Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
             break;
         }
         if (n != 0 &&
-            game_uso_func_082880(result.x * result.x + result.z * result.z) <
+            XCALL(game_uso_func_082880, sqrtf)(result.x * result.x + result.z * result.z) <
                 s->w->speed * s->range) {
             n0 = hitC;
-            game_uso_func_071028(&n0);
+            XCALL(game_uso_func_071028, math_vec3Normalize)(&n0);
             n1 = hitA;
-            game_uso_func_071028(&n1);
+            XCALL(game_uso_func_071028, math_vec3Normalize)(&n1);
             n2 = hitB;
-            game_uso_func_071028(&n2);
+            XCALL(game_uso_func_071028, math_vec3Normalize)(&n2);
             if (((n0.x * n2.x + n0.z * n2.z) < (n0.x * n1.x + n0.z * n1.z)) + 0 * (int)(n0.x * n2.x + n0.z * n2.z + n0.x + n0.z + n0.x * n0.z)) {
                 R = hitA; result.x = R.x; result.y = R.y; result.z = R.z;
             } else {

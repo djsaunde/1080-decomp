@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for CourseMarker_registerTemplates (0x414 / 261 words).
  *
  * Twelve `list->add(new Item(name_k), -1)` statements: each reads one
@@ -39,18 +40,18 @@ struct Item {
 #define NM(s, o) (*(Name *)(&game_uso_D_##s + (o)))
 #define BLK(k, s, o, ADD) Q q##k(NM(s, o)); ADD(arg0, new Item(q##k), -1);
 extern "C" void CourseMarker_registerTemplates(void *arg0) {
-    BLK(0, 807FEC70, 0x680, game_uso_func_052F70)
-    BLK(1, 807FEC74, 0x684, game_uso_func_052F70)
-    BLK(2, 807FEC78, 0x688, game_uso_func_052F70)
-    BLK(3, 807FEC7C, 0x68C, game_uso_func_052F70)
-    BLK(4, 807FEC80, 0x690, game_uso_func_052F70)
-    BLK(5, 807FEC84, 0x694, game_uso_func_052F70)
-    BLK(6, 807FEC88, 0x698, game_uso_func_052F70)
-    BLK(7, 807FEC8C, 0x69C, game_uso_func_052F70)
-    BLK(8, 807FEC90, 0x6A0, game_uso_func_052F70)
-    BLK(9, 807FEC94, 0x6A4, game_uso_func_052F70)
-    BLK(10, 807FEC98, 0x6A8, game_uso_func_052F70)
-    BLK(11, 807FEC9C, 0x6AC, game_uso_func_052F70)
+    BLK(0, 807FEC70, 0x680, XCALL(game_uso_func_052F70, ItemMgr_addType))
+    BLK(1, 807FEC74, 0x684, XCALL(game_uso_func_052F70, ItemMgr_addType))
+    BLK(2, 807FEC78, 0x688, XCALL(game_uso_func_052F70, ItemMgr_addType))
+    BLK(3, 807FEC7C, 0x68C, XCALL(game_uso_func_052F70, ItemMgr_addType))
+    BLK(4, 807FEC80, 0x690, XCALL(game_uso_func_052F70, ItemMgr_addType))
+    BLK(5, 807FEC84, 0x694, XCALL(game_uso_func_052F70, ItemMgr_addType))
+    BLK(6, 807FEC88, 0x698, XCALL(game_uso_func_052F70, ItemMgr_addType))
+    BLK(7, 807FEC8C, 0x69C, XCALL(game_uso_func_052F70, ItemMgr_addType))
+    BLK(8, 807FEC90, 0x6A0, XCALL(game_uso_func_052F70, ItemMgr_addType))
+    BLK(9, 807FEC94, 0x6A4, XCALL(game_uso_func_052F70, ItemMgr_addType))
+    BLK(10, 807FEC98, 0x6A8, XCALL(game_uso_func_052F70, ItemMgr_addType))
+    BLK(11, 807FEC9C, 0x6AC, XCALL(game_uso_func_052F70, ItemMgr_addType))
     int z0, z1, z2, z3;
     z0 = 0; z1 = 0; z2 = 0; z3 = 0;
 }

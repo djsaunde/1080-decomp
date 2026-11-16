@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for RiderCam_update_00004948 (camera transition tick, 0x6A4 + an
  * all-zero pad word). EXACT (agent-c run 125).
  * - Vec3 has no user copy ctor (a user copy ctor adds cfront's this==0 new
@@ -43,7 +44,7 @@ extern "C" void RiderCam_update_00004948(char *obj) {
         Vec3 B;
         B = recpos(obj) * bu_4948_k0;
         B.y *= bu_4948_k1;
-        func_00000000(obj + 0x30, &B);
+        FCALL(math_mtxAddTranslation)(obj + 0x30, &B);
         F(obj, 0x14C) = F(obj, 0x150);
     } else if ((st >= 0x13 && st < 0x18) || (st >= 0x18 && st < 0x1D)) {
         Vec3 d, C, E;
@@ -64,7 +65,7 @@ extern "C" void RiderCam_update_00004948(char *obj) {
         if (e->lo < dist) F(obj, 0x14C) = e->w;
         else if (dist < e->hi) F(obj, 0x14C) = e->v;
         else F(obj, 0x14C) = e->w + (e->v - e->w) / (e->lo - e->hi) * (e->lo - dist);
-        if (st >= 0x18 && st < 0x1D) SNAP(func_00000000);
+        if (st >= 0x18 && st < 0x1D) SNAP(FCALL(math_mtxAddTranslation));
     } else if ((st >= 0x1D && st < 0x22) || (st >= 0x22 && st < 0x27)) {
         Vec3 d, C, E;
         float dist;
@@ -88,10 +89,10 @@ extern "C" void RiderCam_update_00004948(char *obj) {
         t = bu4948_ff(dist * dist + r * r);
         t = bu4948_ff(dist / t) * 2 / F(func_000003F8, 0x160) * 180.0f;
         if (t < bu_4948_klo) F(obj, 0x14C) = bu_4948_klo; else if (bu_4948_khi < t) F(obj, 0x14C) = bu_4948_khi; else F(obj, 0x14C) = t;
-        if (st >= 0x22 && st < 0x27) SNAP(func_00000000);
+        if (st >= 0x22 && st < 0x27) SNAP(FCALL(math_mtxAddTranslation));
     } else {
         F(obj, 0x14C) = F(obj, 0x150);
     }
-    func_00000000(obj + 0x30);
-    func_00000000(obj);
+    FCALL(coll_pushClear_00035E64)(obj + 0x30);
+    FCALL(MNode_update)(obj);
 }
