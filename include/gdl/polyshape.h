@@ -122,7 +122,9 @@ typedef struct PolyShape {
 typedef struct MorphPoly {
     /* 0x00 */ PolyShape poly;
     /* 0xC0 */ void *verts;            /* new vertex source, MorphPoly_setVerts */
-    /* 0xC4 */ s32 unkC4;
+    /* 0xC4 */ u8 *colours;            /* RGBA per vertex (4-byte rows), consumed by
+                                        * MorphPoly_updateColours (the static DL Vtx cn[0..2]
+                                        * of each updateList entry), then cleared */
     /* 0xC8 */ s32 unkC8;
     /* 0xCC */ s32 unkCC;
     /* 0xD0 */ s16 *updateList;        /* -1 terminated index groups */

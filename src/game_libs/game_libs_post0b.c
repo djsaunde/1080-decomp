@@ -9844,13 +9844,30 @@ end:
 // folded use of the final mode word, and the a2C store on the Vec4 line.
 typedef struct { char pad[0x68]; short off68; char pad6A[2]; void (*fn6C)(); } VT415A4;
 typedef struct { char pad[0xC]; void *pC; char pad10[0x18]; VT415A4 *vt; } O415A4;
-typedef struct { int a0, a4, a8, aC, a10, a14; float f18, f1C; char pad20[8]; int a28; int a2C; float v30[4]; } T415A4;
+/* gWindowDefaults (Bss 0x3EC20, 0x40 bytes): the template Window_setDefaults copies into every
+ * new Window; App_main fills it (320 x 240, near 100, far 16000, flags 1030 | 6 | 0x400,
+ * projType 1 = perspective, clear colour 0). Field names are the Window fields they land in
+ * (window.h). agent-b run 553 (was T415A4 here, base + K in Window_setDefaults). */
+typedef struct WindowDefaults {
+    /* 0x00 */ WinClear clear;         /* Window +0x100 / +0x104 (App_main: unk0 0, clearFlags 2) */
+    /* 0x08 */ s32 width;
+    /* 0x0C */ s32 height;
+    /* 0x10 */ s32 originX;
+    /* 0x14 */ s32 originY;
+    /* 0x18 */ f32 near;
+    /* 0x1C */ f32 far;
+    /* 0x20 */ char pad20[8];
+    /* 0x28 */ s32 flags;
+    /* 0x2C */ s32 projType;
+    /* 0x30 */ f32 clearColour[4];
+} WindowDefaults;
+typedef char WindowDefaults_size_check[sizeof(WindowDefaults) == 0x40 ? 1 : -1];
 extern int D_415A4_z;
 extern char gSysLib_415A4_s1[], gMainHeap_415A4_s2[], D_415A4_s3[], gSysLib_415A4_s4[], gGfxLib_415A4_s5[], gSysLib_415A4_s6[];
 extern O415A4 *D_415A4_g1;
 extern int D_415A4_g2, gConsoleNode_3EF04_415A4_g3;
-extern T415A4 gWindowDefaults_415A4_t;
-extern T415A4 gWindowDefaults_415A4_tA; /* run 149: second name for the a28 stores (absolute lui at like the target) */
+extern WindowDefaults gWindowDefaults_415A4_t;
+extern WindowDefaults gWindowDefaults_415A4_tA; /* run 149: second name for the a28 stores (absolute lui at like the target) */
 extern char D_415A4_u[];
 extern char D_415A4_v[];
 extern char *gConsoleNode_3EF04_415A4_g4;
@@ -9859,7 +9876,7 @@ void App_main(O415A4 *self) {
     int a;
     int b;
     char *p;
-    T415A4 *t;
+    WindowDefaults *t;
     float *v;
 
     *(int *)((char *)&D_415A4_z + 0x3C160) = 0;
@@ -9874,17 +9891,17 @@ void App_main(O415A4 *self) {
     gConsoleNode_3EF04_415A4_g3 = CALL(ConsoleMgr_ctor)(0);
     if (1) {} /* agent-c run 303: BB split (the mode word v leaves the call block: v0 allowed) */
     t = &gWindowDefaults_415A4_t;
-    t->a4 = 2; /* agent-c run 303: agent-g run 210's `+ 0 * (int)(t->v30)` fold dropped (its address CSE took the Vec4 base off v0) */
-    t->a0 = 0;
-    t->a10 = 0;
-    t->a14 = 0;
-    t->a8 = 320; t->aC = 240; /* agent-g run 228: one line, 320 first (target t9 = 0x140, t0 = 0xF0; kit CCXXXIV): 94.49 -> 94.59 */
+    t->clear.clearFlags = 2; /* agent-c run 303: agent-g run 210's `+ 0 * (int)(t->clearColour)` fold dropped (its address CSE took the Vec4 base off v0) */
+    t->clear.unk0 = 0;
+    t->originX = 0;
+    t->originY = 0;
+    t->width = 320; t->height = 240; /* agent-g run 228: one line, 320 first (target t9 = 0x140, t0 = 0xF0; kit CCXXXIV): 94.49 -> 94.59 */
     v = (float *)1030; /* agent-c run 303: after the a8 / aC line (target `li v0,1030` after `li t0,240`): 99.26 -> 99.42 */
-    t->f18 = 100.0f;
-    t->f1C = 16000.0f; if (1) {} gWindowDefaults_415A4_tA.a28 = (int)v;
+    t->near = 100.0f;
+    t->far = 16000.0f; if (1) {} gWindowDefaults_415A4_tA.flags = (int)v;
     v = (float *)((int)v | 2);
     v = (float *)((int)v | 6); if (1) {}
-    v = (float *)((int)v | 0x400); gWindowDefaults_415A4_tA.a28 = (int)v + 0 * (int)(v);
+    v = (float *)((int)v | 0x400); gWindowDefaults_415A4_tA.flags = (int)v + 0 * (int)(v);
     /* agent-c run 303: the folded use of v ranks the mode word above t (v0 / v1 as the target); a value-preserving `| 2` (1030 already has bit 1) ahead of the `| 6`: uopt folds
      * only the FIRST identity OR on the known constant, so the target's `ori 6` / `ori 0x400` chain both survive; the a2C
      * store through the plain gWindowDefaults_415A4_t name reuses the record base v1 like the target (t->a2C went absolute); line
@@ -9898,8 +9915,8 @@ void App_main(O415A4 *self) {
      * just-stored word back (store-forwarded into a register after constant folding, so the ors stay unfolded like the
      * target's ori chain; target addiu v0,1030 hoisted with the record constants): 95.58 -> 95.92, same length.
      * agent-g run 257 (previous spelling `v = 1030; t->a28 = v; v |= 6; if (1) {} v |= 0x400; tA.a28 = v`): the mode word through a variable (1030 | 6 | 0x400 == 1030; the target's unfolded ori chain says the value went through one), BB split before the 0x400 (shape grid 90 + 216): 94.87 -> 95.20; held in an existing local (v, assigned again below before any other read) instead of a new one keeps the 56-byte frame, and v's web takes v0 like the target's chain: 95.58 with the p reuse at the vcall, same length */
-    if (1) { v = t->v30; } /* run 149: v from t (target addiu v0 base), stores z-first */
-    gWindowDefaults_415A4_t.a2C = 1; v[3] = v[2] = v[1] = v[0] = 0.0f; /* agent-c run 303: a2C on the Vec4 line (as1 source-line tie: the base's addiu before the a2C sw) */
+    if (1) { v = t->clearColour; } /* run 149: v from t (target addiu v0 base), stores z-first */
+    gWindowDefaults_415A4_t.projType = 1; v[3] = v[2] = v[1] = v[0] = 0.0f; /* agent-c run 303: a2C (projType) on the Vec4 line (as1 source-line tie: the base's addiu before the a2C sw) */
     CALL(memtrack_begin)(GL_DATA_STR(0x1F5D4, "SysLib"), 0);
     CALL(app_initSystem)(gSysLib_415A4_s4);
     CALL(memtrack_end)();
@@ -14316,7 +14333,7 @@ void MorphPoly_init(MorphPoly *self) {
     self->unkC8 = 0;
     self->unkCC = 0;
     self->verts = 0;
-    self->unkC4 = 0;
+    self->colours = 0;
     self->updateCount = 0;
     CALL(MorphPoly_allocUpdateList)();
     CALL(PolyShape_init)(self);
@@ -14396,11 +14413,11 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", MorphPoly_display);
 #endif
 
 extern int gl_func_00000000();
-void MorphPoly_morph(char *a0) {
-    if (*(int*)(a0 + 0xC0) != 0) {
+void MorphPoly_morph(MorphPoly *a0) {
+    if (a0->verts != 0) {
         CALL(MorphPoly_update_4AAF0)(a0);
     }
-    if (*(int*)(a0 + 0xC4) != 0) {
+    if (a0->colours != 0) {
         CALL(MorphPoly_updateColours)();
     }
 }
@@ -14519,28 +14536,30 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", MorphPoly_update_4AAF0);
  * `i * 16 + (d4 * 16 + base)` gives the target ring order (base chain t5/t6,
  * d4*16 t7). Report strings are gl_ref_ pins. */
 extern char sStr_Morphpoly_nothing_to_update_2008C, sStr_new_colours_200AC;
-void MorphPoly_updateColours(char *self) {
+void MorphPoly_updateColours(MorphPoly *self) {
     int i;
     int t0;
     short idx;
     char *slot;
-    char *g;
-    if (*(int *)(self + 0xC4) == 0) {
+    DLContext *g;
+    if (self->colours == 0) {
         CALL(sys_fatal)(&sStr_Morphpoly_nothing_to_update_2008C);
         return;
     }
     CALL(dbg_printf)(&sStr_new_colours_200AC);
-    for (i = 0, t0 = 0; i < *(short *)(self + 0xD6) - *(short *)(self + 0xD4); i++, t0 += 2) {
-        idx = *(short *)(*(char **)(self + 0xD0) + t0);
+    for (i = 0, t0 = 0; i < self->vtxEnd - self->vtxStart; i++, t0 += 2) {
+        idx = *(short *)((char *)self->updateList + t0);
         if (idx != -1) {
-            g = ((char *)gGfx->staticDL);
-            slot = (char *)(i * 16 + (*(short *)(self + 0xD4) * 16 + **(int **)(g + 0x1C)));
-            slot[0xC] = *(*(char **)(self + 0xC4) + idx * 4);
-            slot[0xD] = *(*(char **)(self + 0xC4) + idx * 4 + 1);
-            slot[0xE] = *(*(char **)(self + 0xC4) + idx * 4 + 2);
+            g = gGfx->staticDL;
+            /* the static DL's Vtx row vtxStart + i (GdlVtx); cn[0..2] = the vertex's RGB.
+             * `*(int *)&...->base` is a byte lever (plain ->base reorders the sll / lh) */
+            slot = (char *)(i * 16 + (self->vtxStart * 16 + *(int *)&g->vtx.cur->base));
+            GDLVTX(slot)->cn[0] = self->colours[idx * 4];
+            GDLVTX(slot)->cn[1] = self->colours[idx * 4 + 1];
+            GDLVTX(slot)->cn[2] = self->colours[idx * 4 + 2];
         }
     }
-    *(int *)(self + 0xC4) = 0;
+    self->colours = 0;
 }
 
 void gfx_emptyStub_0004ACCC(int a0) {
@@ -15417,8 +15436,7 @@ extern int D_4C300_g7;
 extern int D_4C300_g8;
 extern int D_4C300_g9;
 extern int gl_func_00034458_4C300();
-typedef char *(*GP_0004C300)();
-#define G240_4C300 (((char *)gGfx->mainWindow)) /* the main ScreenWindow */
+#define G240_4C300 (((char *)gGfx->mainWindow)) /* the main ScreenWindow (SCRWIN: defined above gfx_submitFrameTask) */
 extern void gl_func_00034458_4C300v();
 void ScreenWindow_allocBuffers(ScreenWindow *self) {
     s32 sz;
@@ -15475,23 +15493,23 @@ void ScreenWindow_allocBuffers(ScreenWindow *self) {
     XCALL(gl_func_00034458_4C300, memtrack_end)();
     XCALL(gl_func_00034458_4C300, memtrack_begin)(GL_DATA_STR(0x20154, "DLs"), 0); /* "DLs" */
     /* p walks the two per-frame-buffer slots of startDL / setupDL / bgDL
-     * ("startdraw", "setupDyn", "bgDyn", "bg") as a byte pointer (rule 4b). */
+     * ("startdraw", "setupDyn", "bgDyn", "bg") as a byte pointer (rule 4b): SCRWIN(p)->X[0] is slot i / 4 of X. */
     for (i = 0, p = (char *)self; i != 8; i += 4, p += 4) {
-        FW(p, 0x14C) = XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20158, "startdraw"), 0x28, 0, 0, 0, 1);
+        SCRWIN(p)->startDL[0] = (DLContext *)XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20158, "startdraw"), 0x28, 0, 0, 0, 1);
         if (self->win.flags & 0x1000) {
-            FW(p, 0x198) = XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20164, "setupDyn"), D_4C300_g0, D_4C300_g1,
+            SCRWIN(p)->setupDL[0] = (DLContext *)XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20164, "setupDyn"), D_4C300_g0, D_4C300_g1,
                                             D_4C300_g2, D_4C300_g3, D_4C300_g4);
-            FW(p, 0x180) = XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20170, "bgDyn"), D_4C300_g5, D_4C300_g6,
+            SCRWIN(p)->bgDL[0] = (DLContext *)XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20170, "bgDyn"), D_4C300_g5, D_4C300_g6,
                                             D_4C300_g7, D_4C300_g8, D_4C300_g9);
         } else {
-            FW(p, 0x180) = XCALL(gl_func_00034458_4C300, gfx_newDLChild_0005AB84)(0, GL_DATA(0x20178), FW(G240_4C300 + i, 0x180));
-            FW(p, 0x198) = FW(G240_4C300 + i, 0x198);
+            SCRWIN(p)->bgDL[0] = (DLContext *)XCALL(gl_func_00034458_4C300, gfx_newDLChild_0005AB84)(0, GL_DATA(0x20178), SCRWIN(G240_4C300 + i)->bgDL[0]);
+            SCRWIN(p)->setupDL[0] = SCRWIN(G240_4C300 + i)->setupDL[0];
         }
     }
     XCALL(gl_func_00034458_4C300, memtrack_end)();
     {
-        char *cb = (char *)self->win.node.vptr; /* Cfront vtable entry {s16 delta; s16 idx; fn} at +0x58 */
-        ((GP_0004C300)FW(cb, 0x5C))(*(s16 *)(cb + 0x58) + (char *)self, cb);
+        char *cb = (char *)self->win.node.vptr; /* vtable slot 10 (Cfront entry at +0x58) */
+        VT_SLOT(cb, 10).fn(VT_SLOT(cb, 10).delta + (char *)self, cb);
     }
 }
 
@@ -15935,36 +15953,32 @@ int gfx_stub_0004CDA4(int a0) {
  * index is now a function-scope k whose dead `while (0) { k = 0; }` at the top gives it an earlier
  * bit (k -> v1, the load piece -> a0), and the E9 packet uses the function-scope g (the v1 web of
  * packets 1-2) with its index read through g (i -> v0, p -> a0). */
-#define GFX_4CDB0(o) (*(char **)((o) + 0xC))
+#define GFX_4CDB0(o) (*(char **)&DLCTX(o)->gfx.cur) /* the DLContext's current Gfx chunk (DLBuf) */
 #define PACKET_4CDB0(obj, w0, w1) \
-    g = GFX_4CDB0(obj); i = *(int *)(g + 4); *(int *)(g + 4) = i + 1; \
-    p = (unsigned int *)(*(char **)GFX_4CDB0(obj) + i * 8); p[0] = (w0); p[1] = (w1)
-#define PACKET_4CDB0_I(obj, w0, w1) \
-    { int i = *(int *)(GFX_4CDB0(obj) + 4); char *g = GFX_4CDB0(obj); unsigned int *p; *(int *)(g + 4) = i + 1; \
-    p = (unsigned int *)(*(char **)GFX_4CDB0(obj) + i * 8); p[0] = (w0); p[1] = (w1); }
+    g = GFX_4CDB0(obj); i = DLBUF(g)->count; DLBUF(g)->count = i + 1; \
+    p = (unsigned int *)(*(char **)&DLBUF(GFX_4CDB0(obj))->base + i * 8); p[0] = (w0); p[1] = (w1)
 extern int gGfxLib_4CDB0_a;
-void gfx_submitFrame_0004CDB0(char *self, int flag)
+void gfx_submitFrame_0004CDB0(ScreenWindow *self, int flag)
 {
-    char *obj = *(char **)((char *)&gGfxLib_4CDB0_a + gGfx->fbIndex * 4 + 0x280);
+    char *obj = (char *)GFXLIB(&gGfxLib_4CDB0_a)->oneFrameDL[gGfx->fbIndex];
     char *g; unsigned int *p; int i; int r; char *q;
     int k; /* packet-3 index: the dead while (0) store gives it an itab bit before the obj->0xC load */
     while (0) { k = 0; }
-    CALL(gfx_dlMarkBegin_00044460)(self + 0x174, obj);
-    r = CALL(gl_osVirtualToPhysical)(CALL(gfx_dlMarkStart_00044498)(self + 0x15C));
+    CALL(gfx_dlMarkBegin_00044460)(self->unk174, obj);
+    r = CALL(gl_osVirtualToPhysical)(CALL(gfx_dlMarkStart_00044498)(&self->mark15C));
     PACKET_4CDB0(obj, 0x06000000, r);
-    r = CALL(gl_osVirtualToPhysical)(CALL(gfx_dlMarkStart_00044498)(self + 0x168));
+    r = CALL(gl_osVirtualToPhysical)(CALL(gfx_dlMarkStart_00044498)(&self->mark168));
     PACKET_4CDB0(obj, 0x06000000, r);
-    q = *(char **)(self + 0x1C0);
-    r = CALL(gl_osVirtualToPhysical)(*(int *)(q + 0x60));
-    { char *g = GFX_4CDB0(obj); unsigned int *p; k = *(int *)(GFX_4CDB0(obj) + 4); *(int *)(g + 4) = k + 1; p = (unsigned int *)(*(char **)GFX_4CDB0(obj) + k * 8); p[0] = (0x06000000); p[1] = (r); }
+    q = (char *)self->curBg;
+    r = CALL(gl_osVirtualToPhysical)(DLCTX(q)->frameStart);
+    { char *g = GFX_4CDB0(obj); unsigned int *p; k = DLBUF(GFX_4CDB0(obj))->count; DLBUF(g)->count = k + 1; p = (unsigned int *)(*(char **)&DLBUF(GFX_4CDB0(obj))->base + k * 8); p[0] = (0x06000000); p[1] = (r); }
     if (flag) {
-        { int i; unsigned int *p; g = GFX_4CDB0(obj); i = *(int *)(g + 4); *(int *)(g + 4) = i + 1; p = (unsigned int *)(*(char **)GFX_4CDB0(obj) + i * 8); p[0] = (0xE9000000); p[1] = (0); }
+        { int i; unsigned int *p; g = GFX_4CDB0(obj); i = DLBUF(g)->count; DLBUF(g)->count = i + 1; p = (unsigned int *)(*(char **)&DLBUF(GFX_4CDB0(obj))->base + i * 8); p[0] = (0xE9000000); p[1] = (0); }
     }
-    *(int *)((char *)CALL(gfx_queueGfxTask_0004CEFC)(self, 4) + 0x70) = *(int *)(self + 0x1B4);
+    *(int *)((char *)CALL(gfx_queueGfxTask_0004CEFC)(self, 4) + 0x70) = self->unk1B4;
 }
 #undef GFX_4CDB0
 #undef PACKET_4CDB0
-#undef PACKET_4CDB0_I
 
 
 /* gfx_queueGfxTask_0004CEFC (0xBC, 47 words) = the old 2-word orphan
@@ -17041,35 +17055,34 @@ extern int gl_func_00000000();
  * 0.0 and is still loaded), read through one zero alias per access (the target re-luis each). */
 typedef struct { int w[4]; } Q4E760;
 typedef struct { int w; } Q1E760;
-typedef struct { int w[2]; } Q2E760;
 extern f32 kRo_Window_setDefaults_1B70[], kRo_Window_setDefaults_1B74[], sStr_FCP_1B78[], sStr_GCP_1B7C[], kRo_Window_setDefaults_1B80[];  /* bootup.uso RoData base (sym1, 0): {0, 2200, 3000, 12500, 50000} at +0x1B70 */
-/* base = gWindowDefaults (Bss Sym 324, 0x40 bytes): +0x0 the unk100 / clearFlags pair, +0x8 width,
- * +0xC height, +0x10 / +0x14 origin, +0x18 near, +0x1C far, +0x28 flags, +0x2C projType,
- * +0x30 clearColour (agent-b run 489: window.h field names; same offsets / widths) */
+/* base = gWindowDefaults, a WindowDefaults (defined above App_main; agent-b run 553). The
+ * clearColour / flags copies through &gWindowDefaults (not base) and the Q4 / Q1 struct copies
+ * are the matched spellings. */
 #define W ((Window *)a0)
 void Window_setDefaults(char *a0) {
-    char *base = (char *)&gWindowDefaults;
+    WindowDefaults *base = (WindowDefaults *)&gWindowDefaults;
     char *vt;
     W->node.flags |= 0x80;
     vt = *(char **)&W->node.vptr;
-    *(Q4E760 *)W->clearColour = *(Q4E760 *)((char *)&gWindowDefaults + 0x30);
-    W->originX = *(int *)(base + 0x10);
-    W->originY = *(int *)(base + 0x14);
-    W->width = *(int *)(base + 0x8);
-    W->height = *(int *)(base + 0xC);
-    W->projType = *(int *)(base + 0x2C);
-    W->near = *(float *)(base + 0x18);
-    W->far = *(float *)(base + 0x1C);
-    *(Q1E760 *)&W->flags = *(Q1E760 *)((char *)&gWindowDefaults + 0x28);
+    *(Q4E760 *)W->clearColour = *(Q4E760 *)((WindowDefaults *)&gWindowDefaults)->clearColour;
+    W->originX = base->originX;
+    W->originY = base->originY;
+    W->width = base->width;
+    W->height = base->height;
+    W->projType = base->projType;
+    W->near = base->near;
+    W->far = base->far;
+    *(Q1E760 *)&W->flags = *(Q1E760 *)&((WindowDefaults *)&gWindowDefaults)->flags; /* the 1-word struct copy is a byte lever (a plain int copy reorders 13 insns) */
     *(int *)&W->camera = 0;
-    *(Q2E760 *)&W->unk100 = *(Q2E760 *)base;
+    *WINCLEAR(&W->unk100) = base->clear;
     W->drawDist[0] = kRo_Window_setDefaults_1B70[0x1B70 / 4];
     W->drawDist[1] = kRo_Window_setDefaults_1B74[0x1B74 / 4];
     W->drawDist[2] = sStr_FCP_1B78[0x1B78 / 4];
     W->drawDist[3] = 19584.0f;
     W->drawDist[4] = sStr_GCP_1B7C[0x1B7C / 4];
     W->coneCos = kRo_Window_setDefaults_1B80[0x1B80 / 4];
-    (*(void (**)())(vt + 0x5C))(a0 + *(short *)(vt + 0x58));
+    VT_SLOT(vt, 10).fn(a0 + VT_SLOT(vt, 10).delta); /* vtable slot 10 */
     W->displayMask = 1;
     *(int *)&W->bufAlloc = 0;
 }
