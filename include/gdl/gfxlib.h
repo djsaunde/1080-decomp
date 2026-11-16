@@ -26,6 +26,14 @@ typedef struct GfxMorphList {
     /* 0x14 */ char *vptr;              /* slot 0 = the per-frame update (gfx_end) */
 } GfxMorphList;
 
+/* FogParms (0x18, parm group "FogParms"): FogParms_set / setDefault (white, 996..1000) / lerp /
+ * emit (gfx_emitFog: G_SETFOGCOLOR + G_MW_FOG; the emit reads the low halves of min / max). */
+typedef struct FogParms {
+    /* 0x00 */ float colour[4];         /* RGBA 0..1 */
+    /* 0x10 */ int min;                 /* hostio "Min" (500..1000) */
+    /* 0x14 */ int max;                 /* hostio "Max" (500..1000) */
+} FogParms;
+
 typedef struct GfxLib {
     /* 0x000 */ int every4thFrame;      /* (frame counter & 3) == 0; gfx_setEvery4thFrameFlag */
     /* 0x004 */ int unk004[23];
@@ -34,7 +42,7 @@ typedef struct GfxLib {
     /* 0x0E0 */ float (*curMtx)[4];     /* proj or modelView: gfx_loadMatrix / multMatrix */
     /* 0x0E4 */ float (*extraMtx)[4];   /* extra model matrix (shadow / mirror):
                                          * light_setShadowMatrix / light_setMirrorMatrix */
-    /* 0x0E8 */ int unk0E8[16];
+    /* 0x0E8 */ float worldMtx[4][4]; /* diag(worldScale): game_initDdm */
     /* 0x128 */ float worldScale[3];    /* CollShape_query divides the probe point by it;
                                          * [2] scales camera +0xA8 distances (MapProp / Fog / Snower) */
     /* 0x134 */ int unk134;
@@ -44,7 +52,7 @@ typedef struct GfxLib {
     /* 0x140 */ int unk140[2];          /* 2-word copy source of Shadow_ctor_0004B0A8 */
     /* 0x148 */ void *frameStartCbs[5];  /* gfx_start calls vtable (+0x5C) slot 0 of each, arg 0 */
     /* 0x15C */ int nFrameStartCbs;
-    /* 0x160 */ int unk160[10];
+    /* 0x160 */ int unk160[10];         /* a table SnowBoarder_ctor fills (agent-h) */
     /* 0x188 */ int viewStage;          /* 0 projection, 1 modelview (gfx_setViewStage_00047F68) */
     /* 0x18C */ void *lights;           /* light list head (Link {obj, next}): gfx_updateLights */
     /* 0x190 */ void *shadowLight;      /* MNode (position +0xA0): gfx_setShadowLight */
@@ -53,7 +61,7 @@ typedef struct GfxLib {
                                          * gfx_end calls vtable (+0) slot 0 of each ("ADrawUpd") */
     /* 0x1C0 */ int nDrawUpdates;       /* zeroed by gfx_start */
     /* 0x1C4 */ int flags;              /* bit 1 cleared by gfx_beginView; bit 2 = clear with a
-                                         * zero quad */
+                                         * zero quad; 0x8 = GFX_FLAG_MAPPARMS */
     /* 0x1C8 */ void *unk1C8;
     /* 0x1CC */ int unk1CC[5];
     /* 0x1E0 */ int stageIsProj;        /* viewStage == 0 */
@@ -91,20 +99,19 @@ typedef struct GfxLib {
     /* 0x288 */ int unk288;
     /* 0x28C */ int cpuDraw;            /* gfx_drawText / gfx_fillRect draw into the frame buffer */
     /* 0x290 */ int unk290;
-    /* 0x294 */ int unk294[6];          /* passed by address to GfxLib_reset / hostioParms calls */
+    /* 0x294 */ FogParms fog;           /* the gGfxLib_*_src aliases; FogParms_emit / lerp, GfxLib_reset /
+                                         * hostioParms pass its address */
     /* 0x2AC */ int ddm[51];            /* per-frame DDM render-state hooks (gfx_getDdm); zeroed by reset */
     /* 0x378 */ int unk378[150];
     /* 0x5D0 */ int unk5D0;             /* zeroed by GfxLib_reset */
     /* 0x5D4 */ int unk5D4;
 } GfxLib;
 
-/* FogParms (0x18, parm group "FogParms"): FogParms_set / setDefault (white, 996..1000) / lerp /
- * emit (gfx_emitFog: G_SETFOGCOLOR + G_MW_FOG; the emit reads the low halves of min / max). */
-typedef struct FogParms {
-    /* 0x00 */ float colour[4];         /* RGBA 0..1 */
-    /* 0x10 */ int min;                 /* hostio "Min" (500..1000) */
-    /* 0x14 */ int max;                 /* hostio "Max" (500..1000) */
-} FogParms;
+
+/* GfxLib.flags 0x8: set by game_createMap (bootup) when the course has a COURSE_OP_MAP record (the
+ * map angle / end / add parms); PolyShape_func_00043584 then gives each shape a 0x100-byte buffer
+ * at +0x7C. */
+#define GFX_FLAG_MAPPARMS 0x8
 
 #define GFXLIB(p) ((GfxLib *)(p))
 /* the global itself (gGfxLib = D_00000000 + K sites, gl_data.h) */

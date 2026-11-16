@@ -11080,7 +11080,7 @@ void PolyShape_func_00043584(int *a0) {
     a0[0x6C/4] = 0;
     a0[0x70/4] = 0;
     a0[0x74/4] = 0;
-    if ((gGfx->flags & 8) != 0) {
+    if ((gGfx->flags & GFX_FLAG_MAPPARMS) != 0) {
         a0[0x7C/4] = FCALL(mem_new)(0x100);
     } else {
         a0[0x7C/4] = 0;
@@ -11778,7 +11778,7 @@ void GfxLib_reset(char *arg0) {
     }
     p[50] = 0;
     ((GfxLib *)arg0)->unk210 = 0;
-    gl_func_00000000(((GfxLib *)arg0)->unk294);
+    gl_func_00000000(&((GfxLib *)arg0)->fog);
     gl_func_00000000(arg0, 0);
     r = (unsigned int *)((GfxLib *)arg0)->rcp;
     if (0) { gl_func_00000000(&r); }
