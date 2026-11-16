@@ -176,9 +176,12 @@ extern "C" unsigned int port_game_retrace_count(void) {
  * boot_main_00066850 (VI / PI managers, SysApi hooks, SnowBoard_ctor -> the app's main ->
  * App_main -> app_run). On the port, port/uso "loads" bootup.uso (static initialisers) and
  * App_main ends in app_runInit, so this returns with the game ready for app_runOneFrame.
+ * The kernel's part before boot_main (gSysApi = &gUsoCtx, boot_entry_00066C30) is
+ * port_sysapi_install (port/sysapi.c).
  * The RcpMgr thread gets a port_ultra service step (RcpMgr_portStep), so a yield or blocking
  * wait anywhere drains its queue; the pad and fault threads stay parked. */
 extern "C" void port_uso_init(void) __attribute__((weak));
+extern "C" void port_sysapi_install(void) __attribute__((weak));
 extern "C" void port_ultra_register_service(void (*entry)(void *), int (*step)(void *), const char *name);
 extern "C" void boot_main_00066850(int);
 extern "C" void RcpMgr_update(int);
@@ -189,6 +192,13 @@ extern "C" void port_game_boot(void) {
     port_ultra_register_service((void (*)(void *))RcpMgr_update, RcpMgr_portStep, "RcpMgr");
     if (port_uso_init != 0) {
         port_uso_init();
+    }
+    /* gSysApi: the kernel's table (memory range, usoLoad / usoUnload, the ROM file services);
+     * after port_uso_init, which clears bootup Bss where gSysApi lives (port/sysapi.c) */
+    if (port_sysapi_install != 0) {
+        port_sysapi_install();
+    } else {
+        port_ultra_log("port_game_boot: no port_sysapi_install; boot_main reads gSysApi = 0");
     }
     boot_main_00066850(0);
     if (sPortSys == 0) {

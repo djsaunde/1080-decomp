@@ -1338,7 +1338,13 @@ int fs_gdlSeekFile(GdlFile *o, int a1, int a2) {
     } else goto c1;
     goto end;
 c1:
+#ifdef PORT
+    /* the kernel's fs_seek(file, whence, offset) reads a1 / a2 as they ride through from this
+     * function's own arguments in the MIPS registers; on the port they are passed */
+    r = ((int (*)(int, int, int))SYSAPI->fileSeek)(o->handle, a1, a2);
+#else
     r = SYSAPI->fileSeek(o->handle);
+#endif
     goto end;
 c0:
     r = CALL(hostio_seekFile)(&D_00000000);
