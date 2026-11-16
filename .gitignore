@@ -40,3 +40,6 @@ logs/
 # be needed for the spimdisasm USO-reloc migration; regenerate on demand).
 *.usosyms.txt
 uoptlist
+
+# PC port: assets extracted from the user's ROM by port/tools/extract/extract.py (never commit).
+port/assets/extracted/
