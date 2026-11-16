@@ -20,7 +20,7 @@
  * dbg_printThreads is renamed to gl_func_00048510_c34458 (blank USO jal words, pinned 0). */
 typedef short s16; typedef unsigned short u16; typedef int s32;
 extern "C" {
-int dbg_printThreads(...);
+int gl_func_00048510_c34458(...);
 extern char D_00000000[];
 }
 struct Vtx { int w[4]; void set(const Vtx &o) { *this = o; } };
@@ -44,11 +44,11 @@ void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
     int i;
     *full = 0;
     for (i = 0; i < n594; i++) {
-        idx[i] = dbg_printThreads(this, i == 0 || n594 == 2, &v[i]);
+        idx[i] = gl_func_00048510_c34458(this, i == 0 || n594 == 2, &v[i]);
         if (idx[i] < 0) {
             if (max590 - 1 < nv + 1) { /* agent-g run 258: compare spelling (max590 loaded first like the target): 98.71 -> 98.73; agent-c run 271: `max590 - 1 < nv + 1` -> 99.05 */
                 flush();
-                dbg_printThreads(this);
+                gl_func_00048510_c34458(this);
                 i = 0;
             }
             if (i == 0) {
@@ -65,6 +65,6 @@ void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
         tris[nt].v[k] = idx[k];
     }
     nt = nt + 1; if (nt >= 200) {
-        dbg_printThreads(D_00000000 + 0x1FF44);
+        gl_func_00048510_c34458(D_00000000 + 0x1FF44);
     }
 }

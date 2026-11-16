@@ -18,11 +18,11 @@
  * jal words are blank USO calls).
  */
 extern "C" {
-void *dbg_printThreads(...);
+void *gl_func_00041D40_c34458(...);
 extern char D_00000000[];
 }
 #define S(o) (D_00000000 + (o))
-inline void *operator new(unsigned n) { return dbg_printThreads(n); }
+inline void *operator new(unsigned n) { return gl_func_00041D40_c34458(n); }
 struct Elem { char pad[0xC]; int xC; char pad10[4]; char *x14; };
 struct AIter;
 struct Arr { Elem **data; int pad4, pad8; int count; Elem *&operator[](int i) { return data[i]; } AIter iter(); };
@@ -44,17 +44,17 @@ struct AIter : IBase {
 };
 inline AIter iter(Arr *a) { return AIter(a); }
 extern "C" void App_Update(int arg0) {
-    dbg_printThreads(S(0x1F6B4));
+    gl_func_00041D40_c34458(S(0x1F6B4));
     (*(Arr **)D_00000000)->count = 0;
-    dbg_printThreads(arg0);
+    gl_func_00041D40_c34458(arg0);
     { AIter it = iter(*(Arr **)D_00000000); if (it.first() + 0) do {
         Elem *e = it.cur();
-        dbg_printThreads(S(0x1F6C0), e->xC);
+        gl_func_00041D40_c34458(S(0x1F6C0), e->xC);
         e = it.cur(); if (1) {}
         if (e->x14 != 0) {
-            dbg_printThreads(e->x14 + 0x10, e);
+            gl_func_00041D40_c34458(e->x14 + 0x10, e);
         }
     } while (it.adv() + 0); }
     { volatile int q0, q1, q2; }
-    dbg_printThreads();
+    gl_func_00041D40_c34458();
 }

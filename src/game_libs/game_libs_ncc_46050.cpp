@@ -58,7 +58,7 @@ typedef int s32; typedef unsigned int u32;
 typedef float f32;
 extern "C" {
 extern int D_00000000; extern int gGfxFbWidth_46050_m[];
-extern int dbg_printThreads(...);
+extern int gl_func_00046050_c34458(...);
 }
 #define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
 struct Gwords { unsigned int w0, w1; };
@@ -107,7 +107,7 @@ extern "C" s32 gfx_drawText(Font *o, u8 *arg1, s32 arg2) {
         gW(CTX->next(), 0xFCFFFFFF, 0xFFFCF279);
         gW(CTX->next(), 0xBA000C02, 0 + (o->f4 & 0) + (o->f8 & 0) + (o->fC & 0));
         gW(CTX->next(), 0xBA001301, 0);
-        gW(CTX->next(), 0xFD900000, dbg_printThreads((void *)&D_00000000));
+        gW(CTX->next(), 0xFD900000, gl_func_00046050_c34458((void *)&D_00000000));
         gW(CTX->next(), 0xF5900000, 0x07000000);
         gW(CTX->next(), 0xE6000000, 0);
         gW(CTX->next(), 0xF3000000, 0x077FF100);
@@ -142,7 +142,7 @@ extern "C" s32 gfx_drawText(Font *o, u8 *arg1, s32 arg2) {
                     gSPTextureRectangle(CTX->nextr(), CTX->next0(), CTX->next(), o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
                         ((cc & 0xF) * 8) << 5, ((cc & 0xF0) >> 1) << 5, 0x2000 / charw, 0x2000 / lineh);
                 } else {
-                    dbg_printThreads(o, ch, o->x, o->y);
+                    gl_func_00046050_c34458(o, ch, o->x, o->y);
                 }
             }
             o->x = o->x + charw;

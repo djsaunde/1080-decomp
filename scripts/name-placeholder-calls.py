@@ -204,22 +204,58 @@ def mask(src):
 
 
 def top_blocks(m):
-    """[(boundary, open, close)] for brace blocks at file scope; boundary = index after the last
-    file-scope ';' or '}' before the block."""
+    """[(boundary, open, close, outer)] for brace blocks at file scope; boundary = index after the
+    last file-scope ';' or '}' before the block. Transparent (run 618; before, every site in them
+    was silently skipped):
+      * a C++ linkage block (`extern "C" {`, its string blanked by mask());
+      * a struct / class / union body: its inline member functions are blocks too. outer = the
+        boundary before the outermost enclosing class, where file-scope declarations can go
+        (= boundary for a block not inside a class).
+    A K&R definition `T f(a, b) T1 a; T2 b; {` gets the boundary before its parameter list."""
     res, depth, boundary, op = [], 0, 0, None
+    trans = []          # open transparent blocks: (kind, outer boundary)
+    semis = [0]         # file-scope ';' boundaries since the last block (K&R parameter lists)
+
+    def outer_of(b):
+        cls = [o for k, o in trans if k == 'class']
+        return cls[0] if cls else b
     for i, ch in enumerate(m):
         if ch == '{':
             if depth == 0:
+                h = m[boundary:i]
+                if re.fullmatch(r'\s*extern\s*', h):
+                    trans.append(('link', None))
+                    boundary = i + 1
+                    semis = [boundary]
+                    continue
+                if re.fullmatch(r'\s*(?:typedef\s+)?(?:struct|class|union)\b[^=()]*', h):
+                    trans.append(('class', outer_of(boundary)))
+                    boundary = i + 1
+                    semis = [boundary]
+                    continue
                 op = i
+                if '(' not in h:
+                    for b in reversed(semis[:-1]):
+                        if re.fullmatch(r'[^;{}()=]*\b[A-Za-z_]\w*\s*\(\s*\w*(?:\s*,\s*\w+)*\s*\)'
+                                        r'(?:[^;{}()=]+;)+\s*', m[b:i]):
+                            boundary = b
+                            break
             depth += 1
         elif ch == '}':
+            if depth == 0 and trans:
+                trans.pop()
+                boundary = i + 1
+                semis = [boundary]
+                continue
             depth -= 1
             if depth == 0:
-                res.append((boundary, op, i))
+                res.append((boundary, op, i, outer_of(boundary)))
                 boundary = i + 1
+                semis = [boundary]
             depth = max(depth, 0)
         elif ch == ';' and depth == 0:
             boundary = i + 1
+            semis.append(boundary)
     return res
 
 
@@ -363,7 +399,7 @@ def verify_text(src, m, sites, cpp=False):
         edits.append((s.pos, s.end, f'npc_uc_{s.i}'))
         by_block[s.block].append(s)
     for blk, ss in by_block.items():
-        ip = insert_point(m, blk[0])
+        ip = insert_point(m, blk[3])
         decls = ''.join(decl_for(src, m, s.tok, s.pos, f'npc_uc_{s.i}') for s in ss)
         if cpp:     # unmangled names; C++ `f()` means (void), so the K&R default becomes (...)
             decls = 'extern "C" { ' + re.sub(r'\(\); $', '(...); ', decls.replace('(); ', '(...); ')) + '} '
@@ -576,7 +612,7 @@ def obj_of(path):
     return 'build/' + path + '.o'
 
 
-ADDR_TOK_RE = re.compile(r'\w*func_(?!00000000)[0-9A-Fa-f]{6,8}\w*')
+ADDR_TOK_RE = re.compile(r'\w*func_(?!00000000)[0-9A-Fa-f]{6,8}\w*|\w+_c34458')  # _c34458: NCC donors' blank-jal tokens (run 618)
 _ZERO = None
 
 
@@ -1033,6 +1069,9 @@ def run_plans(files, rom, mv, verbose):
 
 def cmd_plan(a, rom, mv):
     tot_named = tot_left = 0
+    only = None     # --funcs: name only these (unit, function) pairs' sites (.cpp units: whole file)
+    if a.funcs:
+        only = {tuple(l.split('\t')[:2]) for l in open(a.funcs) if l.strip() and not l.startswith('#')}
     for res in run_plans(a.files, rom, mv, a.verbose):
         path, sites = res['path'], res['sites']
         raw = [s for s in sites if s.name is None]
@@ -1041,7 +1080,9 @@ def cmd_plan(a, rom, mv):
             tot_left += len(raw)
             continue
         named = [s for s in raw if s.i in res['derived']]
-        left = [s for s in raw if s.i not in res['derived']]
+        if only is not None and not path.endswith('.cpp'):
+            named = [s for s in named if (path, s.func) in only]
+        left = [s for s in raw if s not in named]
         if res.get('hidden'):
             hid = res['hidden']
             print(f'{path}: macro-hidden sites (placeholder calls inside function-like macro bodies, not '
@@ -1238,6 +1279,8 @@ def main():
     p.add_argument('--addr-token-files', action='store_true',
                    help='add every src file that calls a zero-pinned address token (sorted)')
     p.add_argument('--write', action='store_true'); p.add_argument('-v', '--verbose', action='store_true')
+    p.add_argument('--funcs', help='TSV of unit<TAB>function (e.g. port/gen/binds-left.tsv): name only the '
+                   'sites inside those C functions (a .cpp unit is named whole)')
     p = sub.add_parser('check'); p.add_argument('files', nargs='*')
     p.add_argument('--strict', action='store_true')
     sub.add_parser('selftest')

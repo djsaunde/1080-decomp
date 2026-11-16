@@ -10,8 +10,8 @@
  * Residual: h's spill slot 0x28 (target 0x2C, our top slot is make's o parameter), the Mid / Base this
  * colours (target a3 / v1, ours v1 / a0: zdbug:5 priorities Mid 2.0 > Base 1.5) and the next() result
  * (h's pooled slot is reused for it, so both are a1; target a2 then v1). */
-extern "C" void *dbg_printThreads(...);
-inline void *operator new(unsigned n) { return dbg_printThreads(n); }
+extern "C" void *gl_34890_c34458(...);
+inline void *operator new(unsigned n) { return gl_34890_c34458(n); }
 template <class T> inline T *me(T *p) { return p; } /* agent-c run 252: zero-code accessor (kit CCLXXXIV) */
 struct Pair { int a, b; };
 extern "C" Pair D_34890_tmpl;
@@ -38,7 +38,7 @@ struct X : Mid { X(O *oo) : Mid(oo) {} virtual void f(); };
  * loop test written out as next()'s ternary in the for condition (no inline call: no `this` temp in the loop, so h's
  * coloured M-12 variable is not reused by a next() result) and `me(&it)->cur` on the first store, `it(o->list)`
  * plain: 99.57 -> 99.64 standalone. LEFT: the two ternary result colours (target a2 / v1, ours v0 / a1). */
-inline void make(int h, O *o) { if (0) { h = 0; } X *a = new X(o); dbg_printThreads(gHostio_34890_d, h, a, o->flags & 2); }
+inline void make(int h, O *o) { if (0) { h = 0; } X *a = new X(o); gl_34890_c34458(gHostio_34890_d, h, a, o->flags & 2); }
 extern "C" void hostio_sendNodeTree(O *o) {
     make(o->h, o);
     /* agent-g run 319 (kit CDXI): the loop as `if (top) do ... while (I3(it.nxi()))` with two `I2(0)` pool entries in
@@ -49,8 +49,8 @@ extern "C" void hostio_sendNodeTree(O *o) {
     LIter it(me(o)->list);
     if ((I2(0), I2(0), (me(&it)->cur = it.nxt) ? (it.nxt = it.nxt->next, it.cur->data) : 0)) {
         void *rv;
-        do { rv = dbg_printThreads(it.cur->data); } while (I3(it.nxi()));
+        do { rv = gl_34890_c34458(it.cur->data); } while (I3(it.nxi()));
         if (rv) {}
     }
-    dbg_printThreads(gHostio_34890_e);
+    gl_34890_c34458(gHostio_34890_e);
 }

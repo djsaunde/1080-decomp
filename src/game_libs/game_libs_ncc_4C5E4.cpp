@@ -20,7 +20,7 @@
  * G_DL appends, then folded counted uses in the else arm: EXACT. */
 #include "../../include/gdl/gfxlib.h" /* GfxLib: curWindow, fbIndex, perspNorm, flags */
 extern "C" {
-int dbg_printThreads(...);
+int gl_func_0004C5E4_c34458(...);
 extern char D_00000000[];
 extern char gGfxLib_4c5e4_sh[], gGfxLib_4c5e4_flag[], gl_d_4c5e4_word[], gGfxLib_4c5e4_reg[], gGfxLib_4c5e4_arg[], gGfxLib_4c5e4_clr[];
 }
@@ -77,11 +77,11 @@ void Obj::run() {
     GFXLIB(g)->curWindow = (struct ScreenWindow *)this;
     fbIndex = GFXLIB(g)->fbIndex;
     curBg = bgDL[fbIndex];
-    GFXLIB(gGfxLib_4c5e4_sh)->perspNorm = dbg_printThreads(g, nearWord, farWord); /* gfx_calcPerspNorm(near, far) */
+    GFXLIB(gGfxLib_4c5e4_sh)->perspNorm = gl_func_0004C5E4_c34458(g, nearWord, farWord); /* gfx_calcPerspNorm(near, far) */
     unk1B4 = 0;
     g = mark15C; /* agent-g run 260 (kit CCXCIII spilltemps): the mark15C address first mentioned before the fbOwner load, so its item takes the first temp (spill 68 -> 72 = target); held in the dead g (a fresh name costs a home) */
     dl = ((DL **)((char *)fbOwner + fbIndex * 4))[0x198 / 4]; /* fbOwner->setupDL[fbIndex] */
-    dbg_printThreads(g, dl); /* gfx_dlMarkBegin */
+    gl_func_0004C5E4_c34458(g, dl); /* gfx_dlMarkBegin */
     char *s1;
     if (GFXLIB(gGfxLib_4c5e4_flag)->flags & 2) { /* gfx flags bit 2: clear with a zero quad */
         int f = ((clearFlags & 2) != 0) + 0 * (int)(originX); /* agent-c run 210: folded counted use of the member originX (zero code) */
@@ -89,7 +89,7 @@ void Obj::run() {
         if (f) f = (flags & 2) != 0;
         float buf[4]; int one = 1; /* agent-c run 232: home-keeping argument locals -> frame 208 / buf 180 = target (88.69 -> 88.72); run 260: e3 dropped (the inline appends' homes take its word); run 261: za / e1 / e2 dropped for the named hh / nn / vh / vn homes */
         buf[0] = 0.0f; buf[1] = 0.0f; buf[2] = 0.0f; buf[3] = 0.0f;
-        dbg_printThreads(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, 0, 0, 8, 8, 8, clearAlpha);
+        gl_func_0004C5E4_c34458(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, 0, 0, 8, 8, 8, clearAlpha);
     } else {
         s1 = (char *)vt->fn((void *)(vt->off + (int)this)); /* offset first: the target's `addu a0,t7,s0` */
         Sub *sb = fbOwner;
@@ -102,12 +102,12 @@ void Obj::run() {
          * 3.0 and the codeless sub-load item to 2.0, so that item is coloured after bc and takes t3 -- sb8 then gets
          * the target's t4 (99.95 -> 100). `0 * (signed char)f` / `0 * (unsigned)(sub)` keep the folds distinct
          * expressions (a repeated `0 * f` is one CSE item that gets a colour of its own). */
-        dbg_printThreads(dl, s1, pf, m4, f + 0 * f, clearColour, c0 + 0 * c0 + 0 * (signed char)f, c4 + 0 * c4, b8 + 0 * b8, bc + 0 * bc, sb8 + 0 * (unsigned)(fbOwner), clearAlpha);
+        gl_func_0004C5E4_c34458(dl, s1, pf, m4, f + 0 * f, clearColour, c0 + 0 * c0 + 0 * (signed char)f, c4 + 0 * c4, b8 + 0 * b8, bc + 0 * bc, sb8 + 0 * (unsigned)(fbOwner), clearAlpha);
     }
-    dbg_printThreads(dl);
-    dbg_printThreads(mark15C);
-    dbg_printThreads(mark168, dl);
-    dbg_printThreads(gGfxLib_4c5e4_reg + 0x294); if (1) {} /* run 194 (lever-sweep bbsplit) */
+    gl_func_0004C5E4_c34458(dl);
+    gl_func_0004C5E4_c34458(mark15C);
+    gl_func_0004C5E4_c34458(mark168, dl);
+    gl_func_0004C5E4_c34458(gGfxLib_4c5e4_reg + 0x294); if (1) {} /* run 194 (lever-sweep bbsplit) */
     {
     /* agent-c run 261 (kit CCXCIX): the G_DL / G_MOVEMEM appends share ONE named head (hh) and ONE named count
      * (nn) -- the target's a2 / a1 in both -- and the Vp append has its own named vh / vn (v1 / t0); folded uses
@@ -115,7 +115,7 @@ void Obj::run() {
      * (99.59 -> 99.95) */
     s1 = (char *)dl; DLHead *hh; int nn;
     Sub2 *e = startDL[fbIndex];
-    int v = dbg_printThreads(e->frameStart) + 0 * (int)(fbIndex); /* osVirtualToPhysical; agent-c run 210: folded counted use of the member fbIndex (zero code) */
+    int v = gl_func_0004C5E4_c34458(e->frameStart) + 0 * (int)(fbIndex); /* osVirtualToPhysical; agent-c run 210: folded counted use of the member fbIndex (zero code) */
     { hh = ((DL *)s1)->head; nn = hh->count++; Gfx *p = &((DL *)s1)->head->buf[nn]; p->w0 = 0x06000000; p->w1 = v + 0 * nn; }
     s1 = (char *)dl;
 #define d ((DL *)s1)
@@ -135,9 +135,9 @@ void Obj::run() {
     vp->vscale[1] = cy * 2.0f;
     vp->vtrans[0] = cw * 4.0f + cx * 2.0f;
     vp->vtrans[1] = ch * 4.0f + cy * 2.0f;
-    { hh = d->head; nn = hh->count++; Gfx *p = &d->head->buf[nn]; unsigned c3 = 0x03800010; p->w0 = c3; p->w1 = dbg_printThreads(vp); } /* agent-c run 232: used c3 below p -> p home sp+0x50 = target (88.72 -> 88.73) */
+    { hh = d->head; nn = hh->count++; Gfx *p = &d->head->buf[nn]; unsigned c3 = 0x03800010; p->w0 = c3; p->w1 = gl_func_0004C5E4_c34458(vp); } /* agent-c run 232: used c3 below p -> p home sp+0x50 = target (88.72 -> 88.73) */
     }
-    dbg_printThreads(this);
-    dbg_printThreads(gGfxLib_4c5e4_arg, this);
+    gl_func_0004C5E4_c34458(this);
+    gl_func_0004C5E4_c34458(gGfxLib_4c5e4_arg, this);
     GFXLIB(gGfxLib_4c5e4_clr)->curWindow = 0;
 }
