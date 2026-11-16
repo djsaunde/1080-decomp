@@ -36,16 +36,56 @@ typedef struct SnowPool {
 
 float snoweffects_uso_func_00000000(Vec3 *a, Vec3 *b);
 
-/* the ring-buffer cursors of the emitter that 0x46BC / 0x535C / 0x53E8 step */
+/* one 0x2C-byte emitter point (3EE4 allocates count of them at +0x90 and clears each with 0x3EB0) */
+typedef struct SnowPoint {
+    /* 0x00 */ Vec3 pos;
+    /* 0x0C */ Vec3 vel;
+    /* 0x18 */ f32 w[4];
+    /* 0x28 */ s32 unk28;
+} SnowPoint;
+
+/* one 12-byte ring slot (state 2 = live, 0 = cleared; 0x4714) */
+typedef struct SnowSlot {
+    /* 0x00 */ s32 state;
+    /* 0x04 */ s32 unk04[2];
+} SnowSlot;
+
+/* the trail emitter (a Node subclass, set up by 0x3EE4): a ring of `count` slots of `stride`
+ * points each, stepped by 0x46BC / 0x535C / 0x53E8 */
 typedef struct SnowRing {
-    /* 0x00 */ char unk00[0x58];
+    /* 0x00 */ Node node;
+    /* 0x2C */ s32 unk2C;
+    /* 0x30 */ s32 unk30;
+    /* 0x34 */ f32 unk34;
+    /* 0x38 */ f32 unk38;
+    /* 0x3C */ char unk3C[8];
+    /* 0x44 */ f32 unk44;
+    /* 0x48 */ f32 unk48;
+    /* 0x4C */ char unk4C[8];
+    /* 0x54 */ s32 unk54;
     /* 0x58 */ s32 readOfs;
     /* 0x5C */ s32 writeOfs;
     /* 0x60 */ s32 read;
     /* 0x64 */ s32 write;
-    /* 0x68 */ s32 size;
+    /* 0x68 */ s32 size;            /* stride * count points */
     /* 0x6C */ s32 stride;
     /* 0x70 */ s32 count;
+    /* 0x74 */ s32 unk74;
+    /* 0x78 */ s32 unk78;
+    /* 0x7C */ s32 unk7C;
+    /* 0x80 */ s32 unk80;
+    /* 0x84 */ s32 unk84;
+    /* 0x88 */ s32 unk88;
+    /* 0x8C */ void *vtx;           /* size Vtx (16-byte aligned) */
+    /* 0x90 */ SnowPoint *points;   /* size points */
+    /* 0x94 */ SnowSlot *slots;     /* count slots */
+    /* 0x98 */ char unk98[0x18];
+    /* 0xB0 */ void *dl;            /* gfx_newDLContext(0, .., 0x18, ..) */
+    /* 0xB4 */ char unkB4[0x120 - 0xB4];
+    /* 0x120 */ Vec3 unk120;
+    /* 0x12C */ Vec3 unk12C;
+    /* 0x138 */ char unk138[0x154 - 0x138];
+    /* 0x154 */ f32 unk154[8];
 } SnowRing;
 
 /* typed blank (0) alias for the reloc'd call to the global 0x3EE4 (floats on the stack) */
@@ -241,9 +281,64 @@ void snoweffects_uso_func_00003E40(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00003EB0);
+/* clear a point: the second mtc1 zero of the target is the int 0 of a chained assignment
+ * (a 0.0f chain shares the first register) */
+void snoweffects_uso_func_00003EB0(SnowPoint *p) {
+    p->pos.x = 0.0f;
+    p->pos.y = 0.0f;
+    p->pos.z = 0.0f;
+    p->vel.x = 0.0f;
+    p->vel.y = 0.0f;
+    p->vel.z = 0.0f;
+    p->w[0] = p->w[1] = p->w[2] = p->w[3] = 0;
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00003EE4);
+/* two RoData floats of the emitter defaults (separate lui each: one pin per constant) */
+extern f32 snow_ro_20;
+extern f32 snow_ro_24;
+
+/* emitter init: ring geometry, the Vtx / point / slot arrays, the display-list context, then the
+ * virtual reset (slot 11) and the default colour / size parameters */
+void snoweffects_uso_func_00003EE4(SnowRing *this, int a1, int stride, int count, int a4, float f5, float f6) {
+    int i;
+    int n;
+    this->unk2C = a1;
+    this->unk30 = a4;
+    this->unk34 = f5;
+    this->unk38 = f6;
+    this->stride = stride;
+    this->count = count;
+    this->size = count * stride;
+    this->unk54 = 0;
+    this->unk78 = 0;
+    this->unk80 = 0;
+    this->unk7C = -1;
+    this->read = 0;
+    this->readOfs = 0;
+    this->write = 0;
+    this->writeOfs = 0;
+    this->vtx = (void *)CALL(mem_newAligned)(this->size << 4, 16);
+    n = this->size;
+    this->points = (SnowPoint *)CALL(mem_new)(n * sizeof(SnowPoint));
+    for (i = 0; i < this->size; i++) {
+        CALL(snoweffects_uso_func_00003EB0)(&this->points[i]);
+    }
+    this->slots = (SnowSlot *)CALL(mem_new)(count * sizeof(SnowSlot));
+    this->dl = (void *)CALL(gfx_newDLContext)(0, (char *)&D_00000000 + 0x634, 0x18, 0, 0, 0, 0);
+    ((void (*)(void *))VT_SLOT(this->node.vptr, 11).fn)((char *)this + VT_SLOT(this->node.vptr, 11).delta);
+    this->unk84 = this->unk88 = 4;
+    this->unk48 = this->unk154[0] = 0.0f;
+    this->unk44 = 1.0f;
+    this->unk154[1] = 100.0f;
+    this->unk154[2] = 184.0f;
+    this->unk154[3] = 130.0f;
+    this->unk154[5] = snow_ro_20;
+    this->unk154[4] = 182.0f;
+    this->unk154[6] = snow_ro_24;
+    this->unk154[7] = 1.0f;
+    this->unk120.z = this->unk120.y = this->unk120.x = 0;
+    this->unk12C.z = this->unk12C.y = this->unk12C.x = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000040B4);
 
@@ -263,7 +358,22 @@ int snoweffects_uso_func_000046BC(char *this) {
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00004714);
+/* on a level change, mark the write slot 2; a change to 0 also advances the ring (0x535C) and
+ * marks the next slot 2. No change while set: clear the write slot. */
+void snoweffects_uso_func_00004714(SnowRing *r, int on, int prev, int a3) {
+    (void)&a3;
+    if (on != prev) {
+        if (on != 0) {
+            r->slots[r->write].state = 2;
+        } else {
+            r->slots[r->write].state = 2;
+            CALL(snoweffects_uso_func_0000535C)(r);
+            r->slots[r->write].state = 2;
+        }
+    } else if (on) {
+        r->slots[r->write].state = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000047D4);
 

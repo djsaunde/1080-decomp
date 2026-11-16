@@ -5719,3 +5719,5 @@ CollObj_vtbl_chkE0 = 0x00000000;  /* checkpoint E0 (NM): CollObj vptr, bootup Da
 gl_func_00000000_chkcyl = 0x00000000;  /* checkpoint E0 (NM): CollObj_initCylinder (char *, char *, int, float, float) */
 gl_func_00000000_snow_hit = 0x00000000;  /* CollShape_nearestHit (snoweffects 0x52D4, typed blank jal) */
 gl_func_00000000_snow_3ee4 = 0x00000000;  /* snoweffects_uso_func_00003EE4 (snoweffects 0x78E8, typed blank jal: float args) */
+snow_ro_20 = 0x00000020;  /* snoweffects RoData+0x20 float (0x3EE4 emitter default, own lui) */
+snow_ro_24 = 0x00000024;  /* snoweffects RoData+0x24 float (0x3EE4 emitter default, own lui) */
