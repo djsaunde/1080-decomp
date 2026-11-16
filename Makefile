@@ -190,8 +190,8 @@ $(SNOW_NM_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
 SNOW_NM_FUNCS := snoweffects_uso_func_000015D0 snoweffects_uso_func_00001A18 snoweffects_uso_func_00002310
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_FUNCS),$(f)=$(SNOW_NM_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_DONOR)
-# agent-e runs 664 / 668: NON_MATCHING-only NCC donor for 0x64B8
-# (94.2 %, 404 words = target; edg temp slots off).
+# agent-e runs 664 / 668 / 673: NON_MATCHING-only NCC donor for 0x64B8 (97.0 %), 0x6B28 (93.8 %) and
+# 0x718C (96.9 %), each the target's length.
 SNOW_NM_E_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp.o
 $(SNOW_NM_E_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h
 	@mkdir -p $(dir $@)

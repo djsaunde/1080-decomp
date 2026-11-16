@@ -1,9 +1,11 @@
 /* IDO 7.1 NCC (C++) NON_MATCHING donors for snoweffects.uso functions at 0x6000+ (agent-e run 664), spliced
  * over the empty NON_MATCHING placeholders in snoweffects_uso.c on the non_matching build only (the matching
  * build keeps INCLUDE_ASM). Callees go through typed blank (0-pinned) aliases; RoData constants through
- * 0-pinned snow_ro_* symbols (0x7960 moved to the matching donor snoweffects_uso_ncc_e.cpp, run 673). Spliced: 0x64B8 (94.2 %, run 668: the
- * lerp reads u into locals and the pos / vel stores go through set(), which forwards the lerped point and
- * brings the body to the target's 404 words), 0x6B28 (90.7 %, run 668). */
+ * 0-pinned snow_ro_* symbols. 0x7960 moved to the matching donor snoweffects_uso_ncc_e.cpp (run 673).
+ * Spliced (run 673): 0x64B8 (97.0 %, 404 words), 0x6B28 (93.8 %, 358 words) and 0x718C (96.9 %, 471 words), all
+ * the target's length. Run 673 levers: the +0x1A0 / +0x1FC timers as `t->timer--; if (t->timer < 0)` (the
+ * pre-decrement form colours the counter v0 / v1, the target uses t-registers), and the set()-built operator*
+ * of SVb (below). */
 #include "snoweffects_ncc_e.h"
 extern "C" float snow_ro_50, snow_ro_54;  /* RoData+0x50 / +0x54: the 0x64B8 burst speed scale / bias */
 
@@ -18,6 +20,19 @@ struct SV {
     SV &operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
     SV &operator+=(const SV &v) { x += v.x; y += v.y; z += v.z; return *this; }
 };
+/* SVb: the same Vec3 with operator* built through set() (a named r per expansion). Run 673: with it, 0x6B28 and the
+ * 0x64B8 lerp materialise &vFC (addiu v0,a1,252) like the target, and 0x6B28's |speed| colours f2. */
+struct SVb {
+    float x, y, z;
+    SVb() {}
+    SVb(float a, float b, float c) { x = a; y = b; z = c; }
+    SVb &operator=(SVb o) { x = o.x; y = o.y; z = o.z; return *this; }
+    void set(float a, float b, float c) { x = a; y = b; z = c; }
+    SVb operator*(float s) const { SVb r; r.set(x * s, y * s, z * s); return r; }
+    SVb &operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
+    SVb &operator+=(const SVb &v) { x += v.x; y += v.y; z += v.z; return *this; }
+};
+inline SVb operator+(const SVb &a, const SVb &b) { SVb r; r.set(a.x + b.x, a.y + b.y, a.z + b.z); return r; }
 inline SV operator-(const SV &a, const SV &b) { SV r; r.set(a.x - b.x, a.y - b.y, a.z - b.z); return r; }
 inline SV operator+(const SV &a, const SV &b) { SV r; r.set(a.x + b.x, a.y + b.y, a.z + b.z); return r; }
 inline void xformB(SV &v, const M44 &m) { float x = m.m[0][0] * v.x + m.m[1][0] * v.y + m.m[2][0] * v.z + m.m[3][0]; float y = m.m[0][1] * v.x + m.m[1][1] * v.y + m.m[2][1] * v.z + m.m[3][1]; float z = m.m[0][2] * v.x + m.m[1][2] * v.y + m.m[2][2] * v.z + m.m[3][2]; v.x = x; v.y = y; v.z = z; }
@@ -61,8 +76,8 @@ struct SnowEm {
     char pad80[0x98 - 0x80];
     /* 0x98 */ void *pool;
     char pad9C[0xF0 - 0x9C];
-    /* 0xF0 */ SV vF0;
-    /* 0xFC */ SV vFC;
+    /* 0xF0 */ SVb vF0;
+    /* 0xFC */ SVb vFC;
     char pad108[0x138 - 0x108];
     /* 0x138 */ SV pos;
     /* 0x144 */ int on;
@@ -97,7 +112,8 @@ extern "C" void snoweffects_uso_func_000064B8(SnowEm *t) {
     }
     if (t->on > 0) {
         i = 0;
-        if (--t->timer < 0) {
+        t->timer--;
+        if (t->timer < 0) {
             t->timer = t->period;
             i = 1;
         }
@@ -131,7 +147,7 @@ extern "C" void snoweffects_uso_func_000064B8(SnowEm *t) {
                         p = gl_func_00000000_snow_pool(t->pool);
                     }
                     if (p != 0) {
-                        SV u = t->vF0 + t->vFC * (t->f3C * 2.0f);
+                        SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f);
                         float r = gl_func_00000000_snow_randf();
                         { float x = u.x, y = u.y, z = u.z;
                         u.x = (t->vF0.x - x) * r + x;
@@ -162,19 +178,20 @@ extern "C" void snoweffects_uso_func_000064B8(SnowEm *t) {
 }
 
 /* 0x6B28: spawn update of effect B (flag bit 1), run 668: two RoData default sets picked by the game
- * flags, the course-state counters +0x1C8 / +0x1CC, then a camera-relative burst spawn (90.7 %, 357 words
- * vs 358: the target materialises &vFC for the scale). */
+ * flags, the course-state counters +0x1C8 / +0x1CC, then a camera-relative burst spawn (93.8 %, 358 words;
+ * run 673's SVb gives the &vFC materialisation and |speed| in f2). Left: frame 240 vs 232 and the ugen FP
+ * ring in the lerp. */
 extern "C" float snow_ro_58, snow_ro_5C, snow_ro_60, snow_ro_64, snow_ro_68;
 extern "C" float snow_ro_6C, snow_ro_70, snow_ro_74, snow_ro_78, snow_ro_7C;
 struct SnowGame { char pad[0x8C]; /* 0x8C */ int flags; };
 extern "C" SnowGame snow_game_6B28;  /* a game-state global (+0x8C flags, bits 0x820000) */
 struct SnowCamB {
     char pad000[0x318];
-    /* 0x318 */ SV v318;
+    /* 0x318 */ SVb v318;
     char pad324[0x348 - 0x324];
     /* 0x348 */ float f348;
     char pad34C[0x3B0 - 0x34C];
-    /* 0x3B0 */ SV v3B0;
+    /* 0x3B0 */ SVb v3B0;
     char pad3BC[0x9A0 - 0x3BC];
     /* 0x9A0 */ short s9A0;
     /* 0x9A2 */ short state;
@@ -193,8 +210,8 @@ struct SnowEmB {
     char pad84[0x9C - 0x84];
     /* 0x9C */ void *pool;
     char padA0[0xF0 - 0xA0];
-    /* 0xF0 */ SV vF0;
-    /* 0xFC */ SV vFC;
+    /* 0xF0 */ SVb vF0;
+    /* 0xFC */ SVb vFC;
     char pad108[0x144 - 0x108];
     /* 0x144 */ int on;
     /* 0x148 */ float speed;
@@ -251,7 +268,7 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
         col = t->cam->col;
         gl_func_00000000_snow_randf();
         if (t->c1CC != 0 && t->c1CC < 3) {
-            SV n = t->cam->v318 * t->f1C4;
+            SVb n = t->cam->v318 * t->f1C4;
             n += t->cam->v3B0 * t->f1B8;
             SPart *p = gl_func_00000000_snow_pool(t->pool);
             if (p == 0) {
@@ -263,7 +280,7 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
                 if (s < 0.5) {
                     s = 0.5f;
                 }
-                SV u = t->vF0 + t->vFC * (t->f3C * 2.0f * s);
+                SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f * s);
                 float r = gl_func_00000000_snow_randf();
                 { x = u.x; y = u.y; z = u.z;
                 u.x = (t->vF0.x - x) * r + x;
@@ -299,23 +316,13 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
  * NM (96.9 %, 471 words = target, frame 368 = target): the operator* scalars colour f12 where the target has
  * f16 (the |speed| temp too), the u copy materialises &t->pos, and the inner edg temps sit 4..8 bytes off. */
 extern "C" float snow_ro_B0;  /* RoData+0xB0: the 0x718C spin scale */
-struct SVc {
-    float x, y, z;
-    SVc() {}
-    SVc(float a, float b, float c) { x = a; y = b; z = c; }
-    SVc &operator=(SVc o) { x = o.x; y = o.y; z = o.z; return *this; }
-    void set(float a, float b, float c) { x = a; y = b; z = c; }
-    SVc operator*(float s) const { SVc r; r.set(x * s, y * s, z * s); return r; }
-    SVc &operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
-    SVc &operator+=(const SVc &v) { x += v.x; y += v.y; z += v.z; return *this; }
-};
 struct SnowCamC {
     char pad000[0x318];
-    /* 0x318 */ SVc v318;
+    /* 0x318 */ SVb v318;
     char pad324[0x348 - 0x324];
     /* 0x348 */ float f348;
     char pad34C[0x3B0 - 0x34C];
-    /* 0x3B0 */ SVc v3B0;
+    /* 0x3B0 */ SVb v3B0;
     char pad3BC[0x9A2 - 0x3BC];
     /* 0x9A2 */ short state;
     char pad9A4[0xA30 - 0x9A4];
@@ -331,11 +338,11 @@ struct SnowEmC {
     char pad84[0xA0 - 0x84];
     /* 0xA0 */ void *pool;
     char padA4[0xF0 - 0xA4];
-    /* 0xF0 */ SVc vF0;
+    /* 0xF0 */ SVb vF0;
     char padFC[0x114 - 0xFC];
-    /* 0x114 */ SVc v114;
+    /* 0x114 */ SVb v114;
     char pad120[0x138 - 0x120];
-    /* 0x138 */ SVc pos;
+    /* 0x138 */ SVb pos;
     char pad144[0x1DC - 0x144];
     /* 0x1DC */ float f1DC;
     /* 0x1E0 */ float f1E0;
@@ -397,16 +404,16 @@ extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
             p = gl_func_00000000_snow_pool(t->pool);
         }
         if (p != 0) {
-            SVc w;
-            SVc u = t->pos;
+            SVb w;
+            SVb u = t->pos;
             r = gl_func_00000000_snow_randf();
             u.x = (t->vF0.x - u.x) * r + u.x;
             u.y = (t->vF0.y - u.y) * r + u.y;
             u.z = (t->vF0.z - u.z) * r + u.z;
             { int sc[2]; sc[0] = 0; }
             w = t->cam->v318 * t->f208;
-            SVc a1 = t->cam->v3B0 * t->f20C * (a < 0.0f ? -a : a);
-            SVc a2 = t->v114 * (1.0f + gl_func_00000000_snow_randf() * snow_ro_B0) * t->f210;
+            SVb a1 = t->cam->v3B0 * t->f20C * (a < 0.0f ? -a : a);
+            SVb a2 = t->v114 * (1.0f + gl_func_00000000_snow_randf() * snow_ro_B0) * t->f210;
             a2 *= (a < 0.0f ? -a : a);
             if (0.0f < a) {
                 a2 *= -1.0f;

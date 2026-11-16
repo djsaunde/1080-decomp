@@ -880,10 +880,9 @@ void snoweffects_uso_func_00006420(SnowEffect *this) {
 
 /* 0x64B8: spawn update of effect A (flag bit 0): burst / timer gating, a direction from the +0x30-matrix
  * point minus +0x138 (normalized, scaled, plus the camera +0x318 lean) and per-particle pool spawns.
- * NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e run 668, 94.2 %, 404 words = target),
- * spliced over this placeholder on the non_matching build. Left: the edg Vec3 temporaries sit 4..12 bytes
- * off the target's slots (the second operator* result is above the first in the target), the target
- * materialises &vFC for the scale, and the lerp loads are scheduled apart. */
+ * NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e runs 668 / 673, 97.0 %, 404 words =
+ * target), spliced over this placeholder on the non_matching build. Left: frame 352 vs 344 (the edg Vec3
+ * temporaries below the spawn block sit 4..12 bytes off) and the lerp loads are scheduled apart. */
 #ifdef NON_MATCHING
 void snoweffects_uso_func_000064B8(void) {
 }
@@ -900,8 +899,8 @@ void snoweffects_uso_func_00006B08(char *a0) {
 
 /* 0x6B28: spawn update of effect B (flag bit 1): game-flag RoData defaults (+0x1B0..+0x1C4), course-state
  * counters (+0x1C8 / +0x1CC / +0x1D8 from camera +0x9A0 / +0x9A2 / +0xA20), then a burst spawn along the
- * camera +0x318 / +0x3B0 axes. NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e run 668,
- * 90.7 %), spliced over this placeholder on the non_matching build. */
+ * camera +0x318 / +0x3B0 axes. NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e runs 668 /
+ * 673, 93.8 %, 358 words = target), spliced over this placeholder on the non_matching build. */
 #ifdef NON_MATCHING
 void snoweffects_uso_func_00006B28(void) {
 }
