@@ -133,7 +133,12 @@ void CheckpointCyl_handleMsg(char *self, int *msg) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_0000045C);
+/* checkpoint_uso_func_0000045C: cylinder checkpoint "between the posts" test (pos - postA and
+ * pos - postB in the XZ plane, dot < 0). EXACT via an IDO 7.1 NCC (C++) donor,
+ * src/checkpoint_uso/checkpoint_uso_ncc_45C.cpp, REPLACE_FUNC_BODY-spliced over this placeholder. */
+int checkpoint_uso_func_0000045C(char *self, float *p) {
+    return 0;
+}
 
 /* CheckpointBox_ctor: box Checkpoint ctor (0xCC bytes, cfront this==0
  * alloc), the E0 shape with one CollObj: SNode_ctor, vptr Data+0x3E80, inline

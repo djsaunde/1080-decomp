@@ -2409,6 +2409,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 BALLOON_1A8_DONOR := build/src/balloon_uso/balloon_uso_ncc_1A8.cpp.o
 build/src/balloon_uso/balloon_uso.c.o build/non_matching/src/balloon_uso/balloon_uso.c.o: private REPLACE_FUNC_BODY += Balloon_display=$(BALLOON_1A8_DONOR)
 build/src/balloon_uso/balloon_uso.c.o build/non_matching/src/balloon_uso/balloon_uso.c.o: $(BALLOON_1A8_DONOR)
+# checkpoint 45C = cylinder "between the posts" XZ dot test; V3 value class (by-value operator= returning V3 &, kept post pointers, const V3 & position); NCC donor (agent-b run 640).
+CHECKPOINT_45C_DONOR := build/src/checkpoint_uso/checkpoint_uso_ncc_45C.cpp.o
+build/src/checkpoint_uso/checkpoint_uso.c.o build/non_matching/src/checkpoint_uso/checkpoint_uso.c.o: private REPLACE_FUNC_BODY += checkpoint_uso_func_0000045C=$(CHECKPOINT_45C_DONOR)
+build/src/checkpoint_uso/checkpoint_uso.c.o build/non_matching/src/checkpoint_uso/checkpoint_uso.c.o: $(CHECKPOINT_45C_DONOR)
 # 49DBC = three textured-vertex builds (two-arg arg1 call, distinct base-0 a2/a3 symbols, no named scalar locals); NCC donor (agent-c run 153).
 GAMELIBS_49DBC_DONOR := build/src/game_libs/game_libs_ncc_49DBC.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += PolyShape_shade_00049DBC=$(GAMELIBS_49DBC_DONOR)
