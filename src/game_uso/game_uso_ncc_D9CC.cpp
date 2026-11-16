@@ -99,7 +99,7 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
             } else {
                 var_f0 = temp_f2_2;
             }
-            if (*(f64 *)((char *)&game_uso_D_807FFB18 + 0x1F8) < (f64) var_f0) {
+            if (*(f64 *)((char *)&game_uso_D_807FFB18 + kRoD_0p8_1F8) < (f64) var_f0) {
                 if (temp_f2_2 <= 0.0f) {
                     RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0xE);
                     sp2C = (char *)3;
@@ -121,7 +121,7 @@ after_24:;
     }
     if (RIDER(var_v1)->groundDist < 500.0f) {
         temp_v0 = RIDER(var_v1)->dnode.vqs.quat;
-        if ((f64) RIDER(var_v1)->localUp.z < *(f64 *)((char *)&game_uso_D_807FFB20 + 0x200)) {
+        if ((f64) RIDER(var_v1)->localUp.z < *(f64 *)((char *)&game_uso_D_807FFB20 + kRoD_m0p4_200)) {
             temp_v0[0] = 0.0f; temp_v0[1] = 0.0f; temp_v0[2] = 0.0f; temp_v0[3] = 1.0f;
             sp28 = 2;
             var_a3 = 4;
@@ -208,7 +208,7 @@ after_24:;
                 RiderAnim_setHitKind_0000EDCC((int *)arg0, 2);
                 var_a3 = 2;
                 RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x12);
-            } else if ((*(f32 *)((char *)&game_uso_D_807FF68C + 4248) <= var_f2) && ((f64) RA(arg0)->hitScale == 1.0) && (RIDER(var_v1)->useDParms == 0)) {
+            } else if ((*(f32 *)((char *)&game_uso_D_807FF68C + kDataF_60_1098) <= var_f2) && ((f64) RA(arg0)->hitScale == 1.0) && (RIDER(var_v1)->useDParms == 0)) {
                 sp28 = 0;
                 sp30 = 0;
                 RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x2F);

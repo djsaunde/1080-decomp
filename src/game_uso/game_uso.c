@@ -691,14 +691,14 @@ void *SnowChaseActorCamParms_ctor(char *s0) {
     if (s0 != 0 || (s0 = (char *)XCALL(game_uso_func_055750, mem_new)(0xD0)) != 0) {
         b = s0;
         if (b != 0 || (b = (char *)XCALL(game_uso_func_055750, mem_new)(8)) != 0) {
-            ((SnowChaseActorCamParms *)b)->name = &game_uso_D_807FE908 + 0x318;
+            ((SnowChaseActorCamParms *)b)->name = &game_uso_D_807FE908 + kStr_Parms_318;
             ((SnowChaseActorCamParms *)b)->unk04 = 0;
         }
         hi.x = 0; hi.y = 64.0f; hi.z = 0;
         if (1) {}
         lo.x = -1000.0f; lo.y = -1000.0f; lo.z = -1000.0f;
         if (1) {}
-        big.idx.w = ((T4_18FC *)(&game_uso_D_807FE910 + 0x320))->w;
+        big.idx.w = ((T4_18FC *)(&game_uso_D_807FE910 + kTag_cof_320))->w;
         if (1) {}
         big.v.x = 1000.0f; big.v.y = 1000.0f; big.v.z = 1000.0f;
         pa = hi;
@@ -749,7 +749,7 @@ SnowChaseActorCam *SnowChaseActorCam_ctor(SnowChaseActorCam *a0, int target, int
         a0 = (SnowChaseActorCam *)CALL(mem_new)(0x124);
         if (a0 == 0) goto end;
     }
-    CALL(Node_ctor)(a0, &D_00000000 + 0x340); /* Node init, name "SnowChaseActorCam" */
+    CALL(Node_ctor)(a0, &D_00000000 + kStr_SnowChaseActorCam_340); /* Node init, name "SnowChaseActorCam" */
     NODE(a0)->vptr = (int)&D_00000000;
     CALL(SnowChaseActorCamParms_ctor)(&a0->parms); /* SnowChaseActorCamParms_ctor */
     if (parmsFile != 0) { /* load the parms from that file (bootup cam_create: "rom/cam_ca.bin" etc.) */
@@ -1108,10 +1108,10 @@ void *SnowChaseActorLookParms_ctor(void *arg0) {
       goto after_template;
     }
   }
-  ((int *) var_v1)[0] = (int) (((char *) (&D_00000000)) + 0x354);
+  ((int *) var_v1)[0] = (int) (((char *) (&D_00000000)) + kStr_Parms_354);
   ((int *) var_v1)[1] = 0;
   after_template:
-  init_arg = *((int *) (((char *) (&D_00000000)) + 0x35C));
+  init_arg = *((int *) (((char *) (&D_00000000)) + kTag_ch0_35C));
   init_arg_copy = *((One1 *) (int *) &init_arg);
   var_a0 = ((char *) arg0) + 8;
   if (arg0 == ((void *) (-8)))
@@ -1139,7 +1139,7 @@ SnowChaseActorLook *SnowChaseActorLook_ctor(SnowChaseActorLook *a0, int anchor, 
         a0 = (SnowChaseActorLook *)CALL(mem_new)(0x64);
         if (a0 == 0) goto end;
     }
-    CALL(Node_ctor)(a0, &D_00000000 + 0x360); /* Node init, name "SnowChaseActorLook" */
+    CALL(Node_ctor)(a0, &D_00000000 + kStr_SnowChaseActorLook_360); /* Node init, name "SnowChaseActorLook" */
     NODE(a0)->vptr = (int)&D_00000000;
     CALL(SnowChaseActorLookParms_ctor)(&a0->parms); /* SnowChaseActorLookParms_ctor */
     if (parmsFile != 0) { /* load the parms from that file (bootup cam_create: "rom/cam_ca.bin" etc.) */
@@ -1386,14 +1386,14 @@ void *SnowChaseActorParms_ctor(char *s0) {
     if (s0 != 0 || (s0 = (char *)XCALL(game_uso_func_055750, mem_new)(0xE8)) != 0) {
         b = s0;
         if (b != 0 || (b = (char *)XCALL(game_uso_func_055750, mem_new)(8)) != 0) {
-            ((SnowChaseActorParms *)b)->name = &game_uso_D_807FE964 + 0x374;
+            ((SnowChaseActorParms *)b)->name = &game_uso_D_807FE964 + kStr_Parms_374;
             ((SnowChaseActorParms *)b)->unk04 = 0;
         }
         hi.x = 0; hi.y = 0; hi.z = 0;
         if (1) {}
         lo.x = -1000.0f; lo.y = -1000.0f; lo.z = -1000.0f;
         if (1) {}
-        big.idx.w = ((T4_3018 *)(&game_uso_D_807FE96C + 0x37C))->w;
+        big.idx.w = ((T4_3018 *)(&game_uso_D_807FE96C + kTag_off_37C))->w;
         if (1) {}
         big.v.x = 1000.0f; big.v.y = 1000.0f; big.v.z = 1000.0f;
         pa = hi;
@@ -1457,7 +1457,7 @@ SnowChaseActor *SnowChaseActor_ctor(SnowChaseActor *a0, int target, int lookBody
         a0 = (SnowChaseActor *)XCALL(game_uso_func_055750, mem_new)(0x138);
         if (a0 == 0) goto out;
     }
-    XCALL(game_uso_func_04C678, Node_ctor)((int *)a0, (char *)&game_uso_D_807FE990 + 0x3A0); /* Node init, name "SnowChaseActor" */
+    XCALL(game_uso_func_04C678, Node_ctor)((int *)a0, (char *)&game_uso_D_807FE990 + kStr_SnowChaseActor_3A0); /* Node init, name "SnowChaseActor" */
     NODE(a0)->vptr = (int)&game_uso_D_807FE8A8;
     SnowChaseActorParms_ctor(&a0->parms);
     /* load the parms file */
@@ -1968,7 +1968,7 @@ void *SnowAI_ctor(char *a0, int a1, int a2) {
     }
 
     /* Stage 2: the Node base (name at D[0x6D0]); then the SnowAI vtable at +0x28 */
-    CALL(Node_ctor)(a0, (char*)&D_00000000 + 0x6D0);
+    CALL(Node_ctor)(a0, (char*)&D_00000000 + kStr_Node_6D0);
     NODE(a0)->vptr = (int)&D_00000000;
 
     /* Stage 3: sub-region; alloc failure still runs the finalize phase */
@@ -1984,7 +1984,7 @@ void *SnowAI_ctor(char *a0, int a1, int a2) {
         v1 = (char*)CALL(mem_new)(8);
         if (v1 == NULL) goto skip_head;
     }
-    ((SnowAIParms *)v1)->name = (char*)&D_00000000 + 0x6D8;
+    ((SnowAIParms *)v1)->name = (char*)&D_00000000 + kStr_SnowAI_Parms_6D8;
     ((SnowAIParms *)v1)->unk04 = 0;
 skip_head:
 
@@ -3076,8 +3076,8 @@ int SnowAI_updateMarker(int *a0, int *a1, int arg3, int *arg4) {
     *a1 = 0;
     v = AI(a0)->targetNode;
     if (v < 0 || v >= 12) {
-        XCALL(game_uso_func_047B1C, sys_assertFail)((char*)&D_00000000 + 0x78C,
-                         (char*)&D_00000000 + 0x7B0, 0x609);
+        XCALL(game_uso_func_047B1C, sys_assertFail)((char*)&D_00000000 + kStr_0_markerType_markerType_11_78C,
+                         (char*)&D_00000000 + kStr_snowai_cpp_7B0, 0x609);
     }
     av.a = *(int*)(*(int*)((char*)&D_00000000 + 0x548 + AI(a0)->targetNode * 4));
     r = (int*)SnowAI_findNearestMarker_0000A374(a0, av, arg3, arg4);
@@ -3423,8 +3423,8 @@ int SnowAI_isAboveSegmentFloor(char *a0, char *a1, char *a2) {
     float fx, fy, fz;
     float *q;
     if (a2 == 0) {
-        XCALL(game_uso_func_047B1C, sys_assertFail)(&game_uso_D_807FEDD0 + 0x7D4,
-                           &game_uso_D_807FEDD0 + 0x7E0, 1586);
+        XCALL(game_uso_func_047B1C, sys_assertFail)(&game_uso_D_807FEDD0 + kStr_enCm_0_7D4,
+                           &game_uso_D_807FEDD0 + kStr_snowai_cpp_7E0, 1586);
     }
     w = 0; if (1) { w = (float*)(a2 + 0x30); }
     q = 0; if (1) { q = (float*)(a1 + 0x30); }
@@ -3540,8 +3540,8 @@ void SnowAI_pickFork(SnowAI *a0) {
     slots[1] = (int *)SnowAI_findNearestMarker_0000A374(a0, v1,
                 (int)a0->rider->rival->dnode.vqs.trans);
     if (slots[1] == 0) {
-        XCALL(game_uso_func_047B1C, sys_assertFail)((char *)&game_uso_D_807FEDF8 + 0x7EC,
-                             (char *)&game_uso_D_807FEDF8 + 0x808, 0x450);
+        XCALL(game_uso_func_047B1C, sys_assertFail)((char *)&game_uso_D_807FEDF8 + kStr_nearBoarderNorNearMrk_0_7EC,
+                             (char *)&game_uso_D_807FEDF8 + kStr_snowai_cpp_808, 0x450);
     }
     if (((CourseMarker *)slots[1])->parms.flg.value & MARKER_F_REDIRECT) {
         w = (int *)((CourseMarker *)slots[1])->link;
@@ -3551,8 +3551,8 @@ void SnowAI_pickFork(SnowAI *a0) {
     slots[0] = (int *)SnowAI_findNearestMarker_0000A374(a0, v2,
                 (int)a0->rider->rival->dnode.vqs.trans);
     if (slots[0] == 0) {
-        XCALL(game_uso_func_047B1C, sys_assertFail)((char *)&game_uso_D_807FEE20 + 0x814,
-                             (char *)&game_uso_D_807FEE20 + 0x830, 0x45B);
+        XCALL(game_uso_func_047B1C, sys_assertFail)((char *)&game_uso_D_807FEE20 + kStr_nearBoarderDivNearMrk_0_814,
+                             (char *)&game_uso_D_807FEE20 + kStr_snowai_cpp_830, 0x45B);
     }
     ref = a0->rider->rival->dnode.vqs.trans;
     if (1) { p = &buf1; }
@@ -3729,7 +3729,7 @@ void SnowAI_scanNodes(SnowAI *obj) {
 void SnowAI_startNodeScan(SnowAI *a0) {
     a0->scanIndex = 0;
     a0->modeFlags |= 2;
-    a0->scanBestDist = *(float *)((char *)&D_00000000 + 0x110);
+    a0->scanBestDist = *(float *)((char *)&D_00000000 + kRoF_FLT_MAX_110);
 }
 
 /* SnowAI_scanSegments: nearest projected-segment distance update.
@@ -3871,7 +3871,7 @@ void SnowAI_scanSegments(SnowAI *obj) {
 void SnowAI_startSegmentScan(SnowAI *a0) {
     a0->scanIndex = 0;
     a0->modeFlags |= 4;
-    a0->scanBestDist = *(float*)(&D_00000000 + 0x114);
+    a0->scanBestDist = *(float*)(&D_00000000 + kRoF_FLT_MAX_114);
 }
 
 void game_readFloatParm_0000ABB8(char *dst) {
@@ -4012,7 +4012,7 @@ void *Sun_ctor(void *arg0) {
         s0 = (void *)XCALL(game_uso_func_055750, mem_new)(0xB4);
         if (s0 == NULL) goto skip_sub;
     }
-    XCALL(game_uso_func_04C678, Node_ctor)(s0, (char *)&game_uso_D_807FF340 + 0xD50);
+    XCALL(game_uso_func_04C678, Node_ctor)(s0, (char *)&game_uso_D_807FF340 + kTag_sun_D50);
     NODE(s0)->vptr = (int)&import_80086288;
 
     p = (char *)s0 + 0x2C;
@@ -4071,12 +4071,12 @@ after_o16:
             r = (char *)XCALL(game_uso_func_055750, mem_new)(8);
             if (r == NULL) goto after_o140hdr;
         }
-        ((SunParms *)r)->name = (char *)&game_uso_D_807FF344 + 0xD54; /* "Parms" */
+        ((SunParms *)r)->name = (char *)&game_uso_D_807FF344 + kStr_Parms_D54; /* "Parms" */
         ((SunParms *)r)->head = 0;
     }
 after_o140hdr:
     {
-        idx0.a = *(int *)((char *)&game_uso_D_807FF34C + 0xD5C);
+        idx0.a = *(int *)((char *)&game_uso_D_807FF34C + kTag_rot_D5C);
         /* One-word index records are passed by value to 04A188. */
         idx_arg = idx0;
         nfirst = s0 + 8;
@@ -4091,7 +4091,7 @@ after_o140hdr:
     }
 node1:
     {
-        idx1.a = *(int *)((char *)&game_uso_D_807FF350 + 0xD60);
+        idx1.a = *(int *)((char *)&game_uso_D_807FF350 + kTag_ele_D60);
         idx_arg = idx1;
         n = s0 + 32;
         if (s0 == (char *)-32) {
@@ -4105,7 +4105,7 @@ node1:
     }
 node2:
     {
-        idx2.a = *(int *)((char *)&game_uso_D_807FF354 + 0xD64);
+        idx2.a = *(int *)((char *)&game_uso_D_807FF354 + kTag_scl_D64);
         idx_arg = idx2;
         n = s0 + 56;
         if (s0 == (char *)-56) {
@@ -4119,7 +4119,7 @@ node2:
     }
 node3:
     {
-        idx3.a = *(int *)((char *)&game_uso_D_807FF358 + 0xD68);
+        idx3.a = *(int *)((char *)&game_uso_D_807FF358 + kTag_mat_D68);
         idx_arg = idx3;
         n = s0 + 80;
         if (s0 == (char *)-80) {
@@ -4133,7 +4133,7 @@ node3:
     }
 node4:;
     {
-        idx4.a = *(int *)((char *)&game_uso_D_807FF35C + 0xD6C);
+        idx4.a = *(int *)((char *)&game_uso_D_807FF35C + kTag_col_D6C);
         v4[0] = 1.0f;
         v4[1] = 1.0f;
         v4[2] = 1.0f;
@@ -4261,7 +4261,7 @@ void Sun_update(int *a0) {
     float buf[5];
     buf[2] = 0.0f;
     buf[3] = 0.0f;
-    buf[4] = *(float*)((char*)&D_00000000 + 0x140);      /* sp+0x2C = D[0x140] */
+    buf[4] = *(float*)((char*)&D_00000000 + kRoF_16000000_140);      /* sp+0x2C = D[0x140] */
     /* float-first arg (-> $f12); a0 is saved across the calls, not passed */
     XCALL(game_uso_func_070338, math_rotate2D)(((Sun *)a0)->parms.ele.value.f, &buf[3], &buf[4]);
     XCALL(game_uso_func_070338, math_rotate2D)(((Sun *)a0)->parms.rot.value.f, &buf[2], &buf[4]);
@@ -4345,7 +4345,7 @@ void LensFlareElem_init_0000B710(char *a0) {
     ((LensFlareElem *)a0)->color[1] = one;
     ((LensFlareElem *)a0)->color[0] = one;
     ((LensFlareElem *)a0)->pos = zero;
-    ((LensFlareElem *)a0)->size = *(float*)(&D_00000000 + 0x150);
+    ((LensFlareElem *)a0)->size = *(float*)(&D_00000000 + kRoF_0p01_150);
     ((LensFlareElem *)a0)->image = 0;
     ((LensFlareElem *)a0)->flags = 8;
     ((LensFlareElem *)a0)->minDot = zero;
@@ -4437,7 +4437,7 @@ void *LensFlare_create(void *arg0, int arg1, int arg2) {
         sp1 = (char *)XCALL(game_uso_func_055750, mem_new)(0xB4);
         if (sp1 == NULL) goto skip_sub;
     }
-    XCALL(game_uso_func_04C678, Node_ctor)((int *)sp1, (char *)&game_uso_D_807FF360 + 0xD70);
+    XCALL(game_uso_func_04C678, Node_ctor)((int *)sp1, (char *)&game_uso_D_807FF360 + kStr_MNode_D70);
     NODE(sp1)->vptr = (int)&import_80086288;
 
     p = sp1 + 0x2C;
@@ -4471,10 +4471,10 @@ skip_sub:
         hdr = (char *)XCALL(game_uso_func_055750, mem_new)(8);
         if (hdr == NULL) goto stage_a;
     }
-    ((LensFlareParms *)hdr)->name = (char *)&game_uso_D_807FF368 + 0xD78; /* "LensFlare::Parms" */
+    ((LensFlareParms *)hdr)->name = (char *)&game_uso_D_807FF368 + kStr_LensFlare_Parms_D78; /* "LensFlare::Parms" */
     ((LensFlareParms *)hdr)->head = 0;
 stage_a:
-    slot_a.p = *(char **)((char *)&game_uso_D_807FF37C + 0xD8C);
+    slot_a.p = *(char **)((char *)&game_uso_D_807FF37C + kTag_fin_D8C);
     marsh = slot_a;
     n = sp1 + 8;
     if (sp1 == (char *)-8) {
@@ -4484,9 +4484,9 @@ stage_a:
     XCALL(game_uso_func_04A188, Parms_addParm)(n, sp1, marsh, 1);
     ((SunParm *)n)->vptr = (char *)&game_uso_D_807FEE50 + 0x860;
     ((SunParm *)n)->unk14 = 0;
-    ((SunParm *)n)->value.f = *(float *)((char *)&game_uso_D_807FF380 + 0x160);
+    ((SunParm *)n)->value.f = *(float *)((char *)&game_uso_D_807FF380 + kRoF_0p8_160);
 stage_b:
-    slot_b.p = *(char **)((char *)&game_uso_D_807FF380 + 0xD90);
+    slot_b.p = *(char **)((char *)&game_uso_D_807FF380 + kTag_dlv_D90);
     marsh = slot_b;
     n = sp1 + 0x20;
     if (sp1 == (char *)-0x20) {
@@ -4496,9 +4496,9 @@ stage_b:
     XCALL(game_uso_func_04A188, Parms_addParm)(n, sp1, marsh, 1);
     ((SunParm *)n)->vptr = (char *)&D_B8D4_st2 + 0x860;
     ((SunParm *)n)->unk14 = 0;
-    ((SunParm *)n)->value.f = *(float *)((char *)&game_uso_D_807FF384 + 0x164);
+    ((SunParm *)n)->value.f = *(float *)((char *)&game_uso_D_807FF384 + kRoF_0p6_164);
 stage_c:
-    slot_c.p = *(char **)((char *)&game_uso_D_807FF384 + 0xD94);
+    slot_c.p = *(char **)((char *)&game_uso_D_807FF384 + kTag_dfm_D94);
     marsh = slot_c;
     n = sp1 + 0x38;
     if (sp1 == (char *)-0x38) {
@@ -4510,7 +4510,7 @@ stage_c:
     ((SunParm *)n)->unk14 = 0;
     ((SunParm *)n)->value.f = 0.0f;
 finalize:
-    NODE(arg0)->name = (int)((char *)&game_uso_D_807FF388 + 0xD98);
+    NODE(arg0)->name = (int)((char *)&game_uso_D_807FF388 + kStr_LensFlare_D98);
     ((LensFlare *)arg0)->sprite = (Sprite *)import_000F5ADC(0, &game_uso_D_807FF214);
     ((LensFlare *)arg0)->numElems = LENSFLARE_MAX_ELEMS;
     i = 0;
@@ -4882,11 +4882,11 @@ void *RiderAnim_ctor_0000C48C(char *p, int a1, int a2) {
     if (p == (char *)-0x13C) { s1 = (int *)XCALL(game_uso_func_055750, mem_new)(0x308); if (s1 == 0) goto tail; }
     v1 = s1;
     if (s1 == 0) { v1 = (int *)XCALL(game_uso_func_055750, mem_new)(8); if (v1 == 0) goto stage0; }
-    v1[0] = (int)((char *)&game_uso_D_807FF814 + 0x1224);
+    v1[0] = (int)((char *)&game_uso_D_807FF814 + kStr_Parms_1224);
     v1[1] = 0;
 stage0:;
     {
-        u1.v = *(int *)((char *)&game_uso_D_807FF81C + 0x122c);
+        u1.v = *(int *)((char *)&game_uso_D_807FF81C + kTag_lnc_122C);
         t = u1;
         obj = (int *)((char *)s1 + 0x8);
         if (s1 != (int *)-0x8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -4897,7 +4897,7 @@ stage0:;
         }
     }
     {
-        u2.v = *(int *)((char *)&game_uso_D_807FF820 + 0x1230);
+        u2.v = *(int *)((char *)&game_uso_D_807FF820 + kTag_jct_1230);
         t = u2;
         obj = (int *)((char *)s1 + 0x20);
         if (s1 != (int *)-0x20 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -4907,7 +4907,7 @@ stage0:;
         }
     }
     {
-        u3.v = *(int *)((char *)&game_uso_D_807FF824 + 0x1234);
+        u3.v = *(int *)((char *)&game_uso_D_807FF824 + kTag_jht_1234);
         t = u3;
         obj = (int *)((char *)s1 + 0x38);
         if (s1 != (int *)-0x38 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -4917,7 +4917,7 @@ stage0:;
         }
     }
     {
-        u4.v = *(int *)((char *)&game_uso_D_807FF828 + 0x1238);
+        u4.v = *(int *)((char *)&game_uso_D_807FF828 + kTag_jot_1238);
         t = u4;
         obj = (int *)((char *)s1 + 0x50);
         if (s1 != (int *)-0x50 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -4927,7 +4927,7 @@ stage0:;
         }
     }
     {
-        u5.v = *(int *)((char *)&game_uso_D_807FF82C + 0x123c);
+        u5.v = *(int *)((char *)&game_uso_D_807FF82C + kTag_jca_123C);
         t = u5;
         obj = (int *)((char *)s1 + 0x68);
         if (s1 != (int *)-0x68 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -4938,7 +4938,7 @@ stage0:;
         }
     }
     {
-        u6.v = *(int *)((char *)&game_uso_D_807FF830 + 0x1240);
+        u6.v = *(int *)((char *)&game_uso_D_807FF830 + kTag_jlt_1240);
         t = u6;
         obj = (int *)((char *)s1 + 0x80);
         if (s1 != (int *)-0x80 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -4948,7 +4948,7 @@ stage0:;
         }
     }
     {
-        u7.v = *(int *)((char *)&game_uso_D_807FF834 + 0x1244);
+        u7.v = *(int *)((char *)&game_uso_D_807FF834 + kTag_jli_1244);
         t = u7;
         obj = (int *)((char *)s1 + 0x98);
         if (s1 != (int *)-0x98 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -4959,7 +4959,7 @@ stage0:;
         }
     }
     {
-        u8.v = *(int *)((char *)&game_uso_D_807FF838 + 0x1248);
+        u8.v = *(int *)((char *)&game_uso_D_807FF838 + kTag_rfc_1248);
         t = u8;
         obj = (int *)((char *)s1 + 0xb0);
         if (s1 != (int *)-0xb0 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -4970,7 +4970,7 @@ stage0:;
         }
     }
     {
-        u9.v = *(int *)((char *)&game_uso_D_807FF83C + 0x124c);
+        u9.v = *(int *)((char *)&game_uso_D_807FF83C + kTag_tkt_124C);
         t = u9;
         obj = (int *)((char *)s1 + 0xc8);
         if (s1 != (int *)-0xc8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -4980,7 +4980,7 @@ stage0:;
         }
     }
     {
-        u10.v = *(int *)((char *)&game_uso_D_807FF840 + 0x1250);
+        u10.v = *(int *)((char *)&game_uso_D_807FF840 + kTag_b1f_1250);
         t = u10;
         obj = (int *)((char *)s1 + 0xe0);
         if (s1 != (int *)-0xe0 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -4991,7 +4991,7 @@ stage0:;
         }
     }
     {
-        u11.v = *(int *)((char *)&game_uso_D_807FF844 + 0x1254);
+        u11.v = *(int *)((char *)&game_uso_D_807FF844 + kTag_b2f_1254);
         t = u11;
         obj = (int *)((char *)s1 + 0xf8);
         if (s1 != (int *)-0xf8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5002,7 +5002,7 @@ stage0:;
         }
     }
     {
-        u12.v = *(int *)((char *)&game_uso_D_807FF848 + 0x1258);
+        u12.v = *(int *)((char *)&game_uso_D_807FF848 + kTag_xf1_1258);
         t = u12;
         obj = (int *)((char *)s1 + 0x110);
         if (s1 != (int *)-0x110 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5013,7 +5013,7 @@ stage0:;
         }
     }
     {
-        u13.v = *(int *)((char *)&game_uso_D_807FF84C + 0x125c);
+        u13.v = *(int *)((char *)&game_uso_D_807FF84C + kTag_f1f_125C);
         t = u13;
         obj = (int *)((char *)s1 + 0x128);
         if (s1 != (int *)-0x128 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5024,7 +5024,7 @@ stage0:;
         }
     }
     {
-        u14.v = *(int *)((char *)&game_uso_D_807FF850 + 0x1260);
+        u14.v = *(int *)((char *)&game_uso_D_807FF850 + kTag_f2f_1260);
         t = u14;
         obj = (int *)((char *)s1 + 0x140);
         if (s1 != (int *)-0x140 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5035,7 +5035,7 @@ stage0:;
         }
     }
     {
-        u15.v = *(int *)((char *)&game_uso_D_807FF854 + 0x1264);
+        u15.v = *(int *)((char *)&game_uso_D_807FF854 + kTag_f3f_1264);
         t = u15;
         obj = (int *)((char *)s1 + 0x158);
         if (s1 != (int *)-0x158 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5046,7 +5046,7 @@ stage0:;
         }
     }
     {
-        u16.v = *(int *)((char *)&game_uso_D_807FF858 + 0x1268);
+        u16.v = *(int *)((char *)&game_uso_D_807FF858 + kTag_f4f_1268);
         t = u16;
         obj = (int *)((char *)s1 + 0x170);
         if (s1 != (int *)-0x170 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5057,7 +5057,7 @@ stage0:;
         }
     }
     {
-        u17.v = *(int *)((char *)&game_uso_D_807FF85C + 0x126c);
+        u17.v = *(int *)((char *)&game_uso_D_807FF85C + kTag_l1f_126C);
         t = u17;
         obj = (int *)((char *)s1 + 0x188);
         if (s1 != (int *)-0x188 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5068,7 +5068,7 @@ stage0:;
         }
     }
     {
-        u18.v = *(int *)((char *)&game_uso_D_807FF860 + 0x1270);
+        u18.v = *(int *)((char *)&game_uso_D_807FF860 + kTag_l2f_1270);
         t = u18;
         obj = (int *)((char *)s1 + 0x1a0);
         if (s1 != (int *)-0x1a0 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5079,7 +5079,7 @@ stage0:;
         }
     }
     {
-        u19.v = *(int *)((char *)&game_uso_D_807FF864 + 0x1274);
+        u19.v = *(int *)((char *)&game_uso_D_807FF864 + kTag_l3f_1274);
         t = u19;
         obj = (int *)((char *)s1 + 0x1b8);
         if (s1 != (int *)-0x1b8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5090,7 +5090,7 @@ stage0:;
         }
     }
     {
-        u20.v = *(int *)((char *)&game_uso_D_807FF868 + 0x1278);
+        u20.v = *(int *)((char *)&game_uso_D_807FF868 + kTag_r1f_1278);
         t = u20;
         obj = (int *)((char *)s1 + 0x1d0);
         if (s1 != (int *)-0x1d0 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5101,7 +5101,7 @@ stage0:;
         }
     }
     {
-        u21.v = *(int *)((char *)&game_uso_D_807FF86C + 0x127c);
+        u21.v = *(int *)((char *)&game_uso_D_807FF86C + kTag_r2f_127C);
         t = u21;
         obj = (int *)((char *)s1 + 0x1e8);
         if (s1 != (int *)-0x1e8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5112,7 +5112,7 @@ stage0:;
         }
     }
     {
-        u22.v = *(int *)((char *)&game_uso_D_807FF870 + 0x1280);
+        u22.v = *(int *)((char *)&game_uso_D_807FF870 + kTag_dm1_1280);
         t = u22;
         obj = (int *)((char *)s1 + 0x200);
         if (s1 != (int *)-0x200 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5123,7 +5123,7 @@ stage0:;
         }
     }
     {
-        u23.v = *(int *)((char *)&game_uso_D_807FF874 + 0x1284);
+        u23.v = *(int *)((char *)&game_uso_D_807FF874 + kTag_dm2_1284);
         t = u23;
         obj = (int *)((char *)s1 + 0x218);
         if (s1 != (int *)-0x218 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5134,7 +5134,7 @@ stage0:;
         }
     }
     {
-        u24.v = *(int *)((char *)&game_uso_D_807FF878 + 0x1288);
+        u24.v = *(int *)((char *)&game_uso_D_807FF878 + kTag_dm3_1288);
         t = u24;
         obj = (int *)((char *)s1 + 0x230);
         if (s1 != (int *)-0x230 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5145,7 +5145,7 @@ stage0:;
         }
     }
     {
-        u25.v = *(int *)((char *)&game_uso_D_807FF87C + 0x128c);
+        u25.v = *(int *)((char *)&game_uso_D_807FF87C + kTag_dm4_128C);
         t = u25;
         obj = (int *)((char *)s1 + 0x248);
         if (s1 != (int *)-0x248 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5156,7 +5156,7 @@ stage0:;
         }
     }
     {
-        u26.v = *(int *)((char *)&game_uso_D_807FF880 + 0x1290);
+        u26.v = *(int *)((char *)&game_uso_D_807FF880 + kTag_st1_1290);
         t = u26;
         obj = (int *)((char *)s1 + 0x260);
         if (s1 != (int *)-0x260 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5166,7 +5166,7 @@ stage0:;
         }
     }
     {
-        u27.v = *(int *)((char *)&game_uso_D_807FF884 + 0x1294);
+        u27.v = *(int *)((char *)&game_uso_D_807FF884 + kTag_st2_1294);
         t = u27;
         obj = (int *)((char *)s1 + 0x278);
         if (s1 != (int *)-0x278 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5176,7 +5176,7 @@ stage0:;
         }
     }
     {
-        u28.v = *(int *)((char *)&game_uso_D_807FF888 + 0x1298);
+        u28.v = *(int *)((char *)&game_uso_D_807FF888 + kTag_st3_1298);
         t = u28;
         obj = (int *)((char *)s1 + 0x290);
         if (s1 != (int *)-0x290 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5186,7 +5186,7 @@ stage0:;
         }
     }
     {
-        u29.v = *(int *)((char *)&game_uso_D_807FF88C + 0x129c);
+        u29.v = *(int *)((char *)&game_uso_D_807FF88C + kTag_sl1_129C);
         t = u29;
         obj = (int *)((char *)s1 + 0x2a8);
         if (s1 != (int *)-0x2a8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5196,7 +5196,7 @@ stage0:;
         }
     }
     {
-        u30.v = *(int *)((char *)&game_uso_D_807FF890 + 0x12a0);
+        u30.v = *(int *)((char *)&game_uso_D_807FF890 + kTag_sl2_12A0);
         t = u30;
         obj = (int *)((char *)s1 + 0x2c0);
         if (s1 != (int *)-0x2c0 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5206,7 +5206,7 @@ stage0:;
         }
     }
     {
-        u31.v = *(int *)((char *)&game_uso_D_807FF894 + 0x12a4);
+        u31.v = *(int *)((char *)&game_uso_D_807FF894 + kTag_slm_12A4);
         t = u31;
         obj = (int *)((char *)s1 + 0x2d8);
         if (s1 != (int *)-0x2d8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5216,7 +5216,7 @@ stage0:;
         }
     }
     {
-        u32.v = *(int *)((char *)&game_uso_D_807FF898 + 0x12a8);
+        u32.v = *(int *)((char *)&game_uso_D_807FF898 + kTag_stm_12A8);
         t = u32;
         obj = (int *)((char *)s1 + 0x2f0);
         if (s1 != (int *)-0x2f0 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
@@ -5641,7 +5641,7 @@ void RiderAnim_checkRow_0000E1FC(char *obj) {
     if (s->useDParms != 0) goto callA;
     raw = s->edge;
     m = (raw < 0.0f) ? -raw : raw;
-    if (*(double *)((char *)&game_uso_D_807FF458 + 0x208) < (double)m) {
+    if (*(double *)((char *)&game_uso_D_807FF458 + kRoD_0p1_208) < (double)m) {
     callA:
         RiderAnim_enterState_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF458 + kPmf_RiderAnim_stateRowIn));
     } else {

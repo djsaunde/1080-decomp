@@ -38,7 +38,7 @@ extern "C" void RiderAnim_stateRideDeep(int *a0) {
     RiderAnim_checkBrake_0000D8A8(a0);
     RiderAnim_checkJump_0000D8EC(a0);
     f0 = RA(a0)->rider->edge;
-    if ((double)(f0 < 0.0f ? -f0 : f0) > AT(double, &game_uso_D_807FFB78, 0x258)) {
+    if ((double)(f0 < 0.0f ? -f0 : f0) > AT(double, &game_uso_D_807FFB78, kRoD_0p06_258)) {
         import_0010DB78(a0, RANIM_ID(2, RANIM_TURN_B), RANIM_ID(2, RANIM_TURN_F), f0, 0, 1);
     } else {
         import_0010DB28(a0, RANIM_ID(2, RANIM_UP_DOWN), 0, 1, 6, 1);

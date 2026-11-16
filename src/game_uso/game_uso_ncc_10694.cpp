@@ -46,7 +46,7 @@ extern "C" void RiderAnim_stateRide(A *a0) {
     RiderAnim_checkBrake_0000D8A8(a0);
     RiderAnim_checkJump_0000D8EC(a0);
     ar = (r < 0.0f) ? -r : r;
-    if ((double)ar > AT(double, &game_uso_D_807FFB70, 0x250)) {
+    if ((double)ar > AT(double, &game_uso_D_807FFB70, kRoD_0p06_250)) {
         int v = RA(a0)->animSet;
         import_0010DB78(a0, v | RANIM_TURN_B, v | RANIM_TURN_F, r, 0, 1);
     } else {

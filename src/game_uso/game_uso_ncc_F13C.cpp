@@ -38,7 +38,7 @@ extern "C" void RiderAnim_statePreJumpHold(int *a0, int *a1) {
     } else {
         float f0 = RA(s0)->rider->edge;
         float abs_f0 = (f0 < 0.0f) ? -f0 : f0;
-        if (AT(double, &game_uso_D_807FFB58, 0x238) < (double)abs_f0) {
+        if (AT(double, &game_uso_D_807FFB58, kRoD_0p06_238) < (double)abs_f0) {
             import_0010DB78(s0, RANIM_ID(1, RANIM_PRE_JUMP_DEEP_B), RANIM_ID(1, RANIM_PRE_JUMP_DEEP_F), f0, 0, 1);
         } else {
             import_0010DB28(s0, RANIM_ID(1, RANIM_PRE_JUMP), 0, 1, 6, 1);

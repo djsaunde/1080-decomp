@@ -25,6 +25,7 @@
 typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
 typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/sun.h" /* NCC has no -I include */
+#include "../../include/game/game_uso_data.h"
 struct V { char pad[40]; virtual void m0(); virtual void m1(); virtual void m2(); };
 struct Q {
     float x, y, z, w;
@@ -51,7 +52,7 @@ extern "C" void LensFlareElem_draw_0000B750(LensFlareElem *elem, Sprite *sprite,
     sprite->unkC0 = elem->image;
     v = elem->size;
     if (elem->flags & LFELEM_FLAG_SIZE) v *= fade;
-    if ((double)v > AT(double, &game_uso_D_807FFA78, 0x158)) {
+    if ((double)v > AT(double, &game_uso_D_807FFA78, kRoD_0p1_158)) {
         sprite->scaleX = v;
         sprite->scaleY = v;
         Q q(elem->color[0], elem->color[1], elem->color[2], elem->color[3] * fade);
