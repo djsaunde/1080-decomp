@@ -1,5 +1,6 @@
 #include "common.h"
 #include "uso_call.h"
+#include "gdl/node.h" /* NODE(p)->vptr (+0x28) / ->name (+0xC) */
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -189,11 +190,11 @@ have1:
     if (v1 != 0) goto have2;
     obj2 = (int*)CALL(mem_new)(0x2C);
     if (obj2 == 0) goto Sv1;
-have2: CALL(Node_ctor)(obj2, (char*)&D_00000000 + 0x22C); *(int*)((char*)obj2 + 0x28) = (int)&D_edd_vt0;
+have2: CALL(Node_ctor)(obj2, (char*)&D_00000000 + 0x22C); NODE(obj2)->vptr = (char *)&D_edd_vt0;
 Sv1:
-    *(int*)((char*)v1 + 0x28) = (int)&D_edd_vt1;
+    NODE(v1)->vptr = (char *)&D_edd_vt1;
 Sa2:
-    *(int*)((char*)a0 + 0x28) = (int)&D_edd_vt2;
+    NODE(a0)->vptr = (char *)&D_edd_vt2;
 Ret:
     return a0;
 }
@@ -240,7 +241,7 @@ void *edd_ItemType_create_000003BC(int *arg0) {
     p1 = (int*)CALL(mem_new)(0x40);
     if (p1 != 0) {
         CALL(ColourItem_ctor)(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&D_00000000;
+        NODE(p1)->vptr = (char *)&D_00000000;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;

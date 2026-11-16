@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/input.h"
 #include "uso_call.h"
+#include "gdl/node.h" /* NODE(p)->vptr (+0x28) / ->name (+0xC) */
 
 extern int gl_func_00000000();
 
@@ -103,12 +104,12 @@ have1:
     if (q != 0) goto have2;
     r = (void*)CALL(mem_new)(0x2C);
     if (r == 0) goto Lq28;
-have2: CALL(Node_ctor)(r, (char*)&D_n64_100_a + 0xB0); *(int*)((char*)r + 0x28) = (int)&D_n64_100_b;
+have2: CALL(Node_ctor)(r, (char*)&D_n64_100_a + 0xB0); NODE(r)->vptr = (char *)&D_n64_100_b;
 Lq28:
-    *(int*)((char*)q + 0x28) = (int)&D_n64_100_c;
+    NODE(q)->vptr = (char *)&D_n64_100_c;
 Lp28:
-    *(int*)((char*)a0 + 0x28) = (int)((char*)&D_n64_100_d + 0x18);
-    *(int*)((char*)a0 + 0xC)  = (int)((char*)&D_n64_100_e + 0xB8);
+    NODE(a0)->vptr = (char *)((char*)&D_n64_100_d + 0x18);
+    NODE(a0)->name = (char*)&D_n64_100_e + 0xB8;
     CALL(n64_loadSprites_00000230)(a0);
 
     *(int*)((char*)a0 + 0x50) = 0;

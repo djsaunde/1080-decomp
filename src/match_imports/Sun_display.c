@@ -1,6 +1,7 @@
 /* Native original-compiler source port from src/game_uso/game_uso_pool_B274.c. Target bytes unchanged. */
 #include "context_game_uso_pool_B274.h"
 #include "game/game_uso_data.h" /* kRoD_* thresholds */
+#include "gdl/gfxlib.h"
 void Sun_display(GameUsoB274Object *s0) {
     float vec[4];
     GameUsoB274Dispatch *table;
@@ -21,9 +22,11 @@ void Sun_display(GameUsoB274Object *s0) {
     if (!(*(double *)(&game_uso_D_807FFA58 + kRoD_0p1_138) < (double)s0->field_C8)) return;
     game_uso_func_04D700(s0);
     if (1) {
-        *(float *)((char *)(unsigned)(&import_8005C1A8 + 0xA0) + 0x30) = s0->field_A0[0];
-        *(float *)((char *)(unsigned)(&import_8005C1A8 + 0xA0) + 0x34) = s0->field_A0[1];
-        *(float *)((char *)(unsigned)(&import_8005C1A8 + 0xA0) + 0x38) = s0->field_A0[2];
+        /* the sun's model-view translation; import_8005C1A8 is gGfxLib (see game_uso_ncc_B750.cpp) */
+        /* (unsigned) keeps the target's separate +0xA0 (modelView) add before the [3][i] stores */
+        ((float (*)[4])(unsigned)GFXLIB(&import_8005C1A8)->modelView)[3][0] = s0->field_A0[0];
+        ((float (*)[4])(unsigned)GFXLIB(&import_8005C1A8)->modelView)[3][1] = s0->field_A0[1];
+        ((float (*)[4])(unsigned)GFXLIB(&import_8005C1A8)->modelView)[3][2] = s0->field_A0[2];
     }
     r = s0->field_134 * s0->field_C8;
     game_uso_B274_set_prim_color(game_uso_B274_context, s0->field_164);
