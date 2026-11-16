@@ -1,4 +1,6 @@
 #include "uso_call.h"
+#include "common.h"
+#include "libultra/os_task.h"
 /* -O1 donor for gl__VirtualToPhysicalTask — 71-insn pointer-relocation fixup driver
  * (frame 0x20, ra only). PROVEN EXACT 71/71 at IDO 7.1 -O1 (2026-07-08
  * standalone probe: 69/71 raw with the 2 remaining words being the UNBAKED
@@ -15,30 +17,30 @@ extern int gl_func_00000000();
 extern char D_00041710[];
 
 int gl__VirtualToPhysicalTask(int a0) {
-    char *obj;
+    OSTask_t *obj;
 
-    obj = D_00041710;
-    CALL(gl_bcopy)(a0, obj, 0x40);
-    if (*(int *)(obj + 0x10)) {
-        *(int *)(obj + 0x10) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x10));
+    obj = (OSTask_t *)D_00041710;
+    CALL(gl_bcopy)(a0, obj, sizeof(OSTask_t));
+    if (obj->ucode) {
+        obj->ucode = (u64 *)CALL(gl_osVirtualToPhysical)(obj->ucode);
     }
-    if (*(int *)(obj + 0x18)) {
-        *(int *)(obj + 0x18) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x18));
+    if (obj->ucode_data) {
+        obj->ucode_data = (u64 *)CALL(gl_osVirtualToPhysical)(obj->ucode_data);
     }
-    if (*(int *)(obj + 0x20)) {
-        *(int *)(obj + 0x20) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x20));
+    if (obj->dram_stack) {
+        obj->dram_stack = (u64 *)CALL(gl_osVirtualToPhysical)(obj->dram_stack);
     }
-    if (*(int *)(obj + 0x28)) {
-        *(int *)(obj + 0x28) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x28));
+    if (obj->output_buff) {
+        obj->output_buff = (u64 *)CALL(gl_osVirtualToPhysical)(obj->output_buff);
     }
-    if (*(int *)(obj + 0x2C)) {
-        *(int *)(obj + 0x2C) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x2C));
+    if (obj->output_buff_size) {
+        obj->output_buff_size = (u64 *)CALL(gl_osVirtualToPhysical)(obj->output_buff_size);
     }
-    if (*(int *)(obj + 0x30)) {
-        *(int *)(obj + 0x30) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x30));
+    if (obj->data_ptr) {
+        obj->data_ptr = (u64 *)CALL(gl_osVirtualToPhysical)(obj->data_ptr);
     }
-    if (*(int *)(obj + 0x38)) {
-        *(int *)(obj + 0x38) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x38));
+    if (obj->yield_data_ptr) {
+        obj->yield_data_ptr = (u64 *)CALL(gl_osVirtualToPhysical)(obj->yield_data_ptr);
     }
     return (int)obj;
 }

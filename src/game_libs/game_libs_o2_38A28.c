@@ -22,6 +22,7 @@
  *  - declaration order + pad[4] give the 64-byte frame and the 60 / 36 homes. */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "gdl/node.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -38,13 +39,13 @@ void Node_doCommand(char *o, char *c) {
         case 0x64:
             key = *(unsigned int *)(c + 0x4);
             *(unsigned int *)(c + 0x4) = key + 4;
-            *(int *)(o + 0x20) = *(int *)key;
+            NODE(o)->handle = *(int *)key;
             return;
         case 0x65:
             p = *(int **)(c + 0x4);
             *(int **)(c + 0x4) = p + 1;
             key = *p;
-            *(int *)(o + 0x0C) = key;
+            NODE(o)->name = key;
             return;
         case 0x66:
             p = *(int **)(c + 0x4);
@@ -54,11 +55,11 @@ void Node_doCommand(char *o, char *c) {
                 CALL(sys_fatal)(sFmt_Global_out_of_range_1EC6C, key);
             }
             r = *(char **)((char *)&gNodeGlobals + key * 4);
-            CALL(list_append)(r + 0x10, o);
-            if (*(int *)(o + 0x14) != 0) {
-                *(int *)(o + 0x4) = 1;
+            CALL(list_append)(&NODE(r)->children, o);
+            if (NODE(o)->parent != 0) {
+                NODE(o)->unk04 = 1;
             }
-            *(char **)(o + 0x14) = r;
+            NODE(o)->parent = NODE(r);
             return;
         case 0x67:
             p = *(int **)(c + 0x4);
@@ -73,5 +74,5 @@ void Node_doCommand(char *o, char *c) {
             return;
     }
     key = code; code = 0;
-    p = *(int **)(o + 0xC); CALL(sys_fatal)(sFmt_unknown_Node_cmd_for_1EC9C, key, p);
+    p = (int *)NODE(o)->name; CALL(sys_fatal)(sFmt_unknown_Node_cmd_for_1EC9C, key, p);
 }
