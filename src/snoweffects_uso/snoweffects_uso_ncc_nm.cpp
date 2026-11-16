@@ -123,3 +123,56 @@ extern "C" void snoweffects_uso_func_00002310(SnowTex *t) {
     gDPWord(t->dl->next(), 0xB9000201, 4);
     gDPWord(t->dl->next(), 0xB8000000, 0);
 }
+
+/* 0x4374 (0xD2 words, NM ~90 % lines): rebuild the emitter's basis from its world matrix (+0x30): the two
+ * end points (+-len, 0, 0) and the origin go through the matrix (inline point transform); dir = a - b
+ * (operator- through set(), by-value operator=), normalized, kept as fwd (+0xFC), then crossed with the
+ * camera's +0x3B0 vector in place; +0x108 = camera +0x318, normalized; then virtual slots 14 and 15.
+ * Left: the operator- result temps sit 8 bytes lower than the target's (frame 152 vs 160). */
+struct SnowBV3 {
+    float x, y, z;
+    SnowBV3() {}
+    void set(float a, float b, float c) { x = a; y = b; z = c; }
+    SnowBV3 &operator=(SnowBV3 o) { x = o.x; y = o.y; z = o.z; return *this; }
+};
+inline SnowBV3 operator-(const SnowBV3 &a, const SnowBV3 &b) { SnowBV3 r; r.set(a.x - b.x, a.y - b.y, a.z - b.z); return r; }
+inline void xf(SnowBV3 *v, float (*m)[4]) {
+    float nx = m[0][0] * v->x + m[1][0] * v->y + m[2][0] * v->z + m[3][0];
+    float ny = m[0][1] * v->x + m[1][1] * v->y + m[2][1] * v->z + m[3][1];
+    float nz = m[0][2] * v->x + m[1][2] * v->y + m[2][2] * v->z + m[3][2];
+    v->x = nx; v->y = ny; v->z = nz;
+}
+struct SnowVEnt { short d; short pad; void (*fn)(void *); };
+struct SnowBCam { char pad[0x318]; SnowBV3 v318; char pad2[0x3B0 - 0x324]; SnowBV3 up; };
+struct SnowBasis {
+    char pad00[0x28];
+    SnowVEnt *vptr;
+    SnowBCam *cam;
+    float (*m)[4];
+    char pad34[0x3C - 0x34];
+    float len;
+    char pad40[0xE4 - 0x40];
+    SnowBV3 a;       /* E4 */
+    SnowBV3 b;       /* F0 */
+    SnowBV3 fwd;     /* FC */
+    SnowBV3 v108;    /* 108 */
+    SnowBV3 dir;     /* 114 */
+    char pad120[0x138 - 0x120];
+    SnowBV3 c;       /* 138 */
+};
+extern "C" void snoweffects_uso_func_00004374(SnowBasis *t) {
+    t->a.x = t->len; t->a.y = 0.0f; t->a.z = 0.0f;
+    SnowBV3 *pa = &t->a; xf(pa, t->m);
+    t->b.x = -t->len; t->b.z = 0.0f; t->b.y = 0.0f;
+    SnowBV3 *pb = &t->b; xf(pb, t->m);
+    t->dir = *pa - *pb;
+    gl_func_00000000(&t->dir);  /* math_vec3Normalize */
+    t->fwd = t->dir;
+    gl_func_00000000(&t->dir, &t->cam->up, &t->dir);  /* math_vec3Cross */
+    t->v108 = t->cam->v318;
+    gl_func_00000000(&t->v108);  /* math_vec3Normalize */
+    t->c.x = 0.0f; t->c.y = 0.0f; t->c.z = 0.0f;
+    xf(&t->c, t->m);
+    t->vptr[14].fn((void *)((int)t->vptr[14].d + (int)t));
+    t->vptr[15].fn((void *)((int)t->vptr[15].d + (int)t));
+}

@@ -653,7 +653,14 @@ void SnowRing_draw_000040B4(void *self) {
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00004188);
 
+#ifdef NON_MATCHING
+/* emitter basis rebuild: NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp (agent-h run 649),
+ * REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
+void snoweffects_uso_func_00004374(void) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00004374);
+#endif
 
 int snoweffects_uso_func_000046BC(char *this) {
     if (*(int *)(this + 0x144) >= 2) {

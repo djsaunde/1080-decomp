@@ -147,7 +147,7 @@ SNOW_NM_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp.o
 $(SNOW_NM_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NM_FUNCS := snoweffects_uso_func_000015D0 snoweffects_uso_func_00001A18 snoweffects_uso_func_00002310
+SNOW_NM_FUNCS := snoweffects_uso_func_000015D0 snoweffects_uso_func_00001A18 snoweffects_uso_func_00002310 snoweffects_uso_func_00004374
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_FUNCS),$(f)=$(SNOW_NM_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_DONOR)
 # viewrec.uso Text ends with one zero pad word after 0x55A4's `jr ra; sw a0,0(sp)`: all-zero SUFFIX
