@@ -23,6 +23,8 @@
 #include "gdl/gdlfile.h"
 #include "gdl/hostio.h"
 #include "gdl/parm.h"
+#include "gdl/pmf.h"
+#include "gdl/smallnode.h"
 #include "libultra/os_thread.h"
 #include "game/camera.h"
 #include "uso_call.h"
@@ -1699,22 +1701,22 @@ void dma_rawRead(int a0, int a1, int a2, int a3) {
  *   order. Reloc-free (all derefs off a0, indirect jalr) → PROMOTED to plain
  *   C. BYTE-IDENTICAL family MemberCallback_invoke_0003A044 / 0003EBDC / 0003EC5C matched
  *   with the same recipe. */
-int MemberCallback_invoke(char *a0) {
+int MemberCallback_invoke(GdlPmfCallback *a0) {
     char *arg;
-    char *v1;
-    char *entry;
+    GdlPmf *v1;
+    GdlPmf *entry;
     int (*fnptr)(char *);
     int idx;
-    v1 = a0 + 8;
-    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg; /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-    if (*(short*)(a0 + 0xA) < 0) { /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        fnptr = *(int (**)(char *))(a0 + 0xC);
+    v1 = &a0->pmf;
+    arg = a0->obj; arg = a0->pmf.delta + arg;
+    if (a0->pmf.vslot < 0) {
+        fnptr = (int (*)(char *))a0->pmf.u.fn;
     } else {
-        int selector = *(int*)(v1 + 4); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        if (selector == 0 && *(short*)v1 == 0) idx = 0x28; else idx = selector;
-        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        arg = *(short*)entry + arg;
-        fnptr = *(int (**)(char *))(entry + 4);
+        int selector = v1->u.vptrOffset;
+        if (selector == 0 && v1->delta == 0) idx = 0x28; else idx = selector;
+        entry = (GdlPmf *)((v1->vslot << 3) + *(char**)(arg + idx)); /* the vtable entry: *(arg + idx) is the object's vptr */
+        arg = entry->delta + arg;
+        fnptr = (int (*)(char *))entry->u.fn;
     }
     return fnptr(arg);
 }
@@ -2495,7 +2497,7 @@ typedef struct S36C08 {
     char pad00[0x30];
     float pos[3];                                   /* 0x30 */
     char pad3C[0x70 - 0x3C];
-    struct { char pad[0x30]; float v[3]; } sub;     /* 0x70 (v at 0xA0) */
+    struct S36C08Sub { char pad[0x30]; float v[3]; } sub; /* 0x70 (v at 0xA0) */
     char padAC[0xF4 - 0xAC];
     struct S36C08 *child;                           /* 0xF4 */
 } S36C08;
@@ -2542,10 +2544,10 @@ void CamFollow_update(CamFollow *o) {
     }
 
     cb = (char *)(*pc)->child;
-    r[0] = *(float *)(cb + 0xA0); /* RAW: byte-lock: lever = the cb += 0x70 pointer step between the reads (S36C08 sub.v at +0xA0); the member spelling removes the step */
-    cb += 0x70;
-    r[1] = *(float *)(cb + 0x34); /* RAW: byte-lock: lever = the cb += 0x70 pointer step between the reads (S36C08 sub.v at +0xA0); the member spelling removes the step */
-    r[2] = *(float *)(cb + 0x38); /* RAW: byte-lock: lever = the cb += 0x70 pointer step between the reads (S36C08 sub.v at +0xA0); the member spelling removes the step */
+    r[0] = ((S36C08 *)cb)->sub.v[0];
+    cb += 0x70; /* cb = &child->sub: the pointer step is a match lever (addiu v0,v0,112) */
+    r[1] = ((struct S36C08Sub *)cb)->v[1];
+    r[2] = ((struct S36C08Sub *)cb)->v[2];
     r[0] = r[0] * -1.0f;
     r[1] = r[1] * -1.0f;
     r[2] = r[2] * -1.0f;
@@ -2624,7 +2626,7 @@ char *CamMan_ctor(char *o, int a1, int a2) {
     ((FreeCam *)o)->pitch = -90.0f;
     ((FreeCam *)o)->yaw = 180.0f;
     ((FreeCam *)o)->unk38 = 0.0f;
-    *(int *)(o + 0x00) = 0x40; /* RAW: unknown-object: CamMan has no header struct; inline 4-byte member at +0x0 (statement order is the match lever) */
+    ((Node *)o)->unk00 = 0x40; /* CamMan is camera.h's FreeCam; it overrides the Node ctor's unk00 = -1 (statement order is the match lever) */
     ((FreeCam *)o)->accel = 0;
 out:
     return o;
@@ -2902,7 +2904,7 @@ void Spinner_update(int *a0) {
     float y, z;
     int pad[3];
     s.p = (int)NODE(a0)->parent;
-    y = *(float*)((char*)a0 + 0x2C); z = 0.0f; /* RAW: unknown-object: Spinner has no header struct; +0x2C is its float spin rate */
+    y = ((Spinner *)a0)->speed; z = 0.0f;
     s.v.y = y;
     s.v.z = z;
     s.v.x = z;
@@ -2927,8 +2929,8 @@ int *SeekNode_ctor(int *a0, int a1, float a2) {
     if (a0 != 0 || (a0 = (int*)FCALL(mem_new)(0x34)) != 0) {
         FCALL(Node_ctor)(a0, GL_DATA_STR(0x1EA20, "<Node>"));
         ((Node *)a0)->vptr = (char *)&SeekNode_vtbl;
-        *(float*)((char*)a0 + 0x30) = a2; /* RAW: unknown-object: SeekNode has no header struct; +0x30 float ctor arg */
-        a0[0x2C/4] = a1;
+        ((SeekNode *)a0)->rate = a2;
+        ((SeekNode *)a0)->target = a1;
     }
     return a0;
 }
@@ -4912,22 +4914,22 @@ int hostio_readQuadParm_0003A014(char *a0) {
  * 32/32 via the 35A18 recipe (same-line join of arg load + accumulate kills
  * the 2-word load-order scheduler tie — see the 35A18 note). Reloc-free →
  * PROMOTED to plain C. */
-int MemberCallback_invoke_0003A044(char *a0) {
+int MemberCallback_invoke_0003A044(GdlPmfCallback *a0) {
     char *arg;
-    char *v1;
-    char *entry;
+    GdlPmf *v1;
+    GdlPmf *entry;
     int (*fnptr)(char *);
     int idx;
-    v1 = a0 + 8;
-    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg; /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-    if (*(short*)(a0 + 0xA) < 0) { /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        fnptr = *(int (**)(char *))(a0 + 0xC);
+    v1 = &a0->pmf;
+    arg = a0->obj; arg = a0->pmf.delta + arg;
+    if (a0->pmf.vslot < 0) {
+        fnptr = (int (*)(char *))a0->pmf.u.fn;
     } else {
-        int selector = *(int*)(v1 + 4); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        if (selector == 0 && *(short*)v1 == 0) idx = 0x28; else idx = selector;
-        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        arg = *(short*)entry + arg;
-        fnptr = *(int (**)(char *))(entry + 4);
+        int selector = v1->u.vptrOffset;
+        if (selector == 0 && v1->delta == 0) idx = 0x28; else idx = selector;
+        entry = (GdlPmf *)((v1->vslot << 3) + *(char**)(arg + idx)); /* the vtable entry: *(arg + idx) is the object's vptr */
+        arg = entry->delta + arg;
+        fnptr = (int (*)(char *))entry->u.fn;
     }
     return fnptr(arg);
 }
@@ -5005,25 +5007,25 @@ int MemberCallback_invoke_0003A044(char *a0) {
  * (MATCHING_WORKFLOW). Flipping it disturbs temp rotation (combined base expr
  * -> 23/37; named j var -> 24/37; v1-routed end args -> 1/37). Allocation-order
  * tie-break, not C-steerable here. */
-int MemberCallback_invoke_0003A0C4(char *r) {
+int MemberCallback_invoke_0003A0C4(GdlPmfCallback *r) {
     char *base;
-    char *v1;
-    char *e;
+    GdlPmf *v1;
+    GdlPmf *e;
     int (*fp)(int, int, int);
     int off;
-    v1 = r + 8;
-    base = *(char **)(r + 4); base = *(short *)(r + 8) + base; /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
+    v1 = &r->pmf;
+    base = r->obj; base = r->pmf.delta + base;
     if (r) {}
-    if (*(short *)(r + 0xA) < 0) { /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        fp = *(int (**)(int, int, int))(r + 0xC);
+    if (r->pmf.vslot < 0) {
+        fp = (int (*)(int, int, int))r->pmf.u.fn;
     } else {
-        int selector = *(int *)(v1 + 4); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        if (selector == 0 && *(short *)v1 == 0) off = 0x28; else off = selector;
-        e = (*(short *)(v1 + 2) << 3) + *(char **)(base + off); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        fp = *(int (**)(int, int, int))(e + 4);
-        base = *(short *)e + base;
+        int selector = v1->u.vptrOffset;
+        if (selector == 0 && v1->delta == 0) off = 0x28; else off = selector;
+        e = (GdlPmf *)((v1->vslot << 3) + *(char **)(base + off)); /* the vtable entry: *(base + off) is the object's vptr */
+        fp = (int (*)(int, int, int))e->u.fn;
+        base = e->delta + base;
     }
-    return fp((int)base, *(int *)(r + 0x10), *(int *)(r + 0x14)); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
+    return fp((int)base, r->arg0, r->arg1);
 }
 
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0003A0C4_pad.s")
@@ -8059,22 +8061,22 @@ int hostio_readQuadParm_0003EBAC(char *a0) {
  * BYTE-EXACT 32/32 via the 35A18 recipe (same-line join of arg load +
  * accumulate kills the 2-word load-order scheduler tie — see 35A18 note).
  * Reloc-free -> PROMOTED to plain C. */
-int MemberCallback_invoke_0003EBDC(char *a0) {
+int MemberCallback_invoke_0003EBDC(GdlPmfCallback *a0) {
     char *arg;
-    char *v1;
-    char *entry;
+    GdlPmf *v1;
+    GdlPmf *entry;
     int (*fnptr)(char *);
     int idx;
-    v1 = a0 + 8;
-    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg; /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-    if (*(short*)(a0 + 0xA) < 0) { /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        fnptr = *(int (**)(char *))(a0 + 0xC);
+    v1 = &a0->pmf;
+    arg = a0->obj; arg = a0->pmf.delta + arg;
+    if (a0->pmf.vslot < 0) {
+        fnptr = (int (*)(char *))a0->pmf.u.fn;
     } else {
-        int selector = *(int*)(v1 + 4); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        if (selector == 0 && *(short*)v1 == 0) idx = 0x28; else idx = selector;
-        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        arg = *(short*)entry + arg;
-        fnptr = *(int (**)(char *))(entry + 4);
+        int selector = v1->u.vptrOffset;
+        if (selector == 0 && v1->delta == 0) idx = 0x28; else idx = selector;
+        entry = (GdlPmf *)((v1->vslot << 3) + *(char**)(arg + idx)); /* the vtable entry: *(arg + idx) is the object's vptr */
+        arg = entry->delta + arg;
+        fnptr = (int (*)(char *))entry->u.fn;
     }
     return fnptr(arg);
 }
@@ -8117,22 +8119,22 @@ int MemberCallback_invoke_0003EBDC(char *a0) {
  * BYTE-EXACT 32/32 via the 35A18 recipe (same-line join of arg load +
  * accumulate kills the 2-word load-order scheduler tie — see 35A18 note).
  * Reloc-free -> PROMOTED to plain C. */
-int MemberCallback_invoke_0003EC5C(char *a0) {
+int MemberCallback_invoke_0003EC5C(GdlPmfCallback *a0) {
     char *arg;
-    char *v1;
-    char *entry;
+    GdlPmf *v1;
+    GdlPmf *entry;
     int (*fnptr)(char *);
     int idx;
-    v1 = a0 + 8;
-    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg; /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-    if (*(short*)(a0 + 0xA) < 0) { /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        fnptr = *(int (**)(char *))(a0 + 0xC);
+    v1 = &a0->pmf;
+    arg = a0->obj; arg = a0->pmf.delta + arg;
+    if (a0->pmf.vslot < 0) {
+        fnptr = (int (*)(char *))a0->pmf.u.fn;
     } else {
-        int selector = *(int*)(v1 + 4); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        if (selector == 0 && *(short*)v1 == 0) idx = 0x28; else idx = selector;
-        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        arg = *(short*)entry + arg;
-        fnptr = *(int (**)(char *))(entry + 4);
+        int selector = v1->u.vptrOffset;
+        if (selector == 0 && v1->delta == 0) idx = 0x28; else idx = selector;
+        entry = (GdlPmf *)((v1->vslot << 3) + *(char**)(arg + idx)); /* the vtable entry: *(arg + idx) is the object's vptr */
+        arg = entry->delta + arg;
+        fnptr = (int (*)(char *))entry->u.fn;
     }
     return fnptr(arg);
 }
@@ -9636,15 +9638,15 @@ void QNode_setAnimPose(char *a0, char *a1) {
 
     ib = (W3 *)buf;
     if (0) { ib = 0; }                                       /* multi-def: block buf<->ib base CSE (float reads stay sp-based) */
-    *ib = *(W3 *)(a1 + 0xD0);                                /* first lw is IDO-hoisted ABOVE addiu sp (was the splat mis-split) */ /* RAW: byte-lock: lever = raw char * W3 block copies with the if (0) ib multi-def (comments on the line); pose-record class not identified either */
+    *ib = *(W3 *)&((Animator *)a1)->dst.trans;               /* first lw is IDO-hoisted ABOVE addiu sp (was the splat mis-split) */
     QNODE(a0)->vqs.trans[0] = buf[0];
     QNODE(a0)->vqs.trans[1] = buf[1];
     QNODE(a0)->vqs.trans[2] = buf[2];
-    *ib = *(W3 *)(a1 + 0xDC); /* RAW: byte-lock: lever = raw char * W3 block copies with the if (0) ib multi-def (comments on the line); pose-record class not identified either */
+    *ib = *(W3 *)&((Animator *)a1)->dst.scale;
     QNODE(a0)->vqs.scale[0] = buf[0];
     QNODE(a0)->vqs.scale[1] = buf[1];
     QNODE(a0)->vqs.scale[2] = buf[2];
-    *ib = *(W3 *)(a1 + 0xE8); /* RAW: byte-lock: lever = raw char * W3 block copies with the if (0) ib multi-def (comments on the line); pose-record class not identified either */
+    *ib = *(W3 *)&((Animator *)a1)->dst.quat;
     QNODE(a0)->vqs.quat[0] = buf[0];
     QNODE(a0)->vqs.quat[1] = buf[1];
     QNODE(a0)->vqs.quat[2] = buf[2];
@@ -12196,7 +12198,7 @@ void gfx_end(GfxLib *arg0) {
     CALL(prof_endSection)(GL_DATA_STR(0x1FF18, "CPU"));
     *(char **)&gGfxPhase_44EDC_h = GL_DATA_STR(0x1FF1C, "DoneSwap");
     CALL(prof_timerStart)(GL_DATA_STR(0x1FF28, "1GFrame"));
-    obj = *(char **)(&gSysLib_44EDC_i + 0x1C); /* RAW: unknown-object: gSysLib (0x28-byte system-services object) has no struct type; +0x1C is its message queue */
+    obj = SYSLIB_AT(gSysLib_44EDC_i)->msgQueue;
     CALL(gl_osSendMesg)(obj, 0x68, 1);
     CALL(gfx_setEvery4thFrameFlag)(arg0);
 }
@@ -12698,7 +12700,7 @@ void gfx_submitFrameTask_000469A8(GfxLib *arg0, s32 arg1) {
      * read, with folded `0 * (int)&D` uses (kit CCCLXXII form): the loaded value is a ugen temp (t6) and &D the
      * coloured v1 like the target; with the in-call pDC above (one ugen ring slot) the second vcall keeps its
      * jalr delay fill, and the a10 fold drops to one p100 use: 98.786 -> 99.175, same length */
-    (*(ScreenWindow **)((int)&gGfxLib + 0x254) = (ScreenWindow *)((char *)GFX_MAINWIN_I(arg0) + 0 * (int)&gGfxLib))->dl = (DLContext *)((int)temp_s1 + 0 * (int)&gGfxLib); /* RAW: byte-lock: lever = the 0 * (int)&gGfxLib terms on the +0x254 window store (agent-c run 318 search, comment above); the member spelling would drop them, not re-tried this run */
+    (((GfxLib *)(int)&gGfxLib)->curWindow = (ScreenWindow *)((char *)GFX_MAINWIN_I(arg0) + 0 * (int)&gGfxLib))->dl = (DLContext *)((int)temp_s1 + 0 * (int)&gGfxLib);
     if (temp_s0) {} /* agent-c run 318: code-free test of the vcall result after the store (random test search): temp_v0_2 takes v0 like the target, 99.369 -> 99.515 */
     temp_v0_2 = (char *)arg0->unk290;
     temp_s0 = (char *)NODE(temp_v0_2)->vptr;
@@ -16764,7 +16766,7 @@ void gfx_initMtxBlock_0004E00C(int *s0) {
 }
 
 void gfx_setEvery4thFrameFlag(GfxLib *a0) {
-    a0->every4thFrame = (*(int *)((char *)&gSysLib + 0x14) & 3) == 0; /* RAW: unknown-object: gSysLib (0x28-byte system-services object) has no struct type; +0x14 is its frame counter */
+    a0->every4thFrame = (SYSLIB_AT(gSysLib)->frameCount & 3) == 0;
 }
 
 /* Vtable-call wrapper. Promoted 97.5%->100% via IDO load-CSE trick:
@@ -17386,9 +17388,9 @@ void Window_setupView(Window *o) {
         /* agent-c run 183: the 0x14C word goes through src (dead-web reuse): its a1 call-arg web
          * steers the post-call *(o+0x70) reload into a1 like the target (a new named local would
          * add an 8-byte dead home). The camera fov word, aspect and near go as raw words. */
-        src = (float *)*(int *)(o->camera + 0x14C); /* RAW: unknown-object: Window.camera is an MCamera (char *) with no struct; +0x14C is its fov word */
+        src = (float *)*(int *)&((MCamera *)o->camera)->fov;
         aEE44_a(m30, (int)src, *(int *)&o->aspect, *(int *)&o->near, o->far);
-        src = (float *)(o->camera + 0xB4); /* the camera's view matrix */
+        src = &((MCamera *)o->camera)->view[0][0];
         for (r = 0; r < 4; r++) {
             for (c = 0; c < 4; c++) {
                 result[r*4 + c] = 0.0f;
@@ -20418,22 +20420,22 @@ int hostio_readQuadParm_000551B0(char *a0) {
  * Unwrapped EXACT 2026-10-16 (run 97): the C5B0 recipe -- the _pad.s block is
  * gone and the trailing alignment nop is an all-zero SUFFIX_BYTES_FORCE word
  * (both builds, Makefile), so the region is C 0x80 + 4 = 0x84 as in the ROM. */
-int CMod_callbackInvoke_000551E0(char *a0) {
+int CMod_callbackInvoke_000551E0(GdlPmfCallback *a0) {
     char *arg;
-    char *v1;
-    char *entry;
+    GdlPmf *v1;
+    GdlPmf *entry;
     int (*fnptr)(char *);
     int idx;
-    v1 = a0 + 8;
-    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg; /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-    if (*(short*)(a0 + 0xA) < 0) { /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        fnptr = *(int (**)(char *))(a0 + 0xC);
+    v1 = &a0->pmf;
+    arg = a0->obj; arg = a0->pmf.delta + arg;
+    if (a0->pmf.vslot < 0) {
+        fnptr = (int (*)(char *))a0->pmf.u.fn;
     } else {
-        int selector = *(int*)(v1 + 4); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        if (selector == 0 && *(short*)v1 == 0) idx = 0x5C; else idx = selector;
-        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
-        arg = *(short*)entry + arg;
-        fnptr = *(int (**)(char *))(entry + 4);
+        int selector = v1->u.vptrOffset;
+        if (selector == 0 && v1->delta == 0) idx = 0x5C; else idx = selector;
+        entry = (GdlPmf *)((v1->vslot << 3) + *(char**)(arg + idx)); /* the vtable entry: *(arg + idx) is the object's vptr */
+        arg = entry->delta + arg;
+        fnptr = (int (*)(char *))entry->u.fn;
     }
     return fnptr(arg);
 }

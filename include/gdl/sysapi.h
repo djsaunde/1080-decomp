@@ -63,4 +63,22 @@ typedef char SysApi_dmaRead_check[(int)&((SysApi *)0)->dmaRead == 0x80 ? 1 : -1]
 typedef char SysApi_tempFree_check[(int)&((SysApi *)0)->tempFree == 0x9C ? 1 : -1];
 #endif
 
+/* SysLib: the game_libs system-services object, gSysLib (bootup.uso Bss+0x3C740, Sym 73, 0x28 bytes;
+ * include/gdl/gl_data.h). It is `this` for heap_tempAlloc*, the fs_gdlRead* readers, pad_testButton and
+ * sys_timeInFrames. Only the words the converted sites read are named (agent-b run 583):
+ *   +0x14 frameCount: gfx_setEvery4thFrameFlag sets GfxLib.every4thFrame = (frameCount & 3) == 0;
+ *   +0x18 vptr: app_staticInit_000412E8 stores SysLibBase_vtbl, then SysLib_vtbl_1E1B8 (gl_data.h);
+ *   +0x1C msgQueue: gfx_end sends message 0x68 to it (gl_osSendMesg), and the NCC donors 4D468 / 4D688
+ *         bind it as the event queue of osSetEventMesg events 4 / 14 and of interrupt 9. */
+typedef struct SysLib {
+    /* 0x00 */ int unk00[5];
+    /* 0x14 */ int frameCount;
+    /* 0x18 */ void *vptr;
+    /* 0x1C */ char *msgQueue;          /* an OSMesgQueue */
+    /* 0x20 */ int unk20[2];
+} SysLib;
+
+/* gSysLib and its per-site aliases (gSysLib_44EDC_i, ...): the object at the alias's address */
+#define SYSLIB_AT(sym) ((SysLib *)&(sym))
+
 #endif /* GDL_SYSAPI_H */
