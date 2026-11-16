@@ -207,6 +207,7 @@
 #define gGfxFbWidth            D_00000000 /* Data+0x1F974 Sym 1853: framebuffer width; gfx_clearFbRect_00043468 uses it as the row stride in halfwords (y * w + x), gfx_setScreenSize(w, h) stores it with Sym 1854; GfxLib_init / reset */
 #define gGfxFbHeight           D_00000000 /* Data+0x1F978 Sym 1854: framebuffer height (gfx_setScreenSize second argument; GfxLib_init / reset, gfx_drawFbSplash_00048184) */
 #define gSysDevBlock_3A4E8     D_00000000 /* Bss+0x3A4E8 Sym 1505, 5112 bytes (inferred span): the pad / device block of RcpMgr_service, pad_initGlobal, pad_requestGlobal, pad_setSlotValueGlobal, pad_hasRumblePakGlobal, pad_decodeButtonMap_00034CC8, sys_pollDevices_00034B64, sys_fatalHaltLoop. Kind only */
+#define gTempHeap_3A210        D_00000000 /* Bss+0x3A210 Sym 1503: the temp heap object: sys_initHeap(_, base, size) passes it to Mem_init(heap, base, base + size), heap_tempAlloc allocates from it and heap_tempFree hands it to Mem_free (also spelled D_35338_X there). agent-b run 597 */
 
 /* ---- string / path tables (DataRelocs point at RoData strings; agent-a run 491) ---- */
 #define gBoardModelUsoPaths    D_00000000 /* Data+0x8338 Sym 486, 9 char*: "rom/tahoe151.uso", "rom/merlot147.uso", ... the board model USOs (SnowBoarder_loadBoardModel / createBoardShape) */

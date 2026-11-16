@@ -459,7 +459,7 @@ void gl___osDevMgrMain(void) {
  * -> D_00000000. */
 typedef struct { int queue; int msg; } EventState_0006E1A4;
 void gl_osSetEventMesg(int event, void *queue, int msg) {
-    register int sr = gl_func_00000000();
+    register int sr = gl_func_00000000(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
     EventState_0006E1A4 *es = &((EventState_0006E1A4 *)&gl___osEventStateTab)[event];
     es->queue = (int)queue;
     es->msg = msg;
@@ -529,7 +529,7 @@ int gl_proutSprintf(int a0, int a1, int a2) {
 extern int func_00000000();
 extern int D_00000000;
 int gl_sprintf(char *a0, int a1, int a2, ...) {
-    int rv = func_00000000((char*)&D_00000000 + 0x83550, a0, ((int *)&a2)[-1], &a2);
+    int rv = FCALL(_Printf)((char*)&D_00000000 + 0x83550, a0, ((int *)&a2)[-1], &a2);
     if (rv >= 0) {
         a0[rv] = 0;
     }
@@ -741,7 +741,7 @@ s32 gl_osJamMesg(char *arg0, s32 arg1, s32 arg2) {
  * + run-queue head) map to the two distinct zero-resolving placeholders
  * D_00000000 / gl_data_00000000 (kept separate so IDO does not CSE them). */
 void gl_osSetThreadPri(Thread_0006F534 *thread, int pri) {
-    register int sr = gl_func_00000000();
+    register int sr = gl_func_00000000(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
     if (thread == 0) {
         thread = (Thread_0006F534 *)gl___osRunningThread;
     }
@@ -749,11 +749,11 @@ void gl_osSetThreadPri(Thread_0006F534 *thread, int pri) {
         thread->pri = pri;
         if ((Thread_0006F534 *)(void *)thread != (Thread_0006F534 *)gl___osRunningThread && thread->state != 1) {
             CALL(gl___osDequeueThread)(thread->queue, thread);
-            gl_func_00000000(thread->queue, thread);
+            gl_func_00000000(thread->queue, thread); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x730 (= __osEnqueueThread, no symbol of its own) */
         }
         if (((Thread_0006F534 *)gl___osRunningThread)->pri < ((Thread_0006F534 *)gl_data_00000000)->pri) {
             ((Thread_0006F534 *)gl___osRunningThread)->state = 2;
-            gl_func_00000000(&gl_data_00000000);
+            gl_func_00000000(&gl_data_00000000); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x630 (= __osEnqueueAndYield(&__osRunQueue), no symbol of its own) */
         }
     }
     CALL(gl___osRestoreInt)(sr);
@@ -846,7 +846,7 @@ s32 gl_osEPiRawStartDma(void) {
  * stand-in. Body below is a placeholder for the splice (its bytes are
  * replaced by the donor). */
 int gl_osSpTaskYielded(int* a0) {
-    volatile int v0 = gl_func_00000000(a0);
+    volatile int v0 = CALL(gl___osSpGetStatus)(a0);
     volatile int flag = (v0 & 0x100) ? 1 : 0;
     if (v0 & 0x80) {
         a0[1] = a0[1] | flag;
@@ -995,7 +995,7 @@ long long __osInsertTimer(void *t) {
  * Real C lives in the donor unit game_libs_ido53_6FFE4.c (IDO 5.3 -O1), spliced
  * via REPLACE_FUNC_BODY. Global int-mask word -> D_00000000. */
 void gl___osSetGlobalIntMask(int mask) {
-    register int sr = gl_func_00000000();
+    register int sr = gl_func_00000000(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
     gl___OSGlobalIntMask |= mask;
     CALL(gl___osRestoreInt)(sr);
 }

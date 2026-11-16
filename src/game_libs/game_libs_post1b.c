@@ -445,7 +445,7 @@ void hostio_readQuadParm_0006370C(char *a0) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_00063744(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -453,7 +453,7 @@ extern int gl_func_00000000();
 void fs_gdlReadFloat_00063780(float *dst) {
     int pad;
     float scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -473,7 +473,7 @@ void fs_gdlReadVec3_000637BC(Vec3 *dst) {
 extern int gl_func_00000000();
 void fs_gdlReadQuad_0006382C(Quad4 *dst) {
     Quad4 scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16);
     *dst = scratch;
 }
 
@@ -2074,11 +2074,11 @@ void fs_stub_00066208(int a0) {}
 int fs_piReadWord_00066210(int a0, int a1) {
     int buf;
     int saved;
-    saved = gl_func_00000000(1);
-    gl_func_00000000();
+    saved = gl_func_00000000(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
+    gl_func_00000000(); /* UNNAMED: mid-entry jal gl_osWritebackDCacheAll+0x4 (osWritebackDCacheAll entry 4 bytes into the build function, no symbol) */
     CALL(gl_osInvalDCache)(&buf, 4);
     CALL(gl_osPiReadIo)(a1, &buf);
-    gl_func_00000000(saved);
+    gl_func_00000000(saved); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
     return buf;
 }
 
@@ -2140,9 +2140,9 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", fs_readBytes_00066264);
 extern int gl_func_00000000();
 
 void fs_piWriteWord_000662E8(int a0, int a1, int a2) {
-    int r = gl_func_00000000(1);
-    gl_func_00000000();
-    gl_func_00000000(r);
+    int r = gl_func_00000000(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
+    gl_func_00000000(); /* UNNAMED: mid-entry jal gl_osWritebackDCacheAll+0x4 (osWritebackDCacheAll entry 4 bytes into the build function, no symbol) */
+    gl_func_00000000(r); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
     CALL(gl_osPiWriteIo)(a1, a2);
 }
 
@@ -2170,7 +2170,7 @@ extern int gl_func_00000000();
 void fs_gdlWriteInt_000663D0(int *a0) {
     int pad, scratch;
     scratch = *a0;
-    CALL(fs_gdlWriteFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlWriteFile)(&gSysLib, &scratch, 4);
 }
 
 /* Standard int-reader accessor template (15 insns / 0x3C). Split out of
@@ -3186,7 +3186,7 @@ int pad_getFlag_00067368(char *a0) {
  * keeps the pad folded into the 0x24 symbol so the INCLUDE_ASM baseline matches.
  * (Was kept INCLUDE_ASM as "route b" 2026-06-10; the -O2 body is byte-exact.) */
 void pad_threadEntry_00067370(void) {
-    gl_func_00000000();
+    CALL(pad_threadLoop_00066EEC)();
 }
 
 /* pad_open: 26-insn rv-store + sign-flip-or-assert + call.
@@ -3243,7 +3243,7 @@ extern int gl_func_00000000();
 void pad_stopMotor(int *a0) {
     int v = PADCTL(a0)->port;
     if (v != 0) {
-        CALL(pad_setSlotValueGlobal)(gl_func_00000000, v - 1, 0);
+        CALL(pad_setSlotValueGlobal)(&gSysLib, v - 1, 0);
     }
 }
 
@@ -3967,7 +3967,7 @@ f32 math_atan2s_00068044(f32 arg0, f32 arg1) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_000681F4(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -3986,14 +3986,14 @@ void fs_gdlReadVec3_00068230(Tri3i *dst) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_00068280(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadInt_000682BC(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -4160,7 +4160,7 @@ void BinFileMgr_loadData(int *a0, int a1) {
         s1 = 0;
         s0 = 0;
         do {
-            gl_func_00000000((int)BINFILEMGR(a0)->groups + s0, a0);
+            CALL(BinFile_set_000683C4)((int)BINFILEMGR(a0)->groups + s0, a0);
             CALL(BinFileMgr_loadFile_000683D4)((int)BINFILEMGR(a0)->groups + s0);
             s1++;
             s0 += 16;
@@ -4254,7 +4254,7 @@ extern int gl_func_00000000();
 BinFile *BinFileMgr_newFile_0006877C(int a0) {
     BinFile *r = (BinFile *)CALL(mem_new)(0x20);
     if (r != 0) {
-        r->vptr = (char *)gl_func_00000000; /* BinFile_vtbl (blank reloc) */
+        r->vptr = (char *)&BinFile_vtbl; /* BinFile_vtbl (blank reloc) */
     }
     return r;
 }
@@ -4694,14 +4694,14 @@ mid:
 extern int gl_func_00000000();
 void fs_gdlReadInt_00068F28(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadQuad_00068F64(Quad4 *dst) {
     Quad4 scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16);
     *dst = scratch;
 }
 
@@ -5302,12 +5302,12 @@ typedef struct {
 } OSMesgQueue_69E04;
 typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state; } Thread_69E04;
 int gl_osSendMesg(OSMesgQueue_69E04 *mq, int msg, int flags) {
-    register int saveMask = gl_func_00000000();
+    register int saveMask = gl_func_00000000(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
     register int last;
     while (mq->validCount >= mq->msgCount) {
         if (flags == 1) {
             ((Thread_69E04 *)gl___osRunningThread)->state = 8;
-            gl_func_00000000((int *)&mq->fullqueue);
+            gl_func_00000000((int *)&mq->fullqueue); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x630 (= __osEnqueueAndYield, no symbol of its own) */
         } else {
             CALL(gl___osRestoreInt)(saveMask);
             return -1;
@@ -5355,7 +5355,7 @@ typedef struct {
 } OSMesgQueue_69F64;
 typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state; } Thread_69F64;
 int gl_osRecvMesg(OSMesgQueue_69F64 *mq, int **msg, int flags) {
-    register int saveMask = gl_func_00000000();
+    register int saveMask = gl_func_00000000(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
 
     while (mq->validCount == 0) {
         if (flags == 0) {
@@ -5363,7 +5363,7 @@ int gl_osRecvMesg(OSMesgQueue_69F64 *mq, int **msg, int flags) {
             return -1;
         }
         ((Thread_69F64 *)gl___osRunningThread)->state = 8;
-        gl_func_00000000((int *)&mq->mtqueue);
+        gl_func_00000000((int *)&mq->mtqueue); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x630 (= __osEnqueueAndYield, no symbol of its own) */
     }
     if (msg != 0) {
         *msg = mq->msg[mq->first];
@@ -5483,7 +5483,7 @@ void osSpTaskLoad(OSTask_6A420 *intp) {
             tp->ucode = (char *)*(volatile unsigned int *)(((unsigned int)intp->yield_data_ptr + 0xC00 - 4) | 0xA0000000);
         }
     }
-    gl_func_00000000(tp, sizeof(OSTask_6A420));
+    gl_func_00000000(tp, sizeof(OSTask_6A420)); /* UNNAMED: mid-entry jal gl_osWritebackDCache+0x4 (osWritebackDCache entry 4 bytes into the build function, no symbol) */
     CALL(gl___osSpSetStatus)(0x2B00);
     while (CALL(gl___osSpSetPc)(0x04001000) == -1)
         ;
@@ -5623,7 +5623,7 @@ void gl_osDestroyThread(int *target) {
     register int *curr;
     register int *next;
 
-    prelim = gl_func_00000000();
+    prelim = gl_func_00000000(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
     if (target == 0) {
         target = *(int **)&gl___osRunningThread;
     } else {
@@ -5808,8 +5808,8 @@ void gl___osLeoResume(void) {
     mq->msg[last] = es->msg;
     mq->validCount++;
     if (mq->mtqueue->next != NULL) {
-        /* osStartThread(__osPopThread(&mq->mtqueue)) */
-        gl_func_00000000((char *)&gl___osRunQueue, CALL(gl___osPopThread)(mq));
+        /* __osEnqueueThread(&__osRunQueue, __osPopThread(&mq->mtqueue)) */
+        gl_func_00000000((char *)&gl___osRunQueue, CALL(gl___osPopThread)(mq)); /* UNNAMED: mid-entry outer jal gl___osExceptionPreamble+0x730 (= __osEnqueueThread, no symbol of its own) */
     }
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006B880_pad.s")

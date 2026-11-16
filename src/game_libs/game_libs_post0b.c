@@ -666,7 +666,7 @@ extern int gl_func_00000000();
 void sys_pollDevices_00034B64(int a0) {
     CALL(boot_checkStacks_00066AF0)(a0);
     CALL(ConsoleDev_init)(a0);
-    CALL(pad_sendMsg_00067134)(gl_func_00000000);
+    CALL(pad_sendMsg_00067134)(&gSysDevBlock_3A4E8);
 }
 
 // dma_waitAll — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
@@ -735,16 +735,16 @@ int sys_getRegionKseg0_00034BFC(int a0) {
 
 extern int gl_func_00000000();
 void sys_writebackDCacheAll() {
-    int r = gl_func_00000000(1);
-    gl_func_00000000();
-    gl_func_00000000(r);
+    int r = gl_func_00000000(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
+    gl_func_00000000(); /* UNNAMED: mid-entry jal gl_osWritebackDCacheAll+0x4 (osWritebackDCacheAll entry 4 bytes into the build function, no symbol) */
+    gl_func_00000000(r); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
 }
 
 extern int gl_func_00000000();
 void dma_writebackCache(int a0, int a1) {
-    int r = gl_func_00000000(1);
-    gl_func_00000000();
-    gl_func_00000000(r);
+    int r = gl_func_00000000(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
+    gl_func_00000000(); /* UNNAMED: mid-entry jal gl_osWritebackDCacheAll+0x4 (osWritebackDCacheAll entry 4 bytes into the build function, no symbol) */
+    gl_func_00000000(r); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
 }
 
 // dma_invalCache — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
@@ -797,10 +797,10 @@ void dma_writebackCache(int a0, int a1) {
 //   below for the NAMED leading 4-callback orchestration wrapper
 //   only. Byte-match deferred. Name pre-checked: no extern reuse.
 int dma_invalCache(void *a0, void *a1) {
-    int r = gl_func_00000000(1);
+    int r = gl_func_00000000(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
     CALL(gl_osInvalDCache)(a0, a1);
     CALL(gl_osInvalICache)(a0, a1);
-    return gl_func_00000000(r);
+    return gl_func_00000000(r); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
 }
 
 /* 2026-07-15 (agent-f): BYTE-EXACT 61/61 (was 93.93). The old 3-word tail
@@ -842,33 +842,33 @@ int pad_decodeButtonMap_00034CC8(int a0, PadCtl *a1) {
 
 extern int gl_func_00000000();
 int pad_initGlobal(int a0) {
-    CALL(pad_init_00066C74)(gl_func_00000000);
+    CALL(pad_init_00066C74)(&gSysDevBlock_3A4E8);
     return 1;
 }
 
 extern int gl_func_00000000();
 void pad_setSlotValueGlobal(int a0) {
-    CALL(pad_setSlotValue_000671D4)(gl_func_00000000);
+    CALL(pad_setSlotValue_000671D4)(&gSysDevBlock_3A4E8);
 }
 
 extern int gl_func_00000000();
 int pad_hasRumblePakGlobal(int a0) {
-    return CALL(pad_getSlotState_00067358)(gl_func_00000000) == 2;
+    return CALL(pad_getSlotState_00067358)(&gSysDevBlock_3A4E8) == 2;
 }
 
 extern int gl_func_00000000();
 void pad_requestGlobal(int a0) {
-    CALL(pad_request_000671E4)(gl_func_00000000);
+    CALL(pad_request_000671E4)(&gSysDevBlock_3A4E8);
 }
 
 extern int gl_func_00000000();
 void pad_waitIdleGlobal(int a0) {
-    CALL(pad_waitIdle_00067220)(gl_func_00000000);
+    CALL(pad_waitIdle_00067220)(&gSysDevBlock_3A4E8);
 }
 
 extern int gl_func_00000000();
 void pad_getFlagGlobal(int a0) {
-    CALL(pad_getFlag_00067368)(gl_func_00000000);
+    CALL(pad_getFlag_00067368)(&gSysDevBlock_3A4E8);
 }
 
 // app_run — STRUCTURAL PASS (0x2B0 / 172 words, no episode).
@@ -984,7 +984,7 @@ void app_unloadUso(int a0, int a1) {
 
 extern int gl_func_00000000();
 void sys_initHeap(int a0, int a1, int a2) {
-    CALL(Mem_init)(gl_func_00000000, a1, a1 + a2);
+    CALL(Mem_init)(&gTempHeap_3A210, a1, a1 + a2);
 }
 
 // heap_tempAlloc — STRUCTURAL PASS (0xD0 / 52 words, no episode).
@@ -1530,7 +1530,7 @@ int fs_gdlFileInfo(int a0, int a1, int a2) {
 extern int gl_func_00000000();
 int fs_gdlFileSize(GdlFile *a0) {
     if (a0->kind == GDLFILE_REMOTE) {
-        return CALL(hostio_fileSize)(gl_func_00000000);
+        return CALL(hostio_fileSize)(&gHostio);
     }
     CALL(sys_fatal)((GL_DATA_STR(0x1E660, "FileSize on local")));
     return 0;
@@ -1729,14 +1729,14 @@ int MemberCallback_invoke(GdlPmfCallback *a0) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_00035AA4(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadInt_00035AE0(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -3280,7 +3280,7 @@ void fs_gdlWrite24_00037DA8(struct gl_func_00037DA8_Six *a0) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_00037E04(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -5195,7 +5195,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", coll_raySphere);
 extern int gl_func_00000000();
 void fs_gdlReadInt_0003A9AC(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -6371,7 +6371,7 @@ int hostio_readQuadParm_0003CF94(char *a0) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_0003CFC4(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -6379,41 +6379,41 @@ extern int gl_func_00000000();
 void fs_gdlWriteInt_0003D000(int *a0) {
     int pad, scratch;
     scratch = *a0;
-    CALL(fs_gdlWriteFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlWriteFile)(&gSysLib, &scratch, 4);
 }
 
 extern int gl_func_00000000();
 void fs_gdlWriteInt_0003D034(int *a0) {
     int pad, scratch;
     scratch = *a0;
-    CALL(fs_gdlWriteFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlWriteFile)(&gSysLib, &scratch, 4);
 }
 
 extern int gl_func_00000000();
 void fs_gdlWriteInt_0003D068(int *a0) {
     int pad, scratch;
     scratch = *a0;
-    CALL(fs_gdlWriteFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlWriteFile)(&gSysLib, &scratch, 4);
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadInt_0003D09C(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadInt_0003D0D8(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadQuad_0003D114(Quad4 *dst) {
     Quad4 scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16);
     *dst = scratch;
 }
 
@@ -8165,12 +8165,12 @@ void hostio_stub_0003ECE4(void) {
 
 extern int gl_func_00000000();
 int hostio_send(int a0) {
-    return CALL(hostio_devWrite_00035990)(gl_func_00000000, a0, 0xA0);
+    return CALL(hostio_devWrite_00035990)(&gSysLib, a0, 0xA0);
 }
 
 extern int gl_func_00000000();
 int hostio_recv(int a0) {
-    return CALL(hostio_devRead_000359A4)(gl_func_00000000, a0, 0xA0);
+    return CALL(hostio_devRead_000359A4)(&gSysLib, a0, 0xA0);
 }
 
 extern int gl_func_00000000();
@@ -9117,14 +9117,14 @@ void QNode_def(int *self) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_0003FFDC(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadQuad_00040018(Quad4 *dst) {
     Quad4 scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16);
     *dst = scratch;
 }
 
@@ -10294,12 +10294,12 @@ int app_getHeapMode(void) {
 
 extern int gl_func_00000000();
 int app_freeAllOfType(int a0) {
-    return CALL(Mem_freeAllOfType)(gl_func_00000000, a0);
+    return CALL(Mem_freeAllOfType)(&gMainHeap, a0);
 }
 
 extern int gl_func_00000000();
 int app_printHeapOfType(int a0) {
-    return CALL(Mem_printSize_0005B764)(gl_func_00000000, a0);
+    return CALL(Mem_printSize_0005B764)(&gMainHeap, a0);
 }
 
 /* heap_printStats: 36-insn diagnostic dump -- two printf-like calls with
@@ -10375,7 +10375,7 @@ void dbg_hostioHexDump(void) {
 
 extern int gl_func_00000000();
 int memtrack_heapUsed() {
-    return CALL(Mem_getUsed)(gl_func_00000000);
+    return CALL(Mem_getUsed)(&gMainHeap);
 }
 
 /* GfxDdm_ctor: alloc-if-null + conditional sub-alloc. p = a0 ?:
@@ -10391,12 +10391,12 @@ extern int gl_func_00000000();
 GfxDdm *GfxDdm_ctor(GfxDdm *a0) {
     GfxDdmState *q;
     if (a0 == 0) {
-        a0 = (GfxDdm *)gl_func_00000000(12);
+        a0 = (GfxDdm *)CALL(mem_new)(12);
         if (a0 == 0) goto end;
     }
     q = &a0->state;
     if (a0 == (GfxDdm *)-4) {      /* &a0->state == 0 */
-        q = (GfxDdmState *)gl_func_00000000(8);
+        q = (GfxDdmState *)CALL(mem_new)(8);
         if (q == 0) goto end;
     }
     q->flags = 0;
@@ -10595,20 +10595,20 @@ extern int gl_func_00000000();
 void fs_gdlWriteInt_000425BC(int *a0) {
     int pad, scratch;
     scratch = *a0;
-    CALL(fs_gdlWriteFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlWriteFile)(&gSysLib, &scratch, 4);
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadQuad_000425F0(Quad4 *dst) {
     Quad4 scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadInt_00042648(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -16608,7 +16608,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", RcpMgr_queueTask);
 extern int gl_func_00000000();
 void RcpMgr_insert_0004DCD4(int *a0) {
     if (a0[3] != 0) {
-        gl_func_00000000(a0[3], a0);
+        CALL(RcpMgr_insertTask)(a0[3], a0);
         a0[3] = 0;
     }
 }
@@ -16639,14 +16639,14 @@ void prof_resetAll(void) {}
 extern int gl_func_00000000();
 void fs_gdlReadInt_0004DD64(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadQuad_0004DDA0(Quad4 *dst) {
     Quad4 scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16);
     *dst = scratch;
 }
 
@@ -16931,7 +16931,7 @@ float Window_clampRect_0004E424(float x0, float y0, volatile float z0, float x1,
 extern int gl_func_00000000();
 void fs_gdlReadInt_0004E4E8(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -17063,7 +17063,7 @@ extern int gl_func_00000000();
 
 void Window_dtor(char *a0, int a1) {
     if (a0 == (char*)0) return;
-    ((Node *)a0)->vptr = (char*)gl_func_00000000;
+    ((Node *)a0)->vptr = (char *)&Window_vtbl;
     if (a1 & 1) {
         CALL(mem_delete)();
     }
@@ -18323,7 +18323,7 @@ void shape_cmdShape_00051520(NodeListState *a0) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_000515C0(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -19949,7 +19949,7 @@ void CMod_hostioParms(int *a0_arg) {
 
 extern int gl_func_00000000();
 int CMod_display(char *a0) {
-    return CALL(gfx_setBlendColour)(gl_func_00000000, a0 + 0x2C, a0);
+    return CALL(gfx_setBlendColour)(&gGfxLib, a0 + 0x2C, a0);
 }
 
 /* BaseLight_ctor (0x546E8, 203 words): the Cfront constructor of BaseLight (light.h, 0x138).
@@ -20767,14 +20767,14 @@ NodeListState *a3;
 extern int gl_func_00000000();
 void fs_gdlReadInt_00055A7C(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadQuad_00055AB8(Quad4 *dst) {
     Quad4 scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16);
     *dst = scratch;
 }
 
@@ -20885,19 +20885,19 @@ typedef struct { int mask; int bits; char *name; } Flag55FB4;
 void fault_printFlags(int val, int a1, Flag55FB4 *e) {
     int first = 1;
     int m;
-    gl_func_00000000(GL_DATA_STR(0x21880, "%s\t\t0x%08x "), a1, val);
-    gl_func_00000000(GL_DATA(0x2188C));
+    CALL(dbg_printf)(GL_DATA_STR(0x21880, "%s\t\t0x%08x "), a1, val);
+    CALL(dbg_printf)(GL_DATA(0x2188C));
     for (; (m = e->mask) != 0; e++) {
         if ((val & m) == e->bits) {
             if (first) {
                 first = 0;
             } else {
-                gl_func_00000000(GL_DATA(0x21890));
+                CALL(dbg_printf)(GL_DATA(0x21890));
             }
-            gl_func_00000000(GL_DATA(0x21894), e->name);
+            CALL(dbg_printf)(GL_DATA(0x21894), e->name);
         }
     }
-    gl_func_00000000(GL_DATA(0x21898));
+    CALL(dbg_printf)(GL_DATA(0x21898));
 }
 
 /* gfx_childName_00056084: 5-call sequence on a stack buffer (sp+0x18). Calls a
@@ -21208,7 +21208,7 @@ DLContext *gfx_newDLContext(DLContext *param_1, int param_2, int param_3, int pa
     param_1->hilite.max = 0;
     buf = &param_1->hilite;
     if (0) {
-      buf->base = gl_func_00000000(0);
+      buf->base = gl_func_00000000(0); /* UNNAMED: no-reloc dead if (0) arm: the hilite buffer mem_new is folded away, no jal */
     }
     buf->count = 0;
     buf->cur = buf;
@@ -22335,7 +22335,7 @@ void gfx_initDLChild_0005AF64(int *a0, char *a1) {
     a0[0x3C/4] = (int)(a1 + 0x30);
     a0[0x4C/4] = (int)(a1 + 0x40);
     a0[0x5C/4] = (int)(a1 + 0x50);
-    gl_func_00000000(a0, a1);
+    CALL(gfx_resetDLContext)(a0, a1);
 }
 
 /* Mem_listInsert_0005AFB0: 8-insn doubly-linked-list insert-before-anchor
@@ -23076,7 +23076,7 @@ void math_quatAddAxis_0005C548(f32 *q0, f32 *v, f32 d, s32 i, s32 sign) {
     s32 j, k;
     f32 qi, w, qj, qk, d2;
     f32 *q;
-    if (0) { func_00000000(&q0); }
+    if (0) { func_00000000(&q0); } /* UNNAMED: no-reloc dead if (0) regalloc lever, no jal emitted */
     while (0) { q0 = &v[i]; j = 0; k = 0; }
     q = q0;
     while (0) { v = &v[j]; v = &v[k]; }
@@ -24780,11 +24780,11 @@ int math_newMtx_0005FCC4(int *a0) {
  * MemTracker_buildName's own hoisted head (2026-09-05). */
 extern int gl_func_00000000();
 void math_printBounds(float *a0) {
-    (void)gl_func_00000000(GL_DATA_STR(0x21B6C, "Min X = %f, Max X = %f \n"), a0,
+    (void)CALL(dbg_printf)(GL_DATA_STR(0x21B6C, "Min X = %f, Max X = %f \n"), a0,
         (double)a0[0], (double)a0[3]);
-    (void)gl_func_00000000(GL_DATA_STR(0x21B88, "Min Y = %f, Max Y = %f \n"), a0,
+    (void)CALL(dbg_printf)(GL_DATA_STR(0x21B88, "Min Y = %f, Max Y = %f \n"), a0,
         (double)a0[1], (double)a0[4]);
-    (void)gl_func_00000000(GL_DATA_STR(0x21BA4, "Min Z = %f, Max Z = %f \n"), a0,
+    (void)CALL(dbg_printf)(GL_DATA_STR(0x21BA4, "Min Z = %f, Max Z = %f \n"), a0,
         (double)a0[2], (double)a0[5]);
 }
 
@@ -26312,14 +26312,14 @@ int sys_sumBytes(int sum, unsigned char *buf, unsigned int len) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_00061DE0(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadInt_00061E1C(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
