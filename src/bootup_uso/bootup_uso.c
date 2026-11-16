@@ -4266,8 +4266,8 @@ extern float func_7D04_randf();
 void Tv1Tmpl_func_00007D04(char *s0) {
     int a3 = ((Tv1Tmpl *)s0)->state;
     int k;
-    ((Tv1Tmpl *)s0)->unk64 =
-        ((int (*)(char *))VT_SLOT(NODE(TV1_WIN)->vptr, 11).fn)(TV1_WIN + VT_SLOT(NODE(TV1_WIN)->vptr, 11).delta);
+    ((Tv1Tmpl *)s0)->frameImage =
+        ((u16 *(*)(char *))VT_SLOT(NODE(TV1_WIN)->vptr, 11).fn)(TV1_WIN + VT_SLOT(NODE(TV1_WIN)->vptr, 11).delta);
     k = ((Tv1Tmpl *)s0)->state;
     if (k != 1) {
         if (k != 0) {
@@ -4296,10 +4296,10 @@ c2:
     }
     ((Tv1Tmpl *)s0)->scroll = 0x18;
 end:
-    { int *l;
-    k = ((Tv1Tmpl *)s0)->model; l = *(int **)(k + 0x84);
+    { int *l; /* k is reused for the model (one variable keeps it in v1; a Tv1Model * local swaps v0 / v1) */
+    k = *(int *)&((Tv1Tmpl *)s0)->model; l = (int *)((Tv1Model *)k)->screens;
     FCALL(Tv1Tmpl_func_000077D0)(s0, *(int *)(*l + 0x1C), 0, a3); if (1) {}
-    k = ((Tv1Tmpl *)s0)->model; l = *(int **)(k + 0x84) + 1;
+    k = *(int *)&((Tv1Tmpl *)s0)->model; l = (int *)((Tv1Model *)k)->screens + 1;
     FCALL(Tv1Tmpl_func_000077D0)(s0, *(int *)(*l + 0x1C), 1, a3); }
     ((Tv1Tmpl *)s0)->state = a3;
 }

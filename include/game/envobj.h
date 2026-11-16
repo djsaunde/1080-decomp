@@ -123,18 +123,25 @@ typedef struct Tv1Callback {
     Tv1CallbackPmf pmf;         /* 0x8: Data 0x7520 = {0x0000FFFF, Tv1Tmpl_func_00007D04} (the picture step) */
 } Tv1Callback;
 
+/* The tv1 template's model node (Tv1Tmpl.model): Tv1Tmpl_create list_appends each new instance to it
+ * (+0x04 / +0x14 are its list words); +0x84 is its table of the two screen nodes, whose +0x1C words
+ * Tv1Tmpl_func_00007D04 passes to Tv1Tmpl_func_000077D0. Only that table is named. */
+typedef struct Tv1Model {
+    char unk00[0x84];
+    char **screens;             /* 0x84: [0], [1] = the two screen nodes */
+} Tv1Model;
+
 typedef struct Tv1Tmpl {
     Node node;                  /* 0x00 */
     char unk2C[0x40 - 0x2C];
-    s32 model;                  /* 0x40: the template's model node (each new instance adopts it); its
-                                 * +0x84 table holds the two screen nodes */
+    Tv1Model *model;            /* 0x40: the template's model node (each new instance adopts it) */
     char unk44[0x48 - 0x44];
     Tv1Callback stepCallback;   /* 0x48: obj = this, pmf = Tv1Tmpl_func_00007D04 */
     s32 scroll;                 /* 0x58: state 0: -= 10 per step; state 2: 0x18 */
     s32 state;                  /* 0x5C: 0 / 1 / 2 (state 2 picks the next one at random) */
     s32 timer;                  /* 0x60: steps in the state (0x3E / 0x20 / 0x5C) */
-    s32 unk64;                  /* 0x64: GfxLib.curWindow's VT_SLOT 11 result (the slot Fader_buildTexture
-                                 * reads the frame buffer through on mainWindow) */
+    u16 *frameImage;            /* 0x64: GfxLib.curWindow's VT_SLOT 11 result: the frame buffer as a u16
+                                 * RGBA5551 image (Fader_buildTexture reads it the same way on mainWindow) */
     s32 displayCount;           /* 0x68: cleared by update, counted by display */
 } Tv1Tmpl;
 
@@ -213,7 +220,7 @@ typedef struct TreeTmpl {
     s32 unk3C;
     s32 shape;                  /* 0x40: the shared PolyShape (0 until the first TreeTmpl_create) */
     s32 typeId;                 /* 0x44 */
-    s32 shapeData;              /* 0x48: PolyShape_ctor arg 3 (Data, item_registerTemplates) */
+    void *shapeData;            /* 0x48: PolyShape_ctor arg 3 (Data, item_registerTemplates) */
     f32 colour[4];              /* 0x4C: gfx_setPrimColour; (0, 0, 0, 1) */
     char fog[0x18];             /* 0x5C: FogParms (FogParms_emit / FogParms_hostioParms) */
 } TreeTmpl;                     /* 0x74 */
@@ -229,6 +236,8 @@ ENVOBJ_ASSERT(FogItem, rng, 0x5C);
 ENVOBJ_ASSERT(SnowItem, sta, 0x5C);
 ENVOBJ_ASSERT(FallingSnow, unkBC, 0xBC);
 ENVOBJ_ASSERT(Tv1Tmpl, displayCount, 0x68);
+ENVOBJ_ASSERT(Tv1Tmpl, frameImage, 0x64);
+ENVOBJ_ASSERT(Tv1Model, screens, 0x84);
 ENVOBJ_ASSERT(Tv1Tmpl, stepCallback, 0x48);
 typedef char envobj_size_Tv1Callback[sizeof(Tv1Callback) == 0x10 ? 1 : -1];
 ENVOBJ_ASSERT(TreeTmpl, shapeData, 0x48);
