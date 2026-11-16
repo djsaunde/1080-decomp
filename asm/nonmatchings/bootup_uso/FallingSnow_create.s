@@ -83,7 +83,7 @@ glabel FallingSnow_create
     /* DD8060 000075F4 8FAF0028 */  lw         $t7, 0x28($sp)
     /* DD8064 000075F8 8DE20040 */  lw         $v0, 0x40($t7)
     /* DD8068 000075FC E444004C */  swc1       $f4, 0x4C($v0)
-  alabel D_00007600
+  alabel ColourItem_vtbl_75A0_type_7600
     /* DD806C 00007600 8FB80028 */  lw         $t8, 0x28($sp)
     /* DD8070 00007604 8F080040 */  lw         $t0, 0x40($t8)
     /* DD8074 00007608 0C000000 */  jal        func_00000000

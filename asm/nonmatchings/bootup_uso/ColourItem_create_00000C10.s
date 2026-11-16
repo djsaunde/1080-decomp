@@ -28,7 +28,7 @@ glabel ColourItem_create_00000C10
     /* DD16C8 00000C5C 00402825 */   or        $a1, $v0, $zero
   alabel kRo_Fader_display_C60
     /* DD16CC 00000C60 AFA30024 */  sw         $v1, 0x24($sp)
-  alabel D_00000C64
+  alabel kRo_Fader_start_C64
     /* DD16D0 00000C64 0C000000 */  jal        func_00000000
     /* DD16D4 00000C68 AFA20020 */   sw        $v0, 0x20($sp)
     /* DD16D8 00000C6C 8FA50020 */  lw         $a1, 0x20($sp)

@@ -25,13 +25,13 @@ extern void *D_55A0_root; /* zero-page USO-GOT global (gRoot); reloaded per use 
 /* tail-block init globals (decode-progress 2026-06-26): the four transform-group
  * registrations + final 0x58 block pass a distinct per-group global as arg2
  * (sTag_gol_7E58..68), the first 0x48 node uses &sStr_light01_7E48 and Tv1Tmpl_update's
- * word value, the 2nd 0x48 uses sTag_lig_7E54, and obj+0x28 stores &D_00007600. */
+ * word value, the 2nd 0x48 uses sTag_lig_7E54, and obj+0x28 stores &ColourItem_vtbl_75A0_type_7600. */
 extern int sStr_light01_7E48, sTag_lig_7E54, sTag_gol_7E58, sTag_st0_7E5C, sTag_en1_7E60, sTag_en2_7E64, sTag_cam_7E68;
-extern char D_00007600;
+extern char ColourItem_vtbl_75A0_type_7600;
 extern void Tv1Tmpl_update(int *a0);
 extern int sTag_pyr_7E20, D_55A0_it0; /* arg1==1 list-init globals (decode 2026-06-26; the list table is blank in the target) */
 extern int D_00007E34; /* actor-0 sub-init preload value (decode 2026-06-26) */
-extern char D_00007AB8; /* actor-0 obj+0x28 symbol store (decode 2026-06-26) */
+extern char TreeTmpl_vtbl_7AB8; /* actor-0 obj+0x28 symbol store (decode 2026-06-26) */
 #define DROOT ((int *)D_55A0_root)
 #define DI(o) (*(int *)((char *)&D_00000000 + (o)))
 #define DF(o) (*(float *)((char *)&D_00000000 + (o)))
@@ -306,7 +306,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     obj = (char *)FCALL(mem_new)(0x58);
     if (obj != 0) {
         FCALL(ColourItemType_ctor)(obj, p1, D_55A0_g10, &M(0xE4));
-        NODE(obj)->vptr = (char *)&D_00007600;
+        NODE(obj)->vptr = (char *)&ColourItem_vtbl_75A0_type_7600;
     }
     FCALL(ItemMgr_addType)(DROOT, obj, 0xFFFF);
 }

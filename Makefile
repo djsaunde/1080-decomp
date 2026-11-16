@@ -3435,7 +3435,7 @@ build/assets/%.bin.o: assets/%.bin
 # region's offset to its .text-section addends, so `static` callees
 # (CC4/D00/D3C/D94) get the module-relative jal field the ROM ships. Global
 # callees/imports keep field 0 (USO load-time relocs). bake-data-relocs.py then
-# bakes HI16/LO16 data relocs (e.g. func_000009A8's D_0000014C %lo) from the
+# bakes HI16/LO16 data relocs (e.g. func_000009A8's gInputMgr_session_14C %lo) from the
 # linked object. .mdebug is stripped from the inputs (GNU ld -r segfaults on it).
 build/assets/mgrproc_uso_block1_yay0.bin: build/src/mgrproc_uso/mgrproc_uso_o0_0.c.o build/src/mgrproc_uso/mgrproc_uso_head.c.o build/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o build/src/mgrproc_uso/mgrproc_uso.c.o undefined_syms_auto.txt
 	@mkdir -p $(dir $@)

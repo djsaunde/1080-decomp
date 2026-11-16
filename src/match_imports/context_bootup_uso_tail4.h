@@ -324,7 +324,7 @@ void Fader_display(BootupGrid139B0 *arg0);
 int Fader_checkDone_00013924(int *a0);
 int Fader_isDone_00013980(float *a0);
 extern f32 func_411c_rf(void);
-extern f32 D_00000C64;
+extern f32 kRo_Fader_start_C64;
 void Fader_start(BootupGrid139B0 *arg0, s32 arg1, s32 arg2);
 typedef u16 *(*GP_00013B20)(char *, BootupGrid139B0 *);
 typedef struct BootupDispatch13B20 {

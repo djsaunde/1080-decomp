@@ -197,9 +197,9 @@ glabel game_createMap
     /* DD756C 00006B00 AFAA00B0 */   sw        $t2, 0xB0($sp)
     /* DD7570 00006B04 8FAB00F8 */  lw         $t3, 0xF8($sp)
     /* DD7574 00006B08 24010006 */  addiu      $at, $zero, 0x6
-    /* DD7578 00006B0C 3C040000 */  lui        $a0, %hi(D_00007EF8)
+    /* DD7578 00006B0C 3C040000 */  lui        $a0, %hi(gStrBG_7EF8)
     /* DD757C 00006B10 11610053 */  beq        $t3, $at, .L00006C60
-    /* DD7580 00006B14 24847EF8 */   addiu     $a0, $a0, %lo(D_00007EF8)
+    /* DD7580 00006B14 24847EF8 */   addiu     $a0, $a0, %lo(gStrBG_7EF8)
     /* DD7584 00006B18 0C000000 */  jal        func_00000000
     /* DD7588 00006B1C 00002825 */   or        $a1, $zero, $zero
     /* DD758C 00006B20 02A02025 */  or         $a0, $s5, $zero

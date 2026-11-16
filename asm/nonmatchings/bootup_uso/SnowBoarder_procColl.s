@@ -182,7 +182,7 @@ glabel SnowBoarder_procColl
     /* DDCF4C 0000C4E0 00001025 */  or         $v0, $zero, $zero
     /* DDCF50 0000C4E4 14830004 */  bne        $a0, $v1, .L0000C4F8
     /* DDCF54 0000C4E8 24010063 */   addiu     $at, $zero, 0x63
-  alabel D_0000C4EC
+  alabel gModeUsoPaths_C4EC
     /* DDCF58 0000C4EC AE040A5C */  sw         $a0, 0xA5C($s0)
     /* DDCF5C 0000C4F0 10000005 */  b          .L0000C508
     /* DDCF60 0000C4F4 24020002 */   addiu     $v0, $zero, 0x2
@@ -206,19 +206,19 @@ glabel SnowBoarder_procColl
   .L0000C534:
     /* DDCFA0 0000C534 44815000 */  mtc1       $at, $f10
     /* DDCFA4 0000C538 468041A0 */  cvt.s.w    $f6, $f8
-    /* DDCFA8 0000C53C 3C050001 */  lui        $a1, %hi(D_000081C0)
+    /* DDCFA8 0000C53C 3C050001 */  lui        $a1, %hi(gRumbleTbl_edge_81C0)
     /* DDCFAC 0000C540 460A0482 */  mul.s      $f18, $f0, $f10
     /* DDCFB0 0000C544 8E040800 */  lw         $a0, 0x800($s0)
     /* DDCFB4 0000C548 24060002 */  addiu      $a2, $zero, 0x2
     /* DDCFB8 0000C54C 46123100 */  add.s      $f4, $f6, $f18
-  alabel D_0000C550
+  alabel ModeFlowProc_vtbl_C550
     /* DDCFBC 0000C550 4600220D */  trunc.w.s  $f8, $f4
     /* DDCFC0 0000C554 44024000 */  mfc1       $v0, $f8
     /* DDCFC4 0000C558 00000000 */  nop
     /* DDCFC8 0000C55C 00026080 */  sll        $t4, $v0, 2
     /* DDCFCC 0000C560 00AC2821 */  addu       $a1, $a1, $t4
     /* DDCFD0 0000C564 0C000000 */  jal        func_00000000
-    /* DDCFD4 0000C568 8CA581C0 */   lw        $a1, %lo(D_000081C0)($a1)
+    /* DDCFD4 0000C568 8CA581C0 */   lw        $a1, %lo(gRumbleTbl_edge_81C0)($a1)
     /* DDCFD8 0000C56C 44808000 */  mtc1       $zero, $f16
     /* DDCFDC 0000C570 00000000 */  nop
   .L0000C574:
@@ -317,7 +317,7 @@ glabel SnowBoarder_procColl
   alabel sStr_done_C694
     /* DDD100 0000C694 8FA6003C */  lw         $a2, 0x3C($sp)
     /* DDD104 0000C698 00003825 */  or         $a3, $zero, $zero
-  alabel D_0000C69C
+  alabel gSettingsStepTbl_C69C
     /* DDD108 0000C69C AFA5008C */  sw         $a1, 0x8C($sp)
     /* DDD10C 0000C6A0 0C000000 */  jal        func_00000000
     /* DDD110 0000C6A4 AFA50004 */   sw        $a1, 0x4($sp)
@@ -372,7 +372,7 @@ glabel SnowBoarder_procColl
     /* DDD1C4 0000C758 E6000940 */  swc1       $f0, 0x940($s0)
     /* DDD1C8 0000C75C 0C000000 */  jal        func_00000000
     /* DDD1CC 0000C760 E6000944 */   swc1      $f0, 0x944($s0)
-  alabel D_0000C764
+  alabel IntParm_vtbl_C764
     /* DDD1D0 0000C764 0C000000 */  jal        func_00000000
     /* DDD1D4 0000C768 02002025 */   or        $a0, $s0, $zero
     /* DDD1D8 0000C76C 3C040001 */  lui        $a0, %hi(stream_readVec3_00008A7C + 0x34)

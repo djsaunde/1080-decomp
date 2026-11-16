@@ -45,7 +45,7 @@ extern char *D_bu_7770;
 extern char *D_bu_776C[];
 extern int D_bu_1EBDC[];
 extern char sStr_Geometry_7EB8, sStr_ItemMgr_7EC4, sStr_Sun_Flare_7ECC, sStr_rom_flare5_bin_7ED8, sStr_sun_7EE8, sStr_len_7EEC, sStr_lt0_7EF0, sStr_lt1_7EF4,
-    D_00007EF8, sStr_CourseShape_7EFC, sStr_Map_7F08, sStr_MorphShape_7F0C, sStr_morphpolyshape_7F18, sStr_ParseCmds_7F28, sStr_Colours_7F34, sStr_Init_7F3C,
+    gStrBG_7EF8, sStr_CourseShape_7EFC, sStr_Map_7F08, sStr_MorphShape_7F0C, sStr_morphpolyshape_7F18, sStr_ParseCmds_7F28, sStr_Colours_7F34, sStr_Init_7F3C,
     sStr_MapLighter_7F44, sStr_ItemMgr_7F50, sStr_st0_7F58, sStr_no_st0_7F5C, sStr_gol_7F64, sStr_no_gol_7F68, sStr_Markers_7F70, sStr_MarkerMgr_7F78;
 extern int gGfxLib_8005C108_6808_0[], gGfxLib_8005C108_6808_1[], gGfxLib_8005C108_6808_2[],
     gGfxLib_8005C108_6808_3[], gGfxLib_8005C108_6808_4[], gGfxLib_8005C108_6808_5[];
@@ -158,7 +158,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
             break;
         case COURSE_OP_BG:
             if (arg2 != 6) {
-                FCALL(memtrack_begin)(&D_00007EF8, 0);
+                FCALL(memtrack_begin)(&gStrBG_7EF8, 0);
                 FCALL(game_loadUso)(gInputMgr_800200FC, p[0]);
                 o = (char *)FCALL(game_createBGBox)(p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
                 t = o;

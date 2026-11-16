@@ -18,8 +18,8 @@ glabel item_createFog
     /* DD5F7C 00005510 0C000000 */  jal        func_00000000
     /* DD5F80 00005514 AFA50004 */   sw        $a1, 0x4($sp)
     /* DD5F84 00005518 8FA40020 */  lw         $a0, 0x20($sp)
-    /* DD5F88 0000551C 3C180000 */  lui        $t8, %hi(D_000078D8)
-    /* DD5F8C 00005520 271878D8 */  addiu      $t8, $t8, %lo(D_000078D8)
+    /* DD5F88 0000551C 3C180000 */  lui        $t8, %hi(FogTmpl_vtbl_78D8)
+    /* DD5F8C 00005520 271878D8 */  addiu      $t8, $t8, %lo(FogTmpl_vtbl_78D8)
     /* DD5F90 00005524 AC980028 */  sw         $t8, 0x28($a0)
   .L00005528:
     /* DD5F94 00005528 8FBF0014 */  lw         $ra, 0x14($sp)

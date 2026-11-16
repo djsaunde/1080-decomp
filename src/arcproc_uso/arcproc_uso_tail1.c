@@ -33,7 +33,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * tenshoe.ld. Its 11-way switch jumptable .rodata is pinned NOLOAD at VMA 0 so
  * the reloc-form dispatch (lui at,0; lw at,0(at)) bakes byte-exact. */
 
-extern int D_00000148, D_0000014C, D_00000068;
+extern int gInputMgr_backup_148, gInputMgr_session_14C, D_00000068;
 /* arc_openSession_000005C8: 48-insn (0xC0) -O0 alloc wrapper. MATCHED 2026-07-10
  * via REPLACE_FUNC_BODY donor arcproc_uso_o0_5C8.c (real -O0 output). This tail1
  * unit is -O2, so IDO fills the 6 jal delays + keeps the alloc result in v0 (37w);
@@ -48,9 +48,9 @@ void arc_openSession_000005C8(int *a0) {
     a0[2] = CALL(mem_new)(0x38);
     CALL(app_setHeapMode)(saved);
     saved = CALL(app_setHeapMode)(2);
-    s0 = CALL(Backup_openSession)(0, D_00000148, -1, -1);
+    s0 = CALL(Backup_openSession)(0, gInputMgr_backup_148, -1, -1);
     a0[0] = s0;
-    D_0000014C = s0;
+    gInputMgr_session_14C = s0;
     CALL(app_setHeapMode)(saved);
     ((BackupSession *)a0[0])->modes = 4;
     D_00000068 = 0;
@@ -875,7 +875,7 @@ void ARCRaceProcess_drawTimeUpExtra(void) {
  * confirmed). 85.6 -> 92.0 (2026-05-31): (1) the panel draw's 1st arg is
  * &D_00000000 (data-base draw context), not literal 0 (m2c reloc-blindness);
  * (2) the &D float consts (&D+0 compare, &D+0x3C clamp, &D+0x40 step) use
- * distinct externs (D_flt_arc0/D_0000003C/D_00000040 in undefined_syms_auto.txt)
+ * distinct externs (D_flt_arc0/kRo_arc_drawResultScore_000014C8_3C/kRo_arc_drawResultScore_000014C8_40 in undefined_syms_auto.txt)
  * to bust the &D-base CSE — each lwc1 re-materializes its own lui. Same cocktail
  * as MGRRaceProcess_drawIntro. Residual (~8%): the {1,1,1,1} Vec4 is volatile
  * (write-only — read by a callee via the stack, so no &-arg to make it an
@@ -889,7 +889,7 @@ void ARCRaceProcess_drawTimeUpExtra(void) {
  * sp+0x48), and the comma constant `x * (0, 255.0f)` orders mul.s K-first.
  * Notes above are historical. */
 extern int gl_func_00000000();
-extern float D_flt_arc0, D_0000003C, D_00000040;
+extern float D_flt_arc0, kRo_arc_drawResultScore_000014C8_3C, kRo_arc_drawResultScore_000014C8_40;
 void arc_drawResultScore_000014C8(char *a0) {
     float color[4];
     char pad[28];
@@ -904,8 +904,8 @@ void arc_drawResultScore_000014C8(char *a0) {
 
     if (RACEPROC(a0)->leave != 0) {
         if (D_flt_arc0 <= 0.0f) {
-            if (ARCRACE(a0)->resultFade < D_0000003C) {
-                ARCRACE(a0)->resultFade += D_00000040;
+            if (ARCRACE(a0)->resultFade < kRo_arc_drawResultScore_000014C8_3C) {
+                ARCRACE(a0)->resultFade += kRo_arc_drawResultScore_000014C8_40;
             }
 
             RACEPROC(a0)->unk508 = RACEPROC(a0)->unk508 + 1;

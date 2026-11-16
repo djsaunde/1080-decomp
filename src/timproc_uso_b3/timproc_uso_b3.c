@@ -147,8 +147,8 @@ trk_main(a0, a1) int * a0; int a1; {
     } while (done == 0);
 }
 
-extern int D_00000148;
-extern int D_0000014C;
+extern int gInputMgr_backup_148;
+extern int gInputMgr_session_14C;
 extern int D_00000068;
 
 /* 46-insn -O0 allocator-wrapper (0xB8). LANDED 2026-06-21 as a masked-shape
@@ -156,7 +156,7 @@ extern int D_00000068;
  * instruction-for-instruction identical except two immediates (b1 0x1, b3
  * 0x2). Matched via the same splice-import-donor-relocs recipe as b1 — the
  * -O0 donor timproc_uso_b3_o0_5A4.c is spliced in via REPLACE_FUNC_BODY, which
- * imports the donor HI16/LO16/26 relocs; D_00000148/0x14C/0x68 in
+ * imports the donor HI16/LO16/26 relocs; gInputMgr_backup_148/0x14C/0x68 in
  * undefined_syms_auto.txt resolve to the reloc-blind expected/.o bytes. The
  * earlier "BLOCKED by Yay0 pipeline" note was wrong: the splice operates on
  * the .o, independent of Yay0 compression. fuzzy=100.
@@ -165,9 +165,9 @@ extern int D_00000068;
  * slots, `move s0,v0` save, trailing `b epilogue; nop`, frame -0x28. */
 void trk_openSession_000005A4(int **arg0, int arg1, int arg2) {
     int handle = CALL(app_setHeapMode)(2);
-    register int new_obj = CALL(Backup_openSession)(0, D_00000148, 2, arg2);
+    register int new_obj = CALL(Backup_openSession)(0, gInputMgr_backup_148, 2, arg2);
     *arg0 = (int*)new_obj;
-    D_0000014C = new_obj;
+    gInputMgr_session_14C = new_obj;
     CALL(app_setHeapMode)(handle);
     if (arg1 != 0) {
         ((BackupSession *)*arg0)->modes = 2;

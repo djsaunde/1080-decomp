@@ -2768,10 +2768,10 @@ void stream_readS32_0000502C(int *dst) {
  * reproduces exactly (same lever as the game_uso pair-homing, applied to one
  * int). Sibling item_createCfr identical. See docs/IDO_CODEGEN.md
  * #feedback-ido-struct-by-value-homes-arg-pair. */
-extern char D_00007D94;
+extern char gStrHeliUso_7D94;
 struct OneI { int x; };
 void item_createHel(int a0) {
-    FCALL(game_loadUsoOnce)(&D_00007D94);
+    FCALL(game_loadUsoOnce)(&gStrHeliUso_7D94);
     func_00000000(0, *(struct OneI*)&a0);
 }
 
@@ -3178,15 +3178,15 @@ void item_createCfr(int a0) {
     func_00000000(0, *(struct OneI*)&a0);
 }
 
-extern char D_000078D8;
+extern char FogTmpl_vtbl_78D8;
 
 /* 25-insn constructor wrapper: alloc 0x58 bytes, init via runtime-patched
- * callee, set field 0x28 to &D_000078D8.  BYTE-EXACT (2026-06-20).
+ * callee, set field 0x28 to &FogTmpl_vtbl_78D8.  BYTE-EXACT (2026-06-20).
  * Byte-identical sibling of item_createSnow — same three IDO levers stacked
  * (struct-by-value PARAM homes a0; struct-by-value ARG homes outgoing a1 in
  * the jal delay slot; volatile int pad grows the frame 0x20 -> 0x28). The
- * only difference from 553C is the field-0x28 data symbol (D_000078D8 here
- * vs D_000079C8 there). D_54D8_init_value/_arg are base-0 externs. */
+ * only difference from 553C is the field-0x28 data symbol (FogTmpl_vtbl_78D8 here
+ * vs SnowTmpl_vtbl_79C8 there). D_54D8_init_value/_arg are base-0 externs. */
 extern char D_54D8_init_value;
 extern char D_54D8_init_arg;
 int *item_createFog(struct OneI arg0) {
@@ -3196,13 +3196,13 @@ int *item_createFog(struct OneI arg0) {
     p = (int*)FCALL(mem_new)(0x58);
     if (p == 0) goto end;
     FCALL(ColourItemType_ctor)(p, *(struct OneI*)&saved_a0, *(int*)&D_54D8_init_value, &D_54D8_init_arg);
-    NODE(p)->vptr = (char *)&D_000078D8;
+    NODE(p)->vptr = (char *)&FogTmpl_vtbl_78D8;
 end:
     return p;
 }
 
 /* 25-insn constructor wrapper: alloc 0x58 bytes, init via runtime-patched
- * callee, set field 0x28 to &D_000079C8.  BYTE-EXACT (2026-06-20).
+ * callee, set field 0x28 to &SnowTmpl_vtbl_79C8.  BYTE-EXACT (2026-06-20).
  *
  * The match needed three IDO levers stacked:
  *  - struct-by-value PARAM (`struct OneI arg0`) homes the incoming a0 to its
@@ -3214,7 +3214,7 @@ end:
  *    frame 0x20 -> 0x28 (target is bigger) —
  *    docs/IDO_CODEGEN.md VOLATILE-PAD phantom-slot maker.
  * D_553C_init_value/_arg are base-0 externs (init args read/passed at 0x0). */
-extern char D_000079C8;
+extern char SnowTmpl_vtbl_79C8;
 extern char D_553C_init_value;
 extern char D_553C_init_arg;
 int *item_createSnow(struct OneI arg0) {
@@ -3224,7 +3224,7 @@ int *item_createSnow(struct OneI arg0) {
     p = (int*)FCALL(mem_new)(0x58);
     if (p == 0) goto end;
     FCALL(ColourItemType_ctor)(p, *(struct OneI*)&saved_a0, *(int*)&D_553C_init_value, &D_553C_init_arg);
-    NODE(p)->vptr = (char *)&D_000079C8;
+    NODE(p)->vptr = (char *)&SnowTmpl_vtbl_79C8;
 end:
     return p;
 }
@@ -3835,12 +3835,12 @@ void FallingSnow_create(char *a0) {
  * no-op). substate->0x18 (24) flags word: bit 2 (0x4) and bit 3
  * (0x8) = the enable pair (set together on enable, cleared on
  * disable); substate->0x48 (72) = bound handle (= a1 on enable);
- * substate->0x4C (76) f32 = D_000005E8 on enable / 0.0 on disable;
+ * substate->0x4C (76) f32 = kRo_EnvSettings_setSnow_5E8 on enable / 0.0 on disable;
  * substate->0xBC (188) = a gate that forces the enable path even
- * when a1==0. D_000005E8 = f32 constant (default value). [Caps note below RETRACTED 2026-09-04 — matched, see body.] Caps <80:
- * beql/bnel branch-likely + mtc1/swc1 FP + D_000005E8 f32 reloc +
+ * when a1==0. kRo_EnvSettings_setSnow_5E8 = f32 constant (default value). [Caps note below RETRACTED 2026-09-04 — matched, see body.] Caps <80:
+ * beql/bnel branch-likely + mtc1/swc1 FP + kRo_EnvSettings_setSnow_5E8 f32 reloc +
  * reloc notify call. INCLUDE_ASM remains build path. */
-extern float D_000005E8;
+extern float kRo_EnvSettings_setSnow_5E8;
 /* 2026-09-04 MATCHED 53/53 (agent-f): the old body merged `a1 != 0 ||
  * st->0xBC != 0` into one enable test; the target gates only the two
  * flag-CLEARs on 0xBC and always writes 0.0f + handle on the a1==0 path.
@@ -3863,7 +3863,7 @@ void EnvSettings_setSnow(char *a0, int a1) {
     } else {
         f = (int*)(ST_7620 + 0x18); *f |= 0x8;
         f = (int*)(ST_7620 + 0x18); *f |= 0x4;
-        f = (int*)ST_7620; ((FallingSnow *)f)->unk4C = D_000005E8;
+        f = (int*)ST_7620; ((FallingSnow *)f)->unk4C = kRo_EnvSettings_setSnow_5E8;
     }
     ((FallingSnow *)ST_7620)->enabled = a1;
 }
@@ -4165,7 +4165,7 @@ int MemberCallback_invoke_00007BF4(char *a0) {
     return fnptr(arg);
 }
 
-extern float D_000005EC;
+extern float kRo_Tv1Tmpl_create_5EC;
 /* Tv1Tmpl_create: 36-insn alloc/init/link helper. EXACT 2026-10-16 (was NM spill-slot "cap", fix at the end).
  * 6 residual diffs, all frame-slot offsets. ROOT CAUSE (re-decoded 2026-05-28):
  * BOTH mine and target spill `ret` to sp+0x1C; the ONLY difference is the
@@ -4199,7 +4199,7 @@ extern float D_000005EC;
  * not repeat): the target's empty 0x18 is NOT a reproducible dead scalar home.
  * In this dense scalar-only frame IDO -O2 elides dead homes entirely:
  * plain `int dead;`, `volatile int dead;`, coalesced `char *tmp = ret` (+
- * dead-if ref boost), and a live named `float f = D_000005EC` (which also
+ * dead-if ref boost), and a live named `float f = kRo_Tv1Tmpl_create_5EC` (which also
  * parks in $f0 via user-var reuse, 1C74-style) ALL leave frame -32 with dense
  * 0x18/0x1C spills. Dead homes materialize only in aggregate-bearing frames
  * (titproc 1710 class). Decl order does control which spill gets the higher
@@ -4222,7 +4222,7 @@ void *Tv1Tmpl_create(char *a0) {
         NODE(ret)->vptr = (char *)(&Tv1_vtbl);
     }
 
-    TV1(ret)->radius = D_000005EC;
+    TV1(ret)->radius = kRo_Tv1Tmpl_create_5EC;
     link = (int *)((Tv1Tmpl *)a0)->model;
     FCALL(list_append)(ret + 0x10, link);
     if (link[5] != 0) {
@@ -4789,7 +4789,7 @@ void TreeTmpl_hostioParms(char *a0) {
 }
 
 extern char sStr_tree_7FF4;
-extern float D_000005F0;
+extern float kRo_TreeTmpl_create_5F0;
 
 /* TreeTmpl_create: allocator/init sibling of TreeTmpl_display. EXACT 2026-10-16
  * (agent-c). The old caps were all C-reachable:
@@ -4852,7 +4852,7 @@ skip:
         NODE(s1)->unk04 = 1;
     }
     NODE(s1)->parent = (Node *)s0;
-    func_00000000_087A4_f((char *)&TREE(s0)->coll, s0, 0x74, 150.0f, D_000005F0);
+    func_00000000_087A4_f((char *)&TREE(s0)->coll, s0, 0x74, 150.0f, kRo_TreeTmpl_create_5F0);
     TREE(s0)->coll.obj.flags |= 1;
     func_00000000_087A4(D_87A4_tail, &TREE(s0)->coll);
     return s0;

@@ -451,7 +451,7 @@ extern int gl_func_00000000();
 extern char import_8024CAF8;
 extern double D_dbl_5E0, D_dbl_5E8, D_dbl_5F8, D_dbl_600;
 void MGRRaceProcess_drawHud(char *arg0);
-extern float D_b0_2294, D_00000608, D_0000060C, D_00000610;
+extern float D_b0_2294, kRo_MGRRaceProcess_drawResultExtra_608, kRo_MGRRaceProcess_drawResultExtra_60C, kRo_MGRRaceProcess_drawResultExtra_610;
 void MGRRaceProcess_drawResultExtra(int *a0);
 void MGRRaceProcess_onMessageBounce(char *a0);
 extern void import_0024E608();

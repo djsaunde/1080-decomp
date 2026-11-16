@@ -165,16 +165,16 @@ int Fader_isDone_00013980(float *a0) {
  * unchanged), s1->0x44 (68) = 4 (state), s1->0x48 (72) f32 = 0.0
  * (reset accumulator), s1->0x68 (104) = a2 (mode), s1->0x6C (108)
  * / s1->0x70 (112) = mode-derived flags (1/3 when a2==0, else
- * 0), s1->0x74 (116) = 0. D_00000C64 = f32 value-scale for the
+ * 0), s1->0x74 (116) = 0. kRo_Fader_start_C64 = f32 value-scale for the
  * scattered amplitude. Looks like a randomized snow/terrain
  * height-field seed. */
-extern float D_00000C64;
+extern float kRo_Fader_start_C64;
 /* EXACT (agent-c run 115). The clear loop runs ONE flat index i across both
  * loops (grid[i++] = 0.0f, grid re-read from s1->0x58 each store); i and y
  * are zeroed in the for-init AFTER the early return (IDO hoists them, with
  * the 4 for s1->0x44, above the beq). The RNG (bootup.uso func_075EE4)
  * returns a float in f0; the finisher is Fader_buildTexture(s1) (both jal 0).
- * The scatter scale D_00000C64 is read once into a local before the loop
+ * The scatter scale kRo_Fader_start_C64 is read once into a local before the loop
  * (a global read inside the loop would be reloaded after every call). The
  * bound 5 is a LOCAL (n = 5): a constant bound gets LFTR'd to bne, the
  * variable keeps the target's slt. The grid store is a flat [x + y * 32]
@@ -205,7 +205,7 @@ void Fader_start(char *s1, int a1, int a2) {
             i++;
         }
     }
-    sc = D_00000C64;
+    sc = kRo_Fader_start_C64;
     n = 5; k = 0;
     if (1) { }
     do {
@@ -304,7 +304,7 @@ void stream_readQuad_00013CE8(Quad4 *dst) {
 /* TimeGadget_ctor_00013D40 - EXACT (run 113 agent-c, twin port of CoolGadgetParms_ctor).
  * bootup_uso get-or-create constructor + 6 child sub-objects at o+8/0x20/
  * 0x38/0x50/0x68/0x80, values from the 6-word table at 0xCAC0, kinds
- * 0x1E/0x1E/2/-0xC/2/-0xC, child type ptr &D_0000C764. The earlier
+ * 0x1E/0x1E/2/-0xC/2/-0xC, child type ptr &IntParm_vtbl_C764. The earlier
  * structure-exact decode (73/168 words) used `char * volatile w` + an int A[9]
  * homed array to fake the slots; the game_libs twin's form fixes all of it:
  * self reassigned in the `||` alloc-fallback head, six distinct one-word
@@ -319,7 +319,7 @@ extern int sTag_lbx_CAC8;
 extern int sTimeGadgetParmsTags_CACC[];  /* Data 0xCACC: the "lby" / "l2x" / "l2y" tags (the tail of the
                                          * table at 0xCAC0); [3] = Data 0xCAD8, the float
                                          * "TimeGadget::Parms" name (FloatPosParms_ctor) */
-extern char D_0000C764;
+extern char IntParm_vtbl_C764;
 char *TimeGadget_ctor_00013D40(char *self) {
     Val13D40 u1;
     Val13D40 u2;
@@ -341,37 +341,37 @@ char *TimeGadget_ctor_00013D40(char *self) {
         t2 = u1;
         if ((m2 = self + 8) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
             FCALL(Parms_addParm)(m2, self, t2, 1);
-            *(char **)&PARM(m2)->type = &D_0000C764; PARM(m2)->value = 0x1E; PARM(m2)->unk14 = 0;
+            *(char **)&PARM(m2)->type = &IntParm_vtbl_C764; PARM(m2)->value = 0x1E; PARM(m2)->unk14 = 0;
         }
         u2.v = sTag_yps_CAC4;
         t2 = u2;
         if ((m2 = self + 0x20) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
             FCALL(Parms_addParm)(m2, self, t2, 1);
-            *(char **)&PARM(m2)->type = &D_0000C764; PARM(m2)->value = 0x1E; PARM(m2)->unk14 = 0;
+            *(char **)&PARM(m2)->type = &IntParm_vtbl_C764; PARM(m2)->value = 0x1E; PARM(m2)->unk14 = 0;
         }
         u3.v = sTag_lbx_CAC8;
         t2 = u3;
         if ((m2 = self + 0x38) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
             FCALL(Parms_addParm)(m2, self, t2, 1);
-            *(char **)&PARM(m2)->type = &D_0000C764; PARM(m2)->value = 2; PARM(m2)->unk14 = 0;
+            *(char **)&PARM(m2)->type = &IntParm_vtbl_C764; PARM(m2)->value = 2; PARM(m2)->unk14 = 0;
         }
         u4.v = sTimeGadgetParmsTags_CACC[0];
         t2 = u4;
         if ((m2 = self + 0x50) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
             FCALL(Parms_addParm)(m2, self, t2, 1);
-            *(char **)&PARM(m2)->type = &D_0000C764; PARM(m2)->value = -0xC; PARM(m2)->unk14 = 0;
+            *(char **)&PARM(m2)->type = &IntParm_vtbl_C764; PARM(m2)->value = -0xC; PARM(m2)->unk14 = 0;
         }
         u5.v = sTimeGadgetParmsTags_CACC[1];
         t2 = u5;
         if ((m2 = self + 0x68) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
             FCALL(Parms_addParm)(m2, self, t2, 1);
-            *(char **)&PARM(m2)->type = &D_0000C764; PARM(m2)->value = 2; PARM(m2)->unk14 = 0;
+            *(char **)&PARM(m2)->type = &IntParm_vtbl_C764; PARM(m2)->value = 2; PARM(m2)->unk14 = 0;
         }
         u6.v = sTimeGadgetParmsTags_CACC[2];
         t2 = u6;
         if ((m2 = self + 0x80) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
             FCALL(Parms_addParm)(m2, self, t2, 1);
-            *(char **)&PARM(m2)->type = &D_0000C764; PARM(m2)->value = -0xC; PARM(m2)->unk14 = 0;
+            *(char **)&PARM(m2)->type = &IntParm_vtbl_C764; PARM(m2)->value = -0xC; PARM(m2)->unk14 = 0;
         }
     }
     return self;

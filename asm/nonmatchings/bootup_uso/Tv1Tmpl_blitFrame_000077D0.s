@@ -73,7 +73,7 @@ glabel Tv1Tmpl_blitFrame_000077D0
     /* DD8338 000078CC A4400000 */  sh         $zero, 0x0($v0)
     /* DD833C 000078D0 24A50002 */  addiu      $a1, $a1, 0x2
     /* DD8340 000078D4 00A01025 */  or         $v0, $a1, $zero
-  alabel D_000078D8
+  alabel FogTmpl_vtbl_78D8
     /* DD8344 000078D8 24630004 */  addiu      $v1, $v1, 0x4
     /* DD8348 000078DC A4400000 */  sh         $zero, 0x0($v0)
     /* DD834C 000078E0 1470FFF3 */  bne        $v1, $s0, .L000078B0
@@ -142,7 +142,7 @@ glabel Tv1Tmpl_blitFrame_000077D0
     /* DD842C 000079C0 018D2021 */  addu       $a0, $t4, $t5
   .L000079C4:
     /* DD8430 000079C4 00801825 */  or         $v1, $a0, $zero
-  alabel D_000079C8
+  alabel SnowTmpl_vtbl_79C8
     /* DD8434 000079C8 946E0000 */  lhu        $t6, 0x0($v1)
     /* DD8438 000079CC 24840002 */  addiu      $a0, $a0, 0x2
     /* DD843C 000079D0 00A01025 */  or         $v0, $a1, $zero

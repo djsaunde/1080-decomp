@@ -19,7 +19,7 @@ glabel Fog_display
     /* DD895C 00007EF0 8C6F0254 */  lw         $t7, 0x254($v1)
   alabel sStr_lt1_7EF4
     /* DD8960 00007EF4 C4620130 */  lwc1       $f2, 0x130($v1)
-  alabel D_00007EF8
+  alabel gStrBG_7EF8
     /* DD8964 00007EF8 C4860038 */  lwc1       $f6, 0x38($a0)
   alabel sStr_CourseShape_7EFC
     /* DD8968 00007EFC 8DF80070 */  lw         $t8, 0x70($t7)
@@ -122,7 +122,7 @@ glabel Fog_display
     /* DD8A78 0000800C AC8D0010 */  sw         $t5, 0x10($a0)
     /* DD8A7C 00008010 8D6C0014 */  lw         $t4, 0x14($t3)
     /* DD8A80 00008014 0C000000 */  jal        func_00000000
-  alabel D_00008018
+  alabel FloatParm_vtbl_8018
     /* DD8A84 00008018 AC8C0014 */   sw        $t4, 0x14($a0)
     /* DD8A88 0000801C 10000012 */  b          .L00008068
     /* DD8A8C 00008020 8FBF002C */   lw        $ra, 0x2C($sp)
@@ -142,7 +142,7 @@ glabel Fog_display
     /* DD8AC0 00008054 50400004 */  beql       $v0, $zero, .L00008068
     /* DD8AC4 00008058 8FBF002C */   lw        $ra, 0x2C($sp)
     /* DD8AC8 0000805C 0C000000 */  jal        func_00000000
-  alabel D_00008060
+  alabel IntParm_vtbl_8060
     /* DD8ACC 00008060 02002025 */   or        $a0, $s0, $zero
   .L00008064:
     /* DD8AD0 00008064 8FBF002C */  lw         $ra, 0x2C($sp)

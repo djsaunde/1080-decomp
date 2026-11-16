@@ -76,7 +76,7 @@ extern f64 kRo_SnowBoarder_procColl_930;
 extern f32 kRo_SnowBoarder_procColl_940;
 extern f32 kRo_SnowBoarder_procColl_944;
 extern f32 kRo_SnowBoarder_procColl_948;
-extern s32 D_000081C0[];
+extern s32 gRumbleTbl_edge_81C0[];
 }
 extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
     /* agent-g run 232: frame fit (NCC homes every used local in declaration order, top down): 20 used scalars in the
@@ -188,7 +188,7 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
                     temp_f0 = temp_f2;
                 }
                 var_v0 = (s32) ((f32) var_v0 + (temp_f0 * 3.0f)); /* agent-g run 233: index in var_v0 (target mfc1 v0, coloured, not a ugen temp) */
-                FCALL(pad_startRumble)(rider->input, D_000081C0[var_v0], 2);
+                FCALL(pad_startRumble)(rider->input, gRumbleTbl_edge_81C0[var_v0], 2);
             }
         }
         /* Run 109 (agent-c, 69.25 -> 70.94): target block order is default,

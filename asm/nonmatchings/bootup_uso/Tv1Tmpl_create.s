@@ -16,8 +16,8 @@ glabel Tv1Tmpl_create
     /* DD8710 00007CA4 25CE0000 */  addiu      $t6, $t6, 0x0
     /* DD8714 00007CA8 ACCE0028 */  sw         $t6, 0x28($a2)
   .L00007CAC:
-    /* DD8718 00007CAC 3C010000 */  lui        $at, %hi(D_000005EC)
-    /* DD871C 00007CB0 C42405EC */  lwc1       $f4, %lo(D_000005EC)($at)
+    /* DD8718 00007CAC 3C010000 */  lui        $at, %hi(kRo_Tv1Tmpl_create_5EC)
+    /* DD871C 00007CB0 C42405EC */  lwc1       $f4, %lo(kRo_Tv1Tmpl_create_5EC)($at)
     /* DD8720 00007CB4 24C40010 */  addiu      $a0, $a2, 0x10
     /* DD8724 00007CB8 E4C40080 */  swc1       $f4, 0x80($a2)
     /* DD8728 00007CBC 8FAF0028 */  lw         $t7, 0x28($sp)

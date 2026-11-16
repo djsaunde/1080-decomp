@@ -118,9 +118,9 @@ glabel GameFlow_startMode
     /* DE1C10 000111A4 01EE7821 */  addu       $t7, $t7, $t6
     /* DE1C14 000111A8 8DEF0000 */  lw         $t7, 0x0($t7)
     /* DE1C18 000111AC 000FC080 */  sll        $t8, $t7, 2
-    /* DE1C1C 000111B0 3C050001 */  lui        $a1, %hi(D_0000C4EC)
+    /* DE1C1C 000111B0 3C050001 */  lui        $a1, %hi(gModeUsoPaths_C4EC)
     /* DE1C20 000111B4 00B82821 */  addu       $a1, $a1, $t8
-    /* DE1C24 000111B8 8CA5C4EC */  lw         $a1, %lo(D_0000C4EC)($a1)
+    /* DE1C24 000111B8 8CA5C4EC */  lw         $a1, %lo(gModeUsoPaths_C4EC)($a1)
     /* DE1C28 000111BC 0C000000 */  jal        func_00000000
     /* DE1C2C 000111C0 00000000 */   nop
     /* DE1C30 000111C4 24040003 */  addiu      $a0, $zero, 0x3
@@ -162,8 +162,8 @@ glabel GameFlow_startMode
     /* DE1CBC 00011250 12400004 */  beqz       $s2, .L00011264
     /* DE1CC0 00011254 00000000 */   nop
   .L00011258:
-    /* DE1CC4 00011258 3C090001 */  lui        $t1, %hi(D_0000C550)
-    /* DE1CC8 0001125C 2529C550 */  addiu      $t1, $t1, %lo(D_0000C550)
+    /* DE1CC4 00011258 3C090001 */  lui        $t1, %hi(ModeFlowProc_vtbl_C550)
+    /* DE1CC8 0001125C 2529C550 */  addiu      $t1, $t1, %lo(ModeFlowProc_vtbl_C550)
     /* DE1CCC 00011260 AE490004 */  sw         $t1, 0x4($s2)
   .L00011264:
     /* DE1CD0 00011264 3C080000 */  lui        $t0, (0x0 >> 16)
@@ -195,8 +195,8 @@ glabel GameFlow_startMode
     /* DE1D30 000112C4 12400004 */  beqz       $s2, .L000112D8
     /* DE1D34 000112C8 00000000 */   nop
   .L000112CC:
-    /* DE1D38 000112CC 3C0B0001 */  lui        $t3, %hi(D_0000C550)
-    /* DE1D3C 000112D0 256BC550 */  addiu      $t3, $t3, %lo(D_0000C550)
+    /* DE1D38 000112CC 3C0B0001 */  lui        $t3, %hi(ModeFlowProc_vtbl_C550)
+    /* DE1D3C 000112D0 256BC550 */  addiu      $t3, $t3, %lo(ModeFlowProc_vtbl_C550)
     /* DE1D40 000112D4 AE4B0004 */  sw         $t3, 0x4($s2)
   .L000112D8:
     /* DE1D44 000112D8 3C0C0000 */  lui        $t4, (0x0 >> 16)
@@ -228,8 +228,8 @@ glabel GameFlow_startMode
     /* DE1DA4 00011338 12400004 */  beqz       $s2, .L0001134C
     /* DE1DA8 0001133C 00000000 */   nop
   .L00011340:
-    /* DE1DAC 00011340 3C0E0001 */  lui        $t6, %hi(D_0000C550)
-    /* DE1DB0 00011344 25CEC550 */  addiu      $t6, $t6, %lo(D_0000C550)
+    /* DE1DAC 00011340 3C0E0001 */  lui        $t6, %hi(ModeFlowProc_vtbl_C550)
+    /* DE1DB0 00011344 25CEC550 */  addiu      $t6, $t6, %lo(ModeFlowProc_vtbl_C550)
     /* DE1DB4 00011348 AE4E0004 */  sw         $t6, 0x4($s2)
   .L0001134C:
     /* DE1DB8 0001134C 3C0F0000 */  lui        $t7, (0x0 >> 16)
@@ -261,8 +261,8 @@ glabel GameFlow_startMode
     /* DE1E18 000113AC 12400004 */  beqz       $s2, .L000113C0
     /* DE1E1C 000113B0 00000000 */   nop
   .L000113B4:
-    /* DE1E20 000113B4 3C190001 */  lui        $t9, %hi(D_0000C550)
-    /* DE1E24 000113B8 2739C550 */  addiu      $t9, $t9, %lo(D_0000C550)
+    /* DE1E20 000113B4 3C190001 */  lui        $t9, %hi(ModeFlowProc_vtbl_C550)
+    /* DE1E24 000113B8 2739C550 */  addiu      $t9, $t9, %lo(ModeFlowProc_vtbl_C550)
     /* DE1E28 000113BC AE590004 */  sw         $t9, 0x4($s2)
   .L000113C0:
     /* DE1E2C 000113C0 3C090000 */  lui        $t1, (0x0 >> 16)
@@ -294,8 +294,8 @@ glabel GameFlow_startMode
     /* DE1E8C 00011420 12400004 */  beqz       $s2, .L00011434
     /* DE1E90 00011424 00000000 */   nop
   .L00011428:
-    /* DE1E94 00011428 3C0A0001 */  lui        $t2, %hi(D_0000C550)
-    /* DE1E98 0001142C 254AC550 */  addiu      $t2, $t2, %lo(D_0000C550)
+    /* DE1E94 00011428 3C0A0001 */  lui        $t2, %hi(ModeFlowProc_vtbl_C550)
+    /* DE1E98 0001142C 254AC550 */  addiu      $t2, $t2, %lo(ModeFlowProc_vtbl_C550)
     /* DE1E9C 00011430 AE4A0004 */  sw         $t2, 0x4($s2)
   .L00011434:
     /* DE1EA0 00011434 3C0B0000 */  lui        $t3, (0x0 >> 16)
@@ -327,8 +327,8 @@ glabel GameFlow_startMode
     /* DE1F00 00011494 12400004 */  beqz       $s2, .L000114A8
     /* DE1F04 00011498 00000000 */   nop
   .L0001149C:
-    /* DE1F08 0001149C 3C0D0001 */  lui        $t5, %hi(D_0000C550)
-    /* DE1F0C 000114A0 25ADC550 */  addiu      $t5, $t5, %lo(D_0000C550)
+    /* DE1F08 0001149C 3C0D0001 */  lui        $t5, %hi(ModeFlowProc_vtbl_C550)
+    /* DE1F0C 000114A0 25ADC550 */  addiu      $t5, $t5, %lo(ModeFlowProc_vtbl_C550)
     /* DE1F10 000114A4 AE4D0004 */  sw         $t5, 0x4($s2)
   .L000114A8:
     /* DE1F14 000114A8 3C0E0000 */  lui        $t6, (0x0 >> 16)
@@ -360,8 +360,8 @@ glabel GameFlow_startMode
     /* DE1F74 00011508 12400004 */  beqz       $s2, .L0001151C
     /* DE1F78 0001150C 00000000 */   nop
   .L00011510:
-    /* DE1F7C 00011510 3C180001 */  lui        $t8, %hi(D_0000C550)
-    /* DE1F80 00011514 2718C550 */  addiu      $t8, $t8, %lo(D_0000C550)
+    /* DE1F7C 00011510 3C180001 */  lui        $t8, %hi(ModeFlowProc_vtbl_C550)
+    /* DE1F80 00011514 2718C550 */  addiu      $t8, $t8, %lo(ModeFlowProc_vtbl_C550)
     /* DE1F84 00011518 AE580004 */  sw         $t8, 0x4($s2)
   .L0001151C:
     /* DE1F88 0001151C 3C190000 */  lui        $t9, (0x0 >> 16)
@@ -393,8 +393,8 @@ glabel GameFlow_startMode
     /* DE1FE8 0001157C 12400004 */  beqz       $s2, .L00011590
     /* DE1FEC 00011580 00000000 */   nop
   .L00011584:
-    /* DE1FF0 00011584 3C080001 */  lui        $t0, %hi(D_0000C550)
-    /* DE1FF4 00011588 2508C550 */  addiu      $t0, $t0, %lo(D_0000C550)
+    /* DE1FF0 00011584 3C080001 */  lui        $t0, %hi(ModeFlowProc_vtbl_C550)
+    /* DE1FF4 00011588 2508C550 */  addiu      $t0, $t0, %lo(ModeFlowProc_vtbl_C550)
     /* DE1FF8 0001158C AE480004 */  sw         $t0, 0x4($s2)
   .L00011590:
     /* DE1FFC 00011590 3C0A0000 */  lui        $t2, (0x0 >> 16)
@@ -426,8 +426,8 @@ glabel GameFlow_startMode
     /* DE205C 000115F0 12400004 */  beqz       $s2, .L00011604
     /* DE2060 000115F4 00000000 */   nop
   .L000115F8:
-    /* DE2064 000115F8 3C0C0001 */  lui        $t4, %hi(D_0000C550)
-    /* DE2068 000115FC 258CC550 */  addiu      $t4, $t4, %lo(D_0000C550)
+    /* DE2064 000115F8 3C0C0001 */  lui        $t4, %hi(ModeFlowProc_vtbl_C550)
+    /* DE2068 000115FC 258CC550 */  addiu      $t4, $t4, %lo(ModeFlowProc_vtbl_C550)
     /* DE206C 00011600 AE4C0004 */  sw         $t4, 0x4($s2)
   .L00011604:
     /* DE2070 00011604 3C0D0000 */  lui        $t5, (0x0 >> 16)

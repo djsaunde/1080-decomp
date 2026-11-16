@@ -31,11 +31,11 @@ glabel snd_soundObjCreate_0000057C
     /* DD1048 000005DC 8CEF0000 */  lw         $t7, 0x0($a3)
     /* DD104C 000005E0 44802000 */  mtc1       $zero, $f4
     /* DD1050 000005E4 00C02825 */  or         $a1, $a2, $zero
-  alabel D_000005E8
+  alabel kRo_EnvSettings_setSnow_5E8
     /* DD1054 000005E8 A1EE0022 */  sb         $t6, 0x22($t7)
-  alabel D_000005EC
+  alabel kRo_Tv1Tmpl_create_5EC
     /* DD1058 000005EC 8CF80000 */  lw         $t8, 0x0($a3)
-  alabel D_000005F0
+  alabel kRo_TreeTmpl_create_5F0
     /* DD105C 000005F0 E7040010 */  swc1       $f4, 0x10($t8)
     /* DD1060 000005F4 ACE00008 */  sw         $zero, 0x8($a3)
     /* DD1064 000005F8 0C000000 */  jal        func_00000000

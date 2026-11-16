@@ -13,8 +13,8 @@
 
 extern int gl_func_00000000();
 extern int D_00000000;
-extern int D_00000148;
-extern int D_0000014C;
+extern int gInputMgr_backup_148;
+extern int gInputMgr_session_14C;
 
 #define MGR_D_64 (*(int*)((char*)&D_00000000 + 0x64))
 #define MGR_STATE_CODE (*(int*)((char*)&D_00000000 + 0x40))
@@ -147,16 +147,16 @@ mgr_procMain(a0, a1) char * a0; int a1; {
 /* 51-insn allocator+init wrapper, byte-matched at -O0. v3 is `register` (s0,
  * the target's callee-saved result reg); the dead `v3 = (int)&D_00000000`
  * reproduces the target's lui/addiu of &D in s0; the sentinel read uses the
- * direct int symbol D_00000000 for the $at-fused load. D_00000148/_0000014C are
+ * direct int symbol D_00000000 for the $at-fused load. gInputMgr_backup_148/_0000014C are
  * fused stores/loads whose %lo bakes into the blob (bake-data-relocs). */
 void mgr_openSession_00000504(int *a0) {
     int v1;
     register int v3;
     v1 = CALL(app_setHeapMode)(2);
     a0[2] = CALL(mem_new)(0x3C);
-    v3 = CALL(Backup_openSession)(0, D_00000148, -1, -1);
+    v3 = CALL(Backup_openSession)(0, gInputMgr_backup_148, -1, -1);
     a0[0] = v3;
-    D_0000014C = v3;
+    gInputMgr_session_14C = v3;
     CALL(app_setHeapMode)(v1);
     v3 = (int)&D_00000000;
     if (D_00000000 == 0x17D7) {
@@ -275,8 +275,8 @@ int mgr_initMatchRace_00000700(char *arg0, int arg1) {
 }
 
 /* 27-insn -O0 cleanup wrapper, byte-matched at -O0. The `register int z=0`
- * lands in callee-saved s0 (the target's shared-zero reg); D_0000014C (defined
- * = 0x14C) gives the $at-fused `lui at; sw %lo(D_0000014C)(at)` store, whose
+ * lands in callee-saved s0 (the target's shared-zero reg); gInputMgr_session_14C (defined
+ * = 0x14C) gives the $at-fused `lui at; sw %lo(gInputMgr_session_14C)(at)` store, whose
  * %lo (0x14c) is baked into the blob by scripts/bake-data-relocs.py. */
 void mgr_closeSession_000009A8(int *a0) {
     register int z;
@@ -285,7 +285,7 @@ void mgr_closeSession_000009A8(int *a0) {
     CALL(Backup_closeSession)(a0[0], 3);
     z = 0;
     a0[0] = z;
-    D_0000014C = z;
+    gInputMgr_session_14C = z;
 }
 
 /* mgr_prepareReplay_00000A14 — BEST BODY (IMPROVED over checked-in), still CAP.

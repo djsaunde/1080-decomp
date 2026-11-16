@@ -28,8 +28,8 @@ extern f32 kRo_SnowBoarder_ctor_868, kRo_SnowBoarder_ctor_86C, kRo_SnowBoarder_c
 extern char sStr_SnowB_8730;
 extern char sStr_Node_8738;
 extern char sStr_Parms_8740;
-extern char D_00008018;
-/* per-site aliases of D_00008018: bust cross-cascade addr GCSE (target rematerializes lui/addiu per +0xC store, post-jal temp not pre-jal s-reg) */
+extern char FloatParm_vtbl_8018;
+/* per-site aliases of FloatParm_vtbl_8018: bust cross-cascade addr GCSE (target rematerializes lui/addiu per +0xC store, post-jal temp not pre-jal s-reg) */
 extern char D_00008018_s02;
 extern char D_00008018_s03;
 extern char D_00008018_s04;
@@ -67,12 +67,12 @@ extern char D_00008018_s35;
 extern char D_00008018_s36;
 extern char D_00008018_s37;
 extern char D_00008018_s38;
-extern char D_00008060;
+extern char IntParm_vtbl_8060;
 extern char D_00008060_s2;
 extern char D_00008060_s3;
-extern char D_00008108;
-extern char D_00008800;
-extern char D_00008808;
+extern char SnowBChild_vtbl_8108;
+extern char sStr_Trails_8800;
+extern char sStr_DispSpray_8808;
 extern char sStr_DispTrails_8814;
 extern char sStr_DispTrails_8820;
 extern char sStr_Node_882C;
@@ -253,7 +253,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
         FCALL(DNode_ctor)(arg0, &sStr_SnowB_8730);
         NODE(arg0)->vptr = (char *)&SnowBoarder_vtbl_90cc_vt_self;
         var_s0 = arg0 + 0x3EC;
-        if (((arg0 != (void *)-0x3EC) || ((var_s0 = FCALL(mem_new)(0x154)) != 0)) && ((FCALL(Node_ctor)(var_s0, &sStr_Node_8738), NODE(var_s0)->vptr = (char *)&D_00008108, var_s1 = var_s0 + 0x2C, (var_s0 != (void *)-0x2C)) || (temp_v0_5 = FCALL(mem_new)(0x128), var_s1 = temp_v0_5, (temp_v0_5 != 0)))) {
+        if (((arg0 != (void *)-0x3EC) || ((var_s0 = FCALL(mem_new)(0x154)) != 0)) && ((FCALL(Node_ctor)(var_s0, &sStr_Node_8738), NODE(var_s0)->vptr = (char *)&SnowBChild_vtbl_8108, var_s1 = var_s0 + 0x2C, (var_s0 != (void *)-0x2C)) || (temp_v0_5 = FCALL(mem_new)(0x128), var_s1 = temp_v0_5, (temp_v0_5 != 0)))) {
             var_a2 = (s32)var_s1;
             if ((var_s1 != 0) || (temp_v0_5 = FCALL(mem_new)(8), var_a2 = (s32)temp_v0_5, (temp_v0_5 != 0))) {
                 PARMS(var_a2)->name = &sStr_Parms_8740;
@@ -264,7 +264,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             sp104 = sp144;
             if ((var_s1 != (void *)-8) || (temp_v0_5 = FCALL(mem_new)(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp108, var_s1, sp104, 1);
-                PARMF(sp108)->type = &D_00008018;
+                PARMF(sp108)->type = &FloatParm_vtbl_8018;
                 PARMF(sp108)->unk14 = 0;
                 PARMF(sp108)->value = kRo_SnowBoarder_ctor_868;
             }
@@ -561,7 +561,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             *(W90 *)var_s1 = spB0;
             if ((var_s0 != (void *)-0x1E8) || (temp_v0_5 = FCALL(mem_new)(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 FCALL(Parms_addParm)(sp80, var_s0, *(W90 *)var_s1, 1);
-                PARM(sp80)->type = &D_00008060; PARM(sp80)->value = 0x19;
+                PARM(sp80)->type = &IntParm_vtbl_8060; PARM(sp80)->value = 0x19;
                 PARM(sp80)->unk14 = 0;
             }
             spAC.w = *(s32 *)(GL_DATA_STR(0x87E0, "min"));

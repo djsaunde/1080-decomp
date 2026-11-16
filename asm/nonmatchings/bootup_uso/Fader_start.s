@@ -56,8 +56,8 @@ glabel Fader_start
     /* DE44D8 00013A6C 1420FFEF */  bnez       $at, .L00013A2C
     /* DE44DC 00013A70 00000000 */   nop
   .L00013A74:
-    /* DE44E0 00013A74 3C010000 */  lui        $at, %hi(D_00000C64)
-    /* DE44E4 00013A78 C4380C64 */  lwc1       $f24, %lo(D_00000C64)($at)
+    /* DE44E0 00013A74 3C010000 */  lui        $at, %hi(kRo_Fader_start_C64)
+    /* DE44E4 00013A78 C4380C64 */  lwc1       $f24, %lo(kRo_Fader_start_C64)($at)
     /* DE44E8 00013A7C 3C014200 */  lui        $at, (0x42000000 >> 16)
     /* DE44EC 00013A80 4480A000 */  mtc1       $zero, $f20
     /* DE44F0 00013A84 4481B000 */  mtc1       $at, $f22

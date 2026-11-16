@@ -6,7 +6,7 @@ The Yay0-compressed USOs build their code block by `objcopy -O binary
 extracts the .text *pre-link*, so any relocations are left UNAPPLIED (raw
 addend, usually 0). For INCLUDE_ASM functions that's fine (raw .word = ROM
 bytes). But a decompiled C body that references a data symbol at a non-zero
-%lo (e.g. `lui at,%hi(D_0000014C); sw rX,%lo(D_0000014C)(at)`) ends up with a
+%lo (e.g. `lui at,%hi(gInputMgr_session_14C); sw rX,%lo(gInputMgr_session_14C)(at)`) ends up with a
 raw 0 where the real ROM has the baked %lo (0x14c) — the blob diverges even
 though objdiff (reloc-aware) scores the .o as a match.
 

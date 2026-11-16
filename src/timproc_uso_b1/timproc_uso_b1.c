@@ -124,8 +124,8 @@ tim_main(a0, a1) int * a0; int a1; {
     } while (done == 0);
 }
 
-extern int D_00000148;
-extern int D_0000014C;
+extern int gInputMgr_backup_148;
+extern int gInputMgr_session_14C;
 extern int D_00000068;
 
 /* 46-insn -O0 allocator-wrapper (0xB8). LANDED 2026-05-25 via splice-import-
@@ -133,7 +133,7 @@ extern int D_00000068;
  * spliced in via REPLACE_FUNC_BODY; the updated splice (commit 8d1b9c93a in
  * scripts/replace-function-body.py) now imports the donor's HI16/LO16/26
  * relocs into the destination .o instead of dropping them. Combined with
- * D_00000148/0x14C/0x68 defined in undefined_syms_auto.txt = their offsets,
+ * gInputMgr_backup_148/0x14C/0x68 defined in undefined_syms_auto.txt = their offsets,
  * objdiff resolves the relocs to the same bytes expected/.o has post-link.
  * fuzzy=100. See feedback_splice_import_donor_relocs_recipe + the
  * project_1080_reloc_blind_caps_are_unlockable parent breakthrough.
@@ -143,9 +143,9 @@ extern int D_00000068;
  *   epilogue; nop` before the epilogue, 4. Frame -0x28 with s0 save. */
 void tim_openSession_000005A4(int **arg0, int arg1, int arg2) {
     int handle = CALL(app_setHeapMode)(2);
-    register int new_obj = CALL(Backup_openSession)(0, D_00000148, 1, arg2);
+    register int new_obj = CALL(Backup_openSession)(0, gInputMgr_backup_148, 1, arg2);
     *arg0 = (int*)new_obj;
-    D_0000014C = new_obj;
+    gInputMgr_session_14C = new_obj;
     CALL(app_setHeapMode)(handle);
     if (arg1 != 0) {
         ((BackupSession *)*arg0)->modes = 1;
@@ -160,7 +160,7 @@ void tim_openSession_000005A4(int **arg0, int arg1, int arg2) {
  * spliced via REPLACE_FUNC_BODY) drops relocs to mirror the reloc-blind
  * expected/.o, but the final store `sw s0,0x14C(at)` needs 0x14C baked into the
  * %lo field — and no IDO-emittable C produces a 2-insn scalar store with the
- * offset literal in .text (the offset lives in the reloc-filled %lo; `D_0000014C`
+ * offset literal in .text (the offset lives in the reloc-filled %lo; `gInputMgr_session_14C`
  * gives field=0, `&D+0x14C` gives 3 insns at -O0). Real fix = spimdisasm USO-reloc
  * migration (expected/ becomes reloc-aware), per the donor comment + the
  * project's USO-reloc-migration TODO. Distinct from RiderAnim_checkReverseBrake_0000D7F4, which

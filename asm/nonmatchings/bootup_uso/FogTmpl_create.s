@@ -43,7 +43,7 @@ glabel FogTmpl_create
     /* DD8C20 000081B4 AFB80040 */  sw         $t8, 0x40($sp)
     /* DD8C24 000081B8 14A10007 */  bne        $a1, $at, .L000081D8
     /* DD8C28 000081BC AFB80024 */   sw        $t8, 0x24($sp)
-  alabel D_000081C0
+  alabel gRumbleTbl_edge_81C0
     /* DD8C2C 000081C0 24040018 */  addiu      $a0, $zero, 0x18
     /* DD8C30 000081C4 0C000000 */  jal        func_00000000
     /* DD8C34 000081C8 AFA50044 */   sw        $a1, 0x44($sp)

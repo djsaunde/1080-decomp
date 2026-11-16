@@ -39,7 +39,7 @@ glabel Tv1Tmpl_stepPicture_00007D04
     /* DD87F4 00007D88 24780001 */  addiu      $t8, $v1, 0x1
     /* DD87F8 00007D8C 2861003D */  slti       $at, $v1, 0x3D
     /* DD87FC 00007D90 14200002 */  bnez       $at, .L00007D9C
-  alabel D_00007D94
+  alabel gStrHeliUso_7D94
     /* DD8800 00007D94 AE180060 */   sw        $t8, 0x60($s0)
     /* DD8804 00007D98 24070002 */  addiu      $a3, $zero, 0x2
   .L00007D9C:

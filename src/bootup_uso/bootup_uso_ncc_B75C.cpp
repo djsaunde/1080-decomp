@@ -29,7 +29,7 @@ typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
 extern "C" {
 /* math_quatRotateAxisAngle(quat, axis, angle, owner): turn quat about axis (per-site alias of the game_libs helper) */
 void bu_b75c_mvf(char *, char *, f32, SnowBoarder *);
-extern char D_00008170[];
+extern char gRumble_shake_8170[];
 void func_00000000(...);
 #define temp_f12_2 (-0.2f)
 #define temp_f12_3 (0.2f)
@@ -184,7 +184,7 @@ void SnowBoarder_updateOrient(SnowBoarder *rider) {
         } else {
             if ((sp58 < rider->parms.mdr.value) && (((sp54 > 0.0f) && (sp60 < 0.0f)) || ((sp54 < 0.0f) && (sp60 > 0.0f)))) {
                 rider->shake = (s32) (rider->shake + 0x14);
-                FCALL(pad_startRumble)(rider->input, D_00008170, 1, rider);
+                FCALL(pad_startRumble)(rider->input, gRumble_shake_8170, 1, rider);
                 sp60 = 0.0f;
             }
             if (rider->localUp.y < 0.0f) {

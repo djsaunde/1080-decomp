@@ -3,8 +3,8 @@
 #include "uso_call.h"
 
 extern int gl_func_00000000();
-extern int D_00000148;
-extern int D_0000014C;
+extern int gInputMgr_backup_148;
+extern int gInputMgr_session_14C;
 extern int D_00000068;
 
 /* -O0 donor for trk_openSession_000005A4 — masked-shape TWIN of the landed
@@ -16,9 +16,9 @@ extern int D_00000068;
  * See timproc_uso_b1_o0_5A4.c + feedback_splice_import_donor_relocs_recipe. */
 void trk_openSession_000005A4(int **arg0, int arg1, int arg2) {
     int handle = CALL(app_setHeapMode)(2);
-    register int new_obj = CALL(Backup_openSession)(0, D_00000148, 2, arg2);
+    register int new_obj = CALL(Backup_openSession)(0, gInputMgr_backup_148, 2, arg2);
     *arg0 = (int*)new_obj;
-    D_0000014C = new_obj;
+    gInputMgr_session_14C = new_obj;
     CALL(app_setHeapMode)(handle);
     if (arg1 != 0) {
         ((BackupSession *)*arg0)->modes = 2;

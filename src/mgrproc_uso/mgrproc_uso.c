@@ -1208,8 +1208,8 @@ void MGRRaceProcess_drawHud(char *arg0) {
 
 /* MGRRaceProcess_drawResultExtra: 36-insn (0x90) FPU-gated state-update. MATCHED
  * 2026-05-31 (78.2 -> 100%). Three fixes over the prior cap-wrap: (1) the &D FP
- * consts (&D+0/0x608/0x60C/0x610) use DISTINCT externs (D_b0_2294/D_00000608/
- * D_0000060C/D_00000610, valued at the offset in undefined_syms_auto.txt) so each
+ * consts (&D+0/0x608/0x60C/0x610) use DISTINCT externs (D_b0_2294/kRo_MGRRaceProcess_drawResultExtra_608/
+ * kRo_MGRRaceProcess_drawResultExtra_60C/kRo_MGRRaceProcess_drawResultExtra_610, valued at the offset in undefined_syms_auto.txt) so each
  * lwc1 re-materializes its own `lui at` instead of CSE'ing the base into $v0 —
  * the old comment called the at-vs-v0 choice "not reachable from natural C"; the
  * distinct-extern lever busts it. (2) the gate is `if (D[0] <= 0.0f) { body }`
@@ -1217,14 +1217,14 @@ void MGRRaceProcess_drawHud(char *arg0) {
  * `if (D[0]>0) return`. (3) the final guard was DECODED WRONG — the bc1fl
  * branch-likely calls gl_func when `D[0x610] < a0->0x7A0` (target), NOT `>=` as
  * the old pseudocode said. */
-extern float D_b0_2294, D_00000608, D_0000060C, D_00000610;
+extern float D_b0_2294, kRo_MGRRaceProcess_drawResultExtra_608, kRo_MGRRaceProcess_drawResultExtra_60C, kRo_MGRRaceProcess_drawResultExtra_610;
 void MGRRaceProcess_drawResultExtra(int *a0) {
     if (a0[0x500/4] == 0) return;
     if (D_b0_2294 <= 0.0f) {
-        if (MGRRACE(a0)->overlayAlpha < D_00000608) {
-            MGRRACE(a0)->overlayAlpha += D_0000060C;
+        if (MGRRACE(a0)->overlayAlpha < kRo_MGRRaceProcess_drawResultExtra_608) {
+            MGRRACE(a0)->overlayAlpha += kRo_MGRRaceProcess_drawResultExtra_60C;
         }
-        if (D_00000610 < MGRRACE(a0)->overlayAlpha) {
+        if (kRo_MGRRaceProcess_drawResultExtra_610 < MGRRACE(a0)->overlayAlpha) {
             CALL(mgr_drawResults_000023FC)();
         }
     }

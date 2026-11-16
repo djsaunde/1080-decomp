@@ -18,8 +18,8 @@ glabel item_createSnow
     /* DD5FE0 00005574 0C000000 */  jal        func_00000000
     /* DD5FE4 00005578 AFA50004 */   sw        $a1, 0x4($sp)
     /* DD5FE8 0000557C 8FA40020 */  lw         $a0, 0x20($sp)
-    /* DD5FEC 00005580 3C180000 */  lui        $t8, %hi(D_000079C8)
-    /* DD5FF0 00005584 271879C8 */  addiu      $t8, $t8, %lo(D_000079C8)
+    /* DD5FEC 00005580 3C180000 */  lui        $t8, %hi(SnowTmpl_vtbl_79C8)
+    /* DD5FF0 00005584 271879C8 */  addiu      $t8, $t8, %lo(SnowTmpl_vtbl_79C8)
     /* DD5FF4 00005588 AC980028 */  sw         $t8, 0x28($a0)
   .L0000558C:
     /* DD5FF8 0000558C 8FBF0014 */  lw         $ra, 0x14($sp)

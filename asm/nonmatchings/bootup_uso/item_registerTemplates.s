@@ -186,8 +186,8 @@ glabel item_registerTemplates
     /* DD62B4 00005848 25EF0000 */  addiu      $t7, $t7, 0x0
     /* DD62B8 0000584C AC8F0028 */  sw         $t7, 0x28($a0)
   .L00005850:
-    /* DD62BC 00005850 3C180000 */  lui        $t8, %hi(D_00007AB8)
-    /* DD62C0 00005854 27187AB8 */  addiu      $t8, $t8, %lo(D_00007AB8)
+    /* DD62BC 00005850 3C180000 */  lui        $t8, %hi(TreeTmpl_vtbl_7AB8)
+    /* DD62C0 00005854 27187AB8 */  addiu      $t8, $t8, %lo(TreeTmpl_vtbl_7AB8)
     /* DD62C4 00005858 AE180028 */  sw         $t8, 0x28($s0)
     /* DD62C8 0000585C 2604005C */  addiu      $a0, $s0, 0x5C
     /* DD62CC 00005860 2401FFA4 */  addiu      $at, $zero, -0x5C
@@ -257,8 +257,8 @@ glabel item_registerTemplates
     /* DD63BC 00005950 25EF0000 */  addiu      $t7, $t7, 0x0
     /* DD63C0 00005954 AC8F0028 */  sw         $t7, 0x28($a0)
   .L00005958:
-    /* DD63C4 00005958 3C180000 */  lui        $t8, %hi(D_00007AB8)
-    /* DD63C8 0000595C 27187AB8 */  addiu      $t8, $t8, %lo(D_00007AB8)
+    /* DD63C4 00005958 3C180000 */  lui        $t8, %hi(TreeTmpl_vtbl_7AB8)
+    /* DD63C8 0000595C 27187AB8 */  addiu      $t8, $t8, %lo(TreeTmpl_vtbl_7AB8)
     /* DD63CC 00005960 AE180028 */  sw         $t8, 0x28($s0)
     /* DD63D0 00005964 2605005C */  addiu      $a1, $s0, 0x5C
     /* DD63D4 00005968 2401FFA4 */  addiu      $at, $zero, -0x5C
@@ -328,8 +328,8 @@ glabel item_registerTemplates
     /* DD64C4 00005A58 25EF0000 */  addiu      $t7, $t7, 0x0
     /* DD64C8 00005A5C AC8F0028 */  sw         $t7, 0x28($a0)
   .L00005A60:
-    /* DD64CC 00005A60 3C180000 */  lui        $t8, %hi(D_00007AB8)
-    /* DD64D0 00005A64 27187AB8 */  addiu      $t8, $t8, %lo(D_00007AB8)
+    /* DD64CC 00005A60 3C180000 */  lui        $t8, %hi(TreeTmpl_vtbl_7AB8)
+    /* DD64D0 00005A64 27187AB8 */  addiu      $t8, $t8, %lo(TreeTmpl_vtbl_7AB8)
     /* DD64D4 00005A68 AE180028 */  sw         $t8, 0x28($s0)
     /* DD64D8 00005A6C 2605005C */  addiu      $a1, $s0, 0x5C
     /* DD64DC 00005A70 2401FFA4 */  addiu      $at, $zero, -0x5C
@@ -626,8 +626,8 @@ glabel item_registerTemplates
     /* DD6924 00005EB8 27A700E4 */  addiu      $a3, $sp, 0xE4
     /* DD6928 00005EBC 0C000000 */  jal        func_00000000
     /* DD692C 00005EC0 AFA50004 */   sw        $a1, 0x4($sp)
-    /* DD6930 00005EC4 3C090000 */  lui        $t1, %hi(D_00007600)
-    /* DD6934 00005EC8 25297600 */  addiu      $t1, $t1, %lo(D_00007600)
+    /* DD6930 00005EC4 3C090000 */  lui        $t1, %hi(ColourItem_vtbl_75A0_type_7600)
+    /* DD6934 00005EC8 25297600 */  addiu      $t1, $t1, %lo(ColourItem_vtbl_75A0_type_7600)
     /* DD6938 00005ECC AE090028 */  sw         $t1, 0x28($s0)
   .L00005ED0:
     /* DD693C 00005ED0 3C040000 */  lui        $a0, (0x0 >> 16)

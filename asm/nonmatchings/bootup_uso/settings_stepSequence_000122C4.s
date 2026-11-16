@@ -7,8 +7,8 @@ glabel settings_stepSequence_000122C4
     /* DE2D3C 000122D0 AFA50034 */  sw         $a1, 0x34($sp)
     /* DE2D40 000122D4 AFB00018 */  sw         $s0, 0x18($sp)
     /* DE2D44 000122D8 27AE0024 */  addiu      $t6, $sp, 0x24
-    /* DE2D48 000122DC 3C0F0001 */  lui        $t7, %hi(D_0000C69C)
-    /* DE2D4C 000122E0 25EFC69C */  addiu      $t7, $t7, %lo(D_0000C69C)
+    /* DE2D48 000122DC 3C0F0001 */  lui        $t7, %hi(gSettingsStepTbl_C69C)
+    /* DE2D4C 000122E0 25EFC69C */  addiu      $t7, $t7, %lo(gSettingsStepTbl_C69C)
     /* DE2D50 000122E4 8DF90000 */  lw         $t9, 0x0($t7)
     /* DE2D54 000122E8 ADD90000 */  sw         $t9, 0x0($t6)
     /* DE2D58 000122EC 8DF80004 */  lw         $t8, 0x4($t7)

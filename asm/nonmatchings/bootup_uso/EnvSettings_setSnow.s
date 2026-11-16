@@ -37,7 +37,7 @@ glabel EnvSettings_setSnow
     /* DD810C 000076A0 E464004C */   swc1      $f4, 0x4C($v1)
     /* DD8110 000076A4 8CC20040 */  lw         $v0, 0x40($a2)
   .L000076A8:
-    /* DD8114 000076A8 3C010000 */  lui        $at, %hi(D_000005E8)
+    /* DD8114 000076A8 3C010000 */  lui        $at, %hi(kRo_EnvSettings_setSnow_5E8)
     /* DD8118 000076AC 8C4A0018 */  lw         $t2, 0x18($v0)
     /* DD811C 000076B0 24420018 */  addiu      $v0, $v0, 0x18
     /* DD8120 000076B4 354B0008 */  ori        $t3, $t2, 0x8
@@ -47,7 +47,7 @@ glabel EnvSettings_setSnow
     /* DD8130 000076C4 24420018 */  addiu      $v0, $v0, 0x18
     /* DD8134 000076C8 358D0004 */  ori        $t5, $t4, 0x4
     /* DD8138 000076CC AC4D0000 */  sw         $t5, 0x0($v0)
-    /* DD813C 000076D0 C42605E8 */  lwc1       $f6, %lo(D_000005E8)($at)
+    /* DD813C 000076D0 C42605E8 */  lwc1       $f6, %lo(kRo_EnvSettings_setSnow_5E8)($at)
     /* DD8140 000076D4 8CC20040 */  lw         $v0, 0x40($a2)
     /* DD8144 000076D8 E446004C */  swc1       $f6, 0x4C($v0)
   .L000076DC:

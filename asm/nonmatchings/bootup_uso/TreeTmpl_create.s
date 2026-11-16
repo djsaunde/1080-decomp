@@ -89,8 +89,8 @@ glabel TreeTmpl_create
     /* DD932C 000088C0 AE280004 */  sw         $t0, 0x4($s1)
   .L000088C4:
     /* DD9330 000088C4 AE300014 */  sw         $s0, 0x14($s1)
-    /* DD9334 000088C8 3C010000 */  lui        $at, %hi(D_000005F0)
-    /* DD9338 000088CC C42605F0 */  lwc1       $f6, %lo(D_000005F0)($at)
+    /* DD9334 000088C8 3C010000 */  lui        $at, %hi(kRo_TreeTmpl_create_5F0)
+    /* DD9338 000088CC C42605F0 */  lwc1       $f6, %lo(kRo_TreeTmpl_create_5F0)($at)
     /* DD933C 000088D0 AFA4002C */  sw         $a0, 0x2C($sp)
     /* DD9340 000088D4 3C074316 */  lui        $a3, (0x43160000 >> 16)
     /* DD9344 000088D8 0C000000 */  jal        func_00000000

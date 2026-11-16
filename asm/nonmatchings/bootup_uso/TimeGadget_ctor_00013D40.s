@@ -42,8 +42,8 @@ glabel TimeGadget_ctor_00013D40
     /* DE4834 00013DC8 0C000000 */  jal        func_00000000
     /* DE4838 00013DCC AFA60008 */   sw        $a2, 0x8($sp)
     /* DE483C 00013DD0 8FA40028 */  lw         $a0, 0x28($sp)
-    /* DE4840 00013DD4 3C080001 */  lui        $t0, %hi(D_0000C764)
-    /* DE4844 00013DD8 2508C764 */  addiu      $t0, $t0, %lo(D_0000C764)
+    /* DE4840 00013DD4 3C080001 */  lui        $t0, %hi(IntParm_vtbl_C764)
+    /* DE4844 00013DD8 2508C764 */  addiu      $t0, $t0, %lo(IntParm_vtbl_C764)
     /* DE4848 00013DDC 2409001E */  addiu      $t1, $zero, 0x1E
     /* DE484C 00013DE0 AC890010 */  sw         $t1, 0x10($a0)
     /* DE4850 00013DE4 AC88000C */  sw         $t0, 0xC($a0)
@@ -68,8 +68,8 @@ glabel TimeGadget_ctor_00013D40
     /* DE4894 00013E28 0C000000 */  jal        func_00000000
     /* DE4898 00013E2C AFA60008 */   sw        $a2, 0x8($sp)
     /* DE489C 00013E30 8FA40028 */  lw         $a0, 0x28($sp)
-    /* DE48A0 00013E34 3C0D0001 */  lui        $t5, %hi(D_0000C764)
-    /* DE48A4 00013E38 25ADC764 */  addiu      $t5, $t5, %lo(D_0000C764)
+    /* DE48A0 00013E34 3C0D0001 */  lui        $t5, %hi(IntParm_vtbl_C764)
+    /* DE48A4 00013E38 25ADC764 */  addiu      $t5, $t5, %lo(IntParm_vtbl_C764)
     /* DE48A8 00013E3C 240E001E */  addiu      $t6, $zero, 0x1E
     /* DE48AC 00013E40 AC8E0010 */  sw         $t6, 0x10($a0)
     /* DE48B0 00013E44 AC8D000C */  sw         $t5, 0xC($a0)
@@ -94,8 +94,8 @@ glabel TimeGadget_ctor_00013D40
     /* DE48F4 00013E88 0C000000 */  jal        func_00000000
     /* DE48F8 00013E8C AFA60008 */   sw        $a2, 0x8($sp)
     /* DE48FC 00013E90 8FA40028 */  lw         $a0, 0x28($sp)
-    /* DE4900 00013E94 3C080001 */  lui        $t0, %hi(D_0000C764)
-    /* DE4904 00013E98 2508C764 */  addiu      $t0, $t0, %lo(D_0000C764)
+    /* DE4900 00013E94 3C080001 */  lui        $t0, %hi(IntParm_vtbl_C764)
+    /* DE4904 00013E98 2508C764 */  addiu      $t0, $t0, %lo(IntParm_vtbl_C764)
     /* DE4908 00013E9C 24090002 */  addiu      $t1, $zero, 0x2
     /* DE490C 00013EA0 AC890010 */  sw         $t1, 0x10($a0)
     /* DE4910 00013EA4 AC88000C */  sw         $t0, 0xC($a0)
@@ -120,8 +120,8 @@ glabel TimeGadget_ctor_00013D40
     /* DE4954 00013EE8 0C000000 */  jal        func_00000000
     /* DE4958 00013EEC AFA60008 */   sw        $a2, 0x8($sp)
     /* DE495C 00013EF0 8FA40028 */  lw         $a0, 0x28($sp)
-    /* DE4960 00013EF4 3C0D0001 */  lui        $t5, %hi(D_0000C764)
-    /* DE4964 00013EF8 25ADC764 */  addiu      $t5, $t5, %lo(D_0000C764)
+    /* DE4960 00013EF4 3C0D0001 */  lui        $t5, %hi(IntParm_vtbl_C764)
+    /* DE4964 00013EF8 25ADC764 */  addiu      $t5, $t5, %lo(IntParm_vtbl_C764)
     /* DE4968 00013EFC 240EFFF4 */  addiu      $t6, $zero, -0xC
     /* DE496C 00013F00 AC8E0010 */  sw         $t6, 0x10($a0)
     /* DE4970 00013F04 AC8D000C */  sw         $t5, 0xC($a0)
@@ -146,8 +146,8 @@ glabel TimeGadget_ctor_00013D40
     /* DE49B4 00013F48 0C000000 */  jal        func_00000000
     /* DE49B8 00013F4C AFA60008 */   sw        $a2, 0x8($sp)
     /* DE49BC 00013F50 8FA40028 */  lw         $a0, 0x28($sp)
-    /* DE49C0 00013F54 3C080001 */  lui        $t0, %hi(D_0000C764)
-    /* DE49C4 00013F58 2508C764 */  addiu      $t0, $t0, %lo(D_0000C764)
+    /* DE49C0 00013F54 3C080001 */  lui        $t0, %hi(IntParm_vtbl_C764)
+    /* DE49C4 00013F58 2508C764 */  addiu      $t0, $t0, %lo(IntParm_vtbl_C764)
     /* DE49C8 00013F5C 24090002 */  addiu      $t1, $zero, 0x2
     /* DE49CC 00013F60 AC890010 */  sw         $t1, 0x10($a0)
     /* DE49D0 00013F64 AC88000C */  sw         $t0, 0xC($a0)
@@ -172,8 +172,8 @@ glabel TimeGadget_ctor_00013D40
     /* DE4A14 00013FA8 0C000000 */  jal        func_00000000
     /* DE4A18 00013FAC AFA60008 */   sw        $a2, 0x8($sp)
     /* DE4A1C 00013FB0 8FA40028 */  lw         $a0, 0x28($sp)
-    /* DE4A20 00013FB4 3C0D0001 */  lui        $t5, %hi(D_0000C764)
-    /* DE4A24 00013FB8 25ADC764 */  addiu      $t5, $t5, %lo(D_0000C764)
+    /* DE4A20 00013FB4 3C0D0001 */  lui        $t5, %hi(IntParm_vtbl_C764)
+    /* DE4A24 00013FB8 25ADC764 */  addiu      $t5, $t5, %lo(IntParm_vtbl_C764)
     /* DE4A28 00013FBC 240EFFF4 */  addiu      $t6, $zero, -0xC
     /* DE4A2C 00013FC0 AC8E0010 */  sw         $t6, 0x10($a0)
     /* DE4A30 00013FC4 AC8D000C */  sw         $t5, 0xC($a0)

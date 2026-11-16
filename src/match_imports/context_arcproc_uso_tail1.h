@@ -287,7 +287,7 @@ extern int gl_func_00000000();
 extern char D_00000000;
 extern int D_arc240_A, D_arc240_B, D_arc240_C;
 typedef struct { int a, b, c, d; } Quad4;
-extern int D_00000148, D_0000014C, D_00000068;
+extern int gInputMgr_backup_148, gInputMgr_session_14C, D_00000068;
 void arc_openSession_000005C8(int *a0);
 void arc_initCourses_00000688(int *a0);
 void arc_closeSession_00000748(int *a0);
