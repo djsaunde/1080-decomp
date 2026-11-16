@@ -5,6 +5,7 @@
 #include "game/input.h"
 #include "game/course.h" /* WorldRegistry (GameFlow.game) */
 #include "gdl/race.h" /* RaceSprite: the gui sprite slot (image at +0x10, its width at +0x20) */
+#include "gdl/backup.h" /* BackupOptions (SETTINGS(GameFlow.options), SelectWin_charCheatIndex) */
 
 /* Vptr stores below spell bootup vtables as their import_<RAM addr> placeholders and name them in
  * a comment ("vptr: bootup X", the gl_data.h alias; Sym from this module's import table, agent-c run
@@ -1742,12 +1743,12 @@ extern int gen_imp_Parms_addParm();
  * as .late_rodata; IDO merges equal literals in one fn, so distinct values
  * stand in for the repeated ones. The splice drops its text and relocs. */
 char *SelItemParms_ctor(char *arg0) {
-    *(volatile float *)(arg0 + 0) = -1500.0f;
-    *(volatile float *)(arg0 + 0) = 1500.0f;
-    *(volatile float *)(arg0 + 0) = -1501.0f;
-    *(volatile float *)(arg0 + 0) = 1501.0f;
-    *(volatile float *)(arg0 + 0) = -1502.0f;
-    *(volatile float *)(arg0 + 0) = 1502.0f;
+    *(volatile float *)arg0 = -1500.0f;
+    *(volatile float *)arg0 = 1500.0f;
+    *(volatile float *)arg0 = -1501.0f;
+    *(volatile float *)arg0 = 1501.0f;
+    *(volatile float *)arg0 = -1502.0f;
+    *(volatile float *)arg0 = 1502.0f;
     return arg0;
 }
 #ifdef NON_MATCHING
@@ -1792,12 +1793,12 @@ struct TimB5Nm { char *v; };
  * splice): it only re-emits RoData +0x134..+0x14C (-2500, -1500, 2500, 1500,
  * -pi, pi, in this order) that the INCLUDE_ASM .s carried as .late_rodata. */
 char *SelItemInfo_ctor(char *arg0) {
-    *(volatile float *)(arg0 + 0) = -2500.0f;
-    *(volatile float *)(arg0 + 0) = -1500.0f;
-    *(volatile float *)(arg0 + 0) = 2500.0f;
-    *(volatile float *)(arg0 + 0) = 1500.0f;
-    *(volatile float *)(arg0 + 0) = -3.1415927f;
-    *(volatile float *)(arg0 + 0) = 3.1415927f;
+    *(volatile float *)arg0 = -2500.0f;
+    *(volatile float *)arg0 = -1500.0f;
+    *(volatile float *)arg0 = 2500.0f;
+    *(volatile float *)arg0 = 1500.0f;
+    *(volatile float *)arg0 = -3.1415927f;
+    *(volatile float *)arg0 = 3.1415927f;
     return arg0;
 }
 
@@ -5457,7 +5458,7 @@ extern struct DBlk_8D38 import_800201EC;
 extern char timproc_uso_b5_D_807FE78C;
 int SelectWin_charCheatIndex_00008C44(char *r) {
     char *c = INPUT_MGR(import_800201EC).options;
-    int n = *(u16 *)(c + 2) - 4;
+    int n = SETTINGS(c)->seqStep - 4;
     int cnt;
     int i;
     int *p;
@@ -5468,7 +5469,7 @@ int SelectWin_charCheatIndex_00008C44(char *r) {
             i = 0; if (1) {}
             p = (int *)((char *)&timproc_uso_b5_D_807FE78C + 0xF1C);
             do {
-                if (*p == *(int *)((char *)SelectWin_curItem_00008A38(r) + 0x2B0) + 1) {
+                if (*p == SELITEM(SelectWin_curItem_00008A38(r))->id + 1) {
                     return i + 1;
                 }
                 i++;
@@ -5477,8 +5478,8 @@ int SelectWin_charCheatIndex_00008C44(char *r) {
         }
         c = INPUT_MGR(import_800201EC).options;
     }
-    if (*(u8 *)(c + 0xE) == 0xFC && *(u8 *)(c + 0xF) == 0xFF && *(u8 *)(c + 0x10) == 7 &&
-        *(int *)((char *)SelectWin_curItem_00008A38(r) + 0x2B0) == 4) {
+    if (SETTINGS(c)->newMark[0] == 0xFC && SETTINGS(c)->newMark[1] == 0xFF && SETTINGS(c)->newMark[2] == 7 &&
+        SELITEM(SelectWin_curItem_00008A38(r))->id == 4) {
         return 3;
     }
     return 0;

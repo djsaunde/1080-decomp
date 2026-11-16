@@ -2348,17 +2348,20 @@ void AudioHeap_DiscardSequence(int key) {
     char *p;
     int i;
     i = 0;
-    if (*(short *)((char *)&gAudioContext + 0x2048) > 0) {
+    /* p = &gAudioContext shifted by i SequencePlayers: CTX_SEQP(p) = seqPlayers[i] */
+#define CTX_SEQP(p) (((AudioContext *)(p))->seqPlayers[0])
+    if (((AudioContext *)&gAudioContext)->numSequencePlayers > 0) {
         p = (char *)gAudioContext_1fbcc;
         do {
-            if (*(unsigned int *)(p + 0x2D00) >> 31) {
-                if (*(unsigned char *)(p + 0x2D04) == key) {
-                    CALL(AudioSeq_SequencePlayerDisable)(p + 0x2D00);
+            if (CTX_SEQP(p).enabled) {
+                if (CTX_SEQP(p).seqId == key) {
+                    CALL(AudioSeq_SequencePlayerDisable)(&CTX_SEQP(p));
                 }
             }
             i++;
-            p += 0x160;
-        } while (i < *(short *)((char *)&gAudioContext + 0x2048));
+            p += sizeof(SequencePlayer);
+        } while (i < ((AudioContext *)&gAudioContext)->numSequencePlayers);
+#undef CTX_SEQP
     }
 }
 
@@ -4070,11 +4073,11 @@ typedef struct {
     unsigned char f : 2;
     unsigned char lo : 2;
 } B22398;
-void AudioHeap_UnapplySampleCache(char *a0, char *a1) {
-    if (a1 != 0) {
-        if (*(int *)(a0 + 8) == *(int *)(a1 + 4)) {
-            *(int *)(a1 + 4) = *(int *)(a0 + 0xC);
-            ((B22398 *)a1)->f = (signed char)a0[1];
+void AudioHeap_UnapplySampleCache(SampleCacheEntry *entry, Sample *sample) {
+    if (sample != NULL) {
+        if (sample->sampleAddr == entry->allocatedAddr) {
+            sample->sampleAddr = entry->sampleAddr;
+            ((B22398 *)sample)->f = entry->origMedium; /* Sample.medium through the u8 view */
         }
     }
 }
@@ -7224,15 +7227,15 @@ void AudioThread_SetFadeInTimer(int a0, int a1) {
 extern int gl_func_00000000();
 extern int D_00000000;
 void AudioThread_InitMesgQueuesImpl(void) {
-  ((char *) (&gAudioContext))[0x53B8] = 0;
-  ((char *) (&gAudioContext))[0x53B9] = 0;
-  ((char *) (&gAudioContext))[0x53BA] = 0;
-  *((char **) (((char *) (&gAudioContext)) + 0x53C8)) = ((char *) (&gAudioContext)) + 0x53D0;
-  *((char **) (((char *) (&gAudioContext)) + 0x53CC)) = ((char *) (&gAudioContext)) + 0x53E8;
-  *((char **) (((char *) (&gAudioContext)) + 0x53C4)) = ((char *) (&gAudioContext)) + 0x5400;
-  CALL(gl_osCreateMesgQueue)(*((char **) (((char *) (&gAudioContext)) + 0x53C8)), ((char *) (&gAudioContext)) + 0x5418, 1);
-  CALL(gl_osCreateMesgQueue)(*((char **) (((char *) (&gAudioContext)) + 0x53CC)), ((char *) (&gAudioContext)) + 0x5420, 4);
-  CALL(gl_osCreateMesgQueue)(*((char **) (((char *) (&gAudioContext)) + 0x53C4)), ((char *) (&gAudioContext)) + 0x541C, 1);
+  gAudioCtx.threadCmdWritePos = 0;
+  gAudioCtx.threadCmdReadPos = 0;
+  gAudioCtx.threadCmdQueueFinished = 0;
+  gAudioCtx.taskStartQueueP = &gAudioCtx.taskStartQueue;
+  gAudioCtx.threadCmdProcQueueP = &gAudioCtx.threadCmdProcQueue;
+  gAudioCtx.audioResetQueueP = &gAudioCtx.audioResetQueue;
+  CALL(gl_osCreateMesgQueue)(gAudioCtx.taskStartQueueP, gAudioCtx.taskStartMsgBuf, 1);
+  CALL(gl_osCreateMesgQueue)(gAudioCtx.threadCmdProcQueueP, gAudioCtx.threadCmdProcMsgBuf, 4);
+  CALL(gl_osCreateMesgQueue)(gAudioCtx.audioResetQueueP, gAudioCtx.audioResetMesgBuf, 1);
 }
 
 /* AudioThread_QueueCmd: ring-buffer push. head=u8 D[0x53B8],
@@ -7250,16 +7253,16 @@ void AudioThread_InitMesgQueuesImpl(void) {
  * expression spellings give `addu v0,idx,base`) and the first store folds
  * +0x5430 while the second sees the materialized `addiu v0,v0,0x5430`. */
 typedef struct { int a; int b; } Ring26BD8;
-#define B26BD8 ((unsigned char *)&D_00000000)
+#define B26BD8 ((AudioContext *)&D_00000000)
 void AudioThread_QueueCmd(int a0, int *a1) {
-    Ring26BD8 *e;
-    e = (Ring26BD8 *)(B26BD8 + 0x5430);
-    e += B26BD8[0x53B8] & 0xFF;
+    Ring26BD8 *e; /* an AudioCmd as its two words: {op arg0 arg1 arg2, arg} */
+    e = (Ring26BD8 *)B26BD8->threadCmdBuf;
+    e += B26BD8->threadCmdWritePos & 0xFF;
     e->a = a0;
     e->b = *a1;
-    B26BD8[0x53B8]++;
-    if (B26BD8[0x53B9] == B26BD8[0x53B8]) {
-        B26BD8[0x53B8]--;
+    B26BD8->threadCmdWritePos++;
+    if (B26BD8->threadCmdWritePos == B26BD8->threadCmdReadPos) {
+        B26BD8->threadCmdWritePos--;
     }
 }
 
@@ -7451,7 +7454,7 @@ int AudioThread_GetFontsForSequence() {
 int AudioThread_CheckSpecChange(void) {
     int v;
     int local;
-    v = CALL(gl_osRecvMesg)(*(int*)((char*)&gAudioContext + 0x53C4), &local, 0);
+    v = CALL(gl_osRecvMesg)(gAudioCtx.audioResetQueueP, &local, 0);
     if (v == -1) return 0;
     if (local != *(unsigned char*)((char*)&gAudioContext + 0x2CF1)) {
         return 0;
@@ -7472,7 +7475,7 @@ void AudioThread_ClearSpecChangeQueue(void) {
     int scratch;
     do {
         sentinel = -1;
-    } while (CALL(gl_osRecvMesg)(*(int*)((char*)&D_00000000 + 0x53C4), &scratch, 0) != sentinel);
+    } while (CALL(gl_osRecvMesg)(gAudioCtx.audioResetQueueP, &scratch, 0) != sentinel);
 }
 
 // AudioThread_ResetAudioHeap — STRUCTURAL PASS (0x98 / 38 words, no episode).
@@ -7531,7 +7534,7 @@ int AudioThread_ResetAudioHeap(int a0) {
         if (state >= 3) {
             return 0;
         }
-        CALL(gl_osRecvMesg)(*(void **)((char *)&D_00000000 + 0x53C4), &local, 1);
+        CALL(gl_osRecvMesg)(gAudioCtx.audioResetQueueP, &local, 1);
     }
     gl_ref_0003B844();
     CALL(AudioThread_QueueCmdS32)(0xF9000000, a0);
@@ -8921,10 +8924,10 @@ void Audio_InitSyntheticWave(Note *note, SequenceLayer *layer) {
 }
 
 /* Audio_InitNoteList: 4-insn self-linked-list init. */
-void Audio_InitNoteList(int *a0) {
-    a0[0] = (int)a0;
-    a0[1] = (int)a0;
-    a0[2] = 0;
+void Audio_InitNoteList(AudioListItem *list) {
+    list->prev = list;
+    list->next = list;
+    list->u.value = NULL;
 }
 
 /* Audio_InitNoteLists: 20-insn 4-call init wrapper for 4 contiguous 0x10-byte
@@ -8932,15 +8935,15 @@ void Audio_InitNoteList(int *a0) {
  * on each block, then sets each block's [0xC] field to self-reference (= a0).
  * Byte-exact: 4 jals resolve to gl_func_0003D074 (0x3D074). */
 extern void gl_func_0003D074();
-void Audio_InitNoteLists(char *a0) {
-    gl_func_0003D074(a0);
-    gl_func_0003D074(a0 + 0x10);
-    gl_func_0003D074(a0 + 0x20);
-    gl_func_0003D074(a0 + 0x30);
-    *(int*)(a0 + 0x0C) = (int)a0;
-    *(int*)(a0 + 0x1C) = (int)a0;
-    *(int*)(a0 + 0x2C) = (int)a0;
-    *(int*)(a0 + 0x3C) = (int)a0;
+void Audio_InitNoteLists(NotePool *pool) {
+    gl_func_0003D074(&pool->disabled); /* Audio_InitNoteList */
+    gl_func_0003D074(&pool->decaying);
+    gl_func_0003D074(&pool->releasing);
+    gl_func_0003D074(&pool->active);
+    pool->disabled.pool = pool;
+    pool->decaying.pool = pool;
+    pool->releasing.pool = pool;
+    pool->active.pool = pool;
 }
 
 /* Audio_InitNoteFreeList (OoT's): Audio_InitNoteLists(&noteFreeLists), then every Note of
@@ -9966,12 +9969,12 @@ void Audio_NotePortamentoInit(Note *note) {
     note->playbackState.portamento = note->playbackState.parentLayer->portamento;
 }
 
-void Audio_AdsrInit(char *a0, int a1, int a2) {
-    *(char*)a0 = 0;
-    *(short*)(a0 + 2) = 0;
-    *(int*)(a0 + 0x1C) = a1;
-    *(float*)(a0 + 4) = 0.0f;
-    *(float*)(a0 + 0x10) = 0.0f;
+void Audio_AdsrInit(AdsrState *adsr, AdsrEnvelope *envelope, s16 *volOut) {
+    adsr->action.asByte = 0;
+    adsr->delay = 0;
+    adsr->envelope = envelope;
+    adsr->sustain = 0.0f;
+    adsr->current = 0.0f;
 }
 
 /* Audio_AdsrUpdate: envelope/keyframe stepper (9-state jumptable
@@ -10512,19 +10515,19 @@ void AudioSeq_SequencePlayerDisableChannels(char *arg0, s32 arg1) {
 extern int gl_func_00000000();
 extern int gl_ref_0003EB78();  /* baked USO jal 0x0C00FADE = real per-element init @0x3EB78 */
 
-void AudioSeq_SequenceChannelEnable(char *base, unsigned char idx, int a2) {
-    char *o;
+void AudioSeq_SequenceChannelEnable(SequencePlayer *seqPlayer, unsigned char idx, u8 *script) {
+    SequenceChannel *o;
     char *p;
     int i;
-    o = ((char **)(base + 0x38))[idx];
-    *(unsigned char *)(o + 0x88) = 0;
-    *(int *)(o + 0x70) = a2;
-    *(unsigned char *)o = (*(unsigned char *)o & 0xFFFF) | 0x80;
-    *(unsigned char *)o &= 0xBF;
-    *(short *)(o + 0x1E) = 0;
-    p = o;
+    o = seqPlayer->channels[idx];
+    o->scriptState.depth = 0;
+    o->scriptState.pc = script;
+    *(unsigned char *)o = (*(unsigned char *)o & 0xFFFF) | 0x80; /* enabled = 1 (byte form) */
+    *(unsigned char *)o &= 0xBF;                                  /* finished = 0 */
+    o->delay = 0;
+    p = (char *)o; /* layers[i] through a shifted cursor */
     for (i = 0; i < 8; i++) {
-        if (*(int *)(p + 0x50) != 0) {
+        if (((SequenceChannel *)p)->layers[0] != NULL) {
             gl_ref_0003EB78(o, i);
         }
         p += 4;

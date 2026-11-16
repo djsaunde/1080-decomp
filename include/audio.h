@@ -827,7 +827,14 @@ typedef struct AudioContext {
     /* 0x53C4 */ void *audioResetQueueP;              /* InitMesgQueuesImpl (game_libs_o2_26214.c view) */
     /* 0x53C8 */ void *taskStartQueueP;
     /* 0x53CC */ void *threadCmdProcQueueP;           /* ScheduleProcessCmds */
-} AudioContext; /* size >= 0x53D0 (later fields not yet modelled) */
+    /* 0x53D0 */ OSMesgQueue taskStartQueue;          /* InitMesgQueuesImpl: the three *QueueP point here */
+    /* 0x53E8 */ OSMesgQueue threadCmdProcQueue;
+    /* 0x5400 */ OSMesgQueue audioResetQueue;
+    /* 0x5418 */ OSMesg taskStartMsgBuf[1];
+    /* 0x541C */ OSMesg audioResetMesgBuf[1];
+    /* 0x5420 */ OSMesg threadCmdProcMsgBuf[4];
+    /* 0x5430 */ AudioCmd threadCmdBuf[0x100];        /* AudioThread_QueueCmd's ring (threadCmdWritePos) */
+} AudioContext; /* size = 0x5C30 (gl_data.h gAudioContext, Bss Sym 1255) */
 
 #ifndef __cplusplus /* edg (the NCC donors) rejects the &((T *)0)->f constant form */
 #define AUDIO_ASSERT_OFFSET(field, off) \
@@ -884,6 +891,11 @@ AUDIO_ASSERT_OFFSET(layerFreeList, 0x5368);
 AUDIO_ASSERT_OFFSET(noteFreeLists, 0x5378);
 AUDIO_ASSERT_OFFSET(threadCmdChannelMask, 0x53BC);
 AUDIO_ASSERT_OFFSET(threadCmdProcQueueP, 0x53CC);
+AUDIO_ASSERT_OFFSET(taskStartQueue, 0x53D0);
+AUDIO_ASSERT_OFFSET(audioResetQueue, 0x5400);
+AUDIO_ASSERT_OFFSET(threadCmdProcMsgBuf, 0x5420);
+AUDIO_ASSERT_OFFSET(threadCmdBuf, 0x5430);
+typedef char audio_ctx_size_assert[sizeof(AudioContext) == 0x5C30 ? 1 : -1];
 typedef char audio_pool_size_assert[sizeof(AudioAllocPool) == 0x10 ? 1 : -1];
 typedef char audio_reverb_size_assert[sizeof(SynthesisReverb) == 0x158 ? 1 : -1];
 typedef char audio_seqplayer_size_assert[sizeof(SequencePlayer) == 0x160 ? 1 : -1];
