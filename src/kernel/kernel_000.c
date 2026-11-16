@@ -28,7 +28,7 @@ typedef void (*FuncPtr2)(void*, void*);
 extern FuncPtr2 gUsoPrintfHook;
 extern s32 D_8000A32C;
 extern s32 D_8000A340;
-extern s32 gUsoCtx;
+extern UsoCtx gUsoCtx;
 extern s32 gUsoEntryResult;
 extern s32 gUsoEntryIndex;
 extern s32 gUsoEntryModule;
@@ -590,21 +590,12 @@ typedef struct {
     char pad_50[0x22];
 } UsoEntry74;
 
-typedef struct {
-    char pad_00[0x84];
-    void (*field_84)(void*, void*, s32, s32);
-} UsoCallbacks84;
-
-typedef struct {
-    char pad_00[0x84];
-    void (*field_84)();
-} UsoLooseCb;
 
 extern s32 D_8000A2E4;
 extern s32 D_80012F7C;
 
 /* uso_printModules: for every live module slot (gUsoModules[0..0x86]) call the
- * loader hook gUsoCtx.field_84(&D_8000A2E4, name, base, base + size).
+ * loader hook gUsoCtx.print(&D_8000A2E4, name, base, base + size).
  * IDO 7.1 -O2. EXACT 2026-10-20 (agent-g run 112; was NM 83.0, written as a
  * pointer walk with four `register` invariants and called a coloring cap):
  * a plain index loop lets uopt build the p/end walk and hold &gUsoCtx in
@@ -616,7 +607,7 @@ void uso_printModules(void) {
     for (i = 0; i < 0x87; i++) {
         e = ((UsoEntry74 **)&gUsoModules)[i];
         if (e != 0) {
-            ((UsoCallbacks84 *)&gUsoCtx)->field_84(&D_8000A2E4, (char *)e + 0x72, e->field_4C, e->field_4C + e->field_14);
+            gUsoCtx.print(&D_8000A2E4, (char *)e + 0x72, e->field_4C, e->field_4C + e->field_14);
         }
     }
 }
@@ -628,7 +619,7 @@ typedef struct {
 
 extern s32 D_8000A2F4;
 
-/* uso_printSlots: call the loader hook gUsoCtx.field_84(&D_8000A2F4, i,
+/* uso_printSlots: call the loader hook gUsoCtx.print(&D_8000A2F4, i,
  * slot->unk94, slot->name) for all 135 module slots. IDO 7.1 -O2. The old
  * NM (a hand pointer walk) was filed as a coloring cap. */
 /* EXACT 2026-10-20 (agent-g run 112): a plain index loop over the typed
@@ -638,7 +629,7 @@ void uso_printSlots(void) {
     s32 i;
 
     for (i = 0; i < 0x87; i++) {
-        ((UsoCallbacks84 *)&gUsoCtx)->field_84(&D_8000A2F4, i, ((UsoModuleSlot *)&gUsoModuleSlots)[i].romOffset, ((UsoModuleSlot *)&gUsoModuleSlots)[i].name);
+        gUsoCtx.print(&D_8000A2F4, i, ((UsoModuleSlot *)&gUsoModuleSlots)[i].romOffset, ((UsoModuleSlot *)&gUsoModuleSlots)[i].name);
     }
 }
 
@@ -761,8 +752,8 @@ s32 uso_load(s32 file) {
     if (1) {
     }
     gUsoPrintfHook(&D_8000A314, (void *)file);
-    ((s32 *)&gUsoCtx)[6] = 0;
-    ((s16 *)&gUsoCtx)[0x16] = 0;
+    gUsoCtx.missCount = 0;
+    gUsoCtx.unk2C = 0;
     func_80000660(file, &gUsoPathDir, &gUsoPathFile);
     range = func_800008B8(header, &gUsoPathDir, &D_8000A328);
     if (range == NULL) {
@@ -794,8 +785,8 @@ s32 uso_load(s32 file) {
     }
     len = range[1] - range[0];
     off = gUsoHeapCur - range[0];
-    ((s32 *)&gUsoCtx)[1] = len - off;
-    ((s32 *)&gUsoCtx)[0] = gUsoHeapCur;
+    gUsoCtx.heapLeft = len - off;
+    gUsoCtx.heapCur = gUsoHeapCur;
     func_8000098C(header, len, off, &gUsoCtx);
     for (j = 0; j < 0x87; j++) {
         if (new_var[j] != 0) {
@@ -962,8 +953,7 @@ void uso_addrToModule(u32 arg0, void **arg1, s32 *arg2) {
     *arg2 = 0;
 }
 
-/* uso_get_vtable — returns pointer to USO vtable */
-extern s32 gUsoCtx;
+/* uso_getContext: the loader context (UsoCtx, uso.h) */
 void* uso_getContext(void) {
     return &gUsoCtx;
 }
@@ -981,7 +971,7 @@ extern s32 D_8000A35C;
 extern s32 D_8000A2A0;
 extern s32 gUsoSectionBytes;
 
-/* uso_printMemStats: dump the 11 loader counters through the gUsoCtx.field_84
+/* uso_printMemStats: dump the 11 loader counters through the gUsoCtx.print
  * logger: one header line with gUsoMemUsed, then (&D_8000A35C, name[i],
  * gUsoSectionBytes[i]) per entry. IDO 7.1 -O2.
  * EXACT 2026-10-20 (agent-g run 112; was NM 58.5, a pointer walk with five
@@ -991,9 +981,9 @@ extern s32 gUsoSectionBytes;
 void uso_printMemStats(void) {
     s32 i;
 
-    ((UsoLooseCb *)&gUsoCtx)->field_84(&D_8000A34C, gUsoMemUsed);
+    gUsoCtx.print(&D_8000A34C, gUsoMemUsed);
     for (i = 0; i < 11; i++) {
-        ((UsoLooseCb *)&gUsoCtx)->field_84(&D_8000A35C, (&D_8000A2A0)[i], (&gUsoSectionBytes)[i]);
+        gUsoCtx.print(&D_8000A35C, (&D_8000A2A0)[i], (&gUsoSectionBytes)[i]);
     }
 }
 
@@ -1569,7 +1559,6 @@ typedef struct {
     char p40[0x59];
     unsigned char dirty;
 } Obj80002250;
-typedef struct { char p0[0x18]; int miss; char p1c[0x84 - 0x1C]; void (*field_84)(); } Cb80002250;
 int uso_bindImports(Obj80002250 *o) {
     Ent80002250 *e;
     Obj80002250 *u;
@@ -1589,11 +1578,11 @@ int uso_bindImports(Obj80002250 *o) {
             u = ((Obj80002250 **)gUsoModules)[k];
             if (u == 0) {
                 o->dirty = 1;
-                ((Cb80002250 *)&gUsoCtx)->miss++;
+                gUsoCtx.missCount++;
             } else {
                 l = u->list;
                 if (l == 0) {
-                    ((Cb80002250 *)&gUsoCtx)->field_84(&D_8000A3A0, u, l);
+                    gUsoCtx.print(&D_8000A3A0, u, l);
                     return -2;
                 }
                 e->type |= 8;
