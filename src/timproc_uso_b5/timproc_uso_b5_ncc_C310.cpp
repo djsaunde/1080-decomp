@@ -10,6 +10,7 @@
  * arg1 + 0x230 hoist vs the ptrs IV -- assigning the loop-invariant `q = arg1 + 0x230` INSIDE the loop
  * (uopt hoists the assignment into the preheader between the IV inits, as the target) and passing q. */
 typedef float f32; typedef int s32; typedef short s16;
+#include "../../include/game/select.h"  /* NCC donors build without -I include */
 extern "C" {
 extern char timproc_uso_b5_D_807FF538, timproc_uso_b5_D_807FFA78, timproc_uso_b5_D_807FFA90, timproc_uso_b5_D_807FFAA8, timproc_uso_b5_D_807FFAD8, timproc_uso_b5_D_807FFAF0;
 void SelItem_drawStatBar_00003A4C(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, char *arg7);
@@ -32,31 +33,33 @@ extern "C" void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
     Col cols;
     int mv, mv2;
     char *q; /* run 246: assigned inside the loop (hoisted by uopt between the IV inits) */
-    char *e;
+    SelBoardModel *e;
     volatile s32 sp0, sp1; /* agent-c run 218 / run 246: q's home replaces the third word (frame 200) */
     /* agent-g run 246: fb / pv / pp as uopt IVs (fb0 + i * 6, vals[i], ptrs[i]: no edg home, one ugen temp word
      * each below the spill, kit CCLV) and m de-named (the per-iteration read written in place: one more temp word,
      * kit CCXVI) -> the 255 / 255.0f spill at sp+96 as the target (99.89 -> 99.91). */
 #define fb0 ((f32 *)(&timproc_uso_b5_D_807FF538 + 0xB8))
-#define m (*(s32 *)(arg0 + 0x2BC))
+#define ITEM ((SelBoardItem *)arg0)
+#define WIN ((SelectWin *)arg1)
+#define m (ITEM->barCount)
 
-    if (*(s32 *)(arg0 + 0x2BC) < 10) {
-        *(s32 *)(arg0 + 0x2C0) -= 1; /* run 218: field form (load / adjust in ugen temps t7 / t8) */
-        if (*(s32 *)(arg0 + 0x2C0) < 0) {
-            *(s32 *)(arg0 + 0x2BC) += 2;
-            *(s32 *)(arg0 + 0x2C0) = 1; /* run 218: the constant-1 LR (t0) shared with the loop's == 1 */
+    if (ITEM->barCount < 10) {
+        ITEM->barTimer -= 1; /* run 218: field form (load / adjust in ugen temps t7 / t8) */
+        if (ITEM->barTimer < 0) {
+            ITEM->barCount += 2;
+            ITEM->barTimer = 1; /* run 218: the constant-1 LR (t0) shared with the loop's == 1 */
         }
     }
-    vals[0] = *(s32 *)(arg0 + 0x1C4);
-    vals[1] = *(s32 *)(arg0 + 0x1DC);
-    vals[2] = *(s32 *)(arg0 + 0x1F4);
-    vals[3] = *(s32 *)(arg0 + 0x20C);
-    vals[4] = *(s32 *)(arg0 + 0x224);
-    ptrs[0] = arg1 + 0x134;
-    ptrs[1] = arg1 + 0x158;
-    ptrs[2] = arg1 + 0x17C;
-    ptrs[3] = arg1 + 0x1A0;
-    ptrs[4] = arg1 + 0x1C4;
+    vals[0] = ITEM->base.info.am0.value;
+    vals[1] = ITEM->base.info.am1.value;
+    vals[2] = ITEM->base.info.am2.value;
+    vals[3] = ITEM->base.info.am3.value;
+    vals[4] = ITEM->base.info.am4.value;
+    ptrs[0] = (char *)WIN->parms.cc[0].rgba;
+    ptrs[1] = (char *)WIN->parms.cc[1].rgba;
+    ptrs[2] = (char *)WIN->parms.cc[2].rgba;
+    ptrs[3] = (char *)WIN->parms.cc[3].rgba;
+    ptrs[4] = (char *)WIN->parms.cc[4].rgba;
     for (i = 0; i != 5; i++) {
         if (m) {} /* run 218: m v0 / selection v1 / copy v0 as the target */
         if (m < vals[i]) {
@@ -65,33 +68,33 @@ extern "C" void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
             mv2 = vals[i];
         }
         mv = mv2 + 0 * (int)(*arg0); /* run 218: folded counted use keeps the target's `move v0,v1` copy */
-        q = arg1 + 0x230;
-        if (*(s32 *)(arg1 + 0x3BC) == 1) { /* run 218: `== 1` = the target's held 1 (t0, rematerialised at the loop top) */
-            SelItem_drawStatBar_00003A4C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (int)(fb0 + i * 6), mv2, (s32)ptrs[i], (s32)q, arg1);
+        q = (char *)WIN->parms.cc[7].rgba;
+        if (WIN->numPlayers == 1) { /* run 218: `== 1` = the target's held 1 (t0, rematerialised at the loop top) */
+            SelItem_drawStatBar_00003A4C((int)arg0, ITEM->base.parms.xp0.value, ITEM->base.parms.yp0.value + i * WIN->parms.ysp.value, (int)(fb0 + i * 6), mv2, (s32)ptrs[i], (s32)q, arg1);
         } else {
-            SelItem_drawStatBarRight_00003C8C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (char *)(fb0 + i * 6), mv, (s32)ptrs[i], (s32)q, arg1);
+            SelItem_drawStatBarRight_00003C8C((int)arg0, ITEM->base.parms.xp0.value, ITEM->base.parms.yp0.value + i * WIN->parms.ysp.value, (char *)(fb0 + i * 6), mv, (s32)ptrs[i], (s32)q, arg1);
         }
     }
-    e = *(char **)(arg0 + 0x2B8);
-    if (*(s32 *)(e + 0x130) == 0) {
-        if (*(f32 *)(e + 0x10C) == 0.0f) {
-            if (!(*(s32 *)(arg0 + 0x2B4) & 0x20)) {
+    e = ITEM->model;
+    if (e->lit == 0) {
+        if (e->spin == 0.0f) {
+            if (!(ITEM->base.flags & 0x20)) {
                 cols.set(105, 255, 155, 255);
-                SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols.c, (int)(&timproc_uso_b5_D_807FFAD8 + 0x658), 0xFF);
+                SelItem_drawSpriteColor_00004068((int)arg0, ITEM->base.parms.xfp.value, ITEM->base.parms.yfp.value, cols.c, (int)(&timproc_uso_b5_D_807FFAD8 + 0x658), 0xFF);
                 hud = (Spr *)(&timproc_uso_b5_D_807FFA78 + 0x5F8);
             } else {
                 cols.set(105, 155, 255, 255);
-                SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols.c, (int)(&timproc_uso_b5_D_807FFAF0 + 0x670), 0xFF);
+                SelItem_drawSpriteColor_00004068((int)arg0, ITEM->base.parms.xfp.value, ITEM->base.parms.yfp.value, cols.c, (int)(&timproc_uso_b5_D_807FFAF0 + 0x670), 0xFF);
                 hud = (Spr *)(&timproc_uso_b5_D_807FFA90 + 0x610);
             }
-            SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols.c, (int)hud, 0xFF);
-            *(s32 *)(arg0 + 0x2C4) += 1;
-            if (*(s32 *)(arg0 + 0x2C4) & 8) {
+            SelItem_drawSpriteColor_00004068((int)arg0, ITEM->base.parms.xfp.value, ITEM->base.parms.yfp.value, cols.c, (int)hud, 0xFF);
+            ITEM->blink += 1;
+            if (ITEM->blink & 8) {
                 cols.set(233, 247, 0, 255);
-                if (!(*(s32 *)(arg0 + 0x2B4) & 0x20)) {
-                    SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) - hud->width() / 2 - 2, *(s32 *)(arg0 + 0xEC), cols.c, (int)(&timproc_uso_b5_D_807FFAA8 + 0x628), 0xFF);
+                if (!(ITEM->base.flags & 0x20)) {
+                    SelItem_drawSpriteColor_00004068((int)arg0, ITEM->base.parms.xfp.value - hud->width() / 2 - 2, ITEM->base.parms.yfp.value, cols.c, (int)(&timproc_uso_b5_D_807FFAA8 + 0x628), 0xFF);
                 } else {
-                    SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) + hud->width() / 2 + 2, *(s32 *)(arg0 + 0xEC), cols.c, (int)(&timproc_uso_b5_D_807FFAA8 + 0x640), 0xFF);
+                    SelItem_drawSpriteColor_00004068((int)arg0, ITEM->base.parms.xfp.value + hud->width() / 2 + 2, ITEM->base.parms.yfp.value, cols.c, (int)(&timproc_uso_b5_D_807FFAA8 + 0x640), 0xFF);
                 }
             }
         }

@@ -13,7 +13,11 @@
  * after vC2 and after vD keep the -pi / pi loads one at a time in $f0. */
 typedef int s32;
 typedef float f32;
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
+#include "../../include/game/select.h"  /* NCC donors build without -I include */
+#define SELF ((SelItemInfo *)arg0)
+#define PI(p) ((SelParmI *)(p))
+#define PF(p) ((SelParmF *)(p))
+#define PV(p) ((SelParmV3 *)(p))
 struct TimB5V3 { f32 x, y, z; };
 struct TimB5Nm { char *v; };
 #define B5_NAME(sym, lo) (*(char **)((char *)&sym + (lo)))
@@ -80,66 +84,66 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
     if (arg0 != 0 || (arg0 = (char *)gen_imp_mem_new(0x108)) != 0) {
         vt = arg0;
         if (vt != 0 || (vt = (char *)gen_imp_mem_new(8)) != 0) {
-            FW(vt, 0x0) = (int)((char *)&timproc_uso_b5_D_807FE9E8 + 0x1178);
-            FW(vt, 0x4) = 0;
+            ((SelItemInfo *)vt)->vptr = (int)((char *)&timproc_uso_b5_D_807FE9E8 + 0x1178);
+            ((SelItemInfo *)vt)->unk004 = 0;
         }
         u0.v = B5_NAME(timproc_uso_b5_D_807FE9F8, 0x1188); nm = u0;
         {
-            if ((c = arg0 + 0x8) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            if ((c = (char *)&SELF->ixn) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt0 + 0x1A0), FW(c, 0x14) = 0, FW(c, 0x10) = 0);
+                (PI(c)->vptr = (int)((char *)&D_timb5_32C8_vt0 + 0x1A0), PI(c)->unk14 = 0, PI(c)->value = 0);
             }
         }
         u1.v = B5_NAME(timproc_uso_b5_D_807FE9FC, 0x118C); nm = u1;
         {
-            if ((c = arg0 + 0x20) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            if ((c = (char *)&SELF->am0) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt1 + 0x1A0), FW(c, 0x10) = 2, FW(c, 0x14) = 0);
+                (PI(c)->vptr = (int)((char *)&D_timb5_32C8_vt1 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
             }
         }
         u2.v = B5_NAME(timproc_uso_b5_D_807FEA00, 0x1190); nm = u2;
         {
-            if ((c = arg0 + 0x38) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            if ((c = (char *)&SELF->am1) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt2 + 0x1A0), FW(c, 0x10) = 2, FW(c, 0x14) = 0);
+                (PI(c)->vptr = (int)((char *)&D_timb5_32C8_vt2 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
             }
         }
         u3.v = B5_NAME(timproc_uso_b5_D_807FEA04, 0x1194); nm = u3;
         {
-            if ((c = arg0 + 0x50) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            if ((c = (char *)&SELF->am2) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt3 + 0x1A0), FW(c, 0x10) = 2, FW(c, 0x14) = 0);
+                (PI(c)->vptr = (int)((char *)&D_timb5_32C8_vt3 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
             }
         }
         u4.v = B5_NAME(timproc_uso_b5_D_807FEA08, 0x1198); nm = u4;
         {
-            if ((c = arg0 + 0x68) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            if ((c = (char *)&SELF->am3) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt4 + 0x1A0), FW(c, 0x10) = 2, FW(c, 0x14) = 0);
+                (PI(c)->vptr = (int)((char *)&D_timb5_32C8_vt4 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
             }
         }
         u5.v = B5_NAME(timproc_uso_b5_D_807FEA0C, 0x119C); nm = u5;
         {
-            if ((c = arg0 + 0x80) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            if ((c = (char *)&SELF->am4) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt5 + 0x1A0), FW(c, 0x10) = 2, FW(c, 0x14) = 0);
+                (PI(c)->vptr = (int)((char *)&D_timb5_32C8_vt5 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
             }
         }
         h = (f32)iz(); u12 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FEA10 + 0x11A0); if (1) {} vC.x = h; vC.y = h; vC.z = h; vA.x = -2500.0f; vA.y = -1500.0f; vA.z = -2500.0f; if (1) {} vB.x = 2500.0f; vB.y = 1500.0f; vB.z = 2500.0f;
         cp0 = vC; cp1 = vA; cp2 = vB;
         nm.v = u12.v;
         {
-            if ((cA = arg0 + 0x98) != 0 ||
+            if ((cA = (char *)&SELF->pos) != 0 ||
                 ((cA = (char *)gen_imp_mem_new(0x20)),
                  (h = (f32)iz()), (cA != 0))) {
                 gen_imp_Parms_addParm(cA, arg0, nm, 1);
                 h = (f32)iz();
-                FW(cA, 0xC) = (int)((char *)&D_timb5_32C8_vv0 + 0x170);
-                FW(cA, 0x1C) = 0;
+                PV(cA)->vptr = (int)((char *)&D_timb5_32C8_vv0 + 0x170);
+                PV(cA)->unk1C = 0;
                 t = cp0;
-                *(f32 *)(cA + 0x10) = t.x;
-                *(f32 *)(cA + 0x14) = t.y;
-                *(f32 *)(cA + 0x18) = t.z;
+                PV(cA)->v[0] = t.x;
+                PV(cA)->v[1] = t.y;
+                PV(cA)->v[2] = t.z;
             }
         }
         u13 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FEA14 + 0x11A4);
@@ -153,32 +157,32 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
         cp2 = vE;
         nm.v = u13.v;
         {
-            if ((cB = arg0 + 0xB8) != 0 || (cB = (char *)gen_imp_mem_new(0x20)) != 0) {
+            if ((cB = (char *)&SELF->rot) != 0 || (cB = (char *)gen_imp_mem_new(0x20)) != 0) {
                 gen_imp_Parms_addParm(cB, arg0, nm, 1);
-                FW(cB, 0xC) = (int)((char *)&D_timb5_32C8_vv1 + 0x170);
-                FW(cB, 0x1C) = 0;
+                PV(cB)->vptr = (int)((char *)&D_timb5_32C8_vv1 + 0x170);
+                PV(cB)->unk1C = 0;
                 t = cp0;
-                *(f32 *)(cB + 0x10) = t.x;
-                *(f32 *)(cB + 0x14) = t.y;
-                *(f32 *)(cB + 0x18) = t.z;
+                PV(cB)->v[0] = t.x;
+                PV(cB)->v[1] = t.y;
+                PV(cB)->v[2] = t.z;
             }
         }
         u14.v = B5_NAME(timproc_uso_b5_D_807FEA18, 0x11A8); nm = u14;
         {
-            if ((c = arg0 + 0xD8) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            if ((c = (char *)&SELF->chy) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vw0 + 0x158);
-                FW(c, 0x14) = 0;
-                *(f32 *)(c + 0x10) = 0.0f;
+                PF(c)->vptr = (int)((char *)&D_timb5_32C8_vw0 + 0x158);
+                PF(c)->unk14 = 0;
+                PF(c)->value = 0.0f;
             }
         }
         u15.v = B5_NAME(timproc_uso_b5_D_807FEA1C, 0x11AC); nm = u15;
         {
-            if ((c = arg0 + 0xF0) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            if ((c = (char *)&SELF->scl) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vw1 + 0x158);
-                FW(c, 0x14) = 0;
-                *(f32 *)(c + 0x10) = 0.0f;
+                PF(c)->vptr = (int)((char *)&D_timb5_32C8_vw1 + 0x158);
+                PF(c)->unk14 = 0;
+                PF(c)->value = 0.0f;
             }
         }
     }

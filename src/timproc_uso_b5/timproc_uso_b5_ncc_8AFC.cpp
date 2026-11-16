@@ -6,6 +6,9 @@
  * Spliced into timproc_uso_b5.c.o via REPLACE_FUNC_BODY. */
 typedef short s16;
 typedef float f32;
+typedef int s32;
+#include "../../include/game/select.h"  /* NCC donors build without -I include */
+#define WIN ((SelectWin *)scr)
 extern "C" {
 extern int SelectWin_curItem_00008A38(...);
 }
@@ -17,16 +20,16 @@ extern "C" void RoomModifier_resetScale_00008AFC(char *scr) {
     char *o;
 
     for (g = 0; g < 4; g++) {
-        for (i = 0; i < *(int *)(*(char **)(*(char **)(scr + 0x40C) + g * 4 + 0x40) + 0x6C); i++) {
+        for (i = 0; i < WIN->itemsMgr->lists[g]->count; i++) {
             o = (char *)SelectWin_curItem_00008A38(scr);
-            e = *(char **)(*(char **)(*(char **)(scr + 0x40C) + g * 4 + 0x40) + i * 4 + 0x3C);
+            e = (char *)WIN->itemsMgr->lists[g]->items[i];
             if (o != e) {
-                o = *(char **)(e + 0x28);
-                ((void (*)(char *, f32))*(int *)(o + 0x5C))((char *)(*(s16 *)(o + 0x58) + (int)e), 1.0f - *(f32 *)(scr + 0x480) * K);
+                o = (char *)SELITEM(e)->vptr;
+                ((void (*)(char *, f32))SELVT(o)->updateHighlight.fn)((char *)(SELVT(o)->updateHighlight.delta + (int)e), 1.0f - WIN->fade * K);
             }
         }
     }
     o = (char *)SelectWin_curItem_00008A38(scr);
-    vt = *(char **)(o + 0x28);
-    ((void (*)(char *, f32))*(int *)(vt + 0x5C))((char *)(*(s16 *)(vt + 0x58) + (int)o), 1.0f);
+    vt = (char *)SELITEM(o)->vptr;
+    ((void (*)(char *, f32))SELVT(vt)->updateHighlight.fn)((char *)(SELVT(vt)->updateHighlight.delta + (int)o), 1.0f);
 }

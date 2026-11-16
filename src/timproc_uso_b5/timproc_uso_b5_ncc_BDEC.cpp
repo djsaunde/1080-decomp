@@ -14,6 +14,8 @@
  *   reload / store join), the colour buffer declared first as 5 words (frame 104).
  * History: runs 2026-05-29 .. 163 (cfe body 76.0 -> 95.82). */
 typedef float f32; typedef int s32;
+#include "../../include/game/select.h"  /* NCC donors build without -I include */
+#define WIN ((SelectWin *)arg1)
 extern "C" {
 extern char D_00000000;
 int gl_func_00000000(...);
@@ -21,10 +23,10 @@ int gl_func_00000000(...);
 inline int full() { return 255; } /* the alpha numerator: an int that uopt folds after CSE */
 extern "C" void CharacterItem_drawArrows_0000BDEC(char *arg0, char *arg1, int arg2) {
     float col[5]; int s2; float c; float denom = 255.0f; float a;
-    s2 = *(int *)(*(char **)(*(char **)(arg1 + 0x414) + 0xC) + 0xC4);
-    CALL(SelItem_drawSpriteWhite_00003FF8)(arg0, *(int *)(arg1 + 0x8C), s2 + *(int *)(arg1 + 0xA4), (char *)&D_00000000 + 0x6E8,
-                     (int)(denom * *(float *)(arg1 + 0x4A0)));
-    if (*(int *)(arg0 + 0x2B4) & 0x20000) {
+    s2 = WIN->scene->view->originY;
+    CALL(SelItem_drawSpriteWhite_00003FF8)(arg0, WIN->parms.hxp.value, s2 + WIN->parms.hyp.value, (char *)&D_00000000 + 0x6E8,
+                     (int)(denom * WIN->unk4A0));
+    if (SELITEM(arg0)->flags & 0x20000) {
         c = 192.0f / denom;
         col[0] = c;
         a = (f32)full() / denom;
@@ -32,8 +34,8 @@ extern "C" void CharacterItem_drawArrows_0000BDEC(char *arg0, char *arg1, int ar
         col[2] = c;
         col[3] = a;
         if (arg2 & 8) {
-            CALL(SelItem_drawSpriteColor_00004068)(arg0, *(int *)(arg1 + 0x8C) - 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
-                             col, (char *)&D_00000000 + 0x700, (int)(denom * *(float *)(arg1 + 0x4A0)));
+            CALL(SelItem_drawSpriteColor_00004068)(arg0, WIN->parms.hxp.value - 0x1E, s2 + WIN->parms.hyp.value + 0x14,
+                             col, (char *)&D_00000000 + 0x700, (int)(denom * WIN->unk4A0));
         }
     } else {
         c = 64.0f / denom;
@@ -42,18 +44,18 @@ extern "C" void CharacterItem_drawArrows_0000BDEC(char *arg0, char *arg1, int ar
         col[1] = c;
         col[2] = c;
         col[3] = a;
-        CALL(SelItem_drawSpriteColor_00004068)(arg0, *(int *)(arg1 + 0x8C) - 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
-                         col, (char *)&D_00000000 + 0x700, (int)(denom * *(float *)(arg1 + 0x4A0)));
+        CALL(SelItem_drawSpriteColor_00004068)(arg0, WIN->parms.hxp.value - 0x1E, s2 + WIN->parms.hyp.value + 0x14,
+                         col, (char *)&D_00000000 + 0x700, (int)(denom * WIN->unk4A0));
     }
-    if (!(*(int *)(arg0 + 0x2B4) & 0x20000)) {
+    if (!(SELITEM(arg0)->flags & 0x20000)) {
         col[3] = a;
         c = 192.0f / denom;
         col[0] = c;
         col[1] = c;
         col[2] = c;
         if (arg2 & 8) {
-            CALL(SelItem_drawSpriteColor_00004068)(arg0, *(int *)(arg1 + 0x8C) + 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
-                             col, (char *)&D_00000000 + 0x718, (int)(denom * *(float *)(arg1 + 0x4A0)));
+            CALL(SelItem_drawSpriteColor_00004068)(arg0, WIN->parms.hxp.value + 0x1E, s2 + WIN->parms.hyp.value + 0x14,
+                             col, (char *)&D_00000000 + 0x718, (int)(denom * WIN->unk4A0));
         }
     } else {
         col[3] = a;
@@ -61,7 +63,7 @@ extern "C" void CharacterItem_drawArrows_0000BDEC(char *arg0, char *arg1, int ar
         col[0] = c;
         col[1] = c;
         col[2] = c;
-        CALL(SelItem_drawSpriteColor_00004068)(arg0, *(int *)(arg1 + 0x8C) + 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
-                         col, (char *)&D_00000000 + 0x718, (int)(denom * *(float *)(arg1 + 0x4A0)));
+        CALL(SelItem_drawSpriteColor_00004068)(arg0, WIN->parms.hxp.value + 0x1E, s2 + WIN->parms.hyp.value + 0x14,
+                         col, (char *)&D_00000000 + 0x718, (int)(denom * WIN->unk4A0));
     }
 }
