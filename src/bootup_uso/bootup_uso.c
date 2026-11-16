@@ -651,7 +651,7 @@ extern char gGfxLib_d94_g[], gGfxLib_d94_src[];
 void BGBox_func_00000D94(char *a0) {
     int *p;
     int on;
-    if ((double)FOGPARMS(GFXLIB(gGfxLib_d94_g)->unk294)->colour[3] < D_bu_ro_dpool[0x70 / 8]) {
+    if ((double)GFXLIB(gGfxLib_d94_g)->fog.colour[3] < D_bu_ro_dpool[0x70 / 8]) {
         FCALL(gfx_setPrimColour)(gGfxLib_d94_g, gGfxLib_d94_src);
         FCALL(Node_display)(a0);
         p = &GFXLIB(gGfxLib_d94_g)->curWindow->win.flags;
