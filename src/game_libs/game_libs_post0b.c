@@ -11595,16 +11595,16 @@ void GfxLib_hostioParms(char *arg0) {
     /* per-site base-0 aliases of D_00000000: target re-materializes a fresh
      * lui/addiu pair at EVERY use (no $s0 promotion, no saved regs at all);
      * a single `g` local CSEs into s0 (the old 79% cap). */
-    extern char gl_d44144_k1, gl_d44144_k2, gl_d44144_k2c, gl_d44144_k3,
-        gl_d44144_k3c, gl_d44144_k4, gl_d44144_k5, gl_d44144_k5c,
-        gl_d44144_k6, gl_d44144_r1, gl_d44144_r2, gl_d44144_r3, gl_d44144_r4,
-        gl_d44144_s1a, gl_d44144_s1b, gl_d44144_s2a, gl_d44144_s2b,
-        gl_d44144_s3a, gl_d44144_s3b, gl_d44144_s4a, gl_d44144_s4b,
-        gl_d44144_gp, gl_d44144_t1, gl_d44144_t2, gl_d44144_t3, gl_d44144_t4;
+    extern char gHostio_44144_group, gHostio_44144_shadowAlpha, gGfxLib_44144_shadowAlpha, gHostio_44144_cvgTest,
+        gGfxLib_44144_cvgTest, gHostio_44144_autoLights, gHostio_44144_fifoLen, gFifoLen_3EC0C_44144,
+        gGfxLib_44144_fog, gHostio_44144_dumpScreen, gHostio_44144_dumpZBuffer, gHostio_44144_dumpError, gHostio_44144_showDLUsage,
+        HostioFnCb_vtbl_2C638_44144_a, GfxLib_hostioSendFbB_44144_cb, HostioFnCb_vtbl_2C638_44144_b, GfxLib_hostioSendFbA_44144_cb,
+        HostioFnCb_vtbl_2C638_44144_c, GfxLib_hostioForceError_44144_cb, HostioFnCb_vtbl_2C638_44144_d, GfxLib_hostioPrintDLUsage_44144_cb,
+        gGfxLib_44144_rcp, gRcpBusy_3EC10_44144, gHostio_44144_rcpStatus, gHostio_44144_gfxStatus, gHostio_44144_end;
     /* per-block aliases of D_0002F730 (fresh lui 0x2/addiu per block; one
      * extern would CSE into a saved reg) */
-    extern char gl_d44144_f730a, gl_d44144_f730b, gl_d44144_f730c, gl_d44144_f730d;
-    extern int gl_d44144_v13; /* direct int read == folded lui/lw of *(int*)&D_00000000 */
+    extern char HostioCb_vtbl_1F730_44144_a, HostioCb_vtbl_1F730_44144_b, HostioCb_vtbl_1F730_44144_c, HostioCb_vtbl_1F730_44144_d;
+    extern int gGfxStatusStr_3C7C8_44144; /* direct int read == folded lui/lw of *(int*)&D_00000000 */
     char sp38[0x100]; /* 0x38..0x138 message/aux buffer, drives the 0x138 frame */
     s32 *sp30;        /* single spill slot reused by all 4 alloc blocks */
     s32 *temp_v0;
@@ -11612,62 +11612,62 @@ void GfxLib_hostioParms(char *arg0) {
     s32 *var_v1;
     char *temp_v0_9;
 
-    gl_func_00000000(&gl_d44144_k1, &D_0002FD34, 0);
-    gl_func_00000000f(&gl_d44144_k2, &D_0002FD40, &gl_d44144_k2c + 0x24C, 0, 1.0f, 0);
-    gl_func_00000000(&gl_d44144_k3, &D_0002FD50, &gl_d44144_k3c + 0x250);
-    gl_func_00000000(&gl_d44144_k4, &D_0002FD58, &D_0002F970);
-    gl_func_00000000(&gl_d44144_k5, &D_0002FD64, &gl_d44144_k5c + 0x0, 0x400, 0x19000, 0);
-    gl_func_00000000(&gl_d44144_k6 + 0x294);
+    gl_func_00000000(&gHostio_44144_group, &D_0002FD34, 0);
+    gl_func_00000000f(&gHostio_44144_shadowAlpha, &D_0002FD40, &gGfxLib_44144_shadowAlpha + 0x24C, 0, 1.0f, 0);
+    gl_func_00000000(&gHostio_44144_cvgTest, &D_0002FD50, &gGfxLib_44144_cvgTest + 0x250);
+    gl_func_00000000(&gHostio_44144_autoLights, &D_0002FD58, &D_0002F970);
+    gl_func_00000000(&gHostio_44144_fifoLen, &D_0002FD64, &gFifoLen_3EC0C_44144 + 0x0, 0x400, 0x19000, 0);
+    gl_func_00000000(&gGfxLib_44144_fog + 0x294);
     temp_v0 = gl_func_00000000((int *)8);
     var_a2 = temp_v0;
     if (temp_v0 != 0) {
         var_v1 = temp_v0;
         if ((temp_v0 != 0) || (sp30 = temp_v0, temp_v0 = gl_func_00000000((int *)4), var_a2 = sp30, var_v1 = temp_v0, (temp_v0 != 0))) {
-            *var_v1 = (s32)&gl_d44144_f730a;
+            *var_v1 = (s32)&HostioCb_vtbl_1F730_44144_a;
         }
-        FW(var_a2, 0x0) = (s32)&gl_d44144_s1a;
-        FW(var_a2, 0x4) = (s32)&gl_d44144_s1b;
+        FW(var_a2, 0x0) = (s32)&HostioFnCb_vtbl_2C638_44144_a;
+        FW(var_a2, 0x4) = (s32)&GfxLib_hostioSendFbB_44144_cb;
     }
-    gl_func_00000000(&gl_d44144_r1, &D_0002FD6C, var_a2, 1);
+    gl_func_00000000(&gHostio_44144_dumpScreen, &D_0002FD6C, var_a2, 1);
     temp_v0 = gl_func_00000000((int *)8);
     var_a2 = temp_v0;
     if (temp_v0 != 0) {
         var_v1 = temp_v0;
         if ((temp_v0 != 0) || (sp30 = temp_v0, temp_v0 = gl_func_00000000((int *)4), var_a2 = sp30, var_v1 = temp_v0, (temp_v0 != 0))) {
-            *var_v1 = (s32)&gl_d44144_f730b;
+            *var_v1 = (s32)&HostioCb_vtbl_1F730_44144_b;
         }
-        FW(var_a2, 0x0) = (s32)&gl_d44144_s2a;
-        FW(var_a2, 0x4) = (s32)&gl_d44144_s2b;
+        FW(var_a2, 0x0) = (s32)&HostioFnCb_vtbl_2C638_44144_b;
+        FW(var_a2, 0x4) = (s32)&GfxLib_hostioSendFbA_44144_cb;
     }
-    gl_func_00000000(&gl_d44144_r2, &D_0002FD78, var_a2, 1);
+    gl_func_00000000(&gHostio_44144_dumpZBuffer, &D_0002FD78, var_a2, 1);
     temp_v0 = gl_func_00000000((int *)8);
     var_a2 = temp_v0;
     if (temp_v0 != 0) {
         var_v1 = temp_v0;
         if ((temp_v0 != 0) || (sp30 = temp_v0, temp_v0 = gl_func_00000000((int *)4), var_a2 = sp30, var_v1 = temp_v0, (temp_v0 != 0))) {
-            *var_v1 = (s32)&gl_d44144_f730c;
+            *var_v1 = (s32)&HostioCb_vtbl_1F730_44144_c;
         }
-        FW(var_a2, 0x0) = (s32)&gl_d44144_s3a;
-        FW(var_a2, 0x4) = (s32)&gl_d44144_s3b;
+        FW(var_a2, 0x0) = (s32)&HostioFnCb_vtbl_2C638_44144_c;
+        FW(var_a2, 0x4) = (s32)&GfxLib_hostioForceError_44144_cb;
     }
-    gl_func_00000000(&gl_d44144_r3, &D_0002FD88, var_a2, 0);
+    gl_func_00000000(&gHostio_44144_dumpError, &D_0002FD88, var_a2, 0);
     temp_v0 = gl_func_00000000((int *)8);
     var_a2 = temp_v0;
     if (temp_v0 != 0) {
         var_v1 = temp_v0;
         if ((temp_v0 != 0) || (sp30 = temp_v0, temp_v0 = gl_func_00000000((int *)4), var_a2 = sp30, var_v1 = temp_v0, (temp_v0 != 0))) {
-            *var_v1 = (s32)&gl_d44144_f730d;
+            *var_v1 = (s32)&HostioCb_vtbl_1F730_44144_d;
         }
-        FW(var_a2, 0x0) = (s32)&gl_d44144_s4a;
-        FW(var_a2, 0x4) = (s32)&gl_d44144_s4b;
+        FW(var_a2, 0x0) = (s32)&HostioFnCb_vtbl_2C638_44144_d;
+        FW(var_a2, 0x4) = (s32)&GfxLib_hostioPrintDLUsage_44144_cb;
     }
-    gl_func_00000000_44144v(&gl_d44144_r4, &D_0002FD94, var_a2, 1);
-    temp_v0_9 = *(char **)(&gl_d44144_gp + 0x218);
-    gl_func_00000000(sp38, &D_0002FDA4, FW(temp_v0_9, 0x3C), FW(temp_v0_9, 0x40), FW(temp_v0_9, 0x24), FW(temp_v0_9, 0x1C), FW(temp_v0_9, 0x20), *(int *)&gl_d44144_t1);
-    gl_func_00000000(&gl_d44144_t2, sp38);
-    gl_func_00000000(sp38, &D_0002FDD4, gl_d44144_v13);
-    gl_func_00000000(&gl_d44144_t3, sp38);
-    gl_func_00000000(&gl_d44144_t4);
+    gl_func_00000000_44144v(&gHostio_44144_showDLUsage, &D_0002FD94, var_a2, 1);
+    temp_v0_9 = *(char **)(&gGfxLib_44144_rcp + 0x218);
+    gl_func_00000000(sp38, &D_0002FDA4, FW(temp_v0_9, 0x3C), FW(temp_v0_9, 0x40), FW(temp_v0_9, 0x24), FW(temp_v0_9, 0x1C), FW(temp_v0_9, 0x20), *(int *)&gRcpBusy_3EC10_44144);
+    gl_func_00000000(&gHostio_44144_rcpStatus, sp38);
+    gl_func_00000000(sp38, &D_0002FDD4, gGfxStatusStr_3C7C8_44144);
+    gl_func_00000000(&gHostio_44144_gfxStatus, sp38);
+    gl_func_00000000(&gHostio_44144_end);
     gl_func_00000000(arg0);
 }
 #else
