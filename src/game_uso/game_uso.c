@@ -7233,14 +7233,14 @@ extern void RiderAnim_checkReverseBrake_0000D7F4(char *);
 extern char game_uso_D_807FF400;
 extern char game_uso_D_807FF460;
 void RiderAnim_stateBrake(int *a0) {
-    int *p;
+    SnowBoarder *p;
     import_0010DB78(a0, RA(a0)->animSet | RANIM_BRAKE_B, RA(a0)->animSet | RANIM_BRAKE_F, *(int *)&RA(a0)->rider->edge, 0, 1);
-    p = (int *)RA(a0)->rider;
-    if (((SnowBoarder *)p)->crouch == 0) {
+    p = RA(a0)->rider;
+    if (p->crouch == 0) {
         RiderAnim_setNextState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF400 + 0xE10));
-        p = (int *)RA(a0)->rider;
+        p = RA(a0)->rider;
     }
-    if (((SnowBoarder *)p)->useDParms != 0) {
+    if (p->useDParms != 0) {
         RiderAnim_setNextState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF460 + 0xE70));
     }
     RiderAnim_checkGroundSpin_0000E91C((char *)a0);

@@ -12,7 +12,9 @@
  * Spliced into game_uso.c.o via REPLACE_FUNC_BODY
  * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe). Every
  * symbol is extern "C". */
-#include "../../include/game/rideranim_anims.h" /* NCC has no -I include */
+typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
+typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
+#include "../../include/game/rideranim.h" /* NCC has no -I include */
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -24,16 +26,15 @@ void RiderAnim_checkJump_0000D8EC(void *);
 void RiderAnim_checkReverseBrake_0000D7F4(void *);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
-#define I(b,o) AT(int,b,o)
 extern "C" void RiderAnim_stateBrakeDeep(int *a0) {
-    int *p;
-    import_0010DB78(a0, RANIM_ID(2, RANIM_BRAKE_B), RANIM_ID(2, RANIM_BRAKE_F), I(I(a0, 0xB4), 0x970), 0, 1);
-    p = (int *)a0[0xB4 / 4];
-    if (p[0x990 / 4] == 0) {
+    SnowBoarder *p;
+    import_0010DB78(a0, RANIM_ID(2, RANIM_BRAKE_B), RANIM_ID(2, RANIM_BRAKE_F), *(int *)&RA(a0)->rider->edge, 0, 1);
+    p = RA(a0)->rider;
+    if (p->crouch == 0) {
         RiderAnim_setNextState_0000D5BC(a0, AT(PM, &game_uso_D_807FF438, 0xE48));
-        p = (int *)a0[0xB4 / 4];
+        p = RA(a0)->rider;
     }
-    if (p[0x9CC / 4] == 0) {
+    if (p->useDParms == 0) {
         RiderAnim_setNextState_0000D5BC(a0, AT(PM, &game_uso_D_807FF460, 0xE70));
     }
     RiderAnim_checkJump_0000D8EC(a0);

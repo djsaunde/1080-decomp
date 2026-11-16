@@ -12,7 +12,9 @@
  * Spliced into game_uso.c.o via REPLACE_FUNC_BODY
  * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe). Every
  * symbol is extern "C". */
-#include "../../include/game/rideranim_anims.h" /* NCC has no -I include */
+typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
+typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
+#include "../../include/game/rideranim.h" /* NCC has no -I include */
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -25,29 +27,29 @@ void RiderAnim_startHop_0001001C(void *);
 void RiderAnim_setNextState_0000D5BC(void *, PM);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
-#define I(b,o) AT(int,b,o)
 struct V { int *child() { return AT(int *, this, 0x800); } };
 extern "C" void RiderAnim_statePreJumpHold(int *a0, int *a1) {
     int *s0 = a0;
-    a1 = AT(V *, s0, 0xB4)->child();
-    if ((((a1[0x10 / 4] & 0x100) != 0) == 0 || (((unsigned int *)a1)[0x10 / 4] & 0x200)) && I(AT(V *, s0, 0xB4), 0x938) != 0) {
+    a1 = ((V *)RA(s0)->rider)->child(); /* rider->input */
+    /* the u32 view of held makes edg load it again for the 0x200 test (a plain second read is CSEd) */
+    if ((((((RiderInput *)a1)->held & 0x100) != 0) == 0 || (*(u32 *)&((RiderInput *)a1)->held & 0x200)) && RA(s0)->rider->contactCount != 0) {
         RiderAnim_jumpTakeoff_0000F360(s0);
     } else {
-        float f0 = AT(float, AT(V *, s0, 0xB4), 0x970);
+        float f0 = RA(s0)->rider->edge;
         float abs_f0 = (f0 < 0.0f) ? -f0 : f0;
         if (AT(double, &game_uso_D_807FFB58, 0x238) < (double)abs_f0) {
             import_0010DB78(s0, RANIM_ID(1, RANIM_PRE_JUMP_DEEP_B), RANIM_ID(1, RANIM_PRE_JUMP_DEEP_F), f0, 0, 1);
         } else {
             import_0010DB28(s0, RANIM_ID(1, RANIM_PRE_JUMP), 0, 1, 6, 1);
         }
-        if (I(AT(V *, s0, 0xB4), 0x938) == 0) {
+        if (RA(s0)->rider->contactCount == 0) {
             RiderAnim_startHop_0001001C(s0);
         }
     }
     {
-        short v0 = AT(short, s0, 0xE6);
-        AT(short, s0, 0xE6) = v0 + 1;
-        if (s0[0x184 / 4] < v0) {
+        short v0 = RA(s0)->holdFrames;
+        RA(s0)->holdFrames = v0 + 1;
+        if (RA(s0)->parms.jht.value.i < v0) {
             RiderAnim_setNextState_0000D5BC(s0, AT(PM, &game_uso_D_807FF498, 0xEA8));
         }
     }

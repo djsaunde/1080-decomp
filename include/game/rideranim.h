@@ -126,7 +126,8 @@ typedef struct RiderAnim {
     s32 unkE0;              /* 0xE0: no user found */
     s16 jumpCharge;         /* 0xE4: frames the jump has been held (statePreJumpHold, holdJumpLift: < jlt;
                              * jumpTakeoff scales jca by it); -1 = not charging */
-    s16 unkE6;              /* 0xE6 */
+    s16 holdFrames;         /* 0xE6: frames in statePreJumpHold (statePreJump clears it); past the jht parm the
+                             * hold moves to its next state */
     s32 trickButtons;       /* 0xE8: trick button bits gathered by readTrickInput (cleared by clearTricks) */
     s32 trickInputFrames;   /* 0xEC: frames trickButtons has been non-zero; readTrickInput picks the entry
                              * whose inputMask equals trickButtons once it exceeds the tkt parm */

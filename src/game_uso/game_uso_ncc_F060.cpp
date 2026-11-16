@@ -14,7 +14,9 @@
  * Spliced into game_uso.c.o via REPLACE_FUNC_BODY
  * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe). Every
  * symbol is extern "C". */
-#include "../../include/game/rideranim_anims.h" /* NCC has no -I include */
+typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
+typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
+#include "../../include/game/rideranim.h" /* NCC has no -I include */
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -26,20 +28,20 @@ void RiderAnim_clearTricks_00011888(void *);
 void RiderAnim_setState_0000D5F8(void *, PM, int);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
-#define I(b,o) AT(int,b,o)
 struct V { int *child() { return AT(int *, this, 0x800); } };
 extern "C" void RiderAnim_statePreJump(int *a0) {
     int *s0 = a0;
-    a0[0xF4 / 4] = 0;
+    RA(a0)->curTrick = 0;
     RiderAnim_clearTricks_00011888(a0);
-    a0 = AT(V *, s0, 0xB4)->child();
-    if ((((a0[0x10 / 4] & 0x100) != 0) == 0 || (((unsigned int *)a0)[0x10 / 4] & 0x200)) && I(AT(V *, s0, 0xB4), 0x938) != 0) {
+    a0 = ((V *)RA(s0)->rider)->child(); /* rider->input */
+    /* the u32 view of held makes edg load it again for the 0x200 test (a plain second read is CSEd) */
+    if ((((((RiderInput *)a0)->held & 0x100) != 0) == 0 || (*(u32 *)&((RiderInput *)a0)->held & 0x200)) && RA(s0)->rider->contactCount != 0) {
         RiderAnim_jumpTakeoff_0000F360(s0);
         return;
     }
-    import_0010DB28(s0, RANIM_ID(1, RANIM_PRE_JUMP), 0, 0, 0x100, s0[0x16C / 4]);
+    import_0010DB28(s0, RANIM_ID(1, RANIM_PRE_JUMP), 0, 0, 0x100, RA(s0)->parms.jct.value.i);
     RiderAnim_setState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4A0, 0xEB0), -1);
-    AT(short, s0, 0xE6) = 0;
-    AT(short, s0, 0xE4) = AT(short, s0, 0xE4) + 1;
-    import_000966AC(AT(char *, s0, 0xB4) + 0x808);
+    RA(s0)->holdFrames = 0;
+    RA(s0)->jumpCharge = RA(s0)->jumpCharge + 1;
+    import_000966AC(RA(s0)->rider->sound);
 }
