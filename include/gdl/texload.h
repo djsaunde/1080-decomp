@@ -26,6 +26,13 @@ typedef struct TexCI {
     /* 0x0C */ s32 tlut;               /* stored as is */
 } TexCI;
 
+/* The two other texture paths that read these records (game_libs_post0b.c):
+ *   gfx_setupMatTextures_00045E20(gfx, DLContext *dl, BaseMat *mat): emits the texture
+ *     enable / G_TEXTURE packets for the BaseMat->next chain, numbering BaseMat.tile;
+ *   gfx_flushTexture_00046C4C(gfx, BaseMat *mat): passes the texel block to the 0x578F0
+ *     call with a byte count = TexImage width * height (BaseMat width * height without
+ *     MAT_TEX_RECORD) times a float its first call returns (bytes per texel, presumably);
+ *     for MAT_FMT_CI8 / _B it passes TexCI.texels and then TexCI.tlut with 0x200. */
 #define TEXIMG(p) ((TexImage *)(p))
 #define TEXCI(p) ((TexCI *)(p))
 

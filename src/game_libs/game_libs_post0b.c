@@ -16,6 +16,7 @@
 #include "gdl/item.h"
 #include "gdl/ballrot.h"
 #include "gdl/gfxlib.h"
+#include "gdl/texload.h"
 #include "game/camera.h"
 #include "uso_call.h"
 extern int AnimPlayer_reset();
@@ -12361,13 +12362,14 @@ void gfx_emitOneLight_00045CB0(s32 arg0, char *arg1, float *arg2) {
  * else arm of the ==64 test redundantly re-assigns lo (second addiu a3);
  * loop stores s1 post-increment via a v0 copy and advances the node BEFORE
  * consuming the byte-size return (s2 += v / 8 signed-div shape). */
-typedef struct Dl45E20 { unsigned int *buf; int idx; } Dl45E20;
+/* one Gfx command appended to ctx->gfx (gdl/dlctx.h) */
 #define EMIT45E20(ctx, W0, W1) \
-    { Dl45E20 *d_ = *(Dl45E20 **)((ctx) + 0xC); int i_ = d_->idx; d_->idx = i_ + 1; \
-      { unsigned int *p_ = (unsigned int *)((char *)((*(Dl45E20 **)((ctx) + 0xC))->buf) + i_ * 8); \
+    { DLBuf *d_ = (ctx)->gfx.cur; int i_ = d_->count; d_->count = i_ + 1; \
+      { unsigned int *p_ = (unsigned int *)((char *)(ctx)->gfx.cur->base + i_ * 8); \
         p_[0] = (W0); p_[1] = (W1); } }
-void gfx_setupMatTextures_00045E20(void *a0, char *a1, char *a2) {
-    int m = *(int *)(a2 + 0x38);
+/* a1 = the DL context, a2 = the first texture of the material chain (BaseMat->next) */
+void gfx_setupMatTextures_00045E20(void *a0, DLContext *a1, BaseMat *a2) {
+    int m = a2->geomFlags;
     int s2acc = 0;
     int s1 = 0;
     int hi, lo;
@@ -12379,8 +12381,8 @@ void gfx_setupMatTextures_00045E20(void *a0, char *a1, char *a2) {
         } else {
             EMIT45E20(a1, 0xB7000000, 0x00040000);
         }
-        *(int *)(a2 + 0x28) = *(int *)(a2 + 0x28) | 0x1100;
-        if (*(short *)(a2 + 0x20) == 64) {
+        a2->texFlags = a2->texFlags | 0x1100;
+        if (a2->width == 64) {
             hi = 3968;
         } else {
             hi = 1984;
@@ -12393,14 +12395,14 @@ void gfx_setupMatTextures_00045E20(void *a0, char *a1, char *a2) {
     }
     EMIT45E20(a1, 0xBB040801, (hi << 16) | (lo & 0xFFFF));
     {
-        char *node = a2;
+        BaseMat *node = a2;
         if (node != 0) {
             do {
                 int v;
-                *(int *)(node + 0x3C) = s1++;
+                node->tile = s1++;
                 dbg_printThreads(a1, node, s2acc);
                 v = dbg_printThreads(node);
-                node = *(char **)(node + 0x40);
+                node = node->next;
                 s2acc += v / 8;
             } while (node != 0);
         }
@@ -12786,25 +12788,25 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gfx_beginView_00046BC4);
 extern int gl_func_00000000();
 extern float gl_retf_46C4C();      /* float-returning view of the jal-0 placeholder (cb) */
 extern void gl_fn_578F0();         /* concrete jal target 0x578F0 (h) */
-void gfx_flushTexture_00046C4C(int *a0, int *a1)
+void gfx_flushTexture_00046C4C(int *a0, BaseMat *a1)
 {
   int *s0;
   int scaled;
-  if (a1[0x28 / 4] & 0x10)
+  if (a1->texFlags & MAT_TEX_RECORD)
   {
-    int *obj = (int *) a1[0x1C / 4];
-    s0 = obj;
-    scaled = (int) (((float) (obj[0xC / 4] * obj[0x10 / 4])) * gl_retf_46C4C(a1));
+    TexImage *obj = (TexImage *) a1->texels;
+    s0 = (int *) obj;
+    scaled = (int) (((float) (obj->width * obj->height)) * gl_retf_46C4C(a1));
   }
   else
   {
-    s0 = (int *) (((char *) a1) + 0x1C);
-    scaled = (int) (((float) ((*((short *) (((char *) a1) + 0x20))) * (*((short *) (((char *) a1) + 0x22))))) * gl_retf_46C4C(a1));
+    s0 = (int *) &a1->texels;
+    scaled = (int) (((float) (a1->width * a1->height)) * gl_retf_46C4C(a1));
   }
-  if ((a1[0x24 / 4] == 0x508) || (a1[0x24 / 4] == 0x608))
+  if ((a1->format == MAT_FMT_CI8) || (a1->format == MAT_FMT_CI8_B))
   {
-    gl_fn_578F0((*((int *) s0)) + 8, scaled);
-    gl_fn_578F0((*((int *) s0)) + 0xC, 0x200);
+    gl_fn_578F0(&TEXCI(*s0)->texels, scaled);   /* CI: the texels and the 0x200-byte TLUT */
+    gl_fn_578F0(&TEXCI(*s0)->tlut, 0x200);
   }
   else
   {
