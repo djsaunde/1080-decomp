@@ -1,5 +1,6 @@
 /* Native original-compiler source port from src/timproc_uso_b5/timproc_uso_b5.c. Target bytes unchanged. */
 #include "context_timproc_uso_b5.h"
+#include "game/timproc_uso_b5_data.h"
 #include "gdl/light.h" /* LightTarget (the model's light-target child) */
 #define ITEM(p) ((SelCharacterItem *)(p))
 #define MODEL(p) ((SelCharModel *)(p))
@@ -50,7 +51,7 @@ SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, 
             float cf;
             gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEE54 + 0x15E4,
                                        0.0f, 0.0f, 0.0f);
-            cf = *(float *)((char *)&import_80807FB8 + 0x3A0); /* RAW: data-table: an import-base data read (&import_80807FB8 + K, a RoData float) */
+            cf = *(float *)((char *)&import_80807FB8 + kRoF_gen_1e7_3A0); /* genproc RoData */
             ((TimB5UiObject *)gc)->field_28 = (void *)(&import_80087FB8[0]); ((LightTarget *)gc)->mask = 0xFFFF; /* gc is a LightTarget (vptr: bootup LightTarget_vtbl) */
             ((LightTarget *)gc)->unk108[0] = cf;
             ((LightTarget *)gc)->unk108[1] = cf;
@@ -67,7 +68,7 @@ SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, 
             ((struct TimB5V3 *)p)->z = 0.0f;
             ((struct TimB5V3 *)p)->y = 100.0f;
         } while (0);
-        MODEL(child.ptr)->highlight = *(float *)((char *)&import_80800078 + 0x3A4); /* RAW: data-table (as above) */
+        MODEL(child.ptr)->highlight = *(float *)((char *)&import_80800078 + kRoF_gen_0p1_3A4); /* genproc RoData */
         n = *(int *)&import_80020078;
         if (1) {}
         p = (char *)timproc_uso_b5_d14c_alloc(0xB4);

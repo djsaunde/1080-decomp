@@ -145,12 +145,12 @@ Lp28:
      * joins q's family, coloring the whole family $a3 and COALESCING both
      * spills into one home slot 0x24 (frame 0x30 -> 0x28). A block-scoped
      * `int *z` gave q=$v1 + three distinct slots (the old 13-word cap). */
-    /* RAW: data-table: D_n64_100_f + 0x190 is a USO-local pool word (the Fader) */
-    q = *(void**)((char*)&D_n64_100_f + 0x190);
+    /* D_n64_100_f = bootup Bss+0xF8, gInputMgr (uso-imports.py sites n64proc): its shared Fader */
+    q = ((InputMgr *)&D_n64_100_f)->fader;
     CALL(list_append)((char*)a0 + 0x10, q);
     if (((int*)q)[0x14 / 4] != 0) ((int*)q)[1] = 1;
     ((int*)q)[0x14 / 4] = (int)a0;
-    CALL(Fader_start)(*(int*)((char*)&D_n64_100_f + 0x190), 2, 0); /* RAW: data-table (as above) */
+    CALL(Fader_start)(*(int *)&((InputMgr *)&D_n64_100_f)->fader, 2, 0);
     CALL(snd_postEvent)(0xA3);
     N64DEMO(a0)->pauseMenu = 0;
     N64DEMO(a0)->paused = 0;

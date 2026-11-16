@@ -545,7 +545,9 @@ typedef struct {
                s32 field_38;
                s32 field_3C;
                s32 field_40;
-               char unknown_44[0x10];
+               char unknown_44[8];
+               void *gate;             /* 0x4C: RaceEntry.gate (gdl/race.h), the next "chk" gate */
+               char unknown_50[4];
                char *field_54;
                char *field_58;
                char unknown_5C[4];

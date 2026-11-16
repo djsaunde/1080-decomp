@@ -1,5 +1,6 @@
 /* Native original-compiler source port from src/timproc_uso_b5/timproc_uso_b5.c. Target bytes unchanged. */
 #include "context_timproc_uso_b5.h"
+#include "game/timproc_uso_b5_data.h"
 #include "gdl/light.h" /* LightTarget (the model's light-target child) */
 #define LIST(p) ((SelItemList *)(p))
 #define MODEL(p) ((SelBoardModel *)(p))
@@ -54,7 +55,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
             gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEE84 + 0x1614, (f32) 0, (f32) 0, (f32) 0);
             g2 = gc;
             if (1) {}
-            cf = *(f32 *)((char *)&import_80807FB8 + 0x3B4); /* RAW: data-table: an import-base data read (&import_80807FB8 + K, a RoData float) */
+            cf = *(f32 *)((char *)&import_80807FB8 + kRoF_gen_1e7_3B4); /* genproc RoData */
             NODE(g2)->vptr = &import_80087FB8[0]; ((LightTarget *)g2)->mask = 1; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
             ((LightTarget *)g2)->unk108[0] = cf;
             ((LightTarget *)g2)->unk108[1] = cf;
@@ -93,7 +94,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         g2 = r;
         do {
         ((TimB5EntryFields *)g2)->model = child;
-        ((TimB5EntryFields *)g2)->cfv = *(f32 *)((char *)&import_80807FB8 + 0x3B8); /* RAW: data-table (as above) */
+        ((TimB5EntryFields *)g2)->cfv = *(f32 *)((char *)&import_80807FB8 + kRoF_gen_m28p48_3B8);
         ((TimB5EntryFields *)g2)->node = child;
         } while (0);
     }

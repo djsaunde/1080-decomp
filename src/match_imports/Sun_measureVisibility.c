@@ -1,9 +1,10 @@
 /* Native original-compiler source port from src/game_uso/game_uso.c. Target bytes unchanged. */
 #include "context_game_uso.h"
+#include "gdl/gfxlib.h"
 void Sun_measureVisibility(GameUsoSentinelObject *obj) {
     int count = 0;
-    /* RAW: data-table: a word at an offset of an import-base symbol (import_8005C348 + 0x240) */
-    char *cursor = *(char **)(&import_8005C348 + 0x240);
+    /* import_8005C348 = bootup Bss+0x3C168, gGfxLib (uso-imports.py sites game) */
+    char *cursor = (char *)((GfxLib *)&import_8005C348)->mainWindow;
     unsigned short *data = ((GameUsoSentinelContext *)cursor)->buffer->cells;
     int w;
     int h;

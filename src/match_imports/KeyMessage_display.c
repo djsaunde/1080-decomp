@@ -1,5 +1,7 @@
 /* Native original-compiler source port from src/titproc_uso/titproc_uso.c. Target bytes unchanged. */
 #include "context_titproc_uso.h"
+#include "game/input.h"
+#include "game/titproc_uso_data.h"
 void KeyMessage_display(TitprocBlendObject *object) {
     float ones[4];
     char *tgt;
@@ -13,10 +15,10 @@ void KeyMessage_display(TitprocBlendObject *object) {
     src = ones;
     red = 1.0f;
     ones[0] = red; ones[1] = red; ones[2] = red; ones[3] = red;
-    /* RAW: data-table: words at offsets of import-base symbols (import_00020098 / import_00263E00) */
-    if (*(int *)((char *)&import_00020098 + 0x18C) != 0) {
+    /* import_00020098 = bootup Bss+0xF8, gInputMgr (uso-imports.py sites titproc) */
+    if (((InputMgr *)&import_00020098)->locked != 0) {
         red = ones[0];
-        t = *(float *)((char *)&import_00263E00 + 0x40); /* RAW: data-table (as above) */
+        t = *(float *)((char *)&import_00263E00 + kRoF_tit_keyMsgGB_40); /* titproc RoData */
         vec[0] = red; vec[3] = red; vec[1] = t; vec[2] = t;
         t = (float)object->field_2C / 255.0f;
         out[3] = red;
