@@ -16,7 +16,7 @@ char *FloatPosParms_ctor(char *arg0) {
         s = arg0;
         if (s != 0 || (s = bootup_1438C_alloc(8)) != 0) {
             PARMS(s)->name = (char *)&sTimeGadgetParmsTags_CACC[3]; /* the Parms name string */
-            PARMS(s)->unk04 = 0;
+            PARMS(s)->first = 0;
         }
     }
     x = sFloatParmsTags_CAE8[1];
