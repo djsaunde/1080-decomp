@@ -5255,7 +5255,8 @@ void RiderAnim_readParms_0000D418(char *a0) {
     CALL(Parms_load_00035C6C)(&RA(a0)->parms);
 }
 
-/* Set a0->0x64/0x68 = -1000 and copy the 8-byte pair a0->0xC0..0xC7 to 0xC8.
+/* RiderAnim's onKey override (vtable Data 0x115C slot 10, +0x5C): playback passed the armed key (or the
+ * blend-in ended), so disarm both events and enter the queued state (queuedState 0xC0 -> state 0xC8).
  * MATCH: copying the adjacent pair as a STRUCT (Pair2) emits lw/lw/sw/sw with the
  * target's t7/t6 register order; two separate s32 field-copies gave t6/t7 swapped
  * (was INSN_PATCH'd, banned 2026-05-23). Struct-copy vs separate-field-copy is the
@@ -5263,7 +5264,7 @@ void RiderAnim_readParms_0000D418(char *a0) {
 void RiderAnim_reset_0000D438(char *a0) {
     RA(a0)->player.eventKey = ANIM_NO_KEY;
     RA(a0)->player.blendEvent = ANIM_NO_KEY;
-    RA(a0)->nextState = RA(a0)->state;
+    RA(a0)->state = RA(a0)->queuedState;
 }
 
 /* RiderAnim_init_0000D458: parent F1 (frame -0x48, 90 words/0x164) + 4 helper
@@ -5340,7 +5341,7 @@ void RiderAnim_init_0000D458(s32 arg0) {
  * The volatile-int-pointer form left the &a1 pointer in $v0 (was a regalloc cap);
  * struct-copy is the lever (same as RiderAnim_reset_0000D438). Byte-exact. */
 void RiderAnim_setNextState_0000D5BC(char *a0, Pair2 pair) {
-    RA(a0)->nextState = pair;
+    RA(a0)->state = pair;
 }
 
 /* Copy the adjacent global pair D+0xDC8/0xDCC to adjacent a0->0xC8/0xCC.
@@ -5350,7 +5351,7 @@ void RiderAnim_setNextState_0000D5BC(char *a0, Pair2 pair) {
  * Byte-exact (in-tree verified). */
 extern char game_uso_D_807FF3B8;
 void RiderAnim_clearNextState_0000D5DC(char *a0) {
-    RA(a0)->nextState = *(Pair2*)((char*)&game_uso_D_807FF3B8 + 0xDC8); /* the null PMF */
+    RA(a0)->state = *(Pair2*)((char*)&game_uso_D_807FF3B8 + 0xDC8); /* the null PMF */
 }
 
 /* Varargs (&a1) pair-sink: if a3==-1 set a0->0x68=a3 else a0->0x64=a3; then copy
@@ -5371,7 +5372,7 @@ void RiderAnim_setState_0000D5F8(char *a0, Pair2 pair, int a3) {
     } else {
         RA(a0)->player.eventKey = *(int*)&a3;
     }
-    RA(a0)->state = pair;
+    RA(a0)->queuedState = pair;
 }
 
 /* 2-insn leaf: jr ra; sw a0, 0(sp) (a0 spilled to its caller-arg slot in the
