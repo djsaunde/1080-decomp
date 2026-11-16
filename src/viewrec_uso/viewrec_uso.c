@@ -1338,7 +1338,48 @@ INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004DE
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00005200);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00005318);
+/* the screen at proc+0x5C (0x70 bytes, ctor 0x5200): the setting flag that 0x5318 toggles */
+typedef struct VrScreen5C {
+    /* 0x00 */ Node node;
+    /* 0x2C */ char pad2C[0x50 - 0x2C];
+    /* 0x50 */ ViewRecProc *proc;
+    /* 0x54 */ char pad54[0x68 - 0x54];
+    /* 0x68 */ s32 flag;             /* from bootup Bss+0x28C; settings_setFlag4 */
+    /* 0x6C */ s32 unk6C;
+} VrScreen5C;
+
+/* 0x5318: VrScreen5C pad handling: left / right set the flag (0 / 1, settings_setFlag4), A / B /
+ * Start clear options bit 3 and save the settings, then return to the caller screen (proc flags
+ * bit 16) or fade out to the next process state. */
+void viewrec_uso_func_00005318(VrScreen5C *self) {
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x10001) && self->flag != 0) {
+        CALL(snd_postEvent)(1);
+        self->flag = 0;
+        CALL(settings_setFlag4_000126EC)(&gInputMgr_vr, 0);
+    }
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x4002) && self->flag == 0) {
+        CALL(snd_postEvent)(1);
+        self->flag = 1;
+        CALL(settings_setFlag4_000126EC)(&gInputMgr_vr, 1);
+    }
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x40300)) {
+        CALL(snd_postEvent)(5);
+        {
+            u16 *p;
+            if (1) {}
+            p = (u16 *)(gInputMgr_vr.options + 4);
+            *p &= ~8;
+        }
+        CALL(settings_save_00012150)(&gInputMgr_vr);
+        if (self->proc->flags & 0x10000) {
+            CALL(viewrec_uso_func_00000000)();
+        } else {
+            gInputMgr_vr.procState = gInputMgr_vr.nextProcState;
+            CALL(Process_fadeOut_0000F954)(self->proc, -1, 0);
+        }
+    }
+    CALL(Node_update)(self);
+}
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00005440);
 
