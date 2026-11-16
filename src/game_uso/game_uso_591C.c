@@ -524,7 +524,7 @@ tail_common:
                 self->targetNode = self->altNode;
             }
         }
-    } else if (hit_parent != 0 && (int)((CourseMarker *)hit_parent)->link == 0) {
+    } else if (hit_parent != 0 && ((CourseMarker *)hit_parent)->link == 0) {
         if (self->targetNode != 0) {
             self->targetNode = ((CourseMarker *)hit_parent)->parms.ext.value;
         }

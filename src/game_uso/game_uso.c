@@ -7,6 +7,7 @@
 #include "game/sun.h"
 #include "game/input.h"
 #include "gdl/item.h"
+#include "gdl/gfxlib.h"
 #include "uso_call.h"
 
 /* typed views of an untyped object pointer (same base + offset access as the raw form) */
@@ -1108,8 +1109,8 @@ void *SnowChaseActorLookParms_ctor(void *arg0) {
       goto after_template;
     }
   }
-  ((int *) var_v1)[0] = (int) (((char *) (&D_00000000)) + kStr_Parms_354);
-  ((int *) var_v1)[1] = 0;
+  ((SnowChaseActorLookParms *) var_v1)->name = ((char *) (&D_00000000)) + kStr_Parms_354; /* "Parms" */
+  ((SnowChaseActorLookParms *) var_v1)->unk04 = 0;
   after_template:
   init_arg = *((int *) (((char *) (&D_00000000)) + kTag_ch0_35C));
   init_arg_copy = *((One1 *) (int *) &init_arg);
@@ -1123,9 +1124,9 @@ void *SnowChaseActorLookParms_ctor(void *arg0) {
     }
   }
   CALL(Parms_addParm)(var_a0, arg0, init_arg_copy, 1);
-  ((int *) var_a0)[3] = (int) (((char *) (&D_00000000)) + 0x18);
-  ((float *) var_a0)[4] = 0.0f;
-  ((int *) var_a0)[5] = 0;
+  ((CamParm *) var_a0)->vptr = ((char *) (&D_00000000)) + 0x18; /* the float-parm vtable (CamParm, as SnowChaseActorCamParms_ctor) */
+  ((CamParm *) var_a0)->value = 0.0f;
+  ((CamParm *) var_a0)->unk14 = 0;
   done:
   return arg0;
 
@@ -2663,13 +2664,13 @@ void SnowAI_timeoutRun(int *a0) {
         timer = ((SnowAI *)a0)->finishTimer;
         if (timer < 60) {
             if (((SnowBoarder *)p)->dnode.speed <= 30.0f) {
-                RiderAnim_startTimeout_00011024((int)((SnowBoarder *)p)->anim, dispatch_arg);
+                RiderAnim_startTimeout_00011024(((SnowBoarder *)p)->anim, dispatch_arg);
                 AI(a0)->finishTimer = 61;
             } else {
                 AI(a0)->finishTimer = timer + 1;
             }
         } else if (timer == 60) {
-            RiderAnim_startTimeout_00011024((int)((SnowBoarder *)p)->anim, dispatch_arg);
+            RiderAnim_startTimeout_00011024(((SnowBoarder *)p)->anim, dispatch_arg);
             AI(a0)->finishTimer = 61;
         }
     }
@@ -2723,7 +2724,7 @@ int SnowAI_isAtFinish(int *a0) {
     int b;
 
     v.a = **(int **)((char *)&game_uso_D_807FEB38 + kMarkerTypeTags_548);
-    r = (int *)SnowAI_findNearestMarker_0000A374((int)a0, v, (int)AI(a0)->rider->dnode.vqs.trans);
+    r = (int *)SnowAI_findNearestMarker_0000A374(a0, v, AI(a0)->rider->dnode.vqs.trans);
 
     b = (r != 0);
     if (b) {
@@ -3701,7 +3702,7 @@ void SnowAI_scanNodes(SnowAI *obj) {
     tbuf.z = tbuf.z + copy2.z;
 
     a1arg.a = **(int **)((char *)&D_00000000 + kMarkerTypeTags_548 + obj->scanIndex * 4);
-    v0var = (char *)SnowAI_findNearestMarker_0000A374((int)obj, a1arg, (int)&tbuf);
+    v0var = (char *)SnowAI_findNearestMarker_0000A374(obj, a1arg, &tbuf);
     if (v0var != 0) {
         t = (int)((CourseMarker *)v0var)->link;
         if (t != 0) {
@@ -4051,13 +4052,13 @@ skip_sub:
                 p = (char *)XCALL(game_uso_func_055750, mem_new)(4);
                 if (p == NULL) goto o16_fill;
             }
-            *(int *)p = (int)((char *)&game_uso_D_807FEE38 + 0x848);
+            ((MemberCallback *)p)->vptr = (char *)&game_uso_D_807FEE38 + 0x848;
         o16_fill:
             ((MemberCallback *)r)->obj = arg0;
             ((MemberCallback *)r)->pmf = *(Pair2 *)((char *)&game_uso_D_807FEE30 + 0x840);
         }
     o16_set:
-        *(int *)s0 = (int)((char *)&game_uso_D_807FF234 + 0xC44);
+        ((MemberCallback *)s0)->vptr = (char *)&game_uso_D_807FF234 + 0xC44;
     }
 after_o16:
 
@@ -4186,7 +4187,8 @@ end_ret:
 /* Sun_display — reconstructed from expected/.o (reloc-aware). s1 base =
  * gGfxLib_8005C108 cached in a saved register; four double thresholds live in distinct
  * rodata symbols game_uso_D_807FFA40/48/50/58 (each at +0x120/0x128/0x130/0x138);
- * destination vec at import_8005C1A8+0xD0..0xD8. Callees: game_uso_func_063734,
+ * destination vec = gGfxLib.modelView[3][0..2] (import_8005C1A8 is the gGfxLib token named for its
+ * +0xA0 site). Callees: game_uso_func_063734,
  * import_000F8678, game_uso_func_04D700, game_uso_func_05B750. */
 extern char gGfxLib_8005C108;
 extern char import_8005C1A8;
@@ -4201,37 +4203,37 @@ extern void game_uso_func_05B750();
 
 void Sun_display(char *s0) {
     char *s1 = (char *)(unsigned)&gGfxLib_8005C108;
-    char *dst;
+    float *dst;
     float vec[3];
     float r;
     char *v1;
     int *vt;
 
-    if ((double)*(float *)(s1 + 0x2A0) > *(double *)(&game_uso_D_807FFA40 + kRoD_0p98_120)) return;
+    if ((double)GFXLIB(s1)->fog.colour[3] > *(double *)(&game_uso_D_807FFA40 + kRoD_0p98_120)) return;
 
     vec[0] = SUN(s0)->mnode.world[3][0];
     vec[1] = SUN(s0)->mnode.world[3][1];
     vec[2] = SUN(s0)->mnode.world[3][2];
-    if (game_uso_func_063734(*(int *)(s1 + 0x254), &vec[0], 1, 0) == 0) return;
+    if (game_uso_func_063734(GFXLIB(s1)->curWindow, &vec[0], 1, 0) == 0) return;
 
     SUN(s0)->screenX = (int)vec[0];
     SUN(s0)->screenY = (int)vec[1];
     import_000F8678(s1, &SUN(s0)->visCallback);
-    SUN(s0)->depthImage = *(void **)(s1 + 0x254);
+    SUN(s0)->depthImage = GFXLIB(s1)->curWindow;
     SUN(s0)->fade = SUN(s0)->visibility;
 
-    if (*(double *)(&game_uso_D_807FFA48 + kRoD_0p7_128) < (double)*(float *)(s1 + 0x2A0)) {
-        SUN(s0)->fade *= (1.0 - (((double)*(float *)(s1 + 0x2A0) - *(double *)(&game_uso_D_807FFA48 + kRoD_0p7_128)) / *(double *)(&game_uso_D_807FFA50 + kRoD_0p3_130)));
+    if (*(double *)(&game_uso_D_807FFA48 + kRoD_0p7_128) < (double)GFXLIB(s1)->fog.colour[3]) {
+        SUN(s0)->fade *= (1.0 - (((double)GFXLIB(s1)->fog.colour[3] - *(double *)(&game_uso_D_807FFA48 + kRoD_0p7_128)) / *(double *)(&game_uso_D_807FFA50 + kRoD_0p3_130)));
     }
 
     if (!(*(double *)(&game_uso_D_807FFA58 + kRoD_0p1_138) < (double)SUN(s0)->fade)) return;
 
     game_uso_func_04D700(s0);
 
-    dst = &import_8005C1A8 + 0xA0;
-    *(float *)(dst + 0x30) = SUN(s0)->mnode.world[3][0];
-    *(float *)(dst + 0x34) = SUN(s0)->mnode.world[3][1];
-    *(float *)(dst + 0x38) = SUN(s0)->mnode.world[3][2];
+    dst = GFXLIB(&import_8005C1A8)->modelView[3]; /* the sprite's model-view translation */
+    dst[0] = SUN(s0)->mnode.world[3][0];
+    dst[1] = SUN(s0)->mnode.world[3][1];
+    dst[2] = SUN(s0)->mnode.world[3][2];
     r = SUN(s0)->fade * SUN(s0)->parms.scl.value.f;
     game_uso_func_05B750(s1, SUN(s0)->parms.col.value);
 
@@ -4882,8 +4884,8 @@ void *RiderAnim_ctor_0000C48C(char *p, int a1, int a2) {
     if (p == (char *)-0x13C) { s1 = (int *)XCALL(game_uso_func_055750, mem_new)(0x308); if (s1 == 0) goto tail; }
     v1 = s1;
     if (s1 == 0) { v1 = (int *)XCALL(game_uso_func_055750, mem_new)(8); if (v1 == 0) goto stage0; }
-    v1[0] = (int)((char *)&game_uso_D_807FF814 + kStr_Parms_1224);
-    v1[1] = 0;
+    ((RiderAnimParms *)v1)->name = (char *)&game_uso_D_807FF814 + kStr_Parms_1224; /* "Parms" */
+    ((RiderAnimParms *)v1)->unk04 = 0;
 stage0:;
     {
         u1.v = *(int *)((char *)&game_uso_D_807FF81C + kTag_lnc_122C);
@@ -5322,7 +5324,7 @@ void RiderAnim_init_0000D458(s32 arg0) {
         RiderAnim_enterState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A8 + kPmf_RiderAnim_stateStartWait));
     }
     XCALL(game_uso_func_049280, sys_writebackDCacheAll)();
-    XCALL(game_uso_func_048020, dma_read)((s32) &sp30, 0xF10, 0x10);
+    XCALL(game_uso_func_048020, dma_read)(&sp30, 0xF10, 0x10);
     if (sp30[0] != 0x04080040) {
         var_v0 = 0;
     } else if (sp30[1] != 0x02081040) {
