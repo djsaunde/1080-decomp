@@ -1,0 +1,33 @@
+{
+  "function_name": "heli_uso_func_000000AC",
+  "project": "1080-decomp",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-11-16T20:43:59.017813+00:00",
+  "end_time": "2026-11-16T20:43:59.017828+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T20:43:59.017824+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 15,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n#include \"uso_call.h\"\n\nextern int gl_func_00000000();\nextern char D_00000000;\n\ntypedef struct { int a, b, c; } HeliTri3i;\n\n/* heli_uso_func_00000000: read an int from the gdl file (cross-USO template, as checkpoint\n * checkpoint_uso_func_00000034 / game_uso stream_readS32_00000280). */\nvoid heli_uso_func_00000000(int *dst) {\n    int buf[2];\n    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);\n    *dst = buf[0];\n}\n\n/* heli_uso_func_0000003C: read a Vec3 from the gdl file (template, as balloon_uso_func_00000094 /\n * game_uso stream_readVec3_000001D4). */\nvoid heli_uso_func_0000003C(float *dst) {\n    int pad_top[1];\n    HeliTri3i raw;\n    int pad_mid[2];\n    HeliTri3i tmp;\n    int pad_bot[2];\n    CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);\n    tmp = raw;\n    dst[0] = *(float *)&tmp.a;\n    dst[1] = *(float *)&tmp.b;\n    dst[2] = *(float *)&tmp.c;\n}\n\n/* heli_uso_func_000000AC: read a float from the gdl file (template, as balloon_uso_func_00000104). */\nvoid heli_uso_func_000000AC(float *dst) {\n    float buf[2];\n    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);\n    *dst = buf[0];\n}\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_000000E8);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00000140);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_000001D4);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00000274);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00000388);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_000003F4);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00000458);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00000460);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_000004C0);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_0000069C);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_000007B4);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_000008A8);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00000980);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00000A70);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00000B08);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_000019C4);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_000019CC);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_000019E0);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00001A0C);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00001A3C);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00001A6C);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00001A9C);\n\nINCLUDE_ASM(\"asm/nonmatchings/heli_uso/heli_uso\", heli_uso_func_00001ACC);\n\n",
+  "metadata": {
+    "source_path": "src/heli_uso/heli_uso.c",
+    "asm_path": "asm/nonmatchings/heli_uso/heli_uso/heli_uso_func_000000AC.s",
+    "segment": "heli_uso",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Byte-identical to the asm .word target; readability-gate PASS (ROM identical)."
+  }
+}

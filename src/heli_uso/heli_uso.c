@@ -1,10 +1,40 @@
 #include "common.h"
+#include "uso_call.h"
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000000);
+extern int gl_func_00000000();
+extern char D_00000000;
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_0000003C);
+typedef struct { int a, b, c; } HeliTri3i;
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000000AC);
+/* heli_uso_func_00000000: read an int from the gdl file (cross-USO template, as checkpoint
+ * checkpoint_uso_func_00000034 / game_uso stream_readS32_00000280). */
+void heli_uso_func_00000000(int *dst) {
+    int buf[2];
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+    *dst = buf[0];
+}
+
+/* heli_uso_func_0000003C: read a Vec3 from the gdl file (template, as balloon_uso_func_00000094 /
+ * game_uso stream_readVec3_000001D4). */
+void heli_uso_func_0000003C(float *dst) {
+    int pad_top[1];
+    HeliTri3i raw;
+    int pad_mid[2];
+    HeliTri3i tmp;
+    int pad_bot[2];
+    CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+    tmp = raw;
+    dst[0] = *(float *)&tmp.a;
+    dst[1] = *(float *)&tmp.b;
+    dst[2] = *(float *)&tmp.c;
+}
+
+/* heli_uso_func_000000AC: read a float from the gdl file (template, as balloon_uso_func_00000104). */
+void heli_uso_func_000000AC(float *dst) {
+    float buf[2];
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+    *dst = buf[0];
+}
 
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000000E8);
 

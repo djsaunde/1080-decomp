@@ -1,0 +1,33 @@
+{
+  "function_name": "trnproc_uso_func_00000268",
+  "project": "1080-decomp",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-11-16T20:43:59.150214+00:00",
+  "end_time": "2026-11-16T20:43:59.150228+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T20:43:59.150224+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 15,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n#include \"uso_call.h\"\n\nextern int gl_func_00000000();\nextern char D_00000000;\n\ntypedef struct { int a, b, c; } TrnTri3i;\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00000000);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00000008);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00000010);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00000194);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_000001A4);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_000001B0);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_000001E4);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00000214);\n\n/* trnproc_uso_func_00000268: read an int from the gdl file (cross-USO template, as checkpoint\n * checkpoint_uso_func_00000034 / game_uso stream_readS32_00000280). */\nvoid trnproc_uso_func_00000268(int *dst) {\n    int buf[2];\n    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);\n    *dst = buf[0];\n}\n\n/* trnproc_uso_func_000002A4: read a float from the gdl file (template, as balloon_uso_func_00000104). */\nvoid trnproc_uso_func_000002A4(float *dst) {\n    float buf[2];\n    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);\n    *dst = buf[0];\n}\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_000002E0);\n\n/* trnproc_uso_func_00000338: read a Vec3 from the gdl file (template, as balloon_uso_func_00000094 /\n * game_uso stream_readVec3_000001D4). */\nvoid trnproc_uso_func_00000338(float *dst) {\n    int pad_top[1];\n    TrnTri3i raw;\n    int pad_mid[2];\n    TrnTri3i tmp;\n    int pad_bot[2];\n    CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);\n    tmp = raw;\n    dst[0] = *(float *)&tmp.a;\n    dst[1] = *(float *)&tmp.b;\n    dst[2] = *(float *)&tmp.c;\n}\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_000003A8);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_000006CC);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00000858);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00000908);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00000910);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_000009A0);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_000009F0);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00000A2C);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00000B44);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00000B78);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00000DD4);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00001098);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00001228);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00001284);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_000012AC);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00001324);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_000013A0);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_000013C4);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_000016C8);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00001778);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_0000180C);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_0000188C);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00001A98);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00001B84);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00001BB4);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00001BE4);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00001C14);\n\nINCLUDE_ASM(\"asm/nonmatchings/trnproc_uso/trnproc_uso\", trnproc_uso_func_00001CA4);\n\n",
+  "metadata": {
+    "source_path": "src/trnproc_uso/trnproc_uso.c",
+    "asm_path": "asm/nonmatchings/trnproc_uso/trnproc_uso/trnproc_uso_func_00000268.s",
+    "segment": "trnproc_uso",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Byte-identical to the asm .word target; readability-gate PASS (ROM identical)."
+  }
+}
