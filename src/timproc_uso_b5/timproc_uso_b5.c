@@ -32,8 +32,8 @@ extern char D_b5_0_a;
 extern char D_b5_0_b;
 extern char D_b5_0_c;
 void timproc_uso_b5_func_00000000(void) {
-    *(int*)((char*)&D_b5_0_b + 0x64) = (*(int**)&D_b5_0_a)[0x1F];
-    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_b5_0_c + 0x4), -1, 0);
+    *(int*)((char*)&D_b5_0_b + 0x64) = (*(int**)&D_b5_0_a)[0x1F]; /* RAW: unknown-object: per-site base-0 aliases D_b5_0_a / _b of unidentified objects */
+    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_b5_0_c + 0x4), -1, 0); /* RAW: unknown-object: per-site base-0 alias D_b5_0_c of an unidentified object */
 }
 
 void gen_nop_00000040(void) {
@@ -107,7 +107,7 @@ after_sub:
         n = (int *)n[0x44 / 4];
     }
 
-    *(int *)(a0[0x48 / 4] + 0x30) =
+    *(int *)(a0[0x48 / 4] + 0x30) = /* RAW: unknown-object: the import_000A5D38 display object (+0x30 slot) has no struct yet */
         import_0024CCF4(0, &import_80074E78, 0x48, 0xDD, 3, 13);
 
     import_000A5FBC(a0[0x48 / 4]);
@@ -187,7 +187,7 @@ void GenCourse_update_0000024C(int *a0) {
     p = (int *)a0[0x48 / 4];
     if (((B5Ent24C *)((char *)p + 0x90))[p[0x7C / 4]].fn == 0) return;
     *(int *)&timproc_uso_b5_D_807FF480 = (int)p;
-    *(int *)(&timproc_uso_b5_D_807FF484 + 4) = (int)a0;
+    *(int *)(&timproc_uso_b5_D_807FF484 + 4) = (int)a0; /* RAW: data-table: Data word pair D_807FF480 / D_807FF484 (+4) */
     p = (int *)a0[0x48 / 4];
     ((B5Ent24C *)((char *)p + 0x90))[p[0x7C / 4]].fn();
 }
@@ -3284,12 +3284,12 @@ void SelectWin_update_00005FC0(char *arg0) {
     }
     /* IDO merges equal literals in one fn: five distinct words stand in for
      * the ROM's five pi/2 (0x3FC90FDB) entries. */
-    *(volatile float *)(arg0 + 8) = 1.5707964f;
-    *(volatile float *)(arg0 + 8) = 1.5707966f;
-    *(volatile float *)(arg0 + 8) = 1.5707967f;
-    *(volatile float *)(arg0 + 8) = 1.5707968f;
-    *(volatile float *)(arg0 + 8) = 1.5707970f;
-    *(volatile float *)(arg0 + 8) = 0.1f;
+    *(volatile float *)(arg0 + 8) = 1.5707964f; /* RAW: donor-mirror: placeholder body (REPLACE_FUNC_BODY drops its text); only its RoData literals matter */
+    *(volatile float *)(arg0 + 8) = 1.5707966f; /* RAW: donor-mirror: placeholder body (REPLACE_FUNC_BODY drops its text); only its RoData literals matter */
+    *(volatile float *)(arg0 + 8) = 1.5707967f; /* RAW: donor-mirror: placeholder body (REPLACE_FUNC_BODY drops its text); only its RoData literals matter */
+    *(volatile float *)(arg0 + 8) = 1.5707968f; /* RAW: donor-mirror: placeholder body (REPLACE_FUNC_BODY drops its text); only its RoData literals matter */
+    *(volatile float *)(arg0 + 8) = 1.5707970f; /* RAW: donor-mirror: placeholder body (REPLACE_FUNC_BODY drops its text); only its RoData literals matter */
+    *(volatile float *)(arg0 + 8) = 0.1f; /* RAW: donor-mirror: placeholder body (REPLACE_FUNC_BODY drops its text); only its RoData literals matter */
 }
 
 /* SelectWin_display_00006394 (0x4C8 / 306 words): timing-screen row draw.
@@ -4014,7 +4014,7 @@ void SelectWin_state0_00007078(char *arg0) {
         f32 two = 2.0f;
         f32 *p1;
         f32 *p2;
-        *p1 = *(f32 *)((char *)timproc_uso_b5_alias(&import_80020098, 1) + 0x4) * two + *(p1 = &SELWIN(arg0)->scene->camera->pitch);
+        *p1 = *(f32 *)((char *)timproc_uso_b5_alias(&import_80020098, 1) + 0x4) * two + *(p1 = &SELWIN(arg0)->scene->camera->pitch); /* RAW: unknown-object: the two-float pair returned by timproc_uso_b5_alias(&GameFlow, 1) */
         *p2 = *(f32 *)timproc_uso_b5_alias(&import_80020098, 1) * two + *(p2 = &SELWIN(arg0)->scene->camera->yaw);
     } else {
         SELWIN(arg0)->idleTimer = SELWIN(arg0)->idleTimer - 1;
@@ -5619,8 +5619,8 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     gen_imp_game_initDdm_00002C94(INPUT_MGR(import_800201CC).game, 2);
     {
         extern char import_8005C2CC_w; /* same-value alias (=import_8005C2CC): distinct extern per site busts the read/write base CSE -> twin form-a luis */
-        *(int *)((char *)&import_8005C2CC_w + 0x1C4) =
-            *(int *)((char *)&import_8005C2CC + 0x1C4) & ~8;
+        *(int *)((char *)&import_8005C2CC_w + 0x1C4) = /* RAW: unknown-object: import_8005C2CC owner not identified (docs/1080_MODES.md) */
+            *(int *)((char *)&import_8005C2CC + 0x1C4) & ~8; /* RAW: unknown-object: import_8005C2CC owner not identified (docs/1080_MODES.md) */
     }
     if (1) { }
     p39c = (char *)&import_8005C39C;
@@ -5629,7 +5629,7 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     ((float *)p39c)[2] = 0.0f;
     ((float *)p39c)[1] = 0.0f;
     ((float *)p39c)[0] = 0.0f;
-    *(float *)((char *)&import_8005EBA4 + 0x2A0) = 0.0f;
+    *(float *)((char *)&import_8005EBA4 + 0x2A0) = 0.0f; /* RAW: unknown-object: import_8005EBA4 owner not identified (docs/1080_MODES.md) */
     A = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBA4 + 0x1334);
     B = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBB0 + 0x1340);
     C = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBB4 + 0x1344);
@@ -6071,7 +6071,7 @@ void *GenItemType_create_0000AB24(int *arg0) {
     if (p1 != 0) {
         gen_imp_ColourItem_ctor(p1);
         NODE(p1)->vptr = (char *)&import_8006ED80;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        *(int*)((char*)p1 + 0x3C) = 0; /* RAW: unknown-object: the 0x40 ColourItem subclass (vtbl import_8006ED80) has no struct yet */
     }
     p2 = p1;
     p1 = arg0;

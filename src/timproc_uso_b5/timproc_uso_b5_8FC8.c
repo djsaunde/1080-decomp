@@ -260,7 +260,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             if (w) {
                 gen_imp_QNode_ctor(w, timproc_uso_b5_D_807FEC08 + 0x1398, 0.0f, 0.0f, 0.0f);
                 NODE(w)->vptr = timproc_uso_b5_D_807FEC10 + 0x4AC; NODE(w)->name = timproc_uso_b5_D_807FEC10 + 0x13A0;
-                W16C(TM(w)->head.inner, timproc_uso_b5_D_807FEC18 + 0x13A8, FF(&import_80807FB8, 0x23C))
+                W16C(TM(w)->head.inner, timproc_uso_b5_D_807FEC18 + 0x13A8, FF(&import_80807FB8, 0x23C)) /* RAW: data-table: import RoData constant (FF on a section base) */
                 gen_imp_MNode_addChild(w, TM(w)->head.inner);
                 SETI(t, TM(w)->head.inner)
                 TM(w)->highlight = 1.0f;
@@ -301,7 +301,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             if (w) {
                 gen_imp_QNode_ctor(w, timproc_uso_b5_D_807FECF8 + 0x1488, 0.0f, 0.0f, 0.0f);
                 NODE(w)->vptr = timproc_uso_b5_D_807FED00 + 0x4AC; NODE(w)->name = timproc_uso_b5_D_807FED00 + 0x1490;
-                W16C(TM(w)->head.inner, timproc_uso_b5_D_807FED08 + 0x1498, FF(&import_80807FB8, 0x270))
+                W16C(TM(w)->head.inner, timproc_uso_b5_D_807FED08 + 0x1498, FF(&import_80807FB8, 0x270)) /* RAW: data-table: import RoData constant (FF on a section base) */
                 gen_imp_MNode_addChild(w, TM(w)->head.inner);
                 SETI(_at, TM(w)->head.inner)
                 TM(w)->highlight = 1.0f;
@@ -332,7 +332,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 NODE(w)->vptr = timproc_uso_b5_D_807FED9C + 0x4AC; NODE(w)->name = timproc_uso_b5_D_807FED9C + 0x152C;
                 { _wp = ALLOC(0x16C);
                   if (_wp) { gen_imp_QNode_ctor(_wp, timproc_uso_b5_D_807FEDA4 + 0x1534, 0.0f, 0.0f, 0.0f); NODE(_wp)->vptr = import_80087FB8; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
-                    LT(_wp)->unk108[0] = DF_2B0; LT(_wp)->unk108[1] = DF_2B4; LT(_wp)->unk108[2] = FF(timproc_uso_b5_D_807FEE6C, 0x2B8); LT(_wp)->mask = 1; LT(_wp)->scale = 1.0f; }
+                    LT(_wp)->unk108[0] = DF_2B0; LT(_wp)->unk108[1] = DF_2B4; LT(_wp)->unk108[2] = FF(timproc_uso_b5_D_807FEE6C, 0x2B8); LT(_wp)->mask = 1; LT(_wp)->scale = 1.0f; } /* RAW: data-table: RoData constant (FF on a section base) */
                   TM(w)->head.inner = _wp; }
                 gen_imp_MNode_addChild(w, TM(w)->head.inner);
                 SETI(_at, TM(w)->head.inner)
@@ -367,13 +367,13 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         VSEL(w, b) VCALL(w, b), 1, 4, 400.0f, -150.0f, -1000.0f, 0.0f, DF_310, 0.0f);
         VSEL(w, b) VCALL(w, b), 1, 5, 400.0f, -150.0f, -1000.0f, 0.0f, DF_314, 0.0f);
         VSEL(w, b) VCALL(w, b), 1, 6, 400.0f, -150.0f, -1000.0f, 0.0f, DF_318, 0.0f);
-        VSEL(w, b) VCALL(w, b), 1, 7, 400.0f, -150.0f, -1000.0f, 0.0f, FF(import_808000CC, 0x31C), 0.0f);
+        VSEL(w, b) VCALL(w, b), 1, 7, 400.0f, -150.0f, -1000.0f, 0.0f, FF(import_808000CC, 0x31C), 0.0f); /* RAW: data-table: import RoData constant (FF on a section base) */
         {
             tu = **(u16 **)&INPUT_MGR(import_800201EC).options;
             if (INPUT_MGR(import_800200CC).nextFlowMode != 6) tu &= ~3;
             for (i = 0; i != 8; i++) {
                 char *r;
-                VSEL(w, c) r = VCALL(w, c), 1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f, FF(import_808000CC, 0x320));
+                VSEL(w, c) r = VCALL(w, c), 1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f, FF(import_808000CC, 0x320)); /* RAW: data-table: import RoData constant (FF on a section base) */
                 items[i] = r;
                 if (!(tu & (1U << i))) ((SelItem *)items[i])->enabled = 0.0f; /* locked: bit i of the BackupOptions unlocks word */
             }

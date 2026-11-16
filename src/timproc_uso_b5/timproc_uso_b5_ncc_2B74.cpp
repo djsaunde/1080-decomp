@@ -185,7 +185,7 @@ extern "C" char *SelItemParms_ctor(char *arg0) {
                 PF(c)->value = -20.0f;
             }
         }
-        u11 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FE9DC + 0x116C); nm.v = u11.v;
+        u11 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FE9DC + 0x116C); nm.v = u11.v; /* RAW: data-table: TimB5Nm RoData record (section offset) */
         {
             if ((c = (char *)&SELF->cf2) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
@@ -195,7 +195,7 @@ extern "C" char *SelItemParms_ctor(char *arg0) {
             }
         }
         h = 0; vC.x = h; vC.y = h; vC.z = h;
-        u12 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FE9E0 + 0x1170);
+        u12 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FE9E0 + 0x1170); /* RAW: data-table: TimB5Nm RoData record (section offset) */
         f = -1500.0f; vA.x = f; vA.y = f; vA.z = f;
         g = 1500.0f; vB.x = g; vB.y = g; vB.z = g;
         cp0 = vC; cp1 = vA; cp2 = vB;
@@ -217,7 +217,7 @@ extern "C" char *SelItemParms_ctor(char *arg0) {
                 PV(cA)->v[2] = t.z;
             }
         }
-        u13 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FE9E4 + 0x1174);
+        u13 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FE9E4 + 0x1174); /* RAW: data-table: TimB5Nm RoData record (section offset) */
         vC2.x = h; vC2.y = h; vC2.z = h;
         vD.x = f; vD.y = f; vD.z = f;
         vE.x = g; vE.y = g; vE.z = g;

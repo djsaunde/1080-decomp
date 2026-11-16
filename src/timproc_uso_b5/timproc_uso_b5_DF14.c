@@ -115,7 +115,7 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         gsub = (char *) gen_imp_mem_new((char *)0x16C);
         if (gsub != 0) {
             gen_imp_QNode_ctor(gsub, &timproc_uso_b5_D_807FEF70[5888], 0.0f, 0.0f, 0.0f);
-            t = *(f32 *)(&import_80807FB8 + 1020);
+            t = *(f32 *)(&import_80807FB8 + 1020); /* RAW: data-table: import_80807FB8 RoData constant */
             NODE(gsub)->vptr = &import_80087FB8[0]; ((LightTarget *)gsub)->mask = 1; /* run 216: one line = D884's store order (0x120 first) */ /* vptr: bootup LightTarget_vtbl (gl_data.h) */
             ((LightTarget *)gsub)->unk108[0] = t;
             ((LightTarget *)gsub)->unk108[1] = t;

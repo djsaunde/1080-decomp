@@ -25,10 +25,10 @@ extern "C" void snd_SetChannel8Mode(int mode) {
     A308.mode = mode;
     A308.f8 = 0;
     A308.fC = 0;
-    A308.f1C = *(f32 *)(kRo_snd_SetChannel8Mode_1868 + 0x1868);
+    A308.f1C = *(f32 *)(kRo_snd_SetChannel8Mode_1868 + 0x1868); /* RAW: data-table: RoData f32 constant (kRo_ per-site token + its section offset) */
     switch (mode) {
     case 0:
-        { f32 &r = A308.f14; r = *(f32 *)(kRo_snd_SetChannel8Mode_186C + 0x186C); }
+        { f32 &r = A308.f14; r = *(f32 *)(kRo_snd_SetChannel8Mode_186C + 0x186C); } /* RAW: data-table: RoData f32 constant (kRo_ per-site token + its section offset) */
         XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x01000800, 0.0f);
         return;
     case 1:
@@ -38,7 +38,7 @@ extern "C" void snd_SetChannel8Mode(int mode) {
     case 2:
         { int &r = A308.f4; r = 8; }
         { f32 &r = A308.f14; r = 0.5f; }
-        { f32 &r = A308.f1C; r = *(f32 *)(kRo_snd_SetChannel8Mode_1870 + 0x1870); }
+        { f32 &r = A308.f1C; r = *(f32 *)(kRo_snd_SetChannel8Mode_1870 + 0x1870); } /* RAW: data-table: RoData f32 constant (kRo_ per-site token + its section offset) */
         break;
     }
     { f32 &r = A308.f10; f32 &q = A308.f14; r = q; }

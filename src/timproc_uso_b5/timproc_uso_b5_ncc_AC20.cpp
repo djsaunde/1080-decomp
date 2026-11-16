@@ -41,7 +41,7 @@ struct Obj {
 extern "C" void SelBoard_display_0000AC20(Obj *o) {
     V3 d = rel(o->pos, &sXY[0]);
     gen_imp_math_vec3Normalize(&d);
-    if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF358 + 0x338)) {
+    if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF358 + 0x338)) { /* RAW: data-table: RoData f64 constant (section offset) */
         f32 wrap;
         f32 sc;
         s32 m7C[13];
@@ -69,16 +69,16 @@ extern "C" void SelBoard_display_0000AC20(Obj *o) {
         ax.z = (o->q.x * o->q.z * 2.0f) - (o->q.w * o->q.y * 2.0f);
         o->q.rot(&ax, 1.5707964f);
         if (o->i12C != 0 && o->i130 != 0) {
-            wrap = *(f32 *)((char *)&D_timb5_AC20_w0 + 0x340);
-            o->f10C = o->f10C + *(f32 *)((char *)&D_timb5_AC20_w1 + 0x344);
+            wrap = *(f32 *)((char *)&D_timb5_AC20_w0 + 0x340); /* RAW: data-table: RoData f32 constant (section offset) */
+            o->f10C = o->f10C + *(f32 *)((char *)&D_timb5_AC20_w1 + 0x344); /* RAW: data-table: RoData f32 constant (section offset) */
             if (wrap <= o->f10C) o->f10C = o->f10C - wrap;
             ax.x = (1.0f - (o->q.y * o->q.y * 2.0f)) - (o->q.z * o->q.z * 2.0f);
             ax.y = (o->q.x * o->q.y * 2.0f) + (o->q.w * o->q.z * 2.0f);
             ax.z = (o->q.x * o->q.z * 2.0f) - (o->q.w * o->q.y * 2.0f);
             o->q.rot(&ax, o->f10C);
         } else if (o->f10C > 0.0f) {
-            wrap = *(f32 *)((char *)&D_timb5_AC20_w3 + 0x348);
-            o->f10C = o->f10C + *(f32 *)((char *)&D_timb5_AC20_w2 + 0x34C);
+            wrap = *(f32 *)((char *)&D_timb5_AC20_w3 + 0x348); /* RAW: data-table: RoData f32 constant (section offset) */
+            o->f10C = o->f10C + *(f32 *)((char *)&D_timb5_AC20_w2 + 0x34C); /* RAW: data-table: RoData f32 constant (section offset) */
             if (wrap <= o->f10C) o->f10C = 0.0f;
             ax.x = (1.0f - (o->q.y * o->q.y * 2.0f)) - (o->q.z * o->q.z * 2.0f);
             ax.y = (o->q.x * o->q.y * 2.0f) + (o->q.w * o->q.z * 2.0f);

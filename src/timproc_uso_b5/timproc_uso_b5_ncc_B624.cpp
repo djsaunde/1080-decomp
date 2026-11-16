@@ -54,7 +54,7 @@ struct Obj {
 extern "C" void SelCharacter_display_0000B624(Obj *o) {
     V3 d = rel(o->pos, &sXY[0]);
     gen_imp_math_vec3Normalize(&d);
-    if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF370 + 0x350)) {
+    if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF370 + 0x350)) { /* RAW: data-table: RoData f64 constant (section offset) */
         o->q.x = 0.0f; o->q.y = 0.0f; o->q.z = 0.0f; o->q.w = 1.0f;
         f32 ang3;
         one(o->q, o->view[1]);

@@ -50,8 +50,8 @@ void snd_SoundObjUpdateChannel(GlState2E0C4 *arg0) {
             aux = arg0->field_1F;
             amount = (u8)(amount + base);
             if (aux != 0) {
-                base = *(s32 *)(&gl_2F288_countdown + 0x1C740) - 1;
-                *(s32 *)(&gl_2F288_countdown_store + 0x1C740) = base;
+                base = *(s32 *)(&gl_2F288_countdown + 0x1C740) - 1; /* RAW: data-table: countdown word at section offset 0x1C740 */
+                *(s32 *)(&gl_2F288_countdown_store + 0x1C740) = base; /* RAW: data-table: countdown word at section offset 0x1C740 */
                 if (base == 0) {
                     if (kind == 0) {
                         base = aux / 2;
@@ -61,8 +61,8 @@ void snd_SoundObjUpdateChannel(GlState2E0C4 *arg0) {
                     } else {
                         amount = (u8)(amount + aux);
                     }
-                    base = 3 - (*(s32 *)(&gl_2F288_random + 0x2154) & 1);
-                    *(s32 *)(&gl_2F288_countdown_reset + 0x1C740) = base;
+                    base = 3 - (*(s32 *)(&gl_2F288_random + 0x2154) & 1); /* RAW: data-table: context-only TU (no audio.h types); +0x2154 is gAudioContext.audioRandom */
+                    *(s32 *)(&gl_2F288_countdown_reset + 0x1C740) = base; /* RAW: data-table: countdown word at section offset 0x1C740 */
                 } else if ((kind != 0) && (amount >= 10)) {
                     amount = (u8)(amount - 10);
                 }
@@ -72,8 +72,8 @@ void snd_SoundObjUpdateChannel(GlState2E0C4 *arg0) {
         level = value / 80.0f;
         level += gl_2F288_pool173C[0x173C / 4];
         if (aux != 0) {
-            level *= *(f32 *)((u32)&gl_2F288_tableC330 + (aux * 4) + 0x1C330);
-            scale *= *(f32 *)((u32)&gl_2F288_tableC3B0 + (aux * 4) + 0x1C3B0);
+            level *= *(f32 *)((u32)&gl_2F288_tableC330 + (aux * 4) + 0x1C330); /* RAW: data-table: f32 table at Data 0x1C330 */
+            scale *= *(f32 *)((u32)&gl_2F288_tableC3B0 + (aux * 4) + 0x1C3B0); /* RAW: data-table: f32 table at Data 0x1C3B0 */
         }
         if (kind == 0xFF) {
             aux = (mode & 0xFF) << 8;
