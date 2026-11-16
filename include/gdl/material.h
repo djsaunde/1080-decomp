@@ -94,6 +94,8 @@ typedef struct Mat {
 #define MAT_GEOM_TEXGEN   0x00100000 /* geomFlags bit 20: G_TEXTURE_GEN */
 #define MAT_GEOM_TEXTURED 0x00400000 /* geomFlags bit 22: Mat_print "Tex" (else "RGB") */
 
+#define BASEMAT(p) ((BaseMat *)(p))
+
 typedef char BaseMat_size_check[sizeof(BaseMat) == 0x60 ? 1 : -1];
 typedef char Mat_size_check[sizeof(Mat) == 0x90 ? 1 : -1];
 #ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */

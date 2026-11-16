@@ -645,7 +645,7 @@ extern struct { char pad[0x20A8]; f64 v; } kRo_Friction_applyContact_20A8;
 extern struct { char pad[0x20B0]; f64 v; } kRo_Friction_applyContact_20B0;
 extern struct { char pad[0x20B8]; f32 v; } kRo_Friction_applyContact_20B8;
 
-void Friction_applyContact(char *arg0, f32 arg1, char *arg2, f32 arg3) {
+void Friction_applyContact(char *arg0, f32 arg1, f32 *arg2, f32 arg3) {
     Q_00063F34 sp44;
     f32 sp40;
     volatile s32 pad38;
@@ -660,10 +660,10 @@ void Friction_applyContact(char *arg0, f32 arg1, char *arg2, f32 arg3) {
     if (arg1 < 10.0f) {
         /* arg2 = the unit contact normal */
         *(V3i_63F34 *)&sp44 = *(V3i_63F34 *)FRICTION(arg0)->contactDelta;
-        temp_f0 = (sp44.unk8 * *(f32 *)(arg2 + 0x8)) + ((sp44.unk4 * *(f32 *)(arg2 + 0x4)) + (*(f32 *)(arg2 + 0x0) * (0, sp44.unk0)));
-        sp44.unk0 = (*(f32 *)(arg2 + 0x0) * (0, temp_f0)) - sp44.unk0;
-        sp44.unk4 = (*(f32 *)(arg2 + 0x4) * (0, temp_f0)) - sp44.unk4;
-        sp44.unk8 = (*(f32 *)(arg2 + 0x8) * (0, temp_f0)) - sp44.unk8;
+        temp_f0 = (sp44.unk8 * arg2[2]) + ((sp44.unk4 * arg2[1]) + (arg2[0] * (0, sp44.unk0)));
+        sp44.unk0 = (arg2[0] * (0, temp_f0)) - sp44.unk0;
+        sp44.unk4 = (arg2[1] * (0, temp_f0)) - sp44.unk4;
+        sp44.unk8 = (arg2[2] * (0, temp_f0)) - sp44.unk8;
         sp40 = XCALL(gl_func_00000000_s, math_vec3Length_0005BBCC)((sp44.unk0 * sp44.unk0) + (sp44.unk4 * sp44.unk4) + (sp44.unk8 * sp44.unk8));
         if (kRo_Friction_applyContact_20A0.v < (f64) sp40) {
             CALL(math_vec3Normalize)(&sp44);
@@ -4151,7 +4151,7 @@ extern int func_7C860();
 void BinFileMgr_vfn8_00068524(int *a0, int a1) {
     int s1, s0;
     BINFILEMGR(a0)->fileHandle = (int)CALL(fs_getHandle)(&gSysLib, a1);
-    func_7C860((int)&BINFILEMGR(a0)->nGroups);
+    func_7C860(&BINFILEMGR(a0)->nGroups);
     BINFILEMGR(a0)->groups = (BinFileGroup *)CALL(mem_new)(BINFILEMGR(a0)->nGroups << 4);
     if (BINFILEMGR(a0)->nGroups != 0) {
         s1 = 0;
@@ -4248,12 +4248,12 @@ int BinFileMgr_get_00068730(int *a0, int a1) {
 
 extern int gl_func_00000000();
 
-int BinFileMgr_newFile_0006877C(int a0) {
-    int *r = (int*)CALL(mem_new)(0x20);
+BinFile *BinFileMgr_newFile_0006877C(int a0) {
+    BinFile *r = (BinFile *)CALL(mem_new)(0x20);
     if (r != 0) {
-        r[7] = (int)gl_func_00000000;
+        r->vptr = (char *)gl_func_00000000; /* BinFile_vtbl (blank reloc) */
     }
-    return (int)r;
+    return r;
 }
 
 extern int gl_func_00000000();
@@ -4346,19 +4346,19 @@ end:
  * param supplies the home store sw a0,0x20(sp).
  * docs/IDO_CODEGEN.md#inlined-ctor-pair-decl-order-spill-slot-688f8 */
 extern int ImageFile_vtbl_688f8;
-int *ImageFileMgr_newFile_000688F8(int a0) {
-    int *b;
-    int *p;
-    p = (int *)CALL(mem_new)(0x30);
+ImageFile *ImageFileMgr_newFile_000688F8(int a0) {
+    BinFile *b;
+    ImageFile *p;
+    p = (ImageFile *)CALL(mem_new)(0x30);
     if (p == 0) goto end;
-    b = p;
+    b = &p->base;
     if (b != 0) goto store;
-    b = (int *)CALL(mem_new)(0x20);
+    b = (BinFile *)CALL(mem_new)(0x20);
     if (b == 0) goto skip;
 store:
-    b[7] = (int)&BinFile_vtbl;
+    b->vptr = (char *)&BinFile_vtbl;
 skip:
-    p[7] = (int)&ImageFile_vtbl_688f8;
+    p->base.vptr = (char *)&ImageFile_vtbl_688f8;
 end:
     return p;
 }
@@ -4979,7 +4979,7 @@ int* SkinMgr_ctor(int *a0, int a1, int a2) {
         if (a0 == 0) goto end;
     }
     XCALL(gl_func_00062F64_695F4, Node_ctor)(a0, GL_DATA_STR(0x2C5A8, "skinmgr"));
-    a0[0x28 / 4] = (int)&SkinMgr_vtbl_sym_695F4;
+    NODE(a0)->vptr = (char *)&SkinMgr_vtbl_sym_695F4;
     v1 = (int *)&((SkinMgr *)a0)->anims;
     if (a0 != (int*)-72) goto store;
     v1 = (int*)XCALL(gl_func_00062F64_695F4, mem_new)(4);

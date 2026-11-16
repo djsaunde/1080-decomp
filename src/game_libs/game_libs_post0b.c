@@ -6678,7 +6678,7 @@ int ItemType_getItem(int *arg0, int arg1) {
 int *ColourItem_ctor(int *a0) {
     if (a0 != 0 || (a0 = (int*)FCALL(mem_new)(0x3C)) != 0) {
         FCALL(Node_ctor)(a0, GL_DATA_STR(0x1F2DC, "<Node>"));
-        a0[0x28/4] = (int)&ColourItem_vtbl;
+        NODE(a0)->vptr = (char *)&ColourItem_vtbl;
         a0[0x2C/4] = 0;
         *(float*)((char*)a0 + 0x30) = 0.0f;
         *(float*)((char*)a0 + 0x34) = 0.0f;
@@ -7989,10 +7989,10 @@ end_zero:
  * also copies it into its outgoing arg slot (sw a1,4(sp)). The second
  * r->0x10 load is a plain if/return pair (no CSE across the two returns). */
 typedef struct { int w; } S3EB3C;
-int ItemMgr_firstItemOfType(int *a0, S3EB3C a1, S3EB3C a2) {
-    char *r = (char *)CALL(ItemMgr_findType_0003EA98)(a0, a1);
+void *ItemMgr_firstItemOfType(ItemMgr *a0, S3EB3C a1, S3EB3C a2) {
+    ItemType *r = (ItemType *)CALL(ItemMgr_findType_0003EA98)(a0, a1);
     if (r == 0) return 0;
-    if (*(int **)(r + 0x10) != 0) return **(int **)(r + 0x10);
+    if (r->node.children != 0) return r->node.children->item;
     return 0;
 }
 
@@ -9822,7 +9822,7 @@ int App_ctor(int a0) {
         }
     }
     CALL(Node_ctor)(a0, GL_DATA_STR(0x1F5C8, "<Node>"));
-    *(int *)(a0 + 0x28) = (int)&App_vtbl;
+    NODE(a0)->vptr = (char *)&App_vtbl;
     v1 = (int *)(a0 + 0x2C);
     if (v1 == 0) {
         v1 = (int *)CALL(mem_new)(4);
@@ -11468,10 +11468,10 @@ void FogParms_emit_00043F1C(short *a0) {
 }
 
 void FogParms_hostioParms(FogParms *a0) {
-    CALL(hostio_beginGroup)(&gHostio, (int)(GL_DATA_STR(0x1FD20, "FogParms")), 0);
+    CALL(hostio_beginGroup)(&gHostio, GL_DATA_STR(0x1FD20, "FogParms"), 0);
     CALL(gfx_declColourParm)(a0, 0);
-    CALL(hostio_addInt)(&gHostio, (int)(GL_DATA_STR(0x1FD2C, "Min")), (int)&a0->min, 500, 1000, 1);
-    CALL(hostio_addInt)(&gHostio, (int)(GL_DATA_STR(0x1FD30, "Max")), (int)&a0->max, 500, 1000, 1);
+    CALL(hostio_addInt)(&gHostio, GL_DATA_STR(0x1FD2C, "Min"), &a0->min, 500, 1000, 1);
+    CALL(hostio_addInt)(&gHostio, GL_DATA_STR(0x1FD30, "Max"), &a0->max, 500, 1000, 1);
     CALL(hostio_endGroup)(&gHostio);
 }
 
@@ -13378,14 +13378,14 @@ void gfx_makeVtx_00048104(int a0, short *a1, short *a2, short *a3, short arg5, u
  * subscript gives the 576-chain the lower t-reg. */
 extern int gGfxFbWidth_48184_w, gGfxFbHeight_48184_h;
 extern unsigned short D_48184_img[];
-void gfx_drawFbSplash_00048184(char *a0) {
+void gfx_drawFbSplash_00048184(GfxLib *a0) {
     unsigned short *dst;
     unsigned short *src;
     int i, x, y, x0, y0;
 
     src = D_48184_img;
     x0 = gGfxFbWidth_48184_w / 2 - 64; y0 = gGfxFbHeight_48184_h / 2 - 64;
-    dst = ((unsigned short **)(*(char **)(*(char **)(a0 + 576) + 328) + 244))[*(int *)(a0 + 516)];
+    dst = a0->mainWindow->fbOwner->win.colorBuf[a0->fbIndex];
     for (i = 0; i < gGfxFbWidth_48184_w * gGfxFbHeight_48184_h; i++) {
         dst[i] = 0;
     }
@@ -13677,7 +13677,7 @@ extern int D_00000000;
 int *PolyShape_ctor(int *a0, int a1, int a2, int a3) {
     if (a0 != 0 || (a0 = (int*)FCALL(mem_new)(0xC0)) != 0) {
         FCALL(BasePolyShape_ctor)(a0, a1, a2, a3);
-        a0[0x28/4] = (int)&PolyShape_vtbl;
+        NODE(a0)->vptr = (char *)&PolyShape_vtbl;
         if (a2 != 0) {
             FCALL(PolyShape_init)(a0);
         }
@@ -14310,7 +14310,7 @@ s32 PolyShape_vslot12_0004A308(char *arg0, int arg1, int arg2, int arg3, char *a
 int *MorphPoly_ctor(int *a0, int a1, int a2, int a3) {
     if (a0 != 0 || (a0 = (int*)FCALL(mem_new)(0xDC)) != 0) {
         FCALL(PolyShape_ctor)(a0, a1, a2, a3);
-        a0[0x28/4] = (int)&MorphPoly_vtbl;
+        NODE(a0)->vptr = (char *)&MorphPoly_vtbl;
         if (a2 != 0) {
             FCALL(MorphPoly_init)(a0);
         }
@@ -16023,7 +16023,7 @@ char *gfx_queueGfxTask_0004CEFC(char *self, int flag)
     char *rec;
     int r;
     int q;
-    CALL(gfx_endDL)(*(char **)((char *)&gGfxLib_4CDB0_a + gGfx->fbIndex * 4 + 0x280));
+    CALL(gfx_endDL)(((GfxLib *)&gGfxLib_4CDB0_a)->oneFrameDL[gGfx->fbIndex]);
     p = self + 0x174;
     CALL(gfx_dlMarkEnd_00044474)(p);
     rec = (char *)CALL(RcpMgr_queueTask)(((int)gGfx->rcp), 1);
@@ -16031,7 +16031,7 @@ char *gfx_queueGfxTask_0004CEFC(char *self, int flag)
     q = CALL(gfx_dlMarkLength_00044488)(p);
     CALL(RcpMgr_initTask)(((int)gGfx->rcp), rec, 0, r, q, flag);
     CALL(RcpMgr_insert_0004DC08)(((int)gGfx->rcp), rec);
-    *(char **)(rec + 0x74) = self;
+    ((RcpTask *)rec)->window = (struct ScreenWindow *)self;
     return rec;
 }
 
@@ -16437,7 +16437,7 @@ int RcpMgr_startTask(RcpMgr *self) {
         c = self->active;
         if (c->clipShape != 0) {
             g = ((int)gGfx->curWindow);
-            gGfx->curWindow = (ScreenWindow *)c->window;  /* current window = the task's */
+            gGfx->curWindow = c->window;  /* current window = the task's */
             CALL(PolyShape_clipToWindow_00049308)(self->active->clipShape);       /* PolyShape_clipToWindow */
             gGfx->curWindow = (ScreenWindow *)g;
         }
@@ -16626,7 +16626,7 @@ int *DisplayMgr_ctor(int *s0, int a1) {
         if (s0 == 0) goto out;
     }
     CALL(Node_ctor)(s0, GL_DATA_STR(0x204A8, "dispmgr"));
-    s0[0x28/4] = (int)&DisplayMgr_vtbl;
+    NODE(s0)->vptr = (char *)&DisplayMgr_vtbl;
     s0[0x2C/4] = CALL(mem_new)(a1 * 4);
     s0[0x30/4] = CALL(mem_new)(a1 * 4);
     s0[0x34/4] = a1;
@@ -16982,7 +16982,7 @@ int *Window_ctor(int *a0) {
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, GL_DATA_STR(0x205CC, "win"));
-    *(int *)((char *)a0 + 0x28) = (int)&Window_vtbl;
+    NODE(a0)->vptr = (char *)&Window_vtbl;
     m = (int *)((char *)a0 + 0x78);
     if (m == 0) { m = (int *)CALL(mem_new)(4); if (m == 0) goto s2; }
     p = m;
@@ -17293,24 +17293,24 @@ void Window_runHooks_0004ED0C(int *self)
  * v1->v0 at +0x0 (vs 0x28), fn at v0+0xC (vs 0x4C), short off at v0+0x8 (vs
  * 0x48). Ported the donor's exact match-form incl. the `if (1) {}` block-
  * boundary lever (flips v0/v1 caller-save alloc to target's). */
-void Window_runTaskHooks(char *a0) {
+void Window_runTaskHooks(Window *a0) {
     int i;
-    char *p;
-    int *v1;
-    int *v0;
+    char *p;  /* walks a0->taskHooks: ((Window *)p)->taskHooks[0] is hook i */
+    char *v1; /* the hook object; its Cfront vptr is its first word */
+    char *v0;
 
-    if (*(int*)(a0 + 0x11C) <= 0) return;
+    if (a0->nTaskHooks <= 0) return;
     i = 0;
-    p = a0;
+    p = (char *)a0;
     do {
-        v1 = *(int**)(p + 0x124);
+        v1 = ((Window *)p)->taskHooks[0];
         if (1) {
-            v0 = *(int**)((char*)v1 + 0x0);
-            (*(int(**)())((char*)v0 + 0xC))(*(short*)((char*)v0 + 0x8) + (int)v1);
+            v0 = *(char **)v1;
+            VT_SLOT(v0, 0).fn(VT_SLOT(v0, 0).delta + v1);
             i++;
         }
         p += 4;
-    } while (i < *(int*)(a0 + 0x11C));
+    } while (i < a0->nTaskHooks);
 }
 
 void Window_addHook_0004EDEC(int *a0, int a1) {
@@ -18465,30 +18465,30 @@ extern int gl_func_00034458_5185C(); /* blank alias (= 0): ROM jal words are jal
 #endif
 void BaseMat_hostioParms(char *arg0) {
     volatile int pad185C;
-    s32 *o1;
-    s32 *o2;
-    s32 *o3;
+    void **o1; /* new(0x10) member callback: {vptr, object, Pair2 pmf} */
+    void **o2;
+    void **o3; /* new(4): the callback base (vptr only) */
 
     XCALL(gl_func_00034458_5185C, hostio_beginGroup)((char *)&gHostio, (char *)&D_00000000_c + 0x20EC8, 0);
     XCALL(gl_func_00034458_5185C, gfx_declColourParm)(arg0, 0);
-    if (FW(arg0, 0x38) & 0x400000) {
-        o1 = (s32 *)XCALL(gl_func_00034458_5185C, mem_new)(0x10);
+    if (BASEMAT(arg0)->geomFlags & MAT_GEOM_TEXTURED) {
+        o1 = (void **)XCALL(gl_func_00034458_5185C, mem_new)(0x10);
         if (o1 != 0) {
             o2 = o1;
-            if (o2 != 0 || (o2 = (s32 *)XCALL(gl_func_00034458_5185C, mem_new)(0x10)) != 0) {
+            if (o2 != 0 || (o2 = (void **)XCALL(gl_func_00034458_5185C, mem_new)(0x10)) != 0) {
                 o3 = o2;
-                if (o3 != 0 || (o3 = (s32 *)XCALL(gl_func_00034458_5185C, mem_new)(4)) != 0) {
-                    *o3 = (s32)((char *)&D_00000000_a[0] + 0x20740);
+                if (o3 != 0 || (o3 = (void **)XCALL(gl_func_00034458_5185C, mem_new)(4)) != 0) {
+                    *o3 = (char *)&D_00000000_a[0] + 0x20740;
                 }
-                *(Pair2 *)((o2[1] = (s32)arg0, o2) + 2) =
+                *(Pair2 *)((o2[1] = arg0, o2) + 2) =
                     *(Pair2 *)((char *)&D_00000000_b[0] + 0x20638);
             }
-            *o1 = (s32)((char *)&D_00000000_d + 0x20D88);
+            *o1 = (char *)&D_00000000_d + 0x20D88;
         }
         XCALL(gl_func_00034458_5185C, hostio_addButton)((char *)&gHostio, (char *)&D_00000000_c + 0x20ED0, o1, 1);
     }
-    XCALL(gl_func_00034458_5185C, hostio_addIntVar)((char *)&gHostio, (char *)&D_00000000_c + 0x20ED8, arg0 + 0x50, 0);
-    XCALL(gl_func_00034458_5185C, hostio_addIntVar)((char *)&gHostio, (char *)&D_00000000_c + 0x20EE0, arg0 + 0x54, 0);
+    XCALL(gl_func_00034458_5185C, hostio_addIntVar)((char *)&gHostio, (char *)&D_00000000_c + 0x20ED8, &BASEMAT(arg0)->minCut, 0);
+    XCALL(gl_func_00034458_5185C, hostio_addIntVar)((char *)&gHostio, (char *)&D_00000000_c + 0x20EE0, &BASEMAT(arg0)->maxCut, 0);
     XCALL(gl_func_00034458_5185C, hostio_endGroup)((char *)&gHostio);
 }
 
@@ -18529,12 +18529,12 @@ void Mat_print(char *self) {
     int *v1;
     int *o;
 
-    fmtSel = (*(int *)(self + 0x38) & 0x400000) ? (int)(GL_DATA_STR(0x20EE8, "Tex")) : (int)(GL_DATA_STR(0x20EEC, "RGB"));
-    if (*(int *)(self + 0x14) != 0) {
-        if (*(int *)(self + 0x4C) != 0) {
-            CALL(gl_sprintf)(name, GL_DATA_STR(0x20EF0, "MAT %d(%s)* (%s)"), *(int *)(self + 0x18), self + 0x58, fmtSel);
+    fmtSel = (BASEMAT(self)->geomFlags & MAT_GEOM_TEXTURED) ? (int)(GL_DATA_STR(0x20EE8, "Tex")) : (int)(GL_DATA_STR(0x20EEC, "RGB"));
+    if (BASEMAT(self)->unk14 != 0) {
+        if (BASEMAT(self)->unk4C != 0) {
+            CALL(gl_sprintf)(name, GL_DATA_STR(0x20EF0, "MAT %d(%s)* (%s)"), BASEMAT(self)->id, (char *)&BASEMAT(self)->unk58, fmtSel);
         } else {
-            CALL(gl_sprintf)(name, GL_DATA_STR(0x20F04, "MAT %d(%s) (%s)"), *(int *)(self + 0x18), self + 0x58, fmtSel);
+            CALL(gl_sprintf)(name, GL_DATA_STR(0x20F04, "MAT %d(%s) (%s)"), BASEMAT(self)->id, (char *)&BASEMAT(self)->unk58, fmtSel);
         }
         o = (int *)CALL(mem_new)(0x10);
         a2 = o;
@@ -18810,8 +18810,19 @@ def:
  * (run 105) 52.9 -> EXACT: no named o+48 / o+52 locals -- uopt CSEs and
  * spills the expressions (sp+28/24); named locals add frame homes. */
 extern char ShapeNode_vtbl_521F8_reloc;        /* offset 0x28 store target */
-typedef struct { int w; } W1_521F8;
+typedef struct { int w; } W1_521F8;    /* one-word struct: copied as a struct (the lw 0(base) tell) */
 typedef struct { int a, b; } W2_521F8;
+/* ShapeNode (0x40): a Node that snapshots the global render state at construction. The same
+ * +0x30 / +0x34 layout (one-word Flags, 8-byte pair) is in BasePolyShape (ncc_526D0.cpp
+ * m30 / m34; BasePolyShape_doCommand 0x6A / 0x6B set / clear bits of +0x30). */
+typedef struct ShapeNode {
+    /* 0x00 */ Node node;
+    /* 0x2C */ s32 unk2C;
+    /* 0x30 */ W1_521F8 polyFlags;   /* gPolyFlags_3EEC4 at ctor time */
+    /* 0x34 */ W2_521F8 geomMode;    /* gPolyGeomMode_3EEC8 at ctor time */
+    /* 0x3C */ s32 unk3C;
+} ShapeNode;
+#define SHAPENODE(p) ((ShapeNode *)(p))
 extern W1_521F8 gPolyFlags_3EEC4_521F8_a;
 extern W2_521F8 gPolyGeomMode_3EEC8_521F8_b;
 extern int D_521F8_c;
@@ -18823,24 +18834,24 @@ char *ShapeNode_ctor_000521F8(char *o, int a1) {
         if (o == 0) goto out;
     }
     CALL(Node_ctor)(o, a1);
-    *(char **)(o + 0x28) = &ShapeNode_vtbl_521F8_reloc;
-    r = (W1_521F8 *)(o + 48);
+    NODE(o)->vptr = &ShapeNode_vtbl_521F8_reloc;
+    r = &SHAPENODE(o)->polyFlags;
     if (r != 0 || (r = (W1_521F8 *)CALL(mem_new)(4)) != 0) {
         t = r;
         if (t != 0 || (t = (W1_521F8 *)CALL(mem_new)(4)) != 0) {
             t->w = 0;
         }
     }
-    r = (W1_521F8 *)(o + 52);
+    r = (W1_521F8 *)&SHAPENODE(o)->geomMode;
     if (r != 0 || (r = (W1_521F8 *)CALL(mem_new)(8)) != 0) {
         ((W2_521F8 *)r)->b = 0;
         ((W2_521F8 *)r)->a = 0;
     }
-    *(int *)(o + 8) |= 2;
-    *(W1_521F8 *)(o + 48) = gPolyFlags_3EEC4_521F8_a;
-    *(W2_521F8 *)(o + 52) = gPolyGeomMode_3EEC8_521F8_b;
-    *(int *)(o + 0x3C) = D_521F8_c;
-    *(int *)(o + 0x2C) = 0;
+    NODE(o)->flags |= 2;
+    SHAPENODE(o)->polyFlags = gPolyFlags_3EEC4_521F8_a;
+    SHAPENODE(o)->geomMode = gPolyGeomMode_3EEC8_521F8_b;
+    SHAPENODE(o)->unk3C = D_521F8_c;
+    SHAPENODE(o)->unk2C = 0;
 out:
     return o;
 }
@@ -19130,11 +19141,11 @@ D:
 }
 
 unsigned char BasePolyShape_getMatCodeChar_00052A4C(char *a0, int a1) {
-    return *(unsigned char *)(*(int *)((int)BASEPOLY(a0)->mats + a1 * 4) + 0x32);
+    return BASEPOLY(a0)->mats[a1]->unk32;
 }
 
 short BasePolyShape_getMatCodeNum_00052A64(char *a0, int a1) {
-    return *(short *)(*(int *)((int)BASEPOLY(a0)->mats + a1 * 4) + 0x30);
+    return BASEPOLY(a0)->mats[a1]->unk30;
 }
 
 /* BasePolyShape_setFlags_00052A7C: symmetric flag pair on *(int*)(a0+0x38) --
@@ -19859,7 +19870,7 @@ void *CMod_ctor(void *a0, float a1, float a2, float a3, float a4) {
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, (sCModName));
-    *(int*)((char*)a0 + 0x28) = (int)&CMod_vtbl;
+    NODE(a0)->vptr = (char *)&CMod_vtbl;
     v1 = (float*)((char*)a0 + 0x2C);
     if ((char*)a0 + 0x2C == 0) {
         v1 = (float*)CALL(mem_new)(0x10);
