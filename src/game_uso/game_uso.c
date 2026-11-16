@@ -3704,6 +3704,7 @@ void SnowAI_scanNodes(SnowAI *obj) {
     a1arg.a = **(int **)((char *)&D_00000000 + kMarkerTypeTags_548 + obj->scanIndex * 4);
     v0var = (char *)SnowAI_findNearestMarker_0000A374(obj, a1arg, &tbuf);
     if (v0var != 0) {
+        /* RAW: byte-lock: int carrier t for the marker link (port-audit B); the matched lever, the callees take it as int / char * */
         t = (int)((CourseMarker *)v0var)->link;
         if (t != 0) {
             if (SnowAI_isInSegmentWidth(obj, v0var, t) != 0) {
@@ -3792,6 +3793,7 @@ void SnowAI_scanSegments(SnowAI *obj) {
     node.a = **(int **)((char *)&D_00000000 + kMarkerTypeTags_548 + obj->scanIndex*4);
     r1 = (char *)SnowAI_findNearestMarker_0000A374(obj, node, &blockA);
     if (r1 != 0) {
+        /* RAW: byte-lock: int carrier cnt for the marker link (port-audit B), stored to slots[0] as char *; the matched lever */
         cnt = (int)((CourseMarker *)r1)->link;
         slots[0] = (char *)cnt;
         if (cnt != 0) {
@@ -3800,6 +3802,7 @@ void SnowAI_scanSegments(SnowAI *obj) {
                 f0 = blockA.z - ((CourseMarker *)slots[1])->pos[2];
                 if (f0 < 0.0f) f0 += 250.0f * ((CourseMarker *)slots[1])->parms.wid.value;
                 if (f0 >= 0.0f) {
+                    /* RAW: byte-lock: (unsigned) int-cast of &b1 (port-audit A); dropping it moves addiu sp,244 and the copy schedule (tried run 580) */
                     p = (Vec3 *)(unsigned)&b1;
                     if (p == 0) {
                         p = (Vec3 *)XCALL(game_uso_func_055750, mem_new)(12);
@@ -3825,6 +3828,7 @@ void SnowAI_scanSegments(SnowAI *obj) {
                 skip2:;
                     *(Tri3i *)&c1 = *(Tri3i *)out;
                     *(Tri3i *)&b3 = *(Tri3i *)&c1;
+                    /* RAW: byte-lock: (unsigned) int-cast of &b4 (port-audit A); dropping it changes the code (tried run 580) */
                     p = (Vec3 *)(unsigned)&b4;
                     if (p == 0) {
                         p = (Vec3 *)XCALL(game_uso_func_055750, mem_new)(12);
@@ -4635,6 +4639,7 @@ int MemberCallback_invoke_0000BFDC(char *a0) {
     } else {
         int sel = ((Pair2 *)pair)->b; /* pmf.b, read through pair (a0 + 0xC moves the code) */
         idx = (sel == 0 && pair[0] == 0) ? 0x28 : sel;
+        /* RAW: byte-lock: int-typed cfront PMF vtable dispatch (port-audit B): sel = vtbl + index * 8, the entry is {s16 delta, fn}; the int carrier is the matched form */
         sel = (int)((char*)(pair[1] << 3) + *(int*)(arg + idx));
         arg = *(short*)sel + arg;
         fnptr = *(int (**)(char *))((char*)sel + 4);

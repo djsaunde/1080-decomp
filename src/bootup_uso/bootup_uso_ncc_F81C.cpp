@@ -60,6 +60,7 @@ void *game_createProcessWindow(int a0, int a1) {
     q = &gSnowBoard_0000002C;
     func_00000000(q, p);
     /* +0x114 of the game world object holds the process window (also read by GameFlow_create, tail3a 10C8C) */
+    /* RAW: unknown-object: the game world object (GameFlow.game, boot Bss 0x22C) has no struct yet */
     *(int *)(func_000000F0.game + 0x114) = result;
     return (void *)result;
 }

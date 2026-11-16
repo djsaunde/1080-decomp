@@ -43,7 +43,9 @@ void game_uso_func_05B750(Glob *, void *);
 }
 extern "C" void Sun_display(Self *self) {
     V3 v;
+    /* RAW: byte-lock: int copy of the address (port-audit A) keeps g a variable under edg; a plain or pointer-cast form is folded back into each use (header comment) */
     int gi = (int)&gGfxLib_8005C108; Glob *g = (Glob *)gi;
+    /* RAW: byte-lock: int-typed modelView address (GfxLib +0xA0, port-audit A), same int-copy lever as gi above */
     int di = (int)&import_8005C1A8 + 0xA0;
     float r;
     if (DBL(D_B274_t0, 0x120) < g->prog) return;
