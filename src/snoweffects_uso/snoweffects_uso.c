@@ -79,6 +79,17 @@ typedef struct SnowEffect {
     /* 0x230 */ f32 unk230;
 } SnowEffect;
 
+/* the 0x50-byte link node (ctor 0x9E88, update 0x9F44): couples a source object to an SNode-subclass
+ * target it creates (0x9328) */
+typedef struct SnowLink {
+    /* 0x00 */ Node node;
+    /* 0x2C */ s32 unk2C;
+    /* 0x30 */ void *src;
+    /* 0x34 */ s32 unk34;
+    /* 0x38 */ Node *tgt;
+    /* 0x3C */ char unk3C[0x50 - 0x3C];
+} SnowLink;
+
 /* one 0x2C-byte emitter point (3EE4 allocates count of them at +0x90 and clears each with 0x3EB0) */
 typedef struct SnowPoint {
     /* 0x00 */ Vec3 pos;
@@ -129,6 +140,24 @@ typedef struct SnowRing {
     /* 0x12C */ Vec3 unk12C;
     /* 0x138 */ char unk138[0x154 - 0x138];
     /* 0x154 */ f32 unk154[8];
+    /* 0x174 */ f32 unk174;
+    /* 0x178 */ f32 unk178;
+    /* 0x17C */ f32 unk17C;
+    /* 0x180 */ f32 unk180;
+    /* 0x184 */ f32 unk184;
+    /* 0x188 */ f32 unk188;
+    /* 0x18C */ f32 unk18C;
+    /* 0x190 */ f32 unk190;
+    /* 0x194 */ f32 unk194;
+    /* 0x198 */ f32 unk198;
+    /* 0x19C */ f32 unk19C;
+    /* 0x1A0 */ f32 unk1A0;
+    /* 0x1A4 */ f32 unk1A4;
+    /* 0x1A8 */ f32 unk1A8;
+    /* 0x1AC */ f32 unk1AC;
+    /* 0x1B0 */ char unk1B0[0x1EC - 0x1B0];
+    /* 0x1EC */ s32 unk1EC;
+    /* 0x1F0 */ f32 unk1F0;
 } SnowRing;
 
 /* typed blank (0) alias for the reloc'd call to the global 0x3EE4 (floats on the stack) */
@@ -689,7 +718,34 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00008D70);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009010);
+/* the RoData floats of the 0x9010 defaults (own lui each) */
+extern f32 snow_ro_C0, snow_ro_C4, snow_ro_C8, snow_ro_CC, snow_ro_D0, snow_ro_D4, snow_ro_D8, snow_ro_DC, snow_ro_E0, snow_ro_E4;
+
+/* emitter defaults of the 0x7F60 emitter (a1 unused): parameter floats, counts 3 / 2 */
+void snoweffects_uso_func_00009010(SnowRing *this, int a1) {
+    (void)&a1;
+    this->unk1F0 = 0.0f;
+    this->unk178 = snow_ro_C0;
+    this->unk17C = snow_ro_C4;
+    this->unk48 = 0.0f;
+    this->unk19C = 0.0f;
+    this->unk180 = snow_ro_C8;
+    this->unk184 = snow_ro_CC;
+    this->unk44 = snow_ro_D0;
+    this->unk188 = 1.0f;
+    this->unk1A4 = snow_ro_D4;
+    this->unk1A8 = snow_ro_D8;
+    this->unk1AC = snow_ro_DC;
+    this->unk154[1] = 0.0f;
+    this->unk88 = 3;
+    this->unk154[2] = 184.0f;
+    this->unk154[3] = 130.0f;
+    this->unk154[5] = snow_ro_E0;
+    this->unk154[4] = 255.0f;
+    this->unk154[6] = 8.5f;
+    this->unk154[7] = snow_ro_E4;
+    this->unk1EC = 2;
+}
 
 void snoweffects_uso_func_000090F0(int a0, int a1) {
     (void)&a0;
@@ -815,7 +871,29 @@ void *snoweffects_uso_func_00009E10(char *type) {
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009E10);
 #endif
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009E88);
+/* SnowLink ctor (the Cfront this == 0 protocol as `this != 0 || (this = new) != 0`): Node_ctor(Data+0xA64), vtable Data+0x9C4, name Data+0xA6C,
+ * then a new 0x9328 target attached as its child */
+/* the SnowLink vtable (Data+0x9C4; its USO reloc names the object, so the lo16 is 0: a 0 pin) */
+extern char snowLink_vtbl_9C4;
+
+SnowLink *snoweffects_uso_func_00009E88(SnowLink *this, int a1, void *src, int a3) {
+    Node *c;
+    if (this != 0 || (this = (SnowLink *)CALL(mem_new)(0x50)) != 0) {
+        CALL(Node_ctor)(this, (char *)&D_00000000 + 0xA64);
+        this->node.vptr = (char *)&snowLink_vtbl_9C4;
+        this->node.name = (char *)&D_00000000 + 0xA6C;
+        this->unk2C = a1;
+        this->src = src;
+        this->unk34 = a3;
+        this->tgt = c = (Node *)CALL(snoweffects_uso_func_00009328)(0);
+        CALL(list_append)(&this->node.children, c);
+        if (c->parent != 0) {
+            c->unk04 = 1;
+        }
+        c->parent = (Node *)this;
+    }
+    return this;
+}
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp
  * (agent-h run 621), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
