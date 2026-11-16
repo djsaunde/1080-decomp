@@ -44,6 +44,11 @@ void port_rcp_stuck(void *rcpMgr, const char *where);
 int pad_portDrain(char *padDev);        /* pad_threadLoop_00066EEC's switch, per pending message */
 void pad_portFrame(void);               /* request + complete one controller read */
 
+/* ---- the kernel's SysApi table and ROM file system (port/sysapi.c, port/fs) ---- */
+/* Fill the port SysApi (memory range, usoLoad / usoUnload, file services, symLookup) and store it
+ * in gSysApi (bootup Bss 0x416A0).  port_game_boot calls it after port_uso_init, before boot_main. */
+void port_sysapi_install(void);
+
 /* ---- host hooks the game calls (port/) ---- */
 /* Once per VI retrace (the RcpMgr 'd' message): the audio driver frame.  Replaces RcpMgr_service's
  * `cur = snd_AudioUpdate()` and the audio task start.  main.c has a weak no-op; port/audio

@@ -187,7 +187,12 @@ void port_trace_pad(int pad, u32 frameCount, s32 replayFrame, u32 *held, s8 *raw
 }
 
 /* ---- default collector: whatever is linkable now ---- */
-extern char gInputMgr[] __attribute__((weak));
+/* The InputMgr / GameFlow object is bootup Bss + 0xF8 (port/include/port_game.h PORT_GAMEFLOW).
+ * The game spells it gInputMgr = D_00000000 (a placeholder bound per site), so there is no
+ * gInputMgr symbol to link against: read it through the bootup Bss blob (port/uso), weak so
+ * the shim tests link without the game. */
+extern char port_bootup_bss[] __attribute__((weak));
+#define gInputMgr (port_bootup_bss != NULL ? port_bootup_bss + 0xF8 : NULL)
 extern int gl_ref_00021E04 __attribute__((weak)); /* sys_randf state, bootup Data 0x21E04 */
 
 __attribute__((weak)) void port_trace_collect(PortTraceFrame *f) {
