@@ -759,11 +759,21 @@ void SnowRing_update_0000544C(SnowRing *this) {
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000559C);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00005FD4);
+/* snoweffects_uso_func_00005FD4: SnowEffect::init (name, groups, SnowRing_init, child0 at +0x9C).
+ * EXACT via an IDO 7.1 NCC (C++) donor, src/snoweffects_uso/snoweffects_uso_ncc_b.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder. */
+void snoweffects_uso_func_00005FD4(char *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00006144);
+/* snoweffects_uso_func_00006144: SnowEffect::createA (childA at +0x98, attached to both groups).
+ * EXACT via the NCC donor src/snoweffects_uso/snoweffects_uso_ncc_b.cpp (placeholder). */
+void snoweffects_uso_func_00006144(char *this) {
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00006248);
+/* snoweffects_uso_func_00006248: SnowEffect::createB (childB at +0xA0, attached to both groups).
+ * EXACT via the NCC donor src/snoweffects_uso/snoweffects_uso_ncc_b.cpp (placeholder). */
+void snoweffects_uso_func_00006248(char *this) {
+}
 
 void snoweffects_uso_func_0000634C(char *this) {
     if (*(int *)(this + 0x54) & 1) {

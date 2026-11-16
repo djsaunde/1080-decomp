@@ -131,6 +131,16 @@ $(SNOW_NCC_DONOR): src/snoweffects_uso/snoweffects_uso_ncc.cpp src/snoweffects_u
 SNOW_NCC_FUNCS := SnowRing_draw_000040B4 SnowPool_update_00000B44 SnowFall_moveFlakes_000027A8
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NCC_FUNCS),$(f)=$(SNOW_NCC_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NCC_DONOR)
+# agent-b run 640: snow effect child-node creators 5FD4 / 6144 / 6248 (new child in the first attach's
+# full-expression, void-typed list_append alias); own donor so agent-h / agent-e donors stay separate.
+SNOW_B_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_b.cpp.o
+$(SNOW_B_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_b.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym init__10SnowEffectFP4NodeT1iN23fT6=snoweffects_uso_func_00005FD4 --redefine-sym createA__10SnowEffectFv=snoweffects_uso_func_00006144 --redefine-sym createB__10SnowEffectFv=snoweffects_uso_func_00006248 --redefine-sym __ct__4NodeFPc=gl_func_00000000_snowb_node --redefine-sym __vtbl__8SnowNode=snowb_vtbl_SnowNode_60 --redefine-sym __vtbl__10SnowChild0=snowb_vtbl_SnowChild0_1C8 --redefine-sym __vtbl__10SnowChildA=snowb_vtbl_SnowChildA_158 --redefine-sym __vtbl__10SnowChildB=snowb_vtbl_SnowChildB_238 $@
+SNOW_B_FUNCS := snoweffects_uso_func_00005FD4 snoweffects_uso_func_00006144 snoweffects_uso_func_00006248
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_B_FUNCS),$(f)=$(SNOW_B_DONOR))
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_B_DONOR)
 # viewrec.uso Text ends with one zero pad word after 0x55A4's `jr ra; sw a0,0(sp)`: all-zero SUFFIX
 # on the last function, then clip .text back to the Text size (same mechanism as h2hproc / snoweffects).
 build/src/viewrec_uso/viewrec_uso.c.o: SUFFIX_BYTES_FORCE := viewrec_uso_func_000055A4=0x00000000
