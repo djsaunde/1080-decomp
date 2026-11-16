@@ -1,4 +1,5 @@
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+#include "../../include/gdl/sysapi.h"  /* SysLib, SYSLIB_AT */
 typedef int s32; typedef unsigned int u32; typedef unsigned long long u64;
 #include "../../include/gdl/rcp.h" /* RcpTask / RcpMgr */
 /* IDO 7.1 NCC (C++) donor for RcpMgr_service -- EXACT (agent-g run 256), spliced over the post0b placeholder on
@@ -83,10 +84,10 @@ extern "C" S4D *RcpMgr_ctor(S4D *s) {
     s->w2C = CALL(mem_newAligned)(0x400, 16);
     CALL(gl_osCreateThread)(D_00000000 + 0x3C950, 4, D_4D468_a2, s, D_00000000 + 0x3EB00, 11);
     sG = 0x1234567812345678LL;
-    /* RAW: unknown-object: gSysLib +0x1C is the system OSMesgQueue * (the event queue bound to SP / DP / VI events here); no SysLib struct on this branch yet (main: sysapi.h SysLib.msgQueue, agent-b run 583) */
-    bind(9, *(int *)(gSysLib_4D468_w + 0x1C), 102);
-    { int h = *(int *)(gSysLib_4D468_w + 0x1C); CALL(gl_osSetEventMesg)(4, h, 101); } /* RAW: unknown-object (as above) */
-    { int h = *(int *)(gSysLib_4D468_w + 0x1C); CALL(gl_osSetEventMesg)(14, h, 108); } /* RAW: unknown-object (as above) */
+    /* gSysLib.msgQueue: the system event queue, bound to SP / DP / VI events here */
+    bind(9, (int)SYSLIB_AT(gSysLib_4D468_w)->msgQueue, 102);
+    { int h = (int)SYSLIB_AT(gSysLib_4D468_w)->msgQueue; CALL(gl_osSetEventMesg)(4, h, 101); }
+    { int h = (int)SYSLIB_AT(gSysLib_4D468_w)->msgQueue; CALL(gl_osSetEventMesg)(14, h, 108); }
     CALL(gl_osStartThread)(D_00000000 + 0x3C950);
     s->w20 = 0;
     s->w1C = 0;

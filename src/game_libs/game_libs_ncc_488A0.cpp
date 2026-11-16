@@ -12,6 +12,7 @@ typedef float f32; typedef double f64;
 typedef struct { float x, y, z; } Vec3;
 typedef struct VT3FC58 { char pad[8]; short off8; char padA[2]; void (*fnC)(); char pad10[0x18]; short off28; char pad2A[2]; void (*fn2C)(); } VT3FC58;
 typedef struct { VT3FC58 *vt0; char pad[0x24]; VT3FC58 *vt28; } O3FC58;
+#include "../../include/gdl/polyshape.h"  /* Strip */
 typedef struct { unsigned int w0, w1; } Gfx488A0;
 typedef struct { Gfx488A0 *base; int count; } DLBuf488A0;
 typedef struct { short ob[3]; unsigned short flag; short tc[2]; unsigned char cn[4]; } Vtx488A0;
@@ -67,8 +68,8 @@ extern "C" void gfx_emitLineBatch_000488A0(Obj488A0 *obj) {
         g = &ctx->dl->base[n];
         g->w0 = 0x04000000 | (((obj->nv << 10) | ((obj->nv << 4) - 1)) & 0xFFFF); c2 = obj->ctx; if (obj) {}
         g->w1 = CALL(gl_osVirtualToPhysical)(*c2->vtx + obj->vbase);
-        /* RAW: unknown-object: the strip builder record (ctx, nv, nline, vbase, index triples; 493AC's Rec.n58C vertex total at +0x58C, inside this view's ln[] span) has no C header yet */
-        *(int *)((char *)obj + 0x58C) += obj->nv;
+        /* obj is a Strip (polyshape.h) with per-line widths after the base: wd[] starts at 0x59C = sizeof(Strip) */
+        ((Strip *)obj)->vtxTotal += obj->nv;
         for (i = 0; i < obj->nline; i++) {
             if (obj->wd[i] != 1) {
                 ctx = obj->ctx; d = ctx->dl; n = d->count; d->count = n + 1;

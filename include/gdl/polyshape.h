@@ -105,7 +105,10 @@ typedef struct Strip {
     /* 0x00C */ s32 vtxBase;            /* first pool index gfx_findVtx_00048720 searches */
     /* 0x010 */ s32 unk10;
     /* 0x014 */ s16 tris[200][3];       /* pool indices per triangle */
-    /* 0x4C4 */ u16 ids[(0x590 - 0x4C4) / 2]; /* the vertex ids Strip::add records */
+    /* 0x4C4 */ u16 ids[(0x58C - 0x4C4) / 2]; /* the vertex ids Strip::add records */
+    /* 0x58C */ s32 vtxTotal;           /* vertices emitted so far: the batch emitters PolyShape_emitTriBatch_000483BC /
+                                           gfx_emitLineBatch_000488A0 add nv to it after each G_VTX packet (an int
+                                           += on +0x58C, so ids[] ends here) */
     /* 0x590 */ s32 maxVtx;             /* flush when nv + 1 > maxVtx - 1 */
     /* 0x594 */ s32 mode;               /* 2: match colour / normal on all three face vertices */
     /* 0x598 */ void *vptr;             /* Cfront vtable pointer (slot flush) */
@@ -114,6 +117,7 @@ typedef struct Strip {
 #ifndef __cplusplus
 typedef char Strip_size_check[sizeof(Strip) == 0x59C ? 1 : -1];
 typedef char Strip_mode_check[(int)&((Strip *)0)->mode == 0x594 ? 1 : -1];
+typedef char Strip_vtxTotal_check[(int)&((Strip *)0)->vtxTotal == 0x58C ? 1 : -1];
 #endif
 
 typedef char GdlVtx_size_check[sizeof(GdlVtx) == 0x10 ? 1 : -1];

@@ -1,6 +1,7 @@
 /* Native original-compiler source port from src/game_uso/game_uso.c. Target bytes unchanged. */
 #include "context_game_uso.h"
 #include "gdl/node.h"
+#include "gdl/item.h"
 #include "game/course.h"
 #include "game/game_uso_data.h" /* kStr_ / kTag_ / kVtbl_ (CourseMarker group 0x6B0..0x6CC) */
 
@@ -65,8 +66,8 @@ char *CourseMarkerTmpl_create(char *owner) {
         }
     }
     result = carrier.allocated;
-    /* RAW: unknown-object: owner + 0x40 node link on an untyped owner */
-    node = *(char **)(owner + 0x40);
+    /* owner is the marker ItemType (gdl/item.h): like SNodeItemType_newItem, attach its +0x40 Node under the new item */
+    node = (char *)((ItemType *)owner)->unk40;
     if (node != 0) {
         result = carrier.allocated;
         carrier.nodes[0] = node;

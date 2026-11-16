@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "gdl/node.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -187,12 +188,13 @@ void app_runProcess(int a0, int a1, int *a2) {
     base = (char *)&gInputMgr;
     p = base + 0x10;
     CALL(list_append)(p, obj);
-    /* RAW: unknown-object: the app process-list node (+0x4 run flag, +0x14 owner) is untyped */
-    if (*(int *)((char *)obj + 0x14) != 0) {
-        *(int *)((char *)obj + 0x4) = 1; /* RAW: unknown-object (as above) */
+    /* the Node child-attach idiom (node.h): the process is a Node appended to the child list at
+     * base + 0x10; a node that already had a parent gets unk04 = 1, then parent = base */
+    if (NODE(obj)->parent != 0) {
+        NODE(obj)->unk04 = 1;
     }
     p = base;
-    *(int *)((char *)obj + 0x14) = (int)p; /* RAW: unknown-object (as above) */
+    NODE(obj)->parent = (Node *)p;
     obj = a2;
     CALL(node_linkBack_0004E888)(D_w0, obj);
     CALL(game_stub_000031B8)(gInputMgr_w134);

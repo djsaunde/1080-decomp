@@ -43,8 +43,7 @@ void gfx_setupMatTextures_00045E20(void *a0, GL470E4Object *a1, GLRenderNode *a2
         }
     }
     {
-        /* RAW: unknown-object: a1->list is an untyped display-list record (+4 sync index) */
-        int syncIndex = *(int *)((int)a1->list + 4);
+        int syncIndex = ((GL470E4List *)(int)a1->list)->count; /* the closing G_RDPPIPESYNC slot; the (int) round-trip is the matched lever (plain a1->list->count swaps v0 / v1) */
         int tail = (int)a1->list;
         unsigned int *syncCmd;
         ((GL470E4List *)tail)->count = syncIndex + 1;

@@ -139,7 +139,7 @@ extern "C" void Sprite_display_0004BAF4(Sprite *self) {
     me(me(WDL4B))->add(0xEE000000, ((iz & 0x7FFF) & 0x7FFF) << 16); /* agent-g run 332: 0xEE receiver through two me() (receiver-depth re-grid on the else-arm-d base, final add depth 0): 99.137 -> 99.196 */
     if (GFXLIB(&gGfxLib_4BAF4_flags)->flags & 2) {
         if ((self->unk2C[1] & 8) && *(char **)&self->node.parent != 0) { /* parent read as a pointer (Node.parent is s32; an int compare changes the code) */ /* agent-g run 332: one `& 8` again (ring re-tuned for the else arm's d) */
-            CALL(gfx_emitStateAndPrimColour_00042684)(WDL4B, (char *)spr + 0x34, F4B(*(char **)&self->node.parent, 0x1E, s16)); /* RAW: unknown-object: the parent's s16 at +0x1E (low half of Node.serial in node.h) is not a proven field of the parent class */
+            CALL(gfx_emitStateAndPrimColour_00042684)(WDL4B, (char *)spr + 0x34, ((s16 *)&((Node *)*(char **)&self->node.parent)->serial)[1]); /* the parent Node's serial, low halfword (big-endian +0x1E) */
         }
     } else {
         /* agent-g run 332: spr->dl64 through d like the first packet's 0xCC pointer -- the target holds it in v0 (a

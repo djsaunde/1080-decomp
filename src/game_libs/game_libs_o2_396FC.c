@@ -22,6 +22,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "uso_call.h"
+#include "gdl/mnode.h"
 
 extern int D_00000000;
 extern int gl_func_00000000();
@@ -64,8 +65,7 @@ void MNode_doCommand(int *a0, int *a1) {
     case 112:
         q = (int *)a1[1]; a1[1] = (int)(q + 1);
         s = (short *)*q;
-        /* RAW: unknown-object: MNode's matrix block at 0x30 / 0x70 (Mtx16 copies) is not in the MNode struct yet */
-        *(Mtx16_396FC *)((char *)a0 + 0x30) = *(Mtx16_396FC *)s;
+        *(Mtx16_396FC *)((MNode *)a0)->mtx = *(Mtx16_396FC *)s; /* the local Mtx (MNode.mtx, mnode.h) */
         break;
     case 113:
         p = (int *)((char *)a0 + 0x2C);
@@ -93,9 +93,9 @@ void MNode_doCommand(int *a0, int *a1) {
         xf.v[3] = x;
         xf.v[4] = y;
         xf.v[5] = z;
-        m = (Mtx16_396FC *)((char *)a0 + 0x30);
+        m = (Mtx16_396FC *)((MNode *)a0)->mtx;
         CALL(math_quatScaleToMtx4)(&xf, m);
-        *(Mtx16_396FC *)((char *)a0 + 0x70) = *m; /* RAW: unknown-object (as above) */
+        *(Mtx16_396FC *)((MNode *)a0)->cmtx = *m; /* the combined CMtx starts as a copy of the local one */
         *(Z0_396FC *)&xf = *(Z0_396FC *)&D_00000000;
         *(Z0_396FC *)b1 = *(Z0_396FC *)&D_00000000;
         break;

@@ -26,6 +26,7 @@
 #include "uso_call.h"
 #include "game/input.h"
 #include "gdl/race.h"
+#include "gdl/gadget.h"
 
 extern int D_00000000;
 extern int gl_func_00000000();
@@ -87,8 +88,7 @@ GlSlot3C0C *PointsGadget_allocSlot_00003C0C(char *arg0, s32 arg1, s32 arg2, s32 
             p->slot->unkAC = 0.5f;
             p->slot->unk80 = 0;
             p->slot->unk84 = -18;
-            /* RAW: unknown-object: arg0 (PointsGadget host, 0x54) is untyped char * in this TU */
-            p->slot->unkB0 = *(s32 *)(arg0 + 0x54);
+            p->slot->unkB0 = TPOINTS(arg0)->popupArg; /* arg0 is the TrickPointsGadget (gadget.h) whose slots[8] p walks */
             slot = p->slot;
             CALL(gl_sprintf)(slot->unkB4, GL_DATA(0xCD04), slot->unk98);
             return p->slot;

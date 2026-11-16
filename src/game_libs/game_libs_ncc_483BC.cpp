@@ -11,6 +11,7 @@
  * loop packet t0 and shifts every temp). */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
+#include "../../include/gdl/polyshape.h"  /* Strip */
 typedef struct { unsigned int w0, w1; } Gfx488A0;
 typedef struct { Gfx488A0 *base; int count; } DLBuf488A0;
 typedef struct { short ob[3]; unsigned short flag; short tc[2]; unsigned char cn[4]; } Vtx488A0;
@@ -59,8 +60,8 @@ extern "C" void PolyShape_emitTriBatch_000483BC(Obj488A0 *obj) {
         g = &ctx->dl->base[n];
         g->w0 = 0x04000000 | (((obj->nv << 10) | ((obj->nv << 4) - 1)) & 0xFFFF);
         g->w1 = CALL(gl_osVirtualToPhysical)(*(c2 = obj->ctx)->vtx + obj->vbase);
-        /* RAW: unknown-object: the strip builder record (ctx, nv, nline, vbase, index triples; 493AC's Rec.n58C vertex total at +0x58C, inside this view's ln[] span) has no C header yet */
-        *(int *)((char *)obj + 0x58C) += obj->nv;
+        /* obj is the Strip (polyshape.h): ctx = mesh, nline = nt, vbase = vtxBase, ln = tris */
+        ((Strip *)obj)->vtxTotal += obj->nv;
         for (i = 0; i < obj->nline; i++) {
             Gfx488A0 *h;
             ctx = obj->ctx; n = ctx->dl->count++;
