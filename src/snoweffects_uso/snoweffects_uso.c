@@ -1325,14 +1325,10 @@ void SnowLink_update_00009F44(void *self) {
 void snoweffects_uso_func_00009FE8(void *self) {
 }
 
-#ifdef NON_MATCHING
-/* snow light update: NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp (agent-a runs 665 / 669, objdiff 99.80 %),
- * REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_a.cpp (snow light update,
+ * agent-a runs 661 / 665 / 669 / 677), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
 void snoweffects_uso_func_0000A10C(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000A10C);
-#endif
 
 /* the ItemType item list walked by 0xA760 (a cursor / next iterator, as game_libs
  * hud_findMarkers_000029F8) */
