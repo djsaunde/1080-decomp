@@ -237,10 +237,12 @@ HOME_H = re.compile(r'^src/(?:bootup_uso|titproc_uso|arcproc_uso|mgrproc_uso|h2h
 
 def owner(path, func):
     """Area owner for the readability phase (coordinator's table, run 520): b = game_libs_post0b /
-    post1b*; c = timproc_uso_b5* and the audio driver; g = game_uso; h = bootup_uso / titproc /
+    post1b*; c = timproc_uso_b5*, game_libs_post.c (run 536) and the audio driver; g = game_uso; h = bootup_uso / titproc /
     game_libs.c / game_libs_tail / arc / mgr / h2h / tim / trk; a = everything else."""
     if re.search(r'/game_libs_post(?:0b|1b)', path):
         return 'b'
+    if path == 'src/game_libs/game_libs_post.c':
+        return 'c'          # the whole file since run 536 (coordinator), not only its audio functions
     if path.startswith('src/timproc_uso_b5') or AUDIO_FN.fullmatch(func):
         return 'c'
     if path.startswith('src/game_uso/'):
@@ -432,7 +434,7 @@ def main():
     byown = collections.Counter()
     for (p, f), n in fn_off.items():
         byown[owner(p, f)] += n
-    L += ['', 'Owners: b = game_libs_post0b / post1b*; c = timproc_uso_b5* and audio (Audio* / snd_* / Snd* / Note_ / Seq_ '
+    L += ['', 'Owners: b = game_libs_post0b / post1b*; c = timproc_uso_b5*, game_libs_post.c and audio (Audio* / snd_* / Snd* / Note_ / Seq_ '
           'functions); g = game_uso; h = bootup_uso / titproc / game_libs.c / game_libs_tail / arc / mgr / h2h / tim / trk; '
           'a = everything else. Raw sites per owner: ' + ', '.join(f'{o} {byown[o]}' for o in 'abcgh') + '.']
     L += ['', '### Headers', '']
