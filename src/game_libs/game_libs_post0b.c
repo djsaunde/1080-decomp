@@ -19383,15 +19383,17 @@ unsigned short PolyShape_getFaceVertex(Tbls_5330C *a0, int a1, int a2) {
  * table entries). Shape: idx = u16 at (a0->0x68 + a1*8 + a2*2 + 2); if table B
  * (a0->0x70) non-null, idx = u16 at (B + idx*6); returns a0->0x58 + idx*12.
  * Both arms duplicate the full computation (distinct $t numbering per arm). */
-s32 PolyShape_getFaceNormal(void *a0, int a1, int a2) {
-    int tabB = *(int *)((char *)a0 + 0x70);
-    if (tabB != 0) {
-        return *(unsigned short *)(tabB +
-                   *(unsigned short *)(*(char **)((char *)a0 + 0x68) + a1 * 8 + a2 * 2 + 2) * 6) * 12 +
-               *(int *)((char *)a0 + 0x58);
+/* agent-b run 560: over gdl/polyshape.h: the vertex normal of corner `corner` of triangle `tri`
+ * (vtxNormals row of tris[tri].v[corner], through the optional 6-byte remap rows). Byte levers:
+ * `*(PolyTri **)&shape->tris` and `*(char **)&shape->vtxNormals` (the member forms flip addu
+ * operands); remap stays a byte pointer (`remap[v * 3]` moves the t-ring). */
+f32 *PolyShape_getFaceNormal(BasePolyShape *shape, int tri, int corner) {
+    char *remap = (char *)shape->remap;
+    if (remap != 0) {
+        return (f32 *)(*(u16 *)(remap + (*(PolyTri **)&shape->tris)[tri].v[corner] * 6) * 12 +
+                       *(char **)&shape->vtxNormals);
     }
-    return *(unsigned short *)(*(char **)((char *)a0 + 0x68) + a1 * 8 + a2 * 2 + 2) * 12 +
-           *(int *)((char *)a0 + 0x58);
+    return (f32 *)((*(PolyTri **)&shape->tris)[tri].v[corner] * 12 + *(char **)&shape->vtxNormals);
 }
 
 /* Triangle vertex-color averager. arg0=mesh ctx, arg1=triangle index,
