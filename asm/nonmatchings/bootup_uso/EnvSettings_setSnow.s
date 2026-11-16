@@ -1,6 +1,6 @@
-nonmatching func_00007620, 0xD4
+nonmatching EnvSettings_setSnow, 0xD4
 
-glabel func_00007620
+glabel EnvSettings_setSnow
     /* DD808C 00007620 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DD8090 00007624 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD8094 00007628 8C8E0040 */  lw         $t6, 0x40($a0)
@@ -58,4 +58,4 @@ glabel func_00007620
     /* DD8154 000076E8 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DD8158 000076EC 03E00008 */  jr         $ra
     /* DD815C 000076F0 00000000 */   nop
-endlabel func_00007620
+endlabel EnvSettings_setSnow

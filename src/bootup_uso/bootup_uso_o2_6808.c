@@ -36,7 +36,7 @@ typedef struct { f32 x, y, z; } V3_6808;
 extern int func_00000000();
 extern int gPolyGeomMode_3EEC8_8005EE6C[];         /* mode words: [0], [1] */
 extern int gPolyGeomMode_3EEC8_8005EE6C_6808r[];   /* read alias (same USO import) */
-extern char *import_8001FFC0;         /* root object slot */
+extern char *gEnvSettings_6808;         /* root object slot */
 extern int gInputMgr_800200FC[];         /* settings: [0x3C/4], [0x68/4] */
 extern int import_8001FFF0;
 extern char *D_bu_7770;
@@ -95,7 +95,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     startZ = 0.0f;
     FCALL(memtrack_begin)(&sStr_Geometry_7EB8, 0);
     t = (char *)FCALL(EnvSettings_ctor)(0);
-    import_8001FFC0 = t;
+    gEnvSettings_6808 = t;
     ATTACH6808(FCALL(list_append), (char *)obj->bgRoot, t);
     goalY = 0.0f;
     goalX = 0.0f;
@@ -114,37 +114,37 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
             t = (char *)FCALL(LensFlare_create)(0, &sStr_rom_flare5_bin_7ED8, o);
             FCALL(MNode_addChild)(o, t);
             t78.w = *(int *)&sStr_sun_7EE8;
-            FCALL(map_addEntry_00007204)(import_8001FFC0, o, t78);
+            FCALL(map_addEntry_00007204)(gEnvSettings_6808, o, t78);
             t74.w = *(int *)&sStr_len_7EEC;
-            FCALL(map_addEntry_00007204)(import_8001FFC0, t, t74);
+            FCALL(map_addEntry_00007204)(gEnvSettings_6808, t, t74);
             ATTACH6808(FCALL(list_append), (char *)obj->ogRoot, o);
             FCALL(MNode_addChild)(o, obj->light1);
             va = (char *)obj->light0;
-            FCALL(map_addEntry_00007204)(import_8001FFC0, va + 0 * (t70.w = *(int *)&sStr_lt0_7EF0), t70);
+            FCALL(map_addEntry_00007204)(gEnvSettings_6808, va + 0 * (t70.w = *(int *)&sStr_lt0_7EF0), t70);
             vb = (char *)obj->light1;
-            FCALL(map_addEntry_00007204)(import_8001FFC0, vb + 0 * (t6C.w = *(int *)&sStr_lt1_7EF4), t6C);
+            FCALL(map_addEntry_00007204)(gEnvSettings_6808, vb + 0 * (t6C.w = *(int *)&sStr_lt1_7EF4), t6C);
             FCALL(memtrack_end)();
             break;
         }
         case COURSE_OP_ENV:
             envArg = p[1];
-            FCALL(Node_Load)(import_8001FFC0, 1, p[0]);
+            FCALL(Node_Load)(gEnvSettings_6808, 1, p[0]);
             break;
         case COURSE_OP_ENV_LT2:
             if (INPUT_MGR(gInputMgr_800200FC).level < 2) {
                 envArg = p[1];
-                FCALL(Node_Load)(import_8001FFC0, 1, p[0]);
+                FCALL(Node_Load)(gEnvSettings_6808, 1, p[0]);
             }
             break;
         case COURSE_OP_ENV_EQ2:
             if (INPUT_MGR(gInputMgr_800200FC).level == 2) {
-                FCALL(Node_Load)(import_8001FFC0, 1, p[0]);
+                FCALL(Node_Load)(gEnvSettings_6808, 1, p[0]);
                 envArg = p[1];
             }
             break;
         case COURSE_OP_ENV_EQ3:
             if (INPUT_MGR(gInputMgr_800200FC).level == 3) {
-                FCALL(Node_Load)(import_8001FFC0, 1, p[0]);
+                FCALL(Node_Load)(gEnvSettings_6808, 1, p[0]);
                 envArg = p[1];
             }
             break;
@@ -161,7 +161,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
                 o = (char *)FCALL(game_createBGBox)(p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
                 t = o;
                 ATTACH6808(FCALL(list_append), (char *)obj->bgRoot, t);
-                *(char **)(import_8001FFC0 + 0x3C) = o;
+                *(char **)(gEnvSettings_6808 + 0x3C) = o;
                 FCALL(memtrack_end)();
             }
             break;

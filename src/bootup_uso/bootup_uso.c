@@ -3804,7 +3804,7 @@ void FallingSnow_create(char *a0) {
     FCALL(memtrack_end)();
 }
 
-/* func_00007620 - verified structural decode (0xD4, 53 insns,
+/* EnvSettings_setSnow - verified structural decode (0xD4, 53 insns,
  * enable/disable toggle on a substate object).
  * Struct-typing reference: a0->0x40 (64) = substate object (NULL =
  * no-op). substate->0x18 (24) flags word: bit 2 (0x4) and bit 3
@@ -3825,7 +3825,7 @@ extern float D_000005E8;
  * displacement); enable-path swc1 base = the same `f` var re-pointed at st
  * with the 0x4C folded into the store (colors v0). */
 #define ST_7620 ((char *)ENVSET(a0)->fallingSnow)
-void func_00007620(char *a0, int a1) {
+void EnvSettings_setSnow(char *a0, int a1) {
     int *f;
     if (ST_7620 == 0) return;
     FCALL(snd_setLevelRampTarget)(a1);
@@ -4532,7 +4532,7 @@ void Snower_display(int *a0) {
 
     if (f12 < f2) {
         if (SNOWITEM(a0)->rng.value + f12 > f2) {
-            XCALL(func_00000000_082F8_v, func_00007620)(*(int*)&D_00000000_a, SNOWITEM(a0)->sta.value);
+            XCALL(func_00000000_082F8_v, EnvSettings_setSnow)(*(int*)&D_00000000_a, SNOWITEM(a0)->sta.value);
         }
     }
 
@@ -4616,7 +4616,7 @@ void Snower_readParms(char *a0) {
  *       }
  *       ... (chain continues: more sub-allocs, FP 300.0f
  *           (0x43960000) param, &sTag_sta_7FF0/D_00007540 datums,
- *           func_00007620 helper - same shape as the family).
+ *           EnvSettings_setSnow helper - same shape as the family).
  *   }
  * Struct-typing reference: D_root global -> g, g->0x40 (64) =
  * built-once latch (nonzero = skip). o = 0x74-byte object,
@@ -4626,7 +4626,7 @@ void Snower_readParms(char *a0) {
  * sTag_rng_7FEC value. The `u != -0x3C / -0x8 / -0x20` tests are the
  * `c = u+k; if (c != 0 || alloc)` get-or-create guards folded by
  * IDO. FP const 0x43960000 = 300.0f; block2 kind a3=0 and child2
- * gets {0x10=1 (int), 0xC=&func_00007620+0x70, 0x14=0} instead of
+ * gets {0x10=1 (int), 0xC=&EnvSettings_setSnow+0x70, 0x14=0} instead of
  * the float form.
  * 2026-07-30 agent-g: 13D40 recipe applied (62.5 -> 93.3, 113/113
  * structure, ALL homed slots exact via int A[6] + q2 dead decl
@@ -4634,7 +4634,7 @@ void Snower_readParms(char *a0) {
  * 0x30); v=o tail-reuse lever as 8124. Residual = 13D40
  * allocator-web cap (p.v webs coalesce to v0, t-cycle renumber,
  * u-spill/frame +0x10 reserved words, sw-a0 window x2, tail
- * lw-v0/move-s0 elide) + `(char *)func_00007620 + 0x70` emits
+ * lw-v0/move-s0 elide) + `(char *)EnvSettings_setSnow + 0x70` emits
  * separate addiu 0x70 (addend does not fold into %lo since the
  * symbol is a real fn in this TU, unlike the extern-array
  * sTimeGadgetParmsTags_CACC form in 1438C) + head g = *(char**)&D_00000000
@@ -4690,7 +4690,7 @@ char *SnowTmpl_create(char *arg0) {
                 func_00000000(w = c, u, p, 0);
                 c = w;
                 ((CourseParm *)c)->value = 1;
-                ((CourseParm *)c)->vptr = (s32)((char *)func_00007620 + 0x70);
+                ((CourseParm *)c)->vptr = (s32)((char *)EnvSettings_setSnow + 0x70);
                 ((CourseParm *)c)->value2 = 0;
             }
         }

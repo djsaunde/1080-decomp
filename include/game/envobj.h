@@ -58,7 +58,7 @@ typedef struct FogItem {
 #define FOGITEM(p) ((FogItem *)(p))
 
 /* Snower item (instance 0x74, vtbl Data 0x7968; SnowTmpl_create 84A0): parm a float 300,
- * parm b an int (1) whose parm type is the bootup one at func_00007620 + 0x70. */
+ * parm b an int (1) whose parm type is the bootup one at EnvSettings_setSnow + 0x70. */
 typedef struct SnowItem {
     Node node;                  /* 0x00 */
     s32 link;                   /* 0x2C */
@@ -89,7 +89,7 @@ typedef struct CourseCamItem {
 /* The falling-snow effect (0x134; vtables imported from module 60) that FallingSnow_create
  * builds into EnvSettings.fallingSnow (the owner is gEnvSettings, bootup Bss+0x20, which
  * game_createMap stores and SnowTmpl_create / Snower_display pass) and EnvSettings_setSnow
- * (func_00007620) switches on / off. It is a child of the world's "eg" root. */
+ * (EnvSettings_setSnow) switches on / off. It is a child of the world's "eg" root. */
 typedef struct FallingSnow {
     Node node;                  /* 0x00: doFlags bits 4 / 8 = display / update on */
     char unk2C[0x48 - 0x2C];

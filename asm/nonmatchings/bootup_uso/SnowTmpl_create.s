@@ -94,8 +94,8 @@ glabel SnowTmpl_create
     /* DD9058 000085EC 0C000000 */  jal        func_00000000
     /* DD905C 000085F0 AFA60008 */   sw        $a2, 0x8($sp)
     /* DD9060 000085F4 8FA4002C */  lw         $a0, 0x2C($sp)
-    /* DD9064 000085F8 3C0E0000 */  lui        $t6, %hi(func_00007620 + 0x70)
-    /* DD9068 000085FC 25CE7690 */  addiu      $t6, $t6, %lo(func_00007620 + 0x70)
+    /* DD9064 000085F8 3C0E0000 */  lui        $t6, %hi(EnvSettings_setSnow + 0x70)
+    /* DD9068 000085FC 25CE7690 */  addiu      $t6, $t6, %lo(EnvSettings_setSnow + 0x70)
     /* DD906C 00008600 240F0001 */  addiu      $t7, $zero, 0x1
     /* DD9070 00008604 AC8F0010 */  sw         $t7, 0x10($a0)
     /* DD9074 00008608 AC8E000C */  sw         $t6, 0xC($a0)

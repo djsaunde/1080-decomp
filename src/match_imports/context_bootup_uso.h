@@ -1158,7 +1158,7 @@ extern char bootup_74E8_import457, bootup_74E8_import458;
 extern char bootup_74E8_expected_00000008[], bootup_74E8_expected_000000F0[];
 void FallingSnow_create(char *a0);
 extern float D_000005E8;
-void func_00007620(char *a0, int a1);
+void EnvSettings_setSnow(char *a0, int a1);
 extern void func_0000023C();
 extern int func_76f4_q(GL470E4Context *, int, int, int, float, float *, float);
 void Tv1_display(char *s0);
