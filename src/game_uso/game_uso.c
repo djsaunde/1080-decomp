@@ -4618,16 +4618,16 @@ extern int gl_func_00000000();
  *      operand becomes rs).
  *  (3) entry reuses the sel variable (multi-def) so entry colors v0. */
 int MemberCallback_invoke_0000BFDC(char *a0) {
-    short *pair = (short*)(a0 + 8);
+    short *pair = (short*)&((MemberCallback *)a0)->pmf; /* Cfront PMF: {delta, index, func / vtbl offset} */
     char *arg;
     int idx;
     int (*fnptr)(char *);
 
-    arg = (arg = *(char**)(a0 + 4), arg) + pair[0];
+    arg = (arg = (char *)((MemberCallback *)a0)->obj, arg) + pair[0];
     if (pair[1] < 0) {
-        fnptr = *(int (**)(char *))(a0 + 0xC);
+        fnptr = (int (*)(char *))((MemberCallback *)a0)->pmf.b;
     } else {
-        int sel = *(int*)(pair + 2);
+        int sel = *(int*)(pair + 2); /* pmf.b, read through pair (a0 + 0xC moves the code) */
         idx = (sel == 0 && pair[0] == 0) ? 0x28 : sel;
         sel = (int)((char*)(pair[1] << 3) + *(int*)(arg + idx));
         arg = *(short*)sel + arg;
