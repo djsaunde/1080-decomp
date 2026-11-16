@@ -142,9 +142,17 @@ struct SnowBV3 {
     float x, y, z;
     SnowBV3() {}
     void set(float a, float b, float c) { x = a; y = b; z = c; }
+    SnowBV3 &operator=(SnowBV3 o) { x = o.x; y = o.y; z = o.z; return *this; }
     SnowBV3 &operator+=(const SnowBV3 &o) { x += o.x; y += o.y; z += o.z; return *this; }
     SnowBV3 operator*(float s) const { SnowBV3 r; r.set(x * s, y * s, z * s); return r; }
 };
+inline SnowBV3 operator-(const SnowBV3 &a, const SnowBV3 &b) {
+    SnowBV3 r;
+    r.set(a.x - b.x, a.y - b.y, a.z - b.z);
+    { int sc[1]; sc[0] = 0; }  /* dead scratch word: puts the operator= param at the target's sp+60 */
+    if (1) {}  /* ends the live unit of the subtraction loads (the result-temp address then takes v0) */
+    return r;
+}
 inline float dot(const SnowBV3 &a, const SnowBV3 &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 inline void xf(SnowBV3 *v, float (*m)[4]) {
     float nz, ny, nx;
@@ -156,14 +164,18 @@ inline void xf(SnowBV3 *v, float (*m)[4]) {
 struct SnowBCam {
     char pad[0x318];
     SnowBV3 v318;
-    char pad324[0x3C8 - 0x324];
+    char pad324[0x3B0 - 0x324];
+    SnowBV3 up;      /* 3B0 */
+    char pad3BC[0x3C8 - 0x3BC];
     SnowBV3 v3C8;
     char pad3D4[0xA58 - 0x3D4];
     int flags;       /* A58 */
 };
 struct SnowQuad { int a, b, c, d; };
+struct SnowVEnt { short d; short pad; void (*fn)(void *); };
 struct SnowBasis {
-    char pad00[0x2C];
+    char pad00[0x28];
+    SnowVEnt *vptr;  /* 28 */
     SnowBCam *cam;   /* 2C */
     float (*m)[4];   /* 30: world matrix */
     char pad34[0x3C - 0x34];
@@ -175,12 +187,14 @@ struct SnowBasis {
     SnowQuad uB4;    /* B4: 0x52D4 out-param of the p probe */
     SnowQuad uC4;    /* C4: 0x52D4 out-param of the q probe */
     SnowQuad uD4;    /* D4: copy of uC4 */
-    char padE4[0x108 - 0xE4];
+    SnowBV3 a;       /* E4: +len end point */
+    SnowBV3 b;       /* F0: -len end point */
+    SnowBV3 fwd;     /* FC: normalized a - b */
     SnowBV3 v108;    /* 108 */
     SnowBV3 dir;     /* 114 */
     SnowBV3 p;       /* 120 */
     SnowBV3 q;       /* 12C */
-    char pad138[0x144 - 0x138];
+    SnowBV3 c;       /* 138: origin */
     int hits;        /* 144 */
     float cosA;      /* 148 */
     float d1;        /* 14C */
@@ -188,6 +202,29 @@ struct SnowBasis {
     char pad154[0x15C - 0x154];
     float maxDist;   /* 15C */
 };
+/* 0x4374: rebuild the emitter's basis from its world matrix (+0x30): the end points (+-len, 0, 0) go
+ * through the matrix; dir = a - b (operator- through set(), by-value operator=), normalized and kept as
+ * fwd, then crossed with the camera's up vector (+0x3B0) in place; v108 = camera v318, normalized; the
+ * origin goes through the matrix; then virtual slots 14 and 15. Frame (160): the `if (1) {}` in operator-
+ * puts the result-temp address in v0 right before the copy (as the target), and one dead two-word scratch
+ * block after the first normalize gives the 8 bytes under the temps (run 671 placement search). */
+extern "C" void snoweffects_uso_func_00004374(SnowBasis *t) {
+    t->a.x = t->len; t->a.y = 0.0f; t->a.z = 0.0f;
+    xf(&t->a, t->m);
+    t->b.x = -t->len; t->b.z = 0.0f; t->b.y = 0.0f;
+    xf(&t->b, t->m);
+    t->dir = t->a - t->b;
+    CALL(math_vec3Normalize)(&t->dir);
+    { int sc[2]; sc[0] = 0; }
+    t->fwd = t->dir;
+    CALL(math_vec3Cross)(&t->dir, &t->cam->up, &t->dir);
+    t->v108 = t->cam->v318;
+    CALL(math_vec3Normalize)(&t->v108);
+    t->c.x = 0.0f; t->c.y = 0.0f; t->c.z = 0.0f;
+    xf(&t->c, t->m);
+    t->vptr[14].fn((void *)((int)t->vptr[14].d + (int)t));
+    t->vptr[15].fn((void *)((int)t->vptr[15].d + (int)t));
+}
 extern "C" float gl_func_00000000_snow_ff(float);  /* math_acosf / fcos / fsin: float(float) blank jal */
 extern "C" float gl_func_00000000_snow_hitf(SnowBasis *, SnowBV3 *, SnowBV3 *, SnowQuad *);  /* 0x52D4 */
 extern "C" void snoweffects_uso_func_00004E5C(SnowBasis *t) {

@@ -168,7 +168,7 @@ SNOW_NCC_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc.cpp.o
 $(SNOW_NCC_DONOR): src/snoweffects_uso/snoweffects_uso_ncc.cpp src/snoweffects_uso/snoweffects_ncc.h
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NCC_FUNCS := SnowRing_draw_000040B4 SnowPool_update_00000B44 SnowFall_moveFlakes_000027A8 snoweffects_uso_func_000039C4 snoweffects_uso_func_00004E5C
+SNOW_NCC_FUNCS := SnowRing_draw_000040B4 SnowPool_update_00000B44 SnowFall_moveFlakes_000027A8 snoweffects_uso_func_000039C4 snoweffects_uso_func_00004E5C snoweffects_uso_func_00004374
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NCC_FUNCS),$(f)=$(SNOW_NCC_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NCC_DONOR)
 # agent-b run 640: snow effect child-node creators 5FD4 / 6144 / 6248 (new child in the first attach's
@@ -187,7 +187,7 @@ SNOW_NM_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp.o
 $(SNOW_NM_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NM_FUNCS := snoweffects_uso_func_000015D0 snoweffects_uso_func_00001A18 snoweffects_uso_func_00002310 snoweffects_uso_func_00004374
+SNOW_NM_FUNCS := snoweffects_uso_func_000015D0 snoweffects_uso_func_00001A18 snoweffects_uso_func_00002310
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_FUNCS),$(f)=$(SNOW_NM_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_DONOR)
 # agent-e runs 664 / 668: NON_MATCHING-only NCC donor for 0x7960 (99.7 %, zero / |speed| FP swap) and 0x64B8
