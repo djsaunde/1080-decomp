@@ -16,10 +16,13 @@ typedef struct ItemType {
     /* 0x00 */ Node node;          /* node.children = the items */
     /* 0x2C */ s32 tag;            /* 4-char key, by-value ctor arg */
     /* 0x30 */ struct ItemType *next; /* ItemMgr type list */
-    /* 0x34 */ s32 unk34;
-    /* 0x38 */ s32 unk38;          /* 0 at ctor */
+    /* 0x34 */ s32 builtHead;      /* buildItems (Colour / SNode): the first newItem(0) result; each
+                                    * later one is chained into the previous item's next word */
+    /* 0x38 */ s32 searchDown;     /* 0 at ctor; SNodeItemType_vslot15 (nearest item by key +0x64):
+                                    * set = the largest key below ref, clear = the smallest above */
     /* 0x3C */ s32 unk3C;          /* 0 at ctor; ItemMgr_removeItems clears it with the item list */
-    /* 0x40 */ s32 unk40;          /* ctor arg 2 */
+    /* 0x40 */ s32 unk40;          /* ctor arg 2; SNodeItemType_newItem attaches this Node under each
+                                    * new SNode item (game_uso.c reads it too, so the name stays) */
     /* 0x44 */ s32 typeId;         /* -1 at ctor; ItemMgr_addType arg 2 */
 } ItemType;
 

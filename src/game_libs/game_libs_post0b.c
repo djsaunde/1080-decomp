@@ -6447,7 +6447,7 @@ char *ItemType_ctor(char *o, S3D16C a1, S3D16C a2) {
     *(S3D16C *)(o + 0x2C) = a1;
     ITEMTYPE(o)->unk3C = 0;
     ITEMTYPE(o)->unk40 = a2.w;
-    ITEMTYPE(o)->unk38 = 0;
+    ITEMTYPE(o)->searchDown = 0;
     ITEMTYPE(o)->typeId = -1;
 out:
     return o;
@@ -17050,12 +17050,12 @@ void Window_setDefaults(char *a0) {
     *(Q1E760 *)&W->flags = *(Q1E760 *)((char *)&gWindowDefaults + 0x28);
     *(int *)&W->camera = 0;
     *(Q2E760 *)&W->unk100 = *(Q2E760 *)base;
-    W->unk84[0] = kRo_Window_setDefaults_1B70[0x1B70 / 4];
-    W->unk84[1] = kRo_Window_setDefaults_1B74[0x1B74 / 4];
-    W->unk84[2] = sStr_FCP_1B78[0x1B78 / 4];
-    W->unk84[3] = 19584.0f;
-    W->unk84[4] = sStr_GCP_1B7C[0x1B7C / 4];
-    *(float *)&W->unk80 = kRo_Window_setDefaults_1B80[0x1B80 / 4];
+    W->drawDist[0] = kRo_Window_setDefaults_1B70[0x1B70 / 4];
+    W->drawDist[1] = kRo_Window_setDefaults_1B74[0x1B74 / 4];
+    W->drawDist[2] = sStr_FCP_1B78[0x1B78 / 4];
+    W->drawDist[3] = 19584.0f;
+    W->drawDist[4] = sStr_GCP_1B7C[0x1B7C / 4];
+    W->coneCos = kRo_Window_setDefaults_1B80[0x1B80 / 4];
     (*(void (**)())(vt + 0x5C))(a0 + *(short *)(vt + 0x58));
     W->displayMask = 1;
     *(int *)&W->bufAlloc = 0;
@@ -17196,7 +17196,7 @@ void Window_display(char *arg0) {
         ((GP_0004EB54)FW(temp_v0, 0x64))(*(s16*)(temp_v0 + 0x60) + temp_v1);
         temp_f0 = 85.0f / *(f32*)((char*)FW(arg0, 0x70) + 0x14C);
         for (i = 0; i < 5; i++) {
-            *(f32*)(arg0 + 0x98 + i * 4) = *(f32*)(arg0 + 0x84 + i * 4) * temp_f0;
+            ((Window *)arg0)->drawDistFov[i] = ((Window *)arg0)->drawDist[i] * temp_f0;
         }
     }
     XCALL(gl_func_00034458_4EB54, gfx_setViewStage_00047F68)((char*)&gGfxLib, 0);
@@ -17566,7 +17566,7 @@ int cam_isSphereInView(char *a0, int a1, float px, float py, float pz, float *ou
     if (out != 0) {
         *out = dist;
     }
-    if (((float *)(a0 + 0x98))[a1] <= dist - arg7) {
+    if (((Window *)a0)->drawDistFov[a1] <= dist - arg7) {
         return 0;
     }
     dist = 1.0f / XCALL(gl_func_00000000_f704, sqrtf)(dist);
@@ -17575,7 +17575,7 @@ int cam_isSphereInView(char *a0, int a1, float px, float py, float pz, float *ou
     d[2] *= dist;
     o = *(char **)(a0 + 0x70);
     dist = d[2] * *(float *)(o + 0xDC) + (d[1] * *(float *)(o + 0xCC) + *(float *)(o + 0xBC) * d[0]);
-    if (dist < *(float *)(a0 + 0x80)) {
+    if (dist < ((Window *)a0)->coneCos) {
         return 0;
     }
     return 1;
@@ -19635,27 +19635,27 @@ void BasePolyShape_genNormalsFast(char *arg0, s32 arg1) {
     u8 *p;
     u16 *m;
 
-    if ((FW(arg0, 0x58) == 0) || (FW(arg0, 0x54) == 0)) {
+    if ((BASEPOLY(arg0)->vtxNormals == 0) || (BASEPOLY(arg0)->faceNormals == 0)) {
         CALL(sys_fatal)(GL_DATA_STR(0x2104C, "BasePolyShape::GenNormalsFast() missing ptrs"));
     }
     CALL(BasePolyShape_genPointNormals)(arg0);
     i = 0;
     off = 0;
-    if (FW(arg0, 0x40) != 0) {
+    if (BASEPOLY(arg0)->nVerts != 0) {
         p = counts;
         do {
             i += 1;
             p += 1;
-            v = (f32 *)(FW(arg0, 0x58) + off);
+            v = (f32 *)((int)BASEPOLY(arg0)->vtxNormals + off);
             v[0] = 0.0f;
             v[1] = 0.0f;
             v[2] = 0.0f;
             p[-1] = 0;
             off += 12;
-        } while (i < (u32)FW(arg0, 0x40));
+        } while (i < (u32)BASEPOLY(arg0)->nVerts);
         i = 0;
     }
-    if (FW(arg0, 0x44) != 0) {
+    if (BASEPOLY(arg0)->nTris != 0) {
         off = 0;
         do {
             u8 *c1, *c2, *c3;
@@ -19674,23 +19674,23 @@ void BasePolyShape_genNormalsFast(char *arg0, s32 arg1) {
             vc[0] = ((s16 *)(arg1 + (u32)i3 * 6))[0];
             vc[1] = ((s16 *)(arg1 + (u32)i3 * 6))[1];
             vc[2] = ((s16 *)(arg1 + (u32)i3 * 6))[2];
-            *(f32 *)(FW(arg0, 0x54) + off) = ((vb[1] - va[1]) * (vc[2] - vb[2])) - ((vc[1] - vb[1]) * (vb[2] - va[2]));
-            *(f32 *)((char *)FW(arg0, 0x54) + off + 4) = ((vb[2] - va[2]) * (vc[0] - vb[0])) - ((vc[2] - vb[2]) * (vb[0] - va[0]));
-            *(f32 *)((char *)FW(arg0, 0x54) + off + 8) = ((vb[0] - va[0]) * (vc[1] - vb[1])) - ((vc[0] - vb[0]) * (vb[1] - va[1]));
-            CALL(math_vec3Normalize)((char *)FW(arg0, 0x54) + off);
+            ((f32 *)((int)BASEPOLY(arg0)->faceNormals + off))[0] = ((vb[1] - va[1]) * (vc[2] - vb[2])) - ((vc[1] - vb[1]) * (vb[2] - va[2]));
+            ((f32 *)((int)BASEPOLY(arg0)->faceNormals + off))[1] = ((vb[2] - va[2]) * (vc[0] - vb[0])) - ((vc[2] - vb[2]) * (vb[0] - va[0]));
+            ((f32 *)((int)BASEPOLY(arg0)->faceNormals + off))[2] = ((vb[0] - va[0]) * (vc[1] - vb[1])) - ((vc[0] - vb[0]) * (vb[1] - va[1]));
+            CALL(math_vec3Normalize)((char *)BASEPOLY(arg0)->faceNormals + off);
             c1 = &counts[i1];
             c2 = &counts[i2];
             c3 = &counts[i3];
-            v = (f32 *)(FW(arg0, 0x58) + (u32)i1 * 12);
-            n = (f32 *)(FW(arg0, 0x54) + off);
+            v = (f32 *)((int)BASEPOLY(arg0)->vtxNormals + (u32)i1 * 12);
+            n = (f32 *)((int)BASEPOLY(arg0)->faceNormals + off);
             v[0] += n[0];
             v[1] += n[1];
             v[2] += n[2];
-            v = (f32 *)(FW(arg0, 0x58) + (u32)i2 * 12); n = (f32 *)(FW(arg0, 0x54) + off);
+            v = (f32 *)((int)BASEPOLY(arg0)->vtxNormals + (u32)i2 * 12); n = (f32 *)((int)BASEPOLY(arg0)->faceNormals + off);
             v[0] += n[0];
             v[1] += n[1];
             v[2] += n[2];
-            v = (f32 *)(FW(arg0, 0x58) + (u32)i3 * 12); n = (f32 *)(FW(arg0, 0x54) + off);
+            v = (f32 *)((int)BASEPOLY(arg0)->vtxNormals + (u32)i3 * 12); n = (f32 *)((int)BASEPOLY(arg0)->faceNormals + off);
             if (i2) {}
             if (i3) {}
             v[0] += n[0];
@@ -19701,7 +19701,7 @@ void BasePolyShape_genNormalsFast(char *arg0, s32 arg1) {
             *c3 += 1;
             i += 1;
             off += 12;
-        } while (i < (u32)FW(arg0, 0x44));
+        } while (i < BASEPOLY(arg0)->nTris);
         i = 0;
     }
     p = counts;
@@ -19709,7 +19709,7 @@ void BasePolyShape_genNormalsFast(char *arg0, s32 arg1) {
         do {
             f32 f = (f32)(u32)*p;
             if (f != (float)0) {
-                v = (f32 *)(FW(arg0, 0x58) + i * 12);
+                v = (f32 *)((int)BASEPOLY(arg0)->vtxNormals + i * 12);
                 v[0] /= f;
                 v[1] /= f;
                 v[2] /= f;
@@ -19719,20 +19719,20 @@ void BasePolyShape_genNormalsFast(char *arg0, s32 arg1) {
         } while (i < D_53C04_n);
         i = 0;
     }
-    if (FW(arg0, 0x40) != 0) {
+    if (BASEPOLY(arg0)->nVerts != 0) {
         m = D_53C04_map;
         do {
             if (i != *m) {
                 Vec3_53C04 sp4C;
-                n = (f32 *)(FW(arg0, 0x58) + i * 12);
-                sp4C = ((Vec3_53C04 *)FW(arg0, 0x58))[*m];
+                n = (f32 *)((int)BASEPOLY(arg0)->vtxNormals + i * 12);
+                sp4C = ((Vec3_53C04 *)BASEPOLY(arg0)->vtxNormals)[*m];
                 n[0] = sp4C.x;
                 n[1] = sp4C.y;
                 n[2] = sp4C.z;
             }
             i += 1;
             m += 1;
-        } while (i < (u32)FW(arg0, 0x40));
+        } while (i < (u32)BASEPOLY(arg0)->nVerts);
     }
 }
 

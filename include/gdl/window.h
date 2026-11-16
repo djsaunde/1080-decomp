@@ -43,9 +43,12 @@ typedef struct Window {
     /* 0x074 */ s32 unk74;
     /* 0x078 */ s32 flags;           /* see above */
     /* 0x07C */ s32 projType;        /* 1 = perspective */
-    /* 0x080 */ s32 unk80;
-    /* 0x084 */ f32 unk84[5];        /* scaled by 85 / camera fov into unk98 */
-    /* 0x098 */ f32 unk98[5];
+    /* 0x080 */ f32 coneCos;         /* cam_isSphereInView: a sphere whose direction from the camera
+                                   * has dot(dir, view forward) below this is outside the view cone */
+    /* 0x084 */ f32 drawDist[5];     /* per-class draw distance at the reference 85-degree fov
+                                   * (Window_setDefaults: 0, 2200, 3000, 19584, ...) */
+    /* 0x098 */ f32 drawDistFov[5];  /* drawDist * 85 / camera fov (Window_display); cam_isSphereInView
+                                   * culls a sphere of class i when drawDistFov[i] <= dist - radius */
     /* 0x0AC */ f32 near;
     /* 0x0B0 */ f32 far;
     /* 0x0B4 */ f32 aspect;          /* width / height, Window_updateAspect */
