@@ -7,10 +7,11 @@
  * titproc_uso.c. */
 #include "common.h"
 #include "game/input.h" /* d = the bootup input manager import */
+#include "game/modeproc.h" /* a0 = the titproc flow object (ModeFlowProc: +0 the record session) */
 #include "uso_call.h"
 /* States 7 / 9 (vs ghost): copy the saved ghost's rider / board flag /
  * board into InputMgr ghostRider / ghostFlags / ghostBoard for game_setupVsGhost and
- * take its course; `*(int *)(*(int *)a0 + 8)` is the open BackupSession's ghost. */
+ * take its course; `FLOWPROC(a0)->session->ghost` is the open BackupSession's ghost. */
 extern char import_00020098;
 extern int titproc_uso_func_0120A8();
 extern int titproc_uso_func_0027E8();
@@ -47,17 +48,17 @@ void tit_procMain(char *a0, int a1) {
             r = (int *)XCALL(titproc_uso_func_0027E8, game_init)(d, 2, 9, 1);
             t = (int)r;
             XCALL(titproc_uso_func_07ACE0, list_append)((char *)&import_00020098 + 0x10, r); if (a0) {}
-            if (*(int *)((char *)t + 0x14) != 0) {
-                *(int *)((char *)t + 0x4) = 1;
+            if (NODE(t)->parent != 0) {
+                NODE(t)->unk04 = 1;
             }
-            *(int *)((char *)t + 0x14) = d;
+            NODE(t)->parent = (Node *)d;
             XCALL(titproc_uso_func_01DA48, app_runProcess)(a0, 0, XCALL(titproc_uso_func_000C54, TitleDemoProcess_ctor)(0, r));
             break;
         }
         case 1:
             XCALL(titproc_uso_func_000B6C, tit_openSession_00000B6C)(a0, -1);
             done = 1;
-            import_000B3268(a0, 0x9FFF0, 0x10000, *(int *)a0);
+            import_000B3268(a0, 0x9FFF0, 0x10000, FLOWPROC(a0)->session);
             ((InputMgr *)d)->nextProcState = 2;
             break;
         case 2:
@@ -77,10 +78,10 @@ void tit_procMain(char *a0, int a1) {
             r = (int *)XCALL(titproc_uso_func_0027E8, game_init)(d, t, 10, 1);
             t = (int)r;
             XCALL(titproc_uso_func_07ACE0, list_append)((char *)&import_00020098 + 0x10, r);
-            if (*(int *)((char *)t + 0x14) != 0) {
-                *(int *)((char *)t + 0x4) = 1;
+            if (NODE(t)->parent != 0) {
+                NODE(t)->unk04 = 1;
             }
-            *(int *)((char *)t + 0x14) = d;
+            NODE(t)->parent = (Node *)d;
             XCALL(titproc_uso_func_011CD8, input_setRacePadsActive)(d, 1);
             XCALL(titproc_uso_func_01DA48, app_runProcess)(a0, 0, XCALL(titproc_uso_func_001E9C, GameDemoProcess_ctor)(0, mask, r, 0));
             ((InputMgr *)d)->procState = 0;
@@ -94,10 +95,10 @@ void tit_procMain(char *a0, int a1) {
             r = (int *)XCALL(titproc_uso_func_0027E8, game_init)(d, t, 11, 2);
             t = (int)r;
             XCALL(titproc_uso_func_07ACE0, list_append)((char *)&import_00020098 + 0x10, r);
-            if (*(int *)((char *)t + 0x14) != 0) {
-                *(int *)((char *)t + 0x4) = 1;
+            if (NODE(t)->parent != 0) {
+                NODE(t)->unk04 = 1;
             }
-            *(int *)((char *)t + 0x14) = d;
+            NODE(t)->parent = (Node *)d;
             XCALL(titproc_uso_func_011CD8, input_setRacePadsActive)(d, 1);
             XCALL(titproc_uso_func_01DA48, app_runProcess)(a0, 0, XCALL(titproc_uso_func_001E9C, GameDemoProcess_ctor)(0, mask, r, 0));
             ((InputMgr *)d)->procState = 0;
@@ -113,28 +114,28 @@ void tit_procMain(char *a0, int a1) {
             mask = (s5v | 0x8020000) | 0x80000;
             XCALL(titproc_uso_func_000B6C, tit_openSession_00000B6C)(a0, 2);
             done = 1;
-            ((InputMgr *)d)->ghostRider = tit_imp_Backup_ghostGetRider(*(int *)(*(int *)a0 + 8));
-            ((InputMgr *)d)->ghostFlags = tit_imp_Backup_ghostGetBoardFlag(*(int *)(*(int *)a0 + 8));
-            ((InputMgr *)d)->ghostBoard = tit_imp_Backup_ghostGetBoard(*(int *)(*(int *)a0 + 8));
+            ((InputMgr *)d)->ghostRider = tit_imp_Backup_ghostGetRider(FLOWPROC(a0)->session->ghost);
+            ((InputMgr *)d)->ghostFlags = tit_imp_Backup_ghostGetBoardFlag(FLOWPROC(a0)->session->ghost);
+            ((InputMgr *)d)->ghostBoard = tit_imp_Backup_ghostGetBoard(FLOWPROC(a0)->session->ghost);
             if (t != 0) {
-                XCALL(titproc_uso_func_0120A8, snd_playSeq_000120A8)(d, 10, tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8)), 2);
+                XCALL(titproc_uso_func_0120A8, snd_playSeq_000120A8)(d, 10, tit_imp_Backup_ghostGetCourse(FLOWPROC(a0)->session->ghost), 2);
             } else {
-                XCALL(titproc_uso_func_0120A8, snd_playSeq_000120A8)(d, 4, tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8)), 0);
+                XCALL(titproc_uso_func_0120A8, snd_playSeq_000120A8)(d, 4, tit_imp_Backup_ghostGetCourse(FLOWPROC(a0)->session->ghost), 0);
             }
             ((InputMgr *)d)->nextFlowMode = 6;
-            t = tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8));
+            t = tit_imp_Backup_ghostGetCourse(FLOWPROC(a0)->session->ghost);
             ((InputMgr *)d)->course = t;
             r = (int *)XCALL(titproc_uso_func_0027E8, game_init)(d, t, 4, 1);
             ((InputMgr *)d)->nextFlowMode = 1;
             t = (int)r;
             XCALL(titproc_uso_func_07ACE0, list_append)((char *)&import_00020098 + 0x10, r);
-            if (*(int *)((char *)t + 0x14) != 0) {
-                *(int *)((char *)t + 0x4) = 1;
+            if (NODE(t)->parent != 0) {
+                NODE(t)->unk04 = 1;
             }
-            *(int *)((char *)t + 0x14) = d;
+            NODE(t)->parent = (Node *)d;
             XCALL(titproc_uso_func_011CD8, input_setRacePadsActive)(d, 1);
-            t = *(int *)a0;
-            XCALL(titproc_uso_func_01DA48, app_runProcess)(a0, 0, XCALL(titproc_uso_func_001E9C, GameDemoProcess_ctor)(0, (int)&((char (*)[2])mask)[0][*(int *)(*(int *)(t + 8) + 4)], r, t));
+            t = (int)FLOWPROC(a0)->session;
+            XCALL(titproc_uso_func_01DA48, app_runProcess)(a0, 0, XCALL(titproc_uso_func_001E9C, GameDemoProcess_ctor)(0, (int)&((char (*)[2])mask)[0][((BackupSession *)t)->ghost->count], r, t));
             ((InputMgr *)d)->procState = 11;
             break;
         }
@@ -148,26 +149,26 @@ void tit_procMain(char *a0, int a1) {
             mask = (s5v | 0x8020000) | 0x80000;
             XCALL(titproc_uso_func_000B6C, tit_openSession_00000B6C)(a0, 1);
             done = 1;
-            ((InputMgr *)d)->ghostRider = tit_imp_Backup_ghostGetRider(*(int *)(*(int *)a0 + 8));
-            ((InputMgr *)d)->ghostFlags = tit_imp_Backup_ghostGetBoardFlag(*(int *)(*(int *)a0 + 8));
-            ((InputMgr *)d)->ghostBoard = tit_imp_Backup_ghostGetBoard(*(int *)(*(int *)a0 + 8));
+            ((InputMgr *)d)->ghostRider = tit_imp_Backup_ghostGetRider(FLOWPROC(a0)->session->ghost);
+            ((InputMgr *)d)->ghostFlags = tit_imp_Backup_ghostGetBoardFlag(FLOWPROC(a0)->session->ghost);
+            ((InputMgr *)d)->ghostBoard = tit_imp_Backup_ghostGetBoard(FLOWPROC(a0)->session->ghost);
             if (t != 0) {
-                XCALL(titproc_uso_func_0120A8, snd_playSeq_000120A8)(d, 10, tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8)), 1);
+                XCALL(titproc_uso_func_0120A8, snd_playSeq_000120A8)(d, 10, tit_imp_Backup_ghostGetCourse(FLOWPROC(a0)->session->ghost), 1);
             } else {
-                XCALL(titproc_uso_func_0120A8, snd_playSeq_000120A8)(d, 4, tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8)), 0);
+                XCALL(titproc_uso_func_0120A8, snd_playSeq_000120A8)(d, 4, tit_imp_Backup_ghostGetCourse(FLOWPROC(a0)->session->ghost), 0);
             }
-            t = tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8));
+            t = tit_imp_Backup_ghostGetCourse(FLOWPROC(a0)->session->ghost);
             ((InputMgr *)d)->course = t;
             r = (int *)XCALL(titproc_uso_func_0027E8, game_init)(d, t, 4, 1);
             t = (int)r;
             XCALL(titproc_uso_func_07ACE0, list_append)((char *)&import_00020098 + 0x10, r);
-            if (*(int *)((char *)t + 0x14) != 0) {
-                *(int *)((char *)t + 0x4) = 1;
+            if (NODE(t)->parent != 0) {
+                NODE(t)->unk04 = 1;
             }
-            *(int *)((char *)t + 0x14) = d;
+            NODE(t)->parent = (Node *)d;
             XCALL(titproc_uso_func_011CD8, input_setRacePadsActive)(d, 1);
-            t = *(int *)a0;
-            XCALL(titproc_uso_func_01DA48, app_runProcess)(a0, 0, XCALL(titproc_uso_func_001E9C, GameDemoProcess_ctor)(0, (int)&((char (*)[2])mask)[0][*(int *)(*(int *)(t + 8) + 4)], r, t));
+            t = (int)FLOWPROC(a0)->session;
+            XCALL(titproc_uso_func_01DA48, app_runProcess)(a0, 0, XCALL(titproc_uso_func_001E9C, GameDemoProcess_ctor)(0, (int)&((char (*)[2])mask)[0][((BackupSession *)t)->ghost->count], r, t));
             ((InputMgr *)d)->procState = 11;
             break;
         }
