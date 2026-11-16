@@ -27,9 +27,6 @@ extern int gl_func_00000000();
 extern int gl_func_00000000f(char *, int, int, int, f32, char *);
 extern f32 D_00000000;
 
-/* PointsPopup.font (s32) read as the sprite pointer it holds: the test and the three calls share one
- * pointer-typed load (an int field cast per use is two values: an extra move) */
-#define POPUP_SPRITE(p) (*(char **)&(p)->font)
 
 void PointsGadget_display_FFFFFFE0(PointsPopup *p) {
     f32 base[4];
@@ -56,10 +53,10 @@ void PointsGadget_display_FFFFFFE0(PointsPopup *p) {
     /* scaleX goes in a3 as its raw bits (the callee is K&R here: lw, not lwc1 + mfc1) */
     XCALL(gl_func_00000000f, gui_drawStringScaled_00000F04)((char *)p->arg, (int)(p->parms.xps.value + 2.0f), (int)p->parms.yps.value,
                       *(int *)&p->scaleX, p->scaleY, p->text);
-    if (POPUP_SPRITE(p) != 0) {
-        CALL(gui_spriteRefresh)(POPUP_SPRITE(p));
-        CALL(gui_setColorEnvPrim_000017DC)(POPUP_SPRITE(p), (int)((f32)p->alpha * D_00000000), col, 255);
-        CALL(gui_drawSprite)(POPUP_SPRITE(p), (int)(p->parms.xps.value + (f32)p->unk80),
+    if (p->font != 0) {
+        CALL(gui_spriteRefresh)(p->font);
+        CALL(gui_setColorEnvPrim_000017DC)(p->font, (int)((f32)p->alpha * D_00000000), col, 255);
+        CALL(gui_drawSprite)(p->font, (int)(p->parms.xps.value + (f32)p->unk80),
                          (int)(p->parms.yps.value + (f32)p->unk84), 3);
     }
 }

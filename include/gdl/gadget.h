@@ -186,7 +186,8 @@ typedef struct PointsPopup {
     /* 0x94 */ s32 state;          /* 0 = free; allocSlot sets 5 */
     /* 0x98 */ s32 value;          /* the points shown (allocSlot arg 1, "%d") */
     /* 0x9C */ s32 timer;          /* frames left in the current state (pop functions: 14 / 30 / 230) */
-    /* 0xA0 */ s32 font;           /* the digit sprite: one of the list's sprites (+0x108 / 0x120 / 0x138 / 0x150) */
+    /* 0xA0 */ char *font;         /* the digit sprite: one of the list's 0x18-byte gui sprites
+                                    * (TrickPointsGadget sprite1..4, +0x108 / 0x120 / 0x138 / 0x150) */
     /* 0xA4 */ f32 velX;
     /* 0xA8 */ f32 velY;
     /* 0xAC */ f32 accelY;         /* update: velY += accelY */

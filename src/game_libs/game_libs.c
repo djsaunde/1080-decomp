@@ -1737,7 +1737,7 @@ PointsPopup *PointsGadget_allocSlot_00003DB8(TrickPointsGadget *arg0, s32 arg1, 
             }
             XCALL(gl_func_00000000_i3ff, PointsPopup_setPosScale)((int)arg0->slots[i], 220, 120, 1.0f, 1.0f);
             arg0->slots[i]->value = 0;
-            arg0->slots[i]->font = (s32)arg0->sprite0;
+            arg0->slots[i]->font = arg0->sprite0;
             arg0->slots[i]->velX = 0.0f;
             arg0->slots[i]->velY = 0.0f;
             arg0->slots[i]->accelY = 0.0f;

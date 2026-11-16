@@ -1283,7 +1283,7 @@ void arc_DataManager_init(ArcDataManager *arg0, char *arg1, int arg2, char *arg3
             ((f32 *)sub)[2] = 100.0f / denom;
             ((f32 *)sub)[3] = r0;
         }
-        POPUP(arg0->base.points94)->font = (int)TPOINTS(arg0->base.pointsList)->sprite1;
+        POPUP(arg0->base.points94)->font = TPOINTS(arg0->base.pointsList)->sprite1;
         POPUP(arg0->base.points94)->unk80 = 0;
         POPUP(arg0->base.points94)->unk84 = -0x12;
         sub = (char *)arg0->base.points94;

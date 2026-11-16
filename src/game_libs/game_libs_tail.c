@@ -2775,7 +2775,7 @@ void RaceTracker_onGateCleared(RaceTracker *o, int a1) {
     POPUP(obj)->colour[2] = b / 255.0f;
     b = 255.0;
     POPUP(obj)->colour[3] = b / 255.0f;
-    POPUP(obj)->font = o->pointsList + 0x150;
+    POPUP(obj)->font = (char *)o->pointsList + 0x150;
     POPUP(obj)->accelY = 0.0f;
     XCALL(gl_func_00000000_d548f, PointsPopup_setPosScale)(obj, 100, 0x86, 1.0f, 1.0f);
     POPUP(obj)->velY = 0.0f;
@@ -2832,7 +2832,7 @@ void RaceTracker_popComboBonus(RaceTracker *o, int a1) {
     POPUP(obj)->colour[1] = g / 255.0f;
     POPUP(obj)->colour[2] = b / 255.0f;
     POPUP(obj)->colour[3] = a / 255.0f;
-    POPUP(obj)->font = o->pointsList + 0x138;
+    POPUP(obj)->font = (char *)o->pointsList + 0x138;
     POPUP(obj)->timer = 30;
 }
 
@@ -2872,7 +2872,7 @@ void RaceTracker_popTrickPointsCombo(RaceTracker *arg0, int arg1, int arg2) {
         POPUP(v0)->colour[1] = 235.0f / denom;
         POPUP(v0)->colour[2] = 100.0f / denom;
         POPUP(v0)->colour[3] = (float)255 / denom;
-        POPUP(v0)->font = arg0->pointsList + 0x108;
+        POPUP(v0)->font = (char *)arg0->pointsList + 0x108;
         POPUP(v0)->timer = 14;
         gl_proto_d7b8(v0, 1.0f, 1.0f);
         POPUP(v0)->alpha = 255;
@@ -2959,7 +2959,7 @@ void RaceTracker_popFinalScore(RaceTracker *a0, int a1) {
         POPUP(v0)->colour[2] = num100 / 255.0f;
         POPUP(v0)->colour[1] = num235 / 255.0f;
         POPUP(v0)->colour[3] = num255 / 255.0f;
-        POPUP(v0)->font = (int)((char *)a0->pointsList + 0x120);
+        POPUP(v0)->font = (char *)a0->pointsList + 0x120;
     }
     sub = (int *)a0->pointsList;
     if (sub != 0) {
