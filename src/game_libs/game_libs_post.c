@@ -3054,36 +3054,39 @@ int AudioHeap_SearchRegularCaches(int mode, int flag, int key) {
     int i;
     char *base;
     char *v1;
-    Gl20914Tbl *t;
+    AudioPersistentCache *t;
 
     switch (mode) {
-    case 0:  base = (char *)&gAudioContext + 0x21F8; break;
-    case 1:  base = (char *)&gAudioContext + 0x2308; break;
-    case 2:  base = (char *)&gAudioContext + 0x2418; break;
+    case 0:  base = (char *)&((AudioContext *)&gAudioContext)->seqCache; break;
+    case 1:  base = (char *)&((AudioContext *)&gAudioContext)->fontCache; break;
+    case 2:  base = (char *)&((AudioContext *)&gAudioContext)->sampleBankCache; break;
     }
-    v1 = base + 0xD4;
+#define TMP ((AudioTemporaryCache *)v1)
+    v1 = (char *)&((AudioCache *)base)->temporary;
     if (flag == 0) {
-        if (key == *(short *)(v1 + 0x1E)) {
-            *(int *)v1 = 1;
-            return *(int *)(v1 + 0x14);
+        if (key == TMP->entries[0].id) {
+            TMP->nextSide = 1;
+            return *(int *)&TMP->entries[0].ramAddr;
         }
-        if (key == *(short *)(v1 + 0x2A)) {
-            *(int *)v1 = 0;
-            return *(int *)(v1 + 0x20);
+        if (key == TMP->entries[1].id) {
+            TMP->nextSide = 0;
+            return *(int *)&TMP->entries[1].ramAddr;
         }
         return 0;
     }
-    t = (Gl20914Tbl *)base;
+#undef TMP
+    t = (AudioPersistentCache *)base;
     i = 0;
-    if (*(int *)base != 0) {
+    if (t->numEntries != 0) {
+        /* v1 walks the persistent entries: ((AudioPersistentCache *)v1)->entries[0] = entries[i] */
         v1 = base;
         do {
-            if (key == *(short *)(v1 + 0x1E)) {
-                return *(int *)(v1 + 0x14);
+            if (key == ((AudioPersistentCache *)v1)->entries[0].id) {
+                return *(int *)&((AudioPersistentCache *)v1)->entries[0].ramAddr;
             }
             i++;
-            v1 += 12;
-        } while ((unsigned)i < (unsigned)t->count);
+            v1 += sizeof(AudioCacheEntry);
+        } while ((unsigned)i < t->numEntries);
     }
     if (flag == 2) {
         return CALL(AudioHeap_SearchCaches)(mode, 0, key);   /* blank load-time jal; callee = AudioHeap_SearchCaches */
@@ -3686,10 +3689,11 @@ void AudioHeap_Init(void) {
  * history; the "regalloc/rotation hybrid cap" verdict is RETRACTED.) */
 extern char gAudioContext_21d2c_tbl[];
 extern char gAudioContext_21d2c_n[];
-int AudioHeap_SearchPermanentCache(int a0, int a1) {
+#define PERM (&((AudioContext *)cursor)->permanentCache[0])
+int AudioHeap_SearchPermanentCache(int a0, int a1) { /* (tableType, id) */
     int i = 0;
-    int n = *(int *)(gAudioContext_21d2c_n + 0x2534);
-    char *cursor;
+    int n = ((AudioContext *)gAudioContext_21d2c_n)->permanentPool.numEntries;
+    char *cursor; /* the context shifted by i entries: PERM = permanentCache[i] */
     int b = a1;
     a1 = 0;
     while (0) { a0 += 1; }
@@ -3697,15 +3701,16 @@ int AudioHeap_SearchPermanentCache(int a0, int a1) {
         cursor = (i = 0) + gAudioContext_21d2c_tbl;
         do {
             i++;
-            if (a0 == *(short *)(cursor + 0x2540) && b == *(short *)(cursor + 0x2542)) {
-                return *(int *)(cursor + 0x2538);
+            if (a0 == PERM->tableType && b == PERM->id) {
+                return *(int *)&PERM->ramAddr;
             }
-            n = *(int *)(gAudioContext_21d2c_n + 0x2534);
-            cursor += 0xC;
+            n = ((AudioContext *)gAudioContext_21d2c_n)->permanentPool.numEntries;
+            cursor += sizeof(AudioCacheEntry);
         } while (i < n);
     }
     return 0;
 }
+#undef PERM
 
 /* AudioHeap_AllocPermanent: 33-insn slot-register helper.
  *   count = D[0x2534];
