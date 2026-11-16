@@ -1,0 +1,33 @@
+{
+  "function_name": "checkpoint_uso_func_00000070",
+  "project": "1080-decomp",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-11-16T20:42:39.573665+00:00",
+  "end_time": "2026-11-16T20:42:39.573684+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T20:42:39.573679+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 13,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n#include \"uso_call.h\"\n\nextern int gl_func_00000000();\nextern char D_00000000;\n\n/* checkpoint.uso: checkpoint course objects (two SNode subclasses, a CollObj\n * cylinder gate at 0xE0 and a box gate at 0x58C, plus their templates).\n * IDO 7.1 cfe -O2, like game_uso. Relocs (scripts/uso-imports.py sites\n * checkpoint): bootup Bss+0x3C740 = the gdl file system object, Bss+0x3C768 =\n * the hostio object. */\n\n/* checkpoint_uso_func_00000000: write an int to the gdl file (cross-USO\n * template, as game_libs fs_gdlWriteInt_0003D000). */\nvoid checkpoint_uso_func_00000000(int *a0) {\n    int pad, scratch;\n    scratch = *a0;\n    CALL(fs_gdlWriteFile)(&D_00000000, &scratch, 4);\n}\n\n/* checkpoint_uso_func_00000034: read an int from the gdl file (template, as\n * game_uso stream_readS32_00000280). */\nvoid checkpoint_uso_func_00000034(int *dst) {\n    int buf[2];\n    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);\n    *dst = buf[0];\n}\n\n/* checkpoint_uso_func_00000070: second copy of the int writer (one per class TU). */\nvoid checkpoint_uso_func_00000070(int *a0) {\n    int pad, scratch;\n    scratch = *a0;\n    CALL(fs_gdlWriteFile)(&D_00000000, &scratch, 4);\n}\n\n/* checkpoint_uso_func_000000A4: second copy of the int reader. */\nvoid checkpoint_uso_func_000000A4(int *dst) {\n    int buf[2];\n    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);\n    *dst = buf[0];\n}\n\nINCLUDE_ASM(\"asm/nonmatchings/checkpoint_uso/checkpoint_uso\", checkpoint_uso_func_000000E0);\n\n/* checkpoint_uso_func_000001E4: cylinder checkpoint loadData (int at 0x88). */\nvoid checkpoint_uso_func_000001E4(char *self) {\n    checkpoint_uso_func_00000034((int *)(self + 0x88));\n    CALL(SNode_loadData)(self);\n}\n\n/* checkpoint_uso_func_00000210: cylinder checkpoint saveData. */\nvoid checkpoint_uso_func_00000210(char *self) {\n    checkpoint_uso_func_00000000((int *)(self + 0x88));\n    CALL(SNode_saveData)(self);\n}\n\n/* checkpoint_uso_func_0000023C: cylinder checkpoint hostioParms (one int, 0..100). */\nvoid checkpoint_uso_func_0000023C(char *self) {\n    char *name = *(char **)(self + 0xC); /* Node name */\n    CALL(hostio_beginGroup)(&D_00000000, name, 0);\n    CALL(hostio_addInt)(&D_00000000, &D_00000000 + 0x3EE0, self + 0x88, 0, 100, 0);\n    CALL(hostio_endGroup)(&D_00000000);\n    CALL(SNode_hostioParms)(self);\n}\n\nINCLUDE_ASM(\"asm/nonmatchings/checkpoint_uso/checkpoint_uso\", checkpoint_uso_func_000002AC);\n\nINCLUDE_ASM(\"asm/nonmatchings/checkpoint_uso/checkpoint_uso\", checkpoint_uso_func_0000045C);\n\nINCLUDE_ASM(\"asm/nonmatchings/checkpoint_uso/checkpoint_uso\", checkpoint_uso_func_0000058C);\n\n/* checkpoint_uso_func_0000063C: box checkpoint loadData (int at 0xC8). */\nvoid checkpoint_uso_func_0000063C(char *self) {\n    checkpoint_uso_func_000000A4((int *)(self + 0xC8));\n    CALL(SNode_loadData)(self);\n}\n\n/* checkpoint_uso_func_00000668: box checkpoint saveData. */\nvoid checkpoint_uso_func_00000668(char *self) {\n    checkpoint_uso_func_00000070((int *)(self + 0xC8));\n    CALL(SNode_saveData)(self);\n}\n\n/* checkpoint_uso_func_00000694: box checkpoint handleMsg: messages 7 and 19\n * copy the Vec3 at 0x5C into 0xA0. */\nvoid checkpoint_uso_func_00000694(char *self, int *msg) {\n    CALL(SNode_handleMsg)(self, msg);\n    if (*msg == 7 || *msg == 19) {\n        *(float *)(self + 0xA0) = *(float *)(self + 0x5C);\n        *(float *)(self + 0xA4) = *(float *)(self + 0x60);\n        *(float *)(self + 0xA8) = *(float *)(self + 0x64);\n    }\n}\n\nINCLUDE_ASM(\"asm/nonmatchings/checkpoint_uso/checkpoint_uso\", checkpoint_uso_func_000006F0);\n\nINCLUDE_ASM(\"asm/nonmatchings/checkpoint_uso/checkpoint_uso\", checkpoint_uso_func_000007F4);\n\nINCLUDE_ASM(\"asm/nonmatchings/checkpoint_uso/checkpoint_uso\", checkpoint_uso_func_000008E8);\n\n",
+  "metadata": {
+    "source_path": "src/checkpoint_uso/checkpoint_uso.c",
+    "asm_path": "asm/nonmatchings/checkpoint_uso/checkpoint_uso/checkpoint_uso_func_00000070.s",
+    "segment": "checkpoint_uso",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Byte-identical to the asm .word target; readability-gate PASS (ROM identical)."
+  }
+}
