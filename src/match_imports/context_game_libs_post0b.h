@@ -646,7 +646,7 @@ void coll_nop_00035FCC(void);
 extern char gl_38360_context[];
 extern char gl_38360_data[];
 extern void gl_3D48C_register(void *, void *, int);
-extern int gl_44144_register_float(void *, char *, float *, float, float, s32);
+extern int hostio_addFloat_44144(void *, char *, float *, float, float, s32);
 extern void gl_3D48C_finish(void *);
 extern void gl_3D48C_dispatch(GlObjectPrefix *);
 void BallRotator_hostioParms(GlObjectPrefix *o);
@@ -1567,21 +1567,21 @@ extern int gl_ref_00056CB4();
 void gfx_loadQuadIntInt_00044034(void *a0);
 void FogParms_lerp_0004406C(Boot7EC8Block *a, Boot7EC8Block *b, f32 t);
 struct GlSmallState22C { char pad0[0xC]; s32 p0C; char pad10[8]; };
-extern int gl_44144_register_int(void *, char *, s32);
-extern int gl_44144_register_float(void *, char *, float *, float, float, s32);
-extern int gl_44144_register_word(void *, char *, void *);
-extern int gl_44144_register_range(void *, char *, void *, s32, s32, s32);
-extern int gl_44144_setup(void *);
-extern s32 *gl_44144_alloc(s32);
-extern void gl_44144_register_binding(void *, char *, s32 *, s32);
-extern int gl_44144_format(char *, char *, ...);
-extern int gl_44144_message(void *, char *);
-extern int gl_44144_finish(void *);
-extern int gl_44144_dispatch(void *);
-extern char gl_44144_key_FD34, gl_44144_key_FD40, gl_44144_key_FD50,
-    gl_44144_key_FD58, gl_44144_key_FD64, gl_44144_key_F970,
-    gl_44144_key_FD6C, gl_44144_key_FD78, gl_44144_key_FD88,
-    gl_44144_key_FD94, gl_44144_key_FDA4, gl_44144_key_FDD4;
+extern int hostio_beginGroup_44144(void *, char *, s32);
+extern int hostio_addFloat_44144(void *, char *, float *, float, float, s32);
+extern int hostio_addBool_44144(void *, char *, void *);
+extern int hostio_addInt_44144(void *, char *, void *, s32, s32, s32);
+extern int FogParms_hostioParms_44144(void *);
+extern s32 *mem_new_44144(s32);
+extern void hostio_addButton_44144(void *, char *, s32 *, s32);
+extern int gl_sprintf_44144(char *, char *, ...);
+extern int hostio_addText_44144(void *, char *);
+extern int hostio_endGroup_44144(void *);
+extern int Node_hostioParms_44144(void *);
+extern char sKey_44144_GfxLibParms, sKey_44144_ShadowAlpha, sKey_44144_CvgTest,
+    sKey_44144_AutoLights, sKey_44144_FifoLen, gAutoLights_1F970_44144,
+    sKey_44144_DumpScreen, sKey_44144_DumpZBuffer, sKey_44144_DumpError,
+    sKey_44144_ShowDLUsage, sKey_44144_RcpStatusFmt, sKey_44144_GfxStatusFmt;
 void GfxLib_hostioParms(void *arg0);
 void gfx_dlMarkBegin_00044460(int *a0, int *a1);
 void gfx_dlMarkEnd_00044474(int *a0);
