@@ -35,14 +35,14 @@ void MGRRaceProcess_drawIntro(char *arg0) {
         import_0024EAA0(&import_8024CAF8, (int)((0, (float)255) * MGRRACE(arg0)->overlayAlpha), MGRRACE(arg0)->race.colours.pair[RACECOL_CS][0].value, MGRRACE(arg0)->race.colours.pair[RACECOL_CS][1].value);
         import_0024F2C8(&MGRRACE(arg0)->sprites[0]);
         import_0024F34C(&MGRRACE(arg0)->sprites[0], 0xA0, 0xB0, 3);
-        while (0) { w = *(short *)(arg0 + 0x20); }
+        while (0) { w = *(short *)&((Node *)arg0)->handle; } /* dead; shapes the regalloc */
         q = (char *)MGRRACE(arg0)->sprites[2].image;
         w = ((RaceSpriteImage *)q)->width;
         p6d8 = (char *)MGRRACE(arg0)->sprites[1].image;
         sp48 = 0xA0 - ((((RaceSpriteImage *)p6d8)->width + w + 4) / 2);
         import_0024EAA0(&import_8024CAF8, (int)((0, (float)255) * MGRRACE(arg0)->overlayAlpha), MGRRACE(arg0)->race.colours.pair[RACECOL_RN][0].value, MGRRACE(arg0)->race.colours.pair[RACECOL_RN][1].value);
         p6a8 = (char *)MGRRACE(arg0)->courseList;
-        if (*(int *)(p6a8 + 8) == (*(int *)(p6a8 + 4) + 1) /* MgrCourseList count == idx + 1 (member form reorders the loads) */) {
+        if (*(int *)&((MgrCourseList *)p6a8)->count == (*(int *)&((MgrCourseList *)p6a8)->idx + 1) /* last course; the plain member form reorders the loads */) {
             import_0024F2C8(&MGRRACE(arg0)->sprites[2]);
             import_0024F34C(&MGRRACE(arg0)->sprites[2], sp48, 0x88, 2);
             import_0024F2C8(&MGRRACE(arg0)->sprites[1]);

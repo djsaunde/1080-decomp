@@ -1,5 +1,15 @@
 /* Native original-compiler source port from src/game_uso/game_uso.c. Target bytes unchanged. */
 #include "context_game_uso.h"
+#include "gdl/node.h"
+#include "game/course.h"
+
+/* CourseMarkerTmpl_create (course.h CourseMarker): new CourseMarker (0x8C) = ColourItem base, vptr
+ * Data 0x578, then its "CourseMarker::Parms" (wid float 1.0, ext int, flg int); the owner type's
+ * +0x40 node, when set, becomes the marker's child. */
+#define CM(p) ((CourseMarker *)(p))
+#define MPARMS(p) ((CourseMarkerParms *)(p))
+#define PARM(p) ((CourseParm *)(p))
+#define FPARM(p) ((CourseFParm *)(p))
 char *CourseMarkerTmpl_create(char *owner) {
     char *result;
     union { char *allocated; char *nodes[1]; } carrier;
@@ -17,39 +27,39 @@ char *CourseMarkerTmpl_create(char *owner) {
         node = 0;
         uso_base_init_051C28((SnwBase3D5BC *)((int)allocation | (int)node));
         ((SnwBase3D5BC *)carrier.nodes[0])->field_28 = &game_uso_D_807FEB68;
-        embedded = carrier.allocated + 0x3C;
+        embedded = (char *)&CM(carrier.allocated)->parms;
         if (embedded != 0 || (embedded = (char *)game_uso_func_055750(0x50)) != 0) {
             header = embedded;
             if (header != 0 || (header = (char *)game_uso_func_055750(8)) != 0) {
-                *(int *)header = (int)((char *)&game_uso_D_807FECA0 + 0x6B0);
-                *(int *)(header + 4) = 0;
+                MPARMS(header)->name = (int)((char *)&game_uso_D_807FECA0 + 0x6B0);
+                MPARMS(header)->list = 0;
             }
             slot0.a = *(int *)((char *)&game_uso_D_807FECB4 + 0x6C4);
             marsh = slot0;
-            child = embedded + 8;
+            child = (char *)&MPARMS(embedded)->wid;
             if (child != 0 || (child = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(child, embedded, marsh, 1);
-                *(int *)(child + 0xC) = (int)((char *)&game_uso_D_807FE9B8 + 0x3C8);
-                *(int *)(child + 0x14) = 0;
-                *(float *)(child + 0x10) = 1.0f;
+                PARM(child)->vptr = (int)((char *)&game_uso_D_807FE9B8 + 0x3C8);
+                FPARM(child)->value2 = 0;
+                FPARM(child)->value = 1.0f;
             }
             slot1.a = *(int *)((char *)&game_uso_D_807FECB8 + 0x6C8);
             marsh = slot1;
-            child = embedded + 0x20;
+            child = (char *)&MPARMS(embedded)->ext;
             if (child != 0 || (child = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(child, embedded, marsh, 1);
-                *(int *)(child + 0xC) = (int)((char *)&game_uso_D_807FEA00 + 0x410);
-                *(int *)(child + 0x10) = 0;
-                *(int *)(child + 0x14) = 0;
+                PARM(child)->vptr = (int)((char *)&game_uso_D_807FEA00 + 0x410);
+                PARM(child)->value = 0;
+                PARM(child)->value2 = 0;
             }
             slot2.a = *(int *)((char *)&game_uso_D_807FECBC + 0x6CC);
             marsh = slot2;
-            child = embedded + 0x38;
+            child = (char *)&MPARMS(embedded)->flg;
             if (child != 0 || (child = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(child, embedded, marsh, 0);
-                *(int *)(child + 0xC) = (int)((char *)&game_uso_D_41C0_last + 0x410);
-                *(int *)(child + 0x14) = 0;
-                *(int *)(child + 0x10) = 0;
+                PARM(child)->vptr = (int)((char *)&game_uso_D_41C0_last + 0x410);
+                PARM(child)->value2 = 0;
+                PARM(child)->value = 0;
             }
         }
     }
@@ -58,9 +68,9 @@ char *CourseMarkerTmpl_create(char *owner) {
     if (node != 0) {
         result = carrier.allocated;
         carrier.nodes[0] = node;
-        game_uso_func_07ACE0(result + 0x10, carrier.nodes[0]);
-        if (*(int *)(carrier.nodes[0] + 0x14) != 0) *(int *)(carrier.nodes[0] + 4) = 1;
-        *(int *)(carrier.nodes[0] + 0x14) = (int)result;
+        game_uso_func_07ACE0(&((Node *)result)->children, carrier.nodes[0]); /* list_append */
+        if (((Node *)carrier.nodes[0])->parent != 0) ((Node *)carrier.nodes[0])->unk04 = 1;
+        ((Node *)carrier.nodes[0])->parent = (Node *)result;
     }
     return result;
 }
