@@ -93,6 +93,15 @@ build/src/gui_uso/gui_uso.c.o: TRUNCATE_TEXT := 0x473C
 # compare build/non_matching vs expected) score the trailing alignment-nop word.
 # splat-symbol-boundary trailing-delay-nop class — see docs/MATCHING_WORKFLOW.md.
 build/non_matching/src/gui_uso/gui_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gui_fontAdjustAdvance=0x00000000 gui_drawImage_00003B80=0x00000000,0x00000000,0x00000000
+# snoweffects.uso is four C++ TUs linked into one Text (each TU's reader helpers repeat at
+# 0xCC / 0x3D70 / 0x7E20 / 0x9250); the 16-byte .text pad at the end of each TU is an all-zero
+# SUFFIX on that TU's last function (same mechanism as gui / h2hproc above).
+SNOW_SUFFIX := snoweffects_uso_func_00003D34=0x00000000,0x00000000,0x00000000
+build/src/snoweffects_uso/snoweffects_uso.c.o: SUFFIX_BYTES_FORCE := $(SNOW_SUFFIX)
+build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := $(SNOW_SUFFIX)
+# inject-suffix-bytes appends at the section end as well: clip .text back to the Text size
+build/src/snoweffects_uso/snoweffects_uso.c.o: TRUNCATE_TEXT := 0xA900
+build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0xA900
 build/src/h2hproc_uso/h2hproc_uso.c.o: SUFFIX_BYTES_FORCE := h2h_closeSession_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
 build/src/h2hproc_uso/h2hproc_uso.c.o: TRUNCATE_TEXT := 0x1B30
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := h2h_closeSession_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
