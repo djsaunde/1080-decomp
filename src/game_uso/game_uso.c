@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/game_uso_data.h"
 #include "game/snowai.h"
 #include "game/rideranim.h"
 #include "game/camera.h"
@@ -5316,9 +5317,9 @@ void RiderAnim_init_0000D458(s32 arg0) {
     XCALL(game_uso_func_077C44, AnimPlayer_start)(arg0, RA(arg0)->animSet | RANIM_UP_DOWN, 0, 0, 1, 1);
     import_0010D420(arg0);
     if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
-        RiderAnim_enterState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A0 + 0xDB0));
+        RiderAnim_enterState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A0 + kPmf_RiderAnim_stateStartIntro));
     } else {
-        RiderAnim_enterState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A8 + 0xDB8));
+        RiderAnim_enterState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A8 + kPmf_RiderAnim_stateStartWait));
     }
     XCALL(game_uso_func_049280, sys_writebackDCacheAll)();
     XCALL(game_uso_func_048020, dma_read)((s32) &sp30, 0xF10, 0x10);
@@ -5330,7 +5331,7 @@ void RiderAnim_init_0000D458(s32 arg0) {
         var_v0 = 1;
     }
     if (var_v0 == 0) {
-        RiderAnim_enterState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3B0 + 0xDC0));
+        RiderAnim_enterState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3B0 + kPmf_RiderAnim_stateStopped));
     }
 }
 
@@ -5351,7 +5352,7 @@ void RiderAnim_enterState_0000D5BC(char *a0, Pair2 pair) {
  * Byte-exact (in-tree verified). */
 extern char game_uso_D_807FF3B8;
 void RiderAnim_clearState_0000D5DC(char *a0) {
-    RA(a0)->state = *(Pair2*)((char*)&game_uso_D_807FF3B8 + 0xDC8); /* the null PMF */
+    RA(a0)->state = *(Pair2*)((char*)&game_uso_D_807FF3B8 + kPmfNull_DC8); /* the null PMF */
 }
 
 /* Varargs (&a1) pair-sink: if a3==-1 set a0->0x68=a3 else a0->0x64=a3; then copy
@@ -5498,7 +5499,7 @@ void RiderAnim_checkReverseBrake_0000D7F4(char *a0) {
         if (data->contactCount != 0) {
             CALL(RiderAnim_applyDamage_0000EDD4)(a0, 1, 2);
             CALL(AnimPlayer_start)(a0, RA(a0)->animSet | RANIM_BUMP_R_BREAK, 0, 1, 1, 1);
-            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE90), 1);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateResumeRide), 1);
             CALL(RiderAnim_clearState_0000D5DC)(a0);
             RA(a0)->trickPhase = 0;
         }
@@ -5511,7 +5512,7 @@ void RiderAnim_checkReverseBrake_0000D7F4(char *a0) {
  * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_checkBrake_0000D8A8(char *a0) {
     if (RA(a0)->rider->crouch != 0) {
-        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE70));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateBrakeBlendIn));
     }
 }
 
@@ -5550,7 +5551,7 @@ void RiderAnim_checkJump_0000D8EC(int *a0) {
             if ((((RiderInput *)v0)->held & 0x100) != 0) a1 = 1;
         }
         if (a1 != 0) {
-            CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xEB8));
+            CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_statePreJump));
             RA(a0)->jumpCharge = 0;
             RA(a0)->jumpRepress = 0;
         }
@@ -5642,9 +5643,9 @@ void RiderAnim_checkRow_0000E1FC(char *obj) {
     m = (raw < 0.0f) ? -raw : raw;
     if (*(double *)((char *)&game_uso_D_807FF458 + 0x208) < (double)m) {
     callA:
-        RiderAnim_enterState_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF458 + 0xE68));
+        RiderAnim_enterState_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF458 + kPmf_RiderAnim_stateRowIn));
     } else {
-        RiderAnim_enterState_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF440 + 0xE50));
+        RiderAnim_enterState_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF440 + kPmf_RiderAnim_stateRow));
     }
 }
 
@@ -6004,22 +6005,22 @@ void RiderAnim_checkGroundSpin_0000E91C(char *a0) {
         goto L3;
     L2:
         RA(a0)->spinAnim = RA(a0)->animSet | RANIM_TO_FAKIE_360F;
-        homed = *(Pair2 *)(&game_uso_D_807FF430 + 0xE40);
+        homed = *(Pair2 *)(&game_uso_D_807FF430 + kPmf_RiderAnim_stateRide);
         import_00096724(RA(a0)->rider->sound);
         goto done_switch;
     L1:
         RA(a0)->spinAnim = RA(a0)->animSet | RANIM_TO_FAKIE_180F;
-        homed = *(Pair2 *)(&game_uso_D_807FF4E0 + 0xEF0);
+        homed = *(Pair2 *)(&game_uso_D_807FF4E0 + kPmf_RiderAnim_stateFlipToRide);
         import_00096704(RA(a0)->rider->sound);
         goto done_switch;
     L4:
         RA(a0)->spinAnim = RA(a0)->animSet | RANIM_TO_FAKIE_360B;
-        homed = *(Pair2 *)(&game_uso_D_807FF430 + 0xE40);
+        homed = *(Pair2 *)(&game_uso_D_807FF430 + kPmf_RiderAnim_stateRide);
         import_00096724(RA(a0)->rider->sound);
         goto done_switch;
     L3:
         RA(a0)->spinAnim = RA(a0)->animSet | RANIM_TO_FAKIE_180B;
-        homed = *(Pair2 *)(&game_uso_D_807FF4E0 + 0xEF0);
+        homed = *(Pair2 *)(&game_uso_D_807FF4E0 + kPmf_RiderAnim_stateFlipToRide);
         import_00096704(RA(a0)->rider->sound);
     done_switch:;
     }
@@ -6309,7 +6310,7 @@ void RiderAnim_stateSwitchStance(int *a0) {
         a1 = RA(a0)->animSet | RANIM_SWITCH_STANCE;
     }
     XCALL(game_uso_func_077C44, AnimPlayer_start)(a0, a1, 0, 1, 1, 1);
-    RiderAnim_queueState_0000D5F8((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF488 + 0xE98), 1);
+    RiderAnim_queueState_0000D5F8((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF488 + kPmf_RiderAnim_stateSwitchStanceEnd), 1);
     RiderAnim_clearState_0000D5DC((char *)a0);
 }
 
@@ -6317,7 +6318,7 @@ void RiderAnim_stateSwitchStance(int *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateFlipToRide(int a0) {
     CALL(RiderAnim_flipStance_0000D6E4)(a0);
-    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40));
+    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRide));
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
     CALL(RiderAnim_stateRide)(a0);
 }
@@ -6354,14 +6355,14 @@ void RiderAnim_stateSwitchStanceEnd(int *a0) {
     CALL(RiderAnim_clearRiderEdge_00011868)(s0);
     if (RA(s0)->rider->contactCount == 0) {
         CALL(RiderAnim_stateRide)(s0);
-        CALL(RiderAnim_enterState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + 0xDF8));
+        CALL(RiderAnim_enterState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + kPmf_RiderAnim_stateHopLand));
     } else {
         CALL(RiderAnim_endTrick_0000D63C)(s0, 1);
         if (RA(s0)->rider->useDParms != 0) {
-            CALL(RiderAnim_enterState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + 0xE60));
+            CALL(RiderAnim_enterState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + kPmf_RiderAnim_stateRideDeep));
             CALL(RiderAnim_stateRideDeep)(s0);
         } else {
-            CALL(RiderAnim_enterState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + 0xE40));
+            CALL(RiderAnim_enterState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + kPmf_RiderAnim_stateRide));
             CALL(RiderAnim_stateRide)(s0);
         }
     }
@@ -6429,10 +6430,10 @@ void RiderAnim_statePreJumpCancel(int *a0) {
     CALL(SndHandle_stop)(RA(a0)->rider->sound);
     if (RA(a0)->rider->useDParms != 0) {
         m = (RANIM_GROUP_DEEP | RANIM_UP_DOWN);
-        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE60), -1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + kPmf_RiderAnim_stateRideDeep), -1);
     } else {
         m = RA(a0)->animSet | RANIM_UP_DOWN;
-        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE40), -1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + kPmf_RiderAnim_stateRide), -1);
     }
     RA(a0)->jumpRepress = 1;
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
@@ -6547,7 +6548,7 @@ void RiderAnim_stateTrickEnd(int *a0) {
     }
     RA(a0)->rider->unkA18 = 1;
     RA(a0)->curTrick = 0;
-    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDF0));
+    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateHopAir));
     CALL(RiderAnim_stateHopAir)(a0);
 }
 
@@ -6565,7 +6566,7 @@ void RiderAnim_stateTrickWindup(int *a0) {
     p2 = RA(a0)->rider->input;
     if (!(p2->held & 0x200)) {
         CALL(RiderAnim_enterState_0000D5BC)(a0,
-            *(Pair2*)((char*)&D_00000000 + 0xED8));
+            *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateTrickHold));
     } else {
         CALL(RiderAnim_clearTricks_00011888)(a0);
         CALL(RiderAnim_addTrickPoints_0000EE30)(a0, 1, 1);
@@ -6595,14 +6596,14 @@ void RiderAnim_stateTrickRelease(int *a0) {
     int *s0 = a0;
     if (RA(s0)->queuedTrick != 0) {
         if (RiderAnim_trickCrash_0000D74C((char*)a0) == 0) {
-            char *p = (char *)&game_uso_D_807FF4D0 + 0xEE0;
+            char *p = (char *)&game_uso_D_807FF4D0 + kPmf_RiderAnim_stateTrickStart;
             RiderAnim_enterState_0000D5BC((char*)s0, *(Pair2*)p);
             RiderAnim_stateTrickStart((char*)s0);
         }
     } else {
         import_0010DB28(s0, RA(s0)->curTrick->anim, 3, 1, 1, 1);
         RiderAnim_queueState_0000D5F8((char*)s0,
-            *(Pair2 *)((char *)&game_uso_D_807FF4D8 + 0xEE8), 1);
+            *(Pair2 *)((char *)&game_uso_D_807FF4D8 + kPmf_RiderAnim_stateTrickEnd), 1);
         RiderAnim_clearState_0000D5DC((char*)s0);
     }
 }
@@ -6613,7 +6614,7 @@ void RiderAnim_stateTrickRelease(int *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateTrickHold(char *a0) {
     CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->curTrick->anim, 2, 3, 1, 1);
-    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xEC8), 3);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateTrickRelease), 3);
     CALL(RiderAnim_readTrickInput_0000E5C8)(a0, 0);
 }
 
@@ -6645,7 +6646,7 @@ void RiderAnim_stateTrickStart(char *a0) {
  * not varargs. See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateRowIn(int *a0) {
     CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->animSet, 0, 0, 0x100, 5);
-    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE50), -1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRow), -1);
 }
 
 /* EXACT 2026-07-02 (67/67 words vs asm .s, self-verified via clean
@@ -6682,7 +6683,7 @@ void RiderAnim_stateRow(int *a0) {
     volatile int padbot[5];
 
     import_0010DB28(a0, RA(a0)->animSet, 0, 2, 1, 1);
-    RiderAnim_queueState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF448 + 0xE58), 2);
+    RiderAnim_queueState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF448 + kPmf_RiderAnim_stateRowOut), 2);
 
     q = RA(a0)->rider->dnode.axes[2];
     scale = RA(a0)->parms.rfc.value.f;
@@ -6708,7 +6709,7 @@ void RiderAnim_stateRow(int *a0) {
 void RiderAnim_stateRowOut(int *a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, RA(a0)->animSet, 2, 1, 1, 1);
     GCALL(RiderAnim_clearRiderEdge_00011868)(a0);
-    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), 1);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRide), 1);
 }
 
 /* MATCHED 2026-05-28: struct-by-value (E40/E44 pair). 18-insn 3-call
@@ -6716,7 +6717,7 @@ void RiderAnim_stateRowOut(int *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateResumeRide(int a0) {
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
-    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40));
+    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRide));
     CALL(RiderAnim_stateRide)(a0);
 }
 
@@ -6727,7 +6728,7 @@ void RiderAnim_stateCrashRecover(int *a0) {
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
     if (RA(a0)->slowCrash != 0) {
         CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->selectedAnim, 2, 1, 1, 1);
-        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), 1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRide), 1);
     }
 }
 
@@ -6736,7 +6737,7 @@ void RiderAnim_startCrashSlide_0000FB7C(int *a0) {
     int v = RA(a0)->animSet | RANIM_CRASH_SLIDE;
     RA(a0)->selectedAnim = v;
     CALL(AnimPlayer_startIfChanged)(a0, v, 0, 2, 1, 1);
-    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE88), 2);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateCrashRecover), 2);
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
     RA(a0)->trickPhase = 0;
 }
@@ -6791,11 +6792,11 @@ void RiderAnim_startOllie_0000FC34(int *a0) {
                 + (double)*field_31C);
         } while (0);
         XCALL(game_uso_func_0000D5BC_a3, RiderAnim_enterState_0000D5BC)((char*)a0,
-            *(Pair2*)((char*)&game_uso_D_807FF400 + 0xE10), field_770);
+            *(Pair2*)((char*)&game_uso_D_807FF400 + kPmf_RiderAnim_stateRideBlendIn), field_770);
     }
     import_0010DB28(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 2, 2, ANIM_BLENDIN, 0xA);
     RiderAnim_queueState_0000D5F8((char*)a0,
-        *(Pair2*)((char*)&game_uso_D_807FF410 + 0xE20), -1);
+        *(Pair2*)((char*)&game_uso_D_807FF410 + kPmf_RiderAnim_stateOllieTakeoff), -1);
 }
 
 extern char game_uso_D_807FF408;
@@ -6826,7 +6827,7 @@ void RiderAnim_stateOllieTakeoff(int *a0) {
         float *base_2FC;
         import_0010DB28(s0, (RANIM_GROUP_AIR | RANIM_OLLIE), 2, 3, 1, 1);
         RiderAnim_queueState_0000D5F8((char*)s0,
-            *(Pair2 *)((char *)&game_uso_D_807FF408 + 0xE18), 3);
+            *(Pair2 *)((char *)&game_uso_D_807FF408 + kPmf_RiderAnim_stateOllieRise), 3);
         RiderAnim_clearState_0000D5DC((char*)s0);
 
         zero = 0.0f;
@@ -6859,11 +6860,11 @@ void RiderAnim_stateOllieRise(int *a0) {
     if (base->dnode.vel[1] < -1.0f) {
         if (base->groundDist < 1000.0f) {
             CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 6, 6, ANIM_BLENDIN, 0x14);
-            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE28), -1);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateOllieLand), -1);
             CALL(RiderAnim_clearState_0000D5DC)(a0);
         } else {
             CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 3, 4, 1, 1);
-            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE30), 4);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateOllieHang), 4);
         }
     }
 }
@@ -6873,7 +6874,7 @@ void RiderAnim_stateOllieRise(int *a0) {
 void RiderAnim_stateOllieHang(char *a0) {
     CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 4, 5, 2, 1);
     if (RA(a0)->rider->groundDist < 1000.0f) {
-        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE38));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateOllieDrop));
     }
 }
 
@@ -6885,7 +6886,7 @@ void RiderAnim_stateOllieHang(char *a0) {
 void RiderAnim_stateOllieLand(char *a0) {
     if (RA(a0)->rider->contactCount != 0) {
         CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 6, 1, 1, 1);
-        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE10), 1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRideBlendIn), 1);
     }
 }
 
@@ -6894,7 +6895,7 @@ void RiderAnim_stateOllieLand(char *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateOllieDrop(int *a0) {
     CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 5, 6, 1, 1);
-    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE28), 6);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateOllieLand), 6);
 }
 
 /* MATCHED 2026-05-28: struct-by-value (DD0/DD4 pair). The middle call's
@@ -6904,7 +6905,7 @@ void RiderAnim_stateOllieDrop(int *a0) {
 void RiderAnim_startHop_0001001C(int *a0) {
     RA(a0)->curTrick = 0;
     CALL(RiderAnim_clearTricks_00011888)(a0);
-    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDD0));
+    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateHopStart));
     CALL(RiderAnim_stateHopStart)(a0);
 }
 
@@ -6919,13 +6920,13 @@ void RiderAnim_stateHopStart(int *a0) {
                      0, 2,
                      0x100, 10);
     /* Call 2: 4-arg with D[0xDD8/0xDDC] */
-    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xDD8), -1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateHopRise), -1);
     /* Conditional Call 3 — inline `outer` (arg0[0xB4]) so it takes $t1 not $v0,
      * but NAME the middle pointer `mid` so it claims $v0 like the target. */
     {
         RiderInput *mid = RA(a0)->rider->input;
         if (mid->pressed & 0x400) {
-            CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDE0));
+            CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateCushionIn));
         }
     }
     /* Call 4 */
@@ -7013,12 +7014,12 @@ void RiderAnim_stateHopRise(int *a0) {
     mid = (int *)RA(a0)->rider->input;
     if ((((RiderInput *)mid)->pressed & 0x400) != 0) {
         RiderAnim_enterState_0000D5BC((char*)a0,
-                         *(Pair2*)((char*)&game_uso_D_807FF3D0 + 0xDE0));
+                         *(Pair2*)((char*)&game_uso_D_807FF3D0 + kPmf_RiderAnim_stateCushionIn));
     }
     if (RA(a0)->rider->groundDist < 1000.0f) {
         if (RA(a0)->rider->contactCount != 0) {
             RiderAnim_enterState_0000D5BC((char*)a0,
-                             *(Pair2*)((char*)&game_uso_D_807FF3D8 + 0xDE8));
+                             *(Pair2*)((char*)&game_uso_D_807FF3D8 + kPmf_RiderAnim_stateHopDrop));
         }
         inner = RA(a0)->curTrick;
         if ((inner != 0) && (inner->flags & TRICK_FLAG_HALF_TURN)) {
@@ -7035,7 +7036,7 @@ void RiderAnim_stateHopRise(int *a0) {
                          RA(a0)->animSet | RANIM_HOP,
                          2, 3, 1, 1);
         RiderAnim_queueState_0000D5F8((char*)a0,
-                         *(Pair2*)((char*)&game_uso_D_807FF3E0 + 0xDF0),
+                         *(Pair2*)((char*)&game_uso_D_807FF3E0 + kPmf_RiderAnim_stateHopAir),
                          3);
         RiderAnim_clearState_0000D5DC((char*)a0);
     }
@@ -7096,12 +7097,12 @@ void RiderAnim_stateHopAir(int *a0) {
   v0 = RA(s0)->rider;
   if ((v0->dnode.vel[1] < 0.0f) && (v0->groundDist < 1000.0f))
   {
-    RiderAnim_enterState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D8)) + 0xDE8)));
+    RiderAnim_enterState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D8)) + kPmf_RiderAnim_stateHopDrop)));
     v0 = RA(s0)->rider;
   }
   if (((RiderInput *) (new_var = (int) v0->input))->pressed & 0x400)
   {
-    RiderAnim_enterState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D0)) + 0xDE0)));
+    RiderAnim_enterState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D0)) + kPmf_RiderAnim_stateCushionIn)));
   }
   RiderAnim_readTrickInput_0000E5C8((char *)s0, 0);
   if (RiderAnim_startQueuedTrick_0000E35C((char *)s0) == 0)
@@ -7109,7 +7110,7 @@ void RiderAnim_stateHopAir(int *a0) {
     ;
     if (RA(s0)->rider->contactCount != 0)
     {
-      RiderAnim_enterState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3E8)) + 0xDF8)));
+      RiderAnim_enterState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3E8)) + kPmf_RiderAnim_stateHopLand)));
       RiderAnim_stateHopLand((char *)s0);
     }
     RiderAnim_checkBackwardSwitch_00011750((char *)s0);
@@ -7128,7 +7129,7 @@ void RiderAnim_stateHopDrop(int *arg0) {
     if (CALL(RiderAnim_startQueuedTrick_0000E35C)(arg0) == 0) {
         if (RA(arg0)->rider->contactCount != 0) {
 
-            CALL(RiderAnim_enterState_0000D5BC)(arg0, *(Pair2*)((char*)&D_00000000 + 0xDF8));
+            CALL(RiderAnim_enterState_0000D5BC)(arg0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateHopLand));
             CALL(RiderAnim_stateHopLand)(arg0);
         }
     }
@@ -7148,7 +7149,7 @@ void RiderAnim_stateHopLand(char *a0) {
             CALL(RiderAnim_endTrick_0000D63C)(a0, 1);
             CALL(RiderAnim_clearRiderEdge_00011868)(a0);
             CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->animSet | RANIM_HOP, 5, 1, 1, 1);
-            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE10), 1);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + kPmf_RiderAnim_stateRideBlendIn), 1);
             CALL(RiderAnim_clearState_0000D5DC)(a0);
         }
     }
@@ -7159,7 +7160,7 @@ void RiderAnim_stateHopLand(char *a0) {
  * copy tail. (The "precall-arg-spill family / INSN_PATCH ineligible" cap was wrong.) */
 void RiderAnim_stateCushionIn(char *a0) {
     CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_REGULAR | RANIM_KNEE_CUSHION), 0, 0, ANIM_BLENDIN, 5);
-    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE08), -1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateCushion), -1);
     RA(a0)->hitScale = RA(a0)->parms.lnc.value.f;
 }
 
@@ -7170,7 +7171,7 @@ void RiderAnim_stateCushionIn(char *a0) {
  * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateCushion(int *a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_REGULAR | RANIM_KNEE_CUSHION), 0, 1, 1, 1);
-    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE00), 1);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateCushionEnd), 1);
     GCALL(RiderAnim_clearRiderEdge_00011868)(a0);
 }
 
@@ -7184,7 +7185,7 @@ void RiderAnim_stateCushion(int *a0) {
  * base `&D+0xDF8` keeps the addiu split (lw 0(t6)/4(t6)). Byte-exact. */
 void RiderAnim_stateCushionEnd(void *a0) {
     RA(a0)->hitScale = 1.0f;
-    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDF8));
+    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateHopLand));
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
 }
 
@@ -7241,11 +7242,11 @@ void RiderAnim_stateBrake(int *a0) {
     import_0010DB78(a0, RA(a0)->animSet | RANIM_BRAKE_B, RA(a0)->animSet | RANIM_BRAKE_F, *(int *)&RA(a0)->rider->edge, 0, 1);
     p = RA(a0)->rider;
     if (p->crouch == 0) {
-        RiderAnim_enterState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF400 + 0xE10));
+        RiderAnim_enterState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF400 + kPmf_RiderAnim_stateRideBlendIn));
         p = RA(a0)->rider;
     }
     if (p->useDParms != 0) {
-        RiderAnim_enterState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF460 + 0xE70));
+        RiderAnim_enterState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF460 + kPmf_RiderAnim_stateBrakeBlendIn));
     }
     RiderAnim_checkGroundSpin_0000E91C((char *)a0);
     RiderAnim_checkJump_0000D8EC(a0);
@@ -7274,7 +7275,7 @@ void RiderAnim_stateRideBlendIn(char *a0) {
     CALL(RiderAnim_checkJump_0000D8EC)(a0);
     v0 = RA(a0)->animSet;
     CALL(AnimPlayer_setBlend)(a0, v0 | 2, v0 | 3, *(int *)&RA(a0)->rider->edge, 0x100, 10);
-    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), -1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRide), -1);
 }
 
 /* MATCHED 2026-05-28: struct-by-value (E60/E64 pair). 29-insn init +
@@ -7285,7 +7286,7 @@ void RiderAnim_stateRideBlendIn(char *a0) {
 void RiderAnim_stateRideDeepBlendIn(int *a0) {
     CALL(RiderAnim_checkJump_0000D8EC)(a0);
     CALL(AnimPlayer_setBlend)(a0, (RANIM_GROUP_DEEP | RANIM_TURN_B), (RANIM_GROUP_DEEP | RANIM_TURN_F), *(int *)&RA(a0)->rider->edge, ANIM_BLENDIN, 5);
-    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE60), -1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRideDeep), -1);
 }
 
 /* MATCHED 2026-05-28: struct-by-value arg-pass for the E10/E14 and E48/E4C
@@ -7297,11 +7298,11 @@ void RiderAnim_blendWeight_00010BAC(char *a0) {
     CALL(AnimPlayer_setBlend)(a0, state | 7, state | 6, *(int *)&RA(a0)->rider->localUp.x, 0, 1);
 
     if (RA(a0)->unkD8 == 0) {
-        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE10));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRideBlendIn));
     }
 
     if (RA(a0)->rider->useDParms != 0) {
-        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE48));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRideDeepBlendIn));
     }
 }
 
@@ -7315,11 +7316,11 @@ void RiderAnim_blendWeightDeep_00010C4C(char *a0) {
                      *(int *)&RA(a0)->rider->localUp.x, 0, 1);
 
     if (RA(a0)->unkD8 == 0) {
-        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE48));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRideDeepBlendIn));
     }
 
     if (RA(a0)->rider->useDParms == 0) {
-        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE10));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRideBlendIn));
     }
 }
 
@@ -7329,13 +7330,13 @@ void RiderAnim_stateBrakeBlendIn(char *a0) {
     sub = RA(a0)->rider;
     if (sub->useDParms != 0) {
         CALL(AnimPlayer_setBlend)(a0, (RANIM_GROUP_DEEP | RANIM_BRAKE_B), (RANIM_GROUP_DEEP | RANIM_BRAKE_F), *(int *)&sub->edge, ANIM_BLENDIN, 10);
-        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE78), -1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateBrakeDeep), -1);
     } else {
         int state;
 
         state = RA(a0)->animSet;
         CALL(AnimPlayer_setBlend)(a0, state | 4, state | 5, *(int *)&sub->edge, 0x100, 10);
-        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE80), -1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateBrake), -1);
     }
     CALL(RiderAnim_checkGroundSpin_0000E91C)(a0);
 }
@@ -7345,7 +7346,7 @@ void RiderAnim_stateBrakeBlendIn(char *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_startLanding_00010DC8(int a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, RA(a0)->animSet | RANIM_LANDING, 0, 1, 1, 1);
-    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE10), 1);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRideBlendIn), 1);
 }
 
 /* MATCHED 2026-05-28: struct-by-value (E40/E44 pair). The prior "constant-
@@ -7354,7 +7355,7 @@ void RiderAnim_startLanding_00010DC8(int a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_restartRide_00010E2C(int a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, 0, 0, 1, 1, 1);
-    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), 1);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRide), 1);
 }
 
 void RiderAnim_stateGoalNormal(int a0) {
@@ -7385,7 +7386,7 @@ void RiderAnim_stateStand(int *a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_EVENT | RANIM_STAND), 0, 1, 1, 1);
     RA(a0)->trickPhase = 0;
     RA(a0)->rider->slowdown = 100;
-    GCALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xF58));
+    GCALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateStand));
 }
 
 /* 32-insn / 0x80 dual-call orchestrator on a0->B4-child:
@@ -7414,12 +7415,12 @@ extern char D_00000000;
 void RiderAnim_startTimeout_00011024(int *a0) {
   int v;
   int *p_B4 = (int *) RA(a0)->rider;
-  RA(a0)->pendingState = *((Pair2 *) (((char *) (&D_00000000)) + 0xF48)); /* stateTimeUp */
+  RA(a0)->pendingState = *((Pair2 *) (((char *) (&D_00000000)) + kPmf_RiderAnim_stateTimeUp)); /* stateTimeUp */
   ;
   p_B4 = (int *) &((SnowBoarder *) p_B4)->flags;
  goto dummy_label_965124; dummy_label_965124: ;
   *p_B4 = (*p_B4) & (~4);
-  CALL(RiderAnim_enterState_0000D5BC)(a0, *((Pair2 *) (((char *) (&D_00000000)) + 0xE10)));
+  CALL(RiderAnim_enterState_0000D5BC)(a0, *((Pair2 *) (((char *) (&D_00000000)) + kPmf_RiderAnim_stateRideBlendIn)));
   CALL(RiderAnim_clearRiderEdge_00011868)(a0);
   RA(a0)->rider->slowdown = 0x64;
 }
@@ -7443,13 +7444,13 @@ void RiderAnim_startFinish_000110A4(int *a0) {
   int *new_var3;
   int v;
  do { } while (0);
-  new_var = ((char *) (&D_00000000)) + 0xF20;
+  new_var = ((char *) (&D_00000000)) + kPmf_RiderAnim_stateFinish;
   new_var3 = a0;
   RA(a0)->pendingState = *((Pair2 *) new_var); /* stateFinish */
   ;
   new_var2 = (p_B4 = (int *) &((SnowBoarder *) p_B4)->flags);
   *p_B4 = (*new_var2) & (~4);
-  CALL(RiderAnim_enterState_0000D5BC)(a0, *((Pair2 *) (((char *) (&D_00000000)) + 0xE10)));
+  CALL(RiderAnim_enterState_0000D5BC)(a0, *((Pair2 *) (((char *) (&D_00000000)) + kPmf_RiderAnim_stateRideBlendIn)));
   CALL(RiderAnim_clearRiderEdge_00011868)(a0);
   RA(new_var3)->rider->slowdown = 0x64;
 }
@@ -7465,7 +7466,7 @@ void RiderAnim_startFinish_000110A4(int *a0) {
  * identical to expected/.o; residual fuzzy<100 is the usual uso reloc-presence. */
 void RiderAnim_stateTimeUp(int *a0) {
     CALL(RiderAnim_stateStand)(a0);
-    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF50), 1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateTimeUpLose), 1);
 }
 
 /* BYTE-EXACT 2026-05-31 (stale-cap catch): the struct-by-value body below was
@@ -7507,19 +7508,19 @@ void RiderAnim_stateFinish(int *a0) {
             /* struct-by-value pass homes a1,a2 to sp+4/sp+8 (the target's
              * `sw a1,4(sp); sw a2,8(sp)`) — NOT reachable from two int args.
              * This solved the prior "precall-arg-spill cap" (was 61%, now 94%). */
-            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF28), 1);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateGoalNormal), 1);
             return;
         }
         if (*(int*)((char*)&D_00000000 + 0x64) < 2) {
-            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF30), 1);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateGoalWinOM), 1);
         } else {
-            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF38), 1);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateGoalWin), 1);
         }
         return;
     }
     /* flag != 1: default path. Placed last so IDO emits BNEL-skip-to-here
      * with delay-load (matching asm 0x11198 bnel t7,at,+0x26). */
-    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF40), 1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateGoalLose), 1);
 }
 
 /* RiderAnim_startEndingCpu_00011258: 34-insn (0x88) init+register-clear helper.
@@ -7558,7 +7559,7 @@ extern char game_uso_D_807FF508;
 void RiderAnim_startEndingCpu_00011258(int *a0) {
     int *p;
     XCALL(game_uso_func_077C44, AnimPlayer_start)(a0, (RANIM_GROUP_EVENT | RANIM_ENDING_LOSE), 0, 2, 1, 1);
-    RiderAnim_queueState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
+    RiderAnim_queueState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + kPmf_RiderAnim_stateEnding1), 2);
     RiderAnim_clearState_0000D5DC((char*)a0);
     p = (int *)&RA(a0)->rider->flags;
     *p = *p & ~0x800;
@@ -7572,7 +7573,7 @@ extern char game_uso_D_807FF508;
 void RiderAnim_startEnding_000112E0(int *a0) {
     int *p;
     XCALL(game_uso_func_077C44, AnimPlayer_start)(a0, (RANIM_GROUP_EVENT | RANIM_ENDING_WIN), 0, 2, 1, 1);
-    RiderAnim_queueState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
+    RiderAnim_queueState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + kPmf_RiderAnim_stateEnding1), 2);
     RiderAnim_clearState_0000D5DC((char*)a0);
     p = (int *)&RA(a0)->rider->flags;
     *p = *p & ~0x800;
@@ -7583,7 +7584,7 @@ void RiderAnim_startEnding_000112E0(int *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateEnding1(int *a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, RA(a0)->player.anim, 2, 3, 1, 1);
-    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF08), 3);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateEnding2), 3);
 }
 
 /* MATCHED 2026-05-28: struct-by-value (F10/F14 pair). Family sibling #6 of
@@ -7591,7 +7592,7 @@ void RiderAnim_stateEnding1(int *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateEnding2(int *a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, RA(a0)->player.anim, 3, 4, 1, 1);
-    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF10), 4);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateEnding3), 4);
 }
 
 void RiderAnim_stateEnding3(int *a0) {
@@ -7604,15 +7605,15 @@ void RiderAnim_stateStartIntro(int *a0) {
     int v = (int)(RA(a0)->rider->character % 5U);
     int a1 = (v + RANIM_START_INTRO) | RANIM_GROUP_EVENT;
     FCALL(AnimPlayer_start)(a0, a1, 0, 2, 1, 1);
-    FCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xEF8), 2);
-    FCALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2 *)((char *)&D_00000000 + 0xF00));
+    FCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + kPmf_RiderAnim_stateStartIntroEnd), 2);
+    FCALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2 *)((char *)&D_00000000 + kPmf_RiderAnim_stateIdle));
 }
 /* MATCHED 2026-05-28: struct-by-value (DB8/DBC pair). Family sibling of
  * RiderAnim_restartRide_00010E2C. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateStartIntroEnd(int *a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, RA(a0)->player.anim, 2, 1, 1, 1);
-    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xDB8), 1);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateStartWait), 1);
 }
 
 /* RiderAnim_stateStartWait (0x80): orphan-prologue MERGE of the 0x8 stub at 0x1155C
@@ -7627,7 +7628,7 @@ void RiderAnim_stateStartWait(int *a0) {
     int val = 100;
     if (*(int*)((char*)&D_00000000 + 0x78) == 0) {
         RA(a0)->rider->slowdown = 0;
-        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRide));
     } else {
         RA(a0)->rider->slowdown = val;
         CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->animSet | RANIM_UP_DOWN, 0, 1, 6, 1);
@@ -7658,9 +7659,9 @@ void RiderAnim_startHitAnim_00011624(int *a0) {
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
     CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->selectedAnim, 0, 1, 1, 1);
     if (RA(a0)->rider->health <= 0) {
-        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xDC8), 1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + kPmfNull_DC8), 1);
     } else {
-        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE40), 1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + kPmf_RiderAnim_stateRide), 1);
     }
     RA(a0)->trickPhase = 0;
 }
@@ -7677,7 +7678,7 @@ void RiderAnim_crashRecover_000116D4(void *a0) {
     CALL(RiderAnim_clearRiderEdge_00011868)(s0);
     if (RA(s0)->slowCrash != 0) {
         CALL(AnimPlayer_startIfChanged)(s0, RA(s0)->selectedAnim, 2, 1, 1, 1);
-        CALL(RiderAnim_queueState_0000D5F8)(s0, *(Pair2 *)((char *)&D_00000000 + 0xE40), 1);
+        CALL(RiderAnim_queueState_0000D5F8)(s0, *(Pair2 *)((char *)&D_00000000 + kPmf_RiderAnim_stateRide), 1);
     }
     RA(s0)->trickPhase = 0;
 }
@@ -7745,10 +7746,10 @@ void RiderAnim_checkBackwardSwitch_00011750(char *obj) {
         RA(obj)->backHits = 0;
         if (RA(obj)->rider->useDParms != 0) {
             XCALL(game_uso_func_077C44, AnimPlayer_start)(obj, RA(obj)->animSet | RANIM_DEEP_SWITCH, 0, 0, ANIM_BLENDIN, 5);
-            RiderAnim_queueState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
+            RiderAnim_queueState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + kPmf_RiderAnim_stateSwitchStance), -1);
         } else {
             XCALL(game_uso_func_077C44, AnimPlayer_start)(obj, RA(obj)->animSet | RANIM_SWITCH_STANCE, 0, 0, ANIM_BLENDIN, 5);
-            RiderAnim_queueState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
+            RiderAnim_queueState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + kPmf_RiderAnim_stateSwitchStance), -1);
         }
         RiderAnim_clearState_0000D5DC(obj);
     } else {

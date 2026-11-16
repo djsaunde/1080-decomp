@@ -15,6 +15,7 @@
 typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
 typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/rideranim.h" /* NCC has no -I include */
+#include "../../include/game/game_uso_data.h"
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -50,7 +51,7 @@ extern "C" void RiderAnim_statePreJumpHold(int *a0, int *a1) {
         short v0 = RA(s0)->holdFrames;
         RA(s0)->holdFrames = v0 + 1;
         if (RA(s0)->parms.jht.value.i < v0) {
-            RiderAnim_enterState_0000D5BC(s0, AT(PM, &game_uso_D_807FF498, 0xEA8));
+            RiderAnim_enterState_0000D5BC(s0, AT(PM, &game_uso_D_807FF498, kPmf_RiderAnim_statePreJumpCancel));
         }
     }
 }

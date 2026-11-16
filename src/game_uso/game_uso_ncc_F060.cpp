@@ -17,6 +17,7 @@
 typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
 typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/rideranim.h" /* NCC has no -I include */
+#include "../../include/game/game_uso_data.h"
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -40,7 +41,7 @@ extern "C" void RiderAnim_statePreJump(int *a0) {
         return;
     }
     import_0010DB28(s0, RANIM_ID(1, RANIM_PRE_JUMP), 0, 0, 0x100, RA(s0)->parms.jct.value.i);
-    RiderAnim_queueState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4A0, 0xEB0), -1);
+    RiderAnim_queueState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4A0, kPmf_RiderAnim_statePreJumpHold), -1);
     RA(s0)->holdFrames = 0;
     RA(s0)->jumpCharge = RA(s0)->jumpCharge + 1;
     import_000966AC(RA(s0)->rider->sound);

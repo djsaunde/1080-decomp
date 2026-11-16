@@ -15,6 +15,7 @@
 typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
 typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/rideranim.h" /* NCC has no -I include */
+#include "../../include/game/game_uso_data.h"
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -31,11 +32,11 @@ extern "C" void RiderAnim_stateBrakeDeep(int *a0) {
     import_0010DB78(a0, RANIM_ID(2, RANIM_BRAKE_B), RANIM_ID(2, RANIM_BRAKE_F), *(int *)&RA(a0)->rider->edge, 0, 1);
     p = RA(a0)->rider;
     if (p->crouch == 0) {
-        RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF438, 0xE48));
+        RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF438, kPmf_RiderAnim_stateRideDeepBlendIn));
         p = RA(a0)->rider;
     }
     if (p->useDParms == 0) {
-        RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF460, 0xE70));
+        RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF460, kPmf_RiderAnim_stateBrakeBlendIn));
     }
     RiderAnim_checkJump_0000D8EC(a0);
     RiderAnim_checkReverseBrake_0000D7F4(a0);

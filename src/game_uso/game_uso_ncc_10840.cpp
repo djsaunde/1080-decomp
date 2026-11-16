@@ -17,6 +17,7 @@
 typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
 typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/rideranim.h" /* NCC has no -I include */
+#include "../../include/game/game_uso_data.h"
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -44,7 +45,7 @@ extern "C" void RiderAnim_stateRideDeep(int *a0) {
     }
     RiderAnim_checkRow_0000E1FC(a0);
     if (RA(a0)->rider->useDParms == 0) {
-        RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF400, 0xE10));
+        RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF400, kPmf_RiderAnim_stateRideBlendIn));
     }
     RiderAnim_checkBackwardSwitch_00011750(a0);
 }

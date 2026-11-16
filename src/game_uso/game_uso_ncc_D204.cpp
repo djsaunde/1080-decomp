@@ -22,6 +22,7 @@ typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f
 typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/rideranim.h"
 #include "../../include/game/input.h"
+#include "../../include/game/game_uso_data.h"
 extern char import_80020098;
 extern char game_uso_D_807FF68C;
 extern char game_uso_D_807FF3B8;
@@ -62,7 +63,7 @@ extern "C" void RiderAnim_update_0000D204(H *a0) {
         }
     }
     if (RA(a3)->trickPhase != 0) RiderAnim_selectAnim_0000D9CC(a3);
-    if (PMF(RA(a3)->state) != *(PM *)(&game_uso_D_807FF3B8 + 0xDC8)) (a3->*PMF(RA(a3)->state))(); /* run the state */
+    if (PMF(RA(a3)->state) != *(PM *)(&game_uso_D_807FF3B8 + kPmfNull_DC8)) (a3->*PMF(RA(a3)->state))(); /* run the state */
     XCALL(game_uso_func_0000ECE8, RiderAnim_updateSlowdown_0000ECEC)(a3);
     if (RA(a3)->player.anim != 0) {
         XCALL(game_uso_func_076E78, AnimDataMgr_lookup)(RA(a3)->player.mgr, RA(a3)->player.anim);

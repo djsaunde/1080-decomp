@@ -24,6 +24,7 @@ typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/rideranim.h" /* NCC has no -I include */
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
 #include "../../include/game/input.h"  /* NCC donors build without -I include */
+#include "../../include/game/game_uso_data.h"
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -69,10 +70,10 @@ extern "C" void RiderAnim_stateTrickStart(char *s0) {
     f4 = RA(s0)->curTrick;
     if (f4->flags & TRICK_FLAG_GRAB) {
         XCALL(game_uso_func_077C44, AnimPlayer_start)(s0, f4->anim, 4, 2, 1, 1);
-        RiderAnim_queueState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4B0, 0xEC0), 2);
+        RiderAnim_queueState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4B0, kPmf_RiderAnim_stateTrickWindup), 2);
     } else {
         XCALL(game_uso_func_077C44, AnimPlayer_start)(s0, f4->anim, 4, 3, 1, 1);
-        RiderAnim_queueState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4B8, 0xEC8), 3);
+        RiderAnim_queueState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4B8, kPmf_RiderAnim_stateTrickRelease), 3);
     }
-    RiderAnim_enterState_0000D5BC(s0, AT(PM, &game_uso_D_807FF4C0, 0xED0));
+    RiderAnim_enterState_0000D5BC(s0, AT(PM, &game_uso_D_807FF4C0, kPmf_RiderAnim_stateTrickAir));
 }

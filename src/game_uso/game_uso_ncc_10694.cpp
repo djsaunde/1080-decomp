@@ -15,6 +15,7 @@
 typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
 typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/rideranim.h" /* NCC has no -I include */
+#include "../../include/game/game_uso_data.h"
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -52,12 +53,12 @@ extern "C" void RiderAnim_stateRide(A *a0) {
         import_0010DB28(a0, RA(a0)->animSet | RANIM_UP_DOWN, 0, 1, 6, 1);
     }
     if (RA(a0)->rider->useDParms != 0) {
-        RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF438, 0xE48));
+        RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF438, kPmf_RiderAnim_stateRideDeepBlendIn));
     }
     RiderAnim_checkGroundSpin_0000E91C(a0);
     RiderAnim_checkBackwardSwitch_00011750(a0);
     RA(a0)->rideContacts = RA(a0)->rider->contactCount;
-    if (PMF(RA(a0)->pendingState) != AT(PM, &game_uso_D_807FF3B8, 0xDC8)) { /* the null PMF */
+    if (PMF(RA(a0)->pendingState) != AT(PM, &game_uso_D_807FF3B8, kPmfNull_DC8)) { /* the null PMF */
         RiderAnim_enterState_0000D5BC(a0, PMF(RA(a0)->pendingState));
     }
 }
