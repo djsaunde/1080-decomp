@@ -1,10 +1,16 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for heli.uso 0xB08 (agent-g run 663), spliced over the empty
- * NON_MATCHING placeholder in heli_uso.c on the non_matching build only (the matching build keeps
- * INCLUDE_ASM). 0xB08 is the Heli per-frame update (decode: docs/1080_NEW_MODULES.md "heli.uso").
- * NM ~80 %: the target's 8-way switch is a jump table (RoData+0x7C), which only the MIPSpro 7.2.1 edg
- * front end emits (tools/ncc721.sh); the same C++ there scores ~75 %. Under NCC the switch is a beq
- * chain. The rest of the gap is frame layout (the operator= by-value temp is sp+140 here, sp+252 in the
- * target) and the vel copy chain. RoData floats are literals (each site has its own pool word). */
+/* MIPSpro 7.2.1 C++ (tools/ncc721.sh) NON_MATCHING donor for heli.uso 0xB08 (agent-g run 672), spliced
+ * over the empty NON_MATCHING placeholder in heli_uso.c on the non_matching build only (the matching build
+ * keeps INCLUDE_ASM). 0xB08 is the Heli per-frame update (decode: docs/1080_NEW_MODULES.md "heli.uso").
+ * MIPSpro 7.2.1 is the right front end: the target's 8-way switch is an inline jump table (RoData+0x7C),
+ * which IDO 7.1 NCC (EDG 2.19) never emits. Levers that took mp72 from 77.3 to 84.2:
+ *  - an explicit empty `default: break;` after case 6. The default edge then gets its own block, so uopt
+ *    computes tg / ps (self+0x114 / self+0xDC) at the end of every case, as the target does; without it the
+ *    default goes straight to the join and both are computed once there.
+ *  - `mode = mode * 1;` before the switch (code-free; mode takes v0 as in the target);
+ *  - the marker field is read back through self (`*(self + 0x168)`) after the advance;
+ *  - `Vec3 old = *FWD;` copy-initialised (a word copy, no operator= by-value temp).
+ * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
+ * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
 #include "../../include/common.h"  /* NCC donors build without -I include */
 #include "../../include/uso_call.h"
@@ -42,7 +48,7 @@ struct Vec3 {
 #define V3(off) (*(Vec3 *)(self + (off)))
 #define FWD ((Vec3 *)(self + 0x138))
 extern "C" void heli_uso_func_00000B08(char *self) {
-    Vec3 pp;
+    struct { float x, y, z; } ppr;
     char *player;
     char *q;
     Vec3 toTgt;
@@ -60,7 +66,6 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     float yaw;
     float ang;
     float s;
-    Vec3 old;
     float sa;
     char *p;
     int mode;
@@ -68,55 +73,54 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     Vec3 axZ;
     Vec3 axX;
     Vec3 axY;
-
     p = *(char **)(&heli_flow_b08 + 0x138);
     if (p == 0 && *(int *)(p + 0x48) == 0) {
         return;
     }
     player = **(char ***)(p + 0x44);
-    pp.x = *(float *)(player + 0xA0);
-    pp.y = *(float *)(player + 0xA4);
-    pp.z = *(float *)(player + 0xA8);
+    ppr.x = *(float *)(player + 0xA0);
+    ppr.y = *(float *)(player + 0xA4);
+    ppr.z = *(float *)(player + 0xA8);
     if (HI(0x170) != 0) {
         mode = HI(0x170);
     } else {
         if (*(int *)(player + 0xA54) == 6) {
-            gl_func_00000000 /* heli_uso_func_00000980 */(self);
+            gl_func_00000000(self);
             HI(0x170) = 8;
         }
         if (*(char **)(self + 0x168) == 0) {
-            key.v = *(int *)(&heli_data_00000000 + 0xCBAC); /* "mrk" */
-            p = (char *)gl_func_00000000 /* ItemMgr_findType_0003EA98 */(heli_itemMgr_b08, key);
+            key.v = *(int *)(&heli_data_00000000 + 0xCBAC);
+            p = (char *)gl_func_00000000(heli_itemMgr_b08, key);
             if (p != 0) {
-                char *vt = NODE(p)->vptr;
-                *(char **)(self + 0x168) = (char *)((int (*)(...))VT_SLOT(vt, 12).fn)(VT_SLOT(vt, 12).delta + p, &pp, 0);
+                char *vt = ((Node *)(p))->vptr;
+                *(char **)(self + 0x168) = (char *)((int (*)(...))(((GdlVtEnt *)((char *)(vt) + 8))[12]).fn)((((GdlVtEnt *)((char *)(vt) + 8))[12]).delta + p, &(*(Vec3 *)&ppr), 0);
             }
         }
         p = *(char **)(self + 0x168);
         if (p != 0) {
             q = *(char **)(p + 0x2C);
-            if (q != 0 && *(float *)(q + 0x38) < pp.z) {
+            if (q != 0 && *(float *)(q + 0x38) < (*(Vec3 *)&ppr).z) {
                 *(char **)(self + 0x168) = q;
-                p = q;
             }
-            HI(0x16C) = *(int *)(p + 0x3C);
+            HI(0x16C) = *(int *)(*(char **)(self + 0x168) + 0x3C);
         }
         mode = HI(0x16C);
     }
     tg = (Vec3 *)(self + 0x114);
     ps = (Vec3 *)(self + 0xDC);
+    mode = mode * 1;
     switch (mode) {
     case 8:
         HF(0x150) = 1.0f;
         break;
     case 3:
-        if (HF(0xE4) < pp.z + 4000.0f) {
+        if (HF(0xE4) < (*(Vec3 *)&ppr).z + 4000.0f) {
             HI(0x16C) = 1;
         }
         break;
     case 4:
         f = (5000.0f);
-        V3(0x114) = pp;
+        V3(0x114) = (*(Vec3 *)&ppr);
         HF(0x118) += f;
         HF(0x11C) += f;
         HF(0x15C) = 1000.0f;
@@ -125,14 +129,14 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         V3(0x12C) = *tg;
         break;
     case 7:
-        V3(0x114) = HV(0x108);
+        V3(0x114) = V3(0x108);
         HF(0x15C) = 250.0f;
         HF(0x158) = 1.0f;
         HF(0x150) = 200.0f;
-        V3(0x12C) = pp;
+        V3(0x12C) = (*(Vec3 *)&ppr);
         break;
     case 1:
-        V3(0x114) = pp;
+        V3(0x114) = (*(Vec3 *)&ppr);
         V3(0x12C) = *tg;
         HF(0x114) = HF(0x114) + 0.0f;
         HF(0x118) = HF(0x118) + 600.0f;
@@ -142,7 +146,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         HF(0x150) = 1000.0f;
         break;
     case 5:
-        V3(0x114) = pp;
+        V3(0x114) = (*(Vec3 *)&ppr);
         V3(0x12C) = *tg;
         HF(0x114) = HF(0x114) + 0.0f;
         HF(0x118) = HF(0x118) + -368.0f;
@@ -153,17 +157,16 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         HF(0x160) = 400.0f;
         break;
     case 2:
-        key2.v = *(int *)(&heli_data_00000000 + 0xCBB0); /* "hem"? */
-        p = (char *)gl_func_00000000 /* ItemMgr_queryType */(heli_itemMgr2_b08, key2, ps, 0);
+        key2.v = *(int *)(&heli_data_00000000 + 0xCBB0);
+        p = (char *)gl_func_00000000(heli_itemMgr2_b08, key2, ps, 0);
         if (p != 0 && *(int *)(p + 0x2C) != 0) {
             p = *(char **)(p + 0x2C);
             mpos = *(Vec3 *)(p + 0x30);
-
             mpos.y += (3000.0f);
             HF(0x114) = HF(0x114) + (mpos.x - HF(0x114)) * (0.2);
             HF(0x118) = HF(0x118) + (mpos.y - HF(0x118)) * (0.2);
             HF(0x11C) = HF(0x11C) + (mpos.z - HF(0x11C)) * (0.2);
-            V3(0x12C) = HV(0x114);
+            V3(0x12C) = V3(0x114);
             HF(0x15C) = 0.0f;
             HF(0x158) = 2.0f;
             HF(0x150) = *(float *)(player + 0x348) + 5.0f;
@@ -173,17 +176,19 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         }
         break;
     case 6:
-        V3(0x114) = pp;
+        V3(0x114) = (*(Vec3 *)&ppr);
+        break;
+    default:
         break;
     }
     dir = *tg - *ps;
     dist = gl_func_00000000_heli_ff(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z) * *(float *)(&heli_gGfxLib_d + 0x128);
-    gl_func_00000000 /* math_vec3Normalize */(&dir);
-    gl_func_00000000 /* math_vec3Normalize */(FWD);
+    gl_func_00000000(&dir);
+    gl_func_00000000(FWD);
     t = HF(0x164);
     ang = gl_func_00000000_heli_ff(FWD->x * dir.x + FWD->y * dir.y + FWD->z * dir.z);
     s = gl_func_00000000_heli_ff(ang);
-    old = *FWD;
+    Vec3 old = *FWD;
     if ((s < 0.0f ? -s : s) > (0.001)) {
         sa = gl_func_00000000_heli_ff(t * ang);
         FWD->x = gl_func_00000000_heli_ff((1.0f - t) * ang) * old.x / s + dir.x * sa / s;
@@ -235,11 +240,11 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         HF(0xFC) = 0.0f;
         HF(0x100) = 1.0f;
         axZ.y = 0.0f; axZ.x = 0.0f; axZ.z = 1.0f;
-        gl_func_00000000_heli_ppf /* math_quatRotateAxisAngle */(self + 0xF4, &axZ, HF(0x144));
+        gl_func_00000000_heli_ppf(self + 0xF4, &axZ, HF(0x144));
         axX.x = 1.0f; axX.y = 0.0f; axX.z = 0.0f;
-        gl_func_00000000_heli_ppf /* math_quatRotateAxisAngle */(self + 0xF4, &axX, HF(0x148));
+        gl_func_00000000_heli_ppf(self + 0xF4, &axX, HF(0x148));
         axY.y = 1.0f; axY.x = 0.0f; axY.z = 0.0f;
-        gl_func_00000000_heli_ppf /* math_quatRotateAxisAngle */(self + 0xF4, &axY, -HF(0x14C));
+        gl_func_00000000_heli_ppf(self + 0xF4, &axY, -HF(0x14C));
     }
-    gl_func_00000000 /* QNode_update */(self);
+    gl_func_00000000(self);
 }

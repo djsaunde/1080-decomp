@@ -114,12 +114,12 @@ $(HELI_NCC_DONOR): src/heli_uso/heli_uso_ncc.cpp
 HELI_NCC_FUNCS := heli_uso_func_000008A8
 build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(HELI_NCC_FUNCS),$(f)=$(HELI_NCC_DONOR))
 build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: $(HELI_NCC_DONOR)
-# agent-g run 663: NON_MATCHING-only NCC donor for 0xB08 (the Heli update, ~80 %; the target's jump table
-# needs MIPSpro 7.2.1); the matching build keeps INCLUDE_ASM.
-HELI_NM_DONOR := build/src/heli_uso/heli_uso_ncc_nm.cpp.o
-$(HELI_NM_DONOR): src/heli_uso/heli_uso_ncc_nm.cpp
+# agent-g run 672: NON_MATCHING-only MIPSpro 7.2.1 donor for 0xB08 (the Heli update, ~84 %; the target's
+# inline jump table needs EDG 2.29, tools/ncc721.sh); the matching build keeps INCLUDE_ASM.
+HELI_NM_DONOR := build/src/heli_uso/heli_uso_mp72_nm.cpp.o
+$(HELI_NM_DONOR): src/heli_uso/heli_uso_mp72_nm.cpp $(TOOLS)/ncc721.sh
 	@mkdir -p $(dir $@)
-	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(TOOLS)/ncc721.sh $< $@ $(OPT_FLAGS)
 HELI_NM_FUNCS := heli_uso_func_00000B08
 build/non_matching/src/heli_uso/heli_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(HELI_NM_FUNCS),$(f)=$(HELI_NM_DONOR))
 build/non_matching/src/heli_uso/heli_uso.c.o: $(HELI_NM_DONOR)

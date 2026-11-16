@@ -370,8 +370,8 @@ void heli_uso_func_00000A70(char *self) {
 }
 
 #ifdef NON_MATCHING
-/* heli_uso_func_00000B08: Heli update (C++; NM ~80 %): NCC donor src/heli_uso/heli_uso_ncc_nm.cpp
- * (agent-g run 663), REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
+/* heli_uso_func_00000B08: Heli update (C++; NM ~84 %): MIPSpro 7.2.1 donor src/heli_uso/heli_uso_mp72_nm.cpp
+ * (agent-g run 672), REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
 void heli_uso_func_00000B08(void) {
 }
 #else
