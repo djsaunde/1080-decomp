@@ -325,7 +325,7 @@ void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
             NODE(o2)->vptr = (int)&D_b3_994_v1;
         }
         NODE(o1)->vptr = (int)&D_b3_994_v2;
-        CALL(ColourParms_ctor)(o1 + 0x50);
+        CALL(ColourParms_ctor)(&RACEPROC(o1)->colours);
     }
     NODE(obj)->vptr = (int)&D_b3_994_v3;
     RACEPROC(obj)->spriteSet = 0;

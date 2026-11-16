@@ -49,10 +49,45 @@ typedef struct RaceSprite {
 
 typedef char RaceSprite_size_check[sizeof(RaceSprite) == 0x18 ? 1 : -1];
 
-/* A colour parm block (address passed to the sprite colour call as a top / bottom pair). */
-typedef struct RaceColour {
-    /* 0x00 */ char data[0x24];
-} RaceColour;
+/* One colour parm of the race ColourParms: a GdlParmRGBA (include/gdl/gadget.h; plain types here,
+ * the NCC donors include this header). The sprite colour call (gui_setEnvPrimColor) takes the
+ * addresses of a pair's two `value`s: the prim colour (tag "<x>P") and the env colour ("<x>E"). */
+typedef struct RaceColourParm {
+    /* 0x00 */ char head[0xC];
+    /* 0x0C */ int type;              /* the colour parm type */
+    /* 0x10 */ float value[4];        /* RGBA 0..1 */
+    /* 0x20 */ int unk20;
+} RaceColourParm;
+
+/* RaceColourParms.pair[] index = the parm tag prefix, in ColourParms_ctor order (P then E) */
+#define RACECOL_RD  0   /* "rd": sprites[4] (0x60001), drawn over the countdown (RaceProcess_drawGui) */
+#define RACECOL_32  1   /* "32": the 3-2-1 countdown digits */
+#define RACECOL_GO  2   /* "go" */
+#define RACECOL_GL  3
+#define RACECOL_LS  4
+#define RACECOL_RT  5
+#define RACECOL_TO  6
+#define RACECOL_RN  7   /* arc / mgr result screens (RaceProcess +0x260 / +0x284) */
+#define RACECOL_RS  8
+#define RACECOL_NR  9
+#define RACECOL_AD  10
+#define RACECOL_CS  11  /* arc / mgr result screens (RaceProcess +0x380 / +0x3A4) */
+#define RACECOL_GR  12
+#define RACECOL_DW  13
+
+/* ColourParms (game_libs ColourParms_ctor, 0x488): a "Colour Parms" Parms group of 32 RGBA parms,
+ * loaded from rom/racecol.bin (RaceProcess_init Node_Load, RaceProcess_loadData Parms_load). Every
+ * RaceProcess holds one at +0x50 (the mode ctors call ColourParms_ctor(this + 0x50)). */
+typedef struct RaceColourParms {
+    /* 0x000 */ char head[8];           /* Parms {name, list} */
+    /* 0x008 */ RaceColourParm pair[14][2]; /* [k][0] = "<k>P" prim, [k][1] = "<k>E" env */
+    /* 0x3F8 */ RaceColourParm ctt;
+    /* 0x41C */ RaceColourParm cnm;
+    /* 0x440 */ RaceColourParm ccl;
+    /* 0x464 */ RaceColourParm clg;
+} RaceColourParms;
+
+typedef char RaceColourParms_size_check[sizeof(RaceColourParms) == 0x488 ? 1 : -1];
 
 /* RaceProcess.phase (0x4E0) */
 #define RACE_PHASE_INTRO      0   /* intro delay */
@@ -91,9 +126,7 @@ typedef struct RaceProcess {
     /* 0x048 */ struct GuiMenu *menu;   /* the pause menu (PauseMenu_create(0); its unk30 gets spriteSet;
                                          * include/game/guimenu.h) */
     /* 0x04C */ s32 unk04C;             /* RaceProcess_init arg3 */
-    /* 0x050 */ char parms[0x18];       /* RaceProcess_loadData reads into it */
-    /* 0x068 */ RaceColour colour[6];   /* 0x68 / 0x8C, 0xB0 / 0xD4, 0xF8 / 0x11C pairs */
-    /* 0x140 */ char unk140[0x398];
+    /* 0x050 */ RaceColourParms colours; /* the sprite colours (pair[k][0 / 1].value = prim / env) */
     /* 0x4D8 */ s32 subState;           /* handleInput: updateSub0-3 selector */
     /* 0x4DC */ s32 raceState;          /* RACE_STATE_* */
     /* 0x4E0 */ s32 phase;              /* RACE_PHASE_* (handleInput switch) */
@@ -138,7 +171,8 @@ typedef struct RaceProcess {
 
 typedef char RaceProcess_size_check[sizeof(RaceProcess) == 0x6A8 ? 1 : -1];
 typedef char RaceProcess_vt_check[(int)&((RaceProcess *)0)->vt == 0x28 ? 1 : -1];
-typedef char RaceProcess_colour_check[(int)&((RaceProcess *)0)->colour[5] == 0x11C ? 1 : -1];
+typedef char RaceProcess_colours_check[(int)&((RaceProcess *)0)->colours.pair[RACECOL_GO][1].value == 0x11C ? 1 : -1];
+typedef char RaceProcess_colourCS_check[(int)&((RaceProcess *)0)->colours.pair[RACECOL_CS][1].value == 0x3A4 ? 1 : -1];
 typedef char RaceProcess_subState_check[(int)&((RaceProcess *)0)->subState == 0x4D8 ? 1 : -1];
 typedef char RaceProcess_result_check[(int)&((RaceProcess *)0)->result == 0x4F8 ? 1 : -1];
 typedef char RaceProcess_leftOnce_check[(int)&((RaceProcess *)0)->leftOnce == 0x510 ? 1 : -1];

@@ -3480,8 +3480,8 @@ void RaceProcess_drawGui(RaceProcess *arg0) {
                     sp3C = temp_lo;
                     CALL(gui_spriteRefresh)(sp8C);
                     if ((temp_lo == 0) || (temp_lo == -1)) {
-                        temp_a2 = (int *)&arg0->colour[4];
-                        temp_a3 = (int *)&arg0->colour[5];
+                        temp_a2 = (int *)arg0->colours.pair[RACECOL_GO][0].value;
+                        temp_a3 = (int *)arg0->colours.pair[RACECOL_GO][1].value;
                         CALL(gui_setEnvPrimColor_00001EF4)(sp8C, arg0->countAlpha, temp_a2, temp_a3);
                         CALL(gui_drawSprite)(sp8C, (s32)arg0->msgX, (s32)arg0->msgY, 3);
                         if (GAMEFLOW(&gInputMgr)->nextFlowMode == 2) {
@@ -3489,12 +3489,12 @@ void RaceProcess_drawGui(RaceProcess *arg0) {
                             CALL(gui_drawSprite)(sp8C, (s32)arg0->msgX, (s32)(arg0->msgY + 120.0f), 3);
                         }
                     } else {
-                        CALL(gui_setEnvPrimColor_00001EF4)(sp8C, arg0->countAlpha, (int)&arg0->colour[2], (int)&arg0->colour[3]);
+                        CALL(gui_setEnvPrimColor_00001EF4)(sp8C, arg0->countAlpha, (int)arg0->colours.pair[RACECOL_32][0].value, (int)arg0->colours.pair[RACECOL_32][1].value);
                         CALL(gui_drawSprite)(sp8C, 0xA0, 0xA0, 3);
                     }
                     if (sp3C != 0) {
                         CALL(gui_spriteRefresh)((int)&arg0->sprites[4]);
-                        CALL(gui_setEnvPrimColor_00001EF4)((int)&arg0->sprites[4], 0xFF, (int)&arg0->colour[0], (int)&arg0->colour[1]);
+                        CALL(gui_setEnvPrimColor_00001EF4)((int)&arg0->sprites[4], 0xFF, (int)arg0->colours.pair[RACECOL_RD][0].value, (int)arg0->colours.pair[RACECOL_RD][1].value);
                         CALL(gui_drawSprite)((int)&arg0->sprites[4], 0xA8, 0x50, 3);
                     }
                 }
@@ -3528,7 +3528,7 @@ void RaceProcess_handleMsg(int a0, int *a1) {
 
 extern int gl_func_00000000();
 int RaceProcess_loadData(RaceProcess *a0) {
-    return CALL(Parms_load_00035C6C)(a0->parms);
+    return CALL(Parms_load_00035C6C)(a0->colours.head);
 }
 
 /* RaceProcess_createReplayCam: 79-insn 5-call state swap (0x13C). EXACT in-unit.

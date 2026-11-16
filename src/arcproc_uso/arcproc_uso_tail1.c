@@ -255,7 +255,7 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
             NODE(o2)->vptr = (int)&D_arc_A3C_v1;
         }
         NODE(o1)->vptr = (int)&D_arc_A3C_v2;
-        CALL(ColourParms_ctor)(o1 + 0x50);
+        CALL(ColourParms_ctor)(&RACEPROC(o1)->colours);
     }
     NODE(obj)->vptr = (int)&D_arc_A3C_v3;
     RACEPROC(obj)->spriteSet = 0;
@@ -823,7 +823,7 @@ void ARCRaceProcess_drawIntro(char *arg0) {
                 ARCRACE(arg0)->resultFade = ARCRACE(arg0)->resultFade - D_arc125C_38;
             }
         }
-        CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, (int)(ARCRACE(arg0)->resultFade * (0, (float)255)), arg0 + 0x380, arg0 + 0x3A4);
+        CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, (int)(ARCRACE(arg0)->resultFade * (0, (float)255)), ARCRACE(arg0)->race.colours.pair[RACECOL_CS][0].value, ARCRACE(arg0)->race.colours.pair[RACECOL_CS][1].value);
         CALL(gui_spriteRefresh)(&ARCRACE(arg0)->sprites[0]);
         CALL(gui_drawSprite)(&ARCRACE(arg0)->sprites[0], 0xA0, 0xB6, 3);
         while (0) { w = *(short *)(arg0 + 0x20); }
@@ -831,7 +831,7 @@ void ARCRaceProcess_drawIntro(char *arg0) {
         w = ((RaceSpriteImage *)q)->width;
         p6d8 = (char *)ARCRACE(arg0)->sprites[1].image;
         sp48 = 0xA0 - ((((RaceSpriteImage *)p6d8)->width + w + 4) / 2);
-        CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, (int)(ARCRACE(arg0)->resultFade * (0, (float)255)), arg0 + 0x260, arg0 + 0x284);
+        CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, (int)(ARCRACE(arg0)->resultFade * (0, (float)255)), ARCRACE(arg0)->race.colours.pair[RACECOL_RN][0].value, ARCRACE(arg0)->race.colours.pair[RACECOL_RN][1].value);
         p6a8 = (char *)ARCRACE(arg0)->courseList;
         /* count == idx + 1 (the final course). Kept raw: the ArcCourseList member form
          * swaps the two loads' registers (agent-h run 492). */

@@ -1065,14 +1065,14 @@ void MGRRaceProcess_drawIntro(char *arg0) {
         gl_func_00000000(&D_00000000, (int)(255.0f * MGRRACE(arg0)->overlayAlpha), sp50);
         gl_func_00000000(&D_00000000);
         gl_func_00000000(&D_00000000, 0xA0, 0x9C, 3);
-        gl_func_00000000(&D_00000000, (int)(MGRRACE(arg0)->overlayAlpha * 255.0f), arg0 + 0x380, arg0 + 0x3A4);
+        gl_func_00000000(&D_00000000, (int)(MGRRACE(arg0)->overlayAlpha * 255.0f), MGRRACE(arg0)->race.colours.pair[RACECOL_CS][0].value, MGRRACE(arg0)->race.colours.pair[RACECOL_CS][1].value);
         gl_func_00000000(&MGRRACE(arg0)->sprites[0]);
         gl_func_00000000(&MGRRACE(arg0)->sprites[0], 0xA0, 0xB0, 3);
         q = (char *)MGRRACE(arg0)->sprites[2].image;
         if (1) {}
         w = ((RaceSpriteImage *)q)->width;
         sp48 = 0xA0 - ((MGRRACE(arg0)->sprites[1].image->width + w + 4) / 2);
-        gl_func_00000000(&D_00000000, (int)(MGRRACE(arg0)->overlayAlpha * 255.0f), arg0 + 0x260, arg0 + 0x284);
+        gl_func_00000000(&D_00000000, (int)(MGRRACE(arg0)->overlayAlpha * 255.0f), MGRRACE(arg0)->race.colours.pair[RACECOL_RN][0].value, MGRRACE(arg0)->race.colours.pair[RACECOL_RN][1].value);
         p6a8 = (char *)MGRRACE(arg0)->courseList;
         if (*(int *)(p6a8 + 8) == (*(int *)(p6a8 + 4) + 1)) {
             gl_func_00000000(&MGRRACE(arg0)->sprites[2]);
