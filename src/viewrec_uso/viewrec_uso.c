@@ -270,22 +270,19 @@ void viewrec_uso_func_00001000(ViewRecProc *proc) {
     VCALL(&sVrMenu->node, 10);
 }
 
-/* A / Start on the current menu row: run the row callback. NM: the target reloads sVrMenu into
- * v0 for the call (here v1). */
-#ifdef NON_MATCHING
+/* the menu input: A on an enabled row with a callback plays the select sound and calls the row's
+ * callback (sVrProc set for it). snd_postEvent through the void alias: an int return leaves a dead
+ * $v0 def that pushes the sVrMenu reload into $v1 (target $v0). */
 void viewrec_uso_func_00001068(ViewRecProc *proc) {
-    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x40100)) {
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x40100)) {
         GuiMenu *m = sVrMenu;
         if (m->rows[m->cursor].arg != 0 && m->rows[m->cursor].enabled != 0) {
-            gl_func_00000000(/* snd_postEvent */ 5);
+            XCALL(gl_func_00000000_vrv, snd_postEvent)(5);
             sVrProc = proc;
             sVrMenu->rows[sVrMenu->cursor].arg();
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00001068);
-#endif
 
 void viewrec_uso_func_0000110C(ViewRecProc *proc) {
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
@@ -515,21 +512,19 @@ typedef struct ViewRecScreen {
     /* 0x9C */ s32 minCursor;        /* the lowest selectable option */
 } ViewRecScreen;
 
-/* NM: the target holds &gInputMgr in v0 for the procState copy (here v1). */
-#ifdef NON_MATCHING
+/* the records screen update: run the menu input (0x1068); B leaves (fade out, clear the session's new
+ * marks). The void calls go through the void alias: an int-returning snd_postEvent leaves a dead $v0
+ * def that pushes &gInputMgr into $v1 (target $v0). */
 void viewrec_uso_func_000018D4(ViewRecScreen *self) {
-    gl_func_00000000(/* viewrec_uso_func_00001068 */ self->proc);
-    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x200)) {
-        gl_func_00000000(/* snd_postEvent */ 0x802);
+    XCALL(gl_func_00000000_vrv, viewrec_uso_func_00001068)(self->proc);
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
+        XCALL(gl_func_00000000_vrv, snd_postEvent)(0x802);
         gInputMgr_vr.procState = gInputMgr_vr.nextProcState;
-        gl_func_00000000(/* Backup_sessionClearNew */ self->proc->session);
-        gl_func_00000000(/* Process_fadeOut_0000F954 */ self->proc, -1, 0);
+        XCALL(gl_func_00000000_vrv, Backup_sessionClearNew)(self->proc->session);
+        XCALL(gl_func_00000000_vrv, Process_fadeOut_0000F954)(self->proc, -1, 0);
     }
-    gl_func_00000000(/* Node_update */ self);
+    XCALL(gl_func_00000000_vrv, Node_update)(self);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000018D4);
-#endif
 
 void viewrec_uso_func_00001954(ViewRecScreen *self) {
     CALL(viewrec_uso_func_000011B4)(self->proc);
@@ -850,53 +845,53 @@ void viewrec_uso_func_000029B0(ViewRecScreen *self, s32 i, s32 x, s32 y, s32 rid
     CALL(gui_drawSprite)(spr, x + 60, y, 2);
 }
 
-/* NM (6/73 words): the time digits; in the loop the target has img in v1 and h in v0, here swapped (declaration order, block scope, s16 h, do/while tried). */
-#ifdef NON_MATCHING
+/* the time digits: three sprite-20 glyphs (digits[i] * 22 + 2) 21 px apart, centred on y. The dead
+ * `h = 0` initialiser creates h's pseudo first, which gives it $v0 ahead of the image pointer ($v1),
+ * as in the target (permuter-found; early-pseudo lever). */
 void viewrec_uso_func_00002AE4(ViewRecScreen *self, s32 x, s32 y, u8 *digits) {
     RaceSprite *spr = &sVrSprites[20];
     f32 col[4];
     f32 d;
     s32 i;
     VrImage *img;
-    s32 h;
+    s32 h = 0;
 
     d = 255.0f;
     col[0] = 40 / d;
     col[1] = 138 / d;
     col[2] = 255 / d;
     col[3] = 255 / d;
-    gl_func_00000000(/* gui_spriteRefresh */ spr);
-    gl_func_00000000(/* gui_setColorEnvPrim_000017DC */ spr, 255, col, 255);
+    CALL(gui_spriteRefresh)(spr);
+    CALL(gui_setColorEnvPrim_000017DC)(spr, 255, col, 255);
     for (i = 0; i < 3; i++) {
         img = (VrImage *)spr->image;
         h = img->height;
-        gl_func_00000000(/* gui_drawSpriteIA8Clip_00002BB0 */ spr, x + i * 21, y - h / 2, digits[i] * 22 + 2, 20);
+        CALL(gui_drawSpriteIA8Clip_00002BB0)(spr, x + i * 21, y - h / 2, digits[i] * 22 + 2, 20);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002AE4);
-#endif
 
-/* NM (8/101 words): the time string; only the loop temporaries differ (target image t0, 16 t9, half height t8). */
-#ifdef NON_MATCHING
+/* the time string: t[0..2] sprintf'd with the Data+0x428 format, drawn as label-sprite-11 glyphs 12 px
+ * apart ('[' -> 10, ']' -> 11). As 0x2AE4: the dead `h = 0` initialiser gives h $v0; the image
+ * pointer is a named local declared first (its home sits above buf[12], as 0x2D9C's buf). */
 void viewrec_uso_func_00002C08(ViewRecScreen *self, s32 x, s32 y, u8 *t) {
+    VrImage *img;
     RaceSprite *spr = &sVrLabels[11];
-    char buf[16];
+    char buf[12];
     f32 col[4];
     f32 d;
     u32 i;
     u8 c;
-    s32 h;
+    s32 h = 0;
 
     d = 255.0f;
     col[0] = 40 / d;
     col[1] = 100 / d;
     col[2] = 255 / d;
     col[3] = 255 / d;
-    gl_func_00000000(/* gui_spriteRefresh */ spr);
-    gl_func_00000000(/* gui_setColorEnvPrim_000017DC */ spr, 255, col, 255);
-    gl_func_00000000(/* gl_sprintf */ buf, (char *)&D_00000000 + 1064, t[0], t[1], t[2]);
-    for (i = 0; i < gl_func_00000000(/* str_len */ buf); i++) {
+    CALL(gui_spriteRefresh)(spr);
+    CALL(gui_setColorEnvPrim_000017DC)(spr, 255, col, 255);
+    CALL(gl_sprintf)(buf, (char *)&D_00000000 + 1064, t[0], t[1], t[2]);
+    for (i = 0; i < CALL(str_len)(buf); i++) {
         if (buf[i] == '[') {
             c = 10;
         } else if (buf[i] == ']') {
@@ -904,13 +899,11 @@ void viewrec_uso_func_00002C08(ViewRecScreen *self, s32 x, s32 y, u8 *t) {
         } else {
             c = buf[i] - '0';
         }
-        h = ((VrImage *)spr->image)->height;
-        gl_func_00000000(/* gui_drawSpriteIA8Clip_00002BB0 */ spr, x + i * 12, y - h / 2, c * 16, 16);
+        img = (VrImage *)spr->image;
+        h = img->height;
+        CALL(gui_drawSpriteIA8Clip_00002BB0)(spr, x + i * 12, y - h / 2, c * 16, 16);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002C08);
-#endif
 
 /* draw `val` (sprintf'd with the Data+0x438 format) as label-sprite-11 digits from x, 12 px apart,
  * skipping leading zeros ('[' -> glyph 10, ']' -> glyph 11; the last character is always drawn) */
@@ -963,8 +956,9 @@ void viewrec_uso_func_00002F1C(ViewRecScreen *self, s32 i, s32 x, s32 y) {
     CALL(gui_drawSprite)(spr, x, y, 2);
 }
 
-/* NM (6/119 words): the course records (three rows through 0x29B0 / 0x2AE4 / 0x2C08, a new record blinking, ties drawn without a rank); rec[5] is in v1 (target v0). */
-#ifdef NON_MATCHING
+/* the course records: three rows through 0x29B0 / 0x2AE4 / 0x2C08, a new record blinking, ties drawn
+ * without a rank. The three row draws are void calls (void alias): an int-returning call leaves the
+ * dead $v0 def that pushes the rec[5] CSE into $v1. */
 typedef struct VrTime { u8 b[4]; } VrTime;
 typedef struct VrCourse { char e[6][8]; } VrCourse;
 typedef struct VrScreen2 {
@@ -994,13 +988,13 @@ void viewrec_uso_func_00002FC0(VrScreen2 *self) {
     col[3] = 1.0f;
     course = self->course;
     y = 123;
-    gl_func_00000000(/* gui_setCombine_00001794 */ &D_00000000);
-    gl_func_00000000(/* viewrec_uso_func_00001488 */ self->proc, self->course, 83);
+    CALL(gui_setCombine_00001794)(&D_00000000);
+    CALL(viewrec_uso_func_00001488)(self->proc, self->course, 83);
     *(VrTime *)prev = *(VrTime *)((char *)&D_00000000 + 1088);
     for (i = 0; i < 3; y += 34, i++) {
-        rec = (u8 *)gl_func_00000000(/* Backup_courseRecordGetTime */ *self->proc->session + course * 48, i);
+        rec = (u8 *)CALL(Backup_courseRecordGetTime)(*self->proc->session + course * 48, i);
         show = 1;
-        if (gl_func_00000000(/* Backup_timeEntryIsNew */ ((VrCourse *)*self->proc->session)[course].e[i])) {
+        if (CALL(Backup_timeEntryIsNew)(((VrCourse *)*self->proc->session)[course].e[i])) {
             if (self->blink & 8) {
                 show = 0;
             }
@@ -1010,18 +1004,15 @@ void viewrec_uso_func_00002FC0(VrScreen2 *self) {
             rank = -1;
         }
         if (show) {
-            gl_func_00000000(/* viewrec_uso_func_000029B0 */ self, rank, 38, y, rec[0] & 7, (rec[0] & 0x78) >> 3);
-            gl_func_00000000(/* viewrec_uso_func_00002AE4 */ self, 132, y, rec + 2);
-            gl_func_00000000(/* viewrec_uso_func_00002C08 */ self, 196, y, rec + 5);
+            XCALL(gl_func_00000000_vrv, viewrec_uso_func_000029B0)(self, rank, 38, y, rec[0] & 7, (rec[0] & 0x78) >> 3);
+            XCALL(gl_func_00000000_vrv, viewrec_uso_func_00002AE4)(self, 132, y, rec + 2);
+            XCALL(gl_func_00000000_vrv, viewrec_uso_func_00002C08)(self, 196, y, rec + 5);
         }
         prev[0] = rec[5];
         prev[1] = rec[6];
         prev[2] = rec[7];
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002FC0);
-#endif
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000319C);
 
