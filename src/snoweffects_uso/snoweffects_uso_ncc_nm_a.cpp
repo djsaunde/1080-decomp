@@ -1,14 +1,12 @@
-/* NCC (C++) near-miss DRAFTS for snoweffects.uso 0xA10C and 0x7FE0 -- NOT built, NOT matching
- * (agent-a run 661). Both functions stay INCLUDE_ASM in snoweffects_uso.c.
- *
- * Compile standalone with IDO 7.1 NCC from the project root:
- *   tools/ido-static-recomp/build/7.1/out/NCC -c -G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32
- *       -o /tmp/x.o src/snoweffects_uso/ncc_drafts/snoweffects_nm_a.cpp
- * and diff each function against expected/src/snoweffects_uso/snoweffects_uso.c.o.
- * A matching donor would need typed 0-pinned aliases for the blank jal targets and a `_rodata` pin
- * (A10C: 1/127 at RoData+0xF4, donor .rodata+0).
+/* IDO 7.1 NCC (C++) NON_MATCHING donors for snoweffects.uso 0xA10C and 0x7FE0 (agent-a runs 661 / 665),
+ * spliced over the empty NON_MATCHING placeholders in snoweffects_uso.c on the non_matching build only
+ * (Makefile SNOW_NM_A_FUNCS; the matching build keeps INCLUDE_ASM). Not byte-exact.
+ * 0xA10C is spliced: 405 / 405 words, objdiff fuzzy 98.85 %. 0x7FE0 is NOT spliced: 811 / 800 words
+ * (85.5 %), and a size change shifts the later functions of the non_matching object (0xA8D0 then drops
+ * to 41.7 %), so a donor body has to be exactly the target's length. The callees are named by their real
+ * symbols (the non_matching object is never linked).
  */
-#include "../snoweffects_ncc.h"
+#include "snoweffects_ncc.h"
 /* the callees, by name (a matching donor would call them through typed 0-pinned aliases) */
 extern "C" {
 int ItemMgr_findType_0003EA98(...);
@@ -31,7 +29,16 @@ int snoweffects_uso_func_00009FE8(...);
  * -O2 -g3 .mdebug): the second walk's ItemType at function scope (its by-value SKey temp is then the
  * first frame word, vfp-4 = sp+172), the first walk not in its own block (key temp vfp-28 = sp+148),
  * c / i at function scope, and the ambient Parm bound once as `const SParm<SVec> &a` before the
- * compare. SKey(int) ctor gives the `sw a1, K(sp)` arg-temp store. ---- */
+ * compare. SKey(int) ctor gives the `sw a1, K(sp)` arg-temp store.
+ * Run 665: the item copy (data in one register for the first test / calls, a copy for the stores) is a
+ * CSE temp, not a second variable. Each walk reads the item as `it.get()` in its first test and as the
+ * named `item = it.get()` everywhere else: uopt CSEs the two cur->data loads into a temp and keeps the
+ * named item as its copy (two named pointers coalesce; a copy survives only when its source is killed
+ * before the copy's last use, and a second name costs a frame word the target does not have). That gives
+ * all 405 words and the walk 2 flags reload (150 -> 73 words off, fuzzy 96.8 -> 98.85). Left: the temp
+ * is caller-saved here (v0) where the target keeps it in s1 across the first call (walk 1 passes it to
+ * both calls), the s-register numbering that follows, next()'s v0 / v1, n8 at sp+120 (target sp+112).
+ * ---- */
 extern "C" int snowDirtyFlag_A30;
 extern char *snow_itemMgr;
 struct SVec { float x, y, z; SVec &operator+=(const SVec &o) { x += o.x; y += o.y; z += o.z; return *this; } void set(float a, float b, float c) { x = a; y = b; z = c; } };
@@ -60,6 +67,7 @@ struct SIter {
     SIt *cur, *nxt;
     SIter(SIt *l) { nxt = l; }
     char *next() { cur = nxt; if (nxt != 0) { nxt = nxt->next; return cur->data; } return 0; }
+    SItem *get() { return (SItem *)cur->data; }
 };
 struct SIterB {
     SIt *it[2];
@@ -117,8 +125,8 @@ extern "C" void snoweffects_uso_func_0000A10C(SLights *t) {
         if (type != 0) {
             SIter it(type->items);
             while (it.next() != 0) {
-                SItem *item = (SItem *)it.cur->data;
-                if (item->vtxCount == 0) {
+                SItem *item = it.get();
+                if (it.get()->vtxCount == 0) {
                     snoweffects_uso_func_00009884(item, t->shape);
                 }
                 snoweffects_uso_func_00009BE8(item, t->shape);
@@ -133,8 +141,8 @@ extern "C" void snoweffects_uso_func_0000A10C(SLights *t) {
         if (type != 0) {
             SIter it(type->items);
             while (it.next() != 0) {
-                SItem *item = (SItem *)it.cur->data;
-                if (item->flags & 2) {
+                SItem *item = it.get();
+                if (it.get()->flags & 2) {
                     snoweffects_uso_func_00009884(item, t->shape);
                     item->flags &= ~2;
                 }
@@ -174,7 +182,9 @@ struct TV {
     TV() {}
     TV(float a, float b, float c) { x = a; y = b; z = c; }
     TV operator*(float s) const { TV r(x * s, y * s, z * s); return r; }
-    TV &operator=(const TV &o) { x = o.x; y = o.y; z = o.z; return *this; }
+    /* by value: `p = t->mid` copies the source into the param temp as words (lw / sw through a3),
+     * then member-wise as floats, as in the target (run 665: 79.0 -> 85.5 %) */
+    TV &operator=(TV o) { x = o.x; y = o.y; z = o.z; return *this; }
     TV &operator+=(const TV &o) { x += o.x; y += o.y; z += o.z; return *this; }
     TV &operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
 };

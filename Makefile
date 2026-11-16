@@ -6178,3 +6178,13 @@ $(SNOW_C_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_c.cpp
 SNOW_C_NM_FUNCS := snoweffects_uso_func_00000270 snoweffects_uso_func_00000C90
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_C_NM_FUNCS),$(f)=$(SNOW_C_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_C_DONOR)
+
+# agent-a run 665: NON_MATCHING-only NCC donor for snoweffects 0xA10C (snow light update); the matching build
+# keeps INCLUDE_ASM. The donor also holds the 0x7FE0 draft, not spliced (811 / 800 words).
+SNOW_NM_A_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp.o
+$(SNOW_NM_A_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp src/snoweffects_uso/snoweffects_ncc.h
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+SNOW_NM_A_FUNCS := snoweffects_uso_func_0000A10C
+build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_A_FUNCS),$(f)=$(SNOW_NM_A_DONOR))
+build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_A_DONOR)
