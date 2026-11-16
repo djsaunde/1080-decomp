@@ -873,6 +873,9 @@ void snoweffects_uso_func_000078E8(char *this, int a1, int a2, int a3, int a4, i
     *(float *)(this + 0x164) = 140.0f;
 }
 
+/* 0x7960: trail head update (angle from acosf of the +0x114 / +0x108 dot, 0x52D4 push-back, side
+ * points +0x120 / +0x12C through the +0x30 matrix). NM: an NCC draft at 194 / 219 words is kept in
+ * ncc_drafts/snoweffects_nm_e.cpp (agent-e run 650); frame 168 vs 176 left. */
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007960);
 
 void snoweffects_uso_func_00007CCC(char *a0) {
@@ -1093,6 +1096,9 @@ void snoweffects_uso_func_0000973C(char *a0) {
 void snoweffects_uso_func_00009768(void *self) {
 }
 
+/* 0x9884: snow light vertex list rebuild (restore colours, collect up to 64 vertices within the
+ * radius, MorphPoly_genUpdateList). NM: an NCC draft at 203 / 217 words is kept in
+ * ncc_drafts/snoweffects_nm_e.cpp (agent-e run 650); only the light-position slot left. */
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009884);
 
 void snoweffects_uso_func_00009BE8(char *this, char *src) {
