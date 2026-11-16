@@ -1025,7 +1025,52 @@ INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000319
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00003364);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000036B4);
+/* the erase screen's ctor (200 bytes): the cfront chain Node (0x2C) -> Process (0x50) -> screen, each
+ * level allocating when called with 0; the Node ctor call and its vptr store on one line (as in the
+ * trnproc / h2h race ctors) give the target's schedule of the vptr address ahead of the o1 reload.
+ * The three vtables are 0-pinned per-site symbols: bootup Data+0xC338 / +0xC3A0 imports and the
+ * module's own Data+0x198. */
+extern char vr_vtNode_36B4[], vr_vtProc_36B4[], vr_vtErase_36B4[];
+ViewRecScreen *viewrec_uso_func_000036B4(ViewRecScreen *self, ViewRecProc *proc) {
+    char *o1;
+    char *o2;
+
+    if (self != 0 || (self = (ViewRecScreen *)CALL(mem_new)(200)) != 0) {
+        o1 = (char *)self;
+        if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {
+            o2 = o1;
+            if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o2, &D_00000000 + 0x444); NODE(o2)->vptr = vr_vtNode_36B4; }
+            NODE(o1)->vptr = vr_vtProc_36B4;
+        }
+        self->node.vptr = vr_vtErase_36B4;
+        self->node.name = &D_00000000 + 0x44C;
+        self->proc = proc;
+        *(s32 *)((char *)self + 0x54) = proc->font;
+        *(s32 *)((char *)self + 0x7C) = 101;
+        *(s32 *)((char *)self + 0x6C) = 0;
+        *(s32 *)((char *)self + 0x74) = 119;
+        *(s32 *)((char *)self + 0x80) = 115;
+        *(s32 *)((char *)self + 0x78) = 26;
+        *(s32 *)((char *)self + 0x8C) = 66;
+        *(s32 *)((char *)self + 0x84) = 44;
+        *(s32 *)((char *)self + 0x90) = 72;
+        *(s32 *)((char *)self + 0x88) = 17;
+        *(s32 *)((char *)self + 0x94) = 120;
+        *(s32 *)((char *)self + 0x98) = 161;
+        *(s32 *)((char *)self + 0x9C) = 181;
+        *(s32 *)((char *)self + 0xA0) = 0;
+        *(s32 *)((char *)self + 0xA4) = 0;
+        *(s32 *)((char *)self + 0xA8) = 0;
+        *(s32 *)((char *)self + 0xAC) = 0;
+        *(f32 *)((char *)self + 0xB0) = 0.0f;
+        *(f32 *)((char *)self + 0xB4) = 0.0f;
+        CALL(Process_stop)(self);
+        *(s32 *)((char *)self + 0x30) = 1;
+        *(s32 *)((char *)self + 0x2C) = 0;
+        *(s32 *)((char *)self + 0x48) = 0;
+    }
+    return self;
+}
 
 /* the erase screen's update: dispatch on the process mode */
 void viewrec_uso_func_00003818(ViewRecScreen *self) {
@@ -1044,9 +1089,100 @@ INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000387
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00003F24);
 
+/* NM (84%): the erase screen's pad handling. Left / right pick yes / no (+0x70), A erases the record
+ * set named by proc+0x70 (0x100000 course times, 0x200000 course scores, 0x400000 arcade, 0x800000
+ * ghost, 0x1000000 everything, which restarts the game flow). The target colours the switch value v0
+ * and the reloaded proc v1 (here v1 / a2, with the &GameFlow lui hoisted into the last beq's slot);
+ * switch / if-chain / locals / store order / NCC all give the same colouring. */
+#ifdef NON_MATCHING
+void viewrec_uso_func_00004354(ViewRecScreen *self) {
+    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x10001) && *(s32 *)((char *)self + 0x70) != 0) {
+        gl_func_00000000(/* snd_postEvent */ 1);
+        *(s32 *)((char *)self + 0x70) = 0;
+    }
+    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x4002) && *(s32 *)((char *)self + 0x70) == 0) {
+        gl_func_00000000(/* snd_postEvent */ 1);
+        *(s32 *)((char *)self + 0x70) = 1;
+    }
+    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x40100)) {
+        if (*(s32 *)((char *)self + 0x70) == 0) {
+            gl_func_00000000(/* snd_postEvent */ 5);
+            switch (*(s32 *)((char *)self->proc + 0x70)) {
+                case 0x100000:
+                    gl_func_00000000(/* Backup_sessionResetCourseTimes */ self->proc->session, *(s32 *)((char *)self + 0xA8));
+                    break;
+                case 0x200000:
+                    gl_func_00000000(/* Backup_sessionResetCourseScores */ self->proc->session, *(s32 *)((char *)self + 0xA8));
+                    break;
+                case 0x400000:
+                    gl_func_00000000(/* Backup_sessionResetArcade */ self->proc->session);
+                    break;
+                case 0x800000:
+                    gl_func_00000000(/* Backup_sessionResetGhost */ self->proc->session);
+                    break;
+                case 0x1000000:
+                    gInputMgr_vr.procState = gInputMgr_vr.nextProcState;
+                    gInputMgr_vr.unk84 = 0;
+                    gInputMgr_vr.unk88 = 1;
+                    gl_func_00000000(/* Backup_resetAll_0000B710 */ self->proc->session);
+                    gl_func_00000000(/* Process_fadeOut_0000F954 */ self->proc, -1, 0);
+                    return;
+            }
+            self->proc->mode = 0x80000;
+        } else {
+            gl_func_00000000(/* snd_postEvent */ 0x802);
+            self->proc->mode = 0x80000;
+        }
+    }
+    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x200)) {
+        gl_func_00000000(/* snd_postEvent */ 0x802);
+        self->proc->mode = 0x80000;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004354);
+#endif
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004518);
+/* the replay screen's ctor (0x9C bytes): Node -> Process -> replay screen, as the erase screen's 0x36B4 */
+extern char vr_vtNode_4518[], vr_vtProc_4518[], vr_vtReplay_4518[];
+ViewRecScreen *viewrec_uso_func_00004518(ViewRecScreen *self, ViewRecProc *proc) {
+    char *o1;
+    char *o2;
+
+    if (self != 0 || (self = (ViewRecScreen *)CALL(mem_new)(156)) != 0) {
+        o1 = (char *)self;
+        if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {
+            o2 = o1;
+            if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o2, &D_00000000 + 0x45C); NODE(o2)->vptr = vr_vtNode_4518; }
+            NODE(o1)->vptr = vr_vtProc_4518;
+        }
+        self->node.vptr = vr_vtReplay_4518;
+        self->node.name = &D_00000000 + 0x464;
+        self->proc = proc;
+        *(s32 *)((char *)self + 0x54) = proc->font;
+        *(s32 *)((char *)self + 0x68) = 98;
+        self->frame = 0;
+        *(s32 *)((char *)self + 0x60) = 122;
+        *(s32 *)((char *)self + 0x6C) = 101;
+        *(s32 *)((char *)self + 0x64) = 30;
+        *(s32 *)((char *)self + 0x78) = 46;
+        *(s32 *)((char *)self + 0x70) = 53;
+        *(s32 *)((char *)self + 0x7C) = 59;
+        *(s32 *)((char *)self + 0x74) = 15;
+        self->rowY = 96;
+        *(s32 *)((char *)self + 0x84) = 165;
+        *(s32 *)((char *)self + 0x88) = 181;
+        *(s32 *)((char *)self + 0x8C) = 0;
+        *(s32 *)((char *)self + 0x90) = 0;
+        *(s32 *)((char *)self + 0x94) = 0;
+        *(s32 *)((char *)self + 0x98) = 0;
+        CALL(Process_stop)(self);
+        *(s32 *)((char *)self + 0x30) = 1;
+        *(s32 *)((char *)self + 0x2C) = 0;
+        *(s32 *)((char *)self + 0x48) = 0;
+    }
+    return self;
+}
 
 void viewrec_uso_func_00004670(ViewRecScreen *self) {
     CALL(viewrec_uso_func_000047B0)(self);
