@@ -238,17 +238,21 @@ segments:
   # at runtime by the USO loader; we match pre-relocation text bytes.
   #
   # bootup_uso_pre carved into three sub-bins (issue #6) to isolate the
-  # embedded RSP ucode region (0xDB0000..0xDBA000): 11 ucode payloads
-  # (4 F3DEX 1.x gfx + 7 aspMain audio variants) sit between the head
-  # USO metadata and the tail rodata/reloc tables. Code sections live
-  # before each ID string; data sections (0x800 each) end at the string.
+  # embedded RSP ucode region (0xDB0000..0xDBA000): 11 gfx ucode payloads
+  # (4 F3DEX 1.23 family + 7 SGI gfx ucodes whose data carries "RSP SW
+  # Version: 2.0D / 2.0H" and "SGI U64 GFX SW TEAM"; none of them is audio)
+  # sit between the head USO metadata and the tail rodata/reloc tables. Code
+  # sections live before each ID string; data sections (0x800 each) end at
+  # the string. The audio ucode (aspMain) is elsewhere: Text in game_libs
+  # (game_libs_rsp_ucode_31DF8, ROM 0xE16EDC) and data image in bootup.uso
+  # Data +0x1D340 (ROM 0xDBF730, 0x2E0 bytes); PC port plan section 15.2.
   - [0xD9FE28, bin, bootup_uso_pre_head]
   # bootup_uso_ucodes carved further: three of the gfx DMEM data sections
   # (0x800 each) byte-match Nintendo SDK F3DEX 1.23 stock builds shipped in
   # n64decomp/sm64 lib/PR/f3dex/*_data.bin (issue #6 fingerprint comment).
   # Naming them as separate bins documents the boundaries; remaining
-  # opaque regions hold gfx IMEM + 7 aspMain ucode entries (audio data
-  # sections at id-string-end pattern; aspMain has no public byte ref).
+  # opaque regions hold gfx IMEM + the 7 SGI gfx ucode entries (data
+  # sections at the id-string-end pattern). No aspMain here (see above).
   - [0xDB0000, bin, bootup_uso_ucodes_head]
   - [0xDB7140, bin, bootup_uso_ucodes_F3DEX_NoN_data]
   - [0xDB7940, bin, bootup_uso_ucodes_F3DEX_data]

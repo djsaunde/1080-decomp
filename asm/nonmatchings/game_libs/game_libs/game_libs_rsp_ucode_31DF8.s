@@ -1,4 +1,6 @@
-/* RSP microcode blob mis-split by splat as five fake CPU "functions". */
+/* RSP microcode blob mis-split by splat as five fake CPU "functions": */
+/* the audio ucode aspMain's IMEM text (3 zero words, then 0xF70 bytes at */
+/* 0x31E04 = aspMainTextStart; data image = bootup Data +0x1D340). */
 /* (game_libs_func_00031DF8 / 00031F20 / 00031F4C / 00032884 / 00032934) */
 /* Body is SP scalar + vector code: jal/j targets in IMEM (0x04001xxx), */
 /* RSP COP0 moves (mfc0/mtc0 of SP/DP regs), COP2 vector ops (0x4A......), */
