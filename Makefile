@@ -6174,6 +6174,6 @@ SNOW_C_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_c.cpp.o
 $(SNOW_C_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_c.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_C_NM_FUNCS := snoweffects_uso_func_00000270
+SNOW_C_NM_FUNCS := snoweffects_uso_func_00000270 snoweffects_uso_func_00000C90
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_C_NM_FUNCS),$(f)=$(SNOW_C_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_C_DONOR)

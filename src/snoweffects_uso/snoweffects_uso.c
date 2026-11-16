@@ -410,7 +410,14 @@ SnowParticle *SnowPool_spawn_00000A7C(SnowPool *this, Vec3 *pos) {
 void SnowPool_update_00000B44(SnowPool *this) {
 }
 
+#ifdef NON_MATCHING
+/* particle sprite draw (projected texture rectangles): NCC donor src/snoweffects_uso/snoweffects_uso_ncc_c.cpp
+ * (agent-c run 655), REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
+void snoweffects_uso_func_00000C90(void) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000C90);
+#endif
 
 #ifdef NON_MATCHING
 /* texture-sprite init: NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp (agent-h run 649),
