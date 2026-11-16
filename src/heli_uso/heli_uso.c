@@ -30,17 +30,11 @@ INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000007B4);
 
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000008A8);
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000904);
-
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000980);
-
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000988);
 
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000A70);
 
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000B08);
-
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000B10);
 
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000019C4);
 

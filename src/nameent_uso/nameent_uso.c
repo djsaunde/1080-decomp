@@ -16,8 +16,6 @@ INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_0000020
 
 INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_000002F4);
 
-INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_000002FC);
-
 INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_00000458);
 
 INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_000004C8);

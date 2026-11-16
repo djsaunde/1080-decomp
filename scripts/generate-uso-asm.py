@@ -91,14 +91,30 @@ def main():
 
     if sym:
         starts = {text_start} | set(prols)
+        syms = {text_start}
         s0, ssz = sym
         for k in range(0, ssz, 12):
             info, val = struct.unpack(">II", data[s0 + k:s0 + k + 8])
             info >>= 16
             if info & 7 == 2 and (info >> 4) & 0xF == 5 and val < text_size:
                 starts.add(text_start + val)
+                syms.add(text_start + val)
         starts |= leaf_ends(data, text_start, text_end, starts)
-        prols = sorted(starts - {text_start})
+        # Hoisted heads: an exported entry whose first words (a `lui`/`lw`/float-constant
+        # load scheduled above the stack adjust) run straight into a prologue is ONE
+        # function. Drop a non-Sym start when the chunk before it has no `jr ra` and
+        # does not end in a jump.
+        def returns(a, b):
+            ws = [struct.unpack(">I", data[o:o+4])[0] for o in range(a, b, 4)]
+            nz = [i for i, x in enumerate(ws) if x]
+            return 0x03E00008 in ws or (nz and any((ws[i] >> 26) == 2 or (ws[i] >> 26 == 0 and ws[i] & 0x3F == 8)
+                                                    for i in nz[-2:]))
+        order = sorted(starts)
+        keep = [order[0]]
+        for b in order[1:]:
+            if b in syms or returns(keep[-1], b):
+                keep.append(b)
+        prols = sorted(set(keep) - {text_start})
     boundaries = [text_start] + prols + [text_end]
 
     # asm-processor inserts a trailing nop into .s files with < 2 words. Merge

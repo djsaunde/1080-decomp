@@ -20,8 +20,6 @@ INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_fun
 
 INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_0000045C);
 
-INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_00000480);
-
 INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_0000058C);
 
 INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_0000063C);
