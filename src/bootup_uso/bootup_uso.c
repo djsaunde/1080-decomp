@@ -1,5 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "gdl/gfxlib.h"
+#include "gdl/window.h"
 #include "game/snowboarder.h"
 #include "game/camera.h"
 #include "game/course.h"
@@ -30,16 +32,6 @@ func_00000000() {
 
 extern char D_00000000;
 
-#ifdef NON_MATCHING
-/* Macro definitions for NM-wrap bodies. Auto-managed by /struct-name-tick.
- * Default build never sees these — wrap bodies aren't compiled.
- * BOOT_SELF_PTR: pointer to the self/context struct (read into `self`/`dst`/
- * `t6` locals across wraps). bootup_uso D+0x254.
- */
-#endif
-/* BOOT_SELF_PTR graduated to unconditional 2026-07-03: promoted exact bodies
- * (Snower_display/item_createHem) use it in the default build. */
-#define BOOT_SELF_PTR (*(int**)((char*)&D_00000000 + 0x254))
 
 void func_00000008(int *dst) {
     int buf[2];
@@ -650,15 +642,19 @@ extern int sStr_cam_7324;
  * (func_0000027C + 0x18, alias gGfxLib_d94_src); callees func_05B750(g, rec) and
  * func_04CCA8(a0). The a0->0x3C test goes through a named int (target v1),
  * the flag word through a pointer, and the 16-byte record is a struct copy. */
+/* GfxLib +0x294 is the scene FogParms (FogParms_emit(&gGfxLib_00000294), FogParms_lerp in Fog_display;
+ * gfxlib.h still calls it unk294[6]); colour[3] is the fog alpha. BGBox draws the box while the fog
+ * is (nearly) transparent and otherwise clears the window with the fog colour (Window.flags bit 2). */
+#define FOGPARMS(p) ((FogParms *)(p))
 typedef struct { int w[4]; } S16_D94;
 extern char gGfxLib_d94_g[], gGfxLib_d94_src[];
 void BGBox_func_00000D94(char *a0) {
     int *p;
     int on;
-    if ((double)*(float *)(gGfxLib_d94_g + 0x2A0) < D_bu_ro_dpool[0x70 / 8]) {
+    if ((double)FOGPARMS(GFXLIB(gGfxLib_d94_g)->unk294)->colour[3] < D_bu_ro_dpool[0x70 / 8]) {
         FCALL(gfx_setPrimColour)(gGfxLib_d94_g, gGfxLib_d94_src);
         FCALL(Node_display)(a0);
-        p = (int *)(*(char **)(gGfxLib_d94_g + 0x254) + 0x78);
+        p = &GFXLIB(gGfxLib_d94_g)->curWindow->win.flags;
         on = *(int *)(a0 + 0x3C);
         if (on != 0) {
             *p |= 4;
@@ -666,9 +662,9 @@ void BGBox_func_00000D94(char *a0) {
             *p &= ~4;
         }
     } else {
-        p = (int *)(*(char **)(gGfxLib_d94_g + 0x254) + 0x78);
+        p = &GFXLIB(gGfxLib_d94_g)->curWindow->win.flags;
         *p |= 4;
-        *(S16_D94 *)(*(char **)(gGfxLib_d94_g + 0x254) + 0xDC) = *(S16_D94 *)gGfxLib_d94_src;
+        *(S16_D94 *)GFXLIB(gGfxLib_d94_g)->curWindow->win.clearColour = *(S16_D94 *)gGfxLib_d94_src;
     }
 }
 
@@ -736,6 +732,8 @@ extern char sStr_Node_66B0, sStr_U64BGWall_66B8;
 extern char D_e68_vtx;  /* bootup.uso data sym163 (D_0065AC): 4-vertex quad */
 typedef struct { u32 w0, w1; } GwE68;
 typedef struct { GwE68 *buf; s32 count; } DlE68;
+/* MgrE68 / DlE68 mirror DLContext.gfx.cur / DLBuf (gdl/dlctx.h) with a typed Gfx base: E68_MGR is
+ * GfxLib.staticDL (+0x214, "MainStaticDL"), so the wall's index list goes into the static display list. */
 typedef struct { char pad[0xC]; DlE68 *dl; } MgrE68;
 typedef struct { s16 x, y, z; u16 flag; s16 s, t; u8 cn[4]; } VtxE68;
 extern s32 import_8001FFA0[];   /* screen/grid dims {w, h}: w reads */
@@ -1690,7 +1688,8 @@ extern char sStr_ddm_73E8;
 extern void func_000003F8();  /* used as data-symbol base */
 /* EXACT (agent-c run 115). Identities/offsets from the TextReloc and the
  * asm addends: scale = RoData pool +0x4F0, dst = 0x128 / src = 0xE8 (both
- * import_0005C108 fields), mode D_01EBDC, flags import_0005EE64 (separate
+ * import_0005C108 fields: GfxLib.worldScale and the 4x4 matrix at GfxLib +0xE8, set to
+ * diag(worldScale) here; gdl/gfxlib.h still has unk0E8[16]), mode D_01EBDC, flags import_0005EE64 (separate
  * load/store aliases), cfg word import_0005EE6C + 4 through a named int v
  * (target keeps it in v0), table/gate D_00719C (two aliases so the gate is
  * its own load), ctx import_0005C108; callees func_072E58, func_072F1C,
@@ -3681,17 +3680,16 @@ typedef struct { int w[4]; } Q7288;
 extern Q7288 gGfxLib_7288_src; /* = func_0000027C + 0x18 (asm %lo addend), pinned at 0x294 */
 void EnvSettings_display(int *a0) {
     if (ENVSET(a0)->flags & 2) {
-        char *base = (char*)&gGfxLib;
-        *(float*)(*(char**)(base + 0x254) + 0xAC) = (float)(int)ENVSET(a0)->clipNear;
-        *(float*)(*(char**)(base + 0x254) + 0xB0) = (float)(int)ENVSET(a0)->clipFar;
+        GfxLib *base = gGfx;
+        base->curWindow->win.near = (float)(int)ENVSET(a0)->clipNear;
+        base->curWindow->win.far = (float)(int)ENVSET(a0)->clipFar;
     }
     if (ENVSET(a0)->mode == 0) {
-        char *b2 = (char*)&gGfxLib;
+        GfxLib *b2 = gGfx;
         int *q;
-        q = *(int**)(b2 + 0x254);
-        q = (int*)((char*)q + 0x78);
+        q = &b2->curWindow->win.flags;
         *q |= 4;
-        *(Q7288 *)(*(char **)(b2 + 0x254) + 0xDC) = gGfxLib_7288_src;
+        *(Q7288 *)b2->curWindow->win.clearColour = gGfxLib_7288_src;
     }
 }
 
@@ -4220,13 +4218,16 @@ void *Tv1Tmpl_create(char *a0) {
  * reused `k` (k = obj stays in v1, the list base goes to v0 as in the target);
  * `+ 1` on the int * gives the dead `addiu v0,v0,4`. */
 extern char *gGfxLib_7D04_root[];
+/* the alias is GfxLib + 0x23C (undefined_syms_auto.txt), so [6] is GfxLib.curWindow (+0x254): the
+ * TV asks the window being drawn for its vtable slot 11 result (Fader_buildTexture makes the same call
+ * on GfxLib.mainWindow and indexes the result as a u16 RGBA5551 image: the frame buffer). */
+#define TV1_WIN (gGfxLib_7D04_root[6])
 extern float func_7D04_randf();
 void Tv1Tmpl_func_00007D04(char *s0) {
     int a3 = ((Tv1Tmpl *)s0)->state;
     int k;
     ((Tv1Tmpl *)s0)->unk64 =
-        ((int (*)(char *))*((unsigned int *)((char *)*(int **)(gGfxLib_7D04_root[6] + 0x28) + 0x64)))(
-            (char *)((int)gGfxLib_7D04_root[6] + (int)(short)*(short *)((char *)*(int **)(gGfxLib_7D04_root[6] + 0x28) + 0x60)));
+        ((int (*)(char *))VT_SLOT(NODE(TV1_WIN)->vptr, 11).fn)(TV1_WIN + VT_SLOT(NODE(TV1_WIN)->vptr, 11).delta);
     k = ((Tv1Tmpl *)s0)->state;
     if (k != 1) {
         if (k != 0) {
@@ -4318,9 +4319,9 @@ void Fog_display(char *s0) {
     int hit;
     if (gInputMgr_7ec8_m != 8) {
         frac = 0.0f;
-        limit = *(float *)(gGfxLib_7ec8_g + 0x130) * *(float *)(*(char **)(*(char **)(gGfxLib_7ec8_g + 0x254) + 0x70) + 0xA8);
+        limit = GFXLIB(gGfxLib_7ec8_g)->worldScale[2] * ((MCamera *)GFXLIB(gGfxLib_7ec8_g)->curWindow->win.camera)->mnode.world[3][2];
         hit = 0;
-        p = *(float *)(gGfxLib_7ec8_g + 0x130) * FOGITEM(s0)->pos[2];
+        p = GFXLIB(gGfxLib_7ec8_g)->worldScale[2] * FOGITEM(s0)->pos[2];
         end = FOGITEM(s0)->fin.value + p;
         if (p < limit && limit < end) {
             hit = 1;
@@ -4335,11 +4336,11 @@ void Fog_display(char *s0) {
         }
         if (hit != 0) {
             *(S24_7EC8 *)(gGfxLib_7ec8_src) = *(S24_7EC8 *)bu_7ec8_h;
-            XCALL(func_00000000_7ec8_c, FogParms_lerp_0004406C)(gGfxLib_7ec8_src, s0 + 0x74, frac);
+            XCALL(func_00000000_7ec8_c, FogParms_lerp_0004406C)(gGfxLib_7ec8_src, FOGITEM(s0)->fog, frac);
         }
     } else {
-        if (XCALL(func_00000000_7ec8_t, cam_isSphereInView)(*(int *)(gGfxLib_7ec8_g + 0x254), 3, *(int *)(s0 + 0x30),
-                          *(int *)(s0 + 0x34), FOGITEM(s0)->pos[2], 0, 0.0f) != 0) {
+        if (XCALL(func_00000000_7ec8_t, cam_isSphereInView)(*(int *)&GFXLIB(gGfxLib_7ec8_g)->curWindow, 3, *(int *)&FOGITEM(s0)->pos[0],
+                          *(int *)&FOGITEM(s0)->pos[1], FOGITEM(s0)->pos[2], 0, 0.0f) != 0) {
             FCALL(ColourItem_display)(s0);
         }
     }
@@ -4506,23 +4507,23 @@ extern void func_00000000_082F8_v(int, int);
 extern char D_00000000_a;
 extern char D_func_00000008_data;
 void Snower_display(int *a0) {
-    float f0 = *(float*)((char*)&gGfxLib + 0x130);
-    float f2 = *(float*)((char*)*(int**)((char*)BOOT_SELF_PTR + 0x70) + 0xA8) * f0;
-    float f12 = *(float*)((char*)a0 + 0x38) * f0;
+    float f0 = gGfx->worldScale[2];
+    float f2 = ((MCamera *)gGfx->curWindow->win.camera)->mnode.world[3][2] * f0;
+    float f12 = SNOWITEM(a0)->pos[2] * f0;
 
     if (f12 < f2) {
-        if (*(float*)((char*)a0 + 0x54) + f12 > f2) {
-            XCALL(func_00000000_082F8_v, func_00007620)(*(int*)&D_00000000_a, *(int*)((char*)a0 + 0x6C));
+        if (SNOWITEM(a0)->unk44.value + f12 > f2) {
+            XCALL(func_00000000_082F8_v, func_00007620)(*(int*)&D_00000000_a, SNOWITEM(a0)->unk5C.value);
         }
     }
 
     if (*(int*)(&D_func_00000008_data + 0x2C) == 8) {
         if (XCALL(func_00000000_082F8, cam_isSphereInView)(
-            *(int*)((char*)&gGfxLib + 0x254),
+            *(int *)&gGfx->curWindow,
             3,
-            *(int*)((char*)a0 + 0x30),
-            *(int*)((char*)a0 + 0x34),
-            *(float*)((char*)a0 + 0x38),
+            *(int *)&SNOWITEM(a0)->pos[0],
+            *(int *)&SNOWITEM(a0)->pos[1],
+            SNOWITEM(a0)->pos[2],
             0,
             0.0f) != 0) {
             FCALL(ColourItem_display)(a0);
@@ -4726,7 +4727,7 @@ void TreeTmpl_display(char *arg0) {
             arg0 = (char *)((SNode *)arg0)->next;
         } while (arg0 != 0);
     }
-    FCALL(FogParms_emit_00043F1C)(&gGfxLib_00000294);  /* alt-entry tail call to func_0000027C+0x18 */
+    FCALL(FogParms_emit_00043F1C)(&gGfxLib_00000294);  /* restore the scene fog: GfxLib +0x294 (func_0000027C+0x18) */
 }
 
 extern char gHostio_func_00008744_arg1;

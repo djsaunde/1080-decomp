@@ -255,8 +255,8 @@ void Fader_start(char *s1, int a1, int a2) {
  * preserved (.s = source of truth). INCLUDE_ASM (no episode;
  * tautology-trap rule). */
 /* EXACT (agent-c run 115). Palette remap: the game object is 0x240
- * (func_0000023C + 0x4, alias gGfxLib_13b20_root), its vtable +0x60/+0x64 slot
- * returns the u16 palette (this-adjusted cfront call, arg0 passed through).
+ * (func_0000023C + 0x4, alias gGfxLib_13b20_root = GfxLib.mainWindow, gdl/gfxlib.h), its vtable
+ * +0x60/+0x64 slot returns the u16 palette (this-adjusted cfront call, arg0 passed through).
  * Both loops are plain rolled indexed loops (IDO unrolls them x4) with their
  * own counters i / j; the root load is followed by two empty blocks (ring
  * lever). Three all-zero alignment words follow (SUFFIX_BYTES_FORCE). */

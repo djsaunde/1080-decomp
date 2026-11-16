@@ -49,7 +49,8 @@ typedef struct FogItem {
     s32 parmsList;              /* 0x40 */
     CourseFParm fin;            /* 0x44: [200] fade-in length (value 0x54) */
     CourseFParm rng;            /* 0x5C: [300] full-fog range (value 0x6C) */
-    char sub74[0x18];           /* 0x74: the fog colour record handed to the blend call */
+    char fog[0x18];             /* 0x74: FogParms (gdl/gfxlib.h): the colour Fog_display lerps the scene fog
+                                 * (GfxLib +0x294) toward while the camera is inside the fade range */
     s32 inside;                 /* 0x8C */
 } FogItem;
 
@@ -66,6 +67,8 @@ typedef struct SnowItem {
     CourseFParm unk44;          /* 0x44: [300] */
     CourseParm unk5C;           /* 0x5C: [1] */
 } SnowItem;
+
+#define SNOWITEM(p) ((SnowItem *)(p))
 
 /* The falling-snow effect (0x134; vtables imported from module 60) that FallingSnow_create
  * builds into its owner's +0x40 and func_00007620 switches on / off. */
@@ -89,7 +92,8 @@ typedef struct Tv1Tmpl {
     s32 scroll;                 /* 0x58: state 0: -= 10 per step; state 2: 0x18 */
     s32 state;                  /* 0x5C: 0 / 1 / 2 (state 2 picks the next one at random) */
     s32 timer;                  /* 0x60: steps in the state (0x3E / 0x20 / 0x5C) */
-    s32 unk64;                  /* 0x64: result of the gfx-lib +0x18 node's vtable +0x60 call */
+    s32 unk64;                  /* 0x64: GfxLib.curWindow's VT_SLOT 11 result (the slot Fader_buildTexture
+                                 * reads the frame buffer through on mainWindow) */
     s32 displayCount;           /* 0x68: cleared by update, counted by display */
 } Tv1Tmpl;
 
