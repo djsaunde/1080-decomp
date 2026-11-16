@@ -278,7 +278,10 @@ typedef struct SnowBoarder {
     s32 unk8C0;             /* 0x8C0: 1 << character (one-hot mask, set by the ctor) */
     u32 character;          /* 0x8C4: rider character 1..8: ctor arg 2 = game_createPlayers' index + 1; SnowAI_update
                              * picks ms1..ms8 by it; 6 and 7 get special ctor handling and DDCC skips them */
-    char pad8C8[0x8DC - 0x8C8];
+    s16 boardBin[10];       /* 0x8C8: per-board index into the board binary path table, from the parm stream
+                             * (SnowBoarder_readParms reads a count n, then n s16s here; no ctor store). board is
+                             * 1-based: SnowBoarder_reset loads boardBin[board - 1] (`lh 0x8C6(board * 2 + st)`).
+                             * 10 = the span to camera; the real count is the stream's n */
     char *camera;           /* 0x8DC: the race camera built from the mode's 0x1C-byte descriptor row; every
                              * game_setup* stores it (vs-ghost / demo-race share one between both riders).
                              * SnowBoarder_update passes it to the 0x808 sound update when non-zero */
@@ -438,6 +441,7 @@ SNOWB_ASSERT_OFFSET(unk854, 0x854);
 SNOWB_ASSERT_OFFSET(unk860, 0x860);
 SNOWB_ASSERT_OFFSET(unk8C0, 0x8C0);
 SNOWB_ASSERT_OFFSET(character, 0x8C4);
+SNOWB_ASSERT_OFFSET(boardBin, 0x8C8);
 SNOWB_ASSERT_OFFSET(tint, 0x8E0);
 SNOWB_ASSERT_OFFSET(unk8F4, 0x8F4);
 SNOWB_ASSERT_OFFSET(unk900, 0x900);

@@ -15,10 +15,10 @@ typedef float f32; typedef double f64;
 #include "../../include/game/snowboarder.h"
 #include "../../include/game/input.h" /* GameFlow (InputMgr) */
 #include "../../include/game/course.h" /* CourseMarker (the marker query result) */
-#include "../../include/gdl/gl_data.h" /* gCourseColl = Bss+0x50 Sym 451 (the course CollShape *; its +0x84 is
-                                        * CollShape.shape, gdl/coll.h, which is C-only) */
-/* GameFlow through gInputMgr_c234_g8: the token is pinned at 8 (undefined_syms_auto.txt), so the object
- * starts 8 bytes below it; the reloc names Bss+0xF8 (GameFlow) +0x34 = nextFlowMode (uso-data-sites.py sites). */
+#include "../../include/gdl/gl_data.h" /* gCourseColl = Bss+0x50 Sym 451 (the course CollShape *) */
+#include "../../include/gdl/coll.h"    /* CollShape (C++-safe since agent-b run 553) */
+#define COURSE_COLL (*(CollShape **)&gCourseColl)
+/* GameFlow through gInputMgr_c234_g8: the token is pinned at 8 (undefined_syms_auto.txt), so the object starts 8 bytes below it; the reloc names Bss+0xF8 (GameFlow) +0x34 = nextFlowMode (uso-data-sites.py sites). */
 #define C234_FLOW INPUT_MGR(gInputMgr_c234_g8[-8])
 inline void zf(float &f, int z) { f = z; }
 #undef NULL
@@ -135,13 +135,13 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
      * temp area): the folded read of *rider stops uopt copy-propagating it; defined in the argument list after
      * argument 0 so its addiu follows the D_00000000 lui (99.84 -> 99.85, spill slot = target) */
     if ((var_v0 = func_00000000((sp3Ck = *(s32 *)&gCourseColl), sp3C = (char *)rider->dnode.cvqs.trans + 0 * (int)(*(char *)rider), 0x457A0000, &spCC)) != 0) {
-        rider->groundSurface = func_00000000(*(s32 *)(*(char **)&gCourseColl + 0x84) /* CollShape.shape */, spCC.dc);
+        rider->groundSurface = func_00000000(COURSE_COLL->shape, spCC.dc);
         if (spCC.d8 < D_bu_ro_pool[0x924 / 4]) {
             rider->surface = rider->groundSurface;
         } else {
             rider->surface = 0;
         }
-        rider->groundFlags = func_00000000(*(s32 *)(*(char **)&gCourseColl + 0x84) /* CollShape.shape */, spCC.dc);
+        rider->groundFlags = func_00000000(COURSE_COLL->shape, spCC.dc);
         rider->groundDist = spCC.d8;
         /* agent-g run 231: the plane distance on its own line before the test (spCC.f0 then loads after it, as1 line
          * order), operands K * (dc * e4 + (e0 + K2) * e8 + e4' * ec) + 4 in the target's load / multiply order: 95.45 -> 98.17 */
@@ -210,14 +210,14 @@ c61:
         rider->dnode.surfSpd = (f32) rider->dnode.parms.spd.value;
         rider->dnode.surfVsc = (f32) rider->dnode.parms.vsc.value;
         rider->impactScale = (f32) rider->parms.snf.value;
-        func_00000000(*(s32 *)(*(char **)&gCourseColl + 0x84) /* CollShape.shape */, spCC.de, (char *)&rider->groundColor);
+        func_00000000(COURSE_COLL->shape, spCC.de, (char *)&rider->groundColor);
         goto cend;
 c62:
         rider->dnode.surfImp = 0.0f;
         rider->dnode.surfSpd = kRo_SnowBoarder_procColl_944;
         rider->dnode.surfVsc = kRo_SnowBoarder_procColl_948;
         rider->impactScale = (f32) rider->parms.dsf.value;
-        func_00000000(*(s32 *)(*(char **)&gCourseColl + 0x84) /* CollShape.shape */, spCC.de, (char *)&rider->groundColor);
+        func_00000000(COURSE_COLL->shape, spCC.de, (char *)&rider->groundColor);
 cend:
         rider->noGroundFrames = 0;
     } else {

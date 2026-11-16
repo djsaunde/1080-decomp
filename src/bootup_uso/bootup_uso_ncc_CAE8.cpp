@@ -17,7 +17,7 @@
  * k958 = 0x958, d8abc = 0x8ABC). Callees are func_00000000 (USO TextReloc
  * jal 0).
  * agent-g run 558: the HANDICAP printf arg is the Node name (NODE(st)->name, gdl/node.h); the board index is
- * RIDER(st)->board. Same bytes. */
+ * RIDER(st)->board. Same bytes. agent-g run 563: the board-bin table is boardBin[board - 1] (0x8C8, board 1-based). */
 struct V3 { float x, y, z;
     void set(V3 v) { x = v.x; y = v.y; z = v.z; }
     V3 &operator=(const V3 &v) { set(v); return *this; } };
@@ -35,7 +35,7 @@ typedef float f32; typedef int s32; typedef short s16; typedef unsigned char u8;
 #define RIDER(st) ((SnowBoarder *)(st))
 extern "C" void SnowBoarder_reset(char *st) {
     func_00000000(st, 1, gPlayerBinPaths_cae8_ta[RIDER(st)->character]);
-    func_00000000(st + 0x3EC, 1, gBoardBinPaths_cae8_tb[((short *)(st + 0x8C6))[RIDER(st)->board]]);
+    func_00000000(st + 0x3EC, 1, gBoardBinPaths_cae8_tb[RIDER(st)->boardBin[RIDER(st)->board - 1]]);
     if (RIDER(st)->flags & SNOWB_FLAG_MIRROR) func_00000000(st);
     func_00000000(st + 0x90C, (st + 0x17C) - st);
     RIDER(st)->groundDist = bu_cae8_k958;
