@@ -46,8 +46,10 @@ c segment starts 4 bytes before its Text payload (the Text record's flag word is
 `beq zero,zero` trampoline of n64proc_uso_func_00000000), so its first function shows at
 Text-0x4.
 
-Limits: trnproc and viewrec
-have Text but no splat code segment, so their sites print as `Text+0xK`. A target
+The 8 modules set up on 2026-11-16 (trnproc, viewrec, nameent, balloon, heli, fire,
+checkpoint, snoweffects; docs/1080_NEW_MODULES.md) are uncompressed and their c segment
+starts exactly at the Text payload, so names come from the map like gui's. snoweffects.uso
+and effects.uso store 0 where the other modules have the module magic. A target
 `gl_X+0x4` is a real Sym value inside the build's symbol X (a split boundary), not an
 error of this script.
 
@@ -97,7 +99,8 @@ class Module:
         self._parse(rom)
 
     def _parse(self, rom):
-        assert u32(rom, self.hdr) == MAGIC, hex(self.hdr)
+        # snoweffects.uso / effects.uso store 0 instead of the module magic (run 617)
+        assert u32(rom, self.hdr) in (MAGIC, 0), hex(self.hdr)
         # The magic is followed directly by section records. Code modules start with a Bss
         # record (type 8: no payload), so word 1 reads 8; n64proc, the boarderN / data USOs
         # start with Data (6) or RoData (7) (run 510).
@@ -160,7 +163,8 @@ def find_modules(rom):
     for m in re.finditer(re.escape(struct.pack('>I', MAGIC)), rom):
         o = m.start()
         nm = rom[o + 12:o + 44].split(b'\0')[0]
-        if nm.endswith(b'.uso') and u32(rom, o + 0x28) == MAGIC:
+        if nm.endswith(b'.uso') and (u32(rom, o + 0x28) == MAGIC or
+                                     (u32(rom, o + 0x28) == 0 and u32(rom, o + 0x2C) in TYPES)):
             mods.append(Module(rom, o, struct.unpack_from('>i', rom, o + 4)[0], nm.decode()))
     return mods
 

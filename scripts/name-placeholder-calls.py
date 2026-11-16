@@ -77,7 +77,8 @@ Modules: bootup (src/game_libs, src/bootup_uso), game (game_uso), genproc
 (timproc_uso_b5), gui, titproc, eddproc, arcproc, h2hproc, mgrproc, timproc
 (timproc_uso_b1), trkproc (timproc_uso_b3), map5_data (src/map4_data_uso_b2: that segment
 at ROM 0x71C6E4 is map5_data.uso's Text), n64proc, boarder1-5 (run 510: uso-imports
-now parses their Data-first layout). The kernel has no placeholders.
+now parses their Data-first layout), and the 2026-11-16 new modules trnproc, viewrec,
+nameent, balloon, heli, fire, checkpoint, snoweffects (src/<m>_uso). The kernel has no placeholders.
 
 NCC / MIPSpro donors (.cpp, run 510): the verify copy is built with the object's own Makefile
 recipe (NCC or tools/ncc721.sh, then its objcopy --redefine-sym renames; relative #includes
@@ -140,7 +141,10 @@ MODULE_OF_DIR = {'game_libs': 'bootup', 'bootup_uso': 'bootup', 'game_uso': 'gam
                  'timproc_uso_b5': 'genproc', 'gui_uso': 'gui', 'titproc_uso': 'titproc',
                  'eddproc_uso': 'eddproc', 'arcproc_uso': 'arcproc', 'h2hproc_uso': 'h2hproc',
                  'mgrproc_uso': 'mgrproc', 'timproc_uso_b1': 'timproc', 'timproc_uso_b3': 'trkproc',
-                 'n64proc_uso': 'n64proc', 'map4_data_uso_b2': 'map5_data', **{f'boarder{i}_uso': f'boarder{i}' for i in range(1, 6)}}
+                 'n64proc_uso': 'n64proc', 'map4_data_uso_b2': 'map5_data', **{f'boarder{i}_uso': f'boarder{i}' for i in range(1, 6)},
+                 # the 2026-11-16 new modules (docs/1080_NEW_MODULES.md)
+                 **{f'{m}_uso': m for m in ('trnproc', 'viewrec', 'nameent', 'balloon', 'heli', 'fire',
+                                            'checkpoint', 'snoweffects')}}
 BUILD_VENV = '/home/danjs/code/decomp/tools/build-venv/bin'
 INCLUDE_LINE = '#include "uso_call.h"'
 INCLUDE_REL = '../../include/uso_call.h'

@@ -71,6 +71,7 @@ verifies the named game.uso section offsets in include/game/game_uso_data.h (che
                      whose section the relocs prove it is (adds the header include)
 
 Mode USOs (agent-g run 589): `--uso titproc|eddproc|mgrproc|arcproc|h2hproc|timproc|trkproc|genproc`
+(and since run 617 the new modules trnproc|viewrec|nameent|balloon|heli|fire|checkpoint|snoweffects)
 runs the same game.uso machinery (sites / calls / census / object / pmf-table / const-table / spell /
 check) on that module (MODULES: timproc / trkproc / genproc are src/timproc_uso_b1 / b3 / b5). Each
 module's named section offsets go in its own header (include/game/<src dir>_data.h, created by
@@ -138,6 +139,15 @@ MODULES = {
                 ('src/timproc_uso_b3',), 'include/game/timproc_uso_b3_data.h'),
     'genproc': (0x5BCA4E, ('yay0', ('build/src/timproc_uso_b5/timproc_uso_b5.c.o',)),
                 ('src/timproc_uso_b5',), 'include/game/timproc_uso_b5_data.h'),
+    # the 2026-11-16 new modules (docs/1080_NEW_MODULES.md): uncompressed, c segment = Text payload
+    'trnproc': (0x5B8D06, ('map', ('.trnproc_uso',)), ('src/trnproc_uso',), 'include/game/trnproc_uso_data.h'),
+    'viewrec': (0x642346, ('map', ('.viewrec_uso',)), ('src/viewrec_uso',), 'include/game/viewrec_uso_data.h'),
+    'nameent': (0x64C6C2, ('map', ('.nameent_uso',)), ('src/nameent_uso',), 'include/game/nameent_uso_data.h'),
+    'balloon': (0x7DECE6, ('map', ('.balloon_uso',)), ('src/balloon_uso',), 'include/game/balloon_uso_data.h'),
+    'heli': (0x7E3D9A, ('map', ('.heli_uso',)), ('src/heli_uso',), 'include/game/heli_uso_data.h'),
+    'fire': (0x7F3E5E, ('map', ('.fire_uso',)), ('src/fire_uso',), 'include/game/fire_uso_data.h'),
+    'checkpoint': (0x7F6D42, ('map', ('.checkpoint_uso',)), ('src/checkpoint_uso',), 'include/game/checkpoint_uso_data.h'),
+    'snoweffects': (0x9023D2, ('map', ('.snoweffects_uso',)), ('src/snoweffects_uso',), 'include/game/snoweffects_uso_data.h'),
 }
 
 
@@ -190,8 +200,10 @@ def parse_uso(rom, mod, roms=None):
     """Section table walk (same layout as scripts/uso-sym-oracle.py). Returns name -> bytes;
     `roms` (a dict), when given, gets name -> ROM offset of the section data."""
     import crunch64
-    assert u32(rom, mod) == 0x12345678
-    o = mod + 16
+    # snoweffects.uso stores 0 for the module magic; modules without Bss (nameent, balloon,
+    # heli, fire, checkpoint) put their first section record right after it (run 617)
+    assert u32(rom, mod) in (0x12345678, 0)
+    o = mod + 16 if u32(rom, mod + 4) == 8 else mod + 4
     secs = {}
     while o < len(rom) - 12:
         for k in range(4):
@@ -925,6 +937,8 @@ _GFX_FN = (r'(Anim|anim_|Skin|skin_|BaseLight|BaseMat|BasePolyShape|ColourItem|D
            r'GfxLib|LightTarget|Mat_|MorphPoly|PolyShape|RcpMgr|RcpTask|ScreenWindow|Shadow|Sprite|'
            r'Window|ZoneShape|gfx_|shape_|light_|console_|CollShape|absrot).*')
 OWNERS = [
+    ('n', 'the 2026-11-16 new modules (src/<m>_uso/*, docs/1080_NEW_MODULES.md)',
+     r'^src/(trnproc|viewrec|nameent|balloon|heli|fire|checkpoint|snoweffects)_uso/', None),
     ('agent-c', 'audio: Audio* / snd_* / Snd* functions, any file', None, r'(Audio|snd_|Snd|Note_|Seq_).*'),
     ('agent-b', 'game_libs_post0b.c / game_libs_post1b.c', r'game_libs_post[01]b\.c$', None),
     ('agent-b', 'gfx / anim / shape / window / light / CollShape functions in other files', None, _GFX_FN),

@@ -29,7 +29,7 @@ Measures (per segment = src/<segment>/ or the report.json unit's segment):
     macros (any `#define NAME(p, o ...)` whose body is `*(T *)((char *)(p) + (o))`, e.g. FW / FF),
     except accessor uses whose offset is a named constant (kPmf_/kRoD_/kStr_/kTag_ ..., run 568).
     Per file for the C++ donors (.cpp), and the top N functions by raw-site count with their
-    owner area (owner(): b / c / g / h / a, run 520).
+    owner area (owner(): b / c / g / h / n / a, run 520; n = the 2026-11-16 new modules).
     Justified raw sites (run 577): a site is justified when its line, or the line just above it
     (or the comment that line closes), carries `RAW: <keyword> <reason>` with keyword one of
     byte-lock (every typed spelling changes the bytes; name the lever), data-table (a read from
@@ -175,8 +175,11 @@ WEAK_FN = re.compile(r'_(?:func_[0-9A-Fa-f]{5,8}|vfn\d+(?:_[0-9A-Fa-f]{5,8})?|vs
 def fn_class(name, seg_prefixes):
     m = re.match(r'^(?:(\w+?)_)?func_[0-9A-Fa-f]{8}$', name)
     if m and (m.group(1) is None or m.group(1) in seg_prefixes):
-        # `<segment>_func_00000000` / `func_00000000`: the zero sentinel (never renamed)
-        return 'sentinel' if name.endswith('_00000000') else 'placeholder'
+        # `<segment>_func_00000000` / `func_00000000`: the zero sentinel (never renamed). Not in
+        # the new modules: their VRAM 0 is USO Text offset 0, a real function (1080_NEW_MODULES.md).
+        if name.endswith('_00000000') and not NEW_MODULE_FN.match(name):
+            return 'sentinel'
+        return 'placeholder'
     if WEAK_FN.search(name):
         return 'weak'
     return 'real'
@@ -332,6 +335,9 @@ def block_names(m):
 
 
 AUDIO_FN = re.compile(r'(?:\w+::)?(?:Audio|snd_|Snd|Note_|Seq_)\w*')
+# The 8 code USOs set up on 2026-11-16 (docs/1080_NEW_MODULES.md): owner n.
+NEW_MODULES = re.compile(r'^src/(?:trnproc|viewrec|nameent|balloon|heli|fire|checkpoint|snoweffects)_uso/')
+NEW_MODULE_FN = re.compile(r'^(?:trnproc|viewrec|nameent|balloon|heli|fire|checkpoint|snoweffects)_uso_func_')
 HOME_H = re.compile(r'^src/(?:bootup_uso|titproc_uso|arcproc_uso|mgrproc_uso|h2hproc_uso|timproc_uso_b1|timproc_uso_b3)/'
                     r'|^src/game_libs/game_libs(?:_tail)?\.c$')
 
@@ -339,7 +345,10 @@ HOME_H = re.compile(r'^src/(?:bootup_uso|titproc_uso|arcproc_uso|mgrproc_uso|h2h
 def owner(path, func):
     """Area owner for the readability phase (coordinator's table, run 520): b = game_libs_post0b /
     post1b*; c = timproc_uso_b5*, game_libs_post.c (run 536) and the audio driver; g = game_uso; h = bootup_uso / titproc /
-    game_libs.c / game_libs_tail / arc / mgr / h2h / tim / trk; a = everything else."""
+    game_libs.c / game_libs_tail / arc / mgr / h2h / tim / trk; n = the new modules (trnproc / viewrec /
+    nameent / balloon / heli / fire / checkpoint / snoweffects, 2026-11-16); a = everything else."""
+    if NEW_MODULES.search(path):
+        return 'n'
     if re.search(r'/game_libs_post(?:0b|1b)', path):
         return 'b'
     if path == 'src/game_libs/game_libs_post.c':
@@ -400,6 +409,18 @@ def data_sites(compiled):
                 left_obj=left_obj, left_base=left_base)
 
 
+def include_asm_line(unit, name):
+    """(path, line) of `INCLUDE_ASM(..., name)` in the unit's source, or None."""
+    p = unit.get('metadata', {}).get('source_path') or unit['name'] + '.c'
+    try:
+        for i, line in enumerate(open(p), 1):
+            if 'INCLUDE_ASM' in line and re.search(r'\b%s\b' % re.escape(name), line):
+                return (p, i, None)
+    except OSError:
+        pass
+    return None
+
+
 def naming(un_calls, fn_defs, d_lines, calls):
     """-> (dashboard rows, [(kind, file, line, what)] unjustified) for calls / functions / globals."""
     unj = []
@@ -422,6 +443,8 @@ def naming(un_calls, fn_defs, d_lines, calls):
                     fj += 1
                 else:
                     d = next((x for x in ds if not x[0].startswith('src/match_imports/')), ds[0] if ds else None)
+                    if d is None:
+                        d = include_asm_line(u, name)
                     unj.append(('functions', d[0] if d else '?', d[1] if d else 0, f'{name} ({c})'))
     fun = fcls['placeholder'] + fcls['weak']
     gj = 0
@@ -567,7 +590,7 @@ def main():
                     print(f'{p}:{line} {f} [{o}]')
             return
         cnt = collections.Counter((k, o) for _, _, _, o, k in reasons)
-        owners = 'abcgh'
+        owners = 'abcghn'
         for r in tbl(['keyword'] + list(owners) + ['total'],
                      [[f'`{k}`'] + [cnt[(k, o)] for o in owners] + [sum(cnt[(k, o)] for o in owners)]
                       for k in RAW_KEYWORDS] +
@@ -646,14 +669,15 @@ def main():
         byown[owner(p, f)] += n
     L += ['', 'Owners: b = game_libs_post0b / post1b*; c = timproc_uso_b5*, game_libs_post.c and audio (Audio* / snd_* / Snd* / Note_ / Seq_ '
           'functions); g = game_uso; h = bootup_uso / titproc / game_libs.c / game_libs_tail / arc / mgr / h2h / tim / trk; '
-          'a = everything else. Raw sites per owner: ' + ', '.join(f'{o} {byown[o]}' for o in 'abcgh') + '.']
+          'n = the new modules (trnproc / viewrec / nameent / balloon / heli / fire / checkpoint / snoweffects); '
+          'a = everything else. Raw sites per owner: ' + ', '.join(f'{o} {byown[o]}' for o in 'abcghn') + '.']
     L += ['', '### Raw struct offsets: justified (`RAW:` tags)', '',
           'A raw site is justified when its line, or the line just above it, carries a `RAW: <keyword> <reason>` '
           'comment; keywords: ' + ', '.join(f'`{k}`' for k in RAW_KEYWORDS) + ' (docs/READABILITY_AGENT_RULES.md). '
           '`scripts/readability-census.py --no-build --unjustified [--owner X]` lists the rest as file:line function.', '']
     tot = sum((own_just[o] for o in own_just), collections.Counter())
     L += tbl(['owner', 'raw total', 'justified', 'UNJUSTIFIED'],
-             [(o, own_just[o]['raw'], own_just[o]['just'], own_just[o]['raw'] - own_just[o]['just']) for o in 'abcgh'] +
+             [(o, own_just[o]['raw'], own_just[o]['just'], own_just[o]['raw'] - own_just[o]['just']) for o in 'abcghn'] +
              [('**all**', tot['raw'], tot['just'], tot['raw'] - tot['just'])])
     jf = sorted(((p, c) for p, c in just.items() if c['raw'] - c['just']), key=lambda kv: (-(kv[1]['raw'] - kv[1]['just']), kv[0]))
     L += ['', f'Files with unjustified raw sites: {len(jf)} (top {top}):', '']
