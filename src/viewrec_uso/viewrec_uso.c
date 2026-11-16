@@ -202,7 +202,29 @@ void viewrec_uso_func_00001488(ViewRecProc *proc, int i, int y) {
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00001488);
 #endif
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000014DC);
+/* with flag 0x10000 set, draw label sprites 57, 56, 55, 54 right to left from x 285 at y 220, each
+ * spaced by its image width + 4 (+ 4 more after every odd one). The image and its width read into
+ * locals give the target's v0 / v1. */
+void viewrec_uso_func_000014DC(ViewRecProc *proc) {
+    s32 i;
+    s32 x;
+    RaceSprite *spr;
+
+    if (proc->flags & 0x10000) {
+        x = 285;
+        for (i = 0; i < 4; i++) {
+            spr = &sVrLabels[57 - i];
+            CALL(gui_spriteRefresh)(spr);
+            CALL(gui_setCombine_00001794)(spr);
+            CALL(gui_drawSprite)(spr, x, 220, 6);
+            {
+                RaceSpriteImage *img = spr->image;
+                s32 w = img->width;
+                x -= w + (i & 1) * 4 + 4;
+            }
+        }
+    }
+}
 
 /* draw one records row at y: its title (label sprite via 0x1488), then three indexed sprites at
  * x 46 / 240 (row y) and 160 (y + 30) */
