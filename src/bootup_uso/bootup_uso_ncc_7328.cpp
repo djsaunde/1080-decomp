@@ -13,6 +13,10 @@
  *   function-scope `mode` costs a slot above the iterator);
  * - tail: the |= 2 before the 800 store (ring t5/t3/t4).
  * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY. */
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
+typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
+#include "../../include/game/course.h"
+#include "../../include/game/envobj.h" /* EnvSettings (handlers / clipNear / clipFar / flags) */
 extern "C" {
 void func_00000000(...);
 void stream_readS32_00005EF8(void *);
@@ -43,7 +47,7 @@ extern "C" void EnvSettings_load(char *self) {
         Iter73 it;
         stream_readS32_0000502C(&out);
         found = 0;
-        it.start(*(Link73 **)(self + 0x2C));
+        it.start(*(Link73 **)&ENVSET(self)->handlers);
         while (it.next() != 0) {
             if (it.get()->matches(msg)) {
                 found = it.get();
@@ -59,18 +63,18 @@ extern "C" void EnvSettings_load(char *self) {
             func_00000000(&D_00000000, 1, out);
         }
     }
-    stream_readS32_0000502C(self + 0x38);
-    if (*(int *)(self + 0x38) & 1) {
+    stream_readS32_0000502C(&ENVSET(self)->flags);
+    if (ENVSET(self)->flags & 1) {
         func_00000000(func_0000027C + 0x18);
     }
-    if (*(int *)(self + 0x38) & 2) {
-        stream_readS32_00004FF0(self + 0x30);
-        stream_readS32_00004FF0(self + 0x34);
+    if (ENVSET(self)->flags & 2) {
+        stream_readS32_00004FF0(&ENVSET(self)->clipNear);
+        stream_readS32_00004FF0(&ENVSET(self)->clipFar);
     }
-    { int mode = *(int *)(func_00000008 + 0x34);
+    { int mode = *(int *)(func_00000008 + 0x34); /* GameFlow.gameMode (Bss 0xF8 + 0x3C: alias value 8 + 0x34) */
     if (mode == 6 || mode == 11) {
         *(float *)(func_0000029C + 4) = 1.0f;
-        *(int *)(self + 0x38) |= 2;
-        *(int *)(self + 0x34) = 800;
+        ENVSET(self)->flags |= 2;
+        ENVSET(self)->clipFar = 800;
     } }
 }

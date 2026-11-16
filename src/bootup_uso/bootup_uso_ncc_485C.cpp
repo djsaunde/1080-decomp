@@ -15,25 +15,34 @@
  *   line boundaries limit the scheduler (PERM_FORCE_SAMELINE effect).
  * docs/IDO_CODEGEN.md#kit-xvi-agent-c-run-116. Spliced into bootup_uso.c.o
  * via REPLACE_FUNC_BODY; bu_485c_root / gGfxLib_485c_g are blank (0) aliases. */
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
+typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
+typedef float f32; typedef double f64;
+#include "../../include/game/camera.h"
+#include "../../include/game/course.h"
 struct V3 { float x, y, z;
     V3(float a, float b, float c) { set(a, b, c); }
     void set(float a, float b, float c) { x = a; y = b; z = c; } };
 extern "C" {
 void func_00000000(...);
 extern char func_00000080[];
-extern char gGfxLib_485c_g[];
-extern char *bu_485c_root;
+extern char gGfxLib_485c_g[];          /* gGfxLib (blank per-site alias) */
+extern CamWindow *bu_485c_root;        /* bootup data sym161: the camera window (as 1A44's D_bu_205CC) */
 }
 #define STR (func_00000080 + 0x20)
-#define F(p,o) (*(float *)((char *)(p) + (o)))
-extern "C" void Mountain_display(char *a0) {
-    char *v0;
+/* gGfxLib.worldScale[i] (GfxLib 0x128, gfxlib.h assert) spelled base + offset: every member form
+ * (.worldScale[i], *(float *)&->worldScale[i], a GfxLib * local, base + offsetof) folds the 0x128
+ * into the lui / addiu pair or re-bases per load; the target keeps &gGfxLib in v1, 0x128.. in the lwc1s. */
+#define GFX_WORLDSCALE(i) (*(float *)(gGfxLib_485c_g + 0x128 + 4 * (i)))
+/* scale(scaleXZ, scaleY, scaleXZ), then the translation = camera eye * worldScale + (0, posY, 0). */
+extern "C" void Mountain_display(Mountain *a0) {
+    MCamera *cam;
     func_00000000(STR);
-    V3 b1(F(a0,0x30), F(a0,0x34), F(a0,0x30));
+    V3 b1(a0->scaleXZ, a0->scaleY, a0->scaleXZ);
     func_00000000(STR, &b1);
-    v0 = *(char **)(bu_485c_root + 0x70);
+    cam = bu_485c_root->cam;
     {
-        V3 b2(F(v0,0xA0) * F(gGfxLib_485c_g,0x128), F(v0,0xA4) * F(gGfxLib_485c_g,0x12C) + F(a0,0x2C), F(v0,0xA8) * F(gGfxLib_485c_g,0x130)); func_00000000(STR, &b2);
+        V3 b2(cam->mnode.world[3][0] * GFX_WORLDSCALE(0), cam->mnode.world[3][1] * GFX_WORLDSCALE(1) + a0->posY, cam->mnode.world[3][2] * GFX_WORLDSCALE(2)); func_00000000(STR, &b2);
     }
     func_00000000(a0);
 }
