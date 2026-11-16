@@ -4980,7 +4980,7 @@ int* SkinMgr_ctor(int *a0, int a1, int a2) {
     }
     XCALL(gl_func_00062F64_695F4, Node_ctor)(a0, GL_DATA_STR(0x2C5A8, "skinmgr"));
     a0[0x28 / 4] = (int)&SkinMgr_vtbl_sym_695F4;
-    v1 = &((SkinMgr *)a0)->anims;
+    v1 = (int *)&((SkinMgr *)a0)->anims;
     if (a0 != (int*)-72) goto store;
     v1 = (int*)XCALL(gl_func_00062F64_695F4, mem_new)(4);
     if (v1 == 0) goto after_store;
