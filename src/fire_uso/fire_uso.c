@@ -2,9 +2,12 @@
 #include "uso_call.h"
 #include "gdl/node.h"  /* Node, NodeMsg, VT_SLOT */
 #include "gdl/mnode.h" /* SNode (scale +0x70) */
+#include "gdl/item.h"  /* ItemType */
 
 extern int gl_func_00000000();
 extern char D_00000000;
+extern char gl_data_00000000;
+extern int gPolyGeomMode_3EEC8_tmpl[2];
 
 /* fire.uso: the fire course object (an SNode subclass with a Sprite and two
  * gfx colour parms) and its ItemType template. Compiler: IDO 7.1 cfe -O2 matches
@@ -15,15 +18,39 @@ extern char D_00000000;
  * placeholder; the target is in the TextReloc. Imports from bootup.uso:
  * Bss+0x3C168 = GfxLib, Bss+0x3C768 = the hostio object. */
 
-/* fire_uso_func_00000000: FireTmpl ctor (0x68 bytes). not matched yet (an NM body scored 78%):
- * the whole control flow, the inlined 0x48-byte ItemType base ctor (name passed
- * by value) and the store order match; two residuals: the target keeps the
- * name copy at sp+0x1C (two more frame words, likely the inlined Colour::set's
- * materialised this/params) and reloads 255.0f for the alpha dividend instead
- * of reusing the divisor register (cfe, NCC and value-variants all CSE it).
- * The divides are not folded, so the colours come from an inline
- * set(r, g, b, a) dividing by 255.0f (C needs locals for that, which cost frame words). */
-INCLUDE_ASM("asm/nonmatchings/fire_uso/fire_uso", fire_uso_func_00000000);
+/* fire_uso_func_00000000: FireTmpl ctor (0x68 bytes, cfront this==0 alloc). The
+ * 0x48-byte SNodeItemType base is constructed inline (its own this==0 alloc,
+ * ItemType_ctor(base, tag, 0) with the 4-byte tag by value, then the
+ * SNodeItemType vptr, bootup Data+0x1EFC0); then the FireTmpl vptr (Data+0x228C),
+ * gPolyGeomMode = {0, 10}, the Sprite (unk40, the node each new Fire attaches),
+ * sprite +0xC4 = 1, and the prim (0x58) / env (0x48) colours as r/255.
+ * Levers: the divisor is the local `d` (a literal / 255.0f is folded by cfe; the
+ * target divides at run time) declared first for the frame (name copy at
+ * sp+0x1C); the alpha is the int 255, a separate constant from d's 255.0f, so it
+ * is reloaded (li.s 255) as the target does; the inline base ctor's call and vptr
+ * store share one source line, and `if (1) {}` closes the base part (as1 order). */
+typedef struct { s32 w; } FireTag;
+extern char SNodeItemType_vtbl_fire;
+#define FIRE_SETCOLOUR(c, r, g, b, a) { d = 255.0f; (c)[0] = (r) / d; (c)[1] = (g) / d; (c)[2] = (b) / d; (c)[3] = (a) / d; }
+char *fire_uso_func_00000000(char *self, FireTag tag) {
+    float d;
+    if (self != 0 || (self = (char *)CALL(mem_new)(0x68)) != 0) {
+        ItemType *base = (ItemType *)self;
+        FireTag t = tag;
+        if (base != 0 || (base = (ItemType *)CALL(mem_new)(0x48)) != 0) {
+            CALL(ItemType_ctor)(base, t, 0); base->node.vptr = &SNodeItemType_vtbl_fire;
+        }
+        NODE(self)->vptr = &D_00000000;
+        if (1) {}
+        gPolyGeomMode_3EEC8_tmpl[1] = 10;
+        gPolyGeomMode_3EEC8_tmpl[0] = 0;
+        ((ItemType *)self)->unk40 = CALL(Sprite_ctor_0004B620)(0, &gl_data_00000000);
+        *(s32 *)(((ItemType *)self)->unk40 + 0xC4) = 1;
+        FIRE_SETCOLOUR((f32 *)(self + 0x58), 219.0f, 196.0f, 0.0f, 255);
+        FIRE_SETCOLOUR((f32 *)(self + 0x48), 126.0f, 33.0f, 3.0f, 255);
+    }
+    return self;
+}
 
 int *fire_uso_func_00000270(char *self, int sprite);
 
