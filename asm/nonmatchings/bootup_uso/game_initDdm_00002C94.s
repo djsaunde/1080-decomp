@@ -2,14 +2,14 @@ nonmatching game_initDdm_00002C94, 0x110
 
 glabel game_initDdm_00002C94
     /* DD3700 00002C94 27BDFFD8 */  addiu      $sp, $sp, -0x28
-    /* DD3704 00002C98 3C010000 */  lui        $at, %hi(func_000003F8 + 0xF8)
-    /* DD3708 00002C9C C42004F0 */  lwc1       $f0, %lo(func_000003F8 + 0xF8)($at)
+    /* DD3704 00002C98 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0xF8)
+    /* DD3708 00002C9C C42004F0 */  lwc1       $f0, %lo(snd_calcEmitterDistPan_000003F8 + 0xF8)($at)
     /* DD370C 00002CA0 AFB00018 */  sw         $s0, 0x18($sp)
-    /* DD3710 00002CA4 3C100000 */  lui        $s0, %hi(func_000000F0 + 0x38)
+    /* DD3710 00002CA4 3C100000 */  lui        $s0, %hi(stream_readQuad_000000F0 + 0x38)
     /* DD3714 00002CA8 AFB1001C */  sw         $s1, 0x1C($sp)
-    /* DD3718 00002CAC 3C110000 */  lui        $s1, %hi(func_00000080 + 0x68)
-    /* DD371C 00002CB0 26100128 */  addiu      $s0, $s0, %lo(func_000000F0 + 0x38)
-    /* DD3720 00002CB4 263100E8 */  addiu      $s1, $s1, %lo(func_00000080 + 0x68)
+    /* DD3718 00002CAC 3C110000 */  lui        $s1, %hi(stream_readVec3_00000080 + 0x68)
+    /* DD371C 00002CB0 26100128 */  addiu      $s0, $s0, %lo(stream_readQuad_000000F0 + 0x38)
+    /* DD3720 00002CB4 263100E8 */  addiu      $s1, $s1, %lo(stream_readVec3_00000080 + 0x68)
     /* DD3724 00002CB8 AFBF0024 */  sw         $ra, 0x24($sp)
     /* DD3728 00002CBC AFA40028 */  sw         $a0, 0x28($sp)
     /* DD372C 00002CC0 AFB20020 */  sw         $s2, 0x20($sp)

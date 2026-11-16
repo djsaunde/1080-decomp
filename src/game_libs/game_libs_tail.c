@@ -1146,9 +1146,9 @@ void Backup_resetOptionsData_0000AFC4(char *arg0) {
     SETTINGS(arg0)->newMark[2] = 0;
     SETTINGS(arg0)->unk11 = 0;
     CALL(snd_setPlayer1VolumeLevel)(SETTINGS(arg0)->levels[0]);
-    CALL(func_0000023C)(SETTINGS(arg0)->levels[1]);
+    CALL(snd_setPlayer0VolumeLevel_0000023C)(SETTINGS(arg0)->levels[1]);
     CALL(snd_setPlayer2VolumeLevel)(SETTINGS(arg0)->levels[2]);
-    CALL(func_000001FC)(SETTINGS(arg0)->flags & 3);
+    CALL(snd_setSoundOutputMode_000001FC)(SETTINGS(arg0)->flags & 3);
     gl_flag_AFC4_bit2 = (SETTINGS(arg0)->flags & 4) == 4;
     do {
         temp_v0 = *(char **)((char *)&D_00000000 + 0x28);

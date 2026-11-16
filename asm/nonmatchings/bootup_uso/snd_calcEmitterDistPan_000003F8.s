@@ -1,6 +1,6 @@
-nonmatching func_000003F8, 0x184
+nonmatching snd_calcEmitterDistPan_000003F8, 0x184
 
-glabel func_000003F8
+glabel snd_calcEmitterDistPan_000003F8
     /* DD0E64 000003F8 27BDFFB8 */  addiu      $sp, $sp, -0x48
     /* DD0E68 000003FC AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD0E6C 00000400 AFA60050 */  sw         $a2, 0x50($sp)
@@ -73,14 +73,14 @@ glabel func_000003F8
     /* DD0F78 0000050C 46088482 */  mul.s      $f18, $f16, $f8
     /* DD0F7C 00000510 460A3100 */  add.s      $f4, $f6, $f10
     /* DD0F80 00000514 44815000 */  mtc1       $at, $f10
-    /* DD0F84 00000518 3C010000 */  lui        $at, %hi(func_00000044 + 0xC)
+    /* DD0F84 00000518 3C010000 */  lui        $at, %hi(stream_readF32_00000044 + 0xC)
     /* DD0F88 0000051C 46122180 */  add.s      $f6, $f4, $f18
     /* DD0F8C 00000520 460A3402 */  mul.s      $f16, $f6, $f10
     /* DD0F90 00000524 4600820D */  trunc.w.s  $f8, $f16
     /* DD0F94 00000528 440E4000 */  mfc1       $t6, $f8
     /* DD0F98 0000052C 00000000 */  nop
     /* DD0F9C 00000530 ADEE0000 */  sw         $t6, 0x0($t7)
-    /* DD0FA0 00000534 C4320050 */  lwc1       $f18, %lo(func_00000044 + 0xC)($at)
+    /* DD0FA0 00000534 C4320050 */  lwc1       $f18, %lo(stream_readF32_00000044 + 0xC)($at)
     /* DD0FA4 00000538 C4A40000 */  lwc1       $f4, 0x0($a1)
     /* DD0FA8 0000053C 3C013F80 */  lui        $at, (0x3F800000 >> 16)
     /* DD0FAC 00000540 46122183 */  div.s      $f6, $f4, $f18
@@ -99,4 +99,4 @@ glabel func_000003F8
     /* DD0FDC 00000570 27BD0048 */  addiu      $sp, $sp, 0x48
     /* DD0FE0 00000574 03E00008 */  jr         $ra
     /* DD0FE4 00000578 00000000 */   nop
-endlabel func_000003F8
+endlabel snd_calcEmitterDistPan_000003F8

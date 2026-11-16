@@ -1,6 +1,6 @@
-nonmatching Fog_func_000080B4, 0x38
+nonmatching Fog_saveData, 0x38
 
-glabel Fog_func_000080B4
+glabel Fog_saveData
     /* DD8B20 000080B4 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DD8B24 000080B8 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD8B28 000080BC AFA40018 */  sw         $a0, 0x18($sp)
@@ -15,4 +15,4 @@ glabel Fog_func_000080B4
     /* DD8B4C 000080E0 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DD8B50 000080E4 03E00008 */  jr         $ra
     /* DD8B54 000080E8 00000000 */   nop
-endlabel Fog_func_000080B4
+endlabel Fog_saveData

@@ -6,14 +6,14 @@
 
 extern int func_00000000();
 extern char D_00000000;
-extern struct { int a, b, c; } func_00000188;
+extern struct { int a, b, c; } snd_seqEndDbg_00000188;
 
 /* -O0 cluster split from bootup_uso_tail1.c on 2026-06-23 (F954-F9E8 are -O0;
  * moved together so tail1 keeps only the -O2 game_createProcessWindow and the linker stays
  * contiguous). Process_fadeOut_0000F954 is a byte-exact -O0 C match; Process_pause_0000F9E8 is 1 word
  * off (a -O0 self-cache/eval-order residual in the indirect-call arg) so stays NM. */
 
-/* Process_fadeOut_0000F954: -O0 init helper. The 3rd-call arg loads func_00000188+8 via a
+/* Process_fadeOut_0000F954: -O0 init helper. The 3rd-call arg loads snd_seqEndDbg_00000188+8 via a
  * struct-field ref (folds to lui;lw 8 — an array/scalar+offset ref instead emits
  * an extra addiu materializing the address). */
 void Process_fadeOut_0000F954(int *a0, int a1, int a2) {
@@ -21,9 +21,9 @@ void Process_fadeOut_0000F954(int *a0, int a1, int a2) {
         FCALL(Node_clearFlag4_0000F614)(*(int *)&PROCESS(a0)->pauseMenu);
     }
     FCALL(input_pauseRacePads)(&gInputMgr);
-    FCALL(Fader_start)(func_00000188.c, 3, 0);
+    FCALL(Fader_start)(snd_seqEndDbg_00000188.c, 3, 0);
     PROCESS(a0)->fadingOut = 1;
-    FCALL(func_00000188)(a1, a2, 0);
+    FCALL(snd_seqEndDbg_00000188)(a1, a2, 0);
 }
 
 /* Process_pause_0000F9E8 — 64/64 EXACT (2026-07-03, agent-e).
@@ -39,7 +39,7 @@ void Process_pause_0000F9E8(int *self) {
     register int flag;
     register int *x;
 
-    FCALL(func_0000029C)();
+    FCALL(snd_muteAll_0000029C)();
     self[0x38 / 4] = FCALL(input_pauseRacePads)(&gInputMgr);
     ((void(*)(int))vt[0x5C / 4])(self[0x48 / 4] + (int)VT_SLOT(vt = (int*)((int*)self[0x48 / 4])[0x28 / 4], 10).delta);
     ((int*)self[0x48 / 4])[0x7C / 4] = 0;

@@ -10,7 +10,7 @@
  * bootup offset 0x100F0. */
 
 extern int func_00000000();
-extern struct { char _p2C[0x2C]; int f2C; char _p38[0x8]; int f38; } func_00000008; /* USO-base reloc; struct-typed for $at-fused member stores */
+extern struct { char _p2C[0x2C]; int f2C; char _p38[0x8]; int f38; } stream_readS32_00000008; /* USO-base reloc; struct-typed for $at-fused member stores */
 extern char D_00000000;
 extern char sStr_Node_C58C;
 extern char sStr_Quit_Process_C594;

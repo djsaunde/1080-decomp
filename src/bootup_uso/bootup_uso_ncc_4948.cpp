@@ -37,16 +37,16 @@ struct E8 { float a, b; };
 extern "C" {
 void func_00000000(...);
 float bu4948_ff(float);
-extern char func_000003F8[];
+extern char snd_calcEmitterDistPan_000003F8[];
 extern E16 bu_4948_t16[];
 extern E8 bu_4948_t8[];
 extern float bu_4948_k0, bu_4948_k1, bu_4948_klo, bu_4948_khi;
 }
 #define F(p,o) (*(float *)((char *)(p) + (o)))
-/* bootup RoData pool words reached off the func_000003F8 base (RoData-base + 0x3F8 + K, per the TextRelocs;
+/* bootup RoData pool words reached off the snd_calcEmitterDistPan_000003F8 base (RoData-base + 0x3F8 + K, per the TextRelocs;
  * uso-data-sites.py sites): two separate f32 pi literals, the degree <-> radian factors */
-#define RO_PI_554 F(func_000003F8, 0x15C) /* RoData 0x554: f32 3.1415927 */
-#define RO_PI_558 F(func_000003F8, 0x160) /* RoData 0x558: f32 3.1415927 */
+#define RO_PI_554 F(snd_calcEmitterDistPan_000003F8, 0x15C) /* RoData 0x554: f32 3.1415927 */
+#define RO_PI_558 F(snd_calcEmitterDistPan_000003F8, 0x160) /* RoData 0x558: f32 3.1415927 */
 #define SNAP(SETPOS) { Vec3 *sv = (Vec3 *)obj->rider->dnode.vel; Vec3 B; B = *sv * bu_4948_k0; B.y *= bu_4948_k1; SETPOS(obj->cam.mnode.local, &B); }
 extern "C" void RiderCam_update_00004948(RiderCam *obj) {
 #define st (*(unsigned *)&obj->mode)

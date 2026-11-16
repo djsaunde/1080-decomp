@@ -1,9 +1,9 @@
 nonmatching FallingSnow_create, 0x138
 
 glabel FallingSnow_create
-    /* DD7F54 000074E8 3C0E0000 */  lui        $t6, %hi(func_00000008 + 0x2C)
+    /* DD7F54 000074E8 3C0E0000 */  lui        $t6, %hi(stream_readS32_00000008 + 0x2C)
   alabel sStr_Player2_74EC
-    /* DD7F58 000074EC 8DCE0034 */  lw         $t6, %lo(func_00000008 + 0x2C)($t6)
+    /* DD7F58 000074EC 8DCE0034 */  lw         $t6, %lo(stream_readS32_00000008 + 0x2C)($t6)
     /* DD7F5C 000074F0 27BDFFD8 */  addiu      $sp, $sp, -0x28
   alabel sStr_Mountain_74F4
     /* DD7F60 000074F4 24010008 */  addiu      $at, $zero, 0x8
@@ -49,10 +49,10 @@ glabel FallingSnow_create
     /* DD7FE0 00007574 ACD80028 */  sw         $t8, 0x28($a2)
   .L00007578:
     /* DD7FE4 00007578 8FB90028 */  lw         $t9, 0x28($sp)
-    /* DD7FE8 0000757C 3C080000 */  lui        $t0, %hi(func_000000F0 + 0x44)
+    /* DD7FE8 0000757C 3C080000 */  lui        $t0, %hi(stream_readQuad_000000F0 + 0x44)
     /* DD7FEC 00007580 00C02825 */  or         $a1, $a2, $zero
     /* DD7FF0 00007584 AF260040 */  sw         $a2, 0x40($t9)
-    /* DD7FF4 00007588 8D080134 */  lw         $t0, %lo(func_000000F0 + 0x44)($t0)
+    /* DD7FF4 00007588 8D080134 */  lw         $t0, %lo(stream_readQuad_000000F0 + 0x44)($t0)
     /* DD7FF8 0000758C 8D070088 */  lw         $a3, 0x88($t0)
     /* DD7FFC 00007590 AFA60020 */  sw         $a2, 0x20($sp)
     /* DD8000 00007594 24E40010 */  addiu      $a0, $a3, 0x10

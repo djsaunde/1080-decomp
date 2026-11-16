@@ -10,8 +10,8 @@
  * WIRED via REPLACE_FUNC_BODY donor splice into bootup_uso.c.o (the 2DA4 / E270
  * recipe) over an empty placeholder: the switch's donor-local .rodata reloc is
  * renamed game_createMap_rodata and pinned to 0x5B4 (the target's
- * func_0000057C+0x38 table ref). Reloc-free target lui 0 / lw 0 globals are
- * base-0 pins; the six flag RMWs on func_00000188+0x3C are base-0x188 pins.
+ * snd_soundObjCreate_0000057C+0x38 table ref). Reloc-free target lui 0 / lw 0 globals are
+ * base-0 pins; the six flag RMWs on snd_seqEndDbg_00000188+0x3C are base-0x188 pins.
  *
  * Frame levers (run 223):
  *  - NO cfe temporaries. A call result inside a compound expression (the old

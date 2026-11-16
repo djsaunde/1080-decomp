@@ -40,7 +40,7 @@ typedef struct BGWallTex {
 } BGWallTex;
 
 /* ---- BGBox (0x40, vtbl Data 0x65E8; BGBox_ctor CA0 = NCC donor bootup_uso_ncc_CA0.cpp,
- * BGBox_func_00000D94 = display slot +0x1C) ----
+ * BGBox_display = display slot +0x1C) ----
  * The background box node: game_createBGBox builds it as BGBox_ctor(0, "BGBox", 0, half) and hangs
  * the U64BGWall faces under it. The display draws the box while the scene fog is (nearly)
  * transparent and copies clearWindow into the current window's flags bit 2 (agent-h run 584). */
@@ -48,7 +48,7 @@ typedef struct BGBox {
     Node node;                  /* 0x00: node.name = ctor arg 1 */
     f32 scale[3];               /* 0x2C: 1.0f x 3 */
     f32 unk38;                  /* 0x38: 0.0f */
-    s32 clearWindow;            /* 0x3C: ctor arg 2 (game_createBGBox: 0): BGBox_func_00000D94 sets
+    s32 clearWindow;            /* 0x3C: ctor arg 2 (game_createBGBox: 0): BGBox_display sets
                                  * the window's clear bit (flags bit 2) from it */
 } BGBox;
 
@@ -134,7 +134,7 @@ typedef struct FallingSnow {
 } FallingSnow;
 
 /* "tv1" item template (vtbl Data 0x7788; Tv1Tmpl_create 7C74 builds Tv1 instances of 0x88 with
- * +0x80 = a RoData float). Tv1Tmpl_func_00007D04 steps a 3-state picture cycle. */
+ * +0x80 = a RoData float). Tv1Tmpl_stepPicture_00007D04 steps a 3-state picture cycle. */
 /* Tv1Tmpl's 16-byte member-function callback (the bootup twin of game/sun.h's MemberCallback), built in
  * place by item_registerTemplates as a 3-level cfront cascade: the Callback base stores vptr Data 0x7528
  * (slot 1 = __pure_virtual_called), the member level stores obj and pmf, then the concrete class stores
@@ -146,12 +146,12 @@ typedef struct Tv1CallbackPmf {
 typedef struct Tv1Callback {
     void *vptr;                 /* 0x0 */
     void *obj;                  /* 0x4: the Tv1Tmpl */
-    Tv1CallbackPmf pmf;         /* 0x8: Data 0x7520 = {0x0000FFFF, Tv1Tmpl_func_00007D04} (the picture step) */
+    Tv1CallbackPmf pmf;         /* 0x8: Data 0x7520 = {0x0000FFFF, Tv1Tmpl_stepPicture_00007D04} (the picture step) */
 } Tv1Callback;
 
 /* The tv1 template's model node (Tv1Tmpl.model): Tv1Tmpl_create list_appends each new instance to it
  * (+0x04 / +0x14 are its list words); +0x84 is its table of the two screen nodes, whose +0x1C words
- * Tv1Tmpl_func_00007D04 passes to Tv1Tmpl_func_000077D0. Only that table is named. */
+ * Tv1Tmpl_stepPicture_00007D04 passes to Tv1Tmpl_blitFrame_000077D0. Only that table is named. */
 typedef struct Tv1Model {
     char unk00[0x84];
     char **screens;             /* 0x84: [0], [1] = the two screen nodes */
@@ -162,7 +162,7 @@ typedef struct Tv1Tmpl {
     char unk2C[0x40 - 0x2C];
     Tv1Model *model;            /* 0x40: the template's model node (each new instance adopts it) */
     char unk44[0x48 - 0x44];
-    Tv1Callback stepCallback;   /* 0x48: obj = this, pmf = Tv1Tmpl_func_00007D04 */
+    Tv1Callback stepCallback;   /* 0x48: obj = this, pmf = Tv1Tmpl_stepPicture_00007D04 */
     s32 scroll;                 /* 0x58: state 0: -= 10 per step; state 2: 0x18 */
     s32 state;                  /* 0x5C: 0 / 1 / 2 (state 2 picks the next one at random) */
     s32 timer;                  /* 0x60: steps in the state (0x3E / 0x20 / 0x5C) */
@@ -209,11 +209,11 @@ typedef struct SnowBCollider {
 
 #ifndef __cplusplus /* DNode / SNode / CollCylinder (gdl/dnode.h, gdl/coll.h) */
 /* ---- ShpNode (0x3D8, `<QNode>` "shp", vtbl Data 0x81E0; ctor 8F18): a game_libs DNode ----
- * ShpNode_func_00008FA8 copies dnode.vqs (trans / scale / quat) into dnode.cvqs before the
+ * ShpNode_update copies dnode.vqs (trans / scale / quat) into dnode.cvqs before the
  * base update, then counts `life` down. The ctor sets dnode.parms.rad to 50 (DNode default 150). */
 typedef struct ShpNode {
     DNode dnode;                /* 0x000: the game_libs DNode base (include/gdl/dnode.h) */
-    s32 life;                   /* 0x3D4: 100, decremented by ShpNode_func_00008FA8 */
+    s32 life;                   /* 0x3D4: 100, decremented by ShpNode_update */
 } ShpNode;                      /* 0x3D8 */
 
 #define SHPNODE(p) ((ShpNode *)(p))

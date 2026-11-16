@@ -149,14 +149,14 @@ glabel SnowBoarder_updateDyn
     /* DDCC10 0000C1A4 02002025 */   or        $a0, $s0, $zero
     /* DDCC14 0000C1A8 0C000000 */  jal        func_00000000
     /* DDCC18 0000C1AC 02002025 */   or        $a0, $s0, $zero
-    /* DDCC1C 0000C1B0 3C040001 */  lui        $a0, %hi(func_00008A40 + 0x20)
+    /* DDCC1C 0000C1B0 3C040001 */  lui        $a0, %hi(stream_readF32_00008A40 + 0x20)
     /* DDCC20 0000C1B4 0C000000 */  jal        func_00000000
-    /* DDCC24 0000C1B8 24848A60 */   addiu     $a0, $a0, %lo(func_00008A40 + 0x20)
+    /* DDCC24 0000C1B8 24848A60 */   addiu     $a0, $a0, %lo(stream_readF32_00008A40 + 0x20)
     /* DDCC28 0000C1BC 0C000000 */  jal        func_00000000
     /* DDCC2C 0000C1C0 02002025 */   or        $a0, $s0, $zero
-    /* DDCC30 0000C1C4 3C040001 */  lui        $a0, %hi(func_00008A40 + 0x2C)
+    /* DDCC30 0000C1C4 3C040001 */  lui        $a0, %hi(stream_readF32_00008A40 + 0x2C)
     /* DDCC34 0000C1C8 0C000000 */  jal        func_00000000
-    /* DDCC38 0000C1CC 24848A6C */   addiu     $a0, $a0, %lo(func_00008A40 + 0x2C)
+    /* DDCC38 0000C1CC 24848A6C */   addiu     $a0, $a0, %lo(stream_readF32_00008A40 + 0x2C)
     /* DDCC3C 0000C1D0 0C000000 */  jal        func_00000000
     /* DDCC40 0000C1D4 02002025 */   or        $a0, $s0, $zero
     /* DDCC44 0000C1D8 8E0B0960 */  lw         $t3, 0x960($s0)

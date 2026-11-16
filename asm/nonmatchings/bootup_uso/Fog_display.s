@@ -1,9 +1,9 @@
 nonmatching Fog_display, 0x1B0
 
 glabel Fog_display
-    /* DD8934 00007EC8 3C0E0000 */  lui        $t6, %hi(func_00000008 + 0x2C)
+    /* DD8934 00007EC8 3C0E0000 */  lui        $t6, %hi(stream_readS32_00000008 + 0x2C)
   alabel sStr_Sun_Flare_7ECC
-    /* DD8938 00007ECC 8DCE0034 */  lw         $t6, %lo(func_00000008 + 0x2C)($t6)
+    /* DD8938 00007ECC 8DCE0034 */  lw         $t6, %lo(stream_readS32_00000008 + 0x2C)($t6)
     /* DD893C 00007ED0 27BDFFD0 */  addiu      $sp, $sp, -0x30
     /* DD8940 00007ED4 AFB00028 */  sw         $s0, 0x28($sp)
   alabel sStr_rom_flare5_bin_7ED8
@@ -28,12 +28,12 @@ glabel Fog_display
   alabel sStr_Map_7F08
     /* DD8974 00007F08 C70400A8 */  lwc1       $f4, 0xA8($t8)
   alabel sStr_MorphShape_7F0C
-    /* DD8978 00007F0C 3C040000 */  lui        $a0, %hi(func_0000027C + 0x18)
+    /* DD8978 00007F0C 3C040000 */  lui        $a0, %hi(snd_startPlayer2Seq_0000027C + 0x18)
     /* DD897C 00007F10 3C0B0000 */  lui        $t3, (0x0 >> 16)
     /* DD8980 00007F14 46022002 */  mul.s      $f0, $f4, $f2
   alabel sStr_morphpolyshape_7F18
     /* DD8984 00007F18 00001025 */  or         $v0, $zero, $zero
-    /* DD8988 00007F1C 24840294 */  addiu      $a0, $a0, %lo(func_0000027C + 0x18)
+    /* DD8988 00007F1C 24840294 */  addiu      $a0, $a0, %lo(snd_startPlayer2Seq_0000027C + 0x18)
     /* DD898C 00007F20 46023302 */  mul.s      $f12, $f6, $f2
     /* DD8990 00007F24 256B0000 */  addiu      $t3, $t3, 0x0
   alabel sStr_ParseCmds_7F28
@@ -100,10 +100,10 @@ glabel Fog_display
   alabel D_00007FD0
     /* DD8A3C 00007FD0 AE02008C */  sw         $v0, 0x8C($s0)
   .L00007FD4:
-    /* DD8A40 00007FD4 3C040000 */  lui        $a0, %hi(func_0000027C + 0x18)
+    /* DD8A40 00007FD4 3C040000 */  lui        $a0, %hi(snd_startPlayer2Seq_0000027C + 0x18)
     /* DD8A44 00007FD8 10400022 */  beqz       $v0, .L00008064
   alabel sStr_Snow_7FDC
-    /* DD8A48 00007FDC 24840294 */   addiu     $a0, $a0, %lo(func_0000027C + 0x18)
+    /* DD8A48 00007FDC 24840294 */   addiu     $a0, $a0, %lo(snd_startPlayer2Seq_0000027C + 0x18)
     /* DD8A4C 00007FE0 8D6D0000 */  lw         $t5, 0x0($t3)
   alabel sStr_Parms_7FE4
     /* DD8A50 00007FE4 44069000 */  mfc1       $a2, $f18

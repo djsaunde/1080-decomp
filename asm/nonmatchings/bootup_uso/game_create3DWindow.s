@@ -1,17 +1,17 @@
 nonmatching game_create3DWindow, 0x150
 
 glabel game_create3DWindow
-    /* DD3F54 000034E8 3C010000 */  lui        $at, %hi(func_000003F8 + 0x140)
-    /* DD3F58 000034EC C4240538 */  lwc1       $f4, %lo(func_000003F8 + 0x140)($at)
-    /* DD3F5C 000034F0 3C020000 */  lui        $v0, %hi(func_00000008 + 0x28)
-    /* DD3F60 000034F4 24420030 */  addiu      $v0, $v0, %lo(func_00000008 + 0x28)
-    /* DD3F64 000034F8 3C010000 */  lui        $at, %hi(func_000003F8 + 0x144)
+    /* DD3F54 000034E8 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0x140)
+    /* DD3F58 000034EC C4240538 */  lwc1       $f4, %lo(snd_calcEmitterDistPan_000003F8 + 0x140)($at)
+    /* DD3F5C 000034F0 3C020000 */  lui        $v0, %hi(stream_readS32_00000008 + 0x28)
+    /* DD3F60 000034F4 24420030 */  addiu      $v0, $v0, %lo(stream_readS32_00000008 + 0x28)
+    /* DD3F64 000034F8 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0x144)
     /* DD3F68 000034FC E4440000 */  swc1       $f4, 0x0($v0)
-    /* DD3F6C 00003500 C426053C */  lwc1       $f6, %lo(func_000003F8 + 0x144)($at)
+    /* DD3F6C 00003500 C426053C */  lwc1       $f6, %lo(snd_calcEmitterDistPan_000003F8 + 0x144)($at)
     /* DD3F70 00003504 27BDFFA0 */  addiu      $sp, $sp, -0x60
-    /* DD3F74 00003508 3C010000 */  lui        $at, %hi(func_000003F8 + 0x148)
+    /* DD3F74 00003508 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0x148)
     /* DD3F78 0000350C E4460004 */  swc1       $f6, 0x4($v0)
-    /* DD3F7C 00003510 C4280540 */  lwc1       $f8, %lo(func_000003F8 + 0x148)($at)
+    /* DD3F7C 00003510 C4280540 */  lwc1       $f8, %lo(snd_calcEmitterDistPan_000003F8 + 0x148)($at)
     /* DD3F80 00003514 44805000 */  mtc1       $zero, $f10
     /* DD3F84 00003518 AFB00058 */  sw         $s0, 0x58($sp)
     /* DD3F88 0000351C 240E0002 */  addiu      $t6, $zero, 0x2
@@ -59,9 +59,9 @@ glabel game_create3DWindow
     /* DD4030 000035C4 0C000000 */  jal        func_00000000
     /* DD4034 000035C8 AFA90048 */   sw        $t1, 0x48($sp)
     /* DD4038 000035CC 8FAA0068 */  lw         $t2, 0x68($sp)
-    /* DD403C 000035D0 3C040000 */  lui        $a0, %hi(func_00000008 + 0x24)
+    /* DD403C 000035D0 3C040000 */  lui        $a0, %hi(stream_readS32_00000008 + 0x24)
     /* DD4040 000035D4 00408025 */  or         $s0, $v0, $zero
-    /* DD4044 000035D8 2484002C */  addiu      $a0, $a0, %lo(func_00000008 + 0x24)
+    /* DD4044 000035D8 2484002C */  addiu      $a0, $a0, %lo(stream_readS32_00000008 + 0x24)
     /* DD4048 000035DC 00402825 */  or         $a1, $v0, $zero
     /* DD404C 000035E0 0C000000 */  jal        func_00000000
     /* DD4050 000035E4 AC4A0070 */   sw        $t2, 0x70($v0)

@@ -32,8 +32,8 @@ glabel Snower_display
     /* DD8DD4 00008368 3C020000 */  lui        $v0, (0x0 >> 16)
     /* DD8DD8 0000836C 24420000 */  addiu      $v0, $v0, 0x0
   .L00008370:
-    /* DD8DDC 00008370 3C180000 */  lui        $t8, %hi(func_00000008 + 0x2C)
-    /* DD8DE0 00008374 8F180034 */  lw         $t8, %lo(func_00000008 + 0x2C)($t8)
+    /* DD8DDC 00008370 3C180000 */  lui        $t8, %hi(stream_readS32_00000008 + 0x2C)
+    /* DD8DE0 00008374 8F180034 */  lw         $t8, %lo(stream_readS32_00000008 + 0x2C)($t8)
     /* DD8DE4 00008378 24010008 */  addiu      $at, $zero, 0x8
     /* DD8DE8 0000837C 24050003 */  addiu      $a1, $zero, 0x3
     /* DD8DEC 00008380 5701000F */  bnel       $t8, $at, .L000083C0

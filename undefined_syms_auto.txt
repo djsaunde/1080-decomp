@@ -3235,7 +3235,7 @@ gl_data_00000000_15fc = 0x00000000;  /* 15FC: FW(0x28) abs-0 store (was mis-deco
 func_00000000_38C0_v = 0x00000000;  /* void-typed reg_b alias (kills dead $v0 def; Dz/cfg -> v1/v0) in game_setupSolo */
 gInputMgr_39d8_g = 0x00000000;  /* D_g placeholder alias (array-typed base held in $s0) in game_setupVsGhost */
 func_00000000_3734_v = 0x00000000;  /* void-typed reg-call alias (kills dead $v0 def; cfg -> v0) in game_setupDemoSolo */
-gInputMgr_3734_v = 0x00000094;  /* value load at func_00000080+0x14 in game_setupDemoSolo (lui/lw) */
+gInputMgr_3734_v = 0x00000094;  /* value load at stream_readVec3_00000080+0x14 in game_setupDemoSolo (lui/lw) */
 func_00000000_3638_v = 0x00000000;  /* void-typed init-call alias (kills dead $v0 def; flags -> v0) in game_createPlayers */
 /* DNode_ctor kit-transfer aliases (2026-07-15 agent-h): per-site distinct
  * symbols bust the shared-&D-base-pin CSE; addresses are D_00000000-relative. */
@@ -4009,9 +4009,9 @@ sStr_ImgFileMgr_73EC = 0x000073EC;  /* game_setupMode init arg (target lui/addiu
 D_2DA4_obj = 0x00000000;  /* game_setupMode base-0 created-object global (store + later reads) */
 D_2DA4_obj_rd = 0x00000000;  /* game_setupMode base-0 immediate re-read (distinct so the stored v0 is not forwarded) */
 gPolyGeomMode_3EEC8_2DA4_cfg = 0x00000000;  /* game_setupMode base-0 config word load (+4), distinct from the D_00000000+4 store */
-kRo_game_create3DWindow_538 = 0x00000538;  /* game_create3DWindow source float 0 (== func_000003F8+0x140; target lui at / lwc1 0x538(at)) */
-kRo_game_create3DWindow_53C = 0x0000053C;  /* game_create3DWindow source float 1 (== func_000003F8+0x144), distinct so its lui is not CSE'd */
-kRo_game_create3DWindow_540 = 0x00000540;  /* game_create3DWindow source float 2 (== func_000003F8+0x148) */
+kRo_game_create3DWindow_538 = 0x00000538;  /* game_create3DWindow source float 0 (== snd_calcEmitterDistPan_000003F8+0x140; target lui at / lwc1 0x538(at)) */
+kRo_game_create3DWindow_53C = 0x0000053C;  /* game_create3DWindow source float 1 (== snd_calcEmitterDistPan_000003F8+0x144), distinct so its lui is not CSE'd */
+kRo_game_create3DWindow_540 = 0x00000540;  /* game_create3DWindow source float 2 (== snd_calcEmitterDistPan_000003F8+0x148) */
 import_800200DC_b = 0x00000000;
 import_800200DC_c = 0x00000000;
 import_80020100_b = 0x00000000;
@@ -4044,9 +4044,9 @@ D_87A4_vt = 0x00000000;  /* TreeTmpl_create child +0x30 base-0 address (target l
 D_87A4_tail = 0x00000000;  /* TreeTmpl_create final callback arg load (target lui a0 / lw 0(a0)) */
 func_00000000_087A4_f = 0x00000000;  /* TreeTmpl_create prototyped (char*,char*,int,float,float) blank alias: single-float stack arg via swc1 */
 D_24B8_tbl = 0x00000000;  /* CamDirector_update (NM) base-0 poll-table word (target lui a0 / lw a0,0(a0), no reloc) */
-kRo_game_createLights_524 = 0x00000524;  /* game_createLights colour literal (== func_000003F8+0x12C; target lui at / lwc1 0x12C(at)), distinct so the pool base is not held */
-kRo_game_createLights_528 = 0x00000528;  /* game_createLights vec[1] literal (== func_000003F8+0x130) */
-kRo_game_createLights_52C = 0x0000052C;  /* game_createLights alloc-init literal (== func_000003F8+0x134) */
+kRo_game_createLights_524 = 0x00000524;  /* game_createLights colour literal (== snd_calcEmitterDistPan_000003F8+0x12C; target lui at / lwc1 0x12C(at)), distinct so the pool base is not held */
+kRo_game_createLights_528 = 0x00000528;  /* game_createLights vec[1] literal (== snd_calcEmitterDistPan_000003F8+0x130) */
+kRo_game_createLights_52C = 0x0000052C;  /* game_createLights alloc-init literal (== snd_calcEmitterDistPan_000003F8+0x134) */
 gGfxLib_2F90_reg = 0x00000000;  /* game_createLights base-0 registration object (target lui s0 / addiu s0, held across three calls) */
 LightTarget_vtbl_2F90_m28 = 0x00000000;  /* game_createLights base-0 address stored to m->0x28 (target lui t8 / addiu t8, no reloc) */
 func_00000000_2F90_v = 0x00000000;  /* game_createLights void-typed blank alias (unused-result calls; n2 colours v0) */
@@ -4207,7 +4207,7 @@ kRo_Window_setDefaults_1B74 = 0x0;
 sStr_FCP_1B78 = 0x0;
 sStr_GCP_1B7C = 0x0;
 kRo_Window_setDefaults_1B80 = 0x0;
-func_00000000_3F8_f = 0x00000000;  /* func_000003F8 sqrtf (float->float) callee, jal 0 */
+func_00000000_3F8_f = 0x00000000;  /* snd_calcEmitterDistPan_000003F8 sqrtf (float->float) callee, jal 0 */
 func_00000000_139B0_f = 0x00000000;  /* Fader_start RNG (void->float) jal-0 callee */
 func_00000000_139B0_v = 0x00000000;  /* Fader_start finisher Fader_buildTexture (jal 0 in ROM) */
 func_00000000_3d3cm = 0x00000000;  /* game_setupVsCpu spawn callee game_createPlayers (jal 0 in ROM), prototyped for swc1 float args */
@@ -4216,27 +4216,27 @@ bu_3f00_d7294 = 0x00000000;  /* game_setupVs2P attach-table base D_007294 (bootu
 func_00000000_43d4_f = 0x00000000;  /* game_setupDemoSplit RNG func_075EE4 (void->float) jal-0 callee */
 gInputMgr_43d4_d00_b = 0x00000000;  /* game_setupDemoSplit second list-add import_000200FC (per-site zero alias, kept unheld) */
 bu_43d4_d7294 = 0x00000000;  /* game_setupDemoSplit attach-table base D_007294 (baked 0) */
-gInputMgr_43d4_t90 = 0x00000090;  /* game_setupDemoSplit descriptor table at bootup+0x90 (func_00000080 + 0x10) */
-kRo_game_setupDemoSplit_54C = 0x0000054C;  /* game_setupDemoSplit RoData pool f32 at +0x54C (func_000003F8 + 0x154) */
-kRo_game_setupDemoSplit_550 = 0x00000550;  /* game_setupDemoSplit RoData pool f32 at +0x550 (func_000003F8 + 0x158) */
+gInputMgr_43d4_t90 = 0x00000090;  /* game_setupDemoSplit descriptor table at bootup+0x90 (stream_readVec3_00000080 + 0x10) */
+kRo_game_setupDemoSplit_54C = 0x0000054C;  /* game_setupDemoSplit RoData pool f32 at +0x54C (snd_calcEmitterDistPan_000003F8 + 0x154) */
+kRo_game_setupDemoSplit_550 = 0x00000550;  /* game_setupDemoSplit RoData pool f32 at +0x550 (snd_calcEmitterDistPan_000003F8 + 0x158) */
 func_00000000_411c_f = 0x00000000;  /* game_setupDemoRace RNG func_075EE4 (void->float) jal-0 callee */
 gInputMgr_411c_d00_b = 0x00000000;  /* game_setupDemoRace second list-add import_000200FC (per-site zero alias) */
 bu_411c_d7294 = 0x00000000;  /* game_setupDemoRace attach-table base D_007294 (baked 0) */
-gInputMgr_411c_t90 = 0x00000090;  /* game_setupDemoRace descriptor table at bootup+0x90 (func_00000080 + 0x10) */
-kRo_game_setupDemoRace_544 = 0x00000544;  /* game_setupDemoRace RoData pool f32 at +0x544 (func_000003F8 + 0x14C) */
-kRo_game_setupDemoRace_548 = 0x00000548;  /* game_setupDemoRace RoData pool f32 at +0x548 (func_000003F8 + 0x150) */
+gInputMgr_411c_t90 = 0x00000090;  /* game_setupDemoRace descriptor table at bootup+0x90 (stream_readVec3_00000080 + 0x10) */
+kRo_game_setupDemoRace_544 = 0x00000544;  /* game_setupDemoRace RoData pool f32 at +0x544 (snd_calcEmitterDistPan_000003F8 + 0x14C) */
+kRo_game_setupDemoRace_548 = 0x00000548;  /* game_setupDemoRace RoData pool f32 at +0x548 (snd_calcEmitterDistPan_000003F8 + 0x150) */
 func_00000000_7ec8_c = 0x00000000;  /* Fog_display callee func_0586D8 (ptr, ptr, float), jal 0 */
 func_00000000_7ec8_t = 0x00000000;  /* Fog_display callee func_063D70 (four ints, float, int, float), jal 0 */
 gGfxLib_7ec8_g = 0x00000000;  /* Fog_display globals block import_0005C108 (baked 0) */
 bu_7ec8_h = 0x00000000;  /* Fog_display backup record import_0001FFC8 (baked 0) */
 sFmt_Env_Load_7F90 = 0x00007F90;  /* EnvSettings_load data ref into Fog_display body (was the asm label .L00007F90; label vanishes once 7EC8 is C) */
 sStr_no_st0_7F5C = 0x00007F5C;  /* game_createMap data ref into Fog_display body (was asm label .L00007F5C) */
-gInputMgr_7ec8_m = 0x00000034;  /* Fog_display mode word (asm: func_00000008 + 0x2C) */
-gGfxLib_7ec8_src = 0x00000294;  /* Fog_display 24-byte record (asm: func_0000027C + 0x18) */
+gInputMgr_7ec8_m = 0x00000034;  /* Fog_display mode word (asm: stream_readS32_00000008 + 0x2C) */
+gGfxLib_7ec8_src = 0x00000294;  /* Fog_display 24-byte record (asm: snd_startPlayer2Seq_0000027C + 0x18) */
 func_00000000_e124_r = 0x00000000;  /* SnowBoarder_mirrorFlip_0000E124 callee func_072FB0 (ptr, ptr, float), jal 0 */
-bu_2c94_k4f0 = 0x000004F0;  /* game_initDdm_00002C94 RoData pool f32 (func_000003F8 + 0xF8) */
-gGfxLib_2c94_dst = 0x00000128;  /* game_initDdm_00002C94 dst Vec3 (func_000000F0 + 0x38) */
-gGfxLib_2c94_src = 0x000000E8;  /* game_initDdm_00002C94 src object (func_00000080 + 0x68) */
+bu_2c94_k4f0 = 0x000004F0;  /* game_initDdm_00002C94 RoData pool f32 (snd_calcEmitterDistPan_000003F8 + 0xF8) */
+gGfxLib_2c94_dst = 0x00000128;  /* game_initDdm_00002C94 dst Vec3 (stream_readQuad_000000F0 + 0x38) */
+gGfxLib_2c94_src = 0x000000E8;  /* game_initDdm_00002C94 src object (stream_readVec3_00000080 + 0x68) */
 gGfxLib_2c94_ctx = 0x00000000;  /* game_initDdm_00002C94 import_0005C108 (baked 0) */
 bu_2c94_mode = 0x00000000;  /* game_initDdm_00002C94 D_01EBDC (baked 0) */
 gPolyFlags_3EEC4_2c94_x_ld = 0x00000000;  /* game_initDdm_00002C94 import_0005EE64 load (baked 0) */
@@ -4245,17 +4245,17 @@ gPolyGeomMode_3EEC8_2c94_y_ld = 0x00000000;  /* game_initDdm_00002C94 import_000
 gPolyGeomMode_3EEC8_2c94_y_st = 0x00000000;  /* game_initDdm_00002C94 import_0005EE6C store */
 bu_2c94_tbl = 0x00000000;  /* game_initDdm_00002C94 D_00719C table (baked 0) */
 bu_2c94_gate = 0x00000000;  /* game_initDdm_00002C94 D_00719C gate load (separate alias) */
-gGfxLib_d94_g = 0x00000000;  /* BGBox_func_00000D94 import_0005C108 (baked 0) */
-gGfxLib_d94_src = 0x00000294;  /* BGBox_func_00000D94 record (func_0000027C + 0x18) */
-gGfxLib_13b20_root = 0x00000240;  /* Fader_buildTexture game object (func_0000023C + 0x4) */
+gGfxLib_d94_g = 0x00000000;  /* BGBox_display import_0005C108 (baked 0) */
+gGfxLib_d94_src = 0x00000294;  /* BGBox_display record (snd_startPlayer2Seq_0000027C + 0x18) */
+gGfxLib_13b20_root = 0x00000240;  /* Fader_buildTexture game object (snd_setPlayer0VolumeLevel_0000023C + 0x4) */
 gPlayerBinPaths_cae8_ta = 0x00000000;  /* SnowBoarder_reset NCC donor: blank table ref (in-place lui/lw 0) */
 gBoardBinPaths_cae8_tb = 0x00000000;  /* SnowBoarder_reset second blank table ref */
 gPolyFlags_3EEC4_cae8_x_ld = 0x00000000;  /* SnowBoarder_reset RMW load alias (blank) */
 gPolyFlags_3EEC4_cae8_x_st = 0x00000000;  /* SnowBoarder_reset RMW store alias (blank) */
 bu_cae8_y = 0x00000000;  /* SnowBoarder_reset blank global store */
-gInputMgr_cae8_mode = 0x00000034;  /* SnowBoarder_reset mode word (func_00000008+0x2C) */
+gInputMgr_cae8_mode = 0x00000034;  /* SnowBoarder_reset mode word (stream_readS32_00000008+0x2C) */
 bu_cae8_k958 = 0x00000958;  /* SnowBoarder_reset f32 const (SndHandle_triggerEvent3_00000940+0x18) */
-sFmt_HANDICAP_ON_8ABC = 0x00008ABC;  /* SnowBoarder_reset arg (func_00008A7C+0x40) */
+sFmt_HANDICAP_ON_8ABC = 0x00008ABC;  /* SnowBoarder_reset arg (stream_readVec3_00008A7C+0x40) */
 bu_485c_root = 0x00000000;  /* Mountain_display NCC donor: blank root-pointer global (in-place lui/lw 0) */
 gGfxLib_485c_g = 0x00000000;  /* Mountain_display blank scale-table base (+0x128..0x130) */
 bu_cfa0_probe = 0x00000000;  /* SnowBoarder_display NCC donor: blank callee (jal 0) */
@@ -4266,15 +4266,15 @@ gGfxLib_cfa0_c = 0x00000000;
 gGfxLib_cfa0_d = 0x00000000;
 gGfxLib_cfa0_e = 0x00000000;
 gGfxLib_cfa0_f = 0x00000000;
-gGfxLib_cfa0_ctx = 0x00000254;  /* SnowBoarder_display context pointer (func_0000023C+0x18) */
-gGfxLib_cfa0_flag = 0x000000E4;  /* SnowBoarder_display flag word (func_00000080+0x64) */
+gGfxLib_cfa0_ctx = 0x00000254;  /* SnowBoarder_display context pointer (snd_setPlayer0VolumeLevel_0000023C+0x18) */
+gGfxLib_cfa0_flag = 0x000000E4;  /* SnowBoarder_display flag word (stream_readVec3_00000080+0x64) */
 kRo_SnowBoarder_display_970 = 0x00000970;  /* SnowBoarder_display f32 const (SndHandle_triggerEvent3_00000940+0x30) */
 kRo_SnowBoarder_display_978 = 0x00000978;  /* SnowBoarder_display f64 const (SndHandle_triggerEvent3_00000940+0x38) */
 gSysLib_e800_g1 = 0x00000000;  /* SnowBoard_ctor NCC donor: per-site blank first args (lui/addiu 0) */
 gSysLib_e800_g2 = 0x00000000;
 gSysLib_e800_g3 = 0x00000000;
 gSnowBoard_e800_g4 = 0x00000000;
-SnowBoard_vtbl_e800_v = 0x00000000;  /* SnowBoard_ctor blank handler address stored at func_00000008+0x20 */
+SnowBoard_vtbl_e800_v = 0x00000000;  /* SnowBoard_ctor blank handler address stored at stream_readS32_00000008+0x20 */
 gBoardModelUsoPaths_b1b4_tblA = 0x00000000;  /* SnowBoarder_loadBoardModel_0000B1B4 NCC donor: blank play-by-idx table (lui/addiu 0) */
 gBoarderUsoPaths_b1b4_tblB = 0x00000000;  /* SnowBoarder_loadBoardModel_0000B1B4 blank play-by-cat table */
 __vtbl__7Bb4Base = 0x00000000;  /* SnowBoarder_loadBoardModel_0000B1B4 Base vtable (blank lui/addiu 0) */
@@ -4321,8 +4321,8 @@ gl_ref_00037B00 = 0x00037B00;  /* AudioLoad_DiscardSeqFonts: baked USO jal (0x0C
 gl_ref_0003A0EC = 0x0003A0EC;  /* AudioLoad_GetSamplesForFont: baked USO jal (0x0C00E83B) */
 h2h_void_1204 = 0x00000000;  /* h2h_WinsDisplay_update_00001204 NCC donor: void-returning blank import (jal 0) */
 gl_ref_0003773C = 0x0003773C;  /* AudioLoad_SyncLoadInstrument: baked USO jal (0x0C00DDCF) */
-gInputMgr_74e8_g = 0x00000008;  /* FallingSnow_create: = func_00000008 (expected reloc base; read at +0x2C) */
-gInputMgr_74e8_h = 0x000000F0;  /* FallingSnow_create: = func_000000F0 (expected reloc base; read at +0x44) */
+gInputMgr_74e8_g = 0x00000008;  /* FallingSnow_create: = stream_readS32_00000008 (expected reloc base; read at +0x2C) */
+gInputMgr_74e8_h = 0x000000F0;  /* FallingSnow_create: = stream_readQuad_000000F0 (expected reloc base; read at +0x44) */
 game_uso_func_00000000_rodata = 0x00000000;  /* game_uso_func_00000000 NCC donor: its 1/6 float literal = game_uso RoData item 0 (lui 0 / lwc1 0); renamed donor-local .rodata reloc, content re-emitted by the host placeholder */
 D_43D8_fmin = 0x00000000;  /* CourseMarker_findNearestZ_000043D8 NCC donor: zero base, +0x94 addend = game_uso RoData FLT_MAX (re-emitted by the host placeholder) */
 D_43D8_fmax = 0x00000000;  /* same, +0x98 = -FLT_MAX */
@@ -4332,7 +4332,7 @@ SnowAI_aimWeave_rodata = 0x00000000;  /* SnowAI_aimWeave MIPSpro 7.2.1 donor (ag
 sFmt_Dup_parm_1E6B0 = 0x0001E6B0;  /* Parms_addParm blank-USO data ref baked in the ROM (lui 0x2 / addiu -6480) */
 D_39E24_c = 0x000000A0;  /* SNode_display camera block (same blank USO data ref as gGfxLib_4BAF4_cam: base 0xA0, fields at +0x30) */
 gHostio_34EB4_flags = 0x00000000;  /* app_run flags-word test: distinct zero alias so the test does not share base's s3 */
-gGfxLib_7288_src = 0x00000294;  /* EnvSettings_display 16-byte record copy source (asm: func_0000027C + 0x18) */
+gGfxLib_7288_src = 0x00000294;  /* EnvSettings_display 16-byte record copy source (asm: snd_startPlayer2Seq_0000027C + 0x18) */
 gl_ref_000317E8 = 0x000317E8;  /* baked in-unit jal (agent-c run 122) */
 gl_ref_0003186C = 0x0003186C;  /* baked in-unit jal (agent-c run 122) */
 gl_ref_00031D64 = 0x00031D64;  /* baked in-unit jal (agent-c run 122) */
@@ -4362,8 +4362,8 @@ bu_4948_k0 = 0x00000000;  /* RiderCam_update_00004948 snap scale (lwc1 0(at)) */
 bu_4948_k1 = 0x00000000;  /* RiderCam_update_00004948 snap y scale (lwc1 0(at)) */
 bu_4948_klo = 0x00000000;  /* RiderCam_update_00004948 angle clamp low (lwc1 0(at)) */
 bu_4948_khi = 0x00000000;  /* RiderCam_update_00004948 angle clamp high (lwc1 0(at)) */
-gGfxLib_7D04_root = 0x0000023C;  /* Tv1Tmpl_func_00007D04 root context table = func_0000023C (lui/lw 0x18 -> 0x254) */
-func_7D04_randf = 0x00000000;  /* Tv1Tmpl_func_00007D04 float rand helper (jal 0) */
+gGfxLib_7D04_root = 0x0000023C;  /* Tv1Tmpl_stepPicture_00007D04 root context table = snd_setPlayer0VolumeLevel_0000023C (lui/lw 0x18 -> 0x254) */
+func_7D04_randf = 0x00000000;  /* Tv1Tmpl_stepPicture_00007D04 float rand helper (jal 0) */
 
 /* Audited local port carriers. */
 snw_port_arcproc_uso_func_00001B04_D_arc1B04_a = 0x0;
@@ -5422,7 +5422,7 @@ func_00000000_5a2c4v = 0x00000000;  /* agent-g run 156: void alias, gl 5A2C4 NM 
 func_00000000_e68v = 0x00000000;  /* agent-g run 156: void alias, bootup E68 NM */
 import_8001FFA0 = 0x00000000;  /* agent-h run 406: bootup E68 (exact) grid dims, w reads: blank lui/lw (+0) */
 import_8001FFA0_h = 0x00000000;  /* agent-h run 406: bootup E68 (exact) grid dims, h reads ([1] = +4, target func_00000000 + 0x4) */
-gGfxLib_8005C108_e68 = 0x000001FC;  /* agent-h run 406: bootup E68 (exact) MGR import, target reloc func_000001FC + 0x18 = 0x214 */
+gGfxLib_8005C108_e68 = 0x000001FC;  /* agent-h run 406: bootup E68 (exact) MGR import, target reloc snd_setSoundOutputMode_000001FC + 0x18 = 0x214 */
 D_e68_vtx = 0x00000000;  /* agent-h run 406: bootup E68 (exact) quad vertex data, blank lui/addiu a0 */
 gui_func_00000F04_load = 0x00000000;  /* agent-g run 294: void alias (glyph load, result never read), gui 0F04 NM */
 gl_func_00000000_sqrt5F984 = 0x00000000;  /* agent-g run 156: 5F984 donor sqrt placeholder */
@@ -5524,7 +5524,7 @@ gAudioContext_345c0_201B8 = 0x00000000;
 gl_func_00000000_201B8v = 0x00000000;
 MNode_vtbl_40070_vta = 0x00000000;
 QNode_vtbl_40070_vtb = 0x00000000;
-bu_63b4_c57c = func_0000057C;
+bu_63b4_c57c = snd_soundObjCreate_0000057C;
 func_00000000_63b4_ff = 0x00000000;
 func_00000000_63b4_fpp = 0x00000000;
 func_00000000_63b4_pq = 0x00000000;
@@ -5576,7 +5576,7 @@ sTag_tr1_7E34 = 0x00007E34;
 sTag_tr2_7E38 = 0x00007E38;
 sTag_tr3_7E3C = 0x00007E3C;
 sTag_tv1_7E44 = 0x00007E44;
-/* item_registerTemplates NCC donor (agent-g run 241): bootup.uso RoData pool scalars (target func_0000057C + 0x1C..0x30) */
+/* item_registerTemplates NCC donor (agent-g run 241): bootup.uso RoData pool scalars (target snd_soundObjCreate_0000057C + 0x1C..0x30) */
 kRo_item_registerTemplates_598 = 0x00000598;
 kRo_item_registerTemplates_59C = 0x0000059C;
 kRo_item_registerTemplates_5A0 = 0x000005A0;
@@ -5602,7 +5602,7 @@ CamMan_update_rodata = 0x000019E8;
 gfx_screenRaycast_rodata = 0x00001BA8;
 gGfxLib_4F2DC_b = 0x00000000;
 gCourseColl_4F2DC_e = 0x00000000;
-/* game_createMap (bootup_uso_o2_6808.c donor): jumptable at func_0000057C+0x38, reloc-free base-0 globals, func_00000188+0x3C flag RMWs */
+/* game_createMap (bootup_uso_o2_6808.c donor): jumptable at snd_soundObjCreate_0000057C+0x38, reloc-free base-0 globals, snd_seqEndDbg_00000188+0x3C flag RMWs */
 game_createMap_rodata = 0x000005B4;
 sStr_Geometry_7EB8 = 0x00007EB8;
 gPolyGeomMode_3EEC8_8005EE6C_6808r = 0x00000000;
@@ -5624,7 +5624,7 @@ gPolyFlags_3EEC4_8005EE64_6808_4 = 0x00000000;
 gPolyFlags_3EEC4_8005EE64_6808_5 = 0x00000000;
 gPolyFlags_3EEC4_8005EE64_6808_6 = 0x00000000;
 gPolyFlags_3EEC4_8005EE64_6808_7 = 0x00000000;
-/* SnowBoarder_procColl NCC donor (agent-g run 236): values from the target relocs (jal func_00000000, func_00008A7C + addend, func_00000008 + 0x2C, .L00000930, SndHandle_triggerEvent3_00000940 + 0x0 / 0x4 / 0x8) */
+/* SnowBoarder_procColl NCC donor (agent-g run 236): values from the target relocs (jal func_00000000, stream_readVec3_00008A7C + addend, stream_readS32_00000008 + 0x2C, .L00000930, SndHandle_triggerEvent3_00000940 + 0x0 / 0x4 / 0x8) */
 bu_c234_sv = 0x00000000;
 bu_c234_v5 = 0x00000000;
 sStr_Player_Pos_Reset_8A7C = 0x00008A7C;
@@ -5651,7 +5651,7 @@ gl_func_0005F5F0_normalize = 0x00000000;
 bu_b75c_mvf = 0x00000000;
 D_00008170 = FogTmpl_create + 0x4C;
 SnowBoarder_updateOrient_rodata = 0x000008C8;
-/* cam_create EXACT NCC donor (agent-c run 271): blank USO jal words (jal func_00000000) and the two -1500.0f literals (func_000003F8 + 0x138 / + 0x13C = donor .rodata +0 / +4) */
+/* cam_create EXACT NCC donor (agent-c run 271): blank USO jal words (jal func_00000000) and the two -1500.0f literals (snd_calcEmitterDistPan_000003F8 + 0x138 / + 0x13C = donor .rodata +0 / +4) */
 fn_31c0_alloc = 0x00000000;
 fn_31c0_fin = 0x00000000;
 fn_31c0_vec = 0x00000000;

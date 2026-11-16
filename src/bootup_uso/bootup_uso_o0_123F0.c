@@ -38,7 +38,7 @@ void settings_vol0Down_000124C4(char *a0) {
         p = GAMEFLOW(a0)->options;
         SETTINGS(p)->levels[1] -= 1;
     }
-    FCALL(func_0000023C)(SETTINGS(GAMEFLOW(a0)->options)->levels[1]);
+    FCALL(snd_setPlayer0VolumeLevel_0000023C)(SETTINGS(GAMEFLOW(a0)->options)->levels[1]);
 }
 
 void settings_vol0Up_0001252C(char *a0) {
@@ -47,7 +47,7 @@ void settings_vol0Up_0001252C(char *a0) {
         p = GAMEFLOW(a0)->options;
         SETTINGS(p)->levels[1] += 1;
     }
-    FCALL(func_0000023C)(SETTINGS(GAMEFLOW(a0)->options)->levels[1]);
+    FCALL(snd_setPlayer0VolumeLevel_0000023C)(SETTINGS(GAMEFLOW(a0)->options)->levels[1]);
 }
 
 void settings_vol2Down_00012598(char *a0) {

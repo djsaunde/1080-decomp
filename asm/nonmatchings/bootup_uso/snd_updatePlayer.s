@@ -11,8 +11,8 @@ glabel snd_updatePlayer
     /* DD1098 0000062C 00808025 */  or         $s0, $a0, $zero
     /* DD109C 00000630 C7A20044 */  lwc1       $f2, 0x44($sp)
     /* DD10A0 00000634 10400084 */  beqz       $v0, .L00000848
-    /* DD10A4 00000638 3C010000 */   lui       $at, %hi(func_00000044 + 0x14)
-    /* DD10A8 0000063C D4260058 */  ldc1       $f6, %lo(func_00000044 + 0x14)($at)
+    /* DD10A4 00000638 3C010000 */   lui       $at, %hi(stream_readF32_00000044 + 0x14)
+    /* DD10A8 0000063C D4260058 */  ldc1       $f6, %lo(stream_readF32_00000044 + 0x14)($at)
     /* DD10AC 00000640 46001121 */  cvt.d.s    $f4, $f2
     /* DD10B0 00000644 44806000 */  mtc1       $zero, $f12
     /* DD10B4 00000648 46262203 */  div.d      $f8, $f4, $f6
@@ -37,7 +37,7 @@ glabel snd_updatePlayer
   .L00000690:
     /* DD10FC 00000690 C7A20040 */  lwc1       $f2, 0x40($sp)
     /* DD1100 00000694 E440000C */  swc1       $f0, 0xC($v0)
-    /* DD1104 00000698 3C010000 */  lui        $at, %hi(func_00000044 + 0x1C)
+    /* DD1104 00000698 3C010000 */  lui        $at, %hi(stream_readF32_00000044 + 0x1C)
     /* DD1108 0000069C 460C103C */  c.lt.s     $f2, $f12
     /* DD110C 000006A0 27A50028 */  addiu      $a1, $sp, 0x28
     /* DD1110 000006A4 27A60024 */  addiu      $a2, $sp, 0x24
@@ -47,7 +47,7 @@ glabel snd_updatePlayer
     /* DD1120 000006B4 46001007 */   neg.s     $f0, $f2
     /* DD1124 000006B8 46001006 */  mov.s      $f0, $f2
   .L000006BC:
-    /* DD1128 000006BC D4300060 */  ldc1       $f16, %lo(func_00000044 + 0x1C)($at)
+    /* DD1128 000006BC D4300060 */  ldc1       $f16, %lo(stream_readF32_00000044 + 0x1C)($at)
     /* DD112C 000006C0 3C01427C */  lui        $at, (0x427C0000 >> 16)
     /* DD1130 000006C4 44813000 */  mtc1       $at, $f6
     /* DD1134 000006C8 460002A1 */  cvt.d.s    $f10, $f0

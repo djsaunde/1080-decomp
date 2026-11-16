@@ -1646,11 +1646,11 @@ glabel SnowBoarder_ctor
     /* DDB2EC 0000A880 AE420868 */  sw         $v0, 0x868($s2)
     /* DDB2F0 0000A884 2401FFF7 */  addiu      $at, $zero, -0x9
     /* DDB2F4 0000A888 8E0F0018 */  lw         $t7, 0x18($s0)
-    /* DDB2F8 0000A88C 3C190000 */  lui        $t9, %hi(func_000000F0 + 0x44)
+    /* DDB2F8 0000A88C 3C190000 */  lui        $t9, %hi(stream_readQuad_000000F0 + 0x44)
     /* DDB2FC 0000A890 26100018 */  addiu      $s0, $s0, 0x18
     /* DDB300 0000A894 01E1C024 */  and        $t8, $t7, $at
     /* DDB304 0000A898 AE180000 */  sw         $t8, 0x0($s0)
-    /* DDB308 0000A89C 8F390134 */  lw         $t9, %lo(func_000000F0 + 0x44)($t9)
+    /* DDB308 0000A89C 8F390134 */  lw         $t9, %lo(stream_readQuad_000000F0 + 0x44)($t9)
     /* DDB30C 0000A8A0 8E51086C */  lw         $s1, 0x86C($s2)
     /* DDB310 0000A8A4 8F300088 */  lw         $s0, 0x88($t9)
     /* DDB314 0000A8A8 02202825 */  or         $a1, $s1, $zero
@@ -1670,10 +1670,10 @@ glabel SnowBoarder_ctor
     /* DDB348 0000A8DC 24430018 */  addiu      $v1, $v0, 0x18
     /* DDB34C 0000A8E0 8C6F0000 */  lw         $t7, 0x0($v1)
     /* DDB350 0000A8E4 2401FFF7 */  addiu      $at, $zero, -0x9
-    /* DDB354 0000A8E8 3C190000 */  lui        $t9, %hi(func_000000F0 + 0x44)
+    /* DDB354 0000A8E8 3C190000 */  lui        $t9, %hi(stream_readQuad_000000F0 + 0x44)
     /* DDB358 0000A8EC 01E1C024 */  and        $t8, $t7, $at
     /* DDB35C 0000A8F0 AC780000 */  sw         $t8, 0x0($v1)
-    /* DDB360 0000A8F4 8F390134 */  lw         $t9, %lo(func_000000F0 + 0x44)($t9)
+    /* DDB360 0000A8F4 8F390134 */  lw         $t9, %lo(stream_readQuad_000000F0 + 0x44)($t9)
     /* DDB364 0000A8F8 8E510868 */  lw         $s1, 0x868($s2)
     /* DDB368 0000A8FC 8F300084 */  lw         $s0, 0x84($t9)
     /* DDB36C 0000A900 02202825 */  or         $a1, $s1, $zero
@@ -1979,8 +1979,8 @@ glabel SnowBoarder_ctor
     /* DDB7C8 0000AD5C 25CE0000 */  addiu      $t6, $t6, 0x0
     /* DDB7CC 0000AD60 11A0000F */  beqz       $t5, .L0000ADA0
     /* DDB7D0 0000AD64 8FA50180 */   lw        $a1, 0x180($sp)
-    /* DDB7D4 0000AD68 3C040000 */  lui        $a0, %hi(func_00000148 + 0x18)
-    /* DDB7D8 0000AD6C 24840160 */  addiu      $a0, $a0, %lo(func_00000148 + 0x18)
+    /* DDB7D4 0000AD68 3C040000 */  lui        $a0, %hi(snd_seqEventDbg_00000148 + 0x18)
+    /* DDB7D8 0000AD6C 24840160 */  addiu      $a0, $a0, %lo(snd_seqEventDbg_00000148 + 0x18)
     /* DDB7DC 0000AD70 8DC30000 */  lw         $v1, 0x0($t6)
   .L0000AD74:
     /* DDB7E0 0000AD74 54A30007 */  bnel       $a1, $v1, .L0000AD94
@@ -1999,10 +1999,10 @@ glabel SnowBoarder_ctor
     /* DDB80C 0000ADA0 10000009 */  b          .L0000ADC8
     /* DDB810 0000ADA4 8E4D0A58 */   lw        $t5, 0xA58($s2)
   .L0000ADA8:
-    /* DDB814 0000ADA8 3C020000 */  lui        $v0, %hi(func_00000148 + 0x18)
-    /* DDB818 0000ADAC 3C030000 */  lui        $v1, %hi(func_00000148 + 0x24)
-    /* DDB81C 0000ADB0 2463016C */  addiu      $v1, $v1, %lo(func_00000148 + 0x24)
-    /* DDB820 0000ADB4 24420160 */  addiu      $v0, $v0, %lo(func_00000148 + 0x18)
+    /* DDB814 0000ADA8 3C020000 */  lui        $v0, %hi(snd_seqEventDbg_00000148 + 0x18)
+    /* DDB818 0000ADAC 3C030000 */  lui        $v1, %hi(snd_seqEventDbg_00000148 + 0x24)
+    /* DDB81C 0000ADB0 2463016C */  addiu      $v1, $v1, %lo(snd_seqEventDbg_00000148 + 0x24)
+    /* DDB820 0000ADB4 24420160 */  addiu      $v0, $v0, %lo(snd_seqEventDbg_00000148 + 0x18)
   .L0000ADB8:
     /* DDB824 0000ADB8 24420004 */  addiu      $v0, $v0, 0x4
     /* DDB828 0000ADBC 1443FFFE */  bne        $v0, $v1, .L0000ADB8
@@ -2107,8 +2107,8 @@ glabel SnowBoarder_ctor
     /* DDB994 0000AF28 0C000000 */  jal        func_00000000
     /* DDB998 0000AF2C AC510014 */   sw        $s1, 0x14($v0)
     /* DDB99C 0000AF30 8FAF0164 */  lw         $t7, 0x164($sp)
-    /* DDB9A0 0000AF34 3C100000 */  lui        $s0, %hi(func_00000044 + 0x28)
-    /* DDB9A4 0000AF38 8E02006C */  lw         $v0, %lo(func_00000044 + 0x28)($s0)
+    /* DDB9A0 0000AF34 3C100000 */  lui        $s0, %hi(stream_readF32_00000044 + 0x28)
+    /* DDB9A4 0000AF38 8E02006C */  lw         $v0, %lo(stream_readF32_00000044 + 0x28)($s0)
     /* DDB9A8 0000AF3C 8DF00028 */  lw         $s0, 0x28($t7)
     /* DDB9AC 0000AF40 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx15 + 0x4)
     /* DDB9B0 0000AF44 C42A08B8 */  lwc1       $f10, %lo(SndHandle_setScaleIdx15 + 0x4)($at)
@@ -2156,8 +2156,8 @@ glabel SnowBoarder_ctor
     /* DDBA58 0000AFEC 8FA40164 */   lw        $a0, 0x164($sp)
   .L0000AFF0:
     /* DDBA5C 0000AFF0 8FAD015C */  lw         $t5, 0x15C($sp)
-    /* DDBA60 0000AFF4 3C100000 */  lui        $s0, %hi(func_00000008 + 0x2C)
-    /* DDBA64 0000AFF8 8E020034 */  lw         $v0, %lo(func_00000008 + 0x2C)($s0)
+    /* DDBA60 0000AFF4 3C100000 */  lui        $s0, %hi(stream_readS32_00000008 + 0x2C)
+    /* DDBA64 0000AFF8 8E020034 */  lw         $v0, %lo(stream_readS32_00000008 + 0x2C)($s0)
     /* DDBA68 0000AFFC 8DB00028 */  lw         $s0, 0x28($t5)
     /* DDBA6C 0000B000 3C014200 */  lui        $at, (0x42000000 >> 16)
     /* DDBA70 0000B004 44813000 */  mtc1       $at, $f6
@@ -2178,8 +2178,8 @@ glabel SnowBoarder_ctor
     /* DDBAAC 0000B040 0320F809 */  jalr       $t9
     /* DDBAB0 0000B044 00000000 */   nop
     /* DDBAB4 0000B048 8FAE0158 */  lw         $t6, 0x158($sp)
-    /* DDBAB8 0000B04C 3C100000 */  lui        $s0, %hi(func_00000044 + 0x4)
-    /* DDBABC 0000B050 8E020048 */  lw         $v0, %lo(func_00000044 + 0x4)($s0)
+    /* DDBAB8 0000B04C 3C100000 */  lui        $s0, %hi(stream_readF32_00000044 + 0x4)
+    /* DDBABC 0000B050 8E020048 */  lw         $v0, %lo(stream_readF32_00000044 + 0x4)($s0)
     /* DDBAC0 0000B054 8DD00028 */  lw         $s0, 0x28($t6)
     /* DDBAC4 0000B058 3C014200 */  lui        $at, (0x42000000 >> 16)
     /* DDBAC8 0000B05C 44815000 */  mtc1       $at, $f10
@@ -2207,58 +2207,58 @@ glabel SnowBoarder_ctor
     /* DDBB1C 0000B0B0 3C020000 */  lui        $v0, (0x0 >> 16)
     /* DDBB20 0000B0B4 24420000 */  addiu      $v0, $v0, 0x0
     /* DDBB24 0000B0B8 8C4D0000 */  lw         $t5, 0x0($v0)
-    /* DDBB28 0000B0BC 3C100000 */  lui        $s0, %hi(func_00000044 + 0x28)
-    /* DDBB2C 0000B0C0 3C110000 */  lui        $s1, %hi(func_00000008)
+    /* DDBB28 0000B0BC 3C100000 */  lui        $s0, %hi(stream_readF32_00000044 + 0x28)
+    /* DDBB2C 0000B0C0 3C110000 */  lui        $s1, %hi(stream_readS32_00000008)
     /* DDBB30 0000B0C4 AE4D0814 */  sw         $t5, 0x814($s2)
     /* DDBB34 0000B0C8 8C4E0008 */  lw         $t6, 0x8($v0)
-    /* DDBB38 0000B0CC 3C180000 */  lui        $t8, %hi(func_00000044 + 0x30)
-    /* DDBB3C 0000B0D0 3C060000 */  lui        $a2, %hi(func_00000044 + 0x24)
+    /* DDBB38 0000B0CC 3C180000 */  lui        $t8, %hi(stream_readF32_00000044 + 0x30)
+    /* DDBB3C 0000B0D0 3C060000 */  lui        $a2, %hi(stream_readF32_00000044 + 0x24)
     /* DDBB40 0000B0D4 AE4E0818 */  sw         $t6, 0x818($s2)
     /* DDBB44 0000B0D8 8C4F0004 */  lw         $t7, 0x4($v0)
     /* DDBB48 0000B0DC 00002025 */  or         $a0, $zero, $zero
     /* DDBB4C 0000B0E0 02402825 */  or         $a1, $s2, $zero
     /* DDBB50 0000B0E4 AE4F081C */  sw         $t7, 0x81C($s2)
-    /* DDBB54 0000B0E8 8E10006C */  lw         $s0, %lo(func_00000044 + 0x28)($s0)
+    /* DDBB54 0000B0E8 8E10006C */  lw         $s0, %lo(stream_readF32_00000044 + 0x28)($s0)
     /* DDBB58 0000B0EC AE500824 */  sw         $s0, 0x824($s2)
-    /* DDBB5C 0000B0F0 3C100000 */  lui        $s0, %hi(func_00000080 + 0x8)
-    /* DDBB60 0000B0F4 8E100088 */  lw         $s0, %lo(func_00000080 + 0x8)($s0)
+    /* DDBB5C 0000B0F0 3C100000 */  lui        $s0, %hi(stream_readVec3_00000080 + 0x8)
+    /* DDBB60 0000B0F4 8E100088 */  lw         $s0, %lo(stream_readVec3_00000080 + 0x8)($s0)
     /* DDBB64 0000B0F8 AE500820 */  sw         $s0, 0x820($s2)
-    /* DDBB68 0000B0FC 8E310008 */  lw         $s1, %lo(func_00000008)($s1)
-    /* DDBB6C 0000B100 3C100000 */  lui        $s0, %hi(func_00000044 + 0x2C)
+    /* DDBB68 0000B0FC 8E310008 */  lw         $s1, %lo(stream_readS32_00000008)($s1)
+    /* DDBB6C 0000B100 3C100000 */  lui        $s0, %hi(stream_readF32_00000044 + 0x2C)
     /* DDBB70 0000B104 AE510828 */  sw         $s1, 0x828($s2)
-    /* DDBB74 0000B108 3C110000 */  lui        $s1, %hi(func_00000008 + 0x14)
-    /* DDBB78 0000B10C 8E31001C */  lw         $s1, %lo(func_00000008 + 0x14)($s1)
+    /* DDBB74 0000B108 3C110000 */  lui        $s1, %hi(stream_readS32_00000008 + 0x14)
+    /* DDBB78 0000B10C 8E31001C */  lw         $s1, %lo(stream_readS32_00000008 + 0x14)($s1)
     /* DDBB7C 0000B110 AE510830 */  sw         $s1, 0x830($s2)
     /* DDBB80 0000B114 3C110000 */  lui        $s1, %hi(func_00000000 + 0x4)
     /* DDBB84 0000B118 8E310004 */  lw         $s1, %lo(func_00000000 + 0x4)($s1)
     /* DDBB88 0000B11C AE51082C */  sw         $s1, 0x82C($s2)
-    /* DDBB8C 0000B120 3C110000 */  lui        $s1, %hi(func_00000008 + 0x10)
-    /* DDBB90 0000B124 8E310018 */  lw         $s1, %lo(func_00000008 + 0x10)($s1)
+    /* DDBB8C 0000B120 3C110000 */  lui        $s1, %hi(stream_readS32_00000008 + 0x10)
+    /* DDBB90 0000B124 8E310018 */  lw         $s1, %lo(stream_readS32_00000008 + 0x10)($s1)
     /* DDBB94 0000B128 AE510834 */  sw         $s1, 0x834($s2)
-    /* DDBB98 0000B12C 3C110000 */  lui        $s1, %hi(func_00000044 + 0xC)
-    /* DDBB9C 0000B130 8E310050 */  lw         $s1, %lo(func_00000044 + 0xC)($s1)
+    /* DDBB98 0000B12C 3C110000 */  lui        $s1, %hi(stream_readF32_00000044 + 0xC)
+    /* DDBB9C 0000B130 8E310050 */  lw         $s1, %lo(stream_readF32_00000044 + 0xC)($s1)
     /* DDBBA0 0000B134 AE510838 */  sw         $s1, 0x838($s2)
-    /* DDBBA4 0000B138 8E100070 */  lw         $s0, %lo(func_00000044 + 0x2C)($s0)
+    /* DDBBA4 0000B138 8E100070 */  lw         $s0, %lo(stream_readF32_00000044 + 0x2C)($s0)
     /* DDBBA8 0000B13C AE500844 */  sw         $s0, 0x844($s2)
-    /* DDBBAC 0000B140 3C100000 */  lui        $s0, %hi(func_00000080 + 0x4)
-    /* DDBBB0 0000B144 8E100084 */  lw         $s0, %lo(func_00000080 + 0x4)($s0)
+    /* DDBBAC 0000B140 3C100000 */  lui        $s0, %hi(stream_readVec3_00000080 + 0x4)
+    /* DDBBB0 0000B144 8E100084 */  lw         $s0, %lo(stream_readVec3_00000080 + 0x4)($s0)
     /* DDBBB4 0000B148 AE500860 */  sw         $s0, 0x860($s2)
-    /* DDBBB8 0000B14C 8F180074 */  lw         $t8, %lo(func_00000044 + 0x30)($t8)
-    /* DDBBBC 0000B150 3C100000 */  lui        $s0, %hi(func_00000044 + 0x34)
+    /* DDBBB8 0000B14C 8F180074 */  lw         $t8, %lo(stream_readF32_00000044 + 0x30)($t8)
+    /* DDBBBC 0000B150 3C100000 */  lui        $s0, %hi(stream_readF32_00000044 + 0x34)
     /* DDBBC0 0000B154 AE580854 */  sw         $t8, 0x854($s2)
-    /* DDBBC4 0000B158 8E100078 */  lw         $s0, %lo(func_00000044 + 0x34)($s0)
+    /* DDBBC4 0000B158 8E100078 */  lw         $s0, %lo(stream_readF32_00000044 + 0x34)($s0)
     /* DDBBC8 0000B15C AE50085C */  sw         $s0, 0x85C($s2)
-    /* DDBBCC 0000B160 3C100000 */  lui        $s0, %hi(func_00000044 + 0x38)
-    /* DDBBD0 0000B164 8E10007C */  lw         $s0, %lo(func_00000044 + 0x38)($s0)
+    /* DDBBCC 0000B160 3C100000 */  lui        $s0, %hi(stream_readF32_00000044 + 0x38)
+    /* DDBBD0 0000B164 8E10007C */  lw         $s0, %lo(stream_readF32_00000044 + 0x38)($s0)
     /* DDBBD4 0000B168 AE500858 */  sw         $s0, 0x858($s2)
-    /* DDBBD8 0000B16C 3C100000 */  lui        $s0, %hi(func_00000080)
-    /* DDBBDC 0000B170 8E100080 */  lw         $s0, %lo(func_00000080)($s0)
+    /* DDBBD8 0000B16C 3C100000 */  lui        $s0, %hi(stream_readVec3_00000080)
+    /* DDBBDC 0000B170 8E100080 */  lw         $s0, %lo(stream_readVec3_00000080)($s0)
     /* DDBBE0 0000B174 AE500864 */  sw         $s0, 0x864($s2)
-    /* DDBBE4 0000B178 3C100000 */  lui        $s0, %hi(func_00000044 + 0x14)
-    /* DDBBE8 0000B17C 8E100058 */  lw         $s0, %lo(func_00000044 + 0x14)($s0)
+    /* DDBBE4 0000B178 3C100000 */  lui        $s0, %hi(stream_readF32_00000044 + 0x14)
+    /* DDBBE8 0000B17C 8E100058 */  lw         $s0, %lo(stream_readF32_00000044 + 0x14)($s0)
     /* DDBBEC 0000B180 AE500874 */  sw         $s0, 0x874($s2)
     /* DDBBF0 0000B184 0C000000 */  jal        func_00000000
-    /* DDBBF4 0000B188 8CC60068 */   lw        $a2, %lo(func_00000044 + 0x24)($a2)
+    /* DDBBF4 0000B188 8CC60068 */   lw        $a2, %lo(stream_readF32_00000044 + 0x24)($a2)
     /* DDBBF8 0000B18C AE420804 */  sw         $v0, 0x804($s2)
     /* DDBBFC 0000B190 0C000000 */  jal        func_00000000
     /* DDBC00 0000B194 02402025 */   or        $a0, $s2, $zero

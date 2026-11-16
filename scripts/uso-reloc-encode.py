@@ -25,7 +25,7 @@ STATUS: the GENERATE-SIDE of the fado-equivalent is VALIDATED END-TO-END.
     (uso-reloc-symbolize.py, no --symnames) -> assemble (GNU as + asm-prelude,
     .set noreorder/noat, strip the `nonmatching`/`endlabel` splat lines) ->
     extract_elf_relocs(.o, func_base) -> (symIdx, kind, module_offset) reproduces
-    the ROM's Kyoto entries EXACTLY (validated on bootup func_00000008:
+    the ROM's Kyoto entries EXACTLY (validated on bootup stream_readS32_00000008:
     (73,HI16,0x14),(73,LO16,0x18),(74,R26,0x20) == ROM). So given the symbolized
     .s the generator regenerates the ROM reloc section.
 The remaining pieces (the BUILD INTEGRATION = a focused-session, high-blast-radius
@@ -88,8 +88,8 @@ def extract_elf_relocs(objpath, func_base, objdump='mips-linux-gnu-objdump'):
     The .s must use `usosym_<N>` symbol names (uso-reloc-symbolize.py default, no
     --symnames) so symIdx is unambiguous (N == symIdx; real NAMES collide -- 61 of
     1672 -- so the name can't be the key). `func_base` is the function's module-
-    relative byte offset (e.g. 0x8 for bootup func_00000008); module_offset =
-    func_base + elf_reloc_offset. VALIDATED end-to-end on bootup func_00000008:
+    relative byte offset (e.g. 0x8 for bootup stream_readS32_00000008); module_offset =
+    func_base + elf_reloc_offset. VALIDATED end-to-end on bootup stream_readS32_00000008:
     symbolize -> as -> this -> (73,3,0x14),(73,2,0x18),(74,1,0x20) == ROM exactly."""
     import re as _re
     import subprocess

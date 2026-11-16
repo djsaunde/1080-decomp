@@ -176,8 +176,8 @@ glabel U64BGWall_ctor
     /* DD1B54 000010E8 1420FFB5 */  bnez       $at, .L00000FC0
     /* DD1B58 000010EC 256BFFE0 */   addiu     $t3, $t3, -0x20
   .L000010F0:
-    /* DD1B5C 000010F0 3C080000 */  lui        $t0, %hi(func_000001FC + 0x18)
-    /* DD1B60 000010F4 8D080214 */  lw         $t0, %lo(func_000001FC + 0x18)($t0)
+    /* DD1B5C 000010F0 3C080000 */  lui        $t0, %hi(snd_setSoundOutputMode_000001FC + 0x18)
+    /* DD1B60 000010F4 8D080214 */  lw         $t0, %lo(snd_setSoundOutputMode_000001FC + 0x18)($t0)
     /* DD1B64 000010F8 3C060000 */  lui        $a2, (0x0 >> 16)
     /* DD1B68 000010FC 24C60000 */  addiu      $a2, $a2, 0x0
     /* DD1B6C 00001100 00004825 */  or         $t1, $zero, $zero
@@ -434,8 +434,8 @@ glabel U64BGWall_ctor
     /* DD1F38 000014CC 00A4082A */  slt        $at, $a1, $a0
     /* DD1F3C 000014D0 1420FF1A */  bnez       $at, .L0000113C
     /* DD1F40 000014D4 AFA50124 */   sw        $a1, 0x124($sp)
-    /* DD1F44 000014D8 3C080000 */  lui        $t0, %hi(func_000001FC + 0x18)
-    /* DD1F48 000014DC 8D080214 */  lw         $t0, %lo(func_000001FC + 0x18)($t0)
+    /* DD1F44 000014D8 3C080000 */  lui        $t0, %hi(snd_setSoundOutputMode_000001FC + 0x18)
+    /* DD1F48 000014DC 8D080214 */  lw         $t0, %lo(snd_setSoundOutputMode_000001FC + 0x18)($t0)
     /* DD1F4C 000014E0 AFA00124 */  sw         $zero, 0x124($sp)
     /* DD1F50 000014E4 8D03000C */  lw         $v1, 0xC($t0)
   .L000014E8:

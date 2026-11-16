@@ -4,12 +4,12 @@ glabel Mountain_display
     /* DD52C8 0000485C 27BDFFB0 */  addiu      $sp, $sp, -0x50
     /* DD52CC 00004860 AFA40050 */  sw         $a0, 0x50($sp)
     /* DD52D0 00004864 AFBF0014 */  sw         $ra, 0x14($sp)
-    /* DD52D4 00004868 3C040000 */  lui        $a0, %hi(func_00000080 + 0x20)
+    /* DD52D4 00004868 3C040000 */  lui        $a0, %hi(stream_readVec3_00000080 + 0x20)
     /* DD52D8 0000486C 0C000000 */  jal        func_00000000
-    /* DD52DC 00004870 248400A0 */   addiu     $a0, $a0, %lo(func_00000080 + 0x20)
+    /* DD52DC 00004870 248400A0 */   addiu     $a0, $a0, %lo(stream_readVec3_00000080 + 0x20)
     /* DD52E0 00004874 8FA60050 */  lw         $a2, 0x50($sp)
-    /* DD52E4 00004878 3C040000 */  lui        $a0, %hi(func_00000080 + 0x20)
-    /* DD52E8 0000487C 248400A0 */  addiu      $a0, $a0, %lo(func_00000080 + 0x20)
+    /* DD52E4 00004878 3C040000 */  lui        $a0, %hi(stream_readVec3_00000080 + 0x20)
+    /* DD52E8 0000487C 248400A0 */  addiu      $a0, $a0, %lo(stream_readVec3_00000080 + 0x20)
     /* DD52EC 00004880 C4CC0030 */  lwc1       $f12, 0x30($a2)
     /* DD52F0 00004884 C4C20034 */  lwc1       $f2, 0x34($a2)
     /* DD52F4 00004888 27A50040 */  addiu      $a1, $sp, 0x40
@@ -32,9 +32,9 @@ glabel Mountain_display
     /* DD5338 000048CC C44400A8 */  lwc1       $f4, 0xA8($v0)
     /* DD533C 000048D0 460A4402 */  mul.s      $f16, $f8, $f10
     /* DD5340 000048D4 C4D2002C */  lwc1       $f18, 0x2C($a2)
-    /* DD5344 000048D8 3C040000 */  lui        $a0, %hi(func_00000080 + 0x20)
+    /* DD5344 000048D8 3C040000 */  lui        $a0, %hi(stream_readVec3_00000080 + 0x20)
     /* DD5348 000048DC 46062302 */  mul.s      $f12, $f4, $f6
-    /* DD534C 000048E0 248400A0 */  addiu      $a0, $a0, %lo(func_00000080 + 0x20)
+    /* DD534C 000048E0 248400A0 */  addiu      $a0, $a0, %lo(stream_readVec3_00000080 + 0x20)
     /* DD5350 000048E4 E7A00020 */  swc1       $f0, 0x20($sp)
     /* DD5354 000048E8 27A50020 */  addiu      $a1, $sp, 0x20
     /* DD5358 000048EC 46128080 */  add.s      $f2, $f16, $f18

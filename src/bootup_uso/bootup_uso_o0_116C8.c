@@ -15,7 +15,7 @@ extern char sStr_starLine_C624;
 extern char sStr_starLine_C65C;
 extern char sStr_done_C694;
 /* Two module-external word reads whose baked LO16 fields are 0x34 / 0x40
- * (splat mislabeled them func_00000008+0x2C / +0x38). Bare-symbol reads via
+ * (splat mislabeled them stream_readS32_00000008+0x2C / +0x38). Bare-symbol reads via
  * undefined_syms_auto.txt entries, same recipe as gInputMgr_8AE4_mode (= 0x34). */
 extern int gInputMgr_bu_116C8_34;
 extern int gInputMgr_bu_116C8_40;

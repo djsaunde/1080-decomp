@@ -1,6 +1,6 @@
 /* IDO 7.1 NCC (C++) donor for Mountain_display (0xB8 / 46 words) -- pushes the
  * object's vector and the root transform's scaled vector to a debug/draw
- * sink (func_00000080 + 0x20 is the sink's datum, passed to every call).
+ * sink (stream_readVec3_00000080 + 0x20 is the sink's datum, passed to every call).
  *
  * C++ (agent-c run 116). Under cfe the body capped at 94.1: the two stack
  * vectors and the a2 reload of the homed arg cannot both come out. Under edg:
@@ -26,11 +26,11 @@ struct V3 { float x, y, z;
     void set(float a, float b, float c) { x = a; y = b; z = c; } };
 extern "C" {
 void func_00000000(...);
-extern char func_00000080[];
+extern char stream_readVec3_00000080[];
 extern char gGfxLib_485c_g[];          /* gGfxLib (blank per-site alias) */
 extern CamWindow *bu_485c_root;        /* bootup data sym161: the camera window (as 1A44's D_bu_205CC) */
 }
-#define STR (func_00000080 + 0x20)
+#define STR (stream_readVec3_00000080 + 0x20)
 /* gGfxLib.worldScale[i] (GfxLib 0x128, gfxlib.h assert) spelled base + offset: every member form
  * (.worldScale[i], *(float *)&->worldScale[i], a GfxLib * local, base + offsetof) folds the 0x128
  * into the lui / addiu pair or re-bases per load; the target keeps &gGfxLib in v1, 0x128.. in the lwc1s. */

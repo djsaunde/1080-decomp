@@ -337,8 +337,8 @@ glabel RiderCam_update_00004948
     /* DD588C 00004E20 3C014000 */  lui        $at, (0x40000000 >> 16)
     /* DD5890 00004E24 44812000 */  mtc1       $at, $f4
     /* DD5894 00004E28 C44A0004 */  lwc1       $f10, 0x4($v0)
-    /* DD5898 00004E2C 3C010000 */  lui        $at, %hi(func_000003F8 + 0x15C)
-    /* DD589C 00004E30 C4280554 */  lwc1       $f8, %lo(func_000003F8 + 0x15C)($at)
+    /* DD5898 00004E2C 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0x15C)
+    /* DD589C 00004E30 C4280554 */  lwc1       $f8, %lo(snd_calcEmitterDistPan_000003F8 + 0x15C)($at)
     /* DD58A0 00004E34 46045483 */  div.s      $f18, $f10, $f4
     /* DD58A4 00004E38 3C014334 */  lui        $at, (0x43340000 >> 16)
     /* DD58A8 00004E3C 44815000 */  mtc1       $at, $f10
@@ -367,8 +367,8 @@ glabel RiderCam_update_00004948
     /* DD5904 00004E98 46005303 */   div.s     $f12, $f10, $f0
     /* DD5908 00004E9C 3C014000 */  lui        $at, (0x40000000 >> 16)
     /* DD590C 00004EA0 44812000 */  mtc1       $at, $f4
-    /* DD5910 00004EA4 3C010000 */  lui        $at, %hi(func_000003F8 + 0x160)
-    /* DD5914 00004EA8 C4280558 */  lwc1       $f8, %lo(func_000003F8 + 0x160)($at)
+    /* DD5910 00004EA4 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0x160)
+    /* DD5914 00004EA8 C4280558 */  lwc1       $f8, %lo(snd_calcEmitterDistPan_000003F8 + 0x160)($at)
     /* DD5918 00004EAC 46040482 */  mul.s      $f18, $f0, $f4
     /* DD591C 00004EB0 3C014334 */  lui        $at, (0x43340000 >> 16)
     /* DD5920 00004EB4 44815000 */  mtc1       $at, $f10

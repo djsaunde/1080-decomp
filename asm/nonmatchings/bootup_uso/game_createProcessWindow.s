@@ -18,8 +18,8 @@ glabel game_createProcessWindow
     /* DE02C0 0000F854 35F80006 */  ori        $t8, $t7, 0x6
     /* DE02C4 0000F858 AFB80084 */  sw         $t8, 0x84($sp)
   .L0000F85C:
-    /* DE02C8 0000F85C 3C100000 */  lui        $s0, %hi(func_00000008 + 0x28)
-    /* DE02CC 0000F860 26100030 */  addiu      $s0, $s0, %lo(func_00000008 + 0x28)
+    /* DE02C8 0000F85C 3C100000 */  lui        $s0, %hi(stream_readS32_00000008 + 0x28)
+    /* DE02CC 0000F860 26100030 */  addiu      $s0, $s0, %lo(stream_readS32_00000008 + 0x28)
     /* DE02D0 0000F864 4480A000 */  mtc1       $zero, $f20
     /* DE02D4 0000F868 00000000 */  nop
     /* DE02D8 0000F86C E614000C */  swc1       $f20, 0xC($s0)
@@ -58,15 +58,15 @@ glabel game_createProcessWindow
     /* DE035C 0000F8F0 00000000 */   nop
     /* DE0360 0000F8F4 AFA20080 */  sw         $v0, 0x80($sp)
     /* DE0364 0000F8F8 8FB00080 */  lw         $s0, 0x80($sp)
-    /* DE0368 0000F8FC 3C110000 */  lui        $s1, %hi(func_00000008 + 0x24)
-    /* DE036C 0000F900 2631002C */  addiu      $s1, $s1, %lo(func_00000008 + 0x24)
+    /* DE0368 0000F8FC 3C110000 */  lui        $s1, %hi(stream_readS32_00000008 + 0x24)
+    /* DE036C 0000F900 2631002C */  addiu      $s1, $s1, %lo(stream_readS32_00000008 + 0x24)
     /* DE0370 0000F904 02202025 */  or         $a0, $s1, $zero
     /* DE0374 0000F908 02002825 */  or         $a1, $s0, $zero
     /* DE0378 0000F90C 0C000000 */  jal        func_00000000
     /* DE037C 0000F910 00000000 */   nop
     /* DE0380 0000F914 8FB80080 */  lw         $t8, 0x80($sp)
-    /* DE0384 0000F918 3C190000 */  lui        $t9, %hi(func_000000F0 + 0x44)
-    /* DE0388 0000F91C 8F390134 */  lw         $t9, %lo(func_000000F0 + 0x44)($t9)
+    /* DE0384 0000F918 3C190000 */  lui        $t9, %hi(stream_readQuad_000000F0 + 0x44)
+    /* DE0388 0000F91C 8F390134 */  lw         $t9, %lo(stream_readQuad_000000F0 + 0x44)($t9)
     /* DE038C 0000F920 AF380114 */  sw         $t8, 0x114($t9)
     /* DE0390 0000F924 8FA20080 */  lw         $v0, 0x80($sp)
     /* DE0394 0000F928 10000001 */  b          .L0000F930

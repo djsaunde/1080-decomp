@@ -37,10 +37,10 @@ glabel SnowBoarder_reset
     /* DDD5D4 0000CB68 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent3_00000940 + 0x18)
     /* DDD5D8 0000CB6C C4240958 */  lwc1       $f4, %lo(SndHandle_triggerEvent3_00000940 + 0x18)($at)
     /* DDD5DC 0000CB70 C6060768 */  lwc1       $f6, 0x768($s0)
-    /* DDD5E0 0000CB74 3C020000 */  lui        $v0, %hi(func_00000008 + 0x2C)
+    /* DDD5E0 0000CB74 3C020000 */  lui        $v0, %hi(stream_readS32_00000008 + 0x2C)
     /* DDD5E4 0000CB78 E60409D0 */  swc1       $f4, 0x9D0($s0)
     /* DDD5E8 0000CB7C E6060A78 */  swc1       $f6, 0xA78($s0)
-    /* DDD5EC 0000CB80 8C420034 */  lw         $v0, %lo(func_00000008 + 0x2C)($v0)
+    /* DDD5EC 0000CB80 8C420034 */  lw         $v0, %lo(stream_readS32_00000008 + 0x2C)($v0)
     /* DDD5F0 0000CB84 24010002 */  addiu      $at, $zero, 0x2
     /* DDD5F4 0000CB88 44800000 */  mtc1       $zero, $f0
     /* DDD5F8 0000CB8C 1041000A */  beq        $v0, $at, .L0000CBB8
@@ -95,8 +95,8 @@ glabel SnowBoarder_reset
     /* DDD6AC 0000CC40 0C000000 */  jal        func_00000000
     /* DDD6B0 0000CC44 8E040804 */   lw        $a0, 0x804($s0)
     /* DDD6B4 0000CC48 8E0A0A58 */  lw         $t2, 0xA58($s0)
-    /* DDD6B8 0000CC4C 3C040001 */  lui        $a0, %hi(func_00008A7C + 0x40)
-    /* DDD6BC 0000CC50 24848ABC */  addiu      $a0, $a0, %lo(func_00008A7C + 0x40)
+    /* DDD6B8 0000CC4C 3C040001 */  lui        $a0, %hi(stream_readVec3_00008A7C + 0x40)
+    /* DDD6BC 0000CC50 24848ABC */  addiu      $a0, $a0, %lo(stream_readVec3_00008A7C + 0x40)
     /* DDD6C0 0000CC54 000A5B80 */  sll        $t3, $t2, 14
     /* DDD6C4 0000CC58 05630004 */  bgezl      $t3, .L0000CC6C
     /* DDD6C8 0000CC5C 8E0D00B4 */   lw        $t5, 0xB4($s0)

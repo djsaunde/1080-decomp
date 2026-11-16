@@ -37,9 +37,9 @@ glabel TreeTmpl_create
   alabel sStr_DispTrails_8820
     /* DD928C 00008820 0C000000 */  jal        func_00000000
     /* DD9290 00008824 00402025 */   or        $a0, $v0, $zero
-    /* DD9294 00008828 3C0B0000 */  lui        $t3, %hi(func_00007A48 + 0x10)
+    /* DD9294 00008828 3C0B0000 */  lui        $t3, %hi(boot_readFloatParm_00007A48 + 0x10)
   alabel sStr_Node_882C
-    /* DD9298 0000882C 256B7A58 */  addiu      $t3, $t3, %lo(func_00007A48 + 0x10)
+    /* DD9298 0000882C 256B7A58 */  addiu      $t3, $t3, %lo(boot_readFloatParm_00007A48 + 0x10)
     /* DD929C 00008830 2401FF78 */  addiu      $at, $zero, -0x88
   alabel sStr_Node_8834
     /* DD92A0 00008834 AE2B0028 */  sw         $t3, 0x28($s1)

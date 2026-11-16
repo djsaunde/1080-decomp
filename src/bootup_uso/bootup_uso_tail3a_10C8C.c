@@ -23,10 +23,10 @@ extern char *gui_getCurrentRow_00010324();
  * registrar call, allocates two 0x80 sub-objects (->0xC0/->0xC4), then a
  * sub-record (->0x154) whose byte/halfword fields drive 4 callbacks + a
  * global flag. sp6C.w loads from the shared FP literal pool (reloc to
- * .text func_00000C10 @ module-offset 0xC10, +0xC; same recipe as
+ * .text ColourItem_create_00000C10 @ module-offset 0xC10, +0xC; same recipe as
  * bootup_uso_o0_100F0.c). MATCHED 2026-07-10 (216/216). */
-extern int func_000000F0;
-extern struct { float f0, f1, f2, f3; } func_00000C10; /* FP literal pool */
+extern int stream_readQuad_000000F0;
+extern struct { float f0, f1, f2, f3; } ColourItem_create_00000C10; /* FP literal pool */
 extern char sStr_GameFlow_C5D0;
 extern char sStr_Flow_C5DC;
 extern char sStr_rom_gui_uso_C5E4;
@@ -58,14 +58,14 @@ void GameFlow_create(int *arg0, int arg1) {
         x = 0;
         y = 0;
         z = 0;
-        w = func_00000C10.f3;
+        w = ColourItem_create_00000C10.f3;
         /* q = &rec (the inline Vec4 ctor's this; mem_new fallback): the TextWin colour */
         ((Vec4_10C8C *)q)->x = x;
         ((Vec4_10C8C *)q)->y = y;
         ((Vec4_10C8C *)q)->z = z;
         ((Vec4_10C8C *)q)->w = w;
     }
-    func_000000F0 = FCALL(TextWin_ctor)(0, &sStr_Flow_C5DC, 0x10, 0x12C, 0x10, 0x14, rec);
+    stream_readQuad_000000F0 = FCALL(TextWin_ctor)(0, &sStr_Flow_C5DC, 0x10, 0x12C, 0x10, 0x14, rec);
     FCALL(app_setHeapMode)(sp68);
     GAMEFLOW(arg0)->usoList = 0;
     GAMEFLOW(arg0)->procUsoPath = 0;
@@ -94,9 +94,9 @@ void GameFlow_create(int *arg0, int arg1) {
     GAMEFLOW(arg0)->backup = (void *)FCALL(Backup_ctor)(0);
     GAMEFLOW(arg0)->options = (char *)FCALL(Backup_readOptions)(GAMEFLOW(arg0)->backup);
     FCALL(snd_setPlayer1VolumeLevel)(SETTINGS(GAMEFLOW(arg0)->options)->levels[0]);
-    FCALL(func_0000023C)(SETTINGS(GAMEFLOW(arg0)->options)->levels[1]);
+    FCALL(snd_setPlayer0VolumeLevel_0000023C)(SETTINGS(GAMEFLOW(arg0)->options)->levels[1]);
     FCALL(snd_setPlayer2VolumeLevel)(SETTINGS(GAMEFLOW(arg0)->options)->levels[2]);
-    FCALL(func_000001FC)(SETTINGS(GAMEFLOW(arg0)->options)->flags & 3);
+    FCALL(snd_setSoundOutputMode_000001FC)(SETTINGS(GAMEFLOW(arg0)->options)->flags & 3);
     D_00000000 = (SETTINGS(GAMEFLOW(arg0)->options)->flags & 4) == 4;
     GAMEFLOW(arg0)->recordCap = *(int *)GAMEFLOW(arg0)->backup;
     GAMEFLOW(arg0)->recordBuf = FCALL(mem_new)(GAMEFLOW(arg0)->recordCap << 2);
@@ -181,8 +181,8 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
 
     p = (char *)D_00000000;
     D_00000000 = (int)p + 1;
-    FCALL(TextWin_printf)(func_000000F0, &sFmt_num_C604, p, (&D_00000000)[arg1]);
-    sp3C = FCALL(app_printHeapOfType)(func_000000F0);
+    FCALL(TextWin_printf)(stream_readQuad_000000F0, &sFmt_num_C604, p, (&D_00000000)[arg1]);
+    sp3C = FCALL(app_printHeapOfType)(stream_readQuad_000000F0);
     if (sp3C != 1) {
         FCALL(sys_fatal)(&sStr_FLOW_free_blocks_1_C60C);
     }

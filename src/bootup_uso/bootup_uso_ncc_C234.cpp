@@ -1,6 +1,6 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for SnowBoarder_procColl: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 77.39; a second parameter empty test from round 2 gives 79.35).
  * agent-g run 152 (79.55 -> 85.17): arg 2 of the 0x38 lookup call is a 4-byte struct BY VALUE (target `sw a1,140(sp)` + `sw a1,4(sp)` in the jal delay), the
- * counter test is a post-increment compare on the old value (`slti v1,151`), the func_00008A7C sites are per-site symbols (target re-materialises
+ * counter test is a post-increment compare on the old value (`slti v1,151`), the stream_readVec3_00008A7C sites are per-site symbols (target re-materialises
  * lui/addiu per call, one shared symbol is CSE-spilled to sp+52), the 0x2C mode word reads through a data symbol (lw %lo folded), sp40 declared first.
  * EXACT (agent-g run 236): spliced over the bootup_uso.c placeholder on both build paths via REPLACE_FUNC_BODY; the
  * 0x930..0x948 constants are bu_c234_k9xx pins (target relocs .L00000930 / SndHandle_triggerEvent3_00000940 + addend).
@@ -8,7 +8,7 @@
  * C-only). Same bytes: every access keeps its width / type (a mismatched read stays `*(T *)&rider->field`).
  * agent-g run 558: the 151-frame airborne reset asks ItemMgr_queryType(MarkerMgr, "mrk", pos, 0) for the nearest
  * generic marker (sTag_mrk_8A78 = Data 0x8A78, D_C234_markerMgr = Data 0x7768 Sym 302) and moves the rider 200 above its
- * CourseMarker.pos. The .o's tag reloc is now sTag_mrk_8A78 + 0 (was func_00008A40 + 0x38); linked bytes identical. */
+ * CourseMarker.pos. The .o's tag reloc is now sTag_mrk_8A78 + 0 (was stream_readF32_00008A40 + 0x38); linked bytes identical. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
@@ -53,9 +53,9 @@ extern f32 D_00000128, kRo_SnowBoarder_ctor_868, kRo_SnowBoarder_ctor_86C, kRo_S
 extern char D_00000000;
 extern void bu_b75c_mvf(char *, char *, f32, SnowBoarder *);
 extern int func_00000000(...);
-extern void func_00000008(...);
+extern void stream_readS32_00000008(...);
 extern float func_411c_rf(void);
-extern void func_00008A7C(...);
+extern void stream_readVec3_00008A7C(...);
 extern char gInputMgr_c234_g8[];
 extern void bu_c234_v5(char *, char *, f64, f64, f64);
 extern char sStr_Player_Pos_Reset_8A7C[], sFmt_num_8A94[], bu_c234_k2[], sStr_SBProcColl_8AA4[], sStr_SBProcColl_8AB0[];

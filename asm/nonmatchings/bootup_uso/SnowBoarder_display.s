@@ -6,11 +6,11 @@ glabel SnowBoarder_display
     /* DDDA14 0000CFA8 AFB00028 */  sw         $s0, 0x28($sp)
     /* DDDA18 0000CFAC 8C8E0A58 */  lw         $t6, 0xA58($a0)
     /* DDDA1C 0000CFB0 00808025 */  or         $s0, $a0, $zero
-    /* DDDA20 0000CFB4 3C180000 */  lui        $t8, %hi(func_0000023C + 0x18)
+    /* DDDA20 0000CFB4 3C180000 */  lui        $t8, %hi(snd_setPlayer0VolumeLevel_0000023C + 0x18)
     /* DDDA24 0000CFB8 31CF2000 */  andi       $t7, $t6, 0x2000
     /* DDDA28 0000CFBC 11E00005 */  beqz       $t7, .L0000CFD4
     /* DDDA2C 0000CFC0 24050002 */   addiu     $a1, $zero, 0x2
-    /* DDDA30 0000CFC4 8F180254 */  lw         $t8, %lo(func_0000023C + 0x18)($t8)
+    /* DDDA30 0000CFC4 8F180254 */  lw         $t8, %lo(snd_setPlayer0VolumeLevel_0000023C + 0x18)($t8)
     /* DDDA34 0000CFC8 8C9908DC */  lw         $t9, 0x8DC($a0)
     /* DDDA38 0000CFCC 53190118 */  beql       $t8, $t9, .L0000D430
     /* DDDA3C 0000CFD0 8FBF002C */   lw        $ra, 0x2C($sp)
@@ -19,17 +19,17 @@ glabel SnowBoarder_display
     /* DDDA44 0000CFD8 44803000 */  mtc1       $zero, $f6
     /* DDDA48 0000CFDC 8E0600B4 */  lw         $a2, 0xB4($s0)
     /* DDDA4C 0000CFE0 8E0700B8 */  lw         $a3, 0xB8($s0)
-    /* DDDA50 0000CFE4 3C040000 */  lui        $a0, %hi(func_0000023C + 0x18)
+    /* DDDA50 0000CFE4 3C040000 */  lui        $a0, %hi(snd_setPlayer0VolumeLevel_0000023C + 0x18)
     /* DDDA54 0000CFE8 27A80084 */  addiu      $t0, $sp, 0x84
     /* DDDA58 0000CFEC AFA80014 */  sw         $t0, 0x14($sp)
-    /* DDDA5C 0000CFF0 8C840254 */  lw         $a0, %lo(func_0000023C + 0x18)($a0)
+    /* DDDA5C 0000CFF0 8C840254 */  lw         $a0, %lo(snd_setPlayer0VolumeLevel_0000023C + 0x18)($a0)
     /* DDDA60 0000CFF4 E7A40010 */  swc1       $f4, 0x10($sp)
     /* DDDA64 0000CFF8 0C000000 */  jal        func_00000000
     /* DDDA68 0000CFFC E7A60018 */   swc1      $f6, 0x18($sp)
     /* DDDA6C 0000D000 1040010A */  beqz       $v0, .L0000D42C
     /* DDDA70 0000D004 AE020A40 */   sw        $v0, 0xA40($s0)
-    /* DDDA74 0000D008 3C040000 */  lui        $a0, %hi(func_0000023C + 0x18)
-    /* DDDA78 0000D00C 8C840254 */  lw         $a0, %lo(func_0000023C + 0x18)($a0)
+    /* DDDA74 0000D008 3C040000 */  lui        $a0, %hi(snd_setPlayer0VolumeLevel_0000023C + 0x18)
+    /* DDDA78 0000D00C 8C840254 */  lw         $a0, %lo(snd_setPlayer0VolumeLevel_0000023C + 0x18)($a0)
     /* DDDA7C 0000D010 C7AA0084 */  lwc1       $f10, 0x84($sp)
     /* DDDA80 0000D014 00001025 */  or         $v0, $zero, $zero
     /* DDDA84 0000D018 C4880098 */  lwc1       $f8, 0x98($a0)
@@ -144,8 +144,8 @@ glabel SnowBoarder_display
     /* DDDC28 0000D1BC 02002025 */   or        $a0, $s0, $zero
     /* DDDC2C 0000D1C0 0C000000 */  jal        func_00000000
     /* DDDC30 0000D1C4 02002025 */   or        $a0, $s0, $zero
-    /* DDDC34 0000D1C8 3C010000 */  lui        $at, %hi(func_00000080 + 0x64)
-    /* DDDC38 0000D1CC AC2000E4 */  sw         $zero, %lo(func_00000080 + 0x64)($at)
+    /* DDDC34 0000D1C8 3C010000 */  lui        $at, %hi(stream_readVec3_00000080 + 0x64)
+    /* DDDC38 0000D1CC AC2000E4 */  sw         $zero, %lo(stream_readVec3_00000080 + 0x64)($at)
     /* DDDC3C 0000D1D0 1000007D */  b          .L0000D3C8
     /* DDDC40 0000D1D4 8E0208B8 */   lw        $v0, 0x8B8($s0)
     /* DDDC44 0000D1D8 8E0208B8 */  lw         $v0, 0x8B8($s0)
@@ -276,8 +276,8 @@ glabel SnowBoarder_display
     /* DDDE18 0000D3AC 0320F809 */  jalr       $t9
     /* DDDE1C 0000D3B0 01232021 */   addu      $a0, $t1, $v1
   .L0000D3B4:
-    /* DDDE20 0000D3B4 3C010000 */  lui        $at, %hi(func_00000080 + 0x64)
-    /* DDDE24 0000D3B8 AC2000E4 */  sw         $zero, %lo(func_00000080 + 0x64)($at)
+    /* DDDE20 0000D3B4 3C010000 */  lui        $at, %hi(stream_readVec3_00000080 + 0x64)
+    /* DDDE24 0000D3B8 AC2000E4 */  sw         $zero, %lo(stream_readVec3_00000080 + 0x64)($at)
     /* DDDE28 0000D3BC 8E0208B8 */  lw         $v0, 0x8B8($s0)
   .L0000D3C0:
     /* DDDE2C 0000D3C0 260A08E0 */  addiu      $t2, $s0, 0x8E0
@@ -308,8 +308,8 @@ glabel SnowBoarder_display
     /* DDDE7C 0000D410 8FA50030 */   lw        $a1, 0x30($sp)
     /* DDDE80 0000D414 0C000000 */  jal        func_00000000
     /* DDDE84 0000D418 02002025 */   or        $a0, $s0, $zero
-    /* DDDE88 0000D41C 3C0D0000 */  lui        $t5, %hi(func_0000023C + 0x18)
-    /* DDDE8C 0000D420 8DAD0254 */  lw         $t5, %lo(func_0000023C + 0x18)($t5)
+    /* DDDE88 0000D41C 3C0D0000 */  lui        $t5, %hi(snd_setPlayer0VolumeLevel_0000023C + 0x18)
+    /* DDDE8C 0000D420 8DAD0254 */  lw         $t5, %lo(snd_setPlayer0VolumeLevel_0000023C + 0x18)($t5)
     /* DDDE90 0000D424 0C000000 */  jal        func_00000000
     /* DDDE94 0000D428 8DA40108 */   lw        $a0, 0x108($t5)
   .L0000D42C:

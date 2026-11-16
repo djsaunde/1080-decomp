@@ -1,6 +1,6 @@
-nonmatching Tv1Tmpl_func_000077D0, 0x278
+nonmatching Tv1Tmpl_blitFrame_000077D0, 0x278
 
-glabel Tv1Tmpl_func_000077D0
+glabel Tv1Tmpl_blitFrame_000077D0
     /* DD823C 000077D0 27BDFFB8 */  addiu      $sp, $sp, -0x48
     /* DD8240 000077D4 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DD8244 000077D8 AFB10018 */  sw         $s1, 0x18($sp)
@@ -176,4 +176,4 @@ glabel Tv1Tmpl_func_000077D0
     /* DD84A8 00007A3C 8FB10018 */  lw         $s1, 0x18($sp)
     /* DD84AC 00007A40 03E00008 */  jr         $ra
     /* DD84B0 00007A44 27BD0048 */   addiu     $sp, $sp, 0x48
-endlabel Tv1Tmpl_func_000077D0
+endlabel Tv1Tmpl_blitFrame_000077D0

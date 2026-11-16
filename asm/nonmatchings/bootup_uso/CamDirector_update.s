@@ -1,8 +1,8 @@
 nonmatching CamDirector_update, 0x2BC
 
 glabel CamDirector_update
-    /* DD2F24 000024B8 3C0E0000 */  lui        $t6, %hi(func_00000044 + 0x20)
-    /* DD2F28 000024BC 8DCE0064 */  lw         $t6, %lo(func_00000044 + 0x20)($t6)
+    /* DD2F24 000024B8 3C0E0000 */  lui        $t6, %hi(stream_readF32_00000044 + 0x20)
+    /* DD2F28 000024BC 8DCE0064 */  lw         $t6, %lo(stream_readF32_00000044 + 0x20)($t6)
     /* DD2F2C 000024C0 27BDFFB0 */  addiu      $sp, $sp, -0x50
     /* DD2F30 000024C4 AFB10018 */  sw         $s1, 0x18($sp)
     /* DD2F34 000024C8 24010001 */  addiu      $at, $zero, 0x1

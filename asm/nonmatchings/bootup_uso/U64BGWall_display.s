@@ -1,8 +1,8 @@
 nonmatching U64BGWall_display, 0x1CC
 
 glabel U64BGWall_display
-    /* DD24B0 00001A44 3C0E0000 */  lui        $t6, %hi(func_00000188 + 0x3C)
-    /* DD24B4 00001A48 8DCE01C4 */  lw         $t6, %lo(func_00000188 + 0x3C)($t6)
+    /* DD24B0 00001A44 3C0E0000 */  lui        $t6, %hi(snd_seqEndDbg_00000188 + 0x3C)
+    /* DD24B4 00001A48 8DCE01C4 */  lw         $t6, %lo(snd_seqEndDbg_00000188 + 0x3C)($t6)
     /* DD24B8 00001A4C 27BDFFC8 */  addiu      $sp, $sp, -0x38
     /* DD24BC 00001A50 AFBF0024 */  sw         $ra, 0x24($sp)
     /* DD24C0 00001A54 31CF0002 */  andi       $t7, $t6, 0x2

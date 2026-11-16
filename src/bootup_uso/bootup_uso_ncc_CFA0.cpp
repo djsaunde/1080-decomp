@@ -18,7 +18,7 @@
  *   the dead `= 0` stores keep their three slots.
  * docs/IDO_CODEGEN.md#kit-xvi-agent-c-run-116. Spliced into bootup_uso.c.o
  * via REPLACE_FUNC_BODY; the bu_cfa0_* aliases are pinned in
- * undefined_syms_auto.txt (ctx 0x254 = func_0000023C+0x18, flag 0xE4,
+ * undefined_syms_auto.txt (ctx 0x254 = snd_setPlayer0VolumeLevel_0000023C+0x18, flag 0xE4,
  * k970 0x970, k978 0x978, the per-site blank args a..f and the two callees 0).
  * agent-g run 543: field form over include/game/snowboarder.h. Same bytes; the two position words passed
  * as int arguments read as `*(int *)&st->dnode.vqs.trans[i]`. */
@@ -39,8 +39,8 @@ int func_00000000(...);
 void bu_cfa0_v(...);
 }
 #define CTX gGfxLib_cfa0_ctx
-/* CTX = GfxLib.curWindow (gfx +0x254, the alias value 0x254 = func_0000023C + 0x18; GfxLib +0x240 is
- * mainWindow, the Fader_buildTexture root at func_0000023C + 4): a ScreenWindow, whose Window base
+/* CTX = GfxLib.curWindow (gfx +0x254, the alias value 0x254 = snd_setPlayer0VolumeLevel_0000023C + 0x18; GfxLib +0x240 is
+ * mainWindow, the Fader_buildTexture root at snd_setPlayer0VolumeLevel_0000023C + 4): a ScreenWindow, whose Window base
  * holds drawDistFov[0] at +0x98 (the class-0 draw distance at this fov, the float compared with the
  * probe distance) and displayMask at +0x108 (passed on, as Window_display passes it to
  * Node_setDisplayMask). agent-g run 580. */

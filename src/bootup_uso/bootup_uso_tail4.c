@@ -133,7 +133,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", Fader_ctor);
  * src/bootup_uso/bootup_uso_ncc_1304C.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder (agent-c run 126). */
 extern f32 kRo_Fader_display_C50, kRo_Fader_display_C54, kRo_Fader_display_C58, kRo_Fader_display_C5C, kRo_Fader_display_C60;
-extern char func_0000023C[];  /* data-symbol base: ctx ptr @ +0x18 */
+extern char snd_setPlayer0VolumeLevel_0000023C[];  /* data-symbol base: ctx ptr @ +0x18 */
 void Fader_display(char *arg0) {
     volatile int r = 0;
 }
@@ -221,7 +221,7 @@ void Fader_start(char *s1, int a1, int a2) {
 /* Fader_buildTexture - verified structural decode (0x144, 84 insns,
  * LUT index->value remap with all-ones fallback).
  *   void Fader_buildTexture(St *a0) {
- *       root = *(void**)(func_0000023C + 4);
+ *       root = *(void**)(snd_setPlayer0VolumeLevel_0000023C + 4);
  *       v = root->0x28;
  *       lut = (u16*)(*(fn)v->0x64)((s16)v->0x60 + root); // vtable
  *       if (a0->0x68 != 0) {                      // remap path
@@ -242,7 +242,7 @@ void Fader_start(char *s1, int a1, int a2) {
  *           }
  *       }
  *   }
- * Struct-typing reference: root = *(func_0000023C+4) global ctx;
+ * Struct-typing reference: root = *(snd_setPlayer0VolumeLevel_0000023C+4) global ctx;
  * root->0x28 (40) vtable ptr, fn @0x64 (100) + s16 base-adjust
  * @0x60 (96) returns a u16 lookup table (the obj-0x28 dispatch
  * idiom, 0x64/0x60 variant). a0->0x54 (84) = source int index
@@ -250,12 +250,12 @@ void Fader_start(char *s1, int a1, int a2) {
  * array (0x400 entries, 0x800 bytes), a0->0x68 (104) = mode gate
  * (nonzero -> remap each src index through lut; zero -> fill dest
  * with 1). Likely a tile/palette index-to-colour expansion. Caps
- * <80: vtable jalr + func_0000023C+4 reloc data ref + 4-way
+ * <80: vtable jalr + snd_setPlayer0VolumeLevel_0000023C+4 reloc data ref + 4-way
  * unrolled nested loop + beql branch-likely. Full body INCLUDE_ASM-
  * preserved (.s = source of truth). INCLUDE_ASM (no episode;
  * tautology-trap rule). */
 /* EXACT (agent-c run 115). Palette remap: the game object is 0x240
- * (func_0000023C + 0x4, alias gGfxLib_13b20_root = GfxLib.mainWindow, gdl/gfxlib.h), its vtable
+ * (snd_setPlayer0VolumeLevel_0000023C + 0x4, alias gGfxLib_13b20_root = GfxLib.mainWindow, gdl/gfxlib.h), its vtable
  * +0x60/+0x64 slot returns the u16 palette (this-adjusted cfront call, arg0 passed through).
  * Both loops are plain rolled indexed loops (IDO unrolls them x4) with their
  * own counters i / j; the root load is followed by two empty blocks (ring

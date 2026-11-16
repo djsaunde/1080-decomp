@@ -21,7 +21,7 @@ extern int gInputMgr_00000150;
 void snd_playSeq_000120A8(char *a0, int a1, int a2, int a3) {
     GAMEFLOW(a0)->seq = a1;
     GAMEFLOW(a0)->seqArg = a2;
-    FCALL(func_00000148)(GAMEFLOW(a0)->seq, GAMEFLOW(a0)->seqArg, 0);
+    FCALL(snd_seqEventDbg_00000148)(GAMEFLOW(a0)->seq, GAMEFLOW(a0)->seqArg, 0);
     GAMEFLOW(a0)->seqArg = 0;
 }
 

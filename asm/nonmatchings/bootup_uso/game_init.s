@@ -113,8 +113,8 @@ glabel game_init
     /* DD3404 00002998 3C040000 */  lui        $a0, (0x0 >> 16)
     /* DD3408 0000299C 0C000000 */  jal        func_00000000
     /* DD340C 000029A0 24840000 */   addiu     $a0, $a0, 0x0
-    /* DD3410 000029A4 3C180000 */  lui        $t8, %hi(func_000001FC + 0x10)
-    /* DD3414 000029A8 8F18020C */  lw         $t8, %lo(func_000001FC + 0x10)($t8)
+    /* DD3410 000029A4 3C180000 */  lui        $t8, %hi(snd_setSoundOutputMode_000001FC + 0x10)
+    /* DD3414 000029A8 8F18020C */  lw         $t8, %lo(snd_setSoundOutputMode_000001FC + 0x10)($t8)
     /* DD3418 000029AC 44824000 */  mtc1       $v0, $f8
     /* DD341C 000029B0 3C040000 */  lui        $a0, %hi(D_0000739C)
     /* DD3420 000029B4 44982000 */  mtc1       $t8, $f4
@@ -168,8 +168,8 @@ glabel game_init
     /* DD34D4 00002A68 8D4B0134 */  lw         $t3, 0x134($t2)
     /* DD34D8 00002A6C 0C000000 */  jal        func_00000000
     /* DD34DC 00002A70 AD620098 */   sw        $v0, 0x98($t3)
-    /* DD34E0 00002A74 3C0C0000 */  lui        $t4, %hi(func_000001FC + 0x10)
-    /* DD34E4 00002A78 8D8C020C */  lw         $t4, %lo(func_000001FC + 0x10)($t4)
+    /* DD34E0 00002A74 3C0C0000 */  lui        $t4, %hi(snd_setSoundOutputMode_000001FC + 0x10)
+    /* DD34E4 00002A78 8D8C020C */  lw         $t4, %lo(snd_setSoundOutputMode_000001FC + 0x10)($t4)
     /* DD34E8 00002A7C 44822000 */  mtc1       $v0, $f4
     /* DD34EC 00002A80 3C040000 */  lui        $a0, %hi(D_000073B4)
     /* DD34F0 00002A84 448C3000 */  mtc1       $t4, $f6
@@ -216,8 +216,8 @@ glabel game_init
     /* DD3588 00002B1C 3C040000 */  lui        $a0, (0x0 >> 16)
     /* DD358C 00002B20 0C000000 */  jal        func_00000000
     /* DD3590 00002B24 24840000 */   addiu     $a0, $a0, 0x0
-    /* DD3594 00002B28 3C0F0000 */  lui        $t7, %hi(func_000001FC + 0x10)
-    /* DD3598 00002B2C 8DEF020C */  lw         $t7, %lo(func_000001FC + 0x10)($t7)
+    /* DD3594 00002B28 3C0F0000 */  lui        $t7, %hi(snd_setSoundOutputMode_000001FC + 0x10)
+    /* DD3598 00002B2C 8DEF020C */  lw         $t7, %lo(snd_setSoundOutputMode_000001FC + 0x10)($t7)
     /* DD359C 00002B30 44823000 */  mtc1       $v0, $f6
     /* DD35A0 00002B34 3C040000 */  lui        $a0, %hi(D_000073CC)
     /* DD35A4 00002B38 448F5000 */  mtc1       $t7, $f10

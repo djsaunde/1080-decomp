@@ -11,19 +11,19 @@
  *   iy, so exactly three named scalars sit above it (the target's 12 unreferenced bytes) and q lands on
  *   sp+92; `if (1) {}` before q's stores.
  * Spliced into bootup_uso.c.o (both trees) via REPLACE_FUNC_BODY over an empty placeholder;
- * func_00000000_63b4_* are blank (0) aliases, bu_63b4_c57c = func_0000057C (target reloc func_0000057C + 0x34). */
+ * func_00000000_63b4_* are blank (0) aliases, bu_63b4_c57c = snd_soundObjCreate_0000057C (target reloc snd_soundObjCreate_0000057C + 0x34). */
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
 typedef float f32;
 extern "C" {
 extern char D_00000000;
-extern f32 bu_63b4_c57c[];   /* == func_0000057C: bootup RoData-base + 0x57C (USO links at VRAM 0) */
+extern f32 bu_63b4_c57c[];   /* == snd_soundObjCreate_0000057C: bootup RoData-base + 0x57C (USO links at VRAM 0) */
 extern float func_00000000_63b4_ff(float);
 extern void func_00000000_63b4_fpp(float, float *, float *);
 extern void func_00000000_63b4_pq(void *, void *);
 extern void func_00000000_63b4_p(void *);
 }
-/* RoData+0x5B0 = 57.29578f, degrees per radian: the target reloc is func_0000057C + 0x34, so the
+/* RoData+0x5B0 = 57.29578f, degrees per radian: the target reloc is snd_soundObjCreate_0000057C + 0x34, so the
  * constant is element 0x34 / 4 of the alias (same lui / lwc1 words and reloc) */
 #define kRo_MapProp_degPerRad bu_63b4_c57c[0x34 / 4]
 struct V3 {

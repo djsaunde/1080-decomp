@@ -2,8 +2,8 @@ nonmatching ScreenThumbMat_grab_0000E740, 0xB4
 
 glabel ScreenThumbMat_grab_0000E740
     /* DDF1AC 0000E740 27BDFFE8 */  addiu      $sp, $sp, -0x18
-    /* DDF1B0 0000E744 3C030000 */  lui        $v1, %hi(func_0000023C + 0x4)
-    /* DDF1B4 0000E748 8C630240 */  lw         $v1, %lo(func_0000023C + 0x4)($v1)
+    /* DDF1B0 0000E744 3C030000 */  lui        $v1, %hi(snd_setPlayer0VolumeLevel_0000023C + 0x4)
+    /* DDF1B4 0000E748 8C630240 */  lw         $v1, %lo(snd_setPlayer0VolumeLevel_0000023C + 0x4)($v1)
     /* DDF1B8 0000E74C AFBF0014 */  sw         $ra, 0x14($sp)
     /* DDF1BC 0000E750 AFA40018 */  sw         $a0, 0x18($sp)
     /* DDF1C0 0000E754 AFA5001C */  sw         $a1, 0x1C($sp)

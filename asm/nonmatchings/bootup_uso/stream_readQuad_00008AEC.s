@@ -1,6 +1,6 @@
-nonmatching func_00008AEC, 0x58
+nonmatching stream_readQuad_00008AEC, 0x58
 
-glabel func_00008AEC
+glabel stream_readQuad_00008AEC
     /* DD9558 00008AEC 27BDFFD8 */  addiu      $sp, $sp, -0x28
     /* DD955C 00008AF0 AFA40028 */  sw         $a0, 0x28($sp)
     /* DD9560 00008AF4 AFBF0014 */  sw         $ra, 0x14($sp)
@@ -23,4 +23,4 @@ glabel func_00008AEC
     /* DD95A4 00008B38 27BD0028 */  addiu      $sp, $sp, 0x28
     /* DD95A8 00008B3C 03E00008 */  jr         $ra
     /* DD95AC 00008B40 00000000 */   nop
-endlabel func_00008AEC
+endlabel stream_readQuad_00008AEC

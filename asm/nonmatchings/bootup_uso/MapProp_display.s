@@ -4,8 +4,8 @@ glabel MapProp_display
     /* DD6E20 000063B4 27BDFF70 */  addiu      $sp, $sp, -0x90
     /* DD6E24 000063B8 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD6E28 000063BC 8C8900BC */  lw         $t1, 0xBC($a0)
-    /* DD6E2C 000063C0 3C010000 */  lui        $at, %hi(func_0000057C + 0x34)
-    /* DD6E30 000063C4 C42805B0 */  lwc1       $f8, %lo(func_0000057C + 0x34)($at)
+    /* DD6E2C 000063C0 3C010000 */  lui        $at, %hi(snd_soundObjCreate_0000057C + 0x34)
+    /* DD6E30 000063C4 C42805B0 */  lwc1       $f8, %lo(snd_soundObjCreate_0000057C + 0x34)($at)
     /* DD6E34 000063C8 44893000 */  mtc1       $t1, $f6
     /* DD6E38 000063CC AFA40090 */  sw         $a0, 0x90($sp)
     /* DD6E3C 000063D0 468032A0 */  cvt.s.w    $f10, $f6

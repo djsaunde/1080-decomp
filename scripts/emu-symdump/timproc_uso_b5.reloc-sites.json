@@ -5476,14 +5476,14 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 24424,
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 24444,
@@ -5648,7 +5648,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 25084,
@@ -5663,7 +5663,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 25164,
@@ -5691,7 +5691,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 25232,
@@ -5712,7 +5712,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 25296,
@@ -5740,7 +5740,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 25364,
@@ -5931,21 +5931,21 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 26236,
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 26284,
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 26324,
@@ -5960,28 +5960,28 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 26416,
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 26460,
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 26500,
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 26588,
@@ -5995,7 +5995,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 26688,
@@ -6143,7 +6143,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 28008,
@@ -6164,7 +6164,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 28124,
@@ -6221,7 +6221,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 28408,
@@ -6300,7 +6300,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 28684,
@@ -6366,7 +6366,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 28980,
@@ -6388,7 +6388,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 29060,
@@ -6417,7 +6417,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 29112,
@@ -6439,7 +6439,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 29192,
@@ -6532,7 +6532,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 29772,
@@ -6702,7 +6702,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 30260,
@@ -6724,7 +6724,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 30420,
@@ -6753,7 +6753,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 30476,
@@ -6775,7 +6775,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 30536,
@@ -6804,7 +6804,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 30604,
@@ -6826,7 +6826,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 30696,
@@ -6856,7 +6856,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 30740,
@@ -6878,7 +6878,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 30904,
@@ -6914,7 +6914,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 30988,
@@ -6928,7 +6928,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 31028,
@@ -6950,7 +6950,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 31084,
@@ -6964,7 +6964,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 31156,
@@ -7217,7 +7217,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 31968,
@@ -7239,7 +7239,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 32052,
@@ -7282,7 +7282,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 32180,
@@ -7504,14 +7504,14 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 32768,
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 32812,
@@ -7533,7 +7533,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 32864,
@@ -7547,7 +7547,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 32900,
@@ -7569,7 +7569,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 32956,
@@ -7583,7 +7583,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 33060,
@@ -7604,7 +7604,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 33192,
@@ -7768,14 +7768,14 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 33768,
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 33808,
@@ -7967,7 +7967,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 34600,
@@ -7988,7 +7988,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 34740,
@@ -8047,14 +8047,14 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 35796,
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 35912,
@@ -8077,7 +8077,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 36032,
@@ -8092,7 +8092,7 @@
 "kind": "jal",
 "resolved": 8354920,
 "class": "func",
-"name": "func_00008A38"
+"name": "boot_emptyStub_00008A38"
 },
 {
 "off": 36156,

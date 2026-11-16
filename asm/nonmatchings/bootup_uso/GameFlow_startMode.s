@@ -74,8 +74,8 @@ glabel GameFlow_startMode
     /* DE1B64 000110F8 260E0001 */  addiu      $t6, $s0, 0x1
     /* DE1B68 000110FC 3C010000 */  lui        $at, (0x0 >> 16)
     /* DE1B6C 00011100 AC2E0000 */  sw         $t6, 0x0($at)
-    /* DE1B70 00011104 3C040000 */  lui        $a0, %hi(func_000000F0)
-    /* DE1B74 00011108 8C8400F0 */  lw         $a0, %lo(func_000000F0)($a0)
+    /* DE1B70 00011104 3C040000 */  lui        $a0, %hi(stream_readQuad_000000F0)
+    /* DE1B74 00011108 8C8400F0 */  lw         $a0, %lo(stream_readQuad_000000F0)($a0)
     /* DE1B78 0001110C 3C050001 */  lui        $a1, %hi(sFmt_num_C604)
     /* DE1B7C 00011110 24A5C604 */  addiu      $a1, $a1, %lo(sFmt_num_C604)
     /* DE1B80 00011114 02003025 */  or         $a2, $s0, $zero
@@ -86,8 +86,8 @@ glabel GameFlow_startMode
     /* DE1B94 00011128 8CE70000 */  lw         $a3, 0x0($a3)
     /* DE1B98 0001112C 0C000000 */  jal        func_00000000
     /* DE1B9C 00011130 00000000 */   nop
-    /* DE1BA0 00011134 3C040000 */  lui        $a0, %hi(func_000000F0)
-    /* DE1BA4 00011138 8C8400F0 */  lw         $a0, %lo(func_000000F0)($a0)
+    /* DE1BA0 00011134 3C040000 */  lui        $a0, %hi(stream_readQuad_000000F0)
+    /* DE1BA4 00011138 8C8400F0 */  lw         $a0, %lo(stream_readQuad_000000F0)($a0)
     /* DE1BA8 0001113C 0C000000 */  jal        func_00000000
     /* DE1BAC 00011140 00000000 */   nop
     /* DE1BB0 00011144 AFA2003C */  sw         $v0, 0x3C($sp)
@@ -137,9 +137,9 @@ glabel GameFlow_startMode
     /* DE1C5C 000111F0 1020010C */  beqz       $at, .L00011624
     /* DE1C60 000111F4 00000000 */   nop
     /* DE1C64 000111F8 0019C880 */  sll        $t9, $t9, 2
-    /* DE1C68 000111FC 3C010000 */  lui        $at, %hi(func_00000C10 + 0x10)
+    /* DE1C68 000111FC 3C010000 */  lui        $at, %hi(ColourItem_create_00000C10 + 0x10)
     /* DE1C6C 00011200 00390821 */  addu       $at, $at, $t9
-    /* DE1C70 00011204 8C390C20 */  lw         $t9, %lo(func_00000C10 + 0x10)($at)
+    /* DE1C70 00011204 8C390C20 */  lw         $t9, %lo(ColourItem_create_00000C10 + 0x10)($at)
     /* DE1C74 00011208 03200008 */  jr         $t9
     /* DE1C78 0001120C 00000000 */   nop
     /* DE1C7C 00011210 00008825 */  or         $s1, $zero, $zero

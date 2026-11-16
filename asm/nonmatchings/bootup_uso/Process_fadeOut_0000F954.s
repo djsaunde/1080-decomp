@@ -19,8 +19,8 @@ glabel Process_fadeOut_0000F954
     /* DE03F8 0000F98C 24840000 */  addiu      $a0, $a0, 0x0
     /* DE03FC 0000F990 0C000000 */  jal        func_00000000
     /* DE0400 0000F994 00000000 */   nop
-    /* DE0404 0000F998 3C040000 */  lui        $a0, %hi(func_00000188 + 0x8)
-    /* DE0408 0000F99C 8C840190 */  lw         $a0, %lo(func_00000188 + 0x8)($a0)
+    /* DE0404 0000F998 3C040000 */  lui        $a0, %hi(snd_seqEndDbg_00000188 + 0x8)
+    /* DE0408 0000F99C 8C840190 */  lw         $a0, %lo(snd_seqEndDbg_00000188 + 0x8)($a0)
     /* DE040C 0000F9A0 24050003 */  addiu      $a1, $zero, 0x3
     /* DE0410 0000F9A4 00003025 */  or         $a2, $zero, $zero
     /* DE0414 0000F9A8 0C000000 */  jal        func_00000000

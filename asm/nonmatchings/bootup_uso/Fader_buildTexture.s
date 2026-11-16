@@ -1,8 +1,8 @@
 nonmatching Fader_buildTexture, 0x144
 
 glabel Fader_buildTexture
-    /* DE458C 00013B20 3C030000 */  lui        $v1, %hi(func_0000023C + 0x4)
-    /* DE4590 00013B24 8C630240 */  lw         $v1, %lo(func_0000023C + 0x4)($v1)
+    /* DE458C 00013B20 3C030000 */  lui        $v1, %hi(snd_setPlayer0VolumeLevel_0000023C + 0x4)
+    /* DE4590 00013B24 8C630240 */  lw         $v1, %lo(snd_setPlayer0VolumeLevel_0000023C + 0x4)($v1)
     /* DE4594 00013B28 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DE4598 00013B2C AFBF0014 */  sw         $ra, 0x14($sp)
     /* DE459C 00013B30 8C620028 */  lw         $v0, 0x28($v1)

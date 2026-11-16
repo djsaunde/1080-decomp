@@ -81,9 +81,9 @@ glabel game_createMap
     /* DD73A0 00006934 102000CA */  beqz       $at, .L00006C60
     /* DD73A4 00006938 AFA20048 */   sw        $v0, 0x48($sp)
     /* DD73A8 0000693C 00026880 */  sll        $t5, $v0, 2
-    /* DD73AC 00006940 3C010000 */  lui        $at, %hi(func_0000057C + 0x38)
+    /* DD73AC 00006940 3C010000 */  lui        $at, %hi(snd_soundObjCreate_0000057C + 0x38)
     /* DD73B0 00006944 002D0821 */  addu       $at, $at, $t5
-    /* DD73B4 00006948 8C2D05B4 */  lw         $t5, %lo(func_0000057C + 0x38)($at)
+    /* DD73B4 00006948 8C2D05B4 */  lw         $t5, %lo(snd_soundObjCreate_0000057C + 0x38)($at)
     /* DD73B8 0000694C 01A00008 */  jr         $t5
     /* DD73BC 00006950 00000000 */   nop
     /* DD73C0 00006954 3C040000 */  lui        $a0, %hi(sStr_Sun_Flare_7ECC)
@@ -336,20 +336,20 @@ glabel game_createMap
     /* DD7780 00006D14 3C020000 */  lui        $v0, (0x0 >> 16)
     /* DD7784 00006D18 11C00008 */  beqz       $t6, .L00006D3C
     /* DD7788 00006D1C 3C0A000A */   lui       $t2, (0xA8002 >> 16)
-    /* DD778C 00006D20 3C0F0000 */  lui        $t7, %hi(func_00000188 + 0x3C)
-    /* DD7790 00006D24 8DEF01C4 */  lw         $t7, %lo(func_00000188 + 0x3C)($t7)
-    /* DD7794 00006D28 3C010000 */  lui        $at, %hi(func_00000188 + 0x3C)
+    /* DD778C 00006D20 3C0F0000 */  lui        $t7, %hi(snd_seqEndDbg_00000188 + 0x3C)
+    /* DD7790 00006D24 8DEF01C4 */  lw         $t7, %lo(snd_seqEndDbg_00000188 + 0x3C)($t7)
+    /* DD7794 00006D28 3C010000 */  lui        $at, %hi(snd_seqEndDbg_00000188 + 0x3C)
     /* DD7798 00006D2C 2416FFF7 */  addiu      $s6, $zero, -0x9
     /* DD779C 00006D30 35F80008 */  ori        $t8, $t7, 0x8
     /* DD77A0 00006D34 10000007 */  b          .L00006D54
-    /* DD77A4 00006D38 AC3801C4 */   sw        $t8, %lo(func_00000188 + 0x3C)($at)
+    /* DD77A4 00006D38 AC3801C4 */   sw        $t8, %lo(snd_seqEndDbg_00000188 + 0x3C)($at)
   .L00006D3C:
-    /* DD77A8 00006D3C 3C190000 */  lui        $t9, %hi(func_00000188 + 0x3C)
-    /* DD77AC 00006D40 8F3901C4 */  lw         $t9, %lo(func_00000188 + 0x3C)($t9)
+    /* DD77A8 00006D3C 3C190000 */  lui        $t9, %hi(snd_seqEndDbg_00000188 + 0x3C)
+    /* DD77AC 00006D40 8F3901C4 */  lw         $t9, %lo(snd_seqEndDbg_00000188 + 0x3C)($t9)
     /* DD77B0 00006D44 2416FFF7 */  addiu      $s6, $zero, -0x9
-    /* DD77B4 00006D48 3C010000 */  lui        $at, %hi(func_00000188 + 0x3C)
+    /* DD77B4 00006D48 3C010000 */  lui        $at, %hi(snd_seqEndDbg_00000188 + 0x3C)
     /* DD77B8 00006D4C 03364024 */  and        $t0, $t9, $s6
-    /* DD77BC 00006D50 AC2801C4 */  sw         $t0, %lo(func_00000188 + 0x3C)($at)
+    /* DD77BC 00006D50 AC2801C4 */  sw         $t0, %lo(snd_seqEndDbg_00000188 + 0x3C)($at)
   .L00006D54:
     /* DD77C0 00006D54 AEA90000 */  sw         $t1, 0x0($s5)
     /* DD77C4 00006D58 8C420000 */  lw         $v0, 0x0($v0)
@@ -403,7 +403,7 @@ glabel game_createMap
     /* DD7884 00006E18 3C020000 */  lui        $v0, (0x0 >> 16)
     /* DD7888 00006E1C 8C420000 */  lw         $v0, 0x0($v0)
     /* DD788C 00006E20 2401FEFF */  addiu      $at, $zero, -0x101
-    /* DD7890 00006E24 3C0D0000 */  lui        $t5, %hi(func_00000188 + 0x3C)
+    /* DD7890 00006E24 3C0D0000 */  lui        $t5, %hi(snd_seqEndDbg_00000188 + 0x3C)
     /* DD7894 00006E28 00411024 */  and        $v0, $v0, $at
     /* DD7898 00006E2C 3C010000 */  lui        $at, (0x0 >> 16)
   alabel sStr_Node_6E30
@@ -411,15 +411,15 @@ glabel game_createMap
     /* DD78A0 00006E34 26220030 */  addiu      $v0, $s1, 0x30
   alabel sStr_World_Registry_6E38
     /* DD78A4 00006E38 8C4B0000 */  lw         $t3, 0x0($v0)
-    /* DD78A8 00006E3C 3C010000 */  lui        $at, %hi(func_00000188 + 0x3C)
+    /* DD78A8 00006E3C 3C010000 */  lui        $at, %hi(snd_seqEndDbg_00000188 + 0x3C)
     /* DD78AC 00006E40 356C0040 */  ori        $t4, $t3, 0x40
     /* DD78B0 00006E44 AC4C0000 */  sw         $t4, 0x0($v0)
   alabel sStr_One_Make_6E48
-    /* DD78B4 00006E48 8DAD01C4 */  lw         $t5, %lo(func_00000188 + 0x3C)($t5)
+    /* DD78B4 00006E48 8DAD01C4 */  lw         $t5, %lo(snd_seqEndDbg_00000188 + 0x3C)($t5)
     /* DD78B8 00006E4C 01B67024 */  and        $t6, $t5, $s6
     /* DD78BC 00006E50 0C000000 */  jal        func_00000000
   alabel sStr_HalfPipe_6E54
-    /* DD78C0 00006E54 AC2E01C4 */   sw        $t6, %lo(func_00000188 + 0x3C)($at)
+    /* DD78C0 00006E54 AC2E01C4 */   sw        $t6, %lo(snd_seqEndDbg_00000188 + 0x3C)($at)
     /* DD78C4 00006E58 3C040000 */  lui        $a0, %hi(sStr_MapLighter_7F44)
     /* DD78C8 00006E5C 24847F44 */  addiu      $a0, $a0, %lo(sStr_MapLighter_7F44)
   alabel sStr_Slalom_Course_6E60

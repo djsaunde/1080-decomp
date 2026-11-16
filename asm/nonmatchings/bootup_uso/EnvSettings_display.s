@@ -25,8 +25,8 @@ glabel EnvSettings_display
     /* DD7D44 000072D8 15400011 */  bnez       $t2, .L00007320
     /* DD7D48 000072DC 00000000 */   nop
     /* DD7D4C 000072E0 8C620254 */  lw         $v0, 0x254($v1)
-    /* DD7D50 000072E4 3C0E0000 */  lui        $t6, %hi(func_0000027C + 0x18)
-    /* DD7D54 000072E8 25CE0294 */  addiu      $t6, $t6, %lo(func_0000027C + 0x18)
+    /* DD7D50 000072E4 3C0E0000 */  lui        $t6, %hi(snd_startPlayer2Seq_0000027C + 0x18)
+    /* DD7D54 000072E8 25CE0294 */  addiu      $t6, $t6, %lo(snd_startPlayer2Seq_0000027C + 0x18)
     /* DD7D58 000072EC 8C4B0078 */  lw         $t3, 0x78($v0)
     /* DD7D5C 000072F0 24420078 */  addiu      $v0, $v0, 0x78
     /* DD7D60 000072F4 356C0004 */  ori        $t4, $t3, 0x4

@@ -33,10 +33,10 @@ glabel GameFlow_restart_000116C8
     /* DE21A8 0001173C 00000000 */   nop
     /* DE21AC 00011740 3C040000 */  lui        $a0, (0x0 >> 16)
     /* DE21B0 00011744 24840000 */  addiu      $a0, $a0, 0x0
-    /* DE21B4 00011748 3C050000 */  lui        $a1, %hi(func_00000008 + 0x2C)
-    /* DE21B8 0001174C 8CA50034 */  lw         $a1, %lo(func_00000008 + 0x2C)($a1)
-    /* DE21BC 00011750 3C060000 */  lui        $a2, %hi(func_00000008 + 0x38)
-    /* DE21C0 00011754 8CC60040 */  lw         $a2, %lo(func_00000008 + 0x38)($a2)
+    /* DE21B4 00011748 3C050000 */  lui        $a1, %hi(stream_readS32_00000008 + 0x2C)
+    /* DE21B8 0001174C 8CA50034 */  lw         $a1, %lo(stream_readS32_00000008 + 0x2C)($a1)
+    /* DE21BC 00011750 3C060000 */  lui        $a2, %hi(stream_readS32_00000008 + 0x38)
+    /* DE21C0 00011754 8CC60040 */  lw         $a2, %lo(stream_readS32_00000008 + 0x38)($a2)
     /* DE21C4 00011758 0C000000 */  jal        func_00000000
     /* DE21C8 0001175C 00000000 */   nop
     /* DE21CC 00011760 3C0E0000 */  lui        $t6, (0x0 >> 16)

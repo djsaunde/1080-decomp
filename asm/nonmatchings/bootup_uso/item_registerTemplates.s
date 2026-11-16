@@ -18,8 +18,8 @@ glabel item_registerTemplates
     /* DD6044 000055D8 3718A002 */  ori        $t8, $t8, (0xAA002 & 0xFFFF)
     /* DD6048 000055DC AD180004 */  sw         $t8, 0x4($t0)
     /* DD604C 000055E0 AD000000 */  sw         $zero, 0x0($t0)
-    /* DD6050 000055E4 3C010000 */  lui        $at, %hi(func_0000057C + 0x1C)
-    /* DD6054 000055E8 C4240598 */  lwc1       $f4, %lo(func_0000057C + 0x1C)($at)
+    /* DD6050 000055E4 3C010000 */  lui        $at, %hi(snd_soundObjCreate_0000057C + 0x1C)
+    /* DD6054 000055E8 C4240598 */  lwc1       $f4, %lo(snd_soundObjCreate_0000057C + 0x1C)($at)
     /* DD6058 000055EC 3C010000 */  lui        $at, (0x0 >> 16)
     /* DD605C 000055F0 AFB00018 */  sw         $s0, 0x18($sp)
     /* DD6060 000055F4 AC200000 */  sw         $zero, 0x0($at)
@@ -204,12 +204,12 @@ glabel item_registerTemplates
     /* DD62F0 00005884 44801000 */  mtc1       $zero, $f2
     /* DD62F4 00005888 3C013F80 */  lui        $at, (0x3F800000 >> 16)
     /* DD62F8 0000588C 44816000 */  mtc1       $at, $f12
-    /* DD62FC 00005890 3C010000 */  lui        $at, %hi(func_0000057C + 0x20)
+    /* DD62FC 00005890 3C010000 */  lui        $at, %hi(snd_soundObjCreate_0000057C + 0x20)
     /* DD6300 00005894 E602004C */  swc1       $f2, 0x4C($s0)
     /* DD6304 00005898 E6020050 */  swc1       $f2, 0x50($s0)
     /* DD6308 0000589C E6020054 */  swc1       $f2, 0x54($s0)
     /* DD630C 000058A0 E60C0058 */  swc1       $f12, 0x58($s0)
-    /* DD6310 000058A4 C420059C */  lwc1       $f0, %lo(func_0000057C + 0x20)($at)
+    /* DD6310 000058A4 C420059C */  lwc1       $f0, %lo(snd_soundObjCreate_0000057C + 0x20)($at)
     /* DD6314 000058A8 8FA40024 */  lw         $a0, 0x24($sp)
     /* DD6318 000058AC 27A50068 */  addiu      $a1, $sp, 0x68
     /* DD631C 000058B0 240603E1 */  addiu      $a2, $zero, 0x3E1
@@ -275,12 +275,12 @@ glabel item_registerTemplates
     /* DD63F8 0000598C 44801000 */  mtc1       $zero, $f2
     /* DD63FC 00005990 3C013F80 */  lui        $at, (0x3F800000 >> 16)
     /* DD6400 00005994 44816000 */  mtc1       $at, $f12
-    /* DD6404 00005998 3C010000 */  lui        $at, %hi(func_0000057C + 0x24)
+    /* DD6404 00005998 3C010000 */  lui        $at, %hi(snd_soundObjCreate_0000057C + 0x24)
     /* DD6408 0000599C E602004C */  swc1       $f2, 0x4C($s0)
     /* DD640C 000059A0 E6020050 */  swc1       $f2, 0x50($s0)
     /* DD6410 000059A4 E6020054 */  swc1       $f2, 0x54($s0)
     /* DD6414 000059A8 E60C0058 */  swc1       $f12, 0x58($s0)
-    /* DD6418 000059AC C42005A0 */  lwc1       $f0, %lo(func_0000057C + 0x24)($at)
+    /* DD6418 000059AC C42005A0 */  lwc1       $f0, %lo(snd_soundObjCreate_0000057C + 0x24)($at)
     /* DD641C 000059B0 8FA40024 */  lw         $a0, 0x24($sp)
     /* DD6420 000059B4 27A50044 */  addiu      $a1, $sp, 0x44
     /* DD6424 000059B8 240603E1 */  addiu      $a2, $zero, 0x3E1
@@ -348,16 +348,16 @@ glabel item_registerTemplates
     /* DD6508 00005A9C 44803000 */  mtc1       $zero, $f6
     /* DD650C 00005AA0 44804000 */  mtc1       $zero, $f8
     /* DD6510 00005AA4 44805000 */  mtc1       $zero, $f10
-    /* DD6514 00005AA8 3C010000 */  lui        $at, %hi(func_0000057C + 0x28)
+    /* DD6514 00005AA8 3C010000 */  lui        $at, %hi(snd_soundObjCreate_0000057C + 0x28)
     /* DD6518 00005AAC E6100058 */  swc1       $f16, 0x58($s0)
     /* DD651C 00005AB0 E606004C */  swc1       $f6, 0x4C($s0)
     /* DD6520 00005AB4 E6080050 */  swc1       $f8, 0x50($s0)
     /* DD6524 00005AB8 E60A0054 */  swc1       $f10, 0x54($s0)
-    /* DD6528 00005ABC C43205A4 */  lwc1       $f18, %lo(func_0000057C + 0x28)($at)
-    /* DD652C 00005AC0 3C010000 */  lui        $at, %hi(func_0000057C + 0x2C)
-    /* DD6530 00005AC4 C42405A8 */  lwc1       $f4, %lo(func_0000057C + 0x2C)($at)
-    /* DD6534 00005AC8 3C010000 */  lui        $at, %hi(func_0000057C + 0x30)
-    /* DD6538 00005ACC C42605AC */  lwc1       $f6, %lo(func_0000057C + 0x30)($at)
+    /* DD6528 00005ABC C43205A4 */  lwc1       $f18, %lo(snd_soundObjCreate_0000057C + 0x28)($at)
+    /* DD652C 00005AC0 3C010000 */  lui        $at, %hi(snd_soundObjCreate_0000057C + 0x2C)
+    /* DD6530 00005AC4 C42405A8 */  lwc1       $f4, %lo(snd_soundObjCreate_0000057C + 0x2C)($at)
+    /* DD6534 00005AC8 3C010000 */  lui        $at, %hi(snd_soundObjCreate_0000057C + 0x30)
+    /* DD6538 00005ACC C42605AC */  lwc1       $f6, %lo(snd_soundObjCreate_0000057C + 0x30)($at)
     /* DD653C 00005AD0 3C013F80 */  lui        $at, (0x3F800000 >> 16)
     /* DD6540 00005AD4 44814000 */  mtc1       $at, $f8
     /* DD6544 00005AD8 8FA40024 */  lw         $a0, 0x24($sp)

@@ -1,6 +1,6 @@
-nonmatching func_000089FC, 0x3C
+nonmatching stream_read16_000089FC, 0x3C
 
-glabel func_000089FC
+glabel stream_read16_000089FC
     /* DD9468 000089FC 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DD946C 00008A00 AFA40020 */  sw         $a0, 0x20($sp)
     /* DD9470 00008A04 AFBF0014 */  sw         $ra, 0x14($sp)
@@ -16,4 +16,4 @@ glabel func_000089FC
     /* DD9498 00008A2C 27BD0020 */  addiu      $sp, $sp, 0x20
     /* DD949C 00008A30 03E00008 */  jr         $ra
     /* DD94A0 00008A34 00000000 */   nop
-endlabel func_000089FC
+endlabel stream_read16_000089FC

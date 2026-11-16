@@ -25,10 +25,10 @@ glabel game_setupDemoSolo
     /* DD41F0 00003784 35EF8005 */  ori        $t7, $t7, (0x58005 & 0xFFFF)
     /* DD41F4 00003788 AFAE0014 */  sw         $t6, 0x14($sp)
     /* DD41F8 0000378C 8E220098 */  lw         $v0, 0x98($s1)
-    /* DD41FC 00003790 3C070000 */  lui        $a3, %hi(func_00000080 + 0x14)
+    /* DD41FC 00003790 3C070000 */  lui        $a3, %hi(stream_readVec3_00000080 + 0x14)
     /* DD4200 00003794 2418001B */  addiu      $t8, $zero, 0x1B
     /* DD4204 00003798 C44400C4 */  lwc1       $f4, 0xC4($v0)
-    /* DD4208 0000379C 8CE70094 */  lw         $a3, %lo(func_00000080 + 0x14)($a3)
+    /* DD4208 0000379C 8CE70094 */  lw         $a3, %lo(stream_readVec3_00000080 + 0x14)($a3)
     /* DD420C 000037A0 02202025 */  or         $a0, $s1, $zero
     /* DD4210 000037A4 E7A40018 */  swc1       $f4, 0x18($sp)
     /* DD4214 000037A8 C44600CC */  lwc1       $f6, 0xCC($v0)

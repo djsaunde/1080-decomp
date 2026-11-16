@@ -24,8 +24,8 @@ glabel Process_update
     /* DE017C 0000F710 8D09002C */  lw         $t1, 0x2C($t0)
     /* DE0180 0000F714 1120000E */  beqz       $t1, .L0000F750
     /* DE0184 0000F718 00000000 */   nop
-    /* DE0188 0000F71C 3C040000 */  lui        $a0, %hi(func_00000188 + 0x8)
-    /* DE018C 0000F720 8C840190 */  lw         $a0, %lo(func_00000188 + 0x8)($a0)
+    /* DE0188 0000F71C 3C040000 */  lui        $a0, %hi(snd_seqEndDbg_00000188 + 0x8)
+    /* DE018C 0000F720 8C840190 */  lw         $a0, %lo(snd_seqEndDbg_00000188 + 0x8)($a0)
     /* DE0190 0000F724 0C000000 */  jal        func_00000000
     /* DE0194 0000F728 00000000 */   nop
     /* DE0198 0000F72C 10400008 */  beqz       $v0, .L0000F750

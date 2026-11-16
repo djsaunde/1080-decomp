@@ -229,9 +229,9 @@ glabel SnowBoarder_handleMsg
     /* DDE6D4 0000DC68 35AE0004 */  ori        $t6, $t5, 0x4
     /* DDE6D8 0000DC6C 0C000000 */  jal        func_00000000
     /* DDE6DC 0000DC70 ACEE0A58 */   sw        $t6, 0xA58($a3)
-    /* DDE6E0 0000DC74 3C040001 */  lui        $a0, %hi(func_00008AEC + 0x4C)
+    /* DDE6E0 0000DC74 3C040001 */  lui        $a0, %hi(stream_readQuad_00008AEC + 0x4C)
     /* DDE6E4 0000DC78 0C000000 */  jal        func_00000000
-    /* DDE6E8 0000DC7C 24848B38 */   addiu     $a0, $a0, %lo(func_00008AEC + 0x4C)
+    /* DDE6E8 0000DC7C 24848B38 */   addiu     $a0, $a0, %lo(stream_readQuad_00008AEC + 0x4C)
     /* DDE6EC 0000DC80 1000004D */  b          .L0000DDB8
     /* DDE6F0 0000DC84 8FBF0014 */   lw        $ra, 0x14($sp)
   .L0000DC88:
@@ -241,9 +241,9 @@ glabel SnowBoarder_handleMsg
     /* DDE700 0000DC94 37190004 */  ori        $t9, $t8, 0x4
     /* DDE704 0000DC98 0C000000 */  jal        func_00000000
     /* DDE708 0000DC9C ACF90A58 */   sw        $t9, 0xA58($a3)
-    /* DDE70C 0000DCA0 3C040001 */  lui        $a0, %hi(func_00008AEC + 0x54)
+    /* DDE70C 0000DCA0 3C040001 */  lui        $a0, %hi(stream_readQuad_00008AEC + 0x54)
     /* DDE710 0000DCA4 0C000000 */  jal        func_00000000
-    /* DDE714 0000DCA8 24848B40 */   addiu     $a0, $a0, %lo(func_00008AEC + 0x54)
+    /* DDE714 0000DCA8 24848B40 */   addiu     $a0, $a0, %lo(stream_readQuad_00008AEC + 0x54)
     /* DDE718 0000DCAC 10000042 */  b          .L0000DDB8
     /* DDE71C 0000DCB0 8FBF0014 */   lw        $ra, 0x14($sp)
   .L0000DCB4:

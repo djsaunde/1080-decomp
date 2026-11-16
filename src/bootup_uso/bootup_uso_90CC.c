@@ -150,7 +150,7 @@ extern void bu_90cc_call_iipif(s32, s32, void *, f32, f32);
  * 7/6 dispatch order (target beq 7 first; switch / if-goto / split-switch
  * spellings all scored lower), arg1 a3-vs-t4, the u32->f32 `lui at,0x4f80`
  * schedule, vt548 hoist, and the 0x1BE0..0x1F94 call-tail scheduling. */
-/* data aliases of splat function-anchored bases (target relocs: Tree_handleMsg+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, SndHandle_setScaleIdx15+4/8, TreeTmpl_create+0x5C/0x64).
+/* data aliases of splat function-anchored bases (target relocs: Tree_handleMsg+40.., stream_readQuad_000000F0+0x44, stream_readF32_00000044/80/08+K, snd_seqEventDbg_00000148+24, SndHandle_setScaleIdx15+4/8, TreeTmpl_create+0x5C/0x64).
  * A fn-typed symbol never folds its addend into %lo (separate addiu) and cfe rejects a data redeclaration; a data alias folds. */
 extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
 extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], gInputMgr_90cc_dF0[], kRo_SnowBoarder_ctor_8B8[], kRo_SnowBoarder_ctor_8BC[];
@@ -164,7 +164,7 @@ extern u8 gGfxLib_90cc_d148_01[], bu_90cc_d148_02[], bu_90cc_d148_03[];
 extern u8 gGfxLib_90cc_d148_18[];
 extern void bu_90cc_d00_b();  /* second read of D_00000000.0 in the sp174 list walk: distinct symbol keeps the target's reload (else CSE'd into a copy) */
 typedef struct { s32 f00, f04, f08, f0C, f10, f14, f18, f1C, f20, f24, f28, f2C, f30, f34, f38; } BuW90;
-/* GameFlow through the func_000000F0 + 0x44 alias (as bootup_uso.c's FLOW_74E8_H): ->game = +0x134 */
+/* GameFlow through the stream_readQuad_000000F0 + 0x44 alias (as bootup_uso.c's FLOW_74E8_H): ->game = +0x134 */
 #define FLOW_90CC GAMEFLOW((char *)gInputMgr_90cc_dF0 - 0xF0)
 extern BuW90 gPolyGeomMode_3EEC8_90cc_gcfg_ld, gPolyGeomMode_3EEC8_90cc_gcfg_st, gPolyGeomMode_3EEC8_90cc_gcfg_b_ld, gPolyGeomMode_3EEC8_90cc_gcfg_b_st;
 /* scalar-field form: a named global field read is a uopt candidate (target lui/lw temps land in s0/s1/a2, not the t-ring) */
@@ -783,7 +783,7 @@ sw_end:
         SNOWB(arg0)->trails = 0;
         SNOWB(arg0)->dispTrails = 0;
         SNOWB(arg0)->dispSpray = 0;
-        FCALL(func_0000057C)(arg0 + 0x808, arg1, arg2);
+        FCALL(snd_soundObjCreate_0000057C)(arg0 + 0x808, arg1, arg2);
         if (SNOWB(arg0)->flags & 3) {
             FCALL(memtrack_begin)(bu_90cc_d87A4 + 0x5C, 0);
             SNOWB(arg0)->dispSpray = FCALL(Node_ctor)(0, bu_90cc_d87A4 + 0x64);

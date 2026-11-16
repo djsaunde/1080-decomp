@@ -36,8 +36,8 @@ glabel SnowBoard_ctor
     /* DDF2EC 0000E880 3C0E0000 */  lui        $t6, (0x0 >> 16)
     /* DDF2F0 0000E884 25CE0000 */  addiu      $t6, $t6, 0x0
     /* DDF2F4 0000E888 3C030000 */  lui        $v1, (0x0 >> 16)
-    /* DDF2F8 0000E88C 3C010000 */  lui        $at, %hi(func_00000008 + 0x20)
-    /* DDF2FC 0000E890 AC2E0028 */  sw         $t6, %lo(func_00000008 + 0x20)($at)
+    /* DDF2F8 0000E88C 3C010000 */  lui        $at, %hi(stream_readS32_00000008 + 0x20)
+    /* DDF2FC 0000E890 AC2E0028 */  sw         $t6, %lo(stream_readS32_00000008 + 0x20)($at)
     /* DDF300 0000E894 24630000 */  addiu      $v1, $v1, 0x0
     /* DDF304 0000E898 8C620028 */  lw         $v0, 0x28($v1)
     /* DDF308 0000E89C 8C59005C */  lw         $t9, 0x5C($v0)

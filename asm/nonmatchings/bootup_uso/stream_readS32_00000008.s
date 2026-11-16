@@ -1,6 +1,6 @@
-nonmatching func_00000008, 0x3C
+nonmatching stream_readS32_00000008, 0x3C
 
-glabel func_00000008
+glabel stream_readS32_00000008
     /* DD0A74 00000008 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DD0A78 0000000C AFA40020 */  sw         $a0, 0x20($sp)
     /* DD0A7C 00000010 AFBF0014 */  sw         $ra, 0x14($sp)
@@ -16,4 +16,4 @@ glabel func_00000008
     /* DD0AA4 00000038 27BD0020 */  addiu      $sp, $sp, 0x20
     /* DD0AA8 0000003C 03E00008 */  jr         $ra
     /* DD0AAC 00000040 00000000 */   nop
-endlabel func_00000008
+endlabel stream_readS32_00000008

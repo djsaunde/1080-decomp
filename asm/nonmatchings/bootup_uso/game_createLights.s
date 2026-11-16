@@ -14,8 +14,8 @@ glabel game_createLights
     /* DD3A24 00002FB8 24A57424 */  addiu      $a1, $a1, %lo(sStr_Ambient_Light_7424)
     /* DD3A28 00002FBC 0C000000 */  jal        func_00000000
     /* DD3A2C 00002FC0 00002025 */   or        $a0, $zero, $zero
-    /* DD3A30 00002FC4 3C010000 */  lui        $at, %hi(func_000003F8 + 0x12C)
-    /* DD3A34 00002FC8 C4200524 */  lwc1       $f0, %lo(func_000003F8 + 0x12C)($at)
+    /* DD3A30 00002FC4 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0x12C)
+    /* DD3A34 00002FC8 C4200524 */  lwc1       $f0, %lo(snd_calcEmitterDistPan_000003F8 + 0x12C)($at)
     /* DD3A38 00002FCC AE220090 */  sw         $v0, 0x90($s1)
     /* DD3A3C 00002FD0 3C013F80 */  lui        $at, (0x3F800000 >> 16)
     /* DD3A40 00002FD4 44812000 */  mtc1       $at, $f4
@@ -60,8 +60,8 @@ glabel game_createLights
     /* DD3ADC 00003070 0C000000 */  jal        func_00000000
     /* DD3AE0 00003074 ACCB0000 */   sw        $t3, 0x0($a2)
     /* DD3AE4 00003078 44800000 */  mtc1       $zero, $f0
-    /* DD3AE8 0000307C 3C010000 */  lui        $at, %hi(func_000003F8 + 0x130)
-    /* DD3AEC 00003080 C4260528 */  lwc1       $f6, %lo(func_000003F8 + 0x130)($at)
+    /* DD3AE8 0000307C 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0x130)
+    /* DD3AEC 00003080 C4260528 */  lwc1       $f6, %lo(snd_calcEmitterDistPan_000003F8 + 0x130)($at)
     /* DD3AF0 00003084 00408025 */  or         $s0, $v0, $zero
     /* DD3AF4 00003088 24440070 */  addiu      $a0, $v0, 0x70
     /* DD3AF8 0000308C 27A5003C */  addiu      $a1, $sp, 0x3C
@@ -109,8 +109,8 @@ glabel game_createLights
     /* DD3B9C 00003130 00402025 */  or         $a0, $v0, $zero
     /* DD3BA0 00003134 0C000000 */  jal        func_00000000
     /* DD3BA4 00003138 E7A00010 */   swc1      $f0, 0x10($sp)
-    /* DD3BA8 0000313C 3C010000 */  lui        $at, %hi(func_000003F8 + 0x134)
-    /* DD3BAC 00003140 C420052C */  lwc1       $f0, %lo(func_000003F8 + 0x134)($at)
+    /* DD3BA8 0000313C 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0x134)
+    /* DD3BAC 00003140 C420052C */  lwc1       $f0, %lo(snd_calcEmitterDistPan_000003F8 + 0x134)($at)
     /* DD3BB0 00003144 3C013F80 */  lui        $at, (0x3F800000 >> 16)
     /* DD3BB4 00003148 44814000 */  mtc1       $at, $f8
     /* DD3BB8 0000314C 3C180000 */  lui        $t8, (0x0 >> 16)

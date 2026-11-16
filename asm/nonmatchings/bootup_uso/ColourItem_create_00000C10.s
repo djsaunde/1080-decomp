@@ -1,6 +1,6 @@
-nonmatching func_00000C10, 0x90
+nonmatching ColourItem_create_00000C10, 0x90
 
-glabel func_00000C10
+glabel ColourItem_create_00000C10
     /* DD167C 00000C10 27BDFFD8 */  addiu      $sp, $sp, -0x28
     /* DD1680 00000C14 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD1684 00000C18 AFA40028 */  sw         $a0, 0x28($sp)
@@ -45,4 +45,4 @@ glabel func_00000C10
     /* DD1700 00000C94 00601025 */  or         $v0, $v1, $zero
     /* DD1704 00000C98 03E00008 */  jr         $ra
     /* DD1708 00000C9C 00000000 */   nop
-endlabel func_00000C10
+endlabel ColourItem_create_00000C10

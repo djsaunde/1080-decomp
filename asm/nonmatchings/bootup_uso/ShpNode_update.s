@@ -1,6 +1,6 @@
-nonmatching ShpNode_func_00008FA8, 0x124
+nonmatching ShpNode_update, 0x124
 
-glabel ShpNode_func_00008FA8
+glabel ShpNode_update
     /* DD9A14 00008FA8 27BDFFB8 */  addiu      $sp, $sp, -0x48
     /* DD9A18 00008FAC AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD9A1C 00008FB0 8C8F00B4 */  lw         $t7, 0xB4($a0)
@@ -76,4 +76,4 @@ glabel ShpNode_func_00008FA8
     /* DD9B2C 000090C0 27BD0048 */  addiu      $sp, $sp, 0x48
     /* DD9B30 000090C4 03E00008 */  jr         $ra
     /* DD9B34 000090C8 00000000 */   nop
-endlabel ShpNode_func_00008FA8
+endlabel ShpNode_update

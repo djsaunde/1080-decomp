@@ -5,9 +5,9 @@ glabel SnowBoarder_update
     /* DDDEB0 0000D444 AFB00030 */  sw         $s0, 0x30($sp)
     /* DDDEB4 0000D448 00808025 */  or         $s0, $a0, $zero
     /* DDDEB8 0000D44C AFBF0034 */  sw         $ra, 0x34($sp)
-    /* DDDEBC 0000D450 3C040001 */  lui        $a0, %hi(func_00008A7C + 0x54)
+    /* DDDEBC 0000D450 3C040001 */  lui        $a0, %hi(stream_readVec3_00008A7C + 0x54)
     /* DDDEC0 0000D454 0C000000 */  jal        func_00000000
-    /* DDDEC4 0000D458 24848AD0 */   addiu     $a0, $a0, %lo(func_00008A7C + 0x54)
+    /* DDDEC4 0000D458 24848AD0 */   addiu     $a0, $a0, %lo(stream_readVec3_00008A7C + 0x54)
     /* DDDEC8 0000D45C 8E030A58 */  lw         $v1, 0xA58($s0)
     /* DDDECC 0000D460 30620100 */  andi       $v0, $v1, 0x100
     /* DDDED0 0000D464 1040001C */  beqz       $v0, .L0000D4D8
@@ -70,8 +70,8 @@ glabel SnowBoarder_update
     /* DDDFA0 0000D534 306D0080 */   andi      $t5, $v1, 0x80
     /* DDDFA4 0000D538 8E020800 */  lw         $v0, 0x800($s0)
     /* DDDFA8 0000D53C 240B0001 */  addiu      $t3, $zero, 0x1
-    /* DDDFAC 0000D540 3C040001 */  lui        $a0, %hi(func_00008A7C + 0x5C)
-    /* DDDFB0 0000D544 24848AD8 */  addiu      $a0, $a0, %lo(func_00008A7C + 0x5C)
+    /* DDDFAC 0000D540 3C040001 */  lui        $a0, %hi(stream_readVec3_00008A7C + 0x5C)
+    /* DDDFB0 0000D544 24848AD8 */  addiu      $a0, $a0, %lo(stream_readVec3_00008A7C + 0x5C)
     /* DDDFB4 0000D548 0C000000 */  jal        func_00000000
     /* DDDFB8 0000D54C AC4B003C */   sw        $t3, 0x3C($v0)
     /* DDDFBC 0000D550 8E030804 */  lw         $v1, 0x804($s0)
@@ -80,9 +80,9 @@ glabel SnowBoarder_update
     /* DDDFC8 0000D55C 844C0020 */  lh         $t4, 0x20($v0)
     /* DDDFCC 0000D560 0320F809 */  jalr       $t9
     /* DDDFD0 0000D564 01832021 */   addu      $a0, $t4, $v1
-    /* DDDFD4 0000D568 3C040001 */  lui        $a0, %hi(func_00008A7C + 0x64)
+    /* DDDFD4 0000D568 3C040001 */  lui        $a0, %hi(stream_readVec3_00008A7C + 0x64)
     /* DDDFD8 0000D56C 0C000000 */  jal        func_00000000
-    /* DDDFDC 0000D570 24848AE0 */   addiu     $a0, $a0, %lo(func_00008A7C + 0x64)
+    /* DDDFDC 0000D570 24848AE0 */   addiu     $a0, $a0, %lo(stream_readVec3_00008A7C + 0x64)
     /* DDDFE0 0000D574 8E030A58 */  lw         $v1, 0xA58($s0)
     /* DDDFE4 0000D578 306D0080 */  andi       $t5, $v1, 0x80
   .L0000D57C:
@@ -110,14 +110,14 @@ glabel SnowBoarder_update
     /* DDE038 0000D5CC E6000A20 */  swc1       $f0, 0xA20($s0)
     /* DDE03C 0000D5D0 13000034 */  beqz       $t8, .L0000D6A4
     /* DDE040 0000D5D4 E6000A24 */   swc1      $f0, 0xA24($s0)
-    /* DDE044 0000D5D8 3C040001 */  lui        $a0, %hi(func_00008A7C + 0x6C)
+    /* DDE044 0000D5D8 3C040001 */  lui        $a0, %hi(stream_readVec3_00008A7C + 0x6C)
     /* DDE048 0000D5DC 0C000000 */  jal        func_00000000
-    /* DDE04C 0000D5E0 24848AE8 */   addiu     $a0, $a0, %lo(func_00008A7C + 0x6C)
+    /* DDE04C 0000D5E0 24848AE8 */   addiu     $a0, $a0, %lo(stream_readVec3_00008A7C + 0x6C)
     /* DDE050 0000D5E4 0C000000 */  jal        func_00000000
     /* DDE054 0000D5E8 02002025 */   or        $a0, $s0, $zero
-    /* DDE058 0000D5EC 3C040001 */  lui        $a0, %hi(func_00008AEC + 0x8)
+    /* DDE058 0000D5EC 3C040001 */  lui        $a0, %hi(stream_readQuad_00008AEC + 0x8)
     /* DDE05C 0000D5F0 0C000000 */  jal        func_00000000
-    /* DDE060 0000D5F4 24848AF4 */   addiu     $a0, $a0, %lo(func_00008AEC + 0x8)
+    /* DDE060 0000D5F4 24848AF4 */   addiu     $a0, $a0, %lo(stream_readQuad_00008AEC + 0x8)
     /* DDE064 0000D5F8 8E080A58 */  lw         $t0, 0xA58($s0)
     /* DDE068 0000D5FC 3C0142C8 */  lui        $at, (0x42C80000 >> 16)
     /* DDE06C 0000D600 00084B40 */  sll        $t1, $t0, 13
@@ -165,9 +165,9 @@ glabel SnowBoarder_update
     /* DDE108 0000D69C 8E0F0818 */  lw         $t7, 0x818($s0)
     /* DDE10C 0000D6A0 ADF90094 */  sw         $t9, 0x94($t7)
   .L0000D6A4:
-    /* DDE110 0000D6A4 3C040001 */  lui        $a0, %hi(func_00008AEC + 0x14)
+    /* DDE110 0000D6A4 3C040001 */  lui        $a0, %hi(stream_readQuad_00008AEC + 0x14)
     /* DDE114 0000D6A8 0C000000 */  jal        func_00000000
-    /* DDE118 0000D6AC 24848B00 */   addiu     $a0, $a0, %lo(func_00008AEC + 0x14)
+    /* DDE118 0000D6AC 24848B00 */   addiu     $a0, $a0, %lo(stream_readQuad_00008AEC + 0x14)
     /* DDE11C 0000D6B0 C60803C8 */  lwc1       $f8, 0x3C8($s0)
     /* DDE120 0000D6B4 C60A0318 */  lwc1       $f10, 0x318($s0)
     /* DDE124 0000D6B8 C61203CC */  lwc1       $f18, 0x3CC($s0)
@@ -255,35 +255,35 @@ glabel SnowBoarder_update
     /* DDE26C 0000D800 46209220 */  cvt.s.d    $f8, $f18
     /* DDE270 0000D804 E4480000 */  swc1       $f8, 0x0($v0)
   .L0000D808:
-    /* DDE274 0000D808 3C040001 */  lui        $a0, %hi(func_00008AEC + 0x20)
+    /* DDE274 0000D808 3C040001 */  lui        $a0, %hi(stream_readQuad_00008AEC + 0x20)
     /* DDE278 0000D80C 0C000000 */  jal        func_00000000
-    /* DDE27C 0000D810 24848B0C */   addiu     $a0, $a0, %lo(func_00008AEC + 0x20)
-    /* DDE280 0000D814 3C040001 */  lui        $a0, %hi(func_00008AEC + 0x2C)
+    /* DDE27C 0000D810 24848B0C */   addiu     $a0, $a0, %lo(stream_readQuad_00008AEC + 0x20)
+    /* DDE280 0000D814 3C040001 */  lui        $a0, %hi(stream_readQuad_00008AEC + 0x2C)
     /* DDE284 0000D818 0C000000 */  jal        func_00000000
-    /* DDE288 0000D81C 24848B18 */   addiu     $a0, $a0, %lo(func_00008AEC + 0x2C)
+    /* DDE288 0000D81C 24848B18 */   addiu     $a0, $a0, %lo(stream_readQuad_00008AEC + 0x2C)
     /* DDE28C 0000D820 0C000000 */  jal        func_00000000
     /* DDE290 0000D824 02002025 */   or        $a0, $s0, $zero
-    /* DDE294 0000D828 3C040001 */  lui        $a0, %hi(func_00008AEC + 0x38)
+    /* DDE294 0000D828 3C040001 */  lui        $a0, %hi(stream_readQuad_00008AEC + 0x38)
     /* DDE298 0000D82C 0C000000 */  jal        func_00000000
-    /* DDE29C 0000D830 24848B24 */   addiu     $a0, $a0, %lo(func_00008AEC + 0x38)
+    /* DDE29C 0000D830 24848B24 */   addiu     $a0, $a0, %lo(stream_readQuad_00008AEC + 0x38)
     /* DDE2A0 0000D834 3C014000 */  lui        $at, (0x40000000 >> 16)
     /* DDE2A4 0000D838 44818000 */  mtc1       $at, $f16
     /* DDE2A8 0000D83C C6040348 */  lwc1       $f4, 0x348($s0)
-    /* DDE2AC 0000D840 3C040000 */  lui        $a0, %hi(func_000000F0 + 0x48)
-    /* DDE2B0 0000D844 8C840138 */  lw         $a0, %lo(func_000000F0 + 0x48)($a0)
+    /* DDE2AC 0000D840 3C040000 */  lui        $a0, %hi(stream_readQuad_000000F0 + 0x48)
+    /* DDE2B0 0000D844 8C840138 */  lw         $a0, %lo(stream_readQuad_000000F0 + 0x48)($a0)
     /* DDE2B4 0000D848 46102283 */  div.s      $f10, $f4, $f16
     /* DDE2B8 0000D84C 02002825 */  or         $a1, $s0, $zero
     /* DDE2BC 0000D850 44065000 */  mfc1       $a2, $f10
     /* DDE2C0 0000D854 0C000000 */  jal        func_00000000
     /* DDE2C4 0000D858 00000000 */   nop
-    /* DDE2C8 0000D85C 3C040000 */  lui        $a0, %hi(func_000000F0 + 0x48)
-    /* DDE2CC 0000D860 8C840138 */  lw         $a0, %lo(func_000000F0 + 0x48)($a0)
+    /* DDE2C8 0000D85C 3C040000 */  lui        $a0, %hi(stream_readQuad_000000F0 + 0x48)
+    /* DDE2CC 0000D860 8C840138 */  lw         $a0, %lo(stream_readQuad_000000F0 + 0x48)($a0)
     /* DDE2D0 0000D864 02002825 */  or         $a1, $s0, $zero
     /* DDE2D4 0000D868 8E0600DC */  lw         $a2, 0xDC($s0)
     /* DDE2D8 0000D86C 0C000000 */  jal        func_00000000
     /* DDE2DC 0000D870 8E0700E4 */   lw        $a3, 0xE4($s0)
-    /* DDE2E0 0000D874 3C040000 */  lui        $a0, %hi(func_000000F0 + 0x48)
-    /* DDE2E4 0000D878 8C840138 */  lw         $a0, %lo(func_000000F0 + 0x48)($a0)
+    /* DDE2E0 0000D874 3C040000 */  lui        $a0, %hi(stream_readQuad_000000F0 + 0x48)
+    /* DDE2E4 0000D878 8C840138 */  lw         $a0, %lo(stream_readQuad_000000F0 + 0x48)($a0)
     /* DDE2E8 0000D87C 02002825 */  or         $a1, $s0, $zero
     /* DDE2EC 0000D880 0C000000 */  jal        func_00000000
     /* DDE2F0 0000D884 8E060A14 */   lw        $a2, 0xA14($s0)
@@ -310,9 +310,9 @@ glabel SnowBoarder_update
     /* DDE344 0000D8D8 0C000000 */  jal        func_00000000
     /* DDE348 0000D8DC AFAE0020 */   sw        $t6, 0x20($sp)
   .L0000D8E0:
-    /* DDE34C 0000D8E0 3C040001 */  lui        $a0, %hi(func_00008AEC + 0x44)
+    /* DDE34C 0000D8E0 3C040001 */  lui        $a0, %hi(stream_readQuad_00008AEC + 0x44)
     /* DDE350 0000D8E4 0C000000 */  jal        func_00000000
-    /* DDE354 0000D8E8 24848B30 */   addiu     $a0, $a0, %lo(func_00008AEC + 0x44)
+    /* DDE354 0000D8E8 24848B30 */   addiu     $a0, $a0, %lo(stream_readQuad_00008AEC + 0x44)
     /* DDE358 0000D8EC 8FBF0034 */  lw         $ra, 0x34($sp)
   .L0000D8F0:
     /* DDE35C 0000D8F0 8FB00030 */  lw         $s0, 0x30($sp)

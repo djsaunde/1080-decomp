@@ -76,8 +76,8 @@ glabel cam_create
   .L000032CC:
     /* DD3D38 000032CC 3C0143FA */  lui        $at, (0x43FA0000 >> 16)
     /* DD3D3C 000032D0 44813000 */  mtc1       $at, $f6
-    /* DD3D40 000032D4 3C010000 */  lui        $at, %hi(func_000003F8 + 0x138)
-    /* DD3D44 000032D8 C4280530 */  lwc1       $f8, %lo(func_000003F8 + 0x138)($at)
+    /* DD3D40 000032D4 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0x138)
+    /* DD3D44 000032D8 C4280530 */  lwc1       $f8, %lo(snd_calcEmitterDistPan_000003F8 + 0x138)($at)
     /* DD3D48 000032DC 8FB800A0 */  lw         $t8, 0xA0($sp)
     /* DD3D4C 000032E0 3C190000 */  lui        $t9, %hi(sStr_rom_cam_info_bin_746C)
     /* DD3D50 000032E4 2739746C */  addiu      $t9, $t9, %lo(sStr_rom_cam_info_bin_746C)
@@ -125,8 +125,8 @@ glabel cam_create
     /* DD3DF4 00003388 2404015C */   addiu     $a0, $zero, 0x15C
     /* DD3DF8 0000338C 10400012 */  beqz       $v0, .L000033D8
     /* DD3DFC 00003390 AFA20068 */   sw        $v0, 0x68($sp)
-    /* DD3E00 00003394 3C010000 */  lui        $at, %hi(func_000003F8 + 0x13C)
-    /* DD3E04 00003398 C42A0534 */  lwc1       $f10, %lo(func_000003F8 + 0x13C)($at)
+    /* DD3E00 00003394 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0x13C)
+    /* DD3E04 00003398 C42A0534 */  lwc1       $f10, %lo(snd_calcEmitterDistPan_000003F8 + 0x13C)($at)
     /* DD3E08 0000339C 00402025 */  or         $a0, $v0, $zero
     /* DD3E0C 000033A0 8FA50074 */  lw         $a1, 0x74($sp)
     /* DD3E10 000033A4 24060000 */  addiu      $a2, $zero, 0x0

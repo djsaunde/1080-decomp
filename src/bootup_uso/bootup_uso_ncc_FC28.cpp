@@ -33,7 +33,7 @@ extern "C" {
  * bootup offset 0x100F0. */
 
 extern int func_00000000(...);
-extern struct { char _p2C[0x2C]; int f2C; char _p38[0x8]; int f38; } func_00000008; /* USO-base reloc; struct-typed for $at-fused member stores */
+extern struct { char _p2C[0x2C]; int f2C; char _p38[0x8]; int f38; } stream_readS32_00000008; /* USO-base reloc; struct-typed for $at-fused member stores */
 extern char D_00000000;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 extern char sStr_Node_C58C;
@@ -120,7 +120,7 @@ void *QuitProcess_ctor0(void *a0) {
  *     $s0/$s1 once the cascade vars die): `s0=a0; s1=&sStr_Quit_Process_C5AC;
  *     *(int*)(s0+0xC)=(int)s1;` -> `lw s0; lui s1; sw s1,0xC(s0)`; and
  *     `s0=a0; f(scratch,s0)` for the last call's arg.
- * (4) struct-typed func_00000008 (member .f2C/.f38) $at-fuses the global stashes
+ * (4) struct-typed stream_readS32_00000008 (member .f2C/.f38) $at-fuses the global stashes
  *     (lui at; sw ...(at)) vs the (char*)&sym+off cast's lui/addiu/sw.
  * (5) D_bootup_scratch0 = int-typed base-0 alias of D_00000000 (undefined_syms)
  *     $at-fuses the *&D scratch store + reload.
@@ -142,8 +142,8 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
         s0 = a0;
         s1 = (void*)&sStr_Quit_Process_C5AC;
         NODE(s0)->name = (const char *)s1;
-        func_00000008.f2C = a1;
-        func_00000008.f38 = a2;
+        stream_readS32_00000008.f2C = a1;
+        stream_readS32_00000008.f38 = a2;
         ((QuitProcess *)a0)->unk44 = 0;
         ((QuitProcess *)a0)->menu = 0;
         D_bootup_scratch0 = func_00000000(a0, 0);

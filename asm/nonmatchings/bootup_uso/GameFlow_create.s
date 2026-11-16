@@ -36,8 +36,8 @@ glabel GameFlow_create
     /* DE1774 00010D08 4480A000 */  mtc1       $zero, $f20
     /* DE1778 00010D0C 4480B000 */  mtc1       $zero, $f22
     /* DE177C 00010D10 4480C000 */  mtc1       $zero, $f24
-    /* DE1780 00010D14 3C010000 */  lui        $at, %hi(func_00000C10 + 0xC)
-    /* DE1784 00010D18 C43A0C1C */  lwc1       $f26, %lo(func_00000C10 + 0xC)($at)
+    /* DE1780 00010D14 3C010000 */  lui        $at, %hi(ColourItem_create_00000C10 + 0xC)
+    /* DE1784 00010D18 C43A0C1C */  lwc1       $f26, %lo(ColourItem_create_00000C10 + 0xC)($at)
     /* DE1788 00010D1C E6340000 */  swc1       $f20, 0x0($s1)
     /* DE178C 00010D20 E6360004 */  swc1       $f22, 0x4($s1)
     /* DE1790 00010D24 E6380008 */  swc1       $f24, 0x8($s1)
@@ -63,8 +63,8 @@ glabel GameFlow_create
     /* DE17DC 00010D70 AFA90024 */  sw         $t1, 0x24($sp)
     /* DE17E0 00010D74 0C000000 */  jal        func_00000000
     /* DE17E4 00010D78 00000000 */   nop
-    /* DE17E8 00010D7C 3C010000 */  lui        $at, %hi(func_000000F0)
-    /* DE17EC 00010D80 AC2200F0 */  sw         $v0, %lo(func_000000F0)($at)
+    /* DE17E8 00010D7C 3C010000 */  lui        $at, %hi(stream_readQuad_000000F0)
+    /* DE17EC 00010D80 AC2200F0 */  sw         $v0, %lo(stream_readQuad_000000F0)($at)
     /* DE17F0 00010D84 8FA40068 */  lw         $a0, 0x68($sp)
     /* DE17F4 00010D88 0C000000 */  jal        func_00000000
     /* DE17F8 00010D8C 00000000 */   nop

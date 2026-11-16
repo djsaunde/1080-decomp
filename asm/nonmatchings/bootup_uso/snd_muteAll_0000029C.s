@@ -1,6 +1,6 @@
-nonmatching func_0000029C, 0x20
+nonmatching snd_muteAll_0000029C, 0x20
 
-glabel func_0000029C
+glabel snd_muteAll_0000029C
     /* DD0D08 0000029C 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DD0D0C 000002A0 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD0D10 000002A4 0C000000 */  jal        func_00000000
@@ -9,4 +9,4 @@ glabel func_0000029C
     /* DD0D1C 000002B0 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DD0D20 000002B4 03E00008 */  jr         $ra
     /* DD0D24 000002B8 00000000 */   nop
-endlabel func_0000029C
+endlabel snd_muteAll_0000029C

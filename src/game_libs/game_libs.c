@@ -3188,7 +3188,7 @@ void RaceProcess_endResult3_00006DF8(RaceProcess *a0) {
     p = GAMEFLOW(&gInputMgr)->dataMgr;
     p->hudFlags = 0;
     CALL(RaceTracker_sendLoseResult)(GAMEFLOW(&gInputMgr)->dataMgr, 0);
-    CALL(func_00000188)(5, 0, 0);
+    CALL(snd_seqEndDbg_00000188)(5, 0, 0);
     CALL(snd_playSeq_000120A8)(&gInputMgr, 5, 0, 0);
 }
 
@@ -3198,7 +3198,7 @@ void RaceProcess_endResult2_00006E78(int a0_passthrough) {
     p = GAMEFLOW(&gInputMgr)->dataMgr;
     p->hudFlags = 0;
     CALL(RaceTracker_sendDrawResult)(GAMEFLOW(&gInputMgr)->dataMgr, 0);
-    CALL(func_00000188)(5, 0, 0);
+    CALL(snd_seqEndDbg_00000188)(5, 0, 0);
     CALL(snd_playSeq_000120A8)(&gInputMgr, 5, 3, 0);
 }
 
@@ -3213,7 +3213,7 @@ void RaceProcess_endResult4_00006EE0(RaceProcess *a0) {
     p = GAMEFLOW(&gInputMgr)->dataMgr;
     p->hudFlags = 0;
     CALL(RaceTracker_sendResult5_0000DE80)(GAMEFLOW(&gInputMgr)->dataMgr, 0);
-    CALL(func_00000188)(6, 0, 0);
+    CALL(snd_seqEndDbg_00000188)(6, 0, 0);
     CALL(snd_playSeq_000120A8)(&gInputMgr, 6, 0, 0);
 }
 
@@ -3234,7 +3234,7 @@ void RaceProcess_endResult4_00006F90(RaceProcess *a0) {
     p = GAMEFLOW(&gInputMgr)->dataMgr;
     p->hudFlags = 0;
     CALL(RaceTracker_sendRetireResult)(GAMEFLOW(&gInputMgr)->dataMgr, 0);
-    CALL(func_00000188)(6, 0, 0);
+    CALL(snd_seqEndDbg_00000188)(6, 0, 0);
     CALL(snd_playSeq_000120A8)(&gInputMgr, 6, 0, 0);
 }
 
@@ -3248,7 +3248,7 @@ void RaceProcess_timeUp(int a0_passthrough) {
     p = GAMEFLOW(&gInputMgr)->dataMgr;
     p->hudFlags = 0;
     CALL(RaceTracker_sendTimeUpResult)(GAMEFLOW(&gInputMgr)->dataMgr, 0);
-    CALL(func_00000188)(6, 0, 0);
+    CALL(snd_seqEndDbg_00000188)(6, 0, 0);
     CALL(snd_playSeq_000120A8)(&gInputMgr, 6, 1, 0);
 }
 
@@ -3313,7 +3313,7 @@ void RaceProcess_leave(RaceProcess *a0) {
         next = (int*)a0->session;
         if (next != 0 && CALL(Backup_sessionHasNew)(next) != 0) {
             CALL(RaceTracker_sendWinResult)(GAMEFLOW(G1)->dataMgr, 0);
-            XCALL(gl_func_00000000_70fcv, func_00000188)(5, 0, 0);
+            XCALL(gl_func_00000000_70fcv, snd_seqEndDbg_00000188)(5, 0, 0);
             if (GAMEFLOW(G2)->nextFlowMode == 5 || GAMEFLOW(G2)->nextFlowMode == 4 || GAMEFLOW(G2)->nextFlowMode == 6) {
                 if (GAMEFLOW(G2)->winVariant == 1) {
                     CALL(snd_playSeq_000120A8)(G2, 5, 2, 0);
@@ -3335,10 +3335,10 @@ void RaceProcess_leave(RaceProcess *a0) {
                 CALL(RaceTracker_sendWinResult)(GAMEFLOW(G3)->dataMgr, 0);
             }
             if (a0->result == 5) {
-                XCALL(gl_func_00000000_70fcv, func_00000188)(6, 0, 0);
+                XCALL(gl_func_00000000_70fcv, snd_seqEndDbg_00000188)(6, 0, 0);
                 CALL(snd_playSeq_000120A8)(G4, 6, 0, 0);
             } else {
-                XCALL(gl_func_00000000_70fcv, func_00000188)(5, 0, 0);
+                XCALL(gl_func_00000000_70fcv, snd_seqEndDbg_00000188)(5, 0, 0);
                 if (GAMEFLOW(G5)->nextFlowMode == 5) {
                     if (GAMEFLOW(G5)->course == 4) {
                         CALL(snd_playSeq_000120A8)(G5, 5, 0, 0);

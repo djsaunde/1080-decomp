@@ -32,9 +32,9 @@ glabel TreeTmpl_display
     /* DD9188 0000871C 5600FFF6 */  bnel       $s0, $zero, .L000086F8
     /* DD918C 00008720 8E0E0018 */   lw        $t6, 0x18($s0)
   .L00008724:
-    /* DD9190 00008724 3C040000 */  lui        $a0, %hi(func_0000027C + 0x18)
+    /* DD9190 00008724 3C040000 */  lui        $a0, %hi(snd_startPlayer2Seq_0000027C + 0x18)
     /* DD9194 00008728 0C000000 */  jal        func_00000000
-    /* DD9198 0000872C 24840294 */   addiu     $a0, $a0, %lo(func_0000027C + 0x18)
+    /* DD9198 0000872C 24840294 */   addiu     $a0, $a0, %lo(snd_startPlayer2Seq_0000027C + 0x18)
   alabel sStr_SnowB_8730
     /* DD919C 00008730 8FBF001C */  lw         $ra, 0x1C($sp)
     /* DD91A0 00008734 8FB00018 */  lw         $s0, 0x18($sp)

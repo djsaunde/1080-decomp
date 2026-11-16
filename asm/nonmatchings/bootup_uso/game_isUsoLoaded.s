@@ -3,8 +3,8 @@ nonmatching game_isUsoLoaded, 0x60
 glabel game_isUsoLoaded
     /* DD938C 00008920 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DD9390 00008924 AFB00014 */  sw         $s0, 0x14($sp)
-    /* DD9394 00008928 3C100000 */  lui        $s0, %hi(func_000000F0 + 0x40)
-    /* DD9398 0000892C 8E100130 */  lw         $s0, %lo(func_000000F0 + 0x40)($s0)
+    /* DD9394 00008928 3C100000 */  lui        $s0, %hi(stream_readQuad_000000F0 + 0x40)
+    /* DD9398 0000892C 8E100130 */  lw         $s0, %lo(stream_readQuad_000000F0 + 0x40)($s0)
     /* DD939C 00008930 AFB10018 */  sw         $s1, 0x18($sp)
     /* DD93A0 00008934 00808825 */  or         $s1, $a0, $zero
     /* DD93A4 00008938 1200000B */  beqz       $s0, .L00008968

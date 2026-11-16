@@ -1,11 +1,11 @@
-nonmatching BGBox_func_00000D94, 0xD4
+nonmatching BGBox_display, 0xD4
 
-glabel BGBox_func_00000D94
+glabel BGBox_display
     /* DD1800 00000D94 3C060000 */  lui        $a2, (0x0 >> 16)
     /* DD1804 00000D98 24C60000 */  addiu      $a2, $a2, 0x0
     /* DD1808 00000D9C C4C402A0 */  lwc1       $f4, 0x2A0($a2)
-    /* DD180C 00000DA0 3C010000 */  lui        $at, %hi(func_00000044 + 0x2C)
-    /* DD1810 00000DA4 D4280070 */  ldc1       $f8, %lo(func_00000044 + 0x2C)($at)
+    /* DD180C 00000DA0 3C010000 */  lui        $at, %hi(stream_readF32_00000044 + 0x2C)
+    /* DD1810 00000DA4 D4280070 */  ldc1       $f8, %lo(stream_readF32_00000044 + 0x2C)($at)
     /* DD1814 00000DA8 460021A1 */  cvt.d.s    $f6, $f4
     /* DD1818 00000DAC 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DD181C 00000DB0 4628303C */  c.lt.d     $f6, $f8
@@ -13,9 +13,9 @@ glabel BGBox_func_00000D94
     /* DD1824 00000DB8 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD1828 00000DBC 00C02025 */  or         $a0, $a2, $zero
     /* DD182C 00000DC0 45000015 */  bc1f       .L00000E18
-    /* DD1830 00000DC4 3C050000 */   lui       $a1, %hi(func_0000027C + 0x18)
+    /* DD1830 00000DC4 3C050000 */   lui       $a1, %hi(snd_startPlayer2Seq_0000027C + 0x18)
     /* DD1834 00000DC8 0C000000 */  jal        func_00000000
-    /* DD1838 00000DCC 24A50294 */   addiu     $a1, $a1, %lo(func_0000027C + 0x18)
+    /* DD1838 00000DCC 24A50294 */   addiu     $a1, $a1, %lo(snd_startPlayer2Seq_0000027C + 0x18)
     /* DD183C 00000DD0 0C000000 */  jal        func_00000000
     /* DD1840 00000DD4 8FA40018 */   lw        $a0, 0x18($sp)
     /* DD1844 00000DD8 8FAE0018 */  lw         $t6, 0x18($sp)
@@ -37,8 +37,8 @@ glabel BGBox_func_00000D94
     /* DD1880 00000E14 AC480000 */   sw        $t0, 0x0($v0)
   .L00000E18:
     /* DD1884 00000E18 8CC20254 */  lw         $v0, 0x254($a2)
-    /* DD1888 00000E1C 3C0C0000 */  lui        $t4, %hi(func_0000027C + 0x18)
-    /* DD188C 00000E20 258C0294 */  addiu      $t4, $t4, %lo(func_0000027C + 0x18)
+    /* DD1888 00000E1C 3C0C0000 */  lui        $t4, %hi(snd_startPlayer2Seq_0000027C + 0x18)
+    /* DD188C 00000E20 258C0294 */  addiu      $t4, $t4, %lo(snd_startPlayer2Seq_0000027C + 0x18)
     /* DD1890 00000E24 8C490078 */  lw         $t1, 0x78($v0)
     /* DD1894 00000E28 24420078 */  addiu      $v0, $v0, 0x78
     /* DD1898 00000E2C 352A0004 */  ori        $t2, $t1, 0x4
@@ -57,4 +57,4 @@ glabel BGBox_func_00000D94
     /* DD18C8 00000E5C 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DD18CC 00000E60 03E00008 */  jr         $ra
     /* DD18D0 00000E64 00000000 */   nop
-endlabel BGBox_func_00000D94
+endlabel BGBox_display

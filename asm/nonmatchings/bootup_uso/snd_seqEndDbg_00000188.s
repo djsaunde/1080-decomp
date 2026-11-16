@@ -1,6 +1,6 @@
-nonmatching func_00000188, 0x40
+nonmatching snd_seqEndDbg_00000188, 0x40
 
-glabel func_00000188
+glabel snd_seqEndDbg_00000188
     /* DD0BF4 00000188 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DD0BF8 0000018C AFA40018 */  sw         $a0, 0x18($sp)
     /* DD0BFC 00000190 AFBF0014 */  sw         $ra, 0x14($sp)
@@ -17,4 +17,4 @@ glabel func_00000188
     /* DD0C28 000001BC 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DD0C2C 000001C0 03E00008 */  jr         $ra
     /* DD0C30 000001C4 00000000 */   nop
-endlabel func_00000188
+endlabel snd_seqEndDbg_00000188

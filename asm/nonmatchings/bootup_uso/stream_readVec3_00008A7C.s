@@ -1,6 +1,6 @@
-nonmatching func_00008A7C, 0x70
+nonmatching stream_readVec3_00008A7C, 0x70
 
-glabel func_00008A7C
+glabel stream_readVec3_00008A7C
     /* DD94E8 00008A7C 27BDFFB8 */  addiu      $sp, $sp, -0x48
     /* DD94EC 00008A80 00803825 */  or         $a3, $a0, $zero
     /* DD94F0 00008A84 AFBF0014 */  sw         $ra, 0x14($sp)
@@ -29,4 +29,4 @@ glabel func_00008A7C
     /* DD954C 00008AE0 27BD0048 */  addiu      $sp, $sp, 0x48
     /* DD9550 00008AE4 03E00008 */  jr         $ra
     /* DD9554 00008AE8 00000000 */   nop
-endlabel func_00008A7C
+endlabel stream_readVec3_00008A7C

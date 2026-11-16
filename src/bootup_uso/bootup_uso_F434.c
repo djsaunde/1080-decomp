@@ -11,13 +11,13 @@
  * -O0 (set in the Makefile). */
 
 extern int func_00000000();
-extern struct { int a, b, c; } func_00000188;
+extern struct { int a, b, c; } snd_seqEndDbg_00000188;
 
 /* 42-insn -O0 method dispatcher: optionally invokes a pre-call hook
  * (vtable[0x6C] with arg = base + h_68) when state field 0x2C is zero,
  * runs the USO helper on a0, then optionally invokes a post-call hook
  * (vtable[0x64], h_60) gated by both state-nonzero AND a global-flag
- * predicate read from `func_00000188.c` (USO base 0x188 + 8 = 0x190).
+ * predicate read from `snd_seqEndDbg_00000188.c` (USO base 0x188 + 8 = 0x190).
  *
  * MATCHED 2026-07-10 (w50 island sweep, 42/42 words): the old "interleaved
  * schedule not reachable at -O0" cap was cfe DAG-sharing — the whole hook
@@ -37,7 +37,7 @@ void Process_update(char *a0) {
     }
     FCALL(Node_update)(a0);
     if (PROCESS(a0)->fadingOut != 0) {
-        if (FCALL(Fader_checkDone_00013924)(func_00000188.c)) {
+        if (FCALL(Fader_checkDone_00013924)(snd_seqEndDbg_00000188.c)) {
             VT_SLOT(m, 11).fn(VT_SLOT(m = NODE(a0)->vptr, 11).delta + a0);
         }
     }

@@ -12,16 +12,16 @@ typedef struct { int a, b, c, d; } Quad4;
 
 /* USO-base absolute placeholders (undefined_syms_auto.txt): the segment links
  * at VRAM 0, so `extern D_00000030` produces the same lui/addiu words as the
- * target's %hi/%lo(func_00000008 + 0x28) — the F7D0 trick, addend baked in
+ * target's %hi/%lo(stream_readS32_00000008 + 0x28) — the F7D0 trick, addend baked in
  * the addiu (form-a LO16-fold, unreachable via struct-member address-of). */
-extern float D_00000030[4];    /* == func_00000008 + 0x28: Vec4f zeroed slot */
-extern char gSnowBoard_0000002C;        /* == func_00000008 + 0x24 */
+extern float D_00000030[4];    /* == stream_readS32_00000008 + 0x28: Vec4f zeroed slot */
+extern char gSnowBoard_0000002C;        /* == stream_readS32_00000008 + 0x24 */
 typedef struct {
     char pad44[0x44];
     WorldRegistry *game;        /* +0x44: GameFlow.game (InputMgr +0x134), the game world */
 } F0Struct;
-extern F0Struct func_000000F0; /* USO-base reloc */
-extern int func_00000188;      /* USO-base reloc */
+extern F0Struct stream_readQuad_000000F0; /* USO-base reloc */
+extern int snd_seqEndDbg_00000188;      /* USO-base reloc */
 extern char sStr_ProcessWindow_C57C;
 extern char sStr_Node_C58C;
 extern char sStr_Quit_Process_C594;
@@ -59,7 +59,7 @@ void *game_createProcessWindow(int a0, int a1) {
     p = (float *)result;
     q = &gSnowBoard_0000002C;
     func_00000000(q, p);
-    func_000000F0.game->windows[3] = result; /* the ProcessWindow slot (GameFlow_startMode reads it) */
+    stream_readQuad_000000F0.game->windows[3] = result; /* the ProcessWindow slot (GameFlow_startMode reads it) */
     return (void *)result;
 }
 

@@ -642,12 +642,12 @@ void H2HRaceProcess_onRaceOver(H2HRace *a0) {
     case 0:
         CALL(Fader_start)((int)GAMEFLOW(base)->fader, 3, 1);
         s0->race.unk504 = 1;
-        CALL(func_00000188)(7, 0, 0);
+        CALL(snd_seqEndDbg_00000188)(7, 0, 0);
         break;
     case 1: {
         unsigned min;
         if (CALL(Fader_checkDone_00013924)((int)GAMEFLOW(base)->fader) == 0) return;
-        CALL(func_00000148)(7, 0, 0);
+        CALL(snd_seqEventDbg_00000148)(7, 0, 0);
         h2hproc_call_00000C18(s0);
         min = A88_diffpair[0x170 / 4];
         tmp = A88_diffpair[0x174 / 4];

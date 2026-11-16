@@ -32,14 +32,14 @@ glabel gui_centerRows_0001016C
     /* DE0C48 000101DC AD200038 */  sw         $zero, 0x38($t1)
     /* DE0C4C 000101E0 8FB00028 */  lw         $s0, 0x28($sp)
     /* DE0C50 000101E4 2610003C */  addiu      $s0, $s0, 0x3C
-    /* DE0C54 000101E8 3C010000 */  lui        $at, %hi(func_00000C10)
-    /* DE0C58 000101EC C4300C10 */  lwc1       $f16, %lo(func_00000C10)($at)
+    /* DE0C54 000101E8 3C010000 */  lui        $at, %hi(ColourItem_create_00000C10)
+    /* DE0C58 000101EC C4300C10 */  lwc1       $f16, %lo(ColourItem_create_00000C10)($at)
     /* DE0C5C 000101F0 E6100000 */  swc1       $f16, 0x0($s0)
-    /* DE0C60 000101F4 3C010000 */  lui        $at, %hi(func_00000C10 + 0x4)
-    /* DE0C64 000101F8 C4320C14 */  lwc1       $f18, %lo(func_00000C10 + 0x4)($at)
+    /* DE0C60 000101F4 3C010000 */  lui        $at, %hi(ColourItem_create_00000C10 + 0x4)
+    /* DE0C64 000101F8 C4320C14 */  lwc1       $f18, %lo(ColourItem_create_00000C10 + 0x4)($at)
     /* DE0C68 000101FC E6120004 */  swc1       $f18, 0x4($s0)
-    /* DE0C6C 00010200 3C010000 */  lui        $at, %hi(func_00000C10 + 0x8)
-    /* DE0C70 00010204 C42A0C18 */  lwc1       $f10, %lo(func_00000C10 + 0x8)($at)
+    /* DE0C6C 00010200 3C010000 */  lui        $at, %hi(ColourItem_create_00000C10 + 0x8)
+    /* DE0C70 00010204 C42A0C18 */  lwc1       $f10, %lo(ColourItem_create_00000C10 + 0x8)($at)
     /* DE0C74 00010208 E60A0008 */  swc1       $f10, 0x8($s0)
     /* DE0C78 0001020C 44803000 */  mtc1       $zero, $f6
     /* DE0C7C 00010210 00000000 */  nop

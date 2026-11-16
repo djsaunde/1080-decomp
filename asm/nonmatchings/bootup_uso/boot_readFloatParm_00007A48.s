@@ -1,6 +1,6 @@
-nonmatching func_00007A48, 0x30
+nonmatching boot_readFloatParm_00007A48, 0x30
 
-glabel func_00007A48
+glabel boot_readFloatParm_00007A48
     /* DD84B4 00007A48 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DD84B8 00007A4C AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD84BC 00007A50 AFA40020 */  sw         $a0, 0x20($sp)
@@ -13,4 +13,4 @@ glabel func_00007A48
     /* DD84D8 00007A6C 27BD0020 */  addiu      $sp, $sp, 0x20
     /* DD84DC 00007A70 03E00008 */  jr         $ra
     /* DD84E0 00007A74 00000000 */   nop
-endlabel func_00007A48
+endlabel boot_readFloatParm_00007A48

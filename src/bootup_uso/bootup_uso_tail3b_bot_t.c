@@ -16,7 +16,7 @@ void settings_applySoundMode_0001266C(char *a0, int a1) {
     *p = *p & ~3;
     p = &SETTINGS(GAMEFLOW(a0)->options)->flags;
     *p = *p | a1;
-    FCALL(func_000001FC)(SETTINGS(GAMEFLOW(a0)->options)->flags & 3);
+    FCALL(snd_setSoundOutputMode_000001FC)(SETTINGS(GAMEFLOW(a0)->options)->flags & 3);
 }
 
 /* settings_setFlag4_000126EC — 56/56 EXACT (2026-07-03, agent-e). Previous "capped 84.95%"

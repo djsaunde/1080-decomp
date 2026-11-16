@@ -6083,7 +6083,7 @@ void *GenItemType_create_0000AB24(int *arg0) {
     if (p1 != 0) {
         gen_imp_ColourItem_ctor(p1);
         NODE(p1)->vptr = (char *)&import_8006ED80;
-        ((ColourSubItem *)p1)->unk3C = 0; /* import_8006ED80 = bootup ColourItem_vtbl_75A0 (Data+0x75A0, uso-imports.py 0xAB4C): the ColourSubItem of the bootup twin func_00000C10 */
+        ((ColourSubItem *)p1)->unk3C = 0; /* import_8006ED80 = bootup ColourItem_vtbl_75A0 (Data+0x75A0, uso-imports.py 0xAB4C): the ColourSubItem of the bootup twin ColourItem_create_00000C10 */
     }
     p2 = p1;
     p1 = arg0;

@@ -35,7 +35,7 @@ extern char D_00007AB8; /* actor-0 obj+0x28 symbol store (decode 2026-06-26) */
 #define DROOT ((int *)D_55A0_root)
 #define DI(o) (*(int *)((char *)&D_00000000 + (o)))
 #define DF(o) (*(float *)((char *)&D_00000000 + (o)))
-extern f32 kRo_item_registerTemplates_598, kRo_item_registerTemplates_59C, kRo_item_registerTemplates_5A0, kRo_item_registerTemplates_5A4, kRo_item_registerTemplates_5A8, kRo_item_registerTemplates_5AC;  /* per-address RoData pool scalars (func_0000057C + K): target re-emits lui at per load */
+extern f32 kRo_item_registerTemplates_598, kRo_item_registerTemplates_59C, kRo_item_registerTemplates_5A0, kRo_item_registerTemplates_5A4, kRo_item_registerTemplates_5A8, kRo_item_registerTemplates_5AC;  /* per-address RoData pool scalars (snd_soundObjCreate_0000057C + K): target re-emits lui at per load */
 #define DP(o) ((void *)((char *)&D_00000000 + (o)))
 #define OI(p, o) (*(int *)((char *)(p) + (o)))
 #define OF(p, o) (*(float *)((char *)(p) + (o)))
@@ -58,7 +58,7 @@ extern S4_55A0 sTag_tr1_7E34, sTag_tr2_7E38, sTag_tr3_7E3C, sTag_tv1_7E44;
 extern char SNodeItemType_vtbl_55A0_s28_0, SNodeItemType_vtbl_55A0_s28_1, SNodeItemType_vtbl_55A0_s28_2, SNodeItemType_vtbl_55A0_s28_3;
 extern char D_55A0_o28_0, D_55A0_o28_1, D_55A0_o28_2, D_55A0_o28_3;
 extern char D_55A0_o48_0, D_55A0_o48_1, D_55A0_o48_2;
-extern Tv1CallbackPmf D_55A0_pair; /* Data 0x7520: {0x0000FFFF, Tv1Tmpl_func_00007D04} */
+extern Tv1CallbackPmf D_55A0_pair; /* Data 0x7520: {0x0000FFFF, Tv1Tmpl_stepPicture_00007D04} */
 extern char D_55A0_la, D_55A0_lb, D_55A0_n4, D_55A0_n2;
 extern char D_55A0_tb, SNodeItemType_vtbl_55A0_o28_4, SNodeItemType_vtbl_55A0_s28_5, D_55A0_o28_5;
 extern int D_55A0_g5, D_55A0_g6, D_55A0_g7, D_55A0_g8, D_55A0_g9, D_55A0_g10;

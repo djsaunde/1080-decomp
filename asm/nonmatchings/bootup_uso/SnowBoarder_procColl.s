@@ -90,7 +90,7 @@ glabel SnowBoarder_procColl
     /* DDCDF0 0000C384 46083282 */  mul.s      $f10, $f6, $f8
     /* DDCDF4 0000C388 C7A800E8 */  lwc1       $f8, 0xE8($sp)
     /* DDCDF8 0000C38C 46049180 */  add.s      $f6, $f18, $f4
-    /* DDCDFC 0000C390 3C010000 */  lui        $at, %hi(func_000000F0 + 0x38)
+    /* DDCDFC 0000C390 3C010000 */  lui        $at, %hi(stream_readQuad_000000F0 + 0x38)
     /* DDCE00 0000C394 44808000 */  mtc1       $zero, $f16
     /* DDCE04 0000C398 240D0001 */  addiu      $t5, $zero, 0x1
     /* DDCE08 0000C39C 46083482 */  mul.s      $f18, $f6, $f8
@@ -99,7 +99,7 @@ glabel SnowBoarder_procColl
     /* DDCE14 0000C3A8 27AF00E4 */  addiu      $t7, $sp, 0xE4
     /* DDCE18 0000C3AC 46125100 */  add.s      $f4, $f10, $f18
     /* DDCE1C 0000C3B0 46083282 */  mul.s      $f10, $f6, $f8
-    /* DDCE20 0000C3B4 C4260128 */  lwc1       $f6, %lo(func_000000F0 + 0x38)($at)
+    /* DDCE20 0000C3B4 C4260128 */  lwc1       $f6, %lo(stream_readQuad_000000F0 + 0x38)($at)
     /* DDCE24 0000C3B8 3C014080 */  lui        $at, (0x40800000 >> 16)
     /* DDCE28 0000C3BC C7A800F0 */  lwc1       $f8, 0xF0($sp)
     /* DDCE2C 0000C3C0 460A2480 */  add.s      $f18, $f4, $f10
@@ -310,8 +310,8 @@ glabel SnowBoarder_procColl
     /* DDD0E4 0000C678 AE0F095C */  sw         $t7, 0x95C($s0)
     /* DDD0E8 0000C67C 14200030 */  bnez       $at, .L0000C740
     /* DDD0EC 0000C680 E60609DC */   swc1      $f6, 0x9DC($s0)
-    /* DDD0F0 0000C684 3C180001 */  lui        $t8, %hi(func_00008A40 + 0x38)
-    /* DDD0F4 0000C688 8F058A78 */  lw         $a1, %lo(func_00008A40 + 0x38)($t8)
+    /* DDD0F0 0000C684 3C180001 */  lui        $t8, %hi(stream_readF32_00008A40 + 0x38)
+    /* DDD0F4 0000C688 8F058A78 */  lw         $a1, %lo(stream_readF32_00008A40 + 0x38)($t8)
     /* DDD0F8 0000C68C 3C040000 */  lui        $a0, (0x0 >> 16)
     /* DDD0FC 0000C690 8C840000 */  lw         $a0, 0x0($a0)
   alabel sStr_done_C694
@@ -338,10 +338,10 @@ glabel SnowBoarder_procColl
     /* DDD14C 0000C6E0 46049200 */  add.s      $f8, $f18, $f4
     /* DDD150 0000C6E4 0C000000 */  jal        func_00000000
     /* DDD154 0000C6E8 E7A80080 */   swc1      $f8, 0x80($sp)
-    /* DDD158 0000C6EC 3C040001 */  lui        $a0, %hi(func_00008A7C)
+    /* DDD158 0000C6EC 3C040001 */  lui        $a0, %hi(stream_readVec3_00008A7C)
     /* DDD15C 0000C6F0 AE00095C */  sw         $zero, 0x95C($s0)
     /* DDD160 0000C6F4 0C000000 */  jal        func_00000000
-    /* DDD164 0000C6F8 24848A7C */   addiu     $a0, $a0, %lo(func_00008A7C)
+    /* DDD164 0000C6F8 24848A7C */   addiu     $a0, $a0, %lo(stream_readVec3_00008A7C)
     /* DDD168 0000C6FC C7AA007C */  lwc1       $f10, 0x7C($sp)
     /* DDD16C 0000C700 C7B20080 */  lwc1       $f18, 0x80($sp)
     /* DDD170 0000C704 C7A80084 */  lwc1       $f8, 0x84($sp)
@@ -350,10 +350,10 @@ glabel SnowBoarder_procColl
     /* DDD17C 0000C710 460042A1 */  cvt.d.s    $f10, $f8
     /* DDD180 0000C714 44073000 */  mfc1       $a3, $f6
     /* DDD184 0000C718 44063800 */  mfc1       $a2, $f7
-    /* DDD188 0000C71C 3C040001 */  lui        $a0, %hi(func_00008A7C + 0x18)
-    /* DDD18C 0000C720 3C050001 */  lui        $a1, %hi(func_00008A7C + 0x14)
-    /* DDD190 0000C724 24A58A90 */  addiu      $a1, $a1, %lo(func_00008A7C + 0x14)
-    /* DDD194 0000C728 24848A94 */  addiu      $a0, $a0, %lo(func_00008A7C + 0x18)
+    /* DDD188 0000C71C 3C040001 */  lui        $a0, %hi(stream_readVec3_00008A7C + 0x18)
+    /* DDD18C 0000C720 3C050001 */  lui        $a1, %hi(stream_readVec3_00008A7C + 0x14)
+    /* DDD190 0000C724 24A58A90 */  addiu      $a1, $a1, %lo(stream_readVec3_00008A7C + 0x14)
+    /* DDD194 0000C728 24848A94 */  addiu      $a0, $a0, %lo(stream_readVec3_00008A7C + 0x18)
     /* DDD198 0000C72C F7AA0018 */  sdc1       $f10, 0x18($sp)
   alabel sStr_Node_C730
     /* DDD19C 0000C730 0C000000 */  jal        func_00000000
@@ -364,10 +364,10 @@ glabel SnowBoarder_procColl
   .L0000C740:
     /* DDD1AC 0000C740 44800000 */  mtc1       $zero, $f0
   .L0000C744:
-    /* DDD1B0 0000C744 3C040001 */  lui        $a0, %hi(func_00008A7C + 0x28)
+    /* DDD1B0 0000C744 3C040001 */  lui        $a0, %hi(stream_readVec3_00008A7C + 0x28)
     /* DDD1B4 0000C748 E6100968 */  swc1       $f16, 0x968($s0)
     /* DDD1B8 0000C74C AE000938 */  sw         $zero, 0x938($s0)
-    /* DDD1BC 0000C750 24848AA4 */  addiu      $a0, $a0, %lo(func_00008A7C + 0x28)
+    /* DDD1BC 0000C750 24848AA4 */  addiu      $a0, $a0, %lo(stream_readVec3_00008A7C + 0x28)
     /* DDD1C0 0000C754 E600093C */  swc1       $f0, 0x93C($s0)
     /* DDD1C4 0000C758 E6000940 */  swc1       $f0, 0x940($s0)
     /* DDD1C8 0000C75C 0C000000 */  jal        func_00000000
@@ -375,9 +375,9 @@ glabel SnowBoarder_procColl
   alabel D_0000C764
     /* DDD1D0 0000C764 0C000000 */  jal        func_00000000
     /* DDD1D4 0000C768 02002025 */   or        $a0, $s0, $zero
-    /* DDD1D8 0000C76C 3C040001 */  lui        $a0, %hi(func_00008A7C + 0x34)
+    /* DDD1D8 0000C76C 3C040001 */  lui        $a0, %hi(stream_readVec3_00008A7C + 0x34)
     /* DDD1DC 0000C770 0C000000 */  jal        func_00000000
-    /* DDD1E0 0000C774 24848AB0 */   addiu     $a0, $a0, %lo(func_00008A7C + 0x34)
+    /* DDD1E0 0000C774 24848AB0 */   addiu     $a0, $a0, %lo(stream_readVec3_00008A7C + 0x34)
     /* DDD1E4 0000C778 8E0A09A8 */  lw         $t2, 0x9A8($s0)
     /* DDD1E8 0000C77C 24050001 */  addiu      $a1, $zero, 0x1
     /* DDD1EC 0000C780 26040808 */  addiu      $a0, $s0, 0x808
@@ -398,8 +398,8 @@ glabel SnowBoarder_procColl
     /* DDD224 0000C7B8 44811000 */  mtc1       $at, $f2
     /* DDD228 0000C7BC 00000000 */  nop
   .L0000C7C0:
-    /* DDD22C 0000C7C0 3C0C0000 */  lui        $t4, %hi(func_00000008 + 0x2C)
-    /* DDD230 0000C7C4 8D8C0034 */  lw         $t4, %lo(func_00000008 + 0x2C)($t4)
+    /* DDD22C 0000C7C0 3C0C0000 */  lui        $t4, %hi(stream_readS32_00000008 + 0x2C)
+    /* DDD230 0000C7C4 8D8C0034 */  lw         $t4, %lo(stream_readS32_00000008 + 0x2C)($t4)
     /* DDD234 0000C7C8 24010002 */  addiu      $at, $zero, 0x2
     /* DDD238 0000C7CC 51810011 */  beql       $t4, $at, .L0000C814
     /* DDD23C 0000C7D0 8E020938 */   lw        $v0, 0x938($s0)

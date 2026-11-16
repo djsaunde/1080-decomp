@@ -36,13 +36,13 @@ func_00000000() {
 extern char D_00000000;
 
 
-void func_00000008(int *dst) {
+void stream_readS32_00000008(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
-void func_00000044(float *dst) {
+void stream_readF32_00000044(float *dst) {
     float buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
@@ -50,7 +50,7 @@ void func_00000044(float *dst) {
 
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { float x, y, z; } Vec3;
-void func_00000080(Vec3 *dst) {
+void stream_readVec3_00000080(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -64,20 +64,20 @@ void func_00000080(Vec3 *dst) {
 }
 
 typedef struct { int a, b, c, d; } Quad4;
-void func_000000F0(Quad4 *dst) {
+void stream_readQuad_000000F0(Quad4 *dst) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
 extern char sStr_Poop_start_6538;
-void func_00000148(int a0, int a1, int a2) {
+void snd_seqEventDbg_00000148(int a0, int a1, int a2) {
     FCALL(dbg_printf)(&sStr_Poop_start_6538);
     FCALL(snd_HandleSeqEvent_30AF4)(a0, a1, a2);
 }
 
 extern char sStr_Poop_end_6544;
-void func_00000188(int a0, int a1, int a2) {
+void snd_seqEndDbg_00000188(int a0, int a1, int a2) {
     FCALL(dbg_printf)(&sStr_Poop_end_6544);
     FCALL(snd_HandleSeqEnd)(a0, a1, a2);
 }
@@ -90,7 +90,7 @@ void snd_setLevelRampTarget(int a0) {
     }
 }
 
-void func_000001FC(void) {
+void snd_setSoundOutputMode_000001FC(void) {
     FCALL(snd_SetSoundOutputMode)();
 }
 
@@ -98,7 +98,7 @@ void snd_setPlayer1VolumeLevel(void) {
     FCALL(snd_SetPlayer1VolumeLevel)();
 }
 
-void func_0000023C(void) {
+void snd_setPlayer0VolumeLevel_0000023C(void) {
     FCALL(snd_SetPlayer0VolumeLevel)();
 }
 
@@ -106,11 +106,11 @@ void snd_setPlayer2VolumeLevel(void) {
     FCALL(snd_SetPlayer2VolumeLevel)();
 }
 
-void func_0000027C(void) {
+void snd_startPlayer2Seq_0000027C(void) {
     FCALL(snd_StartPlayer2Seq)();
 }
 
-void func_0000029C(void) {
+void snd_muteAll_0000029C(void) {
     FCALL(snd_MuteAll)();
 }
 
@@ -128,7 +128,7 @@ void snd_sendEvent(void) {
 
 void snd_updateChannel10Emitter(int a0, int a1, int a2) {
     int local1, local2;
-    FCALL(func_000003F8)(a1, &local1, &local2, a2);
+    FCALL(snd_calcEmitterDistPan_000003F8)(a1, &local1, &local2, a2);
     FCALL(snd_UpdateChannel10Emitter)(a0, local1, (signed char)local2);
 }
 
@@ -152,7 +152,7 @@ void snd_setPlayer3FreqScaleFromStick(void) {
     FCALL(snd_SetPlayer3FreqScaleFromStick)();
 }
 
-// func_000003F8(Vec3 *world, float *outDist, int *outProj, Obj *obj):
+// snd_calcEmitterDistPan_000003F8(Vec3 *world, float *outDist, int *outProj, Obj *obj):
 // camera-relative projection / distance helper (billboard or HUD-marker math).
 //
 //   Cam *cam = obj->0x70;            // view/camera sub-struct
@@ -165,7 +165,7 @@ void snd_setPlayer3FreqScaleFromStick(void) {
 //   v.x *= inv;  v.y *= inv;  v.z *= inv;         // normalize
 //   float d = v.x*cam->0xB4 + v.y*cam->0xC4 + v.z*cam->0xD4;  // dot w/ basis row
 //   *outProj = (int)(d * 63.0f);                  // 0x427C0000 = 63.0f
-//   *outDist = *outDist / K;                      // K = func_00000044+0xC literal
+//   *outDist = *outDist / K;                      // K = stream_readF32_00000044+0xC literal
 //   if ((double)*outDist > 1.0) *outDist = 1.0f;  // clamp to [.,1]
 //
 // Struct-typing reference:
@@ -183,11 +183,11 @@ void snd_setPlayer3FreqScaleFromStick(void) {
  * the clamp. The dot product is written last-term-first with the inner pair
  * reversed and an assignment lever on d.x, which gives the target's
  * running-sum-as-fs add.s and the f18 literal register; the range divisor is
- * the f32 at func_00000044+0xC (D_00000050). */
+ * the f32 at stream_readF32_00000044+0xC (D_00000050). */
 typedef struct { f32 x, y, z; } V3_3F8;
 extern f32 func_00000000_3F8_f(f32);
 extern f32 D_00000050;
-void func_000003F8(V3_3F8 *pos, f32 *dist, s32 *proj, char *obj) {
+void snd_calcEmitterDistPan_000003F8(V3_3F8 *pos, f32 *dist, s32 *proj, char *obj) {
     V3_3F8 d;
     f32 n[3];
     f32 q0, q1, q2, q3;
@@ -213,12 +213,12 @@ void func_000003F8(V3_3F8 *pos, f32 *dist, s32 *proj, char *obj) {
     }
 }
 
-/* func_0000057C: alloc obj = func(0x64) into arg0->0x0; switch(arg1) selects
+/* snd_soundObjCreate_0000057C: alloc obj = func(0x64) into arg0->0x0; switch(arg1) selects
  * 0/1/2; init obj->0x22=(s8)arg2, obj->0x10=0.0f, arg0->0x8=0; then call obj's
  * handler with the selector. Byte-exact (incl. the switch branch-likely + dead
  * store); func_00000000 = cross-segment placeholder (jal 0). Key: `sel=0` must
  * be set AFTER the alloc call so it stays in $a2 (before-the-call spills it). */
-void func_0000057C(int *arg0, int arg1, int arg2) {
+void snd_soundObjCreate_0000057C(int *arg0, int arg1, int arg2) {
     int sel;
     arg0[0] = (int)FCALL(mem_new)(0x64);
     sel = 0;
@@ -238,8 +238,8 @@ void func_0000057C(int *arg0, int arg1, int arg2) {
  * normalize / clamp / scale + 5 func_00000000 dispatch calls).
  * Signature recovered from arg-home slots: a0=int* (struct-ptr ptr),
  * then 5 f32 (arg1..arg5) + 3 s32 (arg6..arg8). o = arg0[0]; bails if 0.
- *   - o->0xC  = clamp01( (f32)((f64)arg5 / *(f64*)(&func_00000044+0x14)) )
- *   - o->0x4  = (f32)((f64)fabsf(arg4) + *(f64*)(&func_00000044+0x1C))
+ *   - o->0xC  = clamp01( (f32)((f64)arg5 / *(f64*)(&stream_readF32_00000044+0x14)) )
+ *   - o->0x4  = (f32)((f64)fabsf(arg4) + *(f64*)(&stream_readF32_00000044+0x1C))
  *   - o->0x18 = (s8)(s32)(arg4 * 63.0f)            // 0x427C0000
  *   - o->0x1E = (arg8 & 0x80)   != 0
  *   - switch(arg6){0,'a','b','c','d'} -> o->0x15 / o->0x14 tags
@@ -249,9 +249,9 @@ void func_0000057C(int *arg0, int arg1, int arg2) {
  *                   func_00000000(arg0[0],*(int*)&sp28,(s8)sp24); }
  *   - func_00000000(&sStr_NA_UpdPl_6584); func_00000000(arg0[0],0);
  *     func_00000000();
- * The &func_00000044+off ldc1 doubles are f64 consts embedded in
- * func_00000044's literal pool (same idiom as CamDirector_update line ~1794,
- * which emits the matching R_MIPS_HI16/LO16 func_00000044 relocs).
+ * The &stream_readF32_00000044+off ldc1 doubles are f64 consts embedded in
+ * stream_readF32_00000044's literal pool (same idiom as CamDirector_update line ~1794,
+ * which emits the matching R_MIPS_HI16/LO16 stream_readF32_00000044 relocs).
  * NM body now reproduces all relocs + the full call/switch/clamp shape
  * (100 residual diff words, down from 125). Residual classes — both
  * permuter-immune, hence INCLUDE_ASM (no episode):
@@ -272,7 +272,7 @@ extern char sStr_NA_UpdPl_6584;
  * carries both the clamp and the fabs results (f0); `/ (f32)4` keeps the
  * div.s (a 4.0f literal folds to * 0.25). Residual: frame 0x38 vs 0x30
  * (sp28/sp24 sit 8 bytes higher; pads only grow it). */
-extern f64 D_bu_ro_d058, D_bu_ro_d060;  /* RoData pool doubles at 0x58 / 0x60 (func_00000044 + 0x14 / 0x1C); one symbol each, the target re-luis per load */
+extern f64 D_bu_ro_d058, D_bu_ro_d060;  /* RoData pool doubles at 0x58 / 0x60 (stream_readF32_00000044 + 0x14 / 0x1C); one symbol each, the target re-luis per load */
 void snd_updatePlayer(SndHandle *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, s32 arg6, s32 arg7, s32 arg8) {
     SoundObj *o;
     f32 sp28;
@@ -525,35 +525,35 @@ void snd_soundObjSetPan_00000B2C(void **a0, float a1) {
 
 void boot_readFloatParm_00000B50(char *a0) {
     int scratch;
-    func_00000008(&scratch);
-    func_00000044((float*)(a0 + 0x10));
+    stream_readS32_00000008(&scratch);
+    stream_readF32_00000044((float*)(a0 + 0x10));
 }
 
 void boot_readVec3Parm_00000B80(char *a0) {
     int scratch;
-    func_00000008(&scratch);
-    func_00000080(a0 + 0x10);
+    stream_readS32_00000008(&scratch);
+    stream_readVec3_00000080(a0 + 0x10);
 }
 
 void boot_readQuadParm_00000BB0(char *a0) {
     int scratch;
-    func_00000008(&scratch);
-    func_000000F0(a0 + 0x10);
+    stream_readS32_00000008(&scratch);
+    stream_readQuad_000000F0(a0 + 0x10);
 }
 
 void boot_readIntParm_00000BE0(char *a0) {
     int scratch;
-    func_00000008(&scratch);
-    func_00000008((int*)(a0 + 0x10));
+    stream_readS32_00000008(&scratch);
+    stream_readS32_00000008((int*)(a0 + 0x10));
 }
 
-/* func_00000C10: mirror of boot_ItemType_create_000046EC / boot_ItemType_create_00007B08 / boot_ItemType_create_0000E690.
+/* ColourItem_create_00000C10: mirror of boot_ItemType_create_000046EC / boot_ItemType_create_00007B08 / boot_ItemType_create_0000E690.
  * BYTE-EXACT twin of donor edd_ItemType_create_000003BC, via the donor's clean C
  * form (p2/head/p1 decl order + char*-cast field access + p1[0x40/4] re-read).
  * Was once force-matched via 22-word INSN_PATCH (banned 2026-05-23, recipe
  * deprecated); this is the genuine C match. */
 extern int func_00000000();
-void *func_00000C10(int *arg0) {
+void *ColourItem_create_00000C10(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -627,24 +627,24 @@ void BGBox_ctor(int a0, int a1, int a2, int a3) {
     volatile int r = 0;
 }
 
-/* BGBox_func_00000D94 - verified structural decode (0xD4, 53 insns,
+/* BGBox_display - verified structural decode (0xD4, 53 insns,
  * FP-threshold-gated state update).
  * Struct-typing reference: g = &D_00000000 global; g->0x2A0 (672) f32
  * value compared (promoted to f64) against the f64 constant at
- * func_00000044+0x2C; g->0x254 (596) ptr to a state object whose
+ * stream_readF32_00000044+0x2C; g->0x254 (596) ptr to a state object whose
  * +0x78 (120) is a flags word (bit 2 / mask 0x4 = an enable, set or
  * cleared by a0->0x3C in the below-threshold path, always set in the
  * at/above path) and +0xDC..+0xE8 (220..232) a 4x int param block
- * filled from func_0000027C+0x18; a0->0x3C (60) selector.
+ * filled from snd_startPlayer2Seq_0000027C+0x18; a0->0x3C (60) selector.
  * Caps <80: FP cvt.d.s + c.lt.d double-promote + ldc1 f64 const +
  * bc1f branch + 2x reloc + 2x cross-symbol data ref.
  * INCLUDE_ASM remains build path. */
-extern void func_00000044();  /* used as data-symbol base */
-extern void func_0000027C();  /* used as data-symbol base */
+extern void stream_readF32_00000044();  /* used as data-symbol base */
+extern void snd_startPlayer2Seq_0000027C();  /* used as data-symbol base */
 extern int sStr_cam_7324;
 /* EXACT (agent-c run 115). Globals block import_0005C108 (alias gGfxLib_d94_g),
- * threshold = RoData f64 at +0x70 (func_00000044 + 0x2C), record at 0x294
- * (func_0000027C + 0x18, alias gGfxLib_d94_src); callees func_05B750(g, rec) and
+ * threshold = RoData f64 at +0x70 (stream_readF32_00000044 + 0x2C), record at 0x294
+ * (snd_startPlayer2Seq_0000027C + 0x18, alias gGfxLib_d94_src); callees func_05B750(g, rec) and
  * func_04CCA8(a0). The a0->0x3C test goes through a named int (target v1),
  * the flag word through a pointer, and the 16-byte record is a struct copy. */
 /* GfxLib +0x294 is the scene FogParms (FogParms_emit(&gGfxLib_00000294), FogParms_lerp in Fog_display;
@@ -653,7 +653,7 @@ extern int sStr_cam_7324;
 #define FOGPARMS(p) ((FogParms *)(p))
 typedef struct { int w[4]; } S16_D94;
 extern char gGfxLib_d94_g[], gGfxLib_d94_src[];
-void BGBox_func_00000D94(char *a0) {
+void BGBox_display(char *a0) {
     int *p;
     int on;
     if ((double)GFXLIB(gGfxLib_d94_g)->fog.colour[3] < D_bu_ro_dpool[0x70 / 8]) {
@@ -705,7 +705,7 @@ void BGBox_func_00000D94(char *a0) {
 //   owner2(s1)->0x0C = a {data,count} index-list handle.
 //   sStr_Node_66B0 base-init descriptor; sStr_U64BGWall_66B8 instance vtable.
 //   func_00000000 + 0x4 = a placeholder/folded data ref (same JAL-target-0
-//   + folded-pool family as the SndHandle_triggerEvent1_0000098C/func_00000044 literal-pool bug,
+//   + folded-pool family as the SndHandle_triggerEvent1_0000098C/stream_readF32_00000044 literal-pool bug,
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C).
 // EXACT (agent-h run 406, 759 words): promoted in place, INCLUDE_ASM dropped.
 //   Procedural tiled quad-mesh + index-buffer builder. Name pre-checked:
@@ -746,7 +746,7 @@ typedef struct { s16 x, y, z; u16 flag; s16 s, t; u8 cn[4]; } VtxE68;
 extern s32 import_8001FFA0[];   /* screen/grid dims {w, h}: w reads */
 extern s32 import_8001FFA0_h[]; /* same import, h reads ([1] = +4) */
 extern int gGfxLib_8005C108[];
-extern int gGfxLib_8005C108_e68[]; /* agent-h run 406: the same import, pinned at the target's link value (USO reloc func_000001FC: +0x18 = 0x214) */
+extern int gGfxLib_8005C108_e68[]; /* agent-h run 406: the same import, pinned at the target's link value (USO reloc snd_setSoundOutputMode_000001FC: +0x18 = 0x214) */
 #define E68_MGR (*(MgrE68 **)((char *)gGfxLib_8005C108_e68 + 0x18))
 #define E68_NEXT(m) (_n = (m)->dl->count++, &(m)->dl->buf[_n])
 /* agent-g run 172: two slots use the explicit increment (objdiff 88.98 -> 89.21, greedy per-site sweep;
@@ -976,7 +976,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
  * Dc->0x128/0x12C/0x130 triple, reloc draw helper, command-list
  * append).
  *   void U64BGWall_display(Obj *a0) {
- *       if (*(int*)(func_00000188 + 0x3C) & 0x2) return;  // gate
+ *       if (*(int*)(snd_seqEndDbg_00000188 + 0x3C) & 0x2) return;  // gate
  *       st  = (*(int*)&D_a)->0x254;
  *       n   = st->0x158;
  *       e   = n->0x3C;                            // entry
@@ -995,7 +995,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
  *       cmd[0] = 0x01020040;                       // packed marker
  *       ... (entry payload writes follow)
  *   }
- * Struct-typing reference: global gate *(func_00000188+0x3C) bit 1
+ * Struct-typing reference: global gate *(snd_seqEndDbg_00000188+0x3C) bit 1
  * (0x2) = suppress/already-emitted. *(&D_a)->0x254 (596) -> state
  * st; st->0x158 (344) -> node n; n->0x3C (60) -> a renderable
  * entry e (e->0x0 base ptr, e->0x4 << 6 = byte offset); n->0xC
@@ -1015,7 +1015,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
  * Remaining ~49 insns (the "entry payload writes" after cmd[0]) are still
  * undecoded — body is 66/115 insns. Next pass: decode the 8-byte-entry payload
  * stores + any trailing FP from the target asm. */
-extern void func_00000188();  /* used as data-symbol base */
+extern void snd_seqEndDbg_00000188();  /* used as data-symbol base */
 /* U64BGWall_display: EXACT via an IDO 7.1 NCC (C++) donor, src/bootup_uso/bootup_uso_ncc_1A44.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 172). Decode notes kept: */
 /* PASS-3 2026-10-20 (agent-c run 114): fresh decode against the target
@@ -1363,7 +1363,7 @@ end:
 //   goes to cams[0] (the game.uso CourseCam), any other kind to cams[1] (RiderCam), via the camera's
 //   command slot (kind, node), after making that camera active.
 // Match history:
-// NM body now structurally faithful: gate read folds via FW(&func_00000044,0x20)
+// NM body now structurally faithful: gate read folds via FW(&stream_readF32_00000044,0x20)
 //   HI16/LO16 reloc; 0x68 delegate base is s16 (lh, FH macro); cam->0x14C activate
 //   is a FLOAT store (FF, was wrongly FW=int 85); sStr_cam_7324 is the poll-table
 //   global (extern int); 2.0f hoisted to `two` local so cfg->0x4/0x0 emit mul.s
@@ -1375,7 +1375,7 @@ end:
 //   classic coloring/two-saved-reg barrier. Genuine type/value/CSE bugs all fixed.
 // agent-g run 276: exact (the C below compiles to the target bytes).
 /* 2026-10-16 agent-c rewrite: gate read through gInputMgr_00000064 (pinned 0x64 ==
- * func_00000044+0x20, folds into the lw like the target); the two cfg->0x10
+ * stream_readF32_00000044+0x20, folds into the lw like the target); the two cfg->0x10
  * reads stay separate because the second is read as u32 (one type CSEs them);
  * sStr_cam_7324 is passed as a 4-byte struct by value (`tb.w = D; f(.., tb, ..)`
  * gives the target `sw a1,56(sp); sw a1,4(sp)`); ONE reused `s0` pointer var
@@ -1600,7 +1600,7 @@ void CamDirector_onMessage(char *a0, int *a1) {
 //     0x14 attached-child/content ptr (re-parent target).
 //   D_00007328..D_000073CC = descriptor/template table (labels, widget
 //     specs); .L00007350/7398 are in-table sub-labels.
-//   func_000001FC + 0x10 (lw, 3x) = folded int ref — same JAL-target-0 /
+//   snd_setSoundOutputMode_000001FC + 0x10 (lw, 3x) = folded int ref — same JAL-target-0 /
 //   folded-symbol family as the SndHandle_triggerEvent1_0000098C literal-pool bug
 //   (docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C);
 //   here it's the integer denominator of the ratio fixups.
@@ -1679,20 +1679,20 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", game_init);
 /* game_initDdm_00002C94 - verified structural decode (0x110, 68 insns,
  * subsystem init: scratch-vec setup + global flag config + table
  * walk).
- * Struct-typing reference: func_000003F8+0xF8 = f32 default value;
- * func_000000F0+0x38 = a global scratch Vec3 (set to (k,k,k));
- * func_00000080+0x68 = a paired context object (reloc setup args).
+ * Struct-typing reference: snd_calcEmitterDistPan_000003F8+0xF8 = f32 default value;
+ * stream_readQuad_000000F0+0x38 = a global scratch Vec3 (set to (k,k,k));
+ * stream_readVec3_00000080+0x68 = a paired context object (reloc setup args).
  * Global flag words: &D_mode = 6, &D_flags bit3 (0x8) cleared,
  * config word at func_00000000+4 = (old & ~0x2) | 0x2000 | 0x80000
  * (clears bit1, sets the 0x2000 and 0x80000 feature bits). &D_tbl =
  * a {int a; int b;} stride-8 table (next-probe reads p[0] after the
  * advance) walked until a zero terminator, each (a,b) passed to the
  * reloc helper with a fixed &D_ctx. sStr_ddm_73E8 = init datum.
- * Caps <80: ~6 reloc calls + cross-symbol data refs (func_000003F8/
+ * Caps <80: ~6 reloc calls + cross-symbol data refs (snd_calcEmitterDistPan_000003F8/
  * 000000F0/00000080/00000000+off) + multi-global flag RMW + table-
  * walk branch-likely. INCLUDE_ASM remains build path. */
 extern char sStr_ddm_73E8;
-extern void func_000003F8();  /* used as data-symbol base */
+extern void snd_calcEmitterDistPan_000003F8();  /* used as data-symbol base */
 /* EXACT (agent-c run 115). Identities/offsets from the TextReloc and the
  * asm addends: scale = RoData pool +0x4F0, dst = 0x128 / src = 0xE8 (both
  * import_0005C108 fields: GfxLib.worldScale and the 4x4 matrix at GfxLib +0xE8, set to
@@ -1799,7 +1799,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
  *       func_00000000(&sStr_Lights_741C, 0);            // pre-init
  *       c = func_00000000(0, &sStr_Ambient_Light_7424);        // build child 0
  *       s1->0x90 = c;
- *       f32 k = *(f32*)(func_000003F8 + 0x12C);
+ *       f32 k = *(f32*)(snd_calcEmitterDistPan_000003F8 + 0x12C);
  *       c->0x124 = c->0x128 = c->0x12C = k;       // colour rgb
  *       c->0x130 = 1.0f;                          // alpha
  *       c->0xD0  = 1;                             // type tag
@@ -1815,13 +1815,13 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
  * slots holding the built child widgets (sStr_Ambient_Light_7424/7434/7444/
  * 7454 = each child's key/descriptor data). Per child: ->0x124
  * (292) / 0x128 (296) / 0x12C (300) f32 = RGB colour (child 0 uses
- * the global func_000003F8+0x12C value; later children use 1.0),
+ * the global snd_calcEmitterDistPan_000003F8+0x12C value; later children use 1.0),
  * ->0x130 (304) f32 = 1.0 alpha, ->0xD0 (208) s32 = type tag
  * (1,2,...), ->0xC4 (196) u32 flags (bits 0x40 then 0x80 OR'd in).
  * sStr_Lights_741C = pre-init datum. EXACT (see the comment on the body). */
 /* EXACT 2026-10-16 (agent-c, 75.4 -> 100). The old "held float-pool base"
- * cap was the shared func_000003F8 base: three scalar f32 globals pinned at
- * the real offsets (kRo_game_createLights_524/528/52C = func_000003F8+0x12C/0x130/0x134)
+ * cap was the shared snd_calcEmitterDistPan_000003F8 base: three scalar f32 globals pinned at
+ * the real offsets (kRo_game_createLights_524/528/52C = snd_calcEmitterDistPan_000003F8+0x12C/0x130/0x134)
  * each get their own `lui at; lwc1`. Other levers:
  *  - the three registration calls take a base-0 object (gGfxLib_2F90_reg, one
  *    symbol: the target holds it in s0), not a literal 0; m->0x28 is the
@@ -1936,17 +1936,17 @@ void *cam_create(int a0, int mode, char *parent, char *a3v, int p4) {
 
 /* game_create3DWindow - verified structural decode (0x150, 84 insns,
  * tagged-arg-block object builder + wire). Cross-symbol data refs:
- * func_00000008+0x28 (global Vec3 slot), func_00000008+0x24 (global
- * pointer slot), func_000003F8+0x140 (source Vec3). The C body uses
+ * stream_readS32_00000008+0x28 (global Vec3 slot), stream_readS32_00000008+0x24 (global
+ * pointer slot), snd_calcEmitterDistPan_000003F8+0x140 (source Vec3). The C body uses
  * &func_NNNNNNNN + offset casts to recreate the data references.
- * Struct-typing reference: func_000003F8+0x140 = a global source
+ * Struct-typing reference: snd_calcEmitterDistPan_000003F8+0x140 = a global source
  * Vec3 (3 f32) copied (with a 0.0 4th lane) into the global slot
- * func_00000008+0x28. a1 = an int[] params source: indices 0,1,2,
+ * stream_readS32_00000008+0x28. a1 = an int[] params source: indices 0,1,2,
  * 3,4,5 and 6 (a1[6] OR'd with 0x2) feed the builder arg block,
  * interleaved with id tags 0x64/0x6D/0x6E/0x6F/0x70/0x71/0x73/0x74
  * (the func_00000000 builder is a tagged-vararg constructor; tag
  * 0x64 head, 0x6D terminator-ish). Result r: r->0x70 (112) = a2,
- * and r is published to the global func_00000008+0x24. a0->0x84
+ * and r is published to the global stream_readS32_00000008+0x24. a0->0x84
  * (132) / a0->0x80 (128) = optional-callback gates; final
  * func_00000000(a0, r) attaches r to a0. sStr_3DWindow_74D0 = builder datum.
  * 2026-06-20 correctness fixes (67->68.6%): removed a spurious
@@ -1956,8 +1956,8 @@ void *cam_create(int a0, int mode, char *parent, char *a3v, int p4) {
  * 2026-10-16 EXACT (lui-count sweep, docs/IDO_CODEGEN.md#lui-count-
  * placeholder-sweep-44de4: target 6 luis vs 3): the three source floats are
  * distinct scalar globals pinned at 0x538/0x53C/0x540 (one shared
- * &func_000003F8 base was CSE'd into one held register), and the Vec4 slot is
- * the zero-offset D_00000030 (== func_00000008+0x28), so its address is held
+ * &snd_calcEmitterDistPan_000003F8 base was CSE'd into one held register), and the Vec4 slot is
+ * the zero-offset D_00000030 (== stream_readS32_00000008+0x28), so its address is held
  * in v0 with 0/4/8/C displacements as in the target. Each optional callback
  * reads its gate once (`if ((p = a0->0x84) != 0) f(r, p)`), and the r->0x70
  * store precedes the publish call (it lands in that jal's delay slot). */
@@ -1965,8 +1965,8 @@ extern char sStr_3DWindow_74D0;
 extern f32 kRo_game_create3DWindow_538, kRo_game_create3DWindow_53C, kRo_game_create3DWindow_540;
 extern float D_00000030[4];
 extern char gSnowBoard_0000002C;
-extern void func_00000008();  /* used as data-symbol base */
-extern void func_000003F8();  /* used as data-symbol base */
+extern void stream_readS32_00000008();  /* used as data-symbol base */
+extern void snd_calcEmitterDistPan_000003F8();  /* used as data-symbol base */
 void *game_create3DWindow(char *a0, int *a1, int a2) {
     float *g;
     char *r;
@@ -2085,7 +2085,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", game_createPlayers);
  * for the r5 list-link (r5->0x14 (20) back-link, r5->0x4 (4) =1
  * when already-linked). r1->0x8DC (2268) = slot receiving the
  * idx-table build result r4. &D + a1*0x1C = a 28-byte descriptor
- * table indexed by a1; func_00000080+0x14 = a static datum.
+ * table indexed by a1; stream_readVec3_00000080+0x14 = a static datum.
  * func_00000000 = the tagged-vararg builder (tags 2/1/0/0x58005/
  * 0x1B). Caps <80: ~12 reloc + FP stack-arg + a1*0x1C index
  * (sll/subu/sll) + beql link-guard + 2 alloc(0x80).
@@ -2098,7 +2098,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", game_createPlayers);
  * 2026-07-15 (agent-g, 72.5 -> objdiff-100): 38C0/39D8 recipe backport, 3rd
  * family member cracked. FOUR DECODE ERRORS + two levers:
  *  (1) alloc-fail does NOT return — beqz +4 skips only the init call (x2);
- *  (2) arg4 of the r1 builder is a VALUE load *(func_00000080+0x14)
+ *  (2) arg4 of the r1 builder is a VALUE load *(stream_readVec3_00000080+0x14)
  *      (target lui/lw), not the address — gInputMgr_3734_v alias;
  *  (3)+(4) the r2 AND r3 builder calls have a FIFTH arg s0 (sw s0, 0x10(sp)
  *      before each jal), matching sibling 39D8's b3=builder(...,o1);
@@ -2111,11 +2111,11 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", game_createPlayers);
  *      %lo placeholder addend (reloc).
  * Unwrapped EXACT 2026-10-16 (run 96): the one differing .o word (lw %lo
  * addend 0 vs 0x14) links to the ROM's 0x94 because gInputMgr_3734_v is pinned to
- * func_00000080+0x14 = 0x94; every other reloc resolves to 0. */
+ * stream_readVec3_00000080+0x14 = 0x94; every other reloc resolves to 0. */
 /* typed-float proto (0x0-alias): args 7,8 are single floats on the stack
  * (target swc1 0x18/0x1C); K&R func_00000000 double-promotes them. */
 extern char *func_3734_r1(void *, int, int, int, void *, int, float, float, int, int);
-extern int gInputMgr_3734_v;  /* VALUE load at func_00000080+0x14 (target lui/lw, not lui/addiu) */
+extern int gInputMgr_3734_v;  /* VALUE load at stream_readVec3_00000080+0x14 (target lui/lw, not lui/addiu) */
 /* void-returning alias for the reg call: kills the dead $v0 def so cfg colors $v0 (38C0 recipe) */
 extern void func_00000000_3734_v(void *, void *);
 void game_setupDemoSolo(char *s1, int a1) {
@@ -2479,9 +2479,9 @@ void game_setupVs2P(char *s1, int a1) {
  * builder; rand-scaled params, same shape as game_setupDemoSplit).
  * Struct-typing reference (same family as game_setupSolo /
  * game_setupDemoSplit): o1/o2 = 0x80-byte builder objects (sp+0x68);
- * rand01() = func_00000000() 0..1 f32; func_000003F8+0x14C /
+ * rand01() = func_00000000() 0..1 f32; snd_calcEmitterDistPan_000003F8+0x14C /
  * +0x150 = f32 scale consts (one -> int table index via trunc,
- * one -> float param); func_00000080+0x10 = descriptor table
+ * one -> float param); stream_readVec3_00000080+0x10 = descriptor table
  * indexed by idx*4; tag 0x58005; flag 0x3. Per-call random
  * descriptor selection (same as game_setupDemoSplit).
  * Caps <80: ~10 reloc (incl. RNG) + FP mul.s/trunc.w.s + idx*4
@@ -2505,14 +2505,14 @@ void game_setupVs2P(char *s1, int a1) {
  *  DECODE FIXES: (a) NO early returns — `if (obj) init(obj,N);` guards ONLY the
  *  init call, flow continues with obj==0 (all three allocs); (b) r2 call a1=2
  *  (not 1); (c) big-block is UNCONDITIONAL (only init(o3,1) guarded);
- *  (d) descriptor table offset is func_00000080+0x10 (not +0x90).
+ *  (d) descriptor table offset is stream_readVec3_00000080+0x10 (not +0x90).
  *  LEVERS: o1/o2/o3/big = ONE serial temp `p` (s0, target's or-s0 beq delays);
  *  homed locals f1/b4/b3/idx2/idx1/r1/r2/o1 = local ARRAY A[8] (IDO never
  *  promotes array elements — struct fields DO get scalarized/promoted, plain
  *  locals stole s-regs); frame gap filled with volatile padA[1] above / padB[2]
  *  below A (single volatile int gets trimmed; arrays don't); per-region
  *  `q = A[5]` temps reproduce block-granular r1 reloads + a3 reuse; E68-style
- *  reloc-identity split (&func_0000057C-0x34 / &func_00000044+0x4C) busts the
+ *  reloc-identity split (&snd_soundObjCreate_0000057C-0x34 / &stream_readF32_00000044+0x4C) busts the
  *  in-TU pool/table base CSE across the 2 uses (frees s1 -> param, kills s2).
  *  RESIDUAL (~12%, hard cap, BF8C class): expected pool/table loads are
  *  DIRECT-form `lui at,%hi(sym+K); lwc1 %lo` — in-TU-defined-function base
@@ -2572,9 +2572,9 @@ void game_setupDemoRace(char *s1, int a1) {
  * func_00000000 builder).
  * Struct-typing reference (same family as game_setupSolo et al.):
  * o1/o2 = 0x80-byte builder objects (saved sp+0x58); rand01() =
- * func_00000000() returning a 0..1 f32; func_000003F8+0x154 /
+ * func_00000000() returning a 0..1 f32; snd_calcEmitterDistPan_000003F8+0x154 /
  * +0x158 = f32 scale constants (one yields an int table index via
- * trunc, one a float param); func_00000080+0x10 = a descriptor
+ * trunc, one a float param); stream_readVec3_00000080+0x10 = a descriptor
  * table indexed by idx*4; tags 0x8004 / 0x15 + flag bits drive the
  * builder. Randomized variant of the family.
  * (Historical notes below; see the EXACT comment for the final shape.)
@@ -2582,7 +2582,7 @@ void game_setupDemoRace(char *s1, int a1) {
  *
  * 2026-06-02 FULL CHAIN DECODED 27.6->55.5% (+27.9pp): two rng() calls give
  * idx1=(int)(r*F3F8->0x154) and idx2=(int)(rr*F3F8->0x158 + idx1 + 1.0f) % 3;
- * row1/row2 = *(func_00000080 + idxN*4 + 0x90) (descriptor table); r1/r2 =
+ * row1/row2 = *(stream_readVec3_00000080 + idxN*4 + 0x90) (descriptor table); r1/r2 =
  * builder(s0, 0/1, idxN, rowN, oN, s0->0x80, cfg->0xC4 -/+ 500.0f, cfg->0xCC,
  * 0x8004/0x8024, 0x15); r1<->r2 0x908 cross-link; b3/b4=builder(s0,2,s0->0x80,
  * rN,oN); bN->0x14C=55.0f; rowF=&D+a1*0x1C; f1/f2=builder(s0,rowF[+0x1C],bN);
@@ -2718,12 +2718,12 @@ void Mountain_hostioParms(char *a0) {
  * f32 source vector components; global root *(&D_a) ->0x70 (112) ptr
  * to a transform/state obj whose ->0xA0/0xA4/0xA8 (160/164/168) is an
  * f32 Vec3 scaled per-component by Dc->0x128/0x12C/0x130 (296/300/304)
- * f32 scale constants; func_00000080+0x20 = static string/param datum
+ * f32 scale constants; stream_readVec3_00000080+0x20 = static string/param datum
  * passed to the reloc draw/print helper. Caps <80: FP-heavy mul.s/
  * add.s chains + 4x func_00000000 reloc calls + 2x &D reloc +
- * func_00000080+0x20 cross-symbol data ref. INCLUDE_ASM remains build
+ * stream_readVec3_00000080+0x20 cross-symbol data ref. INCLUDE_ASM remains build
  * path. */
-extern void func_00000080();  /* used as data-symbol base */
+extern void stream_readVec3_00000080();  /* used as data-symbol base */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_485C.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116): V3 ctor
  * forwarding to set(), b2 in an inner block (allocated after b1's pool slots). */
@@ -3435,7 +3435,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
 // (agent-f 2026-09-04, hand reconstruction from the target .s; old body was
 // a 78-insn stub that dropped the whole 3x3 transform + clamp cascade).
 // Shape recovered: obj homed at 0x90(sp) (no s-regs); K = folded const
-// func_0000057C+0x34 read via DATA ALIAS bu_63b4_c57c (fn-typed base never
+// snd_soundObjCreate_0000057C+0x34 read via DATA ALIAS bu_63b4_c57c (fn-typed base never
 // folds %lo addends); call 1 = float f(float) -> f0; call 2 = (float, &A.x,
 // &A.z); A/B/q live in ONE escaping frame struct Bu63b4F (0x5C..0x8F, passed
 // to call 3 as &fr) — this is what keeps B's x/y transform alive (as plain
@@ -3505,7 +3505,7 @@ void MapProp_hostioParms(char *a0) {
 //     if (root->0x14) { ... }                          // attach guard
 //     // main body: iterate obj sub-objects 0x7C/0x80/0x84/0x88/0x90/0x94
 //     //   building child widgets/labels; descriptor tables .L00007EB8 /
-//     //   .L00007F5C / func_00000188+0x3C (6x); ~65 dispatcher calls
+//     //   .L00007F5C / snd_seqEndDbg_00000188+0x3C (6x); ~65 dispatcher calls
 //     //   total — create / configure / re-parent each element.
 //     // teardown: v = (*(int*)D_0) & s6;  *(int*)D_0b = v;  // clear flag
 //     return s0;                                        // built root/handle
@@ -3519,9 +3519,9 @@ void MapProp_hostioParms(char *a0) {
 //   Folded refs (same JAL-target-0 / literal-pool fold family, see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C):
 //     func_00000000 + 0x4  = a WRITABLE global mode word (RMW |0x20000);
-//     func_00000188 + 0x3C = a folded table (read 6x);
-//     func_0000057C + 0x38 = a folded f32 const (sibling of the
-//                            func_0000057C+0x34 ref in MapProp_display).
+//     snd_seqEndDbg_00000188 + 0x3C = a folded table (read 6x);
+//     snd_soundObjCreate_0000057C + 0x38 = a folded f32 const (sibling of the
+//                            snd_soundObjCreate_0000057C+0x34 ref in MapProp_display).
 // Caps (DEFERRED): 594-insn dispatcher-heavy ctor w/ folded globals
 //   — byte-match blocked by deferred pool symbolization + GOT-base
 //   coloring (arg0->s7, two module globals pinned in s4/s5, the running
@@ -3538,7 +3538,7 @@ void MapProp_hostioParms(char *a0) {
 //   refs (&D_00007Exx) instead of bare 0x7Exx ints, and explicit
 //   goto-on-terminator loop control matching the `opcode==0xC` exit.
 //   Folded literal-pool refs (func_00000000+0x4 mode word,
-//   func_00000188+0x3C table, func_0000057C+0x38 jumptable) kept as
+//   snd_seqEndDbg_00000188+0x3C table, snd_soundObjCreate_0000057C+0x38 jumptable) kept as
 //   offset reads — they cannot be symbolized in this build (USO GOT).
 // PASS-4 2026-06-21 (agent-i): DOUBLY-CAPPED, confirmed empirically vs
 //   expected .o. (1) Reloc cap: target materializes its held s4/s5
@@ -3554,11 +3554,11 @@ void MapProp_hostioParms(char *a0) {
 //   0xA8002 mode word) — faithful corrections, prefix still 0% (frame).
 // PASS-5 2026-07-17 (agent-g): NEGATIVE RESULT — E68 identity-split
 //   recipe probed and REVERTED (all three variants lower fuzzy from
-//   60.28: +0x1C4 RMWs -> true-identity func_00000188+0x3C form 58.82;
+//   60.28: +0x1C4 RMWs -> true-identity snd_seqEndDbg_00000188+0x3C form 58.82;
 //   + mode-word RMW -> func_00000000+0x4 form 57.93; + gc alias for the
 //   s5-class 0x68/0x3C reads 56.56), despite each moving insn count
 //   toward target (545->553 of 594) and matching the target's per-site
-//   %hi/%lo shapes (target: no held base for the func_00000188+0x3C
+//   %hi/%lo shapes (target: no held base for the snd_seqEndDbg_00000188+0x3C
 //   |8/&~8 RMWs; s4 AND s5 both re-materialized lui0/addiu0 mid-body).
 //   At this alignment distance the fuzzy LCS is dominated by the s-reg
 //   under-coloring (built saves 5 regs vs target 9, seed a1->0x40
@@ -3675,13 +3675,13 @@ void map_addEntry_00007204(int a0, int a1, int a2) {
  *   }
  *   if (a0->0x3C == 0) {
  *       self->0x78 |= 4;
- *       copy 4 words from (func_0000027C + 0x18..0x24) to self->0xDC..0xE8;
+ *       copy 4 words from (snd_startPlayer2Seq_0000027C + 0x18..0x24) to self->0xDC..0xE8;
  *   }
  *
- * The `func_0000027C + 0x18` is the splat-fold-into-nearest-func pattern
+ * The `snd_startPlayer2Seq_0000027C + 0x18` is the splat-fold-into-nearest-func pattern
  * (per docs/MATCHING_WORKFLOW.md): a real D_<addr> rodata symbol was folded
  * into the preceding function. */
-/* EXACT (agent-c run 121): the record is a 16-byte struct copy from a pinned alias (gGfxLib_7288_src = func_0000027C + 0x18), and the flags RMW goes through the advanced pointer q (*q |= 4). */
+/* EXACT (agent-c run 121): the record is a 16-byte struct copy from a pinned alias (gGfxLib_7288_src = snd_startPlayer2Seq_0000027C + 0x18), and the flags RMW goes through the advanced pointer q (*q |= 4). */
 /* 2026-07-31 (agent-g newest-lever sweep): 94.6 -> 95.4. Levers landed:
  * de-named self (per-use *(base+0x254) deref -> t-ring reload temps t9/t1
  * exact, kills the old named-self $v0 web) + named per-region base local +
@@ -3691,9 +3691,9 @@ void map_addEntry_00007204(int a0, int a1, int a2) {
  * + offsets aligned); RESIDUAL is a pure register-name rotation web:
  * base colors $a2 vs target $v1, d $a1 vs t5, RMW temps $a0 vs t3/t4,
  * data temps t3-t6 vs t8/t7 ping-pong, plus the folded-rodata src-base
- * addend form — target addiu carries +0x18 (25ce0018 = %lo(func_0000027C)
+ * addend form — target addiu carries +0x18 (25ce0018 = %lo(snd_startPlayer2Seq_0000027C)
  * +24: the ORIGINAL had its own D_00000294 rodata symbol, splat folded it
- * into func_0000027C) where C can only produce %lo+0 with the 0x18 folded
+ * into snd_startPlayer2Seq_0000027C) where C can only produce %lo+0 with the 0x18 folded
  * into the load offsets (24..36); if(1) pointer-mutation does NOT bake
  * addends on FUNCTION symbols (probed — emits a separate addiu+24, unlike
  * the data-symbol C14/2BE4 cases). Coloring probes: if(1) BB-split flips
@@ -3702,7 +3702,7 @@ void map_addEntry_00007204(int a0, int a1, int a2) {
  * def-order swap src<->RMW = 95.275; register kw inert. a-reg-vs-t-ring
  * named-web free-pool tie class. NM. */
 typedef struct { int w[4]; } Q7288;
-extern Q7288 gGfxLib_7288_src; /* = func_0000027C + 0x18 (asm %lo addend), pinned at 0x294 */
+extern Q7288 gGfxLib_7288_src; /* = snd_startPlayer2Seq_0000027C + 0x18 (asm %lo addend), pinned at 0x294 */
 void EnvSettings_display(int *a0) {
     if (ENVSET(a0)->flags & 2) {
         GfxLib *base = gGfx;
@@ -3750,15 +3750,15 @@ void EnvSettings_display(int *a0) {
  * same logic, spill-slot + saved-reg-number divergence, solvable only by
  * per-function exact-structure RE of the original stack-buffer shape
  * (stream_readS32_00005EF8/keybuf likely wrote/compared a small stack STRUCT, not a
- * scalar). All three folded-symbol refs (func_0000027C+0x18,
- * func_00000008+0x34, func_0000029C+0x4) and the jal-0 callees ARE
+ * scalar). All three folded-symbol refs (snd_startPlayer2Seq_0000027C+0x18,
+ * stream_readS32_00000008+0x34, snd_muteAll_0000029C+0x4) and the jal-0 callees ARE
  * reloc-correct here. INCLUDE_ASM remains build path. */
 extern char sFmt_Env_Load_7F90;
 extern char sFmt_Env_Skip_7FA0;
 /* stream_readS32_00005EF8 / stream_readS32_0000502C already file-scope-declared. */
-extern void func_0000027C();   /* K&R data-symbol base (0x27C) */
-extern void func_0000029C();   /* K&R data-symbol base (0x29C) */
-extern void func_00000008();   /* K&R data-symbol base (0x08)  */
+extern void snd_startPlayer2Seq_0000027C();   /* K&R data-symbol base (0x27C) */
+extern void snd_muteAll_0000029C();   /* K&R data-symbol base (0x29C) */
+extern void stream_readS32_00000008();   /* K&R data-symbol base (0x08)  */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_7328.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). Handler list walk through the C++ {cur, nxt} iterator; see the .cpp header. */
 void EnvSettings_load(char *s3) {
@@ -3766,20 +3766,20 @@ void EnvSettings_load(char *s3) {
 
 /* FallingSnow_create - verified structural decode (0x138, 78 insns,
  * guarded constructor + list-link + vtable + finalize).
- * Struct-typing reference: global gate *(func_00000008+0x2C) == 8
+ * Struct-typing reference: global gate *(stream_readS32_00000008+0x2C) == 8
  * skips construction (already-done / disabled state). r = 0x134-byte
  * object, sub = 0x48-byte aux; both get a &D descriptor at ->0x28
  * (r's is the obj-0x28 vtable, 0x5C/0x58 variant: fn@0x5C (92),
  * s16@0x58 (88), dispatched with arg 0x96). a0->0x40 (64) = the
  * owning slot for r. r linked into the global list whose head is
- * (*(func_000000F0+0x44))->0x88 via r->0x14 (back-link) / r->0x4
+ * (*(stream_readQuad_000000F0+0x44))->0x88 via r->0x14 (back-link) / r->0x4
  * (=1 when already-linked). r->0x48 (72) s32 toggled 1 then 0,
  * r->0x4C (76) f32 = 0.0 (init state/flags). sStr_FallingSnow_7FB0 / sStr_Node_7FBC
  * = init datums. Caps <80: global gate + ~6 reloc (alloc/init/
  * finalize) + &D descriptors + list-link beql + obj-0x28 vtable
  * jalr + FP. INCLUDE_ASM remains build path. */
 extern char sStr_FallingSnow_7FB0, sStr_Node_7FBC;
-extern void func_000000F0();  /* used as data-symbol base */
+extern void stream_readQuad_000000F0();  /* used as data-symbol base */
 /* 2026-10-22 (agent-c run 120) EXACT: the final call takes NO argument (the target only stores p->0x48 = 0 in its delay slot; a0 is whatever the previous call left), and the child's init call and its +0x28 store share one source line (as1 line tie). */
 /* run 111 (agent-c): cfront ctor shape (r = new(0x134); if (r) { sub = r; if (sub || (sub = new(0x48))) ... }),
  * no early returns, data symbols for the two %lo-folded globals, a0 escaped so every a0->0x40 is re-read,
@@ -3871,26 +3871,26 @@ void EnvSettings_setSnow(char *a0, int a1) {
 
 /* Tv1_display - verified structural decode (0xDC, 55 insns).
  * Same FP transform/draw family as Mountain_display (shared globals:
- * root *(func_0000023C+0x18), scratch vector func_00000080+0x20,
+ * root *(snd_setPlayer0VolumeLevel_0000023C+0x18), scratch vector stream_readVec3_00000080+0x20,
  * scale consts &D+0x128/0x12C/0x130, a global emit counter).
  * Struct-typing reference: s0 = drawable/emitter object. s0->0x5C
  * (92) / 0x60 (96) s32 params, s0->0x64 (100) f32 (stack arg),
  * s0->0x70 (112) f32 * s0->0x80 (128) f32 = a derived f32 stack
  * arg, s0->0x6C (108) f32 y-offset, s0+0x2C = a sub-struct pointer
- * arg. root = *(func_0000023C+0x18) global context; func_00000080+
+ * arg. root = *(snd_setPlayer0VolumeLevel_0000023C+0x18) global context; stream_readVec3_00000080+
  * 0x20 = shared f32 scratch vector {0x30,0x34,0x38} scaled per-frame
  * by the &D+0x128/0x12C/0x130 scale triple (same as Mountain_display).
  * reloc_emit returns nonzero to proceed with the transform+draw.
  * Caps <80: FP mul.s/add.s chains + 3x reloc + cross-symbol data
- * refs (func_0000023C+0x18, func_00000080+0x20) + f32 stack-arg.
+ * refs (snd_setPlayer0VolumeLevel_0000023C+0x18, stream_readVec3_00000080+0x20) + f32 stack-arg.
  *
  * 2026-06-02 (69.1->75.2%): the reloc_emit call's args 5,7 are single floats
  * (s0->0x64, s0->0x70*s0->0x80; target swc1 0x10/0x18) — typed-float proto
  * func_76f4_q avoids K&R double-promote. Residual ~25%: target FOLDS the root
- * load (lui%hi/lw%lo of func_0000023C+0x18) but the function-symbol arithmetic
+ * load (lui%hi/lw%lo of snd_setPlayer0VolumeLevel_0000023C+0x18) but the function-symbol arithmetic
  * here materializes it (extra addiu) + the 0x70/0x80 mul-operand load order.
  * Double-promote-scan vein. INCLUDE_ASM stays. */
-extern void func_0000023C();  /* used as data-symbol base */
+extern void snd_setPlayer0VolumeLevel_0000023C();  /* used as data-symbol base */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_76F4.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 180, the gl 39E24 shape:
  * the camera vector is a member of the global block, scaled through an inline
@@ -3899,9 +3899,9 @@ void Tv1_display(char *s0) {
     volatile char *r = s0;
 }
 
-/* Tv1Tmpl_func_000077D0 - verified structural decode (0x278, 158 insns,
+/* Tv1Tmpl_blitFrame_000077D0 - verified structural decode (0x278, 158 insns,
  * glyph/tile blit with mode dispatch). Font/HUD text renderer.
- *   void Tv1Tmpl_func_000077D0(St *a0, u16 *dst, int mode) {
+ *   void Tv1Tmpl_blitFrame_000077D0(St *a0, u16 *dst, int mode) {
  *       u16 *glyphs = a0->0x64;
  *       if (glyphs == NULL) return;
  *       base = a0->0x58;
@@ -3961,7 +3961,7 @@ void Tv1_display(char *s0) {
  *   unused `u` give 0x48 with the call spill at 32(sp). */
 extern float func_411c_rf(void);
 #define PUT77(v) { t = dst; dst++; *t = (v); }
-void Tv1Tmpl_func_000077D0(char *arg0, u16 *dst, s32 arg2) {
+void Tv1Tmpl_blitFrame_000077D0(char *arg0, u16 *dst, s32 arg2) {
     s32 pad[5];
     u16 *tbl;
     u16 *g;
@@ -3977,7 +3977,7 @@ void Tv1Tmpl_func_000077D0(char *arg0, u16 *dst, s32 arg2) {
     s32 k;
     u16 *p;
 
-    tbl = ((Tv1Tmpl *)arg0)->frameImage; /* arg0 is the Tv1Tmpl (Tv1Tmpl_func_00007D04 passes s0) */
+    tbl = ((Tv1Tmpl *)arg0)->frameImage; /* arg0 is the Tv1Tmpl (Tv1Tmpl_stepPicture_00007D04 passes s0) */
     if (tbl == NULL) {
         return;
     }
@@ -4061,7 +4061,7 @@ m1:
     } while (c != 0x20);
 }
 
-void func_00007A48(char *a0) {
+void boot_readFloatParm_00007A48(char *a0) {
     int scratch;
     stream_readS32_00004FF0(&scratch);
     stream_readF32_00006100((int*)(a0 + 0x10));
@@ -4233,7 +4233,7 @@ void *Tv1Tmpl_create(char *a0) {
     return ret;
 }
 
-/* Tv1Tmpl_func_00007D04 - verified structural decode (0x14C, 83 insns,
+/* Tv1Tmpl_stepPicture_00007D04 - verified structural decode (0x14C, 83 insns,
  * phased animation/timer state machine).
  * Struct-typing reference: s0->0x5C (92) s32 = animation state /
  * next-state (0/1/2 phases); s0->0x60 (96) s32 = per-phase frame
@@ -4241,12 +4241,12 @@ void *Tv1Tmpl_create(char *a0) {
  * s32 = a timer/position adjusted on phase transition (-0xA for
  * state1->next, =0x18 reset on state2 wrap); s0->0x64 (100) =
  * stored result of the obj-0x28 vtable dispatch (0x64/0x60
- * variant, root = *(func_0000023C+0x18)); s0->0x40 (64) -> obj
+ * variant, root = *(snd_setPlayer0VolumeLevel_0000023C+0x18)); s0->0x40 (64) -> obj
  * whose ->0x84 (132) is a message/anim list (entries -> ->0x1C
  * payload) driven by the two func_00000000 calls (idx 0 and 1,
  * arg = next state a3). State 2 wrap randomizes the next state
  * via rand01()*3.0. Caps <80: obj-0x28 vtable jalr + switch
- * (beq/beql chain) + FP rand*3.0 trunc + func_0000023C+0x18
+ * (beq/beql chain) + FP rand*3.0 trunc + snd_setPlayer0VolumeLevel_0000023C+0x18
  * reloc + reloc dispatch calls. INCLUDE_ASM remains build path. */
 /* RUN 107 (agent-c): 58.0 -> 96.1. The target compares 1, 0, 2 with the
  * bodies out of line = nested-!= goto chain (IDO sorts switch compares).
@@ -4267,7 +4267,7 @@ extern char *gGfxLib_7D04_root[];
  * on GfxLib.mainWindow and indexes the result as a u16 RGBA5551 image: the frame buffer). */
 #define TV1_WIN (gGfxLib_7D04_root[6])
 extern float func_7D04_randf();
-void Tv1Tmpl_func_00007D04(char *s0) {
+void Tv1Tmpl_stepPicture_00007D04(char *s0) {
     int a3 = ((Tv1Tmpl *)s0)->state;
     int k;
     ((Tv1Tmpl *)s0)->frameImage =
@@ -4304,9 +4304,9 @@ end:
     k = *(int *)&((Tv1Tmpl *)s0)->model; l = (int *)((Tv1Model *)k)->screens;
     /* The two "screens" are BaseMats (Tv1Model +0x84 is the shape's material table, BasePolyShape.mats):
      * the frame image is blitted into each screen material's texels (+0x1C, gdl/material.h) */
-    FCALL(Tv1Tmpl_func_000077D0)(s0, *(int *)&((BaseMat *)*l)->texels, 0, a3); if (1) {}
+    FCALL(Tv1Tmpl_blitFrame_000077D0)(s0, *(int *)&((BaseMat *)*l)->texels, 0, a3); if (1) {}
     k = *(int *)&((Tv1Tmpl *)s0)->model; l = (int *)((Tv1Model *)k)->screens + 1;
-    FCALL(Tv1Tmpl_func_000077D0)(s0, *(int *)&((BaseMat *)*l)->texels, 1, a3); }
+    FCALL(Tv1Tmpl_blitFrame_000077D0)(s0, *(int *)&((BaseMat *)*l)->texels, 1, a3); }
     ((Tv1Tmpl *)s0)->state = a3;
 }
 
@@ -4324,7 +4324,7 @@ void Tv1Tmpl_display(char *a0) {
         int counter = ((Tv1Tmpl *)a0)->displayCount + 1;
         ((Tv1Tmpl *)a0)->displayCount = counter;
         if (counter == 1) {
-            FCALL(Tv1Tmpl_func_00007D04)();
+            FCALL(Tv1Tmpl_stepPicture_00007D04)();
         }
     }
 }
@@ -4335,21 +4335,21 @@ void Tv1Tmpl_display(char *a0) {
  * (84) f32 = velocity, s0->0x6C (108) f32 = a derived value,
  * s0->0x8C (140) s32 = a latched collision/zone state (compared
  * to the new hit flag - mismatch triggers the transition + the
- * func_0000027C+0x18 transform-block copy to a global). g =
+ * snd_startPlayer2Seq_0000027C+0x18 transform-block copy to a global). g =
  * *(&D_g); g->0x130 (304) f32 = world scale, g->0x254 (596) ->
  * 0x70 (112) -> 0xA8 (168) f32 = the boundary/limit position
  * (scaled). The (limit - p) / vel is the time-of-impact fraction.
- * Global gate *(func_00000008+0x2C) == 8 disables the test.
+ * Global gate *(stream_readS32_00000008+0x2C) == 8 disables the test.
  * Likely a course/wall boundary crossing detector.
  * Caps <80: FP-heavy mul.s/c.lt.s/add.s/sub.s/div.s + bc1fl
- * branch-likely chain + &D + func_0000027C+0x18 cross-symbol block
+ * branch-likely chain + &D + snd_startPlayer2Seq_0000027C+0x18 cross-symbol block
  * copy. INCLUDE_ASM remains build path. */
 /* EXACT (agent-c run 115). Identities from the bootup.uso TextReloc: the
  * mode word is import_000200FC + 0x2C (= D_00000000), the globals block is
  * import_0005C108 (zero alias gGfxLib_7ec8_g: +0x130 scale, +0x254 game object,
  * +0x18 a 24-byte record), the backup record is import_0001FFC8 (bu_7ec8_h);
- * (the asm spells the mode word func_00000008 + 0x2C = 0x34, alias
- * gInputMgr_7ec8_m, and the record func_0000027C + 0x18 = 0x294, alias
+ * (the asm spells the mode word stream_readS32_00000008 + 0x2C = 0x34, alias
+ * gInputMgr_7ec8_m, and the record snd_startPlayer2Seq_0000027C + 0x18 = 0x294, alias
  * gGfxLib_7ec8_src: the baked words carry those offsets); callees func_0586D8 (char *, char *, float: frac goes out by mfc1 a2),
  * func_063D70 (four ints then float/int/float on the stack) and func_051D88.
  * The record copies are 24-byte struct assignments; the scale is re-read
@@ -4398,7 +4398,7 @@ void Fog_hostioParms(char *a0) {
     FCALL(Node_hostioParms)(a0);
 }
 
-void Fog_func_000080B4(char *a0) {
+void Fog_saveData(char *a0) {
     FCALL(Parms_save)((int*)(a0 + 0x3C));
     FCALL(gfx_saveQuadIntInt_00043FFC)((int*)(a0 + 0x74));
     FCALL(Node_saveData)(a0);
@@ -4774,7 +4774,7 @@ void TreeTmpl_display(char *arg0) {
             arg0 = (char *)((SNode *)arg0)->next;
         } while (arg0 != 0);
     }
-    FCALL(FogParms_emit_00043F1C)(&gGfxLib_00000294);  /* restore the scene fog: GfxLib +0x294 (func_0000027C+0x18) */
+    FCALL(FogParms_emit_00043F1C)(&gGfxLib_00000294);  /* restore the scene fog: GfxLib +0x294 (snd_startPlayer2Seq_0000027C+0x18) */
 }
 
 extern char gHostio_func_00008744_arg1;
@@ -4802,7 +4802,7 @@ extern float D_000005F0;
  *    alias of the blank, func_00000000_087A4_f(char *, char *, int, float,
  *    float); 150.0f rides in a3 as bits. Unused-result calls go through the
  *    void alias func_00000000_087A4.
- *  - &func_00007A48 + 0x10 through the data alias D_087A4_vtable (pinned to
+ *  - &boot_readFloatParm_00007A48 + 0x10 through the data alias D_087A4_vtable (pinned to
  *    0x7A48) folds the addend into %lo (a fn-typed symbol emits a separate
  *    addiu).
  *  - frame 0x50 with kind at sp+0x44: no named `desc` local (each extra named
@@ -4884,23 +4884,23 @@ void stream_readS32_000089C0(int *dst) {
     *dst = buf[0];
 }
 
-void func_000089FC(short *dst) {
+void stream_read16_000089FC(short *dst) {
     short buf[4];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 2);
     *dst = buf[0];
 }
 
-void func_00008A38(int a0) {
+void boot_emptyStub_00008A38(int a0) {
 }
 
-void func_00008A40(float *dst) {
+void stream_readF32_00008A40(float *dst) {
     float buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
-extern void func_00008A7C();
-void func_00008A7C(Vec3 *dst) {
+extern void stream_readVec3_00008A7C();
+void stream_readVec3_00008A7C(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -4913,7 +4913,7 @@ void func_00008A7C(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-void func_00008AEC(Quad4 *dst) {
+void stream_readQuad_00008AEC(Quad4 *dst) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
     *dst = buf;
@@ -5017,7 +5017,7 @@ end:
     return self;
 }
 
-/* ShpNode_func_00008FA8: 73-insn (0x124) "scatter-bitcast-int-to-float-vec3-fields"
+/* ShpNode_update: 73-insn (0x124) "scatter-bitcast-int-to-float-vec3-fields"
  * + counter decrement + global-table update. Sibling of recently-matched
  * ShpNode_ctor (alloc + multi-call init).
  *
@@ -5051,7 +5051,7 @@ end:
  * the then-arm) -> count colours a0 and the &D_8714 lui stays in the arm. */
 extern char sStr_Too_many_objects_for_List_8714;
 typedef struct { int a, b, c; } Vec3i_8FA8;
-void ShpNode_func_00008FA8(int *self) {
+void ShpNode_update(int *self) {
     volatile int pad_t[1];
     int *tbl;
     volatile int pad_hi[2];
@@ -5103,8 +5103,8 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
 //     if (idx >= 0xA) idx = 9;               // clamp [0,9]
 //     if (cat >= 9)   cat = 8;               // clamp [0,8]
 //     if (cat == 7 || cat == 6) {            // banked categories
-//       if (*(int*)(func_00000148) == 0) {   // not-yet-loaded guard
-//         func_00000000(&func_000089FC+0x2C);              // a name/path
+//       if (*(int*)(snd_seqEventDbg_00000148) == 0) {   // not-yet-loaded guard
+//         func_00000000(&stream_read16_000089FC+0x2C);              // a name/path
 //         R *r = func_00000000(0x90);  if (!r) goto reg;    // alloc (retry)
 //         S *s = func_00000000(0x60);
 //         s->0x5C = &D_0;                                   // vtable
@@ -5116,14 +5116,14 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
 //         r->0x28 = 0x1100;  r->0x22 = (s16)0x20;  r->0x20 = (s16)0x40;
 //         r->0x38 = 0x402C4B;  r->0x1C = buf;  r->0x34 = 0;  r->0x18 = 0;
 //       reg:
-//         if (*(int*)(func_00000148+0x14) >= 5) func_00000000(r);  // evict
-//         int n = *(int*)(func_00000148+0x14);
-//         *(int*)(func_00000148+0x14) = n + 1;
-//         ((void**)func_00000148)[n] = r;                   // register
+//         if (*(int*)(snd_seqEventDbg_00000148+0x14) >= 5) func_00000000(r);  // evict
+//         int n = *(int*)(snd_seqEventDbg_00000148+0x14);
+//         *(int*)(snd_seqEventDbg_00000148+0x14) = n + 1;
+//         ((void**)snd_seqEventDbg_00000148)[n] = r;                   // register
 //       }
 //     }
-//     func_00000000(&func_00008A40+0x8, 0);
-//     func_00000000(&func_00008A40+0x14, 0);
+//     func_00000000(&stream_readF32_00008A40+0x8, 0);
+//     func_00000000(&stream_readF32_00008A40+0x14, 0);
 //     if (idx) { t = tableA[idx]; if (!func_00000000(t->0x0))
 //                  func_00000000(D_x, t->0x0); }              // play by idx
 //     t = tableB[cat]; if (!func_00000000(t->0x0))
@@ -5137,14 +5137,14 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
 //     final play call. Resource R (0x90): 0x18 state, 0x1C buffer ptr,
 //     0x20/0x22 s16 dims (0x40/0x20), 0x24=0x110 mode, 0x28=0x1100,
 //     0x34 flag, 0x38=0x402C4B id, 0x5C vtable(&Snower_hostioParms+0x70).
-//   func_00000148 = WRITABLE global resource table: [0]=loaded-root,
+//   snd_seqEventDbg_00000148 = WRITABLE global resource table: [0]=loaded-root,
 //     [0x14]=entry count, [n] = registered R ptrs. tableA/tableB =
 //     other global index->entry arrays.
 //   Folded refs (multi-class fold family — writable globals + tables +
 //   vtables + name data; see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C):
-//     func_00000148 (writable table), func_000089FC+0x2C /
-//     func_00008A40+0x8/+0x14 (name/string data), Snower_hostioParms+0x70
+//     snd_seqEventDbg_00000148 (writable table), stream_read16_000089FC+0x2C /
+//     stream_readF32_00008A40+0x8/+0x14 (name/string data), Snower_hostioParms+0x70
 //     (vtable).
 // Caps (DEFERRED): 186-insn lazy-init + table-register + multi-dispatch.
 //   2026-05-31 partial completion 55.9->67.1%: added the two sentinel-keyed
@@ -5153,14 +5153,14 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
 //   UNSIGNED (sltiu: (unsigned)idx>=0xA, (unsigned)cat>=9).
 //   2026-06-23 decode pass (agent-t) 161->177 insns (target 186), sim
 //   35.7->37.5%: (1) CORRECTNESS FIX — replaced all D_00000000+off named-table
-//   refs with the REAL symbols the .s relocs name: func_00000148 (writable
-//   table+flag+count), func_000089FC+0x2C (name data), Snower_hostioParms+0x70
-//   (vtable), func_00008A40+0x8/+0x14 (string data). Build reloc set now
+//   refs with the REAL symbols the .s relocs name: snd_seqEventDbg_00000148 (writable
+//   table+flag+count), stream_read16_000089FC+0x2C (name data), Snower_hostioParms+0x70
+//   (vtable), stream_readF32_00008A40+0x8/+0x14 (string data). Build reloc set now
 //   matches target's named relocs. (2) Reconstructed the nested ||-allocator-
 //   fallback cascade (m2c shape): r=alloc(0x90); r||(r=alloc) ; s=r||(s=alloc
 //   0x60) ; the s+0x34 / s+0x58 sentinel sub-allocs. (3) 5th stack arg a4 +
 //   a2/a4 home copies. RESIDUAL (37.5->100), genuine IDO -O2 caps:
-//   * CSE-COLLAPSE: target re-materializes &func_00000148 at 5 sites (5x HI16);
+//   * CSE-COLLAPSE: target re-materializes &snd_seqEventDbg_00000148 at 5 sites (5x HI16);
 //     IDO -O2 here CSEs ours into 1 reg held across calls (1x HI16). 4 missing
 //     re-lui's. C-level CSE defeat (volatile addr) not faithful.
 //   * ARG-HOME FRAME: target -0x80 homes cat/idx to BOTH arg slots (0x80/0x84)
@@ -5190,7 +5190,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_B1B4.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). The
  * last residual (counter in v0, target a1) was the registry: an inline
- * Reg::add() on the 5-slot table at func_00000148 doing `tbl[n++] = b`. */
+ * Reg::add() on the 5-slot table at snd_seqEventDbg_00000148 doing `tbl[n++] = b`. */
 void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned int idx, int a2, int a3, int a4) {
     volatile unsigned int r = cat;
 }
@@ -5199,9 +5199,9 @@ void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned int idx, int
  *
  *   j = clamp(idx, 9); v = table1[j];
  *   if (gl_func(v, j) == 0) gl_func(&table1, v);
- *   gl_func(0, (char*)func_00008A40 + 0x18, table2[j], 0);   // dispatch
+ *   gl_func(0, (char*)stream_readF32_00008A40 + 0x18, table2[j], 0);   // dispatch
  *
- * The dispatched function ptr is `func_00008A40 + 0x18` — a code address
+ * The dispatched function ptr is `stream_readF32_00008A40 + 0x18` — a code address
  * inside an existing function (alt-entry); sStr_board_8A58 folds the +0x18.
  *
  * CROSSED 2026-07-15 (was 99.94% "frame -40 vs -32 spill-allocator cap").
@@ -5228,7 +5228,7 @@ void SnowBoarder_createBoardShape_0000B49C(int idx, int j) {
     if (CALL(game_isUsoLoaded)(((int*)&D_00000000)[j], j) == 0) {
         CALL(game_loadUso)(&D_00000000, ((int*)&D_00000000)[j]);
     }
-    CALL(PolyShape_ctor)(0, &sStr_board_8A58, D_00000000_b49c[j], 0);  /* func_00008A40+0x18 */
+    CALL(PolyShape_ctor)(0, &sStr_board_8A58, D_00000000_b49c[j], 0);  /* stream_readF32_00008A40+0x18 */
 }
 
 /* SnowBoarder_limitSpeed - verified structural decode (0x23C, 143 insns,
@@ -5413,7 +5413,7 @@ void SnowBoarder_updateOrient(char *arg0) {
  *       }
  *       if (s0->0x990) {                            // signed branch
  *           if (s0->0x9CC) { ... 0.5f (0x3F000000) ... }
- *           ... uses SndHandle_triggerEvent0_000008F4+0x20 / func_00008A40 ...
+ *           ... uses SndHandle_triggerEvent0_000008F4+0x20 / stream_readF32_00008A40 ...
  *       }
  *       ... s0->0x9A2 (s16) further updates ...
  *   }
@@ -5430,10 +5430,10 @@ void SnowBoarder_updateOrient(char *arg0) {
  *
  * RECONSTRUCTED 2026-06-23: faithful full-body decode now uses the REAL
  * resolved reloc symbols (SndHandle_triggerEvent0_000008F4+0x20 f32 / +0x24 f64 const-pool;
- * func_00008A40+0x20 / +0x2C dispatch-target addresses passed to the
+ * stream_readF32_00008A40+0x20 / +0x2C dispatch-target addresses passed to the
  * allocator func_00000000) in place of the old &D_00000000 placeholders.
  * Build emits EXACTLY 186 instructions = target's 186 (same opcode
- * multiset, all relocs correct: 2x SndHandle_triggerEvent0_000008F4 HI/LO, 2x func_00008A40
+ * multiset, all relocs correct: 2x SndHandle_triggerEvent0_000008F4 HI/LO, 2x stream_readF32_00008A40
  * HI/LO, 8x func_00000000 R_MIPS_26).
  *
  * RESIDUAL CAP (~35 mnemonic-position diffs, permuter-immune — floored at
@@ -5445,8 +5445,8 @@ void SnowBoarder_updateOrient(char *arg0) {
  *   (2) switch default arm: target's 3rd compare is `beql` (likely) with
  *       lwc1 0x360 in delay + ldc1/add.d/cvt ordering; build differs only
  *       in as1 instruction scheduling.
- *   (3) RESOLVED 2026-07-30 (agent-g): the func_00008A40+0x2C tail ref is
- *       anchor-split to &func_00008A38+0x34 (same absolute 0x8A6C, distinct
+ *   (3) RESOLVED 2026-07-30 (agent-g): the stream_readF32_00008A40+0x2C tail ref is
+ *       anchor-split to &boot_emptyStub_00008A38+0x34 (same absolute 0x8A6C, distinct
  *       in-TU anchor — E68/CCE0 lever) which kills the base CSE-collapse:
  *       frame back to -32 (exact), spill gone. Reloc-name diff at that one
  *       site is the accepted fuzzy residual.
@@ -5469,7 +5469,7 @@ void SnowBoarder_updateOrient(char *arg0) {
 #ifdef NON_MATCHING
 extern f32 D_BF8C_pool8F4[]; /* data views of the SndHandle_triggerEvent0_000008F4 const pool (NM only; pins = SndHandle_triggerEvent0_000008F4 / SndHandle_triggerEvent0_000008F4 + 0x24 if promoted) */
 extern f64 D_BF8C_pool8F4_24;
-extern char D_BF8C_8A40[]; /* data view of func_00008A40 (dispatch-target addresses; pin = func_00008A40 if promoted) */
+extern char D_BF8C_8A40[]; /* data view of stream_readF32_00008A40 (dispatch-target addresses; pin = stream_readF32_00008A40 if promoted) */
 void SnowBoarder_updateDyn(char *arg0) {
     /* agent-g run 470: field form (snowboarder.h). The statement order, the nested-!= goto chain and the
      * volatile turnRate parm reads are the run-108 comparison levers; keep them. */
@@ -5543,7 +5543,7 @@ Lend:
     func_00000000(D_BF8C_8A40 + 0x20);  /* perf section start "SnowBCol" */
     func_00000000(sb);                  /* SnowBoarder_procColl */
     /* anchor-split (E68/CCE0 lever): same absolute addr 0x8A6C as
-     * &func_00008A40+0x2C but distinct in-TU anchor kills the base
+     * &stream_readF32_00008A40+0x2C but distinct in-TU anchor kills the base
      * CSE-collapse (frame bloat cascade); reloc-name diff at this site
      * is the accepted fuzzy residual. */
     func_00000000(D_BF8C_8A40 + 0x2C);  /* perf section end */
@@ -5572,8 +5572,8 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_updateDyn);
 //     // main body: physics/animation integration driven by folded
 //     //   constant tables —
 //     //     SndHandle_triggerEvent3_00000940 + {0x4,0x8,0xC,0x10}  (4-word table),
-//     //     func_00008A7C + {0x14,0x18,0x28,0x34} (a folded struct),
-//     //     func_00008A40 + 0x38, SndHandle_triggerEvent0_000008F4 + {0x2C,0x30,0x34}
+//     //     stream_readVec3_00008A7C + {0x14,0x18,0x28,0x34} (a folded struct),
+//     //     stream_readF32_00008A40 + 0x38, SndHandle_triggerEvent0_000008F4 + {0x2C,0x30,0x34}
 //     //   (same literal-pool fold family) — plus 16 func_00000000
 //     //   sub-calls (sub-system updates) operating on st->0x300.. and
 //     //   st->0xA00.. blocks.
@@ -5588,8 +5588,8 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_updateDyn);
 //   Folded refs (literal-pool fold family — incl. another contiguous
 //   strided table at SndHandle_triggerEvent3_00000940 +0x4/0x8/0xC/0x10; see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C):
-//     SndHandle_triggerEvent3_00000940 (4-word table), func_00008A7C (folded struct),
-//     func_00008A40+0x38, SndHandle_triggerEvent0_000008F4+{0x2C,0x30,0x34} (f-pool).
+//     SndHandle_triggerEvent3_00000940 (4-word table), stream_readVec3_00008A7C (folded struct),
+//     stream_readF32_00008A40+0x38, SndHandle_triggerEvent0_000008F4+{0x2C,0x30,0x34} (f-pool).
 // Caps (DEFERRED): 550-insn folded-table-driven physics integrator —
 //   byte-match blocked by deferred pool symbolization. Real-C
 //   STRUCTURAL body below — per-frame entity physics/state update
@@ -5618,7 +5618,7 @@ void SnowBoarder_toggleNudge(char *a0) {
 //     func_00000000(st+0x90C, 0x17C);
 //     st->0x9D0 = F32(SndHandle_triggerEvent3_00000940+0x18);               // folded const
 //     st->0xA78 = st->0x768;
-//     switch (*(int*)(func_00000008+0x2C)) {              // mode/difficulty
+//     switch (*(int*)(stream_readS32_00000008+0x2C)) {              // mode/difficulty
 //       case 2:        st->0xA14 = 0x5A;     break;       // 90
 //       case 3: case 4:st->0xA14 = 0x4B;     break;       // 75
 //       default:       st->0xA14 = 0xF4240;  break;       // 1000000
@@ -5630,7 +5630,7 @@ void SnowBoarder_toggleNudge(char *a0) {
 //     if (st->0x8BC & 0x20) { st->0xA58 = st->0x8BC; func_00000000(st); }
 //     func_00000000(st, st+0x3A4);  func_00000000(st);
 //     func_00000000(st->0x840);     func_00000000(st->0x804);   // sub-resets
-//     if (!((st->0xA58 << 14) >= 0)) func_00000000(&func_00008A7C+0x40,
+//     if (!((st->0xA58 << 14) >= 0)) func_00000000(&stream_readVec3_00008A7C+0x40,
 //                                                  st->0xC);
 //     // snapshot: st->0xB4/B8/BC -> st->0x890/894/898 (prev pos),
 //     //           st->0x318/31C/320 -> st->0x89C/8A0/8A4 (prev pos2)
@@ -5645,7 +5645,7 @@ void SnowBoarder_toggleNudge(char *a0) {
 //     0x890.. / 0x89C..; 0x768/0x9D0/0x840/0x804/0xC sub-objs.
 //   Folded refs (literal-pool/placeholder fold family — SndHandle_triggerEvent3_00000940
 //   +0x18 corroborates the contiguous strided table from SnowBoarder_updateOrient;
-//   func_00000008+0x2C a mode global; func_00008A7C+0x40 a folded
+//   stream_readS32_00000008+0x2C a mode global; stream_readVec3_00008A7C+0x40 a folded
 //   struct; see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C).
 // Caps (DEFERRED): 126-insn reset w/ folded mode/const refs — byte
@@ -5750,7 +5750,7 @@ void SnowBoarder_createColliders_0000CCE0(char *st, int a1) {
 //
 // 2026-06-22 (agent-d): refined to byte-faithful structure (build 292/296
 // insns, body logic matches target instruction-for-instruction). Fixed:
-//   - reloc form: &func_0000023C+0x18 / &func_00000080+0x64 / &SndHandle_triggerEvent3_00000940
+//   - reloc form: &snd_setPlayer0VolumeLevel_0000023C+0x18 / &stream_readVec3_00000080+0x64 / &SndHandle_triggerEvent3_00000940
 //     +0x30/+0x38 (was &D_00000000 — wrong reloc symbol).
 //   - 112.0f/255.0f forced runtime div via shared `float div255=255.0f`
 //     (held in $f0, reused for all 4 divisions) — defeats const-fold to .rodata.
@@ -5764,12 +5764,12 @@ void SnowBoarder_createColliders_0000CCE0(char *st, int a1) {
 //   `<name>f` float-prototype workaround is unavailable: bootup is LINK-DIRECT,
 //   so a func_00000000f reloc breaks the ROM link AND mismatches the target's
 //   R_MIPS_26 func_00000000 symbol (see docs IDO knr-float-call). (2) ctx =
-//   *(func_0000023C+0x18) is read 3x; IDO -O2 CSEs the guard+call-arg reads
+//   *(snd_setPlayer0VolumeLevel_0000023C+0x18) is read 3x; IDO -O2 CSEs the guard+call-arg reads
 //   (no intervening barrier) while the target reloads each — no C knob forces
 //   the reload. Net: correct logic, divergent regalloc — permuter/cc territory.
 //
 //   void SnowBoarder_display(State *st) {
-//     int *ctx = *(int**)(func_0000023C+0x18);          // global ctx ptr
+//     int *ctx = *(int**)(snd_setPlayer0VolumeLevel_0000023C+0x18);          // global ctx ptr
 //     if ((st->0xA58 & 0x2000) && ctx == st->0x8DC) return;   // unchanged
 //     R *r = func_00000000(ctx, st->0xB4, st->0xB8, st->0xBC,
 //                          0, out_at_sp84);              // query current
@@ -5791,7 +5791,7 @@ void SnowBoarder_createColliders_0000CCE0(char *st, int a1) {
 //       func_00000000(st->0x850, st+0x9D8); func_00000000(st);
 //       func_00000000(0x11); func_00000000(0, st+0x8E0);
 //       func_00000000(.); func_00000000(st); func_00000000(st);
-//       *(int*)(func_00000080+0x64) = 0;  goto tail;
+//       *(int*)(stream_readVec3_00000080+0x64) = 0;  goto tail;
 //     }
 //     if ((st->0x8B8 & 0xA) && st->0xA4C && !(st->9A8 & 0x400)) {
 //       Vec3 d = func_00000000(st->0x850, &sp44);
@@ -5807,11 +5807,11 @@ void SnowBoarder_createColliders_0000CCE0(char *st, int a1) {
 //           dispatch st->0x824->0x28;
 //       }
 //     }
-//     *(int*)(func_00000080+0x64) = 0;
+//     *(int*)(stream_readVec3_00000080+0x64) = 0;
 //   tail:
 //     func_00000000((st->0x8B8 & 1) ? 0x11 : 0x14);
 //     func_00000000(0, sp30); func_00000000(st);
-//     func_00000000((*(int**)(func_0000023C+0x18))->0x108);
+//     func_00000000((*(int**)(snd_setPlayer0VolumeLevel_0000023C+0x18))->0x108);
 //   reset: func_00000000(. ); st->0xA44 = 0; ...
 //   }
 //
@@ -5823,9 +5823,9 @@ void SnowBoarder_createColliders_0000CCE0(char *st, int a1) {
 //     0xA30/A31/A32 u8 RGB src; 0x814/0x820/0x824 sub-objs (->0x28
 //     vtable, ->0x1C fn ptr, ->0x18 s16 base — the obj->0x28 dispatch
 //     idiom); 0x850 a transform source; 0x9A0/0x904/0x938 state words.
-//   Folded refs: func_0000023C+0x18 (global ctx ptr — writable fold);
+//   Folded refs: snd_setPlayer0VolumeLevel_0000023C+0x18 (global ctx ptr — writable fold);
 //   SndHandle_triggerEvent3_00000940 +0x30 (f32) / +0x38 (f64) — extends the contiguous
-//   strided fold table to +0x4..+0x38; func_00000080+0x64 (writable
+//   strided fold table to +0x4..+0x38; stream_readVec3_00000080+0x64 (writable
 //   global flag, cleared 2x); see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C.
 //   (Pool symbolization is RESOLVED: refs use real reloc symbols, not
@@ -5844,7 +5844,7 @@ void SnowBoarder_display(char *st) {
 // vtable sub-updates accordingly.
 //
 //   void SnowBoarder_update(State *st) {            // st -> s0
-//     func_00000000(&func_00008A7C+0x54);      // named action (table)
+//     func_00000000(&stream_readVec3_00008A7C+0x54);      // named action (table)
 //     int fl = st->0xA58;
 //     if (fl & 0x100) {
 //       sub = st->0x800;
@@ -5862,15 +5862,15 @@ void SnowBoarder_display(char *st) {
 //     }
 //     if (fl & 0x4) {
 //       st->0x800->0x3C = 1;
-//       func_00000000(&func_00008A7C+0x5C);
+//       func_00000000(&stream_readVec3_00008A7C+0x5C);
 //       dispatch st->0x804->0x28 (->0x24 fn, ->0x20 base);
-//       func_00000000(&func_00008A7C+0x64);
+//       func_00000000(&stream_readVec3_00008A7C+0x64);
 //       fl = st->0xA58;
 //     }
 //     if (fl & 0x80) { func_00000000(st+0x808 ...); ... }
-//     // ... further fl-bit blocks (more func_00008A7C/func_00008AEC
-//     //   descriptor actions + func_000000F0+0x48 + vtable dispatches);
-//     func_00000000(&func_00008AEC+0x44);      // final action
+//     // ... further fl-bit blocks (more stream_readVec3_00008A7C/stream_readQuad_00008AEC
+//     //   descriptor actions + stream_readQuad_000000F0+0x48 + vtable dispatches);
+//     func_00000000(&stream_readQuad_00008AEC+0x44);      // final action
 //   }
 //
 // Struct-typing reference:
@@ -5881,9 +5881,9 @@ void SnowBoarder_display(char *st) {
 //     0x28 own vtable (->0x2C fn, ->0x28 s16 base) — obj->0x28 dispatch
 //     idiom; 0x808 a sub-record.
 //   Folded action/desc tables (literal-pool/placeholder fold family):
-//     func_00008A7C + {0x54,0x5C,0x64,0x6C} (8-stride),
-//     func_00008AEC + {0x8,0x14,0x20,0x2C,0x38,0x44} (0xC-stride),
-//     func_000000F0 + 0x48 (x3); see
+//     stream_readVec3_00008A7C + {0x54,0x5C,0x64,0x6C} (8-stride),
+//     stream_readQuad_00008AEC + {0x8,0x14,0x20,0x2C,0x38,0x44} (0xC-stride),
+//     stream_readQuad_000000F0 + 0x48 (x3); see
 //     docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C.
 // Caps (DEFERRED): 304-insn flag-walk dispatcher w/ folded tables +
 //   vtable calls — byte-match blocked by deferred pool symbolization.
@@ -5896,13 +5896,13 @@ extern void func_d440_f0call(int, int, float);
 extern void func_d440_final(int, int, float, float, float, float, int, int, int);
 extern float func_d440_frnd(void *);  /* float-return alias: result -> cvt.d.s */
 extern float D_00000980;
-/* Distinct folded-table action-record symbols (= func_00008A7C/AEC + N). Naming
- * each one distinctly defeats IDO's CSE of the shared %hi(func_00008A7C) base
+/* Distinct folded-table action-record symbols (= stream_readVec3_00008A7C/AEC + N). Naming
+ * each one distinctly defeats IDO's CSE of the shared %hi(stream_readVec3_00008A7C) base
  * into a spilled saved-reg — forces per-site lui+addiu rematerialization to
  * match the target's 21 luis (vs hoisted 12 + stack reloads). */
 extern char D_00008AD0, D_00008AD8, D_00008AE0, D_00008AE8;
 extern char D_00008AF4, D_00008B00, D_00008B0C, D_00008B18, D_00008B24, D_00008B30;
-/* 3 distinct aliases of func_000000F0 so the repeated *(int*)(&F0+0x48) load is
+/* 3 distinct aliases of stream_readQuad_000000F0 so the repeated *(int*)(&F0+0x48) load is
  * rematerialized per call (target: 3x lui %hi + lw 0x48) not CSE'd to a spill. */
 extern char D_F0a, D_F0b, D_F0c;
 #endif
@@ -5912,7 +5912,7 @@ extern char D_F0a, D_F0b, D_F0c;
 // vtable sub-updates accordingly.
 //
 //   void SnowBoarder_update(State *st) {            // st -> s0
-//     func_00000000(&func_00008A7C+0x54);      // named action (table)
+//     func_00000000(&stream_readVec3_00008A7C+0x54);      // named action (table)
 //     int fl = st->0xA58;
 //     if (fl & 0x100) {
 //       sub = st->0x800;
@@ -5930,15 +5930,15 @@ extern char D_F0a, D_F0b, D_F0c;
 //     }
 //     if (fl & 0x4) {
 //       st->0x800->0x3C = 1;
-//       func_00000000(&func_00008A7C+0x5C);
+//       func_00000000(&stream_readVec3_00008A7C+0x5C);
 //       dispatch st->0x804->0x28 (->0x24 fn, ->0x20 base);
-//       func_00000000(&func_00008A7C+0x64);
+//       func_00000000(&stream_readVec3_00008A7C+0x64);
 //       fl = st->0xA58;
 //     }
 //     if (fl & 0x80) { func_00000000(st+0x808 ...); ... }
-//     // ... further fl-bit blocks (more func_00008A7C/func_00008AEC
-//     //   descriptor actions + func_000000F0+0x48 + vtable dispatches);
-//     func_00000000(&func_00008AEC+0x44);      // final action
+//     // ... further fl-bit blocks (more stream_readVec3_00008A7C/stream_readQuad_00008AEC
+//     //   descriptor actions + stream_readQuad_000000F0+0x48 + vtable dispatches);
+//     func_00000000(&stream_readQuad_00008AEC+0x44);      // final action
 //   }
 //
 // Struct-typing reference:
@@ -5949,9 +5949,9 @@ extern char D_F0a, D_F0b, D_F0c;
 //     0x28 own vtable (->0x2C fn, ->0x28 s16 base) — obj->0x28 dispatch
 //     idiom; 0x808 a sub-record.
 //   Folded action/desc tables (literal-pool/placeholder fold family):
-//     func_00008A7C + {0x54,0x5C,0x64,0x6C} (8-stride),
-//     func_00008AEC + {0x8,0x14,0x20,0x2C,0x38,0x44} (0xC-stride),
-//     func_000000F0 + 0x48 (x3); see
+//     stream_readVec3_00008A7C + {0x54,0x5C,0x64,0x6C} (8-stride),
+//     stream_readQuad_00008AEC + {0x8,0x14,0x20,0x2C,0x38,0x44} (0xC-stride),
+//     stream_readQuad_000000F0 + 0x48 (x3); see
 //     docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C.
 // Caps (DEFERRED): 304-insn flag-walk dispatcher w/ folded tables +
 //   vtable calls — byte-match blocked by deferred pool symbolization.
@@ -6153,7 +6153,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
 //       case 0x3E8: case 0x3E9: case 0x3EA: case 0x3EB:
 //       case 0x3EC: case 0x3ED: case 0x3EE: case 0x3EF:
 //         // numbered sub-actions: set a small index (t-reg 1..5),
-//         //   run SnowBCollider_ctor / func_00008AEC descriptor actions,
+//         //   run SnowBCollider_ctor / stream_readQuad_00008AEC descriptor actions,
 //         //   FP compares vs the folded pool constant;
 //       default: st->0xA54 = 6; break;           // .L0000DDAC
 //     }
@@ -6173,7 +6173,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
 //     `SndHandle_triggerEvent1_0000098C + 0x4` (@0x988) = f64 0.1, `+ 0xC`-form (@0x990) = f64 0.2
 //     (rodata data @ ROM 0xD9FE44). `SndHandle_triggerEvent1_0000098C + N` is just the correct
 //     placeholder-byte reproduction, NOT a pool bug to re-extract.
-//     func_00008AEC/SnowBCollider_ctor refs are the same matchable addend-reloc
+//     stream_readQuad_00008AEC/SnowBCollider_ctor refs are the same matchable addend-reloc
 //     class. See docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C.
 // Caps (DEFERRED): 305-insn opcode dispatcher — byte-match blocked by full
 //   FP-body reconstruction + FP coloring + the file-split needed to fold the
@@ -6190,7 +6190,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
  * test inverted (`if (v != 0x3EF) goto def; goto c3ED;`, IDO_CODEGEN
  * #unsorted-dispatch-if-goto-plus-switch-54aec) and `if (1) {}` in the two
  * one-store bodies so IDO keeps them out of line. Also: the calls take ONE arg
- * where m2c added a1 = self; the 0x8B38.. literals are func_00008AEC /
+ * where m2c added a1 = self; the 0x8B38.. literals are stream_readQuad_00008AEC /
  * SnowBCollider_ctor + K addresses (data aliases, lui/addiu %hi/%lo(sym+K)); the
  * 0.1/0.2 f64 are symbols (lui at + ldc1 %lo); the case-6 fields are f32;
  * sp48 -> sp54 -> sp6C and the 0xE0 copy are Vec3 struct copies (target
@@ -6215,7 +6215,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
  *   if/else, copy-first, register, if (1) and comma spellings all give the
  *   same colouring. bu_d900_k990 needs a pin at 0x990 for an exact. */
 extern f64 kRo_SnowBoarder_handleMsg_988, bu_d900_k990;  /* rodata f64 0.1 (pinned 0x988) / 0.2 (0x990; target spells it SndHandle_triggerEvent1_0000098C + 4) */
-extern char bu_d900_aec[], bu_d900_b44[];  /* data aliases of func_00008AEC / SnowBCollider_ctor (target lui/addiu %hi/%lo(sym+K)) */
+extern char bu_d900_aec[], bu_d900_b44[];  /* data aliases of stream_readQuad_00008AEC / SnowBCollider_ctor (target lui/addiu %hi/%lo(sym+K)) */
 typedef struct { s32 w; } S4D900;  /* 4-byte struct passed by value (target sw a1,4(sp) arg-area copy) */
 void SnowBoarder_handleMsg(char *arg0, char *arg1) {
     S4D900 sp8C;
@@ -6631,7 +6631,7 @@ void SnowBCollider_edgeGrip_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg
  * Struct-typing reference: a0 composite object; a0+0x540 / a0+0x108
  * sub-regions passed to reloc sub-init/deinit; a0+0x8C8 s16 array of
  * `n` elements (n produced by stream_readS32_000089C0, per-element processed by
- * func_000089FC); a0->0x840 (2112) child A ptr, a0->0x804 (2052)
+ * stream_read16_000089FC); a0->0x840 (2112) child A ptr, a0->0x804 (2052)
  * child B ptr; child->0x28 (40) vtable ptr with fn @0x4C (76) and
  * s16 base-adjust @0x48 (72). Caps <80: 2x reloc + 2x vtable jalr +
  * blezl branch-likely loop with per-iter reload. INCLUDE_ASM remains
@@ -6655,7 +6655,7 @@ void SnowBoarder_readParms(char *a0) {
   p = (short *) (a0 + 0x8C8);
   for (; i < n; i++)
   {
-    func_000089FC(p);
+    stream_read16_000089FC(p);
     p += 1;
   }
 
@@ -6671,18 +6671,18 @@ void SnowBoarder_readParms(char *a0) {
 void boot_readFloatParm_0000E588(char *a0) {
     int scratch;
     stream_readS32_000089C0(&scratch);
-    func_00008A40((int*)(a0 + 0x10));
+    stream_readF32_00008A40((int*)(a0 + 0x10));
 }
 
 void boot_readVec3Parm_0000E5B8(char *a0) {
     int scratch;
     stream_readS32_000089C0(&scratch);
-    func_00008A7C((int*)(a0 + 0x10));
+    stream_readVec3_00008A7C((int*)(a0 + 0x10));
 }
 
-float ShpNode_func_0000E5E8(char *a0) { return SHPNODE(a0)->dnode.parms.suc.value; } /* the "suc" DNode parm (+0x198) */
+float ShpNode_getSuc(char *a0) { return SHPNODE(a0)->dnode.parms.suc.value; } /* the "suc" DNode parm (+0x198) */
 
-void ShpNode_func_0000E5F0(char *a0) {
+void ShpNode_saveData(char *a0) {
     FCALL(Parms_save)(a0 + 0x108);
 }
 
@@ -6693,7 +6693,7 @@ void ShpNode_readParms(char *a0) {
 void boot_readQuadParm_0000E630(char *a0) {
     int scratch;
     stream_readS32_000089C0(&scratch);
-    func_00008AEC((int*)(a0 + 0x10));
+    stream_readQuad_00008AEC((int*)(a0 + 0x10));
 }
 
 void boot_readIntParm_0000E660(char *a0) {
@@ -6702,7 +6702,7 @@ void boot_readIntParm_0000E660(char *a0) {
     stream_readS32_000089C0((int*)(a0 + 0x10));
 }
 
-/* boot_ItemType_create_0000E690: byte-identical mirror of func_00000C10 / boot_ItemType_create_000046EC /
+/* boot_ItemType_create_0000E690: byte-identical mirror of ColourItem_create_00000C10 / boot_ItemType_create_000046EC /
  * boot_ItemType_create_00007B08 — all byte-exact twins of donor edd_ItemType_create_000003BC.
  * BYTE-EXACT via the donor's clean C form (p2/head/p1 decl order + char*-cast
  * field access + p1[0x40/4] re-read). Was once force-matched via INSN_PATCH
@@ -6736,13 +6736,13 @@ void SnowBChild_readParms_0000E720(char *a0) {
 
 /* ScreenThumbMat_grab_0000E740 - verified structural decode (0xB4, 48 insns,
  * 2D strided->packed halfword blit / unswizzle).
- * Struct-typing reference: global root *(func_0000023C+4); root->0x28
+ * Struct-typing reference: global root *(snd_setPlayer0VolumeLevel_0000023C+4); root->0x28
  * (40) vtable ptr with fn @0x64 (100) + s16 base-adjust @0x60 (96)
  * returning a buffer base; src region at base+0x9140 laid out as
  * 0x20-byte cells with 4 u16 lanes at cell offsets 0/8/0x10/0x18;
  * dst = a0->0x1C (28) packed u16 output. Grid 32x(16*4)=2048 u16,
  * row stride +0xA80 in src. The obj-0x28 vtable-dispatch idiom
- * (0x64/0x60 variant). Caps <80: vtable jalr + func_0000023C+4
+ * (0x64/0x60 variant). Caps <80: vtable jalr + snd_setPlayer0VolumeLevel_0000023C+4
  * reloc data ref + nested strided copy loop (bne loop pair).
  * INCLUDE_ASM remains build path. */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_E740.cpp,
@@ -6756,10 +6756,10 @@ void ScreenThumbMat_grab_0000E740(char *a0, int a1) {
  * Struct-typing reference: sStr_rom_audio_seq_uso_8D34 / sStr_rom_audio_wave_uso_8D48 / sStr_rom_audio_bank_uso_8D5C =
  * three config-key data (string/descriptor) parsed by the reloc
  * helper into a (x,y,z) triple on the stack, then consumed in
- * (x,z,y) order. func_00000008+0x20 = global slot set to &D
+ * (x,z,y) order. stream_readS32_00000008+0x20 = global slot set to &D
  * (registration). Tail uses the engine-wide obj-0x28 vtable-dispatch
  * idiom, 0x5C/0x58 variant (root *(&D) ->0x28 -> {fn@0x5C,
- * s16@0x58}). Caps <80: 7x reloc + 5x &D reloc + func_00000008+0x20
+ * s16@0x58}). Caps <80: 7x reloc + 5x &D reloc + stream_readS32_00000008+0x20
  * cross-symbol data store + vtable jalr.
  * INCLUDE_ASM remains build path. */
 extern char sStr_rom_audio_seq_uso_8D34, sStr_rom_audio_wave_uso_8D48, sStr_rom_audio_bank_uso_8D5C;
@@ -6839,7 +6839,7 @@ void SnowBoard_InitInstance(char *arg0) {
 }
 
 extern int gInputMgr_00000190;
-void SnowBoard_vslot14(int a0) {
+void SnowBoard_fadeOut_0000EAF8(int a0) {
     FCALL(Fader_start)(gInputMgr_00000190, 3, 0);
 }
 

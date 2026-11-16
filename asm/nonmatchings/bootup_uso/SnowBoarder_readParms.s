@@ -17,7 +17,7 @@ glabel SnowBoarder_readParms
     /* DDEF7C 0000E510 59C0000A */  blezl      $t6, .L0000E53C
     /* DDEF80 0000E514 8E420840 */   lw        $v0, 0x840($s2)
   .L0000E518:
-    /* DDEF84 0000E518 0C00227F */  jal        func_000089FC
+    /* DDEF84 0000E518 0C00227F */  jal        stream_read16_000089FC
     /* DDEF88 0000E51C 02202025 */   or        $a0, $s1, $zero
     /* DDEF8C 0000E520 8FAF0034 */  lw         $t7, 0x34($sp)
     /* DDEF90 0000E524 26100001 */  addiu      $s0, $s0, 0x1

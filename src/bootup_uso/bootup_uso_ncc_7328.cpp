@@ -26,13 +26,13 @@ void stream_readS32_00005EF8(void *);
 void stream_readS32_0000502C(void *);
 void stream_readS32_00004FF0(void *);
 extern char D_00000000, sFmt_Env_Load_7F90, sFmt_Env_Skip_7FA0;
-extern char func_0000027C[], func_00000008[], func_0000029C[];
+extern char snd_startPlayer2Seq_0000027C[], stream_readS32_00000008[], snd_muteAll_0000029C[];
 }
-/* The relocs (uso-data-sites.py sites EnvSettings_load): func_00000008 + 0x34 = GameFlow (bootup Bss
- * 0xF8, sym272) +0x3C, func_0000029C + 4 = GfxLib (sym154) +0x2A0 = fog.colour[3]; the symbols and
+/* The relocs (uso-data-sites.py sites EnvSettings_load): stream_readS32_00000008 + 0x34 = GameFlow (bootup Bss
+ * 0xF8, sym272) +0x3C, snd_muteAll_0000029C + 4 = GfxLib (sym154) +0x2A0 = fog.colour[3]; the symbols and
  * addends stay the target's (agent-g run 580). */
-#define GAMEFLOW_7328 GAMEFLOW(func_00000008 - 8)
-#define GFX_7328 GFXLIB(func_0000029C - 0x29C)
+#define GAMEFLOW_7328 GAMEFLOW(stream_readS32_00000008 - 8)
+#define GFX_7328 GFXLIB(snd_muteAll_0000029C - 0x29C)
 struct Msg73 { int id; };
 struct Handler73 { char pad[0x28]; virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
     virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void handle(); };
@@ -73,7 +73,7 @@ extern "C" void EnvSettings_load(char *self) {
     }
     stream_readS32_0000502C(&ENVSET(self)->flags);
     if (ENVSET(self)->flags & 1) {
-        FCALL(gfx_loadQuadIntInt_00044034)(func_0000027C + 0x18);
+        FCALL(gfx_loadQuadIntInt_00044034)(snd_startPlayer2Seq_0000027C + 0x18);
     }
     if (ENVSET(self)->flags & 2) {
         stream_readS32_00004FF0(&ENVSET(self)->clipNear);

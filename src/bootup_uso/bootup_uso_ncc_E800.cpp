@@ -1,6 +1,6 @@
 /* IDO 7.1 NCC (C++) donor for SnowBoard_ctor (0xBC / 47 words) -- reads three
  * config ints by key, applies them, then installs a handler pointer at
- * func_00000008+0x20 and calls the root object's virtual slot 10
+ * stream_readS32_00000008+0x20 and calls the root object's virtual slot 10
  * (vptr +0x28: lh +0x58 / lw +0x5C).
  *
  * C++ (agent-c run 116). Needed beyond the cfe logic:
@@ -21,18 +21,18 @@ void func_00000000(...);
 extern char D_00000000;
 extern char gSysLib_e800_g1, gSysLib_e800_g2, gSysLib_e800_g3, gSnowBoard_e800_g4, SnowBoard_vtbl_e800_v;
 extern char sStr_rom_audio_seq_uso_8D34, sStr_rom_audio_wave_uso_8D48, sStr_rom_audio_bank_uso_8D5C;
-extern char func_00000008[];
+extern char stream_readS32_00000008[];
 }
 struct VO { char pad[0x28];
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
     virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
     virtual void f(); };
-/* The handler store is the app object's vptr: func_00000008 + 0x20 relocates against gSnowBoard (bootup
+/* The handler store is the app object's vptr: stream_readS32_00000008 + 0x20 relocates against gSnowBoard (bootup
  * Bss 0x58, sym326, the same object as the D_00000000 root) at +0x28, the cfront vptr slot of a Node
  * subclass (uso-data-sites.py sites SnowBoard_ctor; agent-g run 580). The symbol and addend stay the
- * target's: SNOWBOARD_E800 is func_00000008 - 8, so &->vptr is func_00000008 + 0x20. */
+ * target's: SNOWBOARD_E800 is stream_readS32_00000008 - 8, so &->vptr is stream_readS32_00000008 + 0x20. */
 struct AppVptrE800 { char node[0x28]; void *vptr; };
-#define SNOWBOARD_E800 ((AppVptrE800 *)(func_00000008 - 8))
+#define SNOWBOARD_E800 ((AppVptrE800 *)(stream_readS32_00000008 - 8))
 extern "C" void SnowBoard_ctor(void) {
     VO *root;
     int z, x, y;

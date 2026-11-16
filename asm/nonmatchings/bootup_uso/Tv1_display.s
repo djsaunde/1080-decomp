@@ -12,8 +12,8 @@ glabel Tv1_display
     /* DD8180 00007714 E7A40010 */  swc1       $f4, 0x10($sp)
     /* DD8184 00007718 C6080070 */  lwc1       $f8, 0x70($s0)
     /* DD8188 0000771C C6060080 */  lwc1       $f6, 0x80($s0)
-    /* DD818C 00007720 3C040000 */  lui        $a0, %hi(func_0000023C + 0x18)
-    /* DD8190 00007724 8C840254 */  lw         $a0, %lo(func_0000023C + 0x18)($a0)
+    /* DD818C 00007720 3C040000 */  lui        $a0, %hi(snd_setPlayer0VolumeLevel_0000023C + 0x18)
+    /* DD8190 00007724 8C840254 */  lw         $a0, %lo(snd_setPlayer0VolumeLevel_0000023C + 0x18)($a0)
     /* DD8194 00007728 46083282 */  mul.s      $f10, $f6, $f8
     /* DD8198 0000772C 24050003 */  addiu      $a1, $zero, 0x3
     /* DD819C 00007730 0C000000 */  jal        func_00000000
@@ -24,10 +24,10 @@ glabel Tv1_display
     /* DD81B0 00007744 00C02025 */  or         $a0, $a2, $zero
     /* DD81B4 00007748 0C000000 */  jal        func_00000000
     /* DD81B8 0000774C 2605002C */   addiu     $a1, $s0, 0x2C
-    /* DD81BC 00007750 3C020000 */  lui        $v0, %hi(func_00000080 + 0x20)
+    /* DD81BC 00007750 3C020000 */  lui        $v0, %hi(stream_readVec3_00000080 + 0x20)
     /* DD81C0 00007754 3C060000 */  lui        $a2, (0x0 >> 16)
     /* DD81C4 00007758 24C60000 */  addiu      $a2, $a2, 0x0
-    /* DD81C8 0000775C 244200A0 */  addiu      $v0, $v0, %lo(func_00000080 + 0x20)
+    /* DD81C8 0000775C 244200A0 */  addiu      $v0, $v0, %lo(stream_readVec3_00000080 + 0x20)
     /* DD81CC 00007760 C4500030 */  lwc1       $f16, 0x30($v0)
     /* DD81D0 00007764 C4D20128 */  lwc1       $f18, 0x128($a2)
     /* DD81D4 00007768 C4460034 */  lwc1       $f6, 0x34($v0)

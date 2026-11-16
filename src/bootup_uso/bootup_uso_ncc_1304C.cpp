@@ -48,11 +48,11 @@ extern "C" {
 void func_00000000(...);
 extern char D_00000000[];
 extern float kRo_Fader_display_C50, kRo_Fader_display_C54, kRo_Fader_display_C58, kRo_Fader_display_C5C, kRo_Fader_display_C60;
-extern char func_0000023C[];
+extern char snd_setPlayer0VolumeLevel_0000023C[];
 }
-/* func_0000023C + 0x18 is GfxLib +0x254 (uso-data-sites: the reloc names Bss+0x3C168 sym154, the GfxLib
- * global, K = 0x254), so func_0000023C stands for &gGfxLib + 0x23C; the same reloc as the target. */
-#define GFX_1304C GFXLIB(func_0000023C - 0x23C)
+/* snd_setPlayer0VolumeLevel_0000023C + 0x18 is GfxLib +0x254 (uso-data-sites: the reloc names Bss+0x3C168 sym154, the GfxLib
+ * global, K = 0x254), so snd_setPlayer0VolumeLevel_0000023C stands for &gGfxLib + 0x23C; the same reloc as the target. */
+#define GFX_1304C GFXLIB(snd_setPlayer0VolumeLevel_0000023C - 0x23C)
 extern "C" void Fader_display(Fire *f) {
     int x, y, i, j;
     float up, dn;

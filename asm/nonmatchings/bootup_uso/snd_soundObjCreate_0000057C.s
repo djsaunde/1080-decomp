@@ -1,6 +1,6 @@
-nonmatching func_0000057C, 0x94
+nonmatching snd_soundObjCreate_0000057C, 0x94
 
-glabel func_0000057C
+glabel snd_soundObjCreate_0000057C
     /* DD0FE8 0000057C 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DD0FEC 00000580 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD0FF0 00000584 00803825 */  or         $a3, $a0, $zero
@@ -44,4 +44,4 @@ glabel func_0000057C
     /* DD1070 00000604 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DD1074 00000608 03E00008 */  jr         $ra
     /* DD1078 0000060C 00000000 */   nop
-endlabel func_0000057C
+endlabel snd_soundObjCreate_0000057C

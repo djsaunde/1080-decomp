@@ -669,12 +669,12 @@ void MGRRaceProcess_onRaceOver(MgrRace *arg0) {
     case 0:
         XCALL(mgrproc_uso_func_0139B0, Fader_start)(INPUT_MGR(import_80020228).fader, 3, 1);
         arg0->race.unk504 = 1;
-        XCALL(mgrproc_uso_func_000188, func_00000188)(7, 0, 0);
+        XCALL(mgrproc_uso_func_000188, snd_seqEndDbg_00000188)(7, 0, 0);
         break;
     case 1:
         if (XCALL(mgrproc_uso_func_013924, Fader_checkDone_00013924)(INPUT_MGR(import_80020228).fader, state) != 0) {
             arg0->race.subState = 1;
-            XCALL(mgrproc_uso_func_000148, func_00000148)(7, 0, 0);
+            XCALL(mgrproc_uso_func_000148, snd_seqEventDbg_00000148)(7, 0, 0);
             XCALL(mgrproc_uso_func_012110, GameFlow_releaseFiles_00012110)(&import_80020098);
             import_000B2888(arg0);
             mgr_startReplay_00001AD0((int *)arg0, INPUT_MGR(import_80020208).replayLen[0] + 0x26000F);
@@ -855,8 +855,8 @@ void MGRRaceProcess_updateSub2(char *s0) {
             if (--MGRRACE(s0)->endingTimer == 0) {
                 MGRRACE(s0)->endingPhase = 3;
                 MGRRACE(s0)->endingTimer = 1650;
-                XCALL(mgrproc_uso_func_000188, func_00000188)(13, 0, 0);
-                XCALL(mgrproc_uso_func_000148, func_00000148)(13, 0, 0);
+                XCALL(mgrproc_uso_func_000188, snd_seqEndDbg_00000188)(13, 0, 0);
+                XCALL(mgrproc_uso_func_000148, snd_seqEventDbg_00000148)(13, 0, 0);
             }
             break;
         case 3: {
@@ -883,7 +883,7 @@ void MGRRaceProcess_updateSub2(char *s0) {
         r = (char *)XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)((int)RACEPROC(s0)->session);
         if (r != 0) {
             import_000B2888(s0);
-            XCALL(mgrproc_uso_func_000148, func_00000148)(7, 0, 0);
+            XCALL(mgrproc_uso_func_000148, snd_seqEventDbg_00000148)(7, 0, 0);
             mgr_startReplay_00001AD0(s0, INPUT_MGR(import_80020208).replayLen[0] + 0x26000F);
             vt = (char *)&import_80020098;
             RACEPROC(s0)->subState = 3;
@@ -1011,8 +1011,8 @@ void mgr_startEnding_00001BE4(MgrRace *state) {
     XCALL(mgrproc_uso_func_012110, GameFlow_releaseFiles_00012110)(base);
     mgr_switchToView2_00001A64((int *)state);
     mgrproc_1BE4_call_1B58((int *)state, 0xA0000);
-    XCALL(mgrproc_uso_func_000188, func_00000188)(0xB, 0, 0);
-    XCALL(mgrproc_uso_func_000148, func_00000148)(0xB, INPUT_MGR(gInputMgr_800200FC).course - 5, 0);
+    XCALL(mgrproc_uso_func_000188, snd_seqEndDbg_00000188)(0xB, 0, 0);
+    XCALL(mgrproc_uso_func_000148, snd_seqEventDbg_00000148)(0xB, INPUT_MGR(gInputMgr_800200FC).course - 5, 0);
     XCALL(mgrproc_uso_func_0139B0, Fader_start)(INPUT_MGR(import_80020228).fader, 1, 1);
 }
 

@@ -25,10 +25,10 @@ glabel SnowBoarder_createBoardShape_0000B49C
   .L0000B4EC:
     /* DDBF58 0000B4EC 8FAF001C */  lw         $t7, 0x1C($sp)
     /* DDBF5C 0000B4F0 3C060000 */  lui        $a2, (0x0 >> 16)
-    /* DDBF60 0000B4F4 3C050001 */  lui        $a1, %hi(func_00008A40 + 0x18)
+    /* DDBF60 0000B4F4 3C050001 */  lui        $a1, %hi(stream_readF32_00008A40 + 0x18)
     /* DDBF64 0000B4F8 00CF3021 */  addu       $a2, $a2, $t7
     /* DDBF68 0000B4FC 8CC60000 */  lw         $a2, 0x0($a2)
-    /* DDBF6C 0000B500 24A58A58 */  addiu      $a1, $a1, %lo(func_00008A40 + 0x18)
+    /* DDBF6C 0000B500 24A58A58 */  addiu      $a1, $a1, %lo(stream_readF32_00008A40 + 0x18)
     /* DDBF70 0000B504 00002025 */  or         $a0, $zero, $zero
     /* DDBF74 0000B508 0C000000 */  jal        func_00000000
     /* DDBF78 0000B50C 00003825 */   or        $a3, $zero, $zero

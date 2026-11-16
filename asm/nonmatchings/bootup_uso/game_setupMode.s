@@ -58,9 +58,9 @@ glabel game_setupMode
     /* DD38E4 00002E78 1020003E */  beqz       $at, .L00002F74
     /* DD38E8 00002E7C 8FA70020 */   lw        $a3, 0x20($sp)
     /* DD38EC 00002E80 0019C880 */  sll        $t9, $t9, 2
-    /* DD38F0 00002E84 3C010000 */  lui        $at, %hi(func_000003F8 + 0xFC)
+    /* DD38F0 00002E84 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0xFC)
     /* DD38F4 00002E88 00390821 */  addu       $at, $at, $t9
-    /* DD38F8 00002E8C 8C3904F4 */  lw         $t9, %lo(func_000003F8 + 0xFC)($at)
+    /* DD38F8 00002E8C 8C3904F4 */  lw         $t9, %lo(snd_calcEmitterDistPan_000003F8 + 0xFC)($at)
     /* DD38FC 00002E90 03200008 */  jr         $t9
     /* DD3900 00002E94 00000000 */   nop
     /* DD3904 00002E98 00E02025 */  or         $a0, $a3, $zero

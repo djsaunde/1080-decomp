@@ -34,23 +34,23 @@ glabel game_setupDemoRace
     /* DD4BF8 0000418C 02002825 */   or        $a1, $s0, $zero
     /* DD4BFC 00004190 0C000000 */  jal        func_00000000
     /* DD4C00 00004194 00000000 */   nop
-    /* DD4C04 00004198 3C010000 */  lui        $at, %hi(func_000003F8 + 0x14C)
-    /* DD4C08 0000419C C4240544 */  lwc1       $f4, %lo(func_000003F8 + 0x14C)($at)
+    /* DD4C04 00004198 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0x14C)
+    /* DD4C08 0000419C C4240544 */  lwc1       $f4, %lo(snd_calcEmitterDistPan_000003F8 + 0x14C)($at)
     /* DD4C0C 000041A0 46040182 */  mul.s      $f6, $f0, $f4
     /* DD4C10 000041A4 4600320D */  trunc.w.s  $f8, $f6
     /* DD4C14 000041A8 44064000 */  mfc1       $a2, $f8
     /* DD4C18 000041AC 0C000000 */  jal        func_00000000
     /* DD4C1C 000041B0 AFA6005C */   sw        $a2, 0x5C($sp)
     /* DD4C20 000041B4 8FA6005C */  lw         $a2, 0x5C($sp)
-    /* DD4C24 000041B8 3C010000 */  lui        $at, %hi(func_000003F8 + 0x150)
-    /* DD4C28 000041BC C42A0548 */  lwc1       $f10, %lo(func_000003F8 + 0x150)($at)
+    /* DD4C24 000041B8 3C010000 */  lui        $at, %hi(snd_calcEmitterDistPan_000003F8 + 0x150)
+    /* DD4C28 000041BC C42A0548 */  lwc1       $f10, %lo(snd_calcEmitterDistPan_000003F8 + 0x150)($at)
     /* DD4C2C 000041C0 44869000 */  mtc1       $a2, $f18
     /* DD4C30 000041C4 3C013F80 */  lui        $at, (0x3F800000 >> 16)
     /* DD4C34 000041C8 460A0402 */  mul.s      $f16, $f0, $f10
     /* DD4C38 000041CC 44814000 */  mtc1       $at, $f8
     /* DD4C3C 000041D0 24010003 */  addiu      $at, $zero, 0x3
     /* DD4C40 000041D4 8FA90068 */  lw         $t1, 0x68($sp)
-    /* DD4C44 000041D8 3C070000 */  lui        $a3, %hi(func_00000080 + 0x10)
+    /* DD4C44 000041D8 3C070000 */  lui        $a3, %hi(stream_readVec3_00000080 + 0x10)
     /* DD4C48 000041DC 3C0B0005 */  lui        $t3, (0x58005 >> 16)
     /* DD4C4C 000041E0 46809120 */  cvt.s.w    $f4, $f18
     /* DD4C50 000041E4 AFA90010 */  sw         $t1, 0x10($sp)
@@ -59,7 +59,7 @@ glabel game_setupDemoRace
     /* DD4C5C 000041F0 356B8005 */  ori        $t3, $t3, (0x58005 & 0xFFFF)
     /* DD4C60 000041F4 240C001B */  addiu      $t4, $zero, 0x1B
     /* DD4C64 000041F8 46048180 */  add.s      $f6, $f16, $f4
-    /* DD4C68 000041FC 8CE70090 */  lw         $a3, %lo(func_00000080 + 0x10)($a3)
+    /* DD4C68 000041FC 8CE70090 */  lw         $a3, %lo(stream_readVec3_00000080 + 0x10)($a3)
     /* DD4C6C 00004200 02202025 */  or         $a0, $s1, $zero
     /* DD4C70 00004204 00002825 */  or         $a1, $zero, $zero
     /* DD4C74 00004208 46083280 */  add.s      $f10, $f6, $f8
@@ -90,7 +90,7 @@ glabel game_setupDemoRace
     /* DD4CD8 0000426C AFAE0014 */  sw         $t6, 0x14($sp)
     /* DD4CDC 00004270 8E230098 */  lw         $v1, 0x98($s1)
     /* DD4CE0 00004274 8FA60058 */  lw         $a2, 0x58($sp)
-    /* DD4CE4 00004278 3C070000 */  lui        $a3, %hi(func_00000080 + 0x10)
+    /* DD4CE4 00004278 3C070000 */  lui        $a3, %hi(stream_readVec3_00000080 + 0x10)
     /* DD4CE8 0000427C C46A00C4 */  lwc1       $f10, 0xC4($v1)
     /* DD4CEC 00004280 3C0F0004 */  lui        $t7, (0x48024 >> 16)
     /* DD4CF0 00004284 00066880 */  sll        $t5, $a2, 2
@@ -102,7 +102,7 @@ glabel game_setupDemoRace
     /* DD4D08 0000429C C46400CC */  lwc1       $f4, 0xCC($v1)
     /* DD4D0C 000042A0 AFB80024 */  sw         $t8, 0x24($sp)
     /* DD4D10 000042A4 AFAF0020 */  sw         $t7, 0x20($sp)
-    /* DD4D14 000042A8 8CE70090 */  lw         $a3, %lo(func_00000080 + 0x10)($a3)
+    /* DD4D14 000042A8 8CE70090 */  lw         $a3, %lo(stream_readVec3_00000080 + 0x10)($a3)
     /* DD4D18 000042AC 02202025 */  or         $a0, $s1, $zero
     /* DD4D1C 000042B0 24050002 */  addiu      $a1, $zero, 0x2
     /* DD4D20 000042B4 0C000000 */  jal        func_00000000

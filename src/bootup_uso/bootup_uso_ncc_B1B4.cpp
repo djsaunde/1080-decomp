@@ -10,7 +10,7 @@
  *
  * The four words that kept the cfe/NCC ports off (the counter read into v0,
  * target a1) are the registry: a 5-slot table `{ Base *tbl[5]; int n; }` at
- * func_00000148 with an inline add() that does the overflow check and the
+ * snd_seqEventDbg_00000148 with an inline add() that does the overflow check and the
  * post-increment store itself. The expression temp of `tbl[n++]` colours a1;
  * a named `n` local colours v0. The `Base *o = b;` copy is dead code but
  * buys the edg frame slot that puts the later v1 spill at sp+24
@@ -24,7 +24,7 @@ typedef short s16; typedef int s32; typedef unsigned char u8; typedef float f32;
 extern "C" {
 int func_00000000(...);
 extern char D_00000000;
-extern char func_000089FC[], func_00008A40[];
+extern char stream_read16_000089FC[], stream_readF32_00008A40[];
 extern int gBoardModelUsoPaths_b1b4_tblA[], gBoarderUsoPaths_b1b4_tblB[];
 }
 struct Bb4Pair { int a, b; Bb4Pair() { b = 0; a = 0; } };
@@ -44,7 +44,7 @@ struct Bb4Bank : Bb4Mid {
     virtual void v();
 };
 struct Bb4Reg { Bb4Base *tbl[5]; int n; void add(Bb4Base *b) { if (n >= 5) func_00000000(); Bb4Base *o = b; tbl[n++] = o; } };
-extern "C" Bb4Reg func_00000148;
+extern "C" Bb4Reg snd_seqEventDbg_00000148;
 struct Bb4Req { int pad[3]; int a4a, a4b; int pad2[11]; int cat, idx, a2; };
 extern "C" void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned int idx, int a2, int a3, int a4) {
     Bb4Req o;
@@ -56,14 +56,14 @@ extern "C" void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned i
     o.cat = cat;
     o.idx = idx;
     if (cat == 7 || cat == 6) {
-        if (func_00000148.tbl[0] == 0) {
-            FCALL(dbg_printf)(func_000089FC + 0x2C);
+        if (snd_seqEventDbg_00000148.tbl[0] == 0) {
+            FCALL(dbg_printf)(stream_read16_000089FC + 0x2C);
             Bb4Bank *r = new Bb4Bank;
-            func_00000148.add(r);
+            snd_seqEventDbg_00000148.add(r);
         }
     }
-    FCALL(memtrack_begin)(func_00008A40 + 0x8, 0);
-    FCALL(memtrack_begin)(func_00008A40 + 0x14, 0);
+    FCALL(memtrack_begin)(stream_readF32_00008A40 + 0x8, 0);
+    FCALL(memtrack_begin)(stream_readF32_00008A40 + 0x14, 0);
     if (idx != 0) {
         if (FCALL(game_isUsoLoaded)(gBoardModelUsoPaths_b1b4_tblA[idx]) == 0) FCALL(game_loadUso)(&D_00000000, gBoardModelUsoPaths_b1b4_tblA[idx]);
     }

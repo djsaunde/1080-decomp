@@ -317,7 +317,7 @@ extern char sStr_Node_C730;
 extern char sStr_Fader_C738;
 BootupGrid139B0 *Fader_ctor(BootupGrid139B0 *arg0, s32 arg1);
 extern f32 kRo_Fader_display_C50, kRo_Fader_display_C54, kRo_Fader_display_C58, kRo_Fader_display_C5C, kRo_Fader_display_C60;
-extern char func_0000023C[];
+extern char snd_setPlayer0VolumeLevel_0000023C[];
 extern void boot1304C_set_enabled(void *, s32);
 extern void boot1304C_update_pixels(BootupGrid139B0 *);
 void Fader_display(BootupGrid139B0 *arg0);
@@ -337,7 +337,7 @@ typedef struct BootupRoot13B20 {
     u8 reserved00[0x28];
     BootupDispatch13B20 *field_28;
 } BootupRoot13B20;
-extern char func_0000023C[];
+extern char snd_setPlayer0VolumeLevel_0000023C[];
 void Fader_buildTexture(BootupGrid139B0 *arg0);
 void stream_readS32_00013C70(int *dst);
 void stream_readF32_00013CAC(float *dst);

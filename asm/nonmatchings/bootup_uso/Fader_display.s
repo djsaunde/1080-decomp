@@ -221,7 +221,7 @@ glabel Fader_display
     /* DE3DC0 00013354 254A0020 */   addiu     $t2, $t2, 0x20
     /* DE3DC4 00013358 8E180040 */  lw         $t8, 0x40($s0)
     /* DE3DC8 0001335C 29810401 */  slti       $at, $t4, 0x401
-    /* DE3DCC 00013360 3C190000 */  lui        $t9, %hi(func_0000023C + 0x18)
+    /* DE3DCC 00013360 3C190000 */  lui        $t9, %hi(snd_setPlayer0VolumeLevel_0000023C + 0x18)
     /* DE3DD0 00013364 56580005 */  bnel       $s2, $t8, .L0001337C
     /* DE3DD4 00013368 24010400 */   addiu     $at, $zero, 0x400
     /* DE3DD8 0001336C 54200003 */  bnel       $at, $zero, .L0001337C
@@ -238,7 +238,7 @@ glabel Fader_display
     /* DE3E00 00013394 00000000 */   nop
     /* DE3E04 00013398 AE000040 */  sw         $zero, 0x40($s0)
   .L0001339C:
-    /* DE3E08 0001339C 8F390254 */  lw         $t9, %lo(func_0000023C + 0x18)($t9)
+    /* DE3E08 0001339C 8F390254 */  lw         $t9, %lo(snd_setPlayer0VolumeLevel_0000023C + 0x18)($t9)
     /* DE3E0C 000133A0 3C09E700 */  lui        $t1, (0xE7000000 >> 16)
     /* DE3E10 000133A4 3C0DBA00 */  lui        $t5, (0xBA001301 >> 16)
     /* DE3E14 000133A8 8F240158 */  lw         $a0, 0x158($t9)

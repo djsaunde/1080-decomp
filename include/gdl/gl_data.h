@@ -128,7 +128,7 @@
 #define Process_vtbl_C3A0      D_00000000 /* Data+0xC3A0 Sym 851: vtable (16 Text ptrs in span, slot +0x1C Process_func_0000F76C); vptr store by QuitProcess_func_0000FC28, QuitProcess_func_0000FD4C, app_launchNameEnt */
 #define Fader_vtbl             D_00000000 /* Data+0xC6C8 Sym 853: vtable (12 Text ptrs in span, slot +0x1C Fader_func_0001304C); vptr store by Fader_ctor */
 #define PauseMenu_vtbl         D_00000000 /* Data+0xC47C Sym 726: vtable (21 Text ptrs in span, slot +0x1C PauseMenu_func_00010540); vptr store by PauseMenu_create */
-#define ColourItem_vtbl_75A0   D_00000000 /* Data+0x75A0 Sym 143: vtable (27 Text ptrs in span, slot +0x1C ColourItem_display); vptr store by func_00000C10, boot_ItemType_create_00002244, boot_ItemType_create_000046EC, boot_ItemType_create_00007B08, boot_ItemType_create_0000E690, ... */
+#define ColourItem_vtbl_75A0   D_00000000 /* Data+0x75A0 Sym 143: vtable (27 Text ptrs in span, slot +0x1C ColourItem_display); vptr store by ColourItem_create_00000C10, boot_ItemType_create_00002244, boot_ItemType_create_000046EC, boot_ItemType_create_00007B08, boot_ItemType_create_0000E690, ... */
 #define SNodeItemType_vtbl     D_00000000 /* Data+0x1EFC0 Sym 414: vtable (16 Text ptrs in span, slot +0x1C Node_display); vptr store by item_registerTemplates, item_createBal, item_createBa2, item_createChk, item_createGtr, ... */
 #define MNode_vtbl             D_00000000 /* Data+0x1EAA8 Sym 315: vtable (15 Text ptrs in span, slot +0x1C MNode_display); vptr store by cam_create, MapProp_ctor, MCamera_ctor, MNode_def, MNode_ctor, ... */
 #define SnowBCollider_vtbl     D_00000000 /* Data+0x8698 Sym 493: vtable (13 Text ptrs in span, slot +0x1C QNode_display); vptr store by SnowBCollider_ctor */
@@ -139,7 +139,7 @@
 #define Window_vtbl            D_00000000 /* Data+0x20508 Sym 2129: vtable (14 Text ptrs in span, slot +0x1C Window_display); vptr store by Window_ctor, Window_dtor */
 #define BinFile_vtbl           D_00000000 /* Data+0x2B2B0 Sym 2475: vtable (5 Text ptrs in span, slot +0x1C BinFile_release); vptr store by BinFileMgr_newFile_0006877C, ImageFileMgr_newFile_000688F8 */
 #define ImageFile_vtbl         D_00000000 /* Data+0x2B278 Sym 2474: vtable (5 Text ptrs in span, slot +0x1C ImageFile_free_00068BAC); vptr store by ImageFileMgr_newFile_000688F8 */
-#define BGBox_vtbl             D_00000000 /* Data+0x65E8 Sym 164: vtable (10 Text ptrs in span, slot +0x1C BGBox_func_00000D94); vptr store by BGBox_ctor */
+#define BGBox_vtbl             D_00000000 /* Data+0x65E8 Sym 164: vtable (10 Text ptrs in span, slot +0x1C BGBox_display); vptr store by BGBox_ctor */
 #define U64BGWall_vtbl         D_00000000 /* Data+0x6648 Sym 165: vtable (32 Text ptrs in span, slot +0x1C U64BGWall_display); vptr store by U64BGWall_ctor */
 #define WorldRegistry_vtbl     D_00000000 /* Data+0x6DD0 Sym 176: vtable (31 Text ptrs in span, slot +0x1C Node_display); vptr store by WorldRegistry_create_00001E08 */
 #define CamDirector_vtbl       D_00000000 /* Data+0x6FD8 Sym 247: vtable (20 Text ptrs in span, slot +0x1C Node_display); vptr store by CamDirector_ctor */
