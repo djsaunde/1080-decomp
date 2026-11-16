@@ -80,7 +80,7 @@ void PointsGadget_update_00003430(char *arg0) {
                 if (POPUP(s0)->alpha < 0) {
                     POPUP(s0)->alpha = 0;
                     POPUP(s0)->state = 0;
-                    p = &GAMEFLOW(&gInputMgr)->dataMgr->entries->unk18; /* the player's score */
+                    p = &GAMEFLOW(&gInputMgr)->dataMgr->entries->score; /* the player's score */
                     *p = POPUP(s0)->value + *p;
                 }
             }

@@ -170,9 +170,11 @@ typedef struct RaceEntry {
     /* 0x0C */ f32 progress;            /* course coordinate; -6553600 before the first gate */
     /* 0x10 */ f32 speed;               /* RaceTracker_setEntrySpeed; 0 on add / reset */
     /* 0x14 */ s32 time;
-    /* 0x18 */ s32 unk18;
+    /* 0x18 */ s32 score;               /* the entry's score: PointsGadget_update adds each finished pop-up's
+                                         * value; DataManager.shownScore counts up to it (arc init: courseList total) */
     /* 0x1C */ s32 pendingPoints;       /* accumulated, flushed by RaceTracker_endTrick */
-    /* 0x20 */ s32 unk20;
+    /* 0x20 */ s32 shownPending;        /* the count the points94 pop-up shows: tim / trk / arc update step it
+                                         * toward pendingPoints by 50 / 5 / 1 (snd_sendEvent(0x20, step)) */
     /* 0x24 */ s32 pending;             /* 1 while pendingPoints is unflushed */
     /* 0x28 */ s32 health;              /* 50 on add, 0 on reset; RaceTracker_setEntryHealth (active entries only); h2h shows it in its two gauges */
     /* 0x2C */ s32 unk2C;

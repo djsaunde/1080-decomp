@@ -1165,7 +1165,7 @@ void TrkDataManager_update_00001C68(char *arg0) {
         /* the first three raceState reads load race as an int (`*(int *)&`): a lever, the original's mixed
          * int / pointer loads keep IDO from merging the three shownScore arms (agent-h run 529) */
         t1 = DATAMGR(arg0)->shownScore;
-        rem = DATAMGR(arg0)->entries->unk18 - t1;
+        rem = DATAMGR(arg0)->entries->score - t1;
         if (rem >= 0xFA) {
             DATAMGR(arg0)->shownScore = t1 + 0xFA;
             v0b = RACEPROC(*(int *)&TRKDATAMGR(arg0)->race)->raceState;
@@ -1183,44 +1183,44 @@ void TrkDataManager_update_00001C68(char *arg0) {
         }
         if (v0b == 1) {
             CALL(CountDownGadget_setTime)(DATAMGR(arg0)->countDown, DATAMGR(arg0)->score, 1);
-            gl_proto_1c94(DATAMGR(arg0)->course, *(int *)((char *)DATAMGR(arg0)->entries + 0x30), 0.0f);
-            gl_proto_1c68(DATAMGR(arg0)->course, *(int *)((char *)DATAMGR(arg0)->entries + 8), *(int *)((char *)DATAMGR(arg0)->entries + 0xC), 0.0f, 0.0f);
+            gl_proto_1c94(DATAMGR(arg0)->course, *(int *)&DATAMGR(arg0)->entries->pct, 0.0f);
+            gl_proto_1c68(DATAMGR(arg0)->course, *(int *)&DATAMGR(arg0)->entries->posX, *(int *)&DATAMGR(arg0)->entries->progress, 0.0f, 0.0f);
         }
         if (DATAMGR(arg0)->entries->pendingPoints != 0) {
             gl_proto_1c68(DATAMGR(arg0)->points94, 0xA0, 0x46, 1.0f, 1.0f);
-            *(int *)((char *)DATAMGR(arg0)->points94 + 0x78) = 0xFF;
-            fl = (int *)((char *)DATAMGR(arg0)->points94 + 0x18);
+            POPUP(DATAMGR(arg0)->points94)->alpha = 0xFF;
+            fl = &NODE(DATAMGR(arg0)->points94)->doFlags;
             *fl = *fl | 4; if (arg0) {}
-            a1 = DATAMGR(arg0)->entries->unk20;
+            a1 = DATAMGR(arg0)->entries->shownPending;
             r = DATAMGR(arg0)->entries->pendingPoints - a1;
             if (r >= 0x32) {
-                fl = (int *)((char *)DATAMGR(arg0)->entries + 0x20);
+                fl = &DATAMGR(arg0)->entries->shownPending;
                 *fl = *fl + 0x32;
                 CALL(snd_sendEvent)(0x20, 0x32);
-                a1 = DATAMGR(arg0)->entries->unk20;
+                a1 = DATAMGR(arg0)->entries->shownPending;
             } else if (r >= 5) {
-                fl = (int *)((char *)DATAMGR(arg0)->entries + 0x20);
+                fl = &DATAMGR(arg0)->entries->shownPending;
                 *fl = *fl + 5;
                 CALL(snd_sendEvent)(0x20, 5);
-                a1 = DATAMGR(arg0)->entries->unk20;
+                a1 = DATAMGR(arg0)->entries->shownPending;
             } else if (r > 0) {
                 fl = (int *)((char *)DATAMGR(arg0)->entries);
                 fl[8] = fl[8] + 1;
                 CALL(snd_sendEvent)(0x20, 1);
-                a1 = DATAMGR(arg0)->entries->unk20;
+                a1 = DATAMGR(arg0)->entries->shownPending;
             }
             CALL(PointsGadget_setValue)(DATAMGR(arg0)->points94, a1);
         } else {
-            fl = (int *)((char *)DATAMGR(arg0)->points94 + 0x18);
+            fl = &NODE(DATAMGR(arg0)->points94)->doFlags;
             *fl = *fl & ~4;
         }
         if ((RACEPROC(TRKDATAMGR(arg0)->race)->raceState == 2) && (RACEPROC(TRKDATAMGR(arg0)->race)->result == 0)) {
             DATAMGR(arg0)->blinkTimer = DATAMGR(arg0)->blinkTimer + 1;
             if (DATAMGR(arg0)->blinkTimer & 8) {
-                fl = (int *)((char *)DATAMGR(arg0)->points + 0x18);
+                fl = &NODE(DATAMGR(arg0)->points)->doFlags;
                 *fl = *fl & ~4;
             } else {
-                fl = (int *)((char *)DATAMGR(arg0)->points + 0x18);
+                fl = &NODE(DATAMGR(arg0)->points)->doFlags;
                 *fl = *fl | 4;
             }
         }

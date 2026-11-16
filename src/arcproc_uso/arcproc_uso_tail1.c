@@ -284,7 +284,7 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
         o1 = (char *)NODE(w)->vptr;
         ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
 
-        DATAMGR(ARCRACE(obj)->dataMgr)->entries->unk18 = ARCRACE(obj)->courseList->total;
+        DATAMGR(ARCRACE(obj)->dataMgr)->entries->score = ARCRACE(obj)->courseList->total;
         DATAMGR(ARCRACE(obj)->dataMgr)->entries->time = ARCRACE(obj)->courseList->total;
 
         o1 = (char *)ARCRACE(obj)->dataMgr;
@@ -1384,7 +1384,7 @@ void arc_DataManager_update(char *arg0) {
         }
         a1 = DATAMGR(arg0)->shownScore;
         t2 = a1 + 0xFA;
-        rem = DATAMGR(arg0)->entries->unk18 - a1;
+        rem = DATAMGR(arg0)->entries->score - a1;
         if (rem >= 0xFA) {
             DATAMGR(arg0)->shownScore = t2;
             a1 = t2;
@@ -1412,22 +1412,22 @@ void arc_DataManager_update(char *arg0) {
             q = (int *)((char *)DATAMGR(arg0)->points94 + 0x18);
             *q = *q | 4;
             p44 = (char *)DATAMGR(arg0)->entries;
-            a = ((RaceEntry *)p44)->unk20;
+            a = ((RaceEntry *)p44)->shownPending;
             r = ((RaceEntry *)p44)->pendingPoints - a;
             if (r >= 0x32) {
                 q = (int *)p44; if (1) { q += 8; }
                 *q = *q + 0x32;
                 gl_func_00000000(0x20, 0x32);
-                a = DATAMGR(arg0)->entries->unk20;
+                a = DATAMGR(arg0)->entries->shownPending;
             } else if (r >= 5) {
                 q = (int *)p44; if (1) { q += 8; }
                 *q = *q + 5;
                 gl_func_00000000(0x20, 5);
-                a = DATAMGR(arg0)->entries->unk20;
+                a = DATAMGR(arg0)->entries->shownPending;
             } else if (r > 0) {
-                ((RaceEntry *)p44)->unk20 = ((RaceEntry *)p44)->unk20 + 1;
+                ((RaceEntry *)p44)->shownPending = ((RaceEntry *)p44)->shownPending + 1;
                 gl_func_00000000(0x20, 1);
-                a = DATAMGR(arg0)->entries->unk20;
+                a = DATAMGR(arg0)->entries->shownPending;
             }
             gl_func_00000000(DATAMGR(arg0)->points94, a);
         } else {
