@@ -44,6 +44,10 @@ extern RaceSprite sVrLabels[68];    /* 0x1F8: gui_spriteInit (0x8C8) */
 /* 0x378 (sVrLabels[16..]): a separate static array in the original. 0x2F1C indexes it with a
  * variable and the target folds 0x378 into the reloc, which `&sVrLabels[i + 16]` cannot give. */
 extern RaceSprite sVrLabels_378[52];
+/* more indexed sprite runs (same tell: the variable index folds the start into the reloc) */
+extern RaceSprite sVrSprites_048[8];  /* 0x048 (sVrSprites[3..]) */
+extern RaceSprite sVrSprites_108[8];  /* 0x108 (sVrSprites[11..]) */
+extern RaceSprite sVrLabels_7B0[7];   /* 0x7B0 (sVrLabels[61..]) */
 extern f32 sVrPrimColour[4];        /* 0x858 */
 extern f32 sVrEnvColour[4];         /* 0x868 */
 extern GuiMenu *sVrMenu;            /* 0x878: the menu that has the pad */
@@ -200,7 +204,22 @@ INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000148
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000014DC);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00001588);
+/* draw one records row at y: its title (label sprite via 0x1488), then three indexed sprites at
+ * x 46 / 240 (row y) and 160 (y + 30) */
+void viewrec_uso_func_00001588(ViewRecProc *self, s32 y, s32 label, s32 a, s32 b, s32 c) {
+    RaceSprite *spr;
+
+    CALL(viewrec_uso_func_00001488)(self, label, y);
+    spr = &sVrSprites_048[a];
+    CALL(gui_spriteRefresh)(spr);
+    CALL(gui_drawSprite)(spr, 46, y, 2);
+    spr = &sVrSprites_108[b];
+    CALL(gui_spriteRefresh)(spr);
+    CALL(gui_drawSprite)(spr, 240, y, 2);
+    spr = &sVrLabels_7B0[c];
+    CALL(gui_spriteRefresh)(spr);
+    CALL(gui_drawSprite)(spr, 160, y + 30, 3);
+}
 
 /* EXACT via the NCC (C++) donor src/viewrec_uso/viewrec_uso_ncc.cpp (REPLACE_FUNC_BODY). */
 void viewrec_uso_func_00001664(ViewRecProc *self) {
