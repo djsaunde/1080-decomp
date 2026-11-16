@@ -1810,7 +1810,7 @@ int *CourseMarkerTmpl_create(int a0) {
             s = obj + 8;
             if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(s, obj, prm, 1);
-                ((CourseParm *)s)->vptr = (s32)(&game_uso_D_807FE9B8 + kVtbl_FloatParm_3C8);
+                ((CourseParm *)s)->vptr = &game_uso_D_807FE9B8 + kVtbl_FloatParm_3C8;
                 ((CourseParm *)s)->value2 = 0;
                 ((CourseFParm *)s)->value = 1.0f;
             }
@@ -1819,7 +1819,7 @@ int *CourseMarkerTmpl_create(int a0) {
             s = obj + 0x20;
             if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(s, obj, prm, 1);
-                ((CourseParm *)s)->vptr = (s32)(&game_uso_D_807FEA00 + kVtbl_IntParm_410);
+                ((CourseParm *)s)->vptr = &game_uso_D_807FEA00 + kVtbl_IntParm_410;
                 ((CourseParm *)s)->value = 0;
                 ((CourseParm *)s)->value2 = 0;
             }
@@ -1828,7 +1828,7 @@ int *CourseMarkerTmpl_create(int a0) {
             s = obj + 0x38;
             if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(s, obj, prm, 0);
-                ((CourseParm *)s)->vptr = (s32)(&game_uso_D_807FEA00 + kVtbl_IntParm_410);
+                ((CourseParm *)s)->vptr = &game_uso_D_807FEA00 + kVtbl_IntParm_410;
                 ((CourseParm *)s)->value2 = 0;
                 ((CourseParm *)s)->value = 0;
             }

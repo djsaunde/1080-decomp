@@ -1113,7 +1113,7 @@ void *WorldRegistry_create_00001E08(char *o) {
         if (o == 0) goto end;
     }
     FCALL(Node_ctor)(o, &sStr_Node_6E30);
-    ((WorldRegistry *)o)->vptr = (s32)&D_1E08_d;
+    ((WorldRegistry *)o)->vptr = &D_1E08_d;
     sub = (char *)&((WorldRegistry *)o)->head;
     FCALL(WorldCourse_ctorEmpty_00001D8C)(sub);
     NODE(o)->name = (const char *)&sStr_World_Registry_6E38; /* Node name "World Registry" */
@@ -4701,7 +4701,7 @@ char *SnowTmpl_create(char *arg0) {
             if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(w = c, u, p, 1);
                 c = w;
-                ((CourseFParm *)c)->vptr = (s32)(&D_00007540);
+                ((CourseFParm *)c)->vptr = &D_00007540;
                 ((CourseFParm *)c)->value2 = 0;
                 ((CourseFParm *)c)->value = 300.0f;
             }
@@ -4711,7 +4711,7 @@ char *SnowTmpl_create(char *arg0) {
                 func_00000000(w = c, u, p, 0);
                 c = w;
                 ((CourseParm *)c)->value = 1;
-                ((CourseParm *)c)->vptr = (s32)((char *)EnvSettings_setSnow + 0x70);
+                ((CourseParm *)c)->vptr = (char *)EnvSettings_setSnow + 0x70;
                 ((CourseParm *)c)->value2 = 0;
             }
         }

@@ -61,7 +61,7 @@ typedef struct WorldPlayer {     /* 8 bytes (game_addPlayer_000020AC) */
 
 typedef struct WorldRegistry {
     char node[0x28];            /* 0x00: Node (name at 0xC = "World Registry") */
-    s32 vptr;                   /* 0x28 */
+    char *vptr;                 /* 0x28: Cfront vtable (bootup Data, D_1E08_d) */
     WorldCourse head;           /* 0x2C: list sentinel; head.next (0x70) = first course */
     WorldCourse *tail;          /* 0x74: last course (WorldRegistry_addCourse_00001F78 appends here) */
     s32 numCourses;             /* 0x78 */
@@ -142,14 +142,14 @@ typedef struct RaceGate {
 /* one Parms entry (game_libs Parms_addParm(parm, owner, tag, 1); value at +0x10) */
 typedef struct CourseParm {
     char hdr[0xC];              /* 0x00: list link / owner / tag */
-    s32 vptr;                   /* 0x0C: parm type vtable (float / int / vec) */
+    char *vptr;                 /* 0x0C: parm type vtable (float / int / vec) */
     s32 value;                  /* 0x10: the value (f32 for float parms) */
     s32 value2;                 /* 0x14 */
 } CourseParm;                   /* 0x18 */
 
 typedef struct CourseFParm {    /* a float parm: CourseParm with an f32 value */
     char hdr[0xC];
-    s32 vptr;
+    char *vptr;                 /* 0x0C */
     f32 value;                  /* 0x10 */
     s32 value2;                 /* 0x14 */
 } CourseFParm;
