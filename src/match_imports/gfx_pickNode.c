@@ -1,5 +1,10 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post0b.c. Target bytes unchanged. */
 #include "context_game_libs_post0b.h"
+#include "gdl/gfxlib.h"
+#include "gdl/sysapi.h"
+/* gl_4C928_state_base is gGfxLib (bootup.uso Bss+0x3C168, Sym 154); gl_4C928_queue_base is gSysLib
+ * (Bss+0x3C740, Sym 73). uso-data-sites.py sites gfx_pickNode. */
+#define GFX_4C928 GFXLIB(&gl_4C928_state_base)
 void gfx_pickNode(struct GLRender4C *arg0, struct Arg4C928 *arg1)
 {
   unsigned int loop_ready;
@@ -15,7 +20,7 @@ void gfx_pickNode(struct GLRender4C *arg0, struct Arg4C928 *arg1)
   struct GLRequest4C a1blk;
   struct GLRequest4C a2blk;
   struct GLMethods4C *table2;
-  work.state = *((struct St4C928 **) (((char *) (&gl_4C928_state_base)) + 0x218));
+  work.state = (struct St4C928 *)GFX_4C928->rcp;
   do
   {
     do
@@ -54,7 +59,7 @@ void gfx_pickNode(struct GLRender4C *arg0, struct Arg4C928 *arg1)
     }
   }
   while (0);
-  work.small = *((struct GlSmallState22C **) (((char *) (&gl_4C928_state_base)) + 0x22C));
+  work.small = (struct GlSmallState22C *)GFX_4C928->morphs;
   work.small->p0C = 0;
   work.methods = *((struct GLMethods4C **) (((char *) arg0) + 0x28));
   gl_4C928_result_base = work.methods->m64(work.methods->h60 + (char *)arg0);
@@ -62,14 +67,13 @@ void gfx_pickNode(struct GLRender4C *arg0, struct Arg4C928 *arg1)
   work.saved_d0 = arg0->dD0;
   arg0->dD0 = (s32) (4.0f - arg1->fBC);
   arg0->dD4 = (s32) (4.0f - arg1->fC0);
-  *((s32 *) (((char *) (&gl_4C928_state_base)) + 0x1C4)) = (*((s32 *) (((char *) (&gl_4C928_state_base)) + 0x1C4))) | 2;
+  GFX_4C928->flags = GFX_4C928->flags | 2;
   gl_4C928_process(arg0);
-  /* RAW: data-table: words at offsets of section-base symbols (gl_4C928_*_base + K) */
-  *(s32 *)((char *)&gl_4C928_state_base + 0x1C4) &= ~2;
+  GFX_4C928->flags &= ~2;
   arg0->dD0 = work.saved_d0;
   arg0->dD4 = ready;
   gl_4C928_mode(arg0, 1);
-  work.state = *((struct St4C928 **) (((char *) (&gl_4C928_state_base)) + 0x218));
+  work.state = (struct St4C928 *)GFX_4C928->rcp;
   do
   {
     do
@@ -108,9 +112,9 @@ void gfx_pickNode(struct GLRender4C *arg0, struct Arg4C928 *arg1)
     }
   }
   while (0);
-  work.queue = *(void **)((char *)&gl_4C928_queue_base + 0x1C); /* RAW: data-table (as above) */
+  work.queue = SYSLIB_AT(gl_4C928_queue_base)->msgQueue;
   gl_4C928_send(work.queue, 0x68, 1);
-  work.state = *((struct St4C928 **) (((char *) (&gl_4C928_state_base)) + 0x218));
+  work.state = (struct St4C928 *)GFX_4C928->rcp;
   do
   {
     do
@@ -167,7 +171,7 @@ void gfx_pickNode(struct GLRender4C *arg0, struct Arg4C928 *arg1)
   do { arg0->d1A8 = arg0->d1A8 >> 1; } while (0);
   arg1->p10C = (struct Obj4C928 *) gl_4C928_find(arg0, arg0->d1A8);
   gl_4C928_log((char *)&gl_4C928_strings_base + 0x2017C, arg0->d1A8);
-  *((s32 *) (((char *) (&gl_4C928_state_base)) + 0x1C8)) = (s32) arg1->p10C;
+  GFX_4C928->unk1C8 = arg1->p10C;
   if (arg1->p10C != 0)
   {
     gl_4C928_log((char *)&gl_4C928_strings_base + 0x20188, arg1->p10C->id);
@@ -192,6 +196,6 @@ void gfx_pickNode(struct GLRender4C *arg0, struct Arg4C928 *arg1)
       table2->m2C(table2->h28 + (char *)receiver2, &a2blk);
     } while (0);
   }
-  work.small = *((struct GlSmallState22C **) (((char *) (&gl_4C928_state_base)) + 0x22C));
+  work.small = (struct GlSmallState22C *)GFX_4C928->morphs;
   work.small->p0C = 0;
 }

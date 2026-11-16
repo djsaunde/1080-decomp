@@ -1,8 +1,9 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post0b.c. Target bytes unchanged. */
 #include "context_game_libs_post0b.h"
+#include "gdl/gfxlib.h"
 u8 *heap_tempAlloc(s32 unused, u32 size) {
-    /* RAW: data-table: a word at an offset of a section-base symbol (gl_4C928_state_base + 0x218) */
-    u8 *result = *(u8 **)((char *)&gl_4C928_state_base + 0x218);
+    /* gl_4C928_state_base is gGfxLib (bootup.uso Bss+0x3C168, Sym 154): warn while its RCP manager is busy */
+    u8 *result = (u8 *)GFXLIB(&gl_4C928_state_base)->rcp;
     s32 ready;
     f32 divisor = 1024.0f;
     ready = ((struct St4C928 *)result)->p1C != 0;

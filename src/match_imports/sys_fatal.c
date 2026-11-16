@@ -115,6 +115,18 @@ int math_singularFatal_00061458() {
     return gl_func_00000000();
 }
 
+/* The classic MIPS <stdarg.h> walk (pre-ANSI SGI form): VA_ADVANCE rounds the cursor up past the
+ * next slot (8-byte aligned for a double), VA_PREV reads the slot just below it, and VA_ARG is the
+ * two in one expression. VA_START is VA_ADVANCE over the last named parameter, so the cursor
+ * starts just past fmt. %s / %c / %x advance as a statement before the call, %d / %f inside it
+ * (the two spellings schedule the cursor update differently). */
+#define VA_ADVANCE(list, mode)                                                   \
+    ((list) = (char *)(sizeof(mode) > 4 ? ((unsigned int)(list) + 15) & ~7 \
+                                        : ((unsigned int)(list) + 7) & ~3))
+#define VA_PREV(list, mode) (((mode *)(list))[-1])
+#define VA_ARG(list, mode) ((mode *)VA_ADVANCE(list, mode))[-1]
+#define VA_START(list, parm) ((list) = (char *)(((unsigned int)&(parm) + 7) & ~3))
+
 void sys_fatal(u8 *fmt, ...) {
     char *args;
     int i;
@@ -123,7 +135,7 @@ void sys_fatal(u8 *fmt, ...) {
     u8 *old;
 
     gl_ref_00034810((char *)&D_00000000 + 0x21E14);
-    args = (char *)(((unsigned int)&fmt + 7) & ~3);
+    VA_START(args, fmt);
     start = args;
     old = fmt;
     fmt = old + 1;
@@ -146,29 +158,22 @@ percent:
             if (*old != 'r') goto fmt_default;
             goto fmt_r;
 fmt_d:
-            gl_ref_00034810((char *)&D_00000000 + 0x21E48,
-                              /* RAW: data-table: va_arg slot reads from the varargs area (args - 4 / - 8), not a struct */
-                              *(int *)((args = (char *)(((unsigned int)args + 7) & ~3)) - 4));
+            gl_ref_00034810((char *)&D_00000000 + 0x21E48, VA_ARG(args, int));
             goto next;
 fmt_f:
-            args = (char *)(((unsigned int)args + 15) & ~7);
-            gl_ref_00034810((char *)&D_00000000 + 0x21E4C,
-                              *(double *)(args - 8)); /* RAW: data-table (as above) */
+            gl_ref_00034810((char *)&D_00000000 + 0x21E4C, VA_ARG(args, double));
             goto next;
 fmt_s:
-            args = (char *)(((unsigned int)args + 7) & ~3);
-            gl_ref_00034810((char *)&D_00000000 + 0x21E50,
-                              *(char **)(args - 4)); /* RAW: data-table (as above) */
+            VA_ADVANCE(args, char *);
+            gl_ref_00034810((char *)&D_00000000 + 0x21E50, VA_PREV(args, char *));
             goto next;
 fmt_c:
-            args = (char *)(((unsigned int)args + 7) & ~3);
-            gl_ref_00034810((char *)&D_00000000 + 0x21E54,
-                              *(u8 *)(args - 1)); /* RAW: data-table (as above) */
+            VA_ADVANCE(args, u8);
+            gl_ref_00034810((char *)&D_00000000 + 0x21E54, VA_PREV(args, u8));
             goto next;
 fmt_x:
-            args = (char *)(((unsigned int)args + 7) & ~3);
-            gl_ref_00034810((char *)&D_00000000 + 0x21E58,
-                              *(unsigned int *)(args - 4)); /* RAW: data-table (as above) */
+            VA_ADVANCE(args, unsigned int);
+            gl_ref_00034810((char *)&D_00000000 + 0x21E58, VA_PREV(args, unsigned int));
             goto next;
 fmt_r:
             gl_ref_00034810((char *)gSysImStack_6170C_arr[gSysImDepth_6170C_idx - 1]);

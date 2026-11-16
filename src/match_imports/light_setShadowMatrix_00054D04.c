@@ -1,5 +1,6 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post0b.c. Target bytes unchanged. */
 #include "context_game_libs_post0b.h"
+#include "gdl/gfxlib.h"
 void light_setShadowMatrix_00054D04(char *self, float *plane, Vec3 *out) {
     Vec3 position;
     Vec3 direction;
@@ -41,8 +42,8 @@ void light_setShadowMatrix_00054D04(char *self, float *plane, Vec3 *out) {
         }
         matrix = self + 0x12C;
         gl_54d04_project(matrix, &direction, plane);
-        /* RAW: data-table: a word at an offset of a section-base symbol (gl_54d04_root + 0xE4) */
-        *(char **)(&gl_54d04_root + 0xE4) = matrix;
+        /* gl_54d04_root is gGfxLib (bootup.uso Bss+0x3C168, Sym 154): the shadow matrix becomes its extra model matrix */
+        GFXLIB(&gl_54d04_root)->extraMtx = (float (*)[4])matrix;
     } else {
         gl_54d04_report(&gl_54d04_strings + 0x210EC);
     }

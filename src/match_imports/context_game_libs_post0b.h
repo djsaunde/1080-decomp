@@ -1596,7 +1596,9 @@ extern int D_00000000;
 extern int D_glob_a, D_glob_b, D_glob_c, D_glob_d, D_glob_e;
 extern float gl_funcf_00000000();
 void GfxLib_init(char *a0);
-extern char D_44918_flt[];
+/* RoData+0x1B38: f32 0.59, the GfxLib +0x24C hostio parm default that GfxLib_reset restores
+ * (the section-base addend is the pad, like gl_54d04_scale below) */
+extern const struct { char pad[0x1B38]; float value; } D_44918_flt;
 extern f32 D_44918_fzero;
 extern u32 D_44918_ma;
 extern u32 D_44918_mb;

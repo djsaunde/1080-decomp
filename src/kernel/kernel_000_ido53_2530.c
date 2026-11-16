@@ -50,6 +50,15 @@ extern s32 osAppNMIBuffer;                          /* osAppNMIBuffer */
 extern s32 __kmc_pt_mode;
 extern s32 D_80003280[];
 
+/* The KMC PARTNER-N64 debugger monitor image at 0xBFF00000 (ultralib os/initialize.c, BUILD_VERSION < K:
+ * `mon = 0xBFF00000; if (*mon != 0x4B4D4300) return; ... monadr = *(mon + 1)`): word 0 is the
+ * 'KMC\0' signature, word 1 the monitor's run address; osInitialize copies the image there when it
+ * is not 0xBFF00000 and calls monadr + 8. */
+typedef struct KmcMonitorHeader {
+    /* 0x0 */ s32 magic;                        /* 0x4B4D4300 'KMC\0' */
+    /* 0x4 */ s32 monadr;
+} KmcMonitorHeader;
+
 void osInitialize(void) {
     u32 pifdata;
     u32 clock = 0;
@@ -120,8 +129,7 @@ void osInitialize(void) {
             func_80005350((void *)0x80000180, 0x24);
             __kmc_pt_mode = 1;
             if (!(*sp38 & 0x10)) {
-                /* RAW: data-table: a word of the debugger ROM header at hardware address 0xBFF00000 (not a struct) */
-                sp40 = *(s32 *)((char *) sp3C + 4);
+                sp40 = ((KmcMonitorHeader *)sp3C)->monadr;
                 if (sp40 != 0xBFF00000) {
                     sp30 = (s32 *)(sp40 | 0x20000000);
                     sp2C = 0x800;
