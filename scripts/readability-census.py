@@ -2,6 +2,7 @@
 """ROM-wide readability census -> a dashboard section in docs/READABILITY_PLAN.md (agent-a run 517).
 
   scripts/readability-census.py [--no-build] [--write [PLAN.md]] [--top N]
+  scripts/readability-census.py [--no-build] --unjustified [--owner X]   (file:line function list)
 
 Run from the project root after a full build (the readability gate leaves one). Without --write
 the dashboard (Markdown) goes to stdout; with --write it replaces the block between
@@ -25,6 +26,13 @@ Measures (per segment = src/<segment>/ or the report.json unit's segment):
     except accessor uses whose offset is a named constant (kPmf_/kRoD_/kStr_/kTag_ ..., run 568).
     Per file for the C++ donors (.cpp), and the top N functions by raw-site count with their
     owner area (owner(): b / c / g / h / a, run 520).
+    Justified raw sites (run 577): a site is justified when its line, or the line just above it
+    (or the comment that line closes), carries `RAW: <keyword> <reason>` with keyword one of
+    byte-lock (every typed spelling changes the bytes; name the lever), data-table (a read from
+    a data table / pool, not a struct), unknown-object (the object type is not proven yet),
+    nm-only (a NON_MATCHING reference body), donor-mirror (a C++ donor that cannot include the
+    header). Raw total / justified / UNJUSTIFIED per owner and per file; --unjustified lists the
+    unjustified sites as `file:line function` (--owner X narrows to one owner).
   * Globals: distinct `D_<8 hex>` names (not the D_00000000 sentinels) in compiled code.
   * Headers: include/ headers and the struct / union / class definitions in them.
   * Dead code: never-compiled `#if 0` / undefined-macro blocks (scripts/deadblocks.py).
@@ -242,6 +250,41 @@ def raw_offset_sites(code, acc_re):
     return casts, accs
 
 
+RAW_KEYWORDS = ('byte-lock', 'data-table', 'unknown-object', 'nm-only', 'donor-mirror')
+RAW_TAG = re.compile(r'\bRAW:\s*(' + '|'.join(RAW_KEYWORDS) + r')\b')
+
+
+def justified_lines(src):
+    """Set of 1-based line numbers whose raw sites are justified: a `RAW: <keyword>` tag on the
+    line itself, or on the line just above (when that line closes a multi-line comment, anywhere
+    in that comment)."""
+    lines = src.split('\n')
+    tagged = [bool(RAW_TAG.search(ln)) for ln in lines]
+    # a multi-line /* ... */ comment carries its tag to its closing line
+    in_c, start = False, 0
+    for i, ln in enumerate(lines):
+        j = 0
+        while True:
+            if not in_c:
+                k = ln.find('/*', j)
+                if k < 0:
+                    break
+                in_c, start, j = True, i, k + 2
+            else:
+                k = ln.find('*/', j)
+                if k < 0:
+                    break
+                in_c, j = False, k + 2
+                if start != i and any(tagged[start:i + 1]):
+                    tagged[i] = True
+    ok = set()
+    for i, tg in enumerate(tagged):
+        if tg:
+            ok.add(i + 1)
+            ok.add(i + 2)
+    return ok
+
+
 def raw_offsets(code, acc_re):
     """Count `*(T *)(expr + K)` casts (not data-placeholder sites) and accessor-macro uses."""
     c, a = raw_offset_sites(code, acc_re)
@@ -381,6 +424,9 @@ def main():
     calls = collections.defaultdict(collections.Counter)
     offs = collections.defaultdict(collections.Counter)
     fn_off = collections.Counter()          # (file, function) -> raw sites (casts + accessor uses)
+    just = collections.defaultdict(collections.Counter)   # file -> {'raw', 'just'} ; owner via sites
+    own_just = collections.defaultdict(collections.Counter)
+    unjust = []                              # (file, line, function, owner)
     seg_off = collections.defaultdict(collections.Counter)
     dnames = collections.defaultdict(set)
     spell = collections.Counter()
@@ -398,9 +444,21 @@ def main():
         nc, na = len(cpos), len(apos)
         if cpos or apos:
             blks = block_names(m)
+            okl = justified_lines(src)
             for pos in cpos + apos:
                 b = next((x for x in blks if x[0] < pos < x[1]), None)
-                fn_off[(p, b[2] if b else '<file scope>')] += 1
+                fname = b[2] if b else '<file scope>'
+                fn_off[(p, fname)] += 1
+                line = src.count('\n', 0, pos) + 1
+                o = owner(p, fname)
+                ok = line in okl
+                just[p]['raw'] += 1
+                own_just[o]['raw'] += 1
+                if ok:
+                    just[p]['just'] += 1
+                    own_just[o]['just'] += 1
+                else:
+                    unjust.append((p, line, fname, o))
         offs[p]['cast'] += nc
         offs[p]['macro'] += na
         seg_off[seg]['cast'] += nc
@@ -414,6 +472,14 @@ def main():
             spell['salias'] += len(STR_ALIAS.findall(m))
             spell['kro'] += len(KRO.findall(m))
             spell['raw'] += len(RAW_BASE.findall(m))
+
+    if '--unjustified' in args:
+        only = args[args.index('--owner') + 1] if '--owner' in args else None
+        rows = [u for u in sorted(unjust) if only is None or u[3] == only]
+        for p, line, f, o in rows:
+            print(f'{p}:{line} {f} [{o}]')
+        print(f'{len(rows)} unjustified raw sites' + (f' (owner {only})' if only else ''), file=sys.stderr)
+        return
 
     fn = functions()
     ds = data_sites(compiled)
@@ -478,6 +544,18 @@ def main():
     L += ['', 'Owners: b = game_libs_post0b / post1b*; c = timproc_uso_b5*, game_libs_post.c and audio (Audio* / snd_* / Snd* / Note_ / Seq_ '
           'functions); g = game_uso; h = bootup_uso / titproc / game_libs.c / game_libs_tail / arc / mgr / h2h / tim / trk; '
           'a = everything else. Raw sites per owner: ' + ', '.join(f'{o} {byown[o]}' for o in 'abcgh') + '.']
+    L += ['', '### Raw struct offsets: justified (`RAW:` tags)', '',
+          'A raw site is justified when its line, or the line just above it, carries a `RAW: <keyword> <reason>` '
+          'comment; keywords: ' + ', '.join(f'`{k}`' for k in RAW_KEYWORDS) + ' (docs/READABILITY_AGENT_RULES.md). '
+          '`scripts/readability-census.py --no-build --unjustified [--owner X]` lists the rest as file:line function.', '']
+    tot = sum((own_just[o] for o in own_just), collections.Counter())
+    L += tbl(['owner', 'raw total', 'justified', 'UNJUSTIFIED'],
+             [(o, own_just[o]['raw'], own_just[o]['just'], own_just[o]['raw'] - own_just[o]['just']) for o in 'abcgh'] +
+             [('**all**', tot['raw'], tot['just'], tot['raw'] - tot['just'])])
+    jf = sorted(((p, c) for p, c in just.items() if c['raw'] - c['just']), key=lambda kv: (-(kv[1]['raw'] - kv[1]['just']), kv[0]))
+    L += ['', f'Files with unjustified raw sites: {len(jf)} (top {top}):', '']
+    L += tbl(['file', 'owner', 'raw total', 'justified', 'UNJUSTIFIED'],
+             [(f'`{p}`', owner(p, ''), c['raw'], c['just'], c['raw'] - c['just']) for p, c in jf[:top]])
     L += ['', '### Headers', '']
     L += tbl(['include/ dir', 'headers', 'struct/union/class defs'],
              [(f'`{d}`', hdr[d], nstruct[d]) for d in sorted(hdr)] +
