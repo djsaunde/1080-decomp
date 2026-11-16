@@ -1,4 +1,5 @@
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+#include "../../include/gdl/sysapi.h"
 /* IDO 7.1 NCC (C++) donor for app_initSystem (0xEC / 59 words): four init
  * callbacks, back-link two root pointers into the record, then (once) install
  * the KSEG1 config block at module data 0x3B8EC.. and register it.
@@ -21,8 +22,8 @@ extern "C" void app_initSystem(int a0) {
     CALL(dbg_startFaultThread)();
     CALL(pad_initGlobal)(a0);
     CALL(sys_pollDevices_00034B64)(a0);
-    *(int *)(*(char **)&gSysApi_34A78_rec + 0x8C) = (int)&D_34A78_b;
-    *(int *)(*(char **)&gSysApi_34A78_rec + 0x90) = (int)&D_34A78_c;
+    SYSAPI_AT(gSysApi_34A78_rec)->sprintfFn = &D_34A78_b;        /* sys_sprintf_00061B30 */
+    SYSAPI_AT(gSysApi_34A78_rec)->consoleSetOrigin = &D_34A78_c; /* ConsoleDev_setOrigin */
     if (gl_ref_0003B8FC != (int)0xA8000000) {
         gl_ref_0003B8F4 = 3;
         gl_ref_0003B8FC_st = (int)0xA8000000;
