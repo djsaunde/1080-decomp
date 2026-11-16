@@ -60,8 +60,8 @@
 #define gAudioContext D_00000000 /* Bss+0x345C0 Sym 1255, 0x5C30 bytes: the audio driver context (OoT gAudioContext; 133 AudioHeap/AudioLoad/AudioSeq functions) */
 #define gGfxLib       D_00000000 /* Bss+0x3C168 Sym 154, 0x5D8 bytes: the GfxLib global (docs/1080_GRAPHICS.md section 2: +0xA0 modelview, +0x1C4 flags, +0x254 current ScreenWindow) */
 #define gSysLib       D_00000000 /* Bss+0x3C740 Sym 73, 0x28 bytes: the system-services object passed as `this` to heap_tempAlloc*, the fs_gdlRead* parm readers, pad_testButton, sys_timeInFrames (169 functions); App_main queries its memory range first. Role inferred from callers */
-#define gHostio       D_00000000 /* Bss+0x3C768 Sym 338, 8 bytes: the HostIO connection, first argument of every hostio_beginGroup/add/endGroup call in the 47 <Class>_hostioParms functions */
-#define gWindowDefaults D_00000000 /* Bss+0x3EC20 Sym 324, 0x40 bytes: the values Window_setDefaults copies into every new Window (+0x8 width, +0xC height, +0x10 / +0x14 origin, +0x18 near, +0x1C far, +0x28 flags, +0x2C projType, +0x30 clearColour; window.h) */
+#define gHostio       D_00000000 /* Bss+0x3C768 Sym 338, 8 bytes: the HostIO device object (HostioDev, gdl/hostio.h: flags, connected), first argument of every hostio_beginGroup/add/endGroup call in the 47 <Class>_hostioParms functions */
+#define gWindowDefaults D_00000000 /* Bss+0x3EC20 Sym 324, 0x40 bytes: the values Window_setDefaults copies into every new Window (+0x8 width, +0xC height, +0x10 / +0x14 origin, +0x18 near, +0x1C far, +0x28 flags, +0x2C projType, +0x30 clearColour; window.h WindowDefaults). App_main fills it; game_create3DWindow / createProcessWindow read +0x30 */
 #define gInputMgr     D_00000000 /* Bss+0xF8 Sym 272, 0x194 bytes: the InputMgr (include/game/input.h; 79 functions) */
 #define gAudioHeap    D_00000000 /* Bss+0x4B0 Sym 1283, 0x34100 bytes: the audio heap arena (OoT gAudioHeap): AudioLoad_Init zeroes it, AudioHeap_InitMainPools carves initPool / miscPool from it (agent-a run 498) */
 #define gAudioHeapInitSizes D_00000000 /* Data+0x1CDD0 Sym 1284, 16 bytes: OoT gAudioHeapInitSizes {+4 heapSize, +8 initPoolSize, +0xC permanentPoolSize}; AudioLoad_Init / AudioHeap_InitMainPools / AudioHeap_Init (agent-a run 498) */
@@ -198,7 +198,6 @@
 #define gPolyFlags_3EEC4       D_00000000 /* Bss+0x3EEC4 Sym 289, 4 bytes: render flag word (game_createMap sets/clears bits 0x8 / 0x100 per map pass; SnowBoarder_ctor |= 8); zeroed by the CMod static ctor (CMod_vfn0_0005165C). agent-b area: alias only */
 #define gPolyGeomMode_3EEC8    D_00000000 /* Bss+0x3EEC8 Sym 290, 8 bytes: two mode words, [1] = geometry-mode-like bits (BasePolyShape_initGeomGlobals_00052674 sets 1|0x2000|0x8000|0x20000, game_createMap 0xA8002 / |0x20000); [0] cleared with it. agent-b area: alias only */
 #define gMainHeap              D_00000000 /* Bss+0x3C770 Sym 1797, 44 bytes: the default heap object: heap_printStats prints its free/largest and used/size (+0x28 = size; "%dk/%dk used/size"), app_setHeapMode / getHeapMode swap +0x20; heap_new, mem_delete, app_freeAllOfType use it */
-#define gWindowDefaults        D_00000000 /* Bss+0x3EC20 Sym 324, 64 bytes: Window defaults template: Window_setDefaults copies +0x0/+0x8../+0x2C/+0x30 into each new Window; App_main fills it; game_create3DWindow / createProcessWindow read +0x30 */
 #define gMemTrackerMgr         D_00000000 /* Bss+0x3EEF0 Sym 2306, POINTER to the MemTrackerMgr singleton: MemTrackerMgr_ctor stores `this` there; memtrack_begin / end / find walk its head / tail */
 #define gl_osViModeTable       D_00000000 /* Data+0x2D700 Sym 1947, 3360 bytes = 42 x 0x50 OSViMode (type byte i at entry i, NTSC/PAL/MPAL x 14): game_libs' libultra osViModeTable; gfx_setVideoMode indexes it */
 

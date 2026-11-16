@@ -21,6 +21,7 @@
 #include "gdl/nodelist.h"
 #include "gdl/pad.h"
 #include "gdl/gdlfile.h"
+#include "gdl/hostio.h"
 #include "libultra/os_thread.h"
 #include "game/camera.h"
 #include "uso_call.h"
@@ -5961,19 +5962,20 @@ int CollShape_nearestHit(char *o, int *r, float s, void *a3) {
 //
 // Body left INCLUDE_ASM; pseudo-C above is documentation only (below the
 // 80% NM-wrap-promote threshold per CLAUDE.md).
-/* coll_markZeroWeight_0003C7A4: for each zero-weight entry of o->0x84's table
- * (count +0x44, 12-byte records, float at +4), mark o->0x2C[i].s4 = -1. */
-void coll_markZeroWeight_0003C7A4(char *a0) {
+/* coll_markZeroWeight_0003C7A4 (agent-b run 560: over gdl/coll.h CollShape / CollTri and
+ * polyshape.h BasePolyShape): every triangle whose face normal has y == 0 (a vertical face)
+ * gets its CollTri tag set to -1, which the CollShape queries skip. */
+void coll_markZeroWeight_0003C7A4(CollShape *cs) {
     unsigned int i;
-    char *rec;
+    f32 *n;
 
-    if (*(char **)(a0 + 132) == 0) {
+    if (cs->shape == 0) {
         return;
     }
-    for (i = 0; i < *(unsigned int *)(*(char **)(a0 + 132) + 68); i++) {
-        rec = *(char **)(*(char **)(a0 + 132) + 84) + i * 12;
-        if (0.0f == *(float *)(rec + 4)) {
-            *(short *)(*(char **)(a0 + 44) + i * 12 + 4) = -1;
+    for (i = 0; i < cs->shape->nTris; i++) {
+        n = &cs->shape->faceNormals[i * 3];
+        if (0.0f == n[1]) {
+            cs->tris[i].tag = -1;
         }
     }
 }
@@ -7758,28 +7760,30 @@ void ItemMgr_errUnknownType(int a0) {
 /* ItemMgr_spawnItem: EXACT. Corrections vs the sketch above: the jal-0 cb
  * result is unused -- obj IS the stage-1 dispatch result (cb(a1, obj) only
  * registers it); the return is one `obj` web (0 on the a1==0 path, v1).
- * Frame: obj home 0x3C, char pad1[4] = the dead word at 0x38, stk at 0x30,
- * char pad2[0x14] fills 0x18..0x2F. The `if (1) {}` around the stage-2
+ * Frame: obj home 0x3C, the NodeMsg at 0x30 (its unset reply word is the dead word at 0x38),
+ * char pad[0x14] fills 0x18..0x2F.
+ * agent-b run 560: over gdl/item.h / node.h: obj = type's vtable slot 10 (newItem), attached
+ * under the type, named by the type's 4-char tag (Node.name = &type->tag), then sent NodeMsg
+ * {7, arg} through slot 4 (handleMsg). The `if (1) {}` around the stage-2
  * dispatch is a zero-code BB break: it makes uopt re-store obj's spill
  * (`sw v1,60(sp)`) before the second jalr, as the target does.
  * (docs/IDO_CODEGEN.md #bb-break-respill-3e868) */
-char *ItemMgr_spawnItem(void *a0, char *a1, int a2) {
-    char *obj;
-    char pad1[4];
-    int stk[2];
-    char pad2[0x14];
+Node *ItemMgr_spawnItem(ItemMgr *mgr, ItemType *type, int arg) {
+    Node *obj;
+    NodeMsg msg;
+    char pad[0x14];
     char *vt;
     obj = 0;
-    if (a1 != 0) {
-        vt = *(char **)(a1 + 0x28);
-        obj = ((char *(*)(char *))*(void **)(vt + 0x5C))(*(short *)(vt + 0x58) + a1);
-        CALL(ItemType_addItem)(a1, obj);
-        *(char **)(obj + 0x0C) = a1 + 0x2C;
-        stk[0] = 7;
-        stk[1] = a2;
+    if (type != 0) {
+        vt = type->node.vptr;
+        obj = (Node *)VT_SLOT(vt, 10).fn(VT_SLOT(vt, 10).delta + (char *)type);
+        CALL(ItemType_addItem)(type, obj);
+        obj->name = (const char *)&type->tag;
+        msg.tag = 7;
+        msg.arg = arg;
         if (1) {
-            vt = *(char **)(obj + 0x28);
-            ((void (*)(char *, int *))*(void **)(vt + 0x2C))(*(short *)(vt + 0x28) + obj, stk);
+            vt = obj->vptr;
+            VT_SLOT(vt, 4).fn(VT_SLOT(vt, 4).delta + (char *)obj, &msg);
         }
     }
     return obj;
@@ -8152,9 +8156,9 @@ void hostio_updateFloat(float *a0, int a1) {
 }
 
 extern int gl_func_00000000();
-void hostio_reset(int *a0) {
-    a0[1] = 0;
-    a0[0] &= ~1;
+void hostio_reset(HostioDev *dev) {
+    dev->connected = 0;
+    dev->flags &= ~HOSTIO_READY;
     CALL(hostio_init)();
 }
 
@@ -8166,9 +8170,10 @@ void hostio_reset(int *a0) {
  * 3FA54, pinned to the frame top (0x28..0xC8); (2) the 16 bytes at 0x18..0x28
  * are an unused 16-byte local declared after it; (3) the `lw v0,0xC8(sp)`
  * base + late `li v0,1` (instead of v1 base + early li) = `return 1` in its
- * own basic block -- an empty `if (1) {}` after the |= store (BB lever). */
+ * own basic block -- an empty `if (1) {}` after the |= store (BB lever).
+ * dev is the HostIO device object (gdl/hostio.h). */
 typedef struct { int type; char p[0xA0 - 4]; } GlMsg3EDBC;
-int hostio_init(int *a0) {
+int hostio_init(HostioDev *dev) {
     GlMsg3EDBC s;
     char pad[16];
     s.type = 0;
@@ -8177,7 +8182,7 @@ int hostio_init(int *a0) {
     if (s.type != 1) {
         CALL(sys_fatal)(GL_DATA_STR(0x1F398, "HostIO init error %d\n"), s.type);
     }
-    *a0 |= 1;
+    dev->flags |= HOSTIO_READY;
     if (1) {
     }
     return 1;
@@ -8986,9 +8991,9 @@ void hostio_endGroup(int a0) {
 }
 
 extern int gl_func_00000000();
-void hostio_connect(int *a0) {
-    CALL(hostio_msg21_0003FB38)(a0);
-    a0[1] = 1;
+void hostio_connect(HostioDev *dev) {
+    CALL(hostio_msg21_0003FB38)(dev);
+    dev->connected = 1;
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3FC58.cpp, REPLACE_FUNC_BODY-spliced over
@@ -19419,37 +19424,40 @@ s32 PolyShape_getFaceNormal(void *a0, int a1, int a2) {
  * phase of the whole body), and the colour entry re-reads the table from
  * the object, index first: `p[i + 1] * 4 + *(u8 **)(arg0 + 0x50)` (the
  * load is CSEd with colorTab, and the addu takes the table first). */
-void BasePolyShape_avgTriColour(char *arg0, int arg1, unsigned char *arg2) {
+/* agent-b run 560: over gdl/polyshape.h (BasePolyShape.vtxColours / triList / tris, PolyTri.v).
+ * Byte levers: the indexed tri address reads `*(char **)&shape->tris` (a plain member load moves the
+ * t-ring phase) and the per-vertex entry `*(unsigned char **)&shape->vtxColours` (plain swaps an addu). */
+void BasePolyShape_avgTriColour(BasePolyShape *shape, int tri, unsigned char *out) {
     short r, g, b;
     int i;
     unsigned char *colorTab;
     short *idxTab;
-    unsigned short *tri;
+    PolyTri *t;
     unsigned char *e;
-    unsigned short *p;
+    PolyTri *p;
 
-    colorTab = *(unsigned char **)(arg0 + 0x50);
+    colorTab = (unsigned char *)shape->vtxColours;
     if (colorTab == 0) {
-        CALL(sys_fatal)(GL_DATA_STR(0x21024, "PolyAvgCol: no colours"), arg1);
-        colorTab = *(unsigned char **)(arg0 + 0x50);
+        CALL(sys_fatal)(GL_DATA_STR(0x21024, "PolyAvgCol: no colours"), tri);
+        colorTab = (unsigned char *)shape->vtxColours;
     }
-    idxTab = *(short **)(arg0 + 0x4C);
+    idxTab = shape->triList;
     if (idxTab != 0) {
-        tri = (unsigned short *)(idxTab[arg1] * 8 + *(char **)(arg0 + 0x68));
+        t = (PolyTri *)(idxTab[tri] * 8 + *(char **)&shape->tris);
     } else {
-        tri = (unsigned short *)(*(char **)(arg0 + 0x68) + arg1 * 8);
+        t = &shape->tris[tri];
     }
     r = 0; g = 0; b = 0;
-    p = tri;
+    p = t;
     for (i = 0; i != 3; i++) {
-        e = p[i + 1] * 4 + *(unsigned char **)(arg0 + 0x50);
+        e = p->v[i] * 4 + *(unsigned char **)&shape->vtxColours;
         r += e[0];
         g += e[1];
         b += e[2];
     }
-    arg2[0] = r / 3;
-    arg2[1] = g / 3;
-    arg2[2] = b / 3;
+    out[0] = r / 3;
+    out[1] = g / 3;
+    out[2] = b / 3;
 }
 
 /* 2026-10-22 (agent-g run 123) EXACT (301/301): the m2c transcription had a 64-byte-short
@@ -19944,7 +19952,7 @@ s32 *BaseLight_ctor(char *self, int arg1) {
         if ((s1 = self) != 0 || (s1 = (char *)CALL(mem_new)(0xB4)) != 0) {
             CALL(Node_ctor)(s1, arg1); /* Node_ctor(this, name) */
             ((Node *)s1)->vptr = (char *)&MNode_vtbl_546E8_a;
-            if (((v1 = s1 + 0x2C) != 0 || (v1 = (char *)CALL(mem_new)(4)) != 0) &&
+            if (((v1 = (char *)&MNODE(s1)->mflags) != 0 || (v1 = (char *)CALL(mem_new)(4)) != 0) &&
                 ((m = v1) != 0 || (m = (char *)CALL(mem_new)(4)) != 0)) {
                 FW(m, 0) = 0;
             }
@@ -19952,17 +19960,17 @@ s32 *BaseLight_ctor(char *self, int arg1) {
             zv.x = 0.0f;
             zv.y = 0.0f;
             zv.z = 0.0f;
-            CALL(math_mtxAddTranslation)(s1 + 0x30, &zv); } BL_546E8->node.vptr = (char *)&BaseLight_vtbl_546E8_b;
-        s1 = self + 0xC4;
+            CALL(math_mtxAddTranslation)(MNODE(s1)->mtx, &zv); } BL_546E8->node.vptr = (char *)&BaseLight_vtbl_546E8_b;
+        s1 = (char *)&BL_546E8->flags;
         sp20 = (int *)s1;
         if ((s1 != 0 || (s1 = (char *)CALL(mem_new)(4)) != 0) &&
             ((v1 = s1) != 0 || (v1 = (char *)CALL(mem_new)(4)) != 0)) {
             FW(v1, 0) = 0;
         }
-        if ((s1 = self + 0x10C) != 0 || (s1 = (char *)CALL(mem_new)(0x2C)) != 0) {
+        if ((s1 = (char *)&BL_546E8->parms) != 0 || (s1 = (char *)CALL(mem_new)(0x2C)) != 0) {
             if ((v1 = s1) != 0 || (v1 = (char *)CALL(mem_new)(8)) != 0) {
-                FW(v1, 0) = (int)(&sStr_Parms_21084 + 0x21084);
-                FW(v1, 4) = 0;
+                ((BaseLightParms *)v1)->name = (int)(&sStr_Parms_21084 + 0x21084);
+                ((BaseLightParms *)v1)->unk04 = 0;
             }
             u1.v = *(int *)(&sTag_col_2108C + 0x2108C);
             sp94.x = 0.0f;
@@ -19981,7 +19989,7 @@ s32 *BaseLight_ctor(char *self, int arg1) {
             sp38 = sp94;
             sp28 = sp84;
             t = u1;
-            if ((m = s1 + 8) != 0 || (m = (char *)CALL(mem_new)(0x24)) != 0) {
+            if ((m = ((BaseLightParms *)s1)->colHead) != 0 || (m = (char *)CALL(mem_new)(0x24)) != 0) {
                 CALL(Parms_addParm)(m, s1, t, 1);
                 FW(m, 0xC) = (int)(&gl_ref_546E8_e + 0x20758);
                 FW(m, 0x20) = 0;
@@ -20131,7 +20139,7 @@ void LightTarget_doCommand(char *a0, char *a1) {
     if (val == 0x72) {
         int *p = *(int**)(a1 + 4);
         *(int**)(a1 + 4) = p + 1;
-        *(int*)(a0 + 0x120) = *p;
+        ((LightTarget *)a0)->mask = *p;
     } else {
         CALL(Node_doCommand)();
     }
@@ -20158,8 +20166,8 @@ void LightTarget_hostioParms(int *self) {
     extern int gHostio_strA, gHostio_strB, gHostio_strC, gHostio_strD;
     extern int gl_func_00000000ff(void *, void *, void *, float, float, int);
     CALL(hostio_beginGroup)(&gHostio_strA, GL_DATA_STR(0x210CC, "LightTarget"), 0);
-    CALL(hostio_addHexVar)(&gHostio_strB, GL_DATA_STR(0x210D8, "LightMask"), (char*)self + 0x120, 0);
-    XCALL(gl_func_00000000ff, hostio_addFloat)(&gHostio_strC, GL_DATA_STR(0x210E4, "Fade"), (char*)self + 0x124, 0.0f,
+    CALL(hostio_addHexVar)(&gHostio_strB, GL_DATA_STR(0x210D8, "LightMask"), &((LightTarget *)self)->mask, 0);
+    XCALL(gl_func_00000000ff, hostio_addFloat)(&gHostio_strC, GL_DATA_STR(0x210E4, "Fade"), &((LightTarget *)self)->scale, 0.0f,
                       1.0f, 0);
     CALL(hostio_endGroup)(&gHostio_strD);
     CALL(QNode_hostioParms)(self);
@@ -20313,7 +20321,7 @@ void light_setF124_000550A0(int *a0, float a1) {
 typedef struct { f32 x, y, z; } V3_550CC;
 extern int func_00000000();
 extern int D_00000000;
-void LightTarget_display(char *self) {
+void LightTarget_display(LightTarget *self) {
     s32 pad[2];
     V3_550CC v;
     s32 padA;
@@ -20321,18 +20329,17 @@ void LightTarget_display(char *self) {
     if (FCALL(Node_getDisplayMask)(self) == 2) {
         return;
     }
-    v = *(V3_550CC *)(self + 0xDC);
-    p = (V3_550CC *)(self + 0x114);
+    v = *(V3_550CC *)self->pos;
+    p = (V3_550CC *)self->queryPos;
     p->x = v.x;
     p->y = v.y;
     p->z = v.z;
-    FCALL(gfx_selectLights_000478FC)(&gGfxLib, p, *(s32 *)(self + 0x120), *(s32 *)(self + 0x124),
-                     *(s32 *)(self + 0x128));
+    FCALL(gfx_selectLights_000478FC)(&gGfxLib, p, self->mask, *(s32 *)&self->scale, self->unk128[0]);
     v = *p;
-    *(f32 *)(self + 0x108) = v.x;
-    *(f32 *)(self + 0x10C) = v.y;
-    *(f32 *)(self + 0x110) = v.z;
-    *(s32 *)(self + 0x128) = 0;
+    self->unk108[0] = v.x;
+    self->unk108[1] = v.y;
+    self->unk108[2] = v.z;
+    self->unk128[0] = 0;
 }
 
 void light_stub_00055194(int a0, int a1) {
@@ -21047,7 +21054,7 @@ def:
 DLContext *gfx_newDLContext(DLContext *param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
   DLBuf *puVar1;
   int *puVar2;
-  int tmp;
+  DLBuf *buf;
 
   if ((param_1 != 0) || ((param_1 = (DLContext *) CALL(mem_new)(0x7C)) != 0)) {
     puVar1 = &param_1->gfx;
@@ -21099,40 +21106,40 @@ DLContext *gfx_newDLContext(DLContext *param_1, int param_2, int param_3, int pa
     param_1->gfx.count = 0;
     param_1->gfx.cur = &param_1->gfx;
     param_1->vtx.max = param_4;
-    tmp = (int) &param_1->vtx;
+    buf = &param_1->vtx;
     if (param_4 != 0) {
-      ((DLBuf *) tmp)->base = CALL(mem_new)(param_4 * 0x10 + 0x10);
+      buf->base = CALL(mem_new)(param_4 * 0x10 + 0x10);
     }
-    ((DLBuf *) tmp)->count = 0;
-    ((DLBuf *) tmp)->cur = (DLBuf *) tmp;
+    buf->count = 0;
+    buf->cur = buf;
     param_1->light.max = param_5;
-    tmp = (int) &param_1->light;
+    buf = &param_1->light;
     if (param_5 != 0) {
-      ((DLBuf *) tmp)->base = CALL(mem_new)(param_5 * 0x48 + 0x48);
+      buf->base = CALL(mem_new)(param_5 * 0x48 + 0x48);
     }
-    ((DLBuf *) tmp)->count = 0;
-    ((DLBuf *) tmp)->cur = (DLBuf *) tmp;
+    buf->count = 0;
+    buf->cur = buf;
     param_1->mtx.max = param_6;
-    tmp = (int) &param_1->mtx;
+    buf = &param_1->mtx;
     if (param_6 != 0) {
-      ((DLBuf *) tmp)->base = CALL(mem_new)(param_6 * 0x40 + 0x40);
+      buf->base = CALL(mem_new)(param_6 * 0x40 + 0x40);
     }
-    ((DLBuf *) tmp)->count = 0;
-    ((DLBuf *) tmp)->cur = (DLBuf *) tmp;
+    buf->count = 0;
+    buf->cur = buf;
     param_1->vp.max = param_7;
-    tmp = (int) &param_1->vp;
+    buf = &param_1->vp;
     if (param_7 != 0) {
-      ((DLBuf *) tmp)->base = CALL(mem_new)(param_7 * 0x10 + 0x10);
+      buf->base = CALL(mem_new)(param_7 * 0x10 + 0x10);
     }
-    ((DLBuf *) tmp)->count = 0;
-    ((DLBuf *) tmp)->cur = (DLBuf *) tmp;
+    buf->count = 0;
+    buf->cur = buf;
     param_1->hilite.max = 0;
-    tmp = (int) &param_1->hilite;
+    buf = &param_1->hilite;
     if (0) {
-      ((DLBuf *) tmp)->base = gl_func_00000000(0);
+      buf->base = gl_func_00000000(0);
     }
-    ((DLBuf *) tmp)->count = 0;
-    ((DLBuf *) tmp)->cur = (DLBuf *) tmp;
+    buf->count = 0;
+    buf->cur = buf;
     CALL(gfx_resetDLContext)(param_1);
   }
   return param_1;
@@ -23104,16 +23111,16 @@ void math_printVec4(int a0, float *src) {
  * a0 = obj (home 0x20), a1/a2 = a/b bits (mtc1 to $f12/$f14), a3 = c bits
  * (home 0x2c), d/e/f = caller stack 0x30/0x34/0x38. */
 extern int D_00000000;
-extern void gl_proto_5c810(int, int, int, float, float, int);
+extern void gl_proto_5c810(HostioDev *, char *, int, float, float, int);
 void math_logFloatDiffs(int obj, float a, float b, float c, float d, float e, float f) {
     if (a != b) {
-        gl_proto_5c810((int)&gHostio, (int)(GL_DATA(0x21B1C)), obj, a, b, 0);
+        gl_proto_5c810(HOSTIODEV(&gHostio), GL_DATA(0x21B1C), obj, a, b, 0);
     }
     if (c != d) {
-        gl_proto_5c810((int)&gHostio, (int)(GL_DATA(0x21B20)), obj + 4, c, d, 0);
+        gl_proto_5c810(HOSTIODEV(&gHostio), GL_DATA(0x21B20), obj + 4, c, d, 0);
     }
     if (e != f) {
-        gl_proto_5c810((int)&gHostio, (int)(GL_DATA(0x21B24)), obj + 8, e, f, 0);
+        gl_proto_5c810(HOSTIODEV(&gHostio), GL_DATA(0x21B24), obj + 8, e, f, 0);
     }
 }
 

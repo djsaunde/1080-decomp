@@ -53,12 +53,15 @@ typedef struct BaseLight {
 
 typedef struct LightTarget {
     /* 0x000 */ Node node;
-    /* 0x02C */ s32 unk2C[0x37];
-    /* 0x108 */ f32 unk108[3];        /* RoData constant (+0x1BB0) */
-    /* 0x114 */ s32 unk114[3];
-    /* 0x120 */ s32 mask;             /* 0xFFFF */
-    /* 0x124 */ f32 scale;            /* 1.0 */
-    /* 0x128 */ s32 unk128[0x11];
+    /* 0x02C */ s32 unk2C[0x2C];       /* QNode body (QNode_ctor builds it; QNode_hostioParms) */
+    /* 0x0DC */ f32 pos[3];           /* QNode cvqs.trans: the world position */
+    /* 0x0E8 */ s32 unkE8[8];
+    /* 0x108 */ f32 unk108[3];        /* RoData constant (+0x1BB0); LightTarget_display stores the
+                                       * queryPos gfx_selectLights hands back */
+    /* 0x114 */ f32 queryPos[3];      /* LightTarget_display: pos copied here, passed by address */
+    /* 0x120 */ s32 mask;             /* 0xFFFF; HostIO "LightMask", doCommand 0x72 */
+    /* 0x124 */ f32 scale;            /* 1.0; HostIO "Fade" (0..1) */
+    /* 0x128 */ s32 unk128[0x11];     /* [0]: gfx_selectLights arg 5, cleared after each display */
 } LightTarget;
 
 typedef char BaseLight_size_check[sizeof(BaseLight) == 0x138 ? 1 : -1];
@@ -69,5 +72,6 @@ typedef char BaseLight_col_check[(int)&((BaseLight *)0)->parms.col == 0x124 ? 1 
 typedef char BaseLightParms_size_check[sizeof(BaseLightParms) == 0x2C ? 1 : -1];
 typedef char LightTarget_size_check[sizeof(LightTarget) == 0x16C ? 1 : -1];
 typedef char LightTarget_mask_check[(int)&((LightTarget *)0)->mask == 0x120 ? 1 : -1];
+typedef char LightTarget_pos_check[(int)&((LightTarget *)0)->pos == 0xDC ? 1 : -1];
 
 #endif /* GDL_LIGHT_H */
