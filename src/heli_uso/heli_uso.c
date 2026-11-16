@@ -46,6 +46,13 @@ typedef struct HeliTypeTag { int v; } HeliTypeTag;
 typedef struct HeliColour { float r, g, b, a; } HeliColour;
 
 char *heli_uso_func_000004C0(char *self, void *body, void *blades, void *sprite);
+void heli_uso_func_000008A8(char *self);
+
+/* Vec3 assignment as the C++ Vec3 operator= inlines it: a word copy into a stack temp,
+ * then three float stores (dst / src are float addresses, t a HeliTri3i temp) */
+#define HELI_VEC3_SET(dst, src, t) \
+    (t = *(HeliTri3i *)(src), ((float *)(dst))[0] = *(float *)&t.a, \
+     ((float *)(dst))[1] = *(float *)&t.b, ((float *)(dst))[2] = *(float *)&t.c)
 
 typedef struct { int a, b, c; } HeliTri3i;
 typedef struct { int a, b, c, d; } HeliQuad4;
@@ -185,9 +192,45 @@ char *heli_uso_func_00000460(char *self) {
 
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000004C0);
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_0000069C);
+/* heli_uso_func_0000069C: Heli loadData: the start position (+0x108), then the local pose
+ * (vqs.trans = start raised by RoData+0x70) is copied into the combined pose (cvqs). */
+void heli_uso_func_0000069C(char *self) {
+    int pad_top[2];
+    HeliTri3i t1;
+    int pad_mid[3];
+    HeliTri3i t2;
+    int pad_bot[4];
+    heli_uso_func_0000003C((float *)(self + 0x108));
+    HELI_VEC3_SET(self + 0xB4, self + 0x108, t1);
+    *(float *)(self + 0xB8) += HELI_RODATA_F(0x70);
+    HELI_VEC3_SET(self + 0xDC, self + 0xB4, t1);  /* cvqs.trans = vqs.trans */
+    HELI_VEC3_SET(self + 0xE8, self + 0xC0, t2);  /* cvqs.scale = vqs.scale */
+    HELI_VEC3_SET(self + 0xF4, self + 0xCC, t2);  /* cvqs.quat = vqs.quat */
+    *(float *)(self + 0x100) = *(float *)(self + 0xD8);
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000007B4);
+/* heli_uso_func_000007B4: Heli handleMsg. 9 (reset): put the Heli back at its start position
+ * (combined and local trans) and reset the flight state; 7 (store): the start position takes
+ * the current local trans. The compare chain is `beq 9; beql 7; b out`: an if-goto chain. */
+void heli_uso_func_000007B4(char *self, int *msg) {
+    int pad_top[2];
+    HeliTri3i t1;
+    int pad_mid[3];
+    HeliTri3i t2;
+    int pad_bot[2];
+    CALL(QNode_handleMsg)(self, msg);
+    if (*msg == 9) goto reset;
+    if (*msg != 7) goto out;
+    goto store;
+reset:
+    HELI_VEC3_SET(self + 0xDC, self + 0x108, t1);
+    HELI_VEC3_SET(self + 0xB4, self + 0xDC, t2);
+    CALL(heli_uso_func_000008A8)(self); /* global: blank reloc'd jal */
+    goto out;
+store:
+    HELI_VEC3_SET(self + 0x108, self + 0xB4, t1);
+out:;
+}
 
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000008A8);
 
