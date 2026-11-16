@@ -2901,7 +2901,7 @@ void Spinner_update(int *a0) {
     struct { Vec3 v; char pad[12]; int p; } s;
     float y, z;
     int pad[3];
-    s.p = *(int*)((char*)a0 + 0x14);
+    s.p = (int)NODE(a0)->parent;
     y = *(float*)((char*)a0 + 0x2C); z = 0.0f;
     s.v.y = y;
     s.v.z = z;
@@ -4235,7 +4235,7 @@ int Node_sendMsg14(int *a0, int a1) {
     req.return_slot = 0;
     if (0) { a1 = 0; }
     v0 = (int*)a0[0x28/4];
-    (*(int (**)(int, int *))((char *)v0 + 0x34))(*(short *)((char *)v0 + 0x30) + (int)a0, &req.count);
+    ((int (*)(int, int *))VT_SLOT(v0, 5).fn)(VT_SLOT(v0, 5).delta + (int)a0, &req.count);
     return req.return_slot;
 }
 
@@ -4249,7 +4249,7 @@ void Node_runCommands_00038C04(int *self, int **state) {
     if (state[0] == 0) return;
     do {
         int *vtable = (int*)self[0x28/4];
-        ((void(*)(int, int**))vtable[0x3C/4])(*(short*)((char*)vtable + 0x38) + (int)self, state);
+        ((void(*)(int, int**))VT_SLOT(vtable, 6).fn)(VT_SLOT(vtable, 6).delta + (int)self, state);
         {
             int *p = state[1];
             state[1] = (int*)((char*)p + 4);
@@ -4696,7 +4696,7 @@ void SNode_loadData(int *a0) {
     sp_arg = 19;
     {
         int *vt = (int*)a0[0x28/4];
-        ((void(*)(int, int*))vt[0x2C/4])(*(short*)((char*)vt + 0x28) + (int)a0, &sp_arg);
+        ((void(*)(int, int*))VT_SLOT(vt, 4).fn)(VT_SLOT(vt, 4).delta + (int)a0, &sp_arg);
     }
 }
 
@@ -4862,7 +4862,7 @@ int nodelist_displayFlagged_00039EE4(int **head) {
             if (0) {
                 vt = NULL;
             }
-            ((void (*)(int))vt[0x1C / 4])(*(short *)((char *)vt + 0x18) + (int)node);
+            ((void (*)(int))VT_SLOT(vt, 2).fn)(VT_SLOT(vt, 2).delta + (int)node);
         }
         cur = next;
         node = (cur != NULL) ? (next = (int *)cur[1], (int *)cur[0]) : NULL;
@@ -4892,7 +4892,7 @@ int nodelist_updateFlagged_00039F7C(int **head) {
             if (0) {
                 vt = NULL;
             }
-            ((void (*)(int))vt[0x24 / 4])(*(short *)((char *)vt + 0x20) + (int)node);
+            ((void (*)(int))VT_SLOT(vt, 3).fn)(VT_SLOT(vt, 3).delta + (int)node);
         }
         cur = next;
         node = (cur != NULL) ? (next = (int *)cur[1], (int *)cur[0]) : NULL;
@@ -6211,8 +6211,8 @@ void CollObj_sendBump(int **a0, int a1) {
     p = *a0;
     q = (int *)p[0x28/4];
     if (q) {}
-    ((void(*)(int, int*))q[0x2C/4])(
-        *(short*)((char*)q + 0x28) + (int)p, &arr[4]);
+    ((void(*)(int, int*))VT_SLOT(q, 4).fn)(
+        VT_SLOT(q, 4).delta + (int)p, &arr[4]);
 }
 
 extern int gl_func_00000000();
@@ -6490,8 +6490,8 @@ void ItemType_addItem(int *a0, int *a1) {
     }
     a1[0x14/4] = (int)a0;
     v0 = (int*)a0[0x28/4];
-    (*(int(**)(int*, int*, int*))((char*)v0 + 0x64))(
-        (int*)((char*)a0 + *(short*)((char*)v0 + 0x60)), a1, a0);
+    ((int(*)(int*, int*, int*))VT_SLOT(v0, 11).fn)(
+        (int*)((char*)a0 + VT_SLOT(v0, 11).delta), a1, a0);
 }
 
 extern int gl_func_00000000();
@@ -6499,8 +6499,8 @@ extern int gl_func_00000000();
 void ItemType_removeItem(char *a0, int a1) {
     char *vt;
     CALL(list_removeKey_00066620)(a0 + 0x10, a1);
-    vt = *(char**)(a0 + 0x28);
-    (*(int(**)(char*))(vt + 0x64))(a0 + *(short*)(vt + 0x60));
+    vt = NODE(a0)->vptr;
+    ((int(*)(char*))VT_SLOT(vt, 11).fn)(a0 + VT_SLOT(vt, 11).delta);
 }
 
 // ItemType_saveData — STRUCTURAL PASS (0xFC / 63 words, no episode).
@@ -6692,9 +6692,9 @@ int *ColourItem_ctor(int *a0) {
         FCALL(Node_ctor)(a0, GL_DATA_STR(0x1F2DC, "<Node>"));
         NODE(a0)->vptr = (char *)&ColourItem_vtbl;
         a0[0x2C/4] = 0;
-        *(float*)((char*)a0 + 0x30) = 0.0f;
-        *(float*)((char*)a0 + 0x34) = 0.0f;
-        *(float*)((char*)a0 + 0x38) = 0.0f;
+        ((ColourItem *)a0)->rgb[0] = 0.0f;
+        ((ColourItem *)a0)->rgb[1] = 0.0f;
+        ((ColourItem *)a0)->rgb[2] = 0.0f;
     }
     return a0;
 }
@@ -6733,9 +6733,9 @@ void ColourItem_handleMsg(int *a0, int *a1) {
     tag = *a1;
     if (tag == 7) {
         *(Tri3i *)tmp = *(Tri3i *)a1[1];
-        *(float*)((char*)a0 + 0x30) = tmp[0];
-        *(float*)((char*)a0 + 0x34) = tmp[1];
-        *(float*)((char*)a0 + 0x38) = tmp[2];
+        ((ColourItem *)a0)->rgb[0] = tmp[0];
+        ((ColourItem *)a0)->rgb[1] = tmp[1];
+        ((ColourItem *)a0)->rgb[2] = tmp[2];
     } else {
         FCALL(Node_handleMsg)();
     }
@@ -6943,7 +6943,7 @@ int ColourItemType_buildItems(D914Obj *a0) {
     if (s0 != 0) {
         do {
             int r;
-            r = (*(int *)(s0 + 0x2C) = a0->vt->fn(a0->vt->off + (int)a0, s0));
+            r = (*(int *)&((ColourItem *)s0)->next = a0->vt->fn(a0->vt->off + (int)a0, s0));
             p[0] = p[1];
             if (p[1] != 0) {
                 p[1] = p[1]->next;
@@ -6975,7 +6975,7 @@ void ColourItemType_display(int *arg0) {
  * the while/break form produces, AND from optimizing `a0 == a1` into
  * `beqz a1` (since a0's history is opaque through the goto). */
 int* ColourItemType_getItem(int a0, int a1) {
-    int *v1 = *(int**)(a0 + 0x34);
+    int *v1 = (int *)((ItemType *)a0)->builtHead;
     a0 = 0;
     if (v1 == 0) goto end;
 loop:
@@ -7141,7 +7141,7 @@ int SNodeItemType_buildItems(D914Obj *a0) {
     if (s0 != 0) {
         do {
             int r;
-            r = (*(int *)(s0 + 0x84) = a0->vt->fn(a0->vt->off + (int)a0, s0));
+            r = (*(int *)&((SNode *)s0)->next = a0->vt->fn(a0->vt->off + (int)a0, s0));
             p[0] = p[1];
             if (p[1] != 0) {
                 p[1] = p[1]->next;
@@ -7326,14 +7326,14 @@ char *SNodeItemType_vslot15_0003DF58(char *a0, char *a1) {
 }
 
 int SNodeItemType_getItem(int a0, int a1) {
-    int v1 = *(int *)(a0 + 0x34);
+    int v1 = ((ItemType *)a0)->builtHead;
     a0 = 0;
     if (v1 != 0) {
         do {
             if (a0 == a1) {
                 break;
             }
-            v1 = *(int *)(v1 + 0x84);
+            v1 = (int)((SNode *)v1)->next;
             a0++;
         } while (v1 != 0);
     }
@@ -7684,7 +7684,7 @@ void ItemMgr_rebuildAll(int *a0) {
     if (node != 0) {
         do {
             int *obj = (int*)ITEMTYPE(node)->node.vptr;
-            ((gl_e594_fn_t)*(int*)((char*)obj + 0x64))(*(short*)((char*)obj + 0x60) + (char*)node);
+            ((gl_e594_fn_t)VT_SLOT(obj, 11).fn)(VT_SLOT(obj, 11).delta + (char*)node);
             node = (int *)ITEMTYPE(node)->next;
         } while (node != 0);
     }
@@ -7849,7 +7849,7 @@ int ItemMgr_registerTemplate(int a0, Rec3E968 *a1) {
 /* Split off from ItemMgr_registerTemplate bundle 2026-05-08: 2-insn no-frame setter.
  * Stores a1 to a0->field_30. */
 void ItemType_setNext(int *a0, int a1) {
-    *(int*)((char*)a0 + 0x30) = a1;
+    ((ItemType *)a0)->next = (ItemType *)a1;
 }
 
 // ItemMgr_changeType — STRUCTURAL PASS (0xCC / 52 words, no episode). Raw-.word
@@ -9986,10 +9986,10 @@ void App_Reset(App *self) {
     volatile int pad_lo_a, pad_lo_b;
     FCALL(dbg_printf)(GL_DATA_STR(0x1F5E4, "App::Reset\n")); /* "App::Reset\n" */
     vtable = (int *)self->node.vptr;
-    ((void(*)(int))vtable[0x14/4])(*(short*)((char*)vtable + 0x10) + (int)self);
+    ((void(*)(int))VT_SLOT(vtable, 1).fn)(VT_SLOT(vtable, 1).delta + (int)self);
     local = 9;
     vtable = (int *)self->node.vptr;
-    ((void(*)(int, int*))vtable[0x34/4])(*(short*)((char*)vtable + 0x30) + (int)self, &local);
+    ((void(*)(int, int*))VT_SLOT(vtable, 5).fn)(VT_SLOT(vtable, 5).delta + (int)self, &local);
 }
 
 /* App_restart: 21-insn 2-vtable-call dispatcher.
@@ -10016,9 +10016,9 @@ void App_restart(App *a0) {
     CALL(GfxLib_func_0004DD5C)();
     p = (int *)a0->node.vptr;
     a0->unk30 = 0;
-    ((void(*)(int))p[0x74/4])(*(short*)((char*)p + 0x70) + (int)a0);
+    ((void(*)(int))VT_SLOT(p, 13).fn)(VT_SLOT(p, 13).delta + (int)a0);
     p = (int *)a0->node.vptr;
-    ((void(*)(int))p[0x84/4])(*(short*)((char*)p + 0x80) + (int)a0);
+    ((void(*)(int))VT_SLOT(p, 15).fn)(VT_SLOT(p, 15).delta + (int)a0);
 }
 
 /* App_softReset -- MERGED 2026-09-09 (agent-c): the 3-word orphan
@@ -10541,7 +10541,7 @@ void GfxLib_hostioSendFbB_0004247C(void)
     int bc;
     int *g;
     int *p = (int *)G4247C[0x28 / 4];
-    int rv = ((int (*)(int))p[0x64 / 4])((int)G4247C + *(short *)((char *)p + 0x60));
+    int rv = ((int (*)(int))VT_SLOT(p, 11).fn)((int)G4247C + VT_SLOT(p, 11).delta);
     g = G4247C;
     bc = g[0xBC / 4];
     CALL(hostio_sendImage)(&gHostio_data_42440_arg, 0x110, rv, G4247C[0xB8 / 4], bc);
@@ -10556,8 +10556,8 @@ int GfxLib_hostioForceError() {
 extern int gl_func_00000000();
 void GfxLib_hostioPrintDLUsage(void) {
     CALL(gfx_printDLUsage)(((int)gGfx->staticDL));
-    CALL(gfx_printDLUsage)(*(int *)(((int)gGfx->mainWindow) + 0x180));
-    CALL(gfx_printDLUsage)(*(int *)(((int)gGfx->mainWindow) + 0x184));
+    CALL(gfx_printDLUsage)(((ScreenWindow *)gGfx->mainWindow)->bgDL[0]);
+    CALL(gfx_printDLUsage)(((ScreenWindow *)gGfx->mainWindow)->bgDL[1]);
 }
 
 extern int gl_func_00000000();
@@ -10987,7 +10987,7 @@ void gfx_setLightDirs_000430D8(char *self, int flag) {
     if (flag) {
         obj = ITER_FIRST_430D8(p);
         while (obj != 0) {
-            if (!(*(int *)(obj + 0xC4) & 0x80)) {
+            if (!(((BaseLight *)obj)->flags & 0x80)) {
                 slot = base; slot += idx * 16;
                 slot[0x10] = (int)(F_430D8(obj, 0xF0) * 120.0f);
                 slot[0x11] = (int)(F_430D8(obj, 0xF4) * 120.0f);
@@ -11000,7 +11000,7 @@ void gfx_setLightDirs_000430D8(char *self, int flag) {
     } else {
         ITER_NEXT_430D8(p, node);
         while (node != 0) {
-            if (!(*(int *)(node + 0xC4) & 0x80)) {
+            if (!(((BaseLight *)node)->flags & 0x80)) {
                 slot = base; slot += idx * 16;
                 slot[0x10] = (int)(F_430D8(node, 0xE4) * 120.0f);
                 slot[0x11] = (int)(F_430D8(node, 0xE8) * 120.0f);
@@ -11100,7 +11100,7 @@ void gfx_clearFbRect_00043468(int x, int y, int w, int h) {
 }
 
 void gfx_printWindowDLUsage_00043558(int *a0) {
-    CALL(gfx_printDLUsage)(*(int*)((char*)*(int**)((char*)a0 + 0x148) + 0x180));
+    CALL(gfx_printDLUsage)(((ScreenWindow *)a0)->fbOwner->bgDL[0]);
 }
 /* Unreferenced empty function after gfx_printWindowDLUsage_00043558: IDO still emits an
  * unused static procedure, as `jr ra; nop` with no symbol (the 8 bytes
@@ -12074,7 +12074,7 @@ void gfx_start(GfxLib *arg0) {
         e = arg0->frameStartCbs[i];
         if (e != 0) {
             vt = (char *)FW(e, 0x5C);
-            ((void (*)(char *, int))FW(vt, 0xC))(e + *(s16 *)(vt + 8), 0);
+            ((void (*)(char *, int))VT_SLOT(vt, 0).fn)(e + VT_SLOT(vt, 0).delta, 0);
         }
     }
 }
@@ -12743,8 +12743,8 @@ void gfx_swapBuffer(GfxLib *a0) {
     int rv;
     a0->mainWindow->fbIndex = (a0->fbIndex ^= 1);
     vtable = (int*)a0->mainWindow->win.node.vptr;
-    rv = ((int(*)(int))vtable[0x64/4])(
-        (int)a0->mainWindow + *(short*)((char*)vtable + 0x60));
+    rv = ((int(*)(int))VT_SLOT(vtable, 11).fn)(
+        (int)a0->mainWindow + VT_SLOT(vtable, 11).delta);
     FCALL(osViSwapBuffer)(rv);
     FCALL(gfx_waitRetrace)(a0);
 }
@@ -13946,10 +13946,10 @@ extern int gl_func_00000000();
 extern int gGfxLib_41820_c;
 void PolyShape_clipToWindow_00049308(char *self) {
     int i;
-    for (i = 0; i < *(int *)(self + 0x90); i++) {
-        char *rec = (*(char ***)(self + 0x84))[i];
+    for (i = 0; i < ((BasePolyShape *)self)->nMats; i++) {
+        char *rec = (char *)((BasePolyShape *)self)->mats[i];
         char *q = ((char *)GFXLIB(&gGfxLib_41820_c)->curWindow);
-        if (*(int *)(rec + 0x54) >= ((Window *)q)->clipRowLo && *(int *)(rec + 0x50) <= ((Window *)q)->clipRowHi) {
+        if (((BaseMat *)rec)->maxCut >= ((Window *)q)->clipRowLo && ((BaseMat *)rec)->minCut <= ((Window *)q)->clipRowHi) {
             CALL(PolyShape_clipRows_00043D38)(rec);
         }
     }
@@ -14620,7 +14620,7 @@ void MorphPoly_allocUpdateList(int *self) {
     }
     {
         int *g = ((int *)gGfx->staticDL);
-        *(short *)((char *)self + 0xD4) =
+        ((MorphPoly *)self)->vtxStart =
             *(int *)((char *)(*(int *)((char *)g + 0x1C)) + 4);
     }
 }
@@ -14640,13 +14640,13 @@ void MorphPoly_allocUpdateList(int *self) {
 void MorphPoly_checkVtx(int *self, int val, int idx) {
     extern int D_00000000;
     short base;
-    base = *(short*)((char*)self + 0xD4);
+    base = ((MorphPoly *)self)->vtxStart;
     if ((unsigned int)(idx - base) >= (unsigned int)(self[0x40 / 4] * 10)) {
         CALL(sys_assertFail)(GL_DATA_STR(0x200BC, "(dvtx-FirstVtx) < (NumPnts * 10)"),
                           (char*)&D_00000000 + 0x200E0,
                           0xAAF,
                           self);
-        base = *(short*)((char*)self + 0xD4);  /* reload after assert */
+        base = ((MorphPoly *)self)->vtxStart;  /* reload after assert */
     }
     ((short *)self[0xD0 / 4])[idx - base] = val;
 }
@@ -14694,7 +14694,7 @@ int MorphPoly_shade(char *self, int a1, int a2, int aux, int a4) {
     short *lit = (short *)&D_00000000;
     r = CALL(PolyShape_shade_00049DBC)(self, a1, a2, aux, a4);
     if (a1 == 0) {
-        if (*(int *)(self + 0x38) & 0x8000) {
+        if (((BasePolyShape *)self)->shapeFlags & 0x8000) {
             t = CALL(PolyShape_getFaceVertex)(self, aux, 0);
             CALL(MorphPoly_checkVtx)(self, t, lit[0]);
             t = CALL(PolyShape_getFaceVertex)(self, aux, 1);
@@ -15330,7 +15330,7 @@ end:
 }
 
 void PolyShape_stub_0004C20C(int *a0, int a1) {
-    *(int*)((char*)a0 + 0x1B4) = a1;
+    ((ScreenWindow *)a0)->unk1B4 = a1;
 }
 
 extern int func_00000000();
@@ -16103,7 +16103,7 @@ void PolyShape_vfn10_0004CFD4(int *a0, int a1, int a2, int *pa) {
  * flat-sum form pins idx-first creation; named locals take a/v regs.
  * LAND BLOCKED mid-file (post0b drift); relayout queue (11 bodies). */
 int ScreenWindow_getCurBuffer_0004D014(char *a0) {
-    return ((int *)(*(int *)(a0 + 0x148) + 0xF4))[*(int *)(a0 + 0x144)];
+    return (int)((ScreenWindow *)a0)->fbOwner->win.colorBuf[((ScreenWindow *)a0)->fbIndex];
 }
 
 extern int gl_ref_00056CB4();
@@ -16773,7 +16773,7 @@ void gfx_setEvery4thFrameFlag(GfxLib *a0) {
  * Same pattern as CommonInfo_loadData_00008F98. Replaces prior INSN_PATCH
  * approach — no Makefile entry needed. */
 void gfx_vcall_0004E150(GfxLib *a0) {
-    char *p2 = *(char **)((char *)a0->unk134 + 0x14);  /* the +0x134 object's vtable (kept at +0x14) */
+    char *p2 = ((GfxObj *)a0->unk134)->vptr;  /* the +0x134 object's vtable (kept at +0x14) */
     char *p1 = (char *)a0->unk134;
     VT_SLOT(p2, 0).fn(p1 + VT_SLOT(p2, 0).delta);
 }
@@ -17040,7 +17040,7 @@ extern int gl_func_00000000();
 
 void Window_dtor(char *a0, int a1) {
     if (a0 == (char*)0) return;
-    *(char**)(a0 + 0x28) = (char*)gl_func_00000000;
+    ((Node *)a0)->vptr = (char*)gl_func_00000000;
     if (a1 & 1) {
         CALL(mem_delete)();
     }
@@ -17138,10 +17138,10 @@ void Window_setDefaults(char *a0) {
  * insn. With 3 args the body byte-matches; promoted from NM 80.26% → exact. */
 void node_linkBack_0004E888(int *a0, int *a1) {
     CALL(list_append)((char*)a0 + 0x10, a1, a0);
-    if (*(int*)((char*)a1 + 0x14) != 0) {
-        *(int*)((char*)a1 + 0x4) = 1;
+    if (((Node *)a1)->parent != 0) {
+        ((Node *)a1)->unk04 = 1;
     }
-    *(int**)((char*)a1 + 0x14) = a0;
+    ((Node *)a1)->parent = (Node *)a0;
 }
 
 /* node_linkBack_0004E8D4: 19-insn 1-call helper. Calls helper(a0+0x10, a1, a0) then
@@ -17172,7 +17172,7 @@ void node_linkBack_0004E920(int *a0, int *a1) {
  * donor-local jumptable reloc to Window_doCommand_rodata, pinned to the USO
  * RoData at +0x1B84. Body below is a placeholder for the splice. */
 void Window_doCommand(char *a0) {
-    *(volatile int *)(a0 + 0x78) = 0;
+    *(volatile int *)&((Window *)a0)->flags = 0;
 }
 
 /* Split off from Window_doCommand bundle 2026-05-08: 9-insn FPU int-to-float
@@ -17339,14 +17339,14 @@ void Window_runTaskHooks(Window *a0) {
 }
 
 void Window_addHook_0004EDEC(int *a0, int a1) {
-    *(int *)((char *)a0 + a0[0x48] * 4 + 0x134) = a1;
+    ((Window *)a0)->hooks[a0[0x48]] = (void *)a1;
     if (a0[0x48] < 3) {
         a0[0x48] += 1;
     }
 }
 
 void Window_addTaskHook(int *a0, int a1) {
-    *(int *)((char *)a0 + a0[0x47] * 4 + 0x124) = a1;
+    ((Window *)a0)->taskHooks[a0[0x47]] = (void *)a1;
     if (a0[0x47] < 3) {
         a0[0x47] += 1;
     }
@@ -18028,10 +18028,10 @@ s32 Mesh_paint(char *arg0, u32 arg1) {
 extern int gl_func_00000000();
 extern int D_00000000;
 int BasePolyShape_addTri(int *self, int cap, int b, int c, int d, int e) {
-    *(short *)(self[0x68 / 4] + self[0x44 / 4] * 8 + 2) = b;
-    *(short *)(self[0x68 / 4] + self[0x44 / 4] * 8 + 4) = c;
-    *(short *)(self[0x68 / 4] + self[0x44 / 4] * 8 + 6) = d;
-    *(short *)(self[0x68 / 4] + self[0x44 / 4] * 8 + 0) = e;
+    ((BasePolyShape *)self)->tris[((BasePolyShape *)self)->nTris].v[0] = b;
+    ((BasePolyShape *)self)->tris[((BasePolyShape *)self)->nTris].v[1] = c;
+    ((BasePolyShape *)self)->tris[((BasePolyShape *)self)->nTris].v[2] = d;
+    ((BasePolyShape *)self)->tris[((BasePolyShape *)self)->nTris].flags = e;
     {
         int n = self[0x44 / 4] + 1;
         self[0x44 / 4] = n;
@@ -18624,7 +18624,7 @@ extern int gl_func_00000000();
 
 void BaseMat_sendImage_00051E98(char *a0) {
     extern int gl_data_00000000;
-    CALL(hostio_sendImage)(&gl_data_00000000, *(int*)(a0 + 0x24), *(int*)(a0 + 0x1C), *(short*)(a0 + 0x20), *(short*)(a0 + 0x22));
+    CALL(hostio_sendImage)(&gl_data_00000000, ((BaseMat *)a0)->format, ((BaseMat *)a0)->texels, ((BaseMat *)a0)->width, ((BaseMat *)a0)->height);
 }
 
 /* BaseMat_forEachVarArg_00051ED8: varargs per-arg dispatch loop. Decoded from bare
@@ -18738,7 +18738,7 @@ extern float gl_func_returns_float();
 int gfx_texImageBytes(int *a0) {
     float scale = gl_func_returns_float(a0);
     float t;
-    return (int)((float)(*(short*)((char*)a0 + 0x20) * *(short*)((char*)a0 + 0x22)) * (t = scale));
+    return (int)((float)(((BaseMat *)a0)->width * ((BaseMat *)a0)->height) * (t = scale));
 }
 
 /* 16-insn float scale + truncate. Calls gl_func(a0) returning float in
@@ -18758,7 +18758,7 @@ extern float gl_func_returns_float();
 int gfx_texRowBytes(int *a0) {
     float scale = gl_func_returns_float(a0);
     float t;
-    return (int)((float)*(short*)((char*)a0 + 0x20) * (t = scale));
+    return (int)((float)((BaseMat *)a0)->width * (t = scale));
 }
 
 /* 45-insn float-returning state-code dispatcher: a0->[0x24] selects one
@@ -20146,9 +20146,9 @@ void BaseLight_doCommand(int *self, int *strm) {
     goto D;
 R:
     p = (int *)strm[1]; strm[1] += 4;
-    *(float *)((char *)self + 0xC8) = (float)*p;
+    ((BaseLight *)self)->atten = (float)*p;
     p = (int *)strm[1]; strm[1] += 4;
-    *(float *)((char *)self + 0xCC) = (float)*p;
+    ((BaseLight *)self)->falloff = (float)*p;
     return;
 H:
     CALL(cmd_readFixedQuad)(strm, (char *)self + 0x124);
@@ -20160,7 +20160,7 @@ I:
         CALL(sys_fatal)(GL_DATA_STR(0x210B4, "Global out of range %d"));
     }
     v = *(int *)((char *)&gNodeGlobals + idx * 4);
-    *(int *)((char *)self + 0xD4) = v;
+    ((BaseLight *)self)->unkD4[0] = v;
     return;
 D:
     CALL(Node_doCommand)(self, strm);
@@ -20347,9 +20347,9 @@ void light_setMirrorMatrix_00054E78(char *arg0, char *arg1) {
  * Byte-exact 2026-05-27 via float-typed arg (mtc1 a1, $f12 at entry).
  * Note the bc1t form (branch IF equal → skip) yields the `!=` C test. */
 void light_setF124_000550A0(int *a0, float a1) {
-    if (*(float*)((char*)a0 + 0x124) != a1) {
-        *(int*)((char*)a0 + 0x128) = 1;
-        *(float*)((char*)a0 + 0x124) = a1;
+    if (((LightTarget *)a0)->scale != a1) {
+        ((LightTarget *)a0)->unk128[0] = 1;
+        ((LightTarget *)a0)->scale = a1;
     }
 }
 
@@ -22557,7 +22557,7 @@ int Mem_freeBytes(int *a0) {
 }
 
 int Mem_getUsed(int *a0) {
-    return *(int *)((char *)a0 + 0x24) << 4;
+    return ((MemHeap *)a0)->usedSize << 4;
 }
 
 // Walk the circular list (a0->4 = next, terminated when next==a0) and return

@@ -116,7 +116,7 @@ void AnimPlayer_advance(char *arg0) {
                             {
                                 p2 = (int *) AP(arg0)->node.vptr;
                                 if (sp34) {}
-                                ((GP_00062F8C)p2[0x5C / 4])(*(s16 *)((char *)p2 + 0x58) + (int)arg0);
+                                ((GP_00062F8C)VT_SLOT(p2, 10).fn)(VT_SLOT(p2, 10).delta + (int)arg0);
                             }
                         }
                     } else {
@@ -125,7 +125,7 @@ void AnimPlayer_advance(char *arg0) {
                             {
                                 p2 = (int *) AP(arg0)->node.vptr;
                                 if (sp34) {}
-                                ((GP_00062F8C)p2[0x5C / 4])(*(s16 *)((char *)p2 + 0x58) + (int)arg0);
+                                ((GP_00062F8C)VT_SLOT(p2, 10).fn)(VT_SLOT(p2, 10).delta + (int)arg0);
                             }
                         }
                     }
@@ -174,7 +174,7 @@ void AnimPlayer_advance(char *arg0) {
                         if (AP(arg0)->blendEvent == -1) {
                             {
                                 p2 = (int *) AP(arg0)->node.vptr;
-                                ((GP_00062F8C)p2[0x5C / 4])(*(s16 *)((char *)p2 + 0x58) + (int)arg0);
+                                ((GP_00062F8C)VT_SLOT(p2, 10).fn)(VT_SLOT(p2, 10).delta + (int)arg0);
                             }
                         }
                     }
@@ -1722,7 +1722,7 @@ void DNode_resetXform_00065360(char *a0, Vec3_f *a1) {
     DNODE(a0)->cvqs.quat[3] = 1.0f;
     DNODE(a0)->vqs.quat[3] = 1.0f;
     /* virtual call: vtable entry +0x10 (s16 this-delta) / +0x14 (fn) */
-    (*(int (**)(char *))(v0 + 0x14))(*(short *)(v0 + 0x10) + a0);
+    ((int (*)(char *))VT_SLOT(v0, 1).fn)(VT_SLOT(v0, 1).delta + a0);
 }
 
 extern int gl_func_00000000();
@@ -4219,8 +4219,8 @@ extern int gl_func_00000000();
 
 int BinFileMgr_getAcquire(void) {
     int r = CALL(BinFileMgr_get_00068730)();
-    char *p = *(char**)(r + 0x1C);
-    (*(int(**)(int))(p + 0x14))(*(short*)(p + 0x10) + r);
+    char *p = ((BinFile *)r)->vptr;
+    ((int(*)(int))VT_SLOT(p, 1).fn)(VT_SLOT(p, 1).delta + r);
     return r;
 }
 
@@ -4228,8 +4228,8 @@ extern int gl_func_00000000();
 
 void BinFileMgr_getRelease(void) {
     char *r = (char*)CALL(BinFileMgr_get_00068730)();
-    char *p = *(char**)(r + 0x1C);
-    (*(int(**)(char*))(p + 0x1C))(r + *(short*)(p + 0x18));
+    char *p = ((BinFile *)r)->vptr;
+    ((int(*)(char*))VT_SLOT(p, 2).fn)(r + VT_SLOT(p, 2).delta);
 }
 
 extern int gl_func_00000000();
@@ -4665,7 +4665,7 @@ void skin_cmdSkinShape(NodeListState *arg0) {
     v = *(int *)A;
     arg0->cmd = v;
     sp2C = (char *)CALL(BasePolyShape_ctor)(0, GL_DATA_STR(0x2C568, "SkinShape"), v, 0);
-    CALL(mem_new)(FW(sp2C, 0x44) * 8);
+    CALL(mem_new)(((BasePolyShape *)sp2C)->nTris * 8);
     o = (char *)CALL(MorphPoly_ctor)(0, GL_DATA_STR(0x2C574, "SkinShape"), 0, sp2C);
     arg0->obj = o;
     arg0->node = o;
@@ -4679,8 +4679,8 @@ mid:
         CALL(sys_fatal)(GL_DATA_STR(0x2C580, "no skinmgr"));
     }
     b = arg0->parent->parent->mnode;
-    x = (char *)FW(b, 0x28);
-    ((GP_00068DD4)FW(x, 0x14))(*(s16 *)(x + 0x10) + b);
+    x = NODE(b)->vptr;
+    ((GP_00068DD4)VT_SLOT(x, 1).fn)(VT_SLOT(x, 1).delta + b);
     sp24 = (char *)CALL(SkinMgr_init)(sp30, arg0->parent->mnode, arg0->obj);
     CALL(MNode_addChild)(arg0->parent->mnode, sp24);
     CALL(MorphPoly_init)(sp24);

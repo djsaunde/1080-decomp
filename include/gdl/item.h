@@ -30,6 +30,13 @@ typedef struct ItemType {
 
 /* ColourItemType (0x58, vtable D+0x1F228): an RGBA quad, default (1, 0, 0, 1); its display
  * calls gfx_setPrimColour on it */
+/* a colour item (0x3C; ColourItem_ctor, vtable ColourItem_vtbl): a Node + an item-chain link + RGB */
+typedef struct ColourItem {
+    /* 0x00 */ Node node;
+    /* 0x2C */ struct ColourItem *next; /* ColourItemType_buildItems chain; ColourItemType_getItem walks it */
+    /* 0x30 */ f32 rgb[3];         /* 0 at ctor; message 7 (ColourItem_handleMsg) copies the payload Vec3 */
+} ColourItem;
+
 typedef struct ColourItemType {
     /* 0x00 */ ItemType type;
     /* 0x48 */ f32 colour[4];
