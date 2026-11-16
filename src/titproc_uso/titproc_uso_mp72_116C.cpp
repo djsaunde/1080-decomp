@@ -55,6 +55,11 @@ typedef struct InputMgr { char pad00[0x84]; int unk84; } InputMgr;
  * owner process). */
 typedef struct GuiSpriteTable { char sprites[7][0x18]; char *menuOwner; } GuiSpriteTable;
 
+#ifdef PORT     /* tit_nextDemo(counter) overwrites counter before reading it; IDO passed the live a0 */
+#define NEXTDEMO_ARG 0
+#else
+#define NEXTDEMO_ARG
+#endif
 extern "C" {
 extern int gl_func_00000000(...);
 extern char D_00000000;
@@ -117,7 +122,7 @@ void TitleDemoProcess_handleInput(char *s0) {
         if (DATAMGR(TITLEDEMO(s0)->dataMgr)->entries->finished != 0) {
 fire:
             *(int *)((char *)&D_00000000 + 0x34) = 1;
-            v = CALL(tit_nextDemo_000000C0)();
+            v = CALL(tit_nextDemo_000000C0)(NEXTDEMO_ARG);
             XCALL(gl_func_00000000_116c_v, Process_fadeOut_0000F954)(s0, v, 0);
             return;
         }
@@ -167,7 +172,7 @@ fire:
         int *c;
         if (TITLEDEMO(s0)->timer == 0) {
             *(int *)((char *)&D_00000000 + 0x34) = 1;
-            v = CALL(tit_nextDemo_000000C0)();
+            v = CALL(tit_nextDemo_000000C0)(NEXTDEMO_ARG);
             XCALL(gl_func_00000000_116c_v, Process_fadeOut_0000F954)(s0, v, 0);
         }
         if (DATAMGR(TITLEDEMO(s0)->dataMgr)->entries->finished != 0) {

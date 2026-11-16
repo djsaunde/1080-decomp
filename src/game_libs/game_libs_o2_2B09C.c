@@ -1,6 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "audio.h" /* TunedSample / Portamento / AdsrSettings (docs/1080_AUDIO.md) */
+#include "uso_call.h"
 
 /* IDO 7.1 -O2 donor for AudioSeq_SeqLayerProcessScriptStep4 (0x558 / 342 words) = OoT's
  * AudioSeq_SeqLayerProcessScriptStep4 (seqplayer.c) in its older (SM64-era)
@@ -39,9 +40,9 @@ extern gl_2B09C_Ctx gAudioContext_2B09C_bufParams;
 extern f32 gl_2B09C_gPitchFrequencies[];
 #define gPitchFrequencies gl_2B09C_gPitchFrequencies
 extern void *gl_func_00000000();
-#define Audio_GetDrum (gl_2B09C_Drum *)gl_func_00000000
-#define Audio_GetSoundEffect (gl_2B09C_SoundEffect *)gl_func_00000000
-#define Audio_GetInstrumentTunedSample (TunedSample *)gl_func_00000000
+#define Audio_GetDrum (gl_2B09C_Drum *)CALL(Audio_GetDrum)
+#define Audio_GetSoundEffect (gl_2B09C_SoundEffect *)CALL(Audio_GetSoundEffect)
+#define Audio_GetInstrumentTunedSample (TunedSample *)CALL(Audio_GetInstrumentTunedSample)
 #define PORTAMENTO_MODE(p) ((p).mode & ~0x80)
 #define PORTAMENTO_IS_SPECIAL(p) ((p).mode & 0x80)
 

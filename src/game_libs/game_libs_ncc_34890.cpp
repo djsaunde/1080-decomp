@@ -50,7 +50,11 @@ extern "C" void hostio_sendNodeTree(O *o) {
     LIter it(me(o)->list);
     if ((I2(0), I2(0), (me(&it)->cur = it.nxt) ? (it.nxt = it.nxt->next, it.cur->data) : 0)) {
         void *rv;
+#ifdef PORT     /* the recursive call reads the v0 a void function leaves (IDO); g++ needs the cast */
+        do { rv = ((void *(*)(void *))hostio_sendNodeTree)(it.cur->data); } while (I3(it.nxi()));
+#else
         do { rv = XCALL(gl_34890_c34458, hostio_sendNodeTree)(it.cur->data); } while (I3(it.nxi()));
+#endif
         if (rv) {}
     }
     XCALL(gl_34890_c34458, hostio_endTreeNode)(gHostio_34890_e);

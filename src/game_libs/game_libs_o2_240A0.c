@@ -1,6 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "audio.h"
+#include "uso_call.h"
 
 /* IDO 7.1 -O2 donor for AudioLoad_AsyncLoadInner (0x290 / 164 words) = OoT's
  * AudioLoad_AsyncLoadInner (load.c), the older form without
@@ -23,12 +24,12 @@ extern int gl_ref_0003959C();
 #define AudioLoad_SearchCaches gl_ref_000381B0
 #define AudioLoad_GetLoadTable gl_ref_00038204
 #define AudioLoad_StartAsyncLoad gl_ref_0003959C
-#define osSendMesg gl_func_00000000
-#define AudioHeap_AllocPermanent (void *)gl_func_00000000
-#define AudioHeap_AllocCached (void *)gl_func_00000000
-#define AudioLoad_SetSeqLoadStatus gl_func_00000000
-#define AudioLoad_SetFontLoadStatus gl_func_00000000
-#define AudioLoad_SetSampleFontLoadStatus gl_func_00000000
+#define osSendMesg CALL(gl_osSendMesg)
+#define AudioHeap_AllocPermanent (void *)CALL(AudioHeap_AllocPermanent)
+#define AudioHeap_AllocCached (void *)CALL(AudioHeap_AllocCached)
+#define AudioLoad_SetSeqLoadStatus CALL(AudioLoad_SetSeqLoadStatus)
+#define AudioLoad_SetFontLoadStatus CALL(AudioLoad_SetFontLoadStatus)
+#define AudioLoad_SetSampleFontLoadStatus CALL(AudioLoad_SetSampleFontLoadStatus)
 
 void *AudioLoad_AsyncLoadInner(s32 tableType, s32 id, s32 nChunks, s32 retData, void *retQueue) {
     u32 size;

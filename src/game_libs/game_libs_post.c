@@ -3881,7 +3881,7 @@ extern int D_00000000;
 extern AudioContext gAudioContext_21F40;
 #define gl_heap_gAudioCtx gAudioContext_21F40
 extern int gl_func_00036844();
-#define AudioHeap_Alloc (void *)gl_func_00000000
+#define AudioHeap_Alloc (void *)CALL(AudioHeap_Alloc)
 #define AudioHeap_DiscardSampleCacheEntry gl_func_00036844
 
 SampleCacheEntry *AudioHeap_AllocTemporarySampleCacheEntry(u32 size) {
@@ -4158,10 +4158,10 @@ void *AudioHeap_AllocPersistentSampleCacheEntry(int arg) {
 extern AudioContext gAudioContext_22464T;
 #define gl_22464_gAudioCtx gAudioContext_22464T
 extern int gl_func_00036A04();
-#define AudioHeap_SearchCaches (void *)gl_func_00000000
-#define AudioLoad_IsFontLoadComplete gl_func_00000000
-#define Audio_GetInstrumentInner (Instrument *)gl_func_00000000
-#define Audio_GetDrum (Drum *)gl_func_00000000
+#define AudioHeap_SearchCaches (void *)CALL(AudioHeap_SearchCaches)
+#define AudioLoad_IsFontLoadComplete CALL(AudioLoad_IsFontLoadComplete)
+#define Audio_GetInstrumentInner (Instrument *)CALL(Audio_GetInstrumentInner)
+#define Audio_GetDrum (Drum *)CALL(Audio_GetDrum)
 #define AudioHeap_UnapplySampleCache gl_func_00036A04
 
 #define GL22464_UNAPPLY(entry, fontId) \
@@ -4464,9 +4464,9 @@ typedef struct {
     char pad2074[0x2198 - 0x2074]; gl_22A9C_Pool miscPool;
 } gl_22A9C_Ctx;
 #define gl_22A9C_gAudioCtx (*(gl_22A9C_Ctx *)&gAudioContext)
-#define AudioHeap_Alloc (void *)gl_func_00000000
-#define AudioHeap_AllocAttemptExternal (u8 *)gl_func_00000000
-#define AudioHeap_WritebackDCache gl_func_00000000
+#define AudioHeap_Alloc (void *)CALL(AudioHeap_Alloc)
+#define AudioHeap_AllocAttemptExternal (u8 *)CALL(AudioHeap_AllocAttemptExternal)
+#define AudioHeap_WritebackDCache CALL(AudioHeap_WritebackDCache)
 
 void AudioLoad_InitSampleDmaBuffers(s32 numNotes) {
     gl_22A9C_SampleDma *dma;
@@ -9457,8 +9457,8 @@ typedef struct gl_291C0_Note { AudioListItem listItem; gl_291C0_PlaybackState pl
 #define Audio_AllocNoteFromDisabled (gl_291C0_Note *)gl_ref_0003D698
 #define Audio_AllocNoteFromDecaying (gl_291C0_Note *)gl_ref_0003D6E4
 #define Audio_AllocNoteFromActive (gl_291C0_Note *)gl_ref_0003D734
-#define Audio_AudioListRemove gl_func_00000000
-#define AudioSeq_AudioListPushBack gl_func_00000000
+#define Audio_AudioListRemove CALL(Audio_AudioListRemove)
+#define AudioSeq_AudioListPushBack CALL(AudioSeq_AudioListPushBack)
 
 gl_291C0_Note *Audio_AllocNote(gl_291C0_Layer *layer) {
     gl_291C0_Note *note;
@@ -10996,11 +10996,11 @@ typedef struct gl_2ABC0_Layer {
 } gl_2ABC0_Layer;
 typedef struct { char pad[0x30]; gl_2ABC0_Layer *prevParentLayer; gl_2ABC0_Layer *parentLayer; gl_2ABC0_Layer *wantedParentLayer; } gl_2ABC0_PlaybackState;
 typedef struct gl_2ABC0_Note { char listItem[0x10]; gl_2ABC0_PlaybackState playbackState; } gl_2ABC0_Note;
-#define Audio_InitSyntheticWave gl_func_00000000
-#define Audio_SeqLayerNoteDecay gl_func_00000000
-#define Audio_AllocNote (gl_2ABC0_Note *)gl_func_00000000
-#define Audio_NoteVibratoInit gl_func_00000000
-#define Audio_NotePortamentoInit gl_func_00000000
+#define Audio_InitSyntheticWave CALL(Audio_InitSyntheticWave)
+#define Audio_SeqLayerNoteDecay CALL(Audio_SeqLayerNoteDecay)
+#define Audio_AllocNote (gl_2ABC0_Note *)CALL(Audio_AllocNote)
+#define Audio_NoteVibratoInit CALL(Audio_NoteVibratoInit)
+#define Audio_NotePortamentoInit CALL(Audio_NotePortamentoInit)
 
 s32 AudioSeq_SeqLayerProcessScriptStep5(gl_2ABC0_Layer *layer, u32 sameTunedSample) {
     gl_2ABC0_Note *note;
