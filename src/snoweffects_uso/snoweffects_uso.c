@@ -2,6 +2,8 @@
 #include "uso_call.h"
 #include "gdl/node.h"
 #include "gdl/item.h"
+#include "gdl/gfxlib.h"
+#include "gdl/window.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -17,11 +19,28 @@ typedef struct SnowColourItem {
     /* 0x3C */ s32 unk3C;
 } SnowColourItem;
 
+typedef struct SnowRGBA {
+    u8 r, g, b, a;
+} SnowRGBA;
+
 /* one 0x58-byte snow particle record (SnowPool items) */
 typedef struct SnowParticle {
-    /* 0x00 */ char unk00[0x30];
+    /* 0x00 */ Vec3 pos;
+    /* 0x0C */ Vec3 vel;
+    /* 0x18 */ Vec3 unk18;
+    /* 0x24 */ f32 unk24;
+    /* 0x28 */ f32 unk28;
+    /* 0x2C */ f32 unk2C;
     /* 0x30 */ f32 unk30;
-    /* 0x34 */ char unk34[0x24];
+    /* 0x34 */ f32 unk34;
+    /* 0x38 */ f32 unk38;
+    /* 0x3C */ f32 unk3C;
+    /* 0x40 */ f32 unk40;
+    /* 0x44 */ f32 unk44;
+    /* 0x48 */ SnowRGBA col;
+    /* 0x4C */ s32 unk4C;
+    /* 0x50 */ f32 unk50;
+    /* 0x54 */ f32 unk54;
 } SnowParticle;
 
 /* a Node-derived particle pool: items[max] from mem_new, count in use */
@@ -163,9 +182,6 @@ typedef struct SnowRing {
 /* typed blank (0) alias for the reloc'd call to the global 0x3EE4 (floats on the stack) */
 extern void gl_func_00000000_snow_3ee4(void *self, int a1, int a2, int a3, int a4, float f5, float f6);
 
-typedef struct SnowRGBA {
-    u8 r, g, b, a;
-} SnowRGBA;
 
 /* CollShape_nearestHit's result record (only pos / dist are read here) */
 typedef struct SnowHit {
@@ -173,6 +189,28 @@ typedef struct SnowHit {
     /* 0x0C */ f32 dist;
     /* 0x10 */ s32 unk10[7];
 } SnowHit;
+
+/* the snowfall effect (0x27A8 / 0x3620 / 0x374C): particles at +0x30 (count +0xB8), the camera's
+ * view rotation copied in both orientations, and six view-frustum planes built from it */
+typedef struct SnowFall {
+    /* 0x000 */ Node node;
+    /* 0x02C */ s32 unk2C;
+    /* 0x030 */ SnowParticle *items;
+    /* 0x034 */ char unk34[0x50 - 0x34];
+    /* 0x050 */ f32 camRotT[3][3];  /* camera +0xB4 matrix, transposed */
+    /* 0x074 */ f32 camRot[3][3];   /* camera +0xB4 matrix rows (0x3544 rotates by these) */
+    /* 0x098 */ char unk98[0xAC - 0x98];
+    /* 0x0AC */ f32 nearDist;
+    /* 0x0B0 */ f32 farDist;
+    /* 0x0B4 */ s32 unkB4;
+    /* 0x0B8 */ s32 count;
+    /* 0x0BC */ char unkBC[0xD0 - 0xBC];
+    /* 0x0D0 */ f32 planes[6][4];    /* normal + distance (0x3544 / 0x35B0) */
+    /* 0x130 */ s32 nPlanes;
+} SnowFall;
+
+/* typed blank (0) alias for the sys_randf import (float return) */
+extern float gl_func_00000000_snow_randf(void);
 
 /* typed blank (0) alias for the CollShape_nearestHit import: the float radius goes in a2 */
 extern int gl_func_00000000_snow_hit(int shape, int ray, float radius, SnowHit *hit);
@@ -255,13 +293,114 @@ SnowParticle *snoweffects_uso_func_000006D0(SnowPool *this) {
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000718);
+/* SnowPool remove: move the last live particle into p's slot (field by field, the Vec3s through one temp) */
+void snoweffects_uso_func_00000718(SnowPool *this, SnowParticle *p) {
+    int pad[2];
+    Vec3 t;
+    int pad2[2];
+    SnowParticle *last;
+    this->count--;
+    last = &this->items[this->count];
+    if (p != last) {
+        t = last->pos;
+        p->pos.x = t.x;
+        p->pos.y = t.y;
+        p->pos.z = t.z;
+        t = this->items[this->count].vel;
+        p->vel.x = t.x;
+        p->vel.y = t.y;
+        p->vel.z = t.z;
+        t = this->items[this->count].unk18;
+        p->unk18.x = t.x;
+        p->unk18.y = t.y;
+        p->unk18.z = t.z;
+        p->unk24 = this->items[this->count].unk24;
+        p->unk28 = this->items[this->count].unk28;
+        p->unk2C = this->items[this->count].unk2C;
+        p->unk30 = this->items[this->count].unk30;
+        p->unk34 = this->items[this->count].unk34;
+        p->unk38 = this->items[this->count].unk38;
+        p->unk3C = this->items[this->count].unk3C;
+        p->unk40 = this->items[this->count].unk40;
+        p->unk44 = this->items[this->count].unk44;
+        p->col = this->items[this->count].col;
+        p->unk4C = this->items[this->count].unk4C;
+        p->unk50 = this->items[this->count].unk50;
+        p->unk54 = this->items[this->count].unk54;
+    }
+}
 
+#ifdef NON_MATCHING
+/* SnowPool spawn with a random size / fade (sys_randf). 63 / 65 words: the reload of p after the first
+ * sys_randf call is scheduled one slot above the `r * 2` mul.s (target: below). Tried: statement order
+ * hill-climb (both groups), (float)2 / 2 * r / named products, top-level locals. */
+SnowParticle *snoweffects_uso_func_0000097C(SnowPool *this, Vec3 *pos, Vec3 *vel) {
+    SnowParticle *p = (SnowParticle *)gl_func_00000000(this) /* 0x6D0 SnowPool alloc */;
+    if (p != 0) {
+        float x, y, z, r;
+        x = pos->x; y = pos->y; z = pos->z;
+        p->pos.x = x;
+        p->pos.y = y;
+        p->pos.z = z;
+        x = vel->x; y = vel->y; z = vel->z;
+        p->vel.z = z;
+        p->vel.y = y;
+        p->vel.x = x;
+        p->unk24 = *(f32 *)&D_00000000;
+        r = gl_func_00000000_snow_randf() /* sys_randf */;
+        p->unk38 = (0, 10.0f) + r * 2;
+        p->unk3C = 1.0f;
+        p->unk44 = 0.0f;
+        p->unk30 = 256.0f;
+        p->unk34 = 16.0f;
+        r = gl_func_00000000_snow_randf() /* sys_randf */;
+        p->col.r = 251;
+        p->col.g = 251;
+        p->col.b = 251;
+        p->col.a = 0;
+        p->unk50 = (0, 64.0f) + r * 64.0f;
+        p->unk54 = 0.0f;
+    }
+    return p;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000097C);
+#endif
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000A7C);
+SnowParticle *snoweffects_uso_func_00000A7C(SnowPool *this, Vec3 *pos) {
+    SnowParticle *p = (SnowParticle *)CALL(snoweffects_uso_func_000006D0)(this);
+    if (p == 0) {
+        p = (SnowParticle *)CALL(snoweffects_uso_func_00000680)(this);
+    }
+    if (p != 0) {
+        float x = pos->x, y = pos->y, z = pos->z;
+        p->col.a = 0;
+        p->col.b = 0xFB;
+        p->col.g = 0xFB;
+        p->col.r = 0xFB;
+        p->pos.x = x;
+        p->pos.y = y;
+        p->pos.z = z;
+        p->unk34 = 255.0f;
+        p->unk50 = 255.0f;
+        p->vel.x = 0.0f;
+        p->vel.y = 0.0f;
+        p->vel.z = 0.0f;
+        p->unk24 = 0.0f;
+        p->unk40 = 0.0f;
+        p->unk44 = 0.0f;
+        p->unk54 = 0.0f;
+        p->unk38 = 2.0f;
+        p->unk3C = 1.0f;
+        p->unk30 = 256.0f;
+    }
+    return p;
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000B44);
+/* SnowPool update: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc.cpp (user
+ * Vec3 operator+= schedule), REPLACE_FUNC_BODY-spliced over this placeholder. */
+void snoweffects_uso_func_00000B44(SnowPool *this) {
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000C90);
 
@@ -273,7 +412,10 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00002310);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000027A8);
+/* SnowFall flake motion: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc.cpp
+ * (user Vec3 operator+=, RoData+0xC literal pin), REPLACE_FUNC_BODY-spliced over this placeholder. */
+void snoweffects_uso_func_000027A8(SnowFall *this) {
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000028E0);
 
@@ -292,9 +434,78 @@ void snoweffects_uso_func_000035B0(char *this, float *n, float *p, float s) {
     n[3] = snoweffects_uso_func_00000000(&t, (Vec3 *)n);
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00003620);
+/* the current window's camera view matrix (camera +0xB4, rows of four) */
+#define SNOW_CAM_ROT(r, c) \
+    (((f32 (*)[4])(((GfxLib *)&D_00000000)->curWindow->win.camera + 0xB4))[r][c])
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000374C);
+/* typed blank (0) alias for the call to the global 0x35B0 (float in a3) */
+extern void gl_func_00000000_snow_35b0(void *self, f32 (*pl)[4], Vec3 *p, float s);
+
+/* the current window's camera position (camera +0xA0) */
+#define SNOW_CAM_POS(i) (((f32 *)(((GfxLib *)&D_00000000)->curWindow->win.camera + 0xA0))[i])
+
+/* SnowFall: copy the camera rotation, transposed into camRotT and as-is into camRot */
+void snoweffects_uso_func_00003620(SnowFall *this) {
+    this->camRotT[0][0] = SNOW_CAM_ROT(0, 0);
+    this->camRotT[0][1] = SNOW_CAM_ROT(1, 0);
+    this->camRotT[0][2] = SNOW_CAM_ROT(2, 0);
+    this->camRotT[1][0] = SNOW_CAM_ROT(0, 1);
+    this->camRotT[1][1] = SNOW_CAM_ROT(1, 1);
+    this->camRotT[1][2] = SNOW_CAM_ROT(2, 1);
+    this->camRotT[2][0] = SNOW_CAM_ROT(0, 2);
+    this->camRotT[2][1] = SNOW_CAM_ROT(1, 2);
+    this->camRotT[2][2] = SNOW_CAM_ROT(2, 2);
+    this->camRot[0][0] = SNOW_CAM_ROT(0, 0);
+    this->camRot[0][1] = SNOW_CAM_ROT(0, 1);
+    this->camRot[0][2] = SNOW_CAM_ROT(0, 2);
+    this->camRot[1][0] = SNOW_CAM_ROT(1, 0);
+    this->camRot[1][1] = SNOW_CAM_ROT(1, 1);
+    this->camRot[1][2] = SNOW_CAM_ROT(1, 2);
+    this->camRot[2][0] = SNOW_CAM_ROT(2, 0);
+    this->camRot[2][1] = SNOW_CAM_ROT(2, 1);
+    this->camRot[2][2] = SNOW_CAM_ROT(2, 2);
+}
+
+/* SnowFall: build the six view-frustum planes (near / far / left / right / bottom / top as camera-space
+ * normals rotated by 0x3544, placed through the camera position by 0x35B0) */
+void snoweffects_uso_func_0000374C(SnowFall *this) {
+    Vec3 eye;
+    Vec3 n;
+    int pad; /* frame slot: the planes spill lands at sp+0x34 */
+    f32 (*pl)[4];
+    this->nearDist = 10.0f;
+    this->farDist = 100.0f;
+    CALL(snoweffects_uso_func_00003620)(this);
+    eye.x = ((GfxLib *)&D_00000000)->worldScale[0] * SNOW_CAM_POS(0);
+    eye.y = ((GfxLib *)&D_00000000)->worldScale[1] * SNOW_CAM_POS(1);
+    eye.z = ((GfxLib *)&D_00000000)->worldScale[2] * SNOW_CAM_POS(2);
+    n.x = 0.0f;
+    n.y = 0.0f;
+    n.z = 1.0f;
+    pl = this->planes;
+    CALL(snoweffects_uso_func_00003544)(this, pl, &n);
+    XCALL(gl_func_00000000_snow_35b0, snoweffects_uso_func_000035B0)(this, pl++, &eye, this->farDist);
+    n.z = -1.0f;
+    CALL(snoweffects_uso_func_00003544)(this, pl, &n);
+    XCALL(gl_func_00000000_snow_35b0, snoweffects_uso_func_000035B0)(this, pl++, &eye, -this->nearDist);
+    n.y = 0.0f;
+    n.z = 0.0f;
+    n.x = 1.0f;
+    CALL(snoweffects_uso_func_00003544)(this, pl, &n);
+    XCALL(gl_func_00000000_snow_35b0, snoweffects_uso_func_000035B0)(this, pl++, &eye, this->farDist / 2);
+    n.x = -1.0f;
+    CALL(snoweffects_uso_func_00003544)(this, pl, &n);
+    XCALL(gl_func_00000000_snow_35b0, snoweffects_uso_func_000035B0)(this, pl++, &eye, this->farDist / 2);
+    n.x = 0.0f;
+    n.z = 0.0f;
+    n.y = 1.0f;
+    CALL(snoweffects_uso_func_00003544)(this, pl, &n);
+    XCALL(gl_func_00000000_snow_35b0, snoweffects_uso_func_000035B0)(this, pl++, &eye, this->farDist / 2);
+    n.y = -1.0f;
+    CALL(snoweffects_uso_func_00003544)(this, pl, &n);
+    XCALL(gl_func_00000000_snow_35b0, snoweffects_uso_func_000035B0)(this, pl++, &eye, this->farDist / 2);
+    this->nPlanes = ((char *)pl - (char *)this->planes) / 16;
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000039C4);
 

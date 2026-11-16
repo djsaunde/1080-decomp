@@ -29,4 +29,47 @@ struct SnowRing {
     /* 0xB0 */ DLCtx *dl;
 };
 
+/* 3-float vector; += is a user operator (all three adds after the loads, 0x27A8) */
+struct SnowV3 {
+    float x, y, z;
+    SnowV3 &operator+=(const SnowV3 &v) { x += v.x; y += v.y; z += v.z; return *this; }
+};
+
+/* one 0x58-byte particle (C-side SnowParticle in snoweffects_uso.c) */
+struct SnowParticle {
+    /* 0x00 */ SnowV3 pos;
+    /* 0x0C */ SnowV3 vel;
+    /* 0x18 */ SnowV3 accel;   /* snowfall sway */
+    /* 0x24 */ float gravity;
+    /* 0x28 */ float minVelY;
+    /* 0x2C */ float unk2C;
+    /* 0x30 */ float life;
+    /* 0x34 */ float decay;     /* life lost per update */
+    /* 0x38 */ float size;
+    /* 0x3C */ float unk3C;
+    /* 0x40 */ float sizeVel;
+    /* 0x44 */ float fadeAt;    /* below this life the size starts changing */
+    /* 0x48 */ unsigned char col[4];
+    /* 0x4C */ int unk4C;
+    /* 0x50 */ float alpha;
+    /* 0x54 */ float alphaVel;
+};
+
+/* the Node-derived particle pool (C-side struct SnowPool) */
+struct SnowPool {
+    char pad00[0x30];
+    /* 0x30 */ SnowParticle *items;
+    char pad34[0x3C - 0x34];
+    /* 0x3C */ int count;
+    /* 0x40 */ int max;
+};
+
+/* the snowfall effect (C-side struct SnowFall; only what the donors touch) */
+struct SnowFall {
+    char pad00[0x30];
+    /* 0x30 */ SnowParticle *items;
+    char pad34[0xB8 - 0x34];
+    /* 0xB8 */ int count;
+};
+
 #endif
