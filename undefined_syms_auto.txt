@@ -5829,6 +5829,7 @@ snow_ro_A4 = 0x000000A4;  /* snoweffects RoData+0xA4 float (0x70C0 snow effect d
 snow_ro_A8 = 0x000000A8;  /* snoweffects RoData+0xA8 float (0x70C0 snow effect default, own lui) */
 snow_ro_AC = 0x000000AC;  /* snoweffects RoData+0xAC float (0x70C0 snow effect default, own lui) */
 snow_flickerTbl_958 = 0x00000000;  /* snoweffects Data+0x958 flicker-sequence pointer table (0x9C48; reloc carries the offset, lo16 0) */
+snowDirtyFlag_A30 = 0x00000000;  /* snoweffects Data+0xA30 targets-changed flag (0x9768 / 0x9F44 / 0xA10C; reloc carries the offset, lo16 0) */
 gl_func_00000000_snowb_v = 0x00000000;  /* list_append, void-typed (snoweffects 5FD4 / 6144 / 6248 NCC donor, agent-b run 640) */
 gl_func_00000000_snowb_node = 0x00000000;  /* Node_ctor (bootup import; snoweffects_uso_ncc_b.cpp __ct__4NodeFPc) */
 snowb_vtbl_SnowNode_60 = 0x00000000;  /* snoweffects Data+0x60 SnowNode vtable (reloc on the object, lo16 0) */

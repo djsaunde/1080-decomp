@@ -42,4 +42,32 @@ struct SnowLightObj {
     /* 0x288 */ SnowVec3 colour;
 };
 
+/* a libgdl HostIO parm (GdlParmBase header, value from +0x10), read through an inline get() */
+template <class T> struct SnowParm { char hdr[0x10]; T v; const T &get() const { return v; } };
+
+/* RGB colour as the target's floats plus a fourth word */
+struct SnowColour { float r, g, b; int a; };
+
+/* the SnowTarget node (snoweffects_uso_ncc_9F44.cpp): live parm values at +0x248 / +0x260 / +0x278 and
+ * the copies the draw uses (+0x88 colour, +0x98 / +0x9C, +0xA0 position) */
+struct SnowTargetE {
+    char pad00[0x5C];
+    /* 0x5C */ SnowVec3 pos;
+    char pad68[0x88 - 0x68];
+    /* 0x88 */ SnowColour colour;
+    /* 0x98 */ float f98;
+    /* 0x9C */ float f9C;
+    /* 0xA0 */ SnowVec3 drawPos;
+    char padAC[0x248 - 0xAC];
+    /* 0x248 */ SnowParm<float> parm248;
+    char pad25C[0x260 - 0x25C];
+    /* 0x260 */ SnowParm<float> parm260;
+    char pad274[0x278 - 0x274];
+    /* 0x278 */ SnowParm<SnowColour> colourParm;
+};
+
+/* Data+0xA30: the module's "targets changed" flag (0x9768 sets 2, SnowLink_update 1; 0 pin, the USO
+ * reloc carries the offset) */
+extern "C" int snowDirtyFlag_A30;
+
 #endif

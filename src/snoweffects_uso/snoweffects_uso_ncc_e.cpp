@@ -40,3 +40,22 @@ extern "C" void snoweffects_uso_func_00009FE8(void *self, SnowLightObj *o, SnowV
         out->z += d * o->colour.z;
     }
 }
+
+/* 0x9768 (0x11C): SnowTarget dirty check. When the drawn colour, the two float parms or the drawn
+ * position differ from the live parm values and the position, set the dirty flag to 2 and copy them
+ * over (SnowLink_update_00009F44's copy set). The position copy reads through a pointer local, which
+ * gives the target's x, y, z load order (agent-g's heli 0x3F4 lever). */
+extern "C" void snoweffects_uso_func_00009768(SnowTargetE *t) {
+    if (t->colour.r != t->colourParm.get().r || t->colour.g != t->colourParm.get().g ||
+        t->colour.b != t->colourParm.get().b || t->f98 != t->parm248.get() || t->f9C != t->parm260.get() ||
+        t->pos.x != t->drawPos.x || t->pos.y != t->drawPos.y || t->pos.z != t->drawPos.z) {
+        snowDirtyFlag_A30 = 2;
+        t->colour = t->colourParm.get();
+        t->f98 = t->parm248.get();
+        t->f9C = t->parm260.get();
+        SnowVec3 *p = &t->pos;
+        t->drawPos.x = p->x;
+        t->drawPos.y = p->y;
+        t->drawPos.z = p->z;
+    }
+}
