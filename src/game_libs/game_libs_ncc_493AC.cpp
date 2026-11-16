@@ -28,6 +28,9 @@ extern int gGfxLib_493AC_a, gGfxLib_493AC_b, gGfxLib_493AC_c, gGfxLib_493AC_d;
 void *gl_func_00000000(...);
 }
 #define S(o) (D_00000000 + (o))
+#ifdef PORT
+#include "port_game.h"
+#endif
 #define G1C4(S_) (*(s32 *)((char *)&S_ + 0x1C4))
 inline void *operator new(unsigned n) { return CALL(mem_new)(n); }
 template <class T> inline T *me0(T *p) { return p; } /* agent-g run 312: zero-code accessor declared before Arr::iter() */
@@ -47,8 +50,13 @@ struct Rec {
     int n58C;
     int f590;
     int f594;
+#ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): vptr after the 0x598 data bytes; __vtbl__3Rec = bootup Data 0x1F7A8 */
+    char *vptr;
+    Rec() { vptr = port_bootup_data + 0x1F7A8; }
+#else
     Rec() {}
     virtual void f();
+#endif
 };
 /* Mat (include/gdl/material.h; was `Elem` here, agent-b run 553: same offsets, names only) */
 struct Mat {
@@ -88,6 +96,19 @@ inline AIter Arr::iter() { return AIter(me0(me0(me0(this)))); }
 template <class T> inline T *me(T *p) { return p; }
 struct Grid { int w; int n; char pad8[0x18 - 0x8]; s16 *tbl18; int *row1C; };
 struct Ent { u16 key; char pad[6]; };
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct BB {
+    char pad0[0xC]; int m0c; char pad10[0x28 - 0x10];
+    /* agent-g run 312: int return (result never read here): the target colours the grid loop as if v0 were
+     * clobbered by a value-returning call inside the j loop (tbl18 v1, grid a0, end v0); with a void hit()
+     * uopt keeps v0 for the tbl18 load and rotates grid / w / end (99.680 -> 99.917, same length) */
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v1, 0) CF_V0(void, v2, 1) CF_V0(void, v3, 2) CF_V0(void, v4, 3) CF_V0(void, v5, 4)
+    CF_V0(void, v6, 5) CF_V0(void, v7, 6) CF_V0(void, v8, 7) CF_V0(void, v9, 8) CF_V0(void, v10, 9)
+    CF_V0(void, v11, 10) CF_V4(int, hit, 11, int, Rec *, int, Mat *)
+};
+#else
 struct BB {
     char pad0[0xC]; int m0c; char pad10[0x28 - 0x10];
     virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6();
@@ -97,6 +118,7 @@ struct BB {
      * uopt keeps v0 for the tbl18 load and rotates grid / w / end (99.680 -> 99.917, same length) */
     virtual int hit(int, Rec *, int, Mat *);
 };
+#endif
 struct Mgr : BB {
     int m2c; int flags30; char pad34[0x44 - 0x34]; u32 n44; char pad48[4]; s16 *remap4C; int m50; char pad54[0x68 - 0x54];
     Ent *tab68; char pad6c[0x84 - 0x6C]; Arr arr; char pad94[0x9C - 0x94]; int m9c; Grid *grid; char pada4[0xB0 - 0xA4];

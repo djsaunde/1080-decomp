@@ -8,8 +8,16 @@
  * (uopt compute_save priority, docs/IDO_CODEGEN.md kit XIX).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 extern "C" void gl_func_00000000(...);
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct NodeB { char pad[8]; int flags; char pad0c[0x1C];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, tick, 1)
+};
+#else
 struct NodeB { char pad[8]; int flags; char pad0c[0x1C];
     virtual void v0(); virtual void tick(); };
+#endif
 struct Node : NodeB { int x2c; float m30[16]; float m70[16]; };
 struct Link { Node *obj; Link *next; };
 struct Iter {

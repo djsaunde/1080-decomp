@@ -12,8 +12,17 @@
  * (one dead store each) give the frame 56 and the kind / o / node homes 44 / 40 / 36:
  * NCC gives every referenced local a slot. */
 extern "C" void *gl_func_00000000(...);
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct Base { char pad[0x10]; char link[0x18];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, v1, 1) CF_V0(void, v2, 2) CF_V0(void, v3, 3)
+    CF_V1(void, f, 4, int *)
+};
+#else
 struct Base { char pad[0x10]; char link[0x18];
   virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void f(int *); };
+#endif
 struct Obj : Base { char pad2c[0x44]; float f70; };
 struct Node { int x0; int x4; char pad8[0xC]; Obj *o14; };
 struct Owner { char pad[0x40]; Node *n40; };

@@ -13,8 +13,16 @@ struct V3 {
     void operator=(V3 v) { set(v); }
 };
 struct Rec { V3 a, b, c; float w; };
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct ObjB { char pad[8]; int flags; char pad0c[0x1C];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, tick, 1)
+};
+#else
 struct ObjB { char pad[8]; int flags; char pad0c[0x1C];
     virtual void v0(); virtual void tick(); };
+#endif
 struct Obj : ObjB { char pad2c[0x88]; Rec src; Rec dst; };
 struct Link { Obj *obj; Link *next; };
 struct Iter {

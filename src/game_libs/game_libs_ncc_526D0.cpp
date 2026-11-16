@@ -34,7 +34,11 @@ struct Base : Blk6 {
     Flags m18;
     int m1C, m20, m24;
     Base(void *a1);
+#ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr at +0x28 */
+    char *vptr;
+#else
     virtual void f();
+#endif
 };
 struct Obj : Base {
     void *operator new(unsigned n) { return XCALL(gl_func_00000000_526d0_alloc, mem_new)(n); }
@@ -47,10 +51,20 @@ struct Obj : Base {
     float m9C;
     int mA0, mA4, mA8, mAC;
     Obj(void *a1, void *a2, Obj *src);
+#ifdef PORT /* the cfront assignment copies every member but the vptr */
+    void copy(const Obj *o) { if (o) { int save = m1C; char *vp = vptr; *this = *o; vptr = vp; m30.v |= 0x10; m1C = save; } }
+#else
     void copy(const Obj *o) { if (o) { int save = m1C; *this = *o; m30.v |= 0x10; m1C = save; } }
     virtual void f();
+#endif
 };
+#ifdef PORT
+extern "C" char BasePolyShape_vtbl_526d0_vtbl[]; /* __vtbl__3Obj, bootup Data 0x206D8 */
+#endif
 Obj::Obj(void *a1, void *a2, Obj *src) : Base(a1) {
+#ifdef PORT
+    vptr = BasePolyShape_vtbl_526d0_vtbl;
+#endif
     XCALL(gl_func_00000000_526d0_reg, BasePolyShape_reset)(this, &m84);
     copy(src);
     if (a2 != 0) {

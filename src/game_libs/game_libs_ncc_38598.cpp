@@ -8,9 +8,18 @@
  * in Node itself, edg puts the vptr after all of Node's data).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 extern "C" void gl_func_00000000(...);
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct Node385B {
+    char pad[8]; int flags; char padc[0x1C];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, tick, 1)
+};
+#else
 struct Node385B {
     char pad[8]; int flags; char padc[0x1C];
     virtual void v0(); virtual void tick(); };
+#endif
 struct Node385 : Node385B {
     char pad2c[4];
     char m30[0x40];

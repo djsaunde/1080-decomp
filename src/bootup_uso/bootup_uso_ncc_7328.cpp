@@ -34,8 +34,17 @@ extern char snd_startPlayer2Seq_0000027C[], stream_readS32_00000008[], snd_muteA
 #define GAMEFLOW_7328 GAMEFLOW(stream_readS32_00000008 - 8)
 #define GFX_7328 GFXLIB(snd_muteAll_0000029C - 0x29C)
 struct Msg73 { int id; };
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct Handler73 { char pad[0x28];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, v1, 1) CF_V0(void, v2, 2) CF_V0(void, v3, 3) CF_V0(void, v4, 4)
+    CF_V0(void, v5, 5) CF_V0(void, v6, 6) CF_V0(void, v7, 7) CF_V0(void, handle, 8)
+};
+#else
 struct Handler73 { char pad[0x28]; virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
     virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void handle(); };
+#endif
 struct Entry73 { Handler73 *h; int id; int matches(Msg73 m) { return m.id == id; } };
 struct Link73 { Entry73 *data; Link73 *next; };
 struct Iter73 {

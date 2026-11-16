@@ -19,12 +19,20 @@ typedef int s32; typedef unsigned int u32; typedef short s16; typedef unsigned s
 #include "../../include/gdl/rcp.h" /* RcpMgr */
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 struct Pad40 { char pad[0x28]; };
+#ifdef PORT
+#include "port_cfront.h" /* cfront vptr at +0x28; v1..v15 are slots 0..14 (plan 17.8) */
+struct AppB : Pad40 {
+    char *vptr;
+    CF_V0(void, v3, 2) CF_V0(void, v4, 3) CF_V0(void, v13, 12) CF_V0(void, v15, 14)
+};
+#else
 struct AppB : Pad40 {
     virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
     virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8();
     virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12();
     virtual void v13(); virtual void v14(); virtual void v15();
 };
+#endif
 struct App : AppB { char pad2[4]; void (*cb)(); };
 struct Node { char pad[0x60]; Node *next; };
 struct St { int flags; int pad4, pad8; Node *list; int f10; int count; };

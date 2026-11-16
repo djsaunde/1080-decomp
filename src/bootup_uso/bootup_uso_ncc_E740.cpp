@@ -18,10 +18,20 @@ extern char snd_setPlayer0VolumeLevel_0000023C[];
 /* snd_setPlayer0VolumeLevel_0000023C + 4 is GfxLib +0x240 = mainWindow (uso-data-sites: Bss+0x3C168 sym154, K = 0x240; agent-g
  * run 580), so the root object is the main ScreenWindow and buf() its frame buffer. */
 #define GFX_E740 GFXLIB(snd_setPlayer0VolumeLevel_0000023C - 0x23C)
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct VO { char pad[0x28];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, v1, 1) CF_V0(void, v2, 2) CF_V0(void, v3, 3) CF_V0(void, v4, 4)
+    CF_V0(void, v5, 5) CF_V0(void, v6, 6) CF_V0(void, v7, 7) CF_V0(void, v8, 8) CF_V0(void, v9, 9)
+    CF_V0(void, v10, 10) CF_V0(char *, buf, 11)
+};
+#else
 struct VO { char pad[0x28];
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
     virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
     virtual void v10(); virtual char *buf(); };
+#endif
 struct Obj { char pad[0x1C]; unsigned short *pix; };
 extern "C" void ScreenThumbMat_grab_0000E740(Obj *self, int a1) {
     /* the 256x160 region at pixel (32, 58) of the 320-wide RGBA5551 frame buffer, sampled every

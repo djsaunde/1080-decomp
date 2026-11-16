@@ -32,6 +32,20 @@ struct M4f { int a; M4f() { a = 0; } };
 struct W4f { M4f m; W4f() { float z = 0.0f; if (z) {} } };
 struct V3 { float x, y, z; void set(V3 v) { x = v.x; y = v.y; z = v.z; } };
 struct Q4 { V3 v; float w; void set(const Q4 &q) { v.set(q.v); w = q.w; } };
+#ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr, the NCC vtable stores written out */
+extern "C" char MNode_vtbl_40070_vta[], QNode_vtbl_40070_vtb[]; /* __vtbl__4Base, __vtbl__3Obj */
+struct BB { int pad0[2]; int flags; int pad[7]; char *vptr; BB(void *a1); };
+struct Base : BB {
+    W4 m2c;
+    char m30[0xB4 - 0x30];
+    Base(void *a1) : BB(a1) {
+        vptr = MNode_vtbl_40070_vta;
+        dbg_printThreads(this);
+        zero(); { volatile int p1, p2, p3, p4; }
+    }
+    void zero() { float z[3]; z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f; dbg_printThreads(m30, z); }
+};
+#else
 struct BB { int pad0[2]; int flags; int pad[7]; BB(void *a1); virtual void f(); };
 struct Base : BB {
     W4 m2c;
@@ -43,6 +57,7 @@ struct Base : BB {
     void zero() { float z[3]; z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f; CALL(math_mtxAddTranslation)(m30, z); }
     virtual void f();
 };
+#endif
 struct Obj : Base {
     V3 b4, c0;
     Q4 rq;
@@ -50,9 +65,14 @@ struct Obj : Base {
     Q4 f4;
     W4f m104;
     Obj(void *a1, float x, float y, float zz);
+#ifndef PORT
     virtual void f();
+#endif
 };
 Obj::Obj(void *a1, float x, float y, float zz) : Base(a1) {
+#ifdef PORT
+    vptr = QNode_vtbl_40070_vtb;
+#endif
     rq.v.x = 0.0f;
     flags |= 0x20000;
     rq.v.y = 0.0f;

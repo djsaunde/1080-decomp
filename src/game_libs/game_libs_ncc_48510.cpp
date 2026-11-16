@@ -28,6 +28,22 @@ struct Vtx { int w[4]; void set(const Vtx &o) { *this = o; } };
 struct VPool { Vtx *buf; int count; };
 struct Mesh { char pad[0x1C]; VPool *vp; int count() { return vp->count; } Vtx *next() { return &vp->buf[vp->count++]; } };
 struct Tri { s16 v[3]; };
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct Strip {
+    Mesh *mesh;
+    int nv;
+    int nt;
+    char padc[0x14 - 0xC];
+    Tri tris[200];
+    u16 ids[0x590 / 2 - 0x4C4 / 2];
+    int max590;
+    int n594;
+    void add(Vtx *v, s16 *out, int *full, u16 *id);
+    char *vptr; /* cfront vptr */
+    CF_V0(void, flush, 0)
+};
+#else
 struct Strip {
     Mesh *mesh;
     int nv;
@@ -40,6 +56,7 @@ struct Strip {
     virtual void flush();
     void add(Vtx *v, s16 *out, int *full, u16 *id);
 };
+#endif
 void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
     int idx[3]; volatile int pad;
     int i;

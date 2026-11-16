@@ -39,6 +39,17 @@ extern char gHostio_e5e0a, D_00000000_e5e0c, gHostio_e5e0e, sStr_RemoveItems_1F3
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 struct PMF { s32 w0, w1; };
 inline void *operator new(unsigned n) { return (void *)XCALL(gl_3e5e0_c34458, mem_new)(n); }
+#ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr, the NCC vtable stores written out */
+extern "C" char gl_3e5e0_vk[], gl_3e5e0_v1[], gl_3e5e0_v2[]; /* __vtbl__1K, 3CB1, 3CB2 */
+struct K { char *vptr; K() { vptr = gl_3e5e0_vk; } };
+struct CB : K {
+    void *obj;
+    PMF pmf;
+    CB(void *o, const PMF &p) : obj(o), pmf(p) {}
+};
+struct CB1 : CB { CB1(void *o, const PMF &p) : CB(o, p) { vptr = gl_3e5e0_v1; } };
+struct CB2 : CB { CB2(void *o, const PMF &p) : CB(o, p) { vptr = gl_3e5e0_v2; } };
+#else
 struct K { virtual void f(); };
 struct CB : K {
     void *obj;
@@ -47,6 +58,7 @@ struct CB : K {
 };
 struct CB1 : CB { CB1(void *o, const PMF &p) : CB(o, p) {} virtual void f(); };
 struct CB2 : CB { CB2(void *o, const PMF &p) : CB(o, p) {} virtual void f(); };
+#endif
 inline void reg0(char *a) { XCALL(gl_3e5e0_c34458, hostio_addButton)(&gHostio_e5e0e, &sStr_RemoveItems_1F318 + 0x1F318, new CB1(a, *(PMF *)(&D_00000000_e5e0c + 0x1EEC0)), 0); }
 inline void reg1(char *a) { XCALL(gl_3e5e0_c34458, hostio_addButton)(&gHostio_e5e0j, &sStr_ChangeType_1F324 + 0x1F324, new CB1(a, *(PMF *)(&D_00000000_e5e0h + 0x1EEC8)), 1); }
 inline void loop(char *it, int d0) {

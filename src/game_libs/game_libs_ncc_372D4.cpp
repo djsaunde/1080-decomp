@@ -18,9 +18,18 @@ struct Sub372 { char pad[0x30]; V3 pos; void setPos(const V3 &v) { pos = v; } };
 struct Node372 { char pad[0x30]; Sub372 sub; };
 struct Obj372 { char pad[0xF4]; Node372 *node; };
 struct Ptr372 { Obj372 *o; Obj372 *operator->() { return o; } };
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct Base372 {
+    char pad[0x14]; Obj372 *att; char pad18[0x10];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, v1, 1) CF_V0(void, v2, 2) CF_V0(void, v3, 3)
+};
+#else
 struct Base372 {
     char pad[0x14]; Obj372 *att; char pad18[0x10];
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); };
+#endif
 struct Self372 : Base372 {
     int pad2c;
     V3 rot;

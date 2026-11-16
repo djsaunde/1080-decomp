@@ -16,8 +16,23 @@ extern char D_00000000[];
 extern char gHostio_49B3C_s1[], gHostio_49B3C_s2[], gHostio_49B3C_s3[], gHostio_49B3C_s4[], gHostio_49B3C_s5[], gHostio_49B3C_s6[];
 }
 inline void *operator new(unsigned n) { return (void *)CALL(mem_new)(n); }
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct E1 { char pad[0x5C];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, a, 0) CF_V0(void, b, 1) CF_V0(void, tick, 2)
+};
+#else
 struct E1 { char pad[0x5C]; virtual void a(); virtual void b(); virtual void tick(); };
+#endif
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+struct E2 { char pad[0x28];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, upd, 0)
+};
+#else
 struct E2 { char pad[0x28]; virtual void upd(); };
+#endif
 struct Arr { E1 **data; int pad4, pad8; int count; E1 *&operator[](int i) { return data[i]; } };
 struct IBase { Arr *a; int idx; int last; IBase(Arr *arr) {   a = arr; idx = -1; last = arr->count - 1; } };
 struct AIter : IBase {

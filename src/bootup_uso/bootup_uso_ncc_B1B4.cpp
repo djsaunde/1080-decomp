@@ -29,8 +29,15 @@ extern int gBoardModelUsoPaths_b1b4_tblA[], gBoarderUsoPaths_b1b4_tblB[];
 }
 struct Bb4Pair { int a, b; Bb4Pair() { b = 0; a = 0; } };
 struct Bb4Word { int a; Bb4Word() { a = 0; } };
+#ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr at +0x5C; the vtable stores NCC emits
+ * (__vtbl__7Bb4Base / 6Bb4Mid / 7Bb4Bank = bootup Data 0x20640 / 0x1FBEC / 0x8440, uso-data-sites.py) written out */
+#include "port_game.h"
+struct Bb4Base { char p[0x34]; Bb4Pair m; char q[0x58 - 0x3C]; Bb4Word n; char *vptr; Bb4Base() { vptr = port_bootup_data + 0x20640; FCALL(BaseMat_init_000517E4)(this); } };
+struct Bb4Mid : Bb4Base { char x[0x30]; Bb4Mid() { vptr = port_bootup_data + 0x1FBEC; } };
+#else
 struct Bb4Base { char p[0x34]; Bb4Pair m; char q[0x58 - 0x3C]; Bb4Word n; Bb4Base() { FCALL(BaseMat_init_000517E4)(this); } virtual void v(); };
 struct Bb4Mid : Bb4Base { char x[0x30]; Bb4Mid() {} virtual void v(); };
+#endif
 /* agent-g run 555: the real classes. Bb4Base = libgdl BaseMat (its out-of-line ctor is BaseMat_init_000517E4,
  * vtable BaseMat_vtbl Data+0x20640), Bb4Mid = Mat (0x90, Mat_vtbl Data+0x1FBEC), and Bb4Bank = a Mat subclass
  * whose vtable is Data+0x8440 (gl_data.h's "SnowBoarder_vtbl + 0x70"; a separate table after SnowBoarder's):
@@ -40,8 +47,12 @@ struct Bb4Mid : Bb4Base { char x[0x30]; Bb4Mid() {} virtual void v(); };
  * with every 4th pixel of the main screen. The stores below are BaseMat fields (gdl/material.h). */
 #define BM ((BaseMat *)this)
 struct Bb4Bank : Bb4Mid {
+#ifdef PORT
+    Bb4Bank() { vptr = port_bootup_data + 0x8440; BM->format = MAT_FMT_RGBA16; BM->texels = (void *)FCALL(mem_new)(0x1000); BM->width = 0x40; BM->height = 0x20; BM->texFlags = MAT_TEX_WRAP_S | MAT_TEX_WRAP_T; BM->geomFlags = 0x402C4B; BM->unk34 = 0; BM->id = 0; }
+#else
     Bb4Bank() { BM->format = MAT_FMT_RGBA16; BM->texels = (void *)FCALL(mem_new)(0x1000); BM->width = 0x40; BM->height = 0x20; BM->texFlags = MAT_TEX_WRAP_S | MAT_TEX_WRAP_T; BM->geomFlags = 0x402C4B; BM->unk34 = 0; BM->id = 0; }
     virtual void v();
+#endif
 };
 struct Bb4Reg { Bb4Base *tbl[5]; int n; void add(Bb4Base *b) { if (n >= 5) FCALL(sys_staticArrayOverflow)(); Bb4Base *o = b; tbl[n++] = o; } };
 extern "C" Bb4Reg snd_seqEventDbg_00000148;

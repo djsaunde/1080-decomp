@@ -53,6 +53,16 @@ struct V3P { float x, y, z; };
 inline int iz() { return 0; }
 struct Hit { V3P v; float d; short idx; short pad0; int pad1[7]; };
 struct Node;
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct NB { /* run 214: a real virtual call (vptr 0x28, slot 12 = vtbl +0x60) gives addu a0,t2,s0 */
+    char pad0[0x28];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, f1, 0) CF_V0(void, f2, 1) CF_V0(void, f3, 2) CF_V0(void, f4, 3) CF_V0(void, f5, 4)
+    CF_V0(void, f6, 5) CF_V0(void, f7, 6) CF_V0(void, f8, 7) CF_V0(void, f9, 8) CF_V0(void, f10, 9)
+    CF_V0(void, f11, 10) CF_V3(void, contact, 11, float, Vec3 *, int)
+};
+#else
 struct NB { /* run 214: a real virtual call (vptr 0x28, slot 12 = vtbl +0x60) gives addu a0,t2,s0 */
     char pad0[0x28];
     virtual void f1();
@@ -68,6 +78,7 @@ struct NB { /* run 214: a real virtual call (vptr 0x28, slot 12 = vtbl +0x60) gi
     virtual void f11();
     virtual void contact(float, Vec3 *, int);
 };
+#endif
 struct Node : NB {
     char pad2C[0xDC - 0x2C]; Vec3 pos;
     char padE8[0x114 - 0xE8]; Vec3 v114; Vec3 v120;

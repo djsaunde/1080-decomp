@@ -18,6 +18,22 @@
  * the 4F4 test re-reads the field after the store (as1 forwards it: the target's `or t3,t2,zero`) and its bit
  * test is one signed shift (`sll t5; bgezl t5`), 99.0035 -> 99.2981 (2312 B: the head's extra word is left);
  * the final bit-19 test as one signed shift too (`sll t3; bgezl t3`), -> 99.3328; run 368 -> 100. */
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct VO76 {
+    char pad[0x28];
+    char *vptr; /* cfront vptr */
+    CF_V0(int, m1, 0) CF_V0(int, m2, 1) CF_V0(int, m3, 2) CF_V0(int, m4, 3) CF_V0(int, m5, 4)
+    CF_V0(int, m6, 5) CF_V0(int, m7, 6) CF_V0(int, m8, 7) CF_V0(int, m9, 8) CF_V0(int, m10, 9)
+    CF_V0(int, m11, 10) CF_V0(int, m12, 11) CF_V0(int, m13, 12) CF_V0(int, m14, 13)
+    CF_V0(int, m15, 14) CF_V0(int, m16, 15) CF_V0(int, m17, 16) CF_V0(int, m18, 17)
+    CF_V0(int, m19, 18) CF_V0(int, m20, 19) CF_V0(int, m21, 20) CF_V0(int, m22, 21)
+    CF_V0(int, m23, 22) CF_V0(int, m24, 23) CF_V0(int, m25, 24) CF_V0(int, m26, 25)
+    CF_V0(int, m27, 26) CF_V0(int, m28, 27) CF_V0(int, m29, 28) CF_V0(int, m30, 29)
+    CF_V0(int, m31, 30) CF_V0(int, m32, 31) CF_V0(int, m33, 32) CF_V0(int, m34, 33)
+    CF_V0(int, m35, 34) CF_V0(int, m36, 35) CF_V0(int, m37, 36)
+};
+#else
 struct VO76 {
     char pad[0x28];
     virtual int m1(); virtual int m2(); virtual int m3(); virtual int m4(); virtual int m5(); virtual int m6();
@@ -28,6 +44,7 @@ struct VO76 {
     virtual int m31(); virtual int m32(); virtual int m33(); virtual int m34(); virtual int m35(); virtual int m36();
     virtual int m37();
 };
+#endif
 extern "C" {
 typedef signed short s16;
 typedef signed int s32;

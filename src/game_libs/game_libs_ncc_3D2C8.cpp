@@ -6,8 +6,17 @@
  * get() object lands in v0 as in the target.
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 extern "C" void gl_ref_0005166C(int *);
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct NodeB { char pad[0x28];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, v1, 1) CF_V0(void, v2, 2) CF_V0(void, v3, 3) CF_V0(void, v4, 4)
+    CF_V0(void, v5, 5) CF_V0(void, v6, 6) CF_V0(void, reset, 7)
+};
+#else
 struct NodeB { char pad[0x28];
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void reset(); };
+#endif
 struct Link { NodeB *obj; Link *next; };
 struct Iter {
     Link *cur, *nxt;

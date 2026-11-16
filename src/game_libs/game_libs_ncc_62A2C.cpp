@@ -52,6 +52,17 @@ struct AnimPose {
 
 struct Pair { V3 v; V3 w; };
 
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct Listener {   /* the animated node */
+    char pad[0x28];
+         /* vtable +0x50 / +0x54 (slot 9) */
+    char *vptr; /* cfront vptr */
+    CF_V0(void, m0, 0) CF_V0(void, m1, 1) CF_V0(void, m2, 2) CF_V0(void, m3, 3) CF_V0(void, m4, 4)
+    CF_V0(void, m5, 5) CF_V0(void, m6, 6) CF_V0(void, m7, 7) CF_V0(void, m8, 8)
+    CF_V1(void, notify, 9, void *)
+};
+#else
 struct Listener {   /* the animated node */
     char pad[0x28];
     virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
@@ -59,6 +70,7 @@ struct Listener {   /* the animated node */
     virtual void m8();
     virtual void notify(void *src);     /* vtable +0x50 / +0x54 (slot 9) */
 };
+#endif
 
 struct Animator {
     char pad0[0x4C];

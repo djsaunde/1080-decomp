@@ -9,9 +9,18 @@
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 extern "C" int gl_func_00000000(...);
 struct Owner387;
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct Node387B {
+    int x0; int x4; int x8; char padc[8]; Owner387 *x14; int x18; char pad1c[0xC];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, v1, 1) CF_V0(void, v2, 2) CF_V0(void, upd, 3)
+};
+#else
 struct Node387B {
     int x0; int x4; int x8; char padc[8]; Owner387 *x14; int x18; char pad1c[0xC];
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void upd(); };
+#endif
 struct Node387 : Node387B { int x2c; char m30[0x40]; char m70[0x40]; };
 struct Link387 { Node387 *obj; Link387 *next; };
 struct Iter387 {

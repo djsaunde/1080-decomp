@@ -26,10 +26,19 @@ struct E { M8 m; int x; E() {} };
 struct Fog { char p[0x18]; Fog() { CALL(FogParms_setDefault_00043EAC)(this); } };
 struct El { char p[0xC]; El(); };
 struct G { El e[50]; int n; G() {} };
+#ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr, the NCC vtable stores written out */
+extern "C" char SysLibBase_vtbl_412E8_j[], SysLib_vtbl_1E1B8_412E8_k[]; /* __vtbl__1I, __vtbl__1L */
+struct I : W4 { char p[0x18 - 4]; char *vptr; I() { vptr = SysLibBase_vtbl_412E8_j; } };
+#else
 struct I : W4 { char p[0x18 - 4]; virtual void f(); I() {} };
+#endif
 struct HI { I i; };
 struct HM { W4 w; };
+#ifdef PORT
+struct L { char p[0x18]; char *vptr; L() { vptr = SysLib_vtbl_1E1B8_412E8_k; } };
+#else
 struct L { char p[0x18]; virtual void f(); };
+#endif
 struct Big { A a; char p1[0x234 - 0x1E0]; E e; char p2[0x294 - 0x240]; Fog f; char p3[0x378 - 0x2AC]; G g; };
 Big gGfxLib_412E8_a;
 HI gSysLib_412E8_i;

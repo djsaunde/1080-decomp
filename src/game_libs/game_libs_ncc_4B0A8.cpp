@@ -48,6 +48,15 @@ struct AIter : IBase {
 inline AIter iter(Arr *a) { return AIter(a); }
 inline void *res(Elem *e1, Elem *e2) { Tex *t = e1->t; int k = e2->k; return XCALL(gl_4b0a8_c34458, gl_osVirtualToPhysical)(*t->base + k * 8, t, k); }
 struct Src { char pad[0x84]; Arr arr; };
+#ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr, the NCC vtable stores written out */
+extern "C" char Shadow_vtbl_4b0a8_vtbl[]; /* __vtbl__3Obj, bootup Data 0x1FB84 */
+struct Base { int f0; char pad[0x24]; char *vptr; Base(char *name); };
+struct Obj : Base {
+    char pad2c[0x40 - 0x2C];
+    DL *f40;
+    Obj(Src *s);
+};
+#else
 struct Base { int f0; char pad[0x24]; Base(char *name); virtual void f(); };
 struct Obj : Base {
     virtual void f();
@@ -55,7 +64,11 @@ struct Obj : Base {
     DL *f40;
     Obj(Src *s);
 };
+#endif
 Obj::Obj(Src *s) : Base(D_00000000 + 0x200EC) {
+#ifdef PORT
+    vptr = Shadow_vtbl_4b0a8_vtbl;
+#endif
     Pair p = *(Pair *)GFXLIB(&gGfxLib_4b0a8_vt)->unk140;
     f0 = 2;
     f40 = (DL *)XCALL(gl_4b0a8_c34458, gfx_newDLChild_0005AB84)(0, D_00000000 + 0x200F4, (int)GFXLIB(&gGfxLib_4b0a8_w214)->staticDL); /* "MainStaticDL" */

@@ -45,7 +45,15 @@ void bu_cfa0_v(...);
  * probe distance) and displayMask at +0x108 (passed on, as Window_display passes it to
  * Node_setDisplayMask). agent-g run 580. */
 #define CTX_WIN(c) ((Window *)(c))
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct VO { char pad[0x28];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, v1, 1) CF_V0(void, f, 2)
+};
+#else
 struct VO { char pad[0x28]; virtual void v0(); virtual void v1(); virtual void f(); };
+#endif
 struct V3 { float x, y, z; };
 #define DISPATCH_CFA0(node) { ((VO *)(node))->f(); }
 extern "C" void SnowBoarder_display(SnowBoarder *st) {

@@ -7,11 +7,21 @@
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 extern "C" void gl_func_00000000(...);
 extern "C" char D_00000000[];
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct Node {
+    char pad[0x18]; int flags; char pad1c[0xC];
+    void tick() { if (flags & 4) update(); }
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, v1, 1) CF_V0(void, update, 2)
+};
+#else
 struct Node {
     char pad[0x18]; int flags; char pad1c[0xC];
     virtual void v0(); virtual void v1(); virtual void update();
     void tick() { if (flags & 4) update(); }
 };
+#endif
 struct Link { Node *obj; Link *next; };
 struct Iter {
     Link *cur, *nxt;

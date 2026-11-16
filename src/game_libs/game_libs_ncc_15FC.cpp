@@ -25,10 +25,20 @@ extern char sStr_Node_CC58[], sStr_CoolGadget_CC60[];
 extern float kRo_CoolGadget_ctor_C7C, kRo_CoolGadget_ctor_C80, kRo_CoolGadget_ctor_C84, kRo_CoolGadget_ctor_C88, kRo_CoolGadget_ctor_C8C, kRo_CoolGadget_ctor_C90, kRo_CoolGadget_ctor_C94;
 }
 inline void *operator new(unsigned n) { return CALL(mem_new)(n); }
+#ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr, the NCC vtable store written out */
+extern "C" char gl_data_00000000_15fc[]; /* __vtbl__1G = CoolGadget_vtbl, bootup Data 0xC974 */
+struct B { char p[0x28]; char *vptr; B(char *); };
+struct M { char p[0xA8]; M(); };
+struct G : B { M m; char rest[0x198 - 0xD4]; G(int arg1); };
+#else
 struct B { char p[0x28]; B(char *); virtual void g(); };
 struct M { char p[0xA8]; M(); };
 struct G : B { M m; char rest[0x198 - 0xD4]; G(int arg1); virtual void g(); };
+#endif
 G::G(int arg1) : B(sStr_Node_CC58) {
+#ifdef PORT
+    vptr = gl_data_00000000_15fc;
+#endif
     CoolGadget *self = (CoolGadget *)this;
     float temp_f2 = kRo_CoolGadget_ctor_C7C;
     self->node.name = (const char *)sStr_CoolGadget_CC60;

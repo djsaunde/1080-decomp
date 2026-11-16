@@ -19,10 +19,18 @@ struct BuE9FCBas {
     int w[10];
 };
 
+#ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr, the NCC vtable store written out */
+extern "C" char SnowBoard_vtbl_func_0000E9FC_arg2[]; /* __vtbl__8BuE9FCOb, bootup Data 0x8BA8 */
+struct BuE9FCOb : BuE9FCBas {
+    char *vptr;
+    BuE9FCOb() { vptr = SnowBoard_vtbl_func_0000E9FC_arg2; }
+};
+#else
 struct BuE9FCOb : BuE9FCBas {
     BuE9FCOb() {}
     virtual void v();
 };
+#endif
 
 extern "C" {
 BuE9FCOb gSnowBoard_func_0000E9FC_arg1;

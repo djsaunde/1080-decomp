@@ -18,8 +18,24 @@ extern char gHostio_3FC58_s1[];
 extern char gGfxLib_3FC58_g[];
 }
 struct W { int w; W(int x) { w = x; } };
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct O28 { char p[0x28];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, f1, 0) CF_V0(void, f2, 1) CF_V0(void, f3, 2) CF_V0(void, f4, 3)
+    CF_V1(void, f5, 4, const W &)
+};
+#else
 struct O28 { char p[0x28]; virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(const W &); };
+#endif
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+struct O0 {
+    char *vptr; /* cfront vptr */
+    CF_V0(void, f1, 0)
+};
+#else
 struct O0 { virtual void f1(); };
+#endif
 struct Msg {
     int type;
     int p4;

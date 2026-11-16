@@ -21,7 +21,16 @@ int gl_func_00000000(...);
 struct Two { int a, b; Two() {} Two(int x, int y) { a = x; b = y; } void set(int x, int y) { a = x; b = y; } };
 struct Obj;
 struct ObjPad { char pad[40]; };
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct Obj : ObjPad {
+    char *vptr; /* cfront vptr */
+    CF_V0(void, m1, 0) CF_V0(void, m2, 1) CF_V0(void, m3, 2) CF_V0(void, m4, 3) CF_V0(void, m5, 4)
+    CF_V0(void, m6, 5) CF_V1(void, m7, 6, int *)
+};
+#else
 struct Obj : ObjPad { virtual void m1(); virtual void m2(); virtual void m3(); virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7(int *); };
+#endif
 struct Flags { int a; int b;
     void orA(int m) { a |= m; } void clrA(int m) { a &= ~m; }
     void orB(int m) { b |= m; } void clrB(int m) { b &= ~m; } };

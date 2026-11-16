@@ -17,7 +17,15 @@ void *gl_func_00000000(...);
 }
 inline void *operator new(unsigned n) { return CALL(mem_new)(n); }
 struct Pad40 { char pad[0x28]; };
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct Elem : Pad40 {
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v1, 0) CF_V0(void, v2, 1) CF_V0(void, v3, 2)
+};
+#else
 struct Elem : Pad40 { virtual void v1(); virtual void v2(); virtual void v3(); };
+#endif
 struct AIter;
 struct Arr { Elem **data; int pad4, pad8; int count; Elem *&operator[](int i) { return data[i]; } AIter iter(); };
 struct IBase {

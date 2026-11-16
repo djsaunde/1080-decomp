@@ -111,10 +111,20 @@ struct GState { char pad[0x158]; Ctx *ctx; };
 #define GS (*(GState **)(gGfxLib + 0x254)) /* GfxLib current ScreenWindow (Sym 154) */
 struct Flags { int v; int test(int m) { return v & m; } }; /* agent-g run 417: plain (the run-209 folded use of v / kept m made v a uopt LR in v0; the target reads it into a ugen temp, t4) */
 struct Node { char pad[0x18]; Flags flags; char pad1c[2]; s16 m1e; };
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct EBase {
+    char pad0[0x5C];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v1, 0) CF_V0(void, v2, 1) CF_V0(void, v3, 2) CF_V0(void, v4, 3)
+    CF_V1(void, draw, 4, void *)
+};
+#else
 struct EBase {
     char pad0[0x5C];
     virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void draw(void *);
 };
+#endif
 struct Elem : EBase {
     char pad60[0x6C - 0x60]; Ctx *ctx6C; char pad70[0x8A - 0x70]; s16 n8A;
 };

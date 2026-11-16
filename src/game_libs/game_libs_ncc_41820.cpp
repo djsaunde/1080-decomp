@@ -29,8 +29,25 @@ inline void *operator new(unsigned n) { return (void *)CALL(mem_new)(n); }
 struct Rec { int f0; int f4; int f8; int fC; int f10; void *f14; };
 struct Arr { int *data; int f4; int cap; int n; int f10; Arr(int c) { cap = c; n = 0; data = new int[c]; } };
 struct B44 : Rec { char pad[0x28 - 0x18]; B44(char *name); };
+#ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): the vptr after B44's 0x28 bytes, stored explicitly */
+extern "C" char Node_vtbl_1F748_41820_h[]; /* __vtbl__3O44 (Makefile objcopy) */
+struct O44 : B44 { char *vptr; O44() : B44(D_00000000 + 0x1F630) { vptr = Node_vtbl_1F748_41820_h; } };
+#else
 struct O44 : B44 { O44() : B44(D_00000000 + 0x1F630) {} virtual void f(); };
+#endif
 extern "C" { extern Rec *gConsoleNode_3EF04_41820_b; extern Arr *D_41820_e; extern Rec *D_41820_f; }
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct SB {
+    char pad[0x10];
+    int m10;
+    char pad14[0x28 - 0x14];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v1, 0) CF_V0(void, v2, 1) CF_V0(void, v3, 2) CF_V0(void, v4, 3) CF_V0(void, v5, 4)
+    CF_V0(void, v6, 5) CF_V0(void, v7, 6) CF_V0(void, v8, 7) CF_V0(void, v9, 8) CF_V0(void, v10, 9)
+    CF_V0(void, v11, 10) CF_V0(void, v12, 11)
+};
+#else
 struct SB {
     char pad[0x10];
     int m10;
@@ -38,6 +55,7 @@ struct SB {
     virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6();
     virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12();
 };
+#endif
 struct Self : SB {
     int m2C;
     void init();

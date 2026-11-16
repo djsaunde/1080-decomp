@@ -63,12 +63,25 @@ extern char sStr_snowlookat_7460[], sStr_rom_cam_info_bin_746C[], sStr_rom_cam_c
 inline void *operator new(unsigned n) { return fn_31c0_alloc(n); }
 struct N { int v; N() { v = 0; } };
 struct M { N n; M() {} };
+#ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr at +0x28; the two vtable stores NCC
+ * emits here (LookAtMNode: __vtbl__11LookAtMNode = bootup Data 0x1EAA8, the D_00000000 cam_create binds;
+ * RiderCam: __vtbl__8RiderCam = D_00007120) are written out. MNode / MCamera store their own. */
+#include "port_game.h"
+extern "C" char D_00007120[];
+struct MNode { char p[0x28]; char *vptr; MNode(void *name); };
+struct LookAtMNode : MNode { M m; char rest[0xB4 - 0x30]; LookAtMNode(void *u) : MNode(sStr_snowlookat_7460) { vptr = port_bootup_data + 0x1EAA8; { volatile int q0, q1, q2; } fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } };
+struct LookAtNode : LookAtMNode { int chase; LookAtNode() : LookAtMNode(this) { LookAtNode *p = this; } };
+struct MCamera { char p[0x28]; char *vptr; MCamera(LookAtMNode *target, float x, float y, float z); };
+struct RiderCam : MCamera { char q[0x14C - 0x2C]; float fov; float baseFov; char *rider; int mode;
+    RiderCam(LookAtNode *o, char *a) : MCamera(o, 0.0f, 500.0f, -1500.0f) { vptr = D_00007120; mode = 0; rider = a; baseFov = fov; } };
+#else
 struct MNode { char p[0x28]; MNode(void *name); virtual void g(); };
 struct LookAtMNode : MNode { M m; char rest[0xB4 - 0x30]; LookAtMNode(void *u) : MNode(sStr_snowlookat_7460) { { volatile int q0, q1, q2; } fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } virtual void g(); };
 struct LookAtNode : LookAtMNode { int chase; LookAtNode() : LookAtMNode(this) { LookAtNode *p = this; } }; /* agent-c run 238: the named p is a home between the new-temp and the LookAtNode this temp (kit CCLV) */
 struct MCamera { char p[0x28]; MCamera(LookAtMNode *target, float x, float y, float z); virtual void g(); };
 struct RiderCam : MCamera { char q[0x14C - 0x2C]; float fov; float baseFov; char *rider; int mode;
     RiderCam(LookAtNode *o, char *a) : MCamera(o, 0.0f, 500.0f, -1500.0f) { mode = 0; rider = a; baseFov = fov; } virtual void g(); };
+#endif
 struct CourseCam { CourseCam(char *rider, LookAtNode *lookat, float x, float y, float z, int pad, char *infoFile); };
 struct SnowChaseActorCam { SnowChaseActorCam(char *target, int source, char *parmsFile); };
 struct SnowChaseActorLook { SnowChaseActorLook(char *anchor, char *cam, char *parmsFile); };

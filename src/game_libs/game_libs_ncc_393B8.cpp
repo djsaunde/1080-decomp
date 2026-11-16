@@ -11,10 +11,19 @@ extern "C" void gl_func_00000000(...);
 extern "C" int gl_func_00000000_i(...);
 extern "C" char D_00000000[];
 struct Sub393 { void lock() { CALL(sys_imin)(this); } };
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct NodeB393 {
+    char pad[4]; int x04; int flags; char pad0c[8]; void *owner; int x18; char pad1c[0xC];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, v1, 1) CF_V0(void, v2, 2) CF_V0(void, tick, 3)
+};
+#else
 struct NodeB393 {
     char pad[4]; int x04; int flags; char pad0c[8]; void *owner; int x18; char pad1c[0xC];
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void tick();
 };
+#endif
 struct Node393 : NodeB393 { int x2c; float m30[16]; float m70[16]; };
 struct Link393 { Node393 *obj; Link393 *next; };
 struct Iter393 {

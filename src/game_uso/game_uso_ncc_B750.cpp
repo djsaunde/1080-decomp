@@ -30,7 +30,15 @@ typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/sun.h" /* NCC has no -I include */
 #include "../../include/game/game_uso_data.h"
 #include "../../include/gdl/gfxlib.h"
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct V { char pad[40];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, m0, 0) CF_V0(void, m1, 1) CF_V0(void, m2, 2)
+};
+#else
 struct V { char pad[40]; virtual void m0(); virtual void m1(); virtual void m2(); };
+#endif
 struct Q {
     float x, y, z, w;
     void set(float a, float b, float c, float d) { x = a; y = b; z = c; w = d; }

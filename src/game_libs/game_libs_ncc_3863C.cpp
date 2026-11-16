@@ -7,9 +7,18 @@
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 extern "C" int gl_func_00000000(...);
 struct Owner;
+#ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
+#include "port_cfront.h"
+struct NodeB {
+    int x0; int x4; char pad8[0xC]; Owner *x14; int flags; char pad1c[4]; int mask; char pad24[4];
+    char *vptr; /* cfront vptr */
+    CF_V0(void, v0, 0) CF_V0(void, v1, 1) CF_V0(void, fire, 2)
+};
+#else
 struct NodeB {
     int x0; int x4; char pad8[0xC]; Owner *x14; int flags; char pad1c[4]; int mask; char pad24[4];
     virtual void v0(); virtual void v1(); virtual void fire(); };
+#endif
 struct Link { NodeB *obj; Link *next; };
 struct Iter {
     Link *cur, *nxt;
