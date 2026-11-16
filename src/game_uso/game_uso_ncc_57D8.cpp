@@ -5,35 +5,41 @@
  * Val::set() whose `this` re-reads a0->0x30 (gives `addiu v0,a1,0x758; swc1 0x10(v0)`),
  * and the state pointer is read through a0->0x30 too, so the const 2 colours v0.
  * Spliced into game_uso.c.o via REPLACE_FUNC_BODY. */
+typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
+typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
+#include "../../include/game/snowai.h" /* NCC has no -I include */
 extern "C" {
 void SnowAI_steer(char *);
 void SnowAI_finishRun(char *);
 void SnowAI_timeoutRun(char *);
 void SnowAI_recoverStuck(char *);
 }
-struct Val { char pad[0x10]; float v; void set(float f) { v = f; } };
-#define AT(T, p, o) (*(T *)((char *)(p) + (o)))
+struct Val { char pad[0x10]; float v; void set(float f) { v = f; } }; /* a parm: value at +0x10 */
+#define AI(p) ((SnowAI *)(p))
+#define MS(k) AI(a0)->parms.parm[SNOWAI_PARM_MS + (k)].value /* "ms1".."ms8": per-character max speed */
 extern "C" void SnowAI_update(char *a0) {
-    if (AT(int, a0, 0x4D8) != 0) {
-        AT(int, a0, 0x4D8) = 0;
-        char *st = AT(char *, AT(char *, a0, 0x30), 0x908);
-        if (st != 0 && AT(unsigned, AT(char *, a0, 0x30), 0x848) == 2 && AT(unsigned, st, 0x848) != 2) {
+    if (AI(a0)->initPending != 0) {
+        AI(a0)->initPending = 0;
+        SnowBoarder *rival = AI(a0)->rider->rival;
+        /* CPU rider vs a pad rider. The unsigned compares keep the const 2 in v0 and the aiState load in the
+         * branch-likely delay slots (signed s32 compares colour it a2 and fill nops) */
+        if (rival != 0 && (u32)AI(a0)->rider->controller == 2 && (u32)rival->controller != 2) {
             float value;
-            switch (AT(int, st, 0x8C4)) {
-            case 1: value = AT(float, a0, 0x414); break;
-            case 2: value = AT(float, a0, 0x42C); break;
-            case 3: value = AT(float, a0, 0x444); break;
-            case 4: value = AT(float, a0, 0x45C); break;
-            case 5: value = AT(float, a0, 0x474); break;
-            case 6: value = AT(float, a0, 0x48C); break;
-            case 7: value = AT(float, a0, 0x4A4); break;
-            default: value = AT(float, a0, 0x4BC); break;
+            switch ((int)rival->character) {
+            case 1: value = MS(0); break;
+            case 2: value = MS(1); break;
+            case 3: value = MS(2); break;
+            case 4: value = MS(3); break;
+            case 5: value = MS(4); break;
+            case 6: value = MS(5); break;
+            case 7: value = MS(6); break;
+            default: value = MS(7); break;
             }
-            ((Val *)(AT(char *, a0, 0x30) + 0x758))->set(value);
+            ((Val *)&AI(a0)->rider->parms.max)->set(value);
         }
     }
-    AT(float, a0, 0x3C) = 0.0f;
-    switch (AT(int, a0, 0x64)) {
+    AI(a0)->unk3C = 0.0f;
+    switch (AI(a0)->aiState) {
     case 0: SnowAI_steer(a0); break;
     case 1: SnowAI_finishRun(a0); break;
     case 2: SnowAI_timeoutRun(a0); break;

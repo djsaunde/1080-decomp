@@ -1,7 +1,13 @@
 #ifndef GAME_SNOWAI_H
 #define GAME_SNOWAI_H
 
+#ifndef __cplusplus
 #include "game/snowboarder.h"
+#else
+/* edg (NCC) donors include this header by relative path, without -I include: same-directory include,
+ * and no &((T *)0)->f asserts (edg rejects that constant form). */
+#include "snowboarder.h"
+#endif
 
 /*
  * SnowAI: the computer rider controller of game.uso (C++ class; agent-g run 452).
@@ -119,10 +125,11 @@ typedef struct SnowAI {
     f32 savedDts;           /* 0x4D0: rider->parms.dts.value (scaled by dd4) */
     f32 savedNbf;           /* 0x4D4: rider->child.parms.nbf.value (replaced by dbf while scaled) */
     s32 initPending;        /* 0x4D8: set by SnowAI_reset; the next SnowAI_update clears it and, for a CPU
-                             * rider racing a human, sets rider +0x758 from ms1..ms8 by the rival's 0x8C4 */
+                             * rider racing a human, sets rider->parms.max from ms1..ms8 by the rival's character */
     s32 unk4DC;             /* 0x4DC: 3 from the ctor; limit term in 7538 */
 } SnowAI;
 
+#ifndef __cplusplus
 /* compile-time offset checks (array size -1 => error) */
 #define SNOWAI_ASSERT_OFFSET(type, field, off) \
     typedef char snowai_assert_##type##_##off[(int)&((type *)0)->field == (off) ? 1 : -1]
@@ -164,5 +171,6 @@ SNOWAI_ASSERT_OFFSET(SnowAI, unk4DC, 0x4DC);
 typedef char snowai_assert_parm_size[sizeof(SnowAIParm) == 0x18 ? 1 : -1];
 typedef char snowai_assert_parms_size[sizeof(SnowAIParms) == 0x3E0 ? 1 : -1];
 typedef char snowai_assert_size[sizeof(SnowAI) == 0x4E0 ? 1 : -1];
+#endif
 
 #endif /* GAME_SNOWAI_H */
