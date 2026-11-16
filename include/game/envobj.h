@@ -32,7 +32,8 @@ typedef struct EnvSettings {
     s32 clipFar;                /* 0x34: [0xB00]; EnvSettings_load sets 800 for game modes 6 / 11 */
     s32 flags;                  /* 0x38: [1]; bit 2 = override the clip range (set with the 800 far) */
     s32 mode;                   /* 0x3C: [0] */
-    s32 unk40;                  /* 0x40: [0] */
+    struct FallingSnow *fallingSnow; /* 0x40: [0] FallingSnow_create(this) builds it (not in the editor flow
+                                 * mode); EnvSettings_setSnow switches it */
 } EnvSettings;
 
 #define ENVSET(p) ((EnvSettings *)(p))
@@ -64,14 +65,31 @@ typedef struct SnowItem {
     f32 pos[3];                 /* 0x30 */
     s32 parmsName;              /* 0x3C */
     s32 parmsList;              /* 0x40 */
-    CourseFParm unk44;          /* 0x44: [300] */
-    CourseParm unk5C;           /* 0x5C: [1] */
+    CourseFParm rng;            /* 0x44: [300] "rng": depth of the snow zone past pos[2] (scaled z) */
+    CourseParm sta;             /* 0x5C: [1] "sta" (hostio "Snow"): Snower_display hands it to
+                                 * EnvSettings_setSnow while the camera is inside the zone */
 } SnowItem;
 
 #define SNOWITEM(p) ((SnowItem *)(p))
 
+/* A course "cam" item (tag "cam", ItemType registered by item_registerTemplates, create method at
+ * bootup Data 0xE4 of its table): a ColourItem head with a camera kind. CamDirector_update polls the
+ * one nearest the rider (ItemMgr_queryType) and hands it to the active camera's command slot (VT_SLOT
+ * 12): kinds 3..0x12 go to the game.uso CourseCam, the rest to RiderCam_command_00004914, which puts
+ * the eye at pos + 100 up. */
+typedef struct CourseCamItem {
+    Node node;                  /* 0x00 */
+    s32 link;                   /* 0x2C: ColourItem link */
+    f32 pos[3];                 /* 0x30 */
+    s32 kind;                   /* 0x3C: the camera mode / view */
+} CourseCamItem;
+
+#define CAMITEM(p) ((CourseCamItem *)(p))
+
 /* The falling-snow effect (0x134; vtables imported from module 60) that FallingSnow_create
- * builds into its owner's +0x40 and func_00007620 switches on / off. */
+ * builds into EnvSettings.fallingSnow (the owner is gEnvSettings, bootup Bss+0x20, which
+ * game_createMap stores and SnowTmpl_create / Snower_display pass) and EnvSettings_setSnow
+ * (func_00007620) switches on / off. It is a child of the world's "eg" root. */
 typedef struct FallingSnow {
     Node node;                  /* 0x00: doFlags bits 4 / 8 = display / update on */
     char unk2C[0x48 - 0x2C];
@@ -160,10 +178,10 @@ typedef struct TreeTmpl {
 
 #define ENVOBJ_ASSERT(T, f, off) typedef char envobj_assert_##T##_##off[(int)&((T *)0)->f == (off) ? 1 : -1]
 ENVOBJ_ASSERT(U64BGWall, scale, 0x3C);
-ENVOBJ_ASSERT(EnvSettings, unk40, 0x40);
+ENVOBJ_ASSERT(EnvSettings, fallingSnow, 0x40);
 ENVOBJ_ASSERT(FogItem, inside, 0x8C);
 ENVOBJ_ASSERT(FogItem, rng, 0x5C);
-ENVOBJ_ASSERT(SnowItem, unk5C, 0x5C);
+ENVOBJ_ASSERT(SnowItem, sta, 0x5C);
 ENVOBJ_ASSERT(FallingSnow, unkBC, 0xBC);
 ENVOBJ_ASSERT(Tv1Tmpl, displayCount, 0x68);
 ENVOBJ_ASSERT(TreeTmpl, shapeData, 0x48);

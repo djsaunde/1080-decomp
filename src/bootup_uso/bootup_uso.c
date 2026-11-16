@@ -1478,7 +1478,7 @@ void CamDirector_update(CamDirector *self) {
         tb.w = sStr_cam_7324;
         p = (char *)FCALL(ItemMgr_queryType)(D_24B8_tbl, tb, self->rider->dnode.vqs.trans, 0);
         if (p != 0 && p != self->lastCamNode) {
-            k2 = FW(p, 0x3C);
+            k2 = CAMITEM(p)->kind;
             if ((u32)k2 >= 3 && (u32)k2 < 0x13) {
                 /* kinds 3..0x12: the game.uso path camera (CourseCam views) */
                 XCALL(func_00000000_24b8v, CamDirector_setActiveCam)(self, 0);
@@ -2727,9 +2727,9 @@ void Mountain_display(char *a0) {
 }
 
 void RiderCam_command_00004914(char *a0, int a1, char *a2) {
-    ((RiderCam *)a0)->cam.mnode.local[3][0] = *(float*)(a2 + 0x30);
-    ((RiderCam *)a0)->cam.mnode.local[3][1] = *(float*)(a2 + 0x34);
-    ((RiderCam *)a0)->cam.mnode.local[3][2] = *(float*)(a2 + 0x38);
+    ((RiderCam *)a0)->cam.mnode.local[3][0] = CAMITEM(a2)->pos[0];
+    ((RiderCam *)a0)->cam.mnode.local[3][1] = CAMITEM(a2)->pos[1];
+    ((RiderCam *)a0)->cam.mnode.local[3][2] = CAMITEM(a2)->pos[2];
     ((RiderCam *)a0)->mode = a1;
     ((RiderCam *)a0)->cam.mnode.local[3][1] += 100.0f;
 }
@@ -3614,7 +3614,7 @@ void *EnvSettings_ctor(char *a0) {
         if (1) { q += 0x18; }
         *(int *)q &= ~8;
     }
-    ENVSET(a0)->unk40 = 0;
+    ENVSET(a0)->fallingSnow = 0;
     ENVSET(a0)->mode = 0;
     ENVSET(a0)->clipNear = 4;
     ENVSET(a0)->clipFar = 0xB00;
@@ -3760,12 +3760,17 @@ extern void func_000000F0();  /* used as data-symbol base */
  * no early returns, data symbols for the two %lo-folded globals, a0 escaped so every a0->0x40 is re-read,
  * v reused for the tail stores, block-count lever (IDO_CODEGEN#hold-vs-remat-firstusecost-run111). */
 extern char gInputMgr_74e8_g, gInputMgr_74e8_h;
+/* Both aliases relocate to bootup Bss+0xF8 (the InputMgr / GameFlow, uso-imports.py sites bootup):
+ * _g is pinned at +8 and _h at +0xF0, so _g + 0x2C = nextFlowMode and _h + 0x44 = game. a0 is
+ * gEnvSettings (Bss+0x20, SnowTmpl_create). */
+#define FLOW_74E8_G GAMEFLOW((char *)&gInputMgr_74e8_g - 8)
+#define FLOW_74E8_H GAMEFLOW((char *)&gInputMgr_74e8_h - 0xF0)
 void FallingSnow_create(char *a0) {
     int *v;
     char *r;
     char *sub;
     char *head;
-    if (*(int*)((char*)&gInputMgr_74e8_g + 0x2C) == 8) return;
+    if (FLOW_74E8_G->nextFlowMode == 8) return; /* 8 = EDITORS */
     FCALL(memtrack_begin)(&sStr_FallingSnow_7FB0, 0);
     r = (char*)FCALL(mem_new)(0x134);
     if (r != 0) {
@@ -3775,8 +3780,8 @@ void FallingSnow_create(char *a0) {
         }
         NODE(r)->vptr = (s32)(&D_00000000);
     }
-    *(char**)(a0 + 0x40) = r;
-    head = *(char**)((*(char**)((char*)&gInputMgr_74e8_h + 0x44)) + 0x88);
+    ENVSET(a0)->fallingSnow = (FallingSnow *)r;
+    head = (char *)WORLDREG(FLOW_74E8_H->game)->egRoot;
     if (1) { }
     if (1) { }
     if (1) { }
@@ -3789,13 +3794,13 @@ void FallingSnow_create(char *a0) {
     FCALL(list_append)(head + 0x10, r);
     if (NODE(r)->parent != 0) NODE(r)->unk04 = 1;
     NODE(r)->parent = (s32)head;
-    v = (int *)NODE(*(char**)(a0 + 0x40))->vptr;
+    v = (int *)NODE(ENVSET(a0)->fallingSnow)->vptr;
     ((void (*)(char*, int))VT_SLOT(v, 10).fn)(
-        (char*)((int)*(char**)(a0 + 0x40) + (int)(short)VT_SLOT(v, 10).delta),
+        (char *)ENVSET(a0)->fallingSnow + VT_SLOT(v, 10).delta,
         0x96);
-    v = *(int**)(a0 + 0x40); ((FallingSnow *)v)->enabled = 1;
-    v = *(int**)(a0 + 0x40); ((FallingSnow *)v)->unk4C = 0.0f;
-    ((FallingSnow *)*(char**)(a0 + 0x40))->enabled = 0;
+    v = (int *)ENVSET(a0)->fallingSnow; ((FallingSnow *)v)->enabled = 1;
+    v = (int *)ENVSET(a0)->fallingSnow; ((FallingSnow *)v)->unk4C = 0.0f;
+    ENVSET(a0)->fallingSnow->enabled = 0;
     FCALL(memtrack_end)();
 }
 
@@ -3819,7 +3824,7 @@ extern float D_000005E8;
  * addiu + lw/sw 0(v0) pairs, direct `*(int*)(st+0x18) |= k` folds the
  * displacement); enable-path swc1 base = the same `f` var re-pointed at st
  * with the 0x4C folded into the store (colors v0). */
-#define ST_7620 (*(char**)(a0 + 0x40))
+#define ST_7620 ((char *)ENVSET(a0)->fallingSnow)
 void func_00007620(char *a0, int a1) {
     int *f;
     if (ST_7620 == 0) return;
@@ -4101,22 +4106,36 @@ void ColourItem_readParms_00007BC8(char *a0) {
  * (same vtable-dispatch thunk). Keys from the twin: plain if/else idx select
  * (no goto / branch-likely), loaded-value-LAST entry add, and the arg load +
  * accumulate joined on one line (hoists the lh above the lw). */
+/* The callback object (sun.h's MemberCallback, whose pmf is a plain Pair2 there): a cfront pointer
+ * to member function. index < 0: u.fn is the function; otherwise u.vptrOff is the offset of the
+ * vtable pointer in the object (0 with delta 0 means the Node vptr at +0x28) and index selects the
+ * GdlVtEnt {this-delta, fn} slot. */
+typedef struct CbPmf_7BF4 {
+    /* 0x0 */ s16 delta;            /* this adjustment */
+    /* 0x2 */ s16 index;            /* vtable slot, < 0 for a non-virtual member */
+    /* 0x4 */ union { int (*fn)(char *); int vptrOff; } u;
+} CbPmf_7BF4;
+typedef struct MemberCb_7BF4 {
+    /* 0x0 */ void *vptr;
+    /* 0x4 */ char *obj;
+    /* 0x8 */ CbPmf_7BF4 pmf;
+} MemberCb_7BF4;
 int MemberCallback_invoke_00007BF4(char *a0) {
     char *arg;
-    char *v1;
+    CbPmf_7BF4 *v1;
     char *entry;
     int (*fnptr)(char *);
     int idx;
-    v1 = a0 + 8;
-    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg;
-    if (*(short*)(a0 + 0xA) < 0) {
-        fnptr = *(int (**)(char *))(a0 + 0xC);
+    v1 = &((MemberCb_7BF4 *)a0)->pmf;
+    arg = ((MemberCb_7BF4 *)a0)->obj; arg = ((MemberCb_7BF4 *)a0)->pmf.delta + arg;
+    if (((MemberCb_7BF4 *)a0)->pmf.index < 0) {
+        fnptr = ((MemberCb_7BF4 *)a0)->pmf.u.fn;
     } else {
-        int selector = *(int*)(v1 + 4);
-        if (selector == 0 && *(short*)v1 == 0) idx = 0x28; else idx = selector;
-        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx);
-        arg = *(short*)entry + arg;
-        fnptr = *(int (**)(char *))(entry + 4);
+        int selector = v1->u.vptrOff;
+        if (selector == 0 && v1->delta == 0) idx = 0x28; else idx = selector;
+        entry = (v1->index << 3) + *(char**)(arg + idx);
+        arg = ((GdlVtEnt *)entry)->delta + arg;
+        fnptr = (int (*)(char *))((GdlVtEnt *)entry)->fn;
     }
     return fnptr(arg);
 }
@@ -4512,8 +4531,8 @@ void Snower_display(int *a0) {
     float f12 = SNOWITEM(a0)->pos[2] * f0;
 
     if (f12 < f2) {
-        if (SNOWITEM(a0)->unk44.value + f12 > f2) {
-            XCALL(func_00000000_082F8_v, func_00007620)(*(int*)&D_00000000_a, SNOWITEM(a0)->unk5C.value);
+        if (SNOWITEM(a0)->rng.value + f12 > f2) {
+            XCALL(func_00000000_082F8_v, func_00007620)(*(int*)&D_00000000_a, SNOWITEM(a0)->sta.value);
         }
     }
 
