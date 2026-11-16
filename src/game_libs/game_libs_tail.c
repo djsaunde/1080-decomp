@@ -1153,7 +1153,7 @@ void Backup_resetOptionsData_0000AFC4(char *arg0) {
     do {
         temp_v0 = *(char **)((char *)&D_00000000 + 0x28);
         sp3C = 0x15;
-        ((GP_0000AFC4)FW(temp_v0, 0x34))(*(s16 *)(temp_v0 + 0x30) + (int)&gSnowBoard, &sp3C);
+        ((GP_0000AFC4)FW(temp_v0, 0x34))((char *)&gSnowBoard + *(s16 *)(temp_v0 + 0x30), &sp3C);
     } while (0);
 }
 
@@ -2974,8 +2974,8 @@ void RaceTracker_sendEndingMsg(int a0, int a1, int a2) {
     int *v0 = (int *)NODE(&gSnowBoard)->vptr;
     int local = 0x3ED;
     char pad2[12];
-    ((void(*)(int, int*))VT_SLOT(v0, 5).fn)(
-        VT_SLOT(v0, 5).delta + (int)&gSnowBoard, &local);
+    ((void(*)(char *, int*))VT_SLOT(v0, 5).fn)(
+        (char *)&gSnowBoard + VT_SLOT(v0, 5).delta, &local);
 }
 
 /* RaceTracker_sendWinResult: paired vtable dispatch with a mode gate, BYTE-EXACT 68/68

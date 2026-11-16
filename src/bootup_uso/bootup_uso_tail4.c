@@ -335,7 +335,7 @@ char *TimeGadget_ctor_00013D40(char *self) {
     if (self != 0 || (self = (char *)FCALL(mem_new)(0x98)) != 0) {
         if ((p2 = self) != 0 || (p2 = (char *)FCALL(mem_new)(8)) != 0) {
             TGPARMS(p2)->name = &sStr_TimeGadget_Parms_CAAC;
-            TGPARMS(p2)->unk04 = 0;
+            TGPARMS(p2)->first = 0;
         }
         u1.v = sTag_xps_CAC0;
         t2 = u1;

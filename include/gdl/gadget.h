@@ -2,22 +2,29 @@
 #define GDL_GADGET_H
 
 #include "node.h" /* same directory: the NCC donors include this header by relative path */
+#include "parm.h" /* GdlParmBase / GdlParmTag (agent-b run 566) */
 
 /* A libgdl tunable parameter (0x18), built in place inside a "<Class>::Parms" object by a
  * ctor call (parm, owner Parms, 4-byte tag by value, 1) and then typed: +0xC = the parm type
  * vtable (bootup Data 0xC764 = int parm, 0xC83C = float parm), +0x10 = the default value.
  * The tags are the 4-byte strings after each Parms name in the Data section ("xps", "yps",
  * "lbx", ...). HostIO can edit the value at run time; the owning class reads +0x10 directly
- * (agent-h run 507). */
+ * (agent-h run 507). The first 0x10 bytes are a GdlParmBase (gdl/parm.h, agent-b run 566);
+ * GdlParm / GdlParmF / GdlParmRGBA spell its members out instead of embedding it, so the
+ * parm type stores keep the plain `->type` spelling (agent-h run 572). */
 typedef struct GdlParm {
-    /* 0x00 */ char head[0xC];      /* filled by the parm base ctor */
+    /* 0x00 */ GdlParmBase *next;   /* owner list link (0 = last) */
+    /* 0x04 */ GdlParmTag tag;      /* "xps", "yps", ... */
+    /* 0x08 */ s32 unk08;           /* Parms_addParm's 4th argument (1) */
     /* 0x0C */ void *type;          /* parm type vtable */
     /* 0x10 */ s32 value;
     /* 0x14 */ s32 unk14;           /* 0 */
 } GdlParm;
 
 typedef struct GdlParmF {
-    /* 0x00 */ char head[0xC];
+    /* 0x00 */ GdlParmBase *next;   /* owner list link (0 = last) */
+    /* 0x04 */ GdlParmTag tag;      /* "xps", "yps", ... */
+    /* 0x08 */ s32 unk08;           /* Parms_addParm's 4th argument (1) */
     /* 0x0C */ void *type;          /* the float parm type (Data 0xC83C) */
     /* 0x10 */ f32 value;
     /* 0x14 */ s32 unk14;
@@ -30,7 +37,7 @@ typedef char GdlParm_size_check[sizeof(GdlParm) == 0x18 ? 1 : -1];
  * after it (agent-h run 524). */
 typedef struct GdlParms {
     /* 0x00 */ const char *name;    /* "<Class>::Parms" string */
-    /* 0x04 */ s32 unk04;           /* 0 */
+    /* 0x04 */ GdlParmBase *first;  /* 0: the parm list (GdlParmList.first) */
 } GdlParms;
 
 /* "TimeGadget::Parms" (0x98, Data 0xCAAC; ctor TimeGadget_ctor_00013D40, the base ctor's
@@ -40,7 +47,7 @@ typedef struct GdlParms {
  * CoolGadgetParms_ctor builds the same six tags (Data 0xCC38). */
 typedef struct TimeGadgetParms {
     /* 0x00 */ const char *name;    /* "TimeGadget::Parms" */
-    /* 0x04 */ s32 unk04;           /* 0 */
+    /* 0x04 */ GdlParmBase *first;  /* 0: the parm list (GdlParmList.first) */
     /* 0x08 */ GdlParm xps;         /* screen x of the text */
     /* 0x20 */ GdlParm yps;         /* screen y of the text */
     /* 0x38 */ GdlParm lbx;         /* label1 offset x (from xps) */
@@ -55,7 +62,7 @@ typedef char TimeGadgetParms_size_check[sizeof(TimeGadgetParms) == 0x98 ? 1 : -1
  * TimeGadgetParms_ctor): xps / yps and the shadow offset shx / shy (defaults 30, 30, 4, -2). */
 typedef struct CountDownParms {
     /* 0x00 */ const char *name;
-    /* 0x04 */ s32 unk04;
+    /* 0x04 */ GdlParmBase *first;  /* 0: the parm list (GdlParmList.first) */
     /* 0x08 */ GdlParm xps;
     /* 0x20 */ GdlParm yps;
     /* 0x38 */ GdlParm shx;         /* second text pass offset x (from xps) */
@@ -152,7 +159,7 @@ typedef char CountDownGadget_size_check[sizeof(CountDownGadget) == 0xD4 ? 1 : -1
  * screen position (agent-h run 509). */
 typedef struct FloatPosParms {
     /* 0x00 */ const char *name;    /* "TimeGadget::Parms" */
-    /* 0x04 */ s32 unk04;           /* 0 */
+    /* 0x04 */ GdlParmBase *first;  /* 0: the parm list (GdlParmList.first) */
     /* 0x08 */ GdlParmF xps;
     /* 0x20 */ GdlParmF yps;
 } FloatPosParms;
@@ -301,7 +308,9 @@ typedef char TrickPointsGadget_allIdle_check[(int)&((TrickPointsGadget *)0)->all
 
 /* A colour parm (0x24, type Data 0xCA34): an RGBA value instead of one word. */
 typedef struct GdlParmRGBA {
-    /* 0x00 */ char head[0xC];
+    /* 0x00 */ GdlParmBase *next;   /* owner list link (0 = last) */
+    /* 0x04 */ GdlParmTag tag;      /* "xps", "yps", ... */
+    /* 0x08 */ s32 unk08;           /* Parms_addParm's 4th argument (1) */
     /* 0x0C */ void *type;          /* the colour parm type vtable (Data 0xCA34), as GdlParm.type */
     /* 0x10 */ f32 value[4];
     /* 0x20 */ s32 unk20;           /* 0 */
@@ -316,7 +325,7 @@ typedef struct GdlParmRGBA {
  * x / z into the map box at (xps + mx0, yps + my0) with the scale my1 - my0. */
 typedef struct CourseGadgetParms {
     /* 0x000 */ const char *name;   /* "CourseGadget::Parms" */
-    /* 0x004 */ s32 unk04;
+    /* 0x004 */ GdlParmBase *first; /* 0: the parm list (GdlParmList.first) */
     /* 0x008 */ GdlParm xps;        /* screen x of the gadget */
     /* 0x020 */ GdlParm yps;
     /* 0x038 */ GdlParm mx0;        /* map box: x0 (from xps) */

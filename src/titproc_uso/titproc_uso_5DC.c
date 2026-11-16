@@ -35,8 +35,10 @@ void tit_procMain(char *a0, int a1) {
     int s5v;
     int *r;
     int t;
-    int mask;
-    d = (int)&import_00020098;
+    int mask; /* GameDemoProcess_ctor's flags; arg 2 is mask + the ghost count. Summed as a
+               * char * (no int cast; the callee is K&R) for the target's addu order: an int sum
+               * puts the count first (agent-h run 572). */
+    d = (int)&import_00020098; /* int, not InputMgr *: typed, the whole allocation moves */
     done = 0;
     do {
         switch (a1) {
@@ -135,7 +137,7 @@ void tit_procMain(char *a0, int a1) {
             NODE(t)->parent = (Node *)d;
             XCALL(titproc_uso_func_011CD8, input_setRacePadsActive)(d, 1);
             t = (int)FLOWPROC(a0)->session;
-            XCALL(titproc_uso_func_01DA48, app_runProcess)(a0, 0, XCALL(titproc_uso_func_001E9C, GameDemoProcess_ctor)(0, (int)&((char (*)[2])mask)[0][((BackupSession *)t)->ghost->count], r, t));
+            XCALL(titproc_uso_func_01DA48, app_runProcess)(a0, 0, XCALL(titproc_uso_func_001E9C, GameDemoProcess_ctor)(0, (char *)mask + ((BackupSession *)t)->ghost->count, r, t));
             ((InputMgr *)d)->procState = 11;
             break;
         }
@@ -168,7 +170,7 @@ void tit_procMain(char *a0, int a1) {
             NODE(t)->parent = (Node *)d;
             XCALL(titproc_uso_func_011CD8, input_setRacePadsActive)(d, 1);
             t = (int)FLOWPROC(a0)->session;
-            XCALL(titproc_uso_func_01DA48, app_runProcess)(a0, 0, XCALL(titproc_uso_func_001E9C, GameDemoProcess_ctor)(0, (int)&((char (*)[2])mask)[0][((BackupSession *)t)->ghost->count], r, t));
+            XCALL(titproc_uso_func_01DA48, app_runProcess)(a0, 0, XCALL(titproc_uso_func_001E9C, GameDemoProcess_ctor)(0, (char *)mask + ((BackupSession *)t)->ghost->count, r, t));
             ((InputMgr *)d)->procState = 11;
             break;
         }

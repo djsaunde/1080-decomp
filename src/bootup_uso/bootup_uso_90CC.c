@@ -247,7 +247,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             var_a2 = (s32)var_s1;
             if ((var_s1 != 0) || (temp_v0_5 = FCALL(mem_new)(8), var_a2 = (s32)temp_v0_5, (temp_v0_5 != 0))) {
                 PARMS(var_a2)->name = &sStr_Parms_8740;
-                PARMS(var_a2)->unk04 = 0;
+                PARMS(var_a2)->first = 0;
             }
             sp144.w = *(s32 *)(GL_DATA_STR(0x8748, "ied"));
             sp108 = var_s1 + 8;
@@ -363,7 +363,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
             var_s1 = var_s0;
             if ((var_s0 != 0) || (temp_v0_5 = FCALL(mem_new)(8), var_s1 = temp_v0_5, (temp_v0_5 != 0))) {
                 PARMS(var_s1)->name = &sStr_SnowBoarder_Parms_8778;
-                PARMS(var_s1)->unk04 = 0;
+                PARMS(var_s1)->first = 0;
             }
             sp100.w = *(s32 *)(GL_DATA_STR(0x878C, "hpf"));
             sp8C = var_s0 + 8;

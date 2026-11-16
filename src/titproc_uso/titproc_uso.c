@@ -1630,7 +1630,7 @@ void GameDemoProcess_handleInput(GameDemoProcess *s0) {
         goto ret;
     }
     ((void (*)(char *))VT_SLOT(NODE(&import_0001FFF8)->vptr, 11).fn)(
-        (char*)((int)(short)VT_SLOT(NODE(&import_0001FFF8)->vptr, 11).delta + (int)&import_0001FFF8));
+        (char *)&import_0001FFF8 + (short)VT_SLOT(NODE(&import_0001FFF8)->vptr, 11).delta);
     goto final;
 
 dec_path:

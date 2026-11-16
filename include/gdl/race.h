@@ -121,7 +121,7 @@ typedef struct RaceProcess {
     /* 0x000 */ s32 nodeUnk00;
     /* 0x004 */ s32 nodeUnk04;
     /* 0x008 */ s32 nodeFlags;
-    /* 0x00C */ s32 name;               /* RaceProcess_init arg2 ("TIMRace Process", ...) */
+    /* 0x00C */ const char *name;       /* RaceProcess_init arg2 ("TIMRace Process", ...) */
     /* 0x010 */ char children[4];       /* Node child list (address taken) */
     /* 0x014 */ Node *parent;         /* Node parent back-link (include/gdl/node.h) */
     /* 0x018 */ char unk018[0x10];

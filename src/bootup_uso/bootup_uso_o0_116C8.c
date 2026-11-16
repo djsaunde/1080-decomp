@@ -56,13 +56,13 @@ void GameFlow_restart_000116C8(void) {
     FCALL(dbg_printf)(&sStr_starLine_C65C);
     FCALL(GameFlow_startMode)(&gInputMgr, gInputMgr_bu_116C8_34, gInputMgr_bu_116C8_40);
     (*(FN116C8)*(int *)(p + 0x14))(
-        *(short *)((p = NODE(&gSnowBoard)->vptr) + 0x10) + (int)&gSnowBoard);
+        (char *)&gSnowBoard + *(short *)((p = NODE(&gSnowBoard)->vptr) + 0x10));
     p = (char *)&local;
     if (p != 0 || (p = (char *)FCALL(mem_new)(0xC)) != 0) {
         *(int *)p = 8;
     }
     (*(FN116C8)*(int *)(p + 0x34))(
-        *(short *)((p = NODE(&gSnowBoard)->vptr) + 0x30) + (int)&gSnowBoard,
+        (char *)&gSnowBoard + *(short *)((p = NODE(&gSnowBoard)->vptr) + 0x30),
         &local);
     FCALL(dbg_printf)(&sStr_done_C694);
 }

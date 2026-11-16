@@ -230,7 +230,7 @@ char *TimeGadgetParms_ctor(char *self) {
     if (self != 0 || (self = (char *)CALL(mem_new)(0x68)) != 0) {
         if ((p = self) != 0 || (p = (char *)CALL(mem_new)(8)) != 0) {
             PARMS(p)->name = &sStr_TimeGadget_Parms_CB60;
-            PARMS(p)->unk04 = 0;
+            PARMS(p)->first = 0;
         }
         u1.v = sTag_xps_CB74;
         t = u1;
@@ -694,7 +694,7 @@ char *CoolGadgetParms_ctor(char *self) {
     if (self != 0 || (self = (char *)CALL(mem_new)(0x98)) != 0) {
         if ((p2 = self) != 0 || (p2 = (char *)CALL(mem_new)(8)) != 0) {
             PARMS(p2)->name = &sStr_Parms_CC38;
-            PARMS(p2)->unk04 = 0;
+            PARMS(p2)->first = 0;
         }
         u1.v = sTag_xps_CC40;
         t2 = u1;
@@ -1057,7 +1057,7 @@ char *CourseGadgetParms_ctor(char *self) {
     if (self != 0 || (self = (char *)CALL(mem_new)(0x194)) != 0) {
         if ((p = self) != 0 || (p = (char *)CALL(mem_new)(8)) != 0) {
             PARMS(p)->name = &sStr_Parms_CC6C;
-            PARMS(p)->unk04 = 0;
+            PARMS(p)->first = 0;
         }
         u1.v = sTag_xps_CC74;
         {
@@ -2247,7 +2247,7 @@ void *ColourParms_ctor(char *arg0) {
         var_v1 = arg0;
         if ((arg0 != 0) || (temp_v0_2 = FCALL(mem_new)(8), var_v1 = temp_v0_2, (temp_v0_2 != 0))) {
             PARMS(var_v1)->name = &sStr_Colour_Parms_CF80;
-        PARMS(var_v1)->unk04 = 0; } u1_a.x = 1.0f; u1_a.y = 1.0f; u1_a.z = 1.0f; u1_c.x = 1.0f; u1_c.y = 1.0f; u1_c.z = 1.0f; u1_c.w = 1.0f; u1_a.w = 0.0f; u1_b.x = 0.0f; u1_b.y = 0.0f; u1_b.z = 0.0f; u1_b.w = 0.0f; u1_f.v = sTag_rdP_CF90; sp78 = u1_a; var_a0 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_RD][0]; sp68 = u1_b; sp58 = u1_c; sp54 = u1_f; if ((arg0 != (void *)-8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0 = temp_v0_2, (temp_v0_2 != 0))) {
+        PARMS(var_v1)->first = 0; } u1_a.x = 1.0f; u1_a.y = 1.0f; u1_a.z = 1.0f; u1_c.x = 1.0f; u1_c.y = 1.0f; u1_c.z = 1.0f; u1_c.w = 1.0f; u1_a.w = 0.0f; u1_b.x = 0.0f; u1_b.y = 0.0f; u1_b.z = 0.0f; u1_b.w = 0.0f; u1_f.v = sTag_rdP_CF90; sp78 = u1_a; var_a0 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_RD][0]; sp68 = u1_b; sp58 = u1_c; sp54 = u1_f; if ((arg0 != (void *)-8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0, arg0, sp54, 1);
             PARMRGBA(var_a0)->type = (char *)&D_00000000_cd58_u1 + 0xCD58;
             PARMRGBA(var_a0)->unk20 = 0;
@@ -2981,7 +2981,7 @@ void *ColourParms_ctor(char *arg0) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-void RaceProcess_init(RaceProcess *arg0, s32 arg1, s32 arg2, s32 arg3) {
+void RaceProcess_init(RaceProcess *arg0, s32 arg1, const char *arg2, s32 arg3) {
     volatile int pad;
     char *sp28;
     char *temp_v0;

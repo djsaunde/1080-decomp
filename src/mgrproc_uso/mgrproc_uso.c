@@ -1688,10 +1688,10 @@ void mgr_DataManager_init(self, a1, a2, a3, arg5)
     self->colour[3] = 0.0f / div255;     /* f10 = f10/f2 */
 
     if (((RaceProcess *)a1)->flags & RACEF_SPRITES) {
-        gl_func_00000000(self, 0xE8, 0x13, (int)self->base.entries + 0x10);
+        gl_func_00000000(self, 0xE8, 0x13, (char *)self->base.entries + 0x10);
         gl_func_00000000(self, 0x123, 0xE1, 0xD);
-        gl_func_00000000(self, 0x47, 0x13, (int)&self->base.elapsed);
-        gl_func_00000000(self, 0x44, 0x26, (int)self->base.entries + 0x28);
+        gl_func_00000000(self, 0x47, 0x13, &self->base.elapsed);
+        gl_func_00000000(self, 0x44, 0x26, (char *)self->base.entries + 0x28);
         v1 = (unsigned char *)gl_func_00000000(
                  MGR_D_64 * 48 + *(int*)self->base.session, 0);
         obj = gl_func_00000000(0, self->base.sprites60);
