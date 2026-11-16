@@ -1,7 +1,7 @@
-/* IDO 7.1 NCC (C++) donor for RoomModifier_resetScale_00008AFC (0x120 / 72 words):
+/* IDO 7.1 NCC (C++) donor for SelectWin_dimOtherItems_00008AFC (0x120 / 72 words):
  * per-group element refresh through the cfront virtual slot 0x58/0x5C.
  * K = 0.9f is a source literal (donor .rodata pinned at RoData +0x238 as
- * RoomModifier_resetScale_00008AFC_rodata); the this-adjust is spelled
+ * SelectWin_dimOtherItems_00008AFC_rodata); the this-adjust is spelled
  * `(char *)(delta + (int)e)` for the target's addu operand order.
  * Spliced into timproc_uso_b5.c.o via REPLACE_FUNC_BODY. */
 typedef short s16;
@@ -12,7 +12,7 @@ typedef int s32;
 extern "C" {
 extern int SelectWin_curItem_00008A38(...);
 }
-extern "C" void RoomModifier_resetScale_00008AFC(char *scr) {
+extern "C" void SelectWin_dimOtherItems_00008AFC(char *scr) {
     f32 K = 0.9f;
     int g, i;
     char *e;

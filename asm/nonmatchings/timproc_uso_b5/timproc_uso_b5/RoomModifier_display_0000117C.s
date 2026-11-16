@@ -14,7 +14,7 @@ glabel RoomModifier_display_0000117C
     /* 0011A4 000011A4 8CB90034 */  .word 0x8CB90034
     /* 0011A8 000011A8 00194080 */  .word 0x00194080
     /* 0011AC 000011AC 00A84821 */  .word 0x00A84821
-    jal RoomModifier_resetScale_00008AFC   /* 0011B0 0C000000 -> RoomModifier_resetScale_00008AFC */
+    jal SelectWin_dimOtherItems_00008AFC   /* 0011B0 0C000000 -> SelectWin_dimOtherItems_00008AFC */
     /* 0011B4 000011B4 8D240038 */  .word 0x8D240038
     /* 0011B8 000011B8 8FA50018 */  .word 0x8FA50018
     /* 0011BC 000011BC 240E0001 */  .word 0x240E0001

@@ -3560,7 +3560,7 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 # 8AFC = per-group element refresh (72/72 words under NCC; K = 0.9f literal,
 # rodata pinned at +0x238) (agent-g run 138).
 TIMB5_8AFC_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_8AFC.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += RoomModifier_resetScale_00008AFC=$(TIMB5_8AFC_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_dimOtherItems_00008AFC=$(TIMB5_8AFC_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_8AFC_DONOR)
 # 2B74 = composite panel constructor (469/469 words under NCC; vec3 constants
 # as source literals, rodata pinned at +0x11C) (agent-g run 140).

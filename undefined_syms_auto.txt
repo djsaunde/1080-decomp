@@ -2569,7 +2569,7 @@ SelectWin_prevStageItem_00008A64 = 0;
 SelectWin_chosenItem_00008A90 = 0;
 SelectWin_chooseCurrent_00008ABC = 0;
 SelectWin_prevFocusItem_00008AD4 = 0;
-RoomModifier_resetScale_00008AFC = 0;
+SelectWin_dimOtherItems_00008AFC = 0;
 SelectWin_itemCount_00008C1C = 0;
 SelectWin_charCheatIndex_00008C44 = 0;
 SelectWin_boardCheatIndex_00008D38 = 0;
@@ -3606,7 +3606,7 @@ SelectWin_update_00005FC0_rodata = 0x00000190;
 tit_procMain_rodata = 0x00000000;
 TitleDemoProcess_handleInput_rodata = 0x00000000;  /* TitleDemoProcess_handleInput MIPSpro 7.2.1 donor: its 4-entry switch table reloc (renamed by the splice); in-place %lo 0x30 */
 SelectionMgr_update_00001F14_rodata = 0x000000C8;
-RoomModifier_resetScale_00008AFC_rodata = 0x00000238;
+SelectWin_dimOtherItems_00008AFC_rodata = 0x00000238;
 SelItemParms_ctor_rodata = 0x0000011C;
 SelectWin_ctor_rodata = 0x0000014C;
 /* CourseList_createItem: 14-entry jumptable at block-5 RoData +0x3C0 (target %lo(D_807FF3E0)+0x3C0); donor timproc_uso_b5_D884.c */

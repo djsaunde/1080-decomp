@@ -1,6 +1,6 @@
-nonmatching RoomModifier_resetScale_00008AFC, 0x120
+nonmatching SelectWin_dimOtherItems_00008AFC, 0x120
 
-glabel RoomModifier_resetScale_00008AFC
+glabel SelectWin_dimOtherItems_00008AFC
     /* 008AFC 00008AFC 27BDFFC0 */  .word 0x27BDFFC0
     /* 008B00 00008B00 F7B60020 */  .word 0xF7B60020
     /* 008B04 00008B04 3C013F80 */  .word 0x3C013F80
@@ -73,7 +73,7 @@ glabel RoomModifier_resetScale_00008AFC
     /* 008C10 00008C10 8FB40038 */  .word 0x8FB40038
     /* 008C14 00008C14 03E00008 */  .word 0x03E00008
     /* 008C18 00008C18 27BD0040 */  .word 0x27BD0040
-endlabel RoomModifier_resetScale_00008AFC
+endlabel SelectWin_dimOtherItems_00008AFC
 
 /* timproc_uso_b5 RoData words (offsets past the USO RoData marker word). */
 /* Emitted here so every C fn literal/jumptable lands at its ROM %lo; */

@@ -639,7 +639,7 @@ void RoomModifier_update_0000115C(int *a0) {
  * Cascade: -5 const a1 (vs a0), self reads via s0 (vs a1), beqz+nop (vs
  * beqzl w/ move-a0 delay). */
 void RoomModifier_applyScale_0000896C();
-void RoomModifier_resetScale_00008AFC();
+void SelectWin_dimOtherItems_00008AFC();
 extern void gen_imp_Node_display();
 void RoomModifier_display_0000117C(int *a0) {
     int *slot, *flags, *b;
@@ -647,7 +647,7 @@ void RoomModifier_display_0000117C(int *a0) {
 
     b = a0;
     RoomModifier_applyScale_0000896C((int *)((R1 *)a0)[*(int *)((char *)a0 + 0x34)][14]);
-    RoomModifier_resetScale_00008AFC((int *)((R1 *)b)[*(int *)((char *)b + 0x34)][14]);
+    SelectWin_dimOtherItems_00008AFC((int *)((R1 *)b)[*(int *)((char *)b + 0x34)][14]);
     slot = (int *)((R1 *)b)[*(int *)((char *)b + 0x34)][14];
     if (*(int *)(*(int *)((char *)slot + 0x41C) + 0x50) & (1 << *(int *)((char *)b + 0x34))) {
         if (*(int *)((char *)b + 0x2C) != 0) {
@@ -5357,7 +5357,7 @@ int SelectWin_prevFocusItem_00008AD4(SelectWin *w) {
     return (int)w->itemsMgr->lists[w->prevStage]->items[w->prevItem];
 }
 
-// RoomModifier_resetScale_00008AFC — STRUCTURAL PASS (no episode).
+// SelectWin_dimOtherItems_00008AFC — STRUCTURAL PASS (no episode).
 // Raw-.word USO. BOUNDARY NOTE: this .s is a 3-function USO bundle
 // (3 jr-ra). Named fn 0x8AFC..0x8C18 (~70 words) is the draw loop;
 // 2 trailing tiny getters (0x8C1C: idx=scr->0x3C4 ->
@@ -5365,7 +5365,7 @@ int SelectWin_prevFocusItem_00008AD4(SelectWin *w) {
 // deferred USO re-split.
 //
 // Named fn = timing-screen multi-element draw loop (2-level):
-//   void RoomModifier_resetScale_00008AFC(Scr *scr) {        // scr -> s2
+//   void SelectWin_dimOtherItems_00008AFC(Scr *scr) {        // scr -> s2
 //     float K = F32(D_00000238);
 //     for (g = 0; g < numGroups; g++) {                   // scr->0x40C[]
 //       grp = scr->0x40C + g*N;
@@ -5407,7 +5407,7 @@ int SelectWin_prevFocusItem_00008AD4(SelectWin *w) {
  * residual above was the front end plus K being a source literal 0.9f (donor
  * .rodata pinned at RoData +0x238). The placeholder only re-emits that one
  * .rodata word the INCLUDE_ASM .s carried; the splice drops its text. */
-void RoomModifier_resetScale_00008AFC(char *scr) {
+void SelectWin_dimOtherItems_00008AFC(char *scr) {
     *(volatile float *)scr = 0.9f;
 }
 
