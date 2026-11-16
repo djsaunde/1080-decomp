@@ -1,6 +1,10 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "gdl/dma.h"
+#include "gdl/node.h"   /* Node (MCamera_ctor) */
+#include "game/camera.h" /* MCamera (MCamera_ctor) */
+#include "gdl/console.h" /* ConsoleMgr (sys_fatalHaltLoop) */
+#include "gdl/pad.h"     /* PadCtl (sys_fatalHaltLoop) */
 #include "audio.h" /* AudioContext / SequencePlayer / Note layouts (docs/1080_AUDIO.md) */
 #include "uso_call.h"
 
@@ -15588,6 +15592,7 @@ void fs_gdlReadQuad_00032DC0(Quad4 *dst) {
 typedef char *(*GP_00032E18)();
 extern int gl_32e18_blank();  /* blank jal 0 (gl_func_0001CA10 was renamed AudioSynth_InitNextRingBuf) */
 #define gl_func_0001CA10 gl_32e18_blank
+#define MCAM ((MCamera *)self) /* agent-c run 535: game/camera.h MCamera, gdl/node.h Node */
 char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
     char *o;
     char *b;
@@ -15604,7 +15609,7 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
     o = self;
     if (o != 0 || (o = (char *)gl_func_0001CA10(0xB4)) != 0) {
         gl_func_0001CA10(o, GL_DATA_STR(0x1E178, "<MNode>"));
-        *(int **)(o + 0x28) = &MNode_vtbl; /* the inlined MNode base ctor */
+        NODE(o)->vptr = (s32)&MNode_vtbl; /* the inlined MNode base ctor */
         r = (int *)(o + 0x2C);
         if (r != 0 || (r = (int *)gl_func_0001CA10(4)) != 0) {
             q = r;
@@ -15619,7 +15624,7 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
         zv.z = 0.0f;
         gl_func_0001CA10(o, &zv);
     }
-    *(int **)(self + 0x28) = &MCamera_vtbl;
+    NODE(self)->vptr = (s32)&MCamera_vtbl;
     o = self + 0x110;
     if (o != 0 || (o = (char *)gl_func_0001CA10(0x20)) != 0) {
         b = o;
@@ -15647,25 +15652,26 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
     v.y = y;
     v.z = z;
     gl_func_0001CA10(self + 0x30, &v);
-    *(char **)(self + 0xC) = GL_DATA_STR(0x1E18C, "camera");
-    *(int *)(self + 0x8) |= 0x40;
-    *(int *)(self + 0xF4) = arg1; if (1) {}
-    *(f32 *)(self + 0x104) = 0.0f;
-    *(f32 *)(self + 0x108) = 0.0f;
-    *(f32 *)(self + 0xFC) = 0; /* run 129: int 0, not 0.0f -- its own mtc1 zero,$f10 as in the target (+1 word, length 159 = target) */
-    *(f32 *)(self + 0x10C) = 1.0f;
-    gl_func_0001CA10(self + 0xB4);
-    *(int *)(self + 0x130) = 0;
-    *(f32 *)(self + 0x134) = 0.0f;
-    *(f32 *)(self + 0x138) = 0.0f;
-    *(f32 *)(self + 0x13C) = 0.0f;
-    *(f32 *)(self + 0x140) = 0.0f;
-    *(f32 *)(self + 0x148) = 0.0f;
-    *(f32 *)(self + 0x144) = 1.0f;
-    *(f32 *)(self + 0x14C) = 85.0f;
+    NODE(self)->name = (s32)GL_DATA_STR(0x1E18C, "camera");
+    NODE(self)->flags |= 0x40;
+    MCAM->target = (CamMNode *)arg1; if (1) {}
+    MCAM->lookDir.x = 0.0f;
+    MCAM->lookDir.y = 0.0f;
+    MCAM->unkFC = 0; /* run 129: int 0, not 0.0f -- its own mtc1 zero,$f10 as in the target (+1 word, length 159 = target) */
+    MCAM->lookDir.z = 1.0f;
+    gl_func_0001CA10(MCAM->view);
+    MCAM->rotEnable = 0;
+    MCAM->pitch = 0.0f;
+    MCAM->yaw = 0.0f;
+    MCAM->unk13C = 0.0f;
+    MCAM->up.x = 0.0f;
+    MCAM->up.z = 0.0f;
+    MCAM->up.y = 1.0f;
+    MCAM->fov = 85.0f;
 end:
     return self;
 }
+#undef MCAM
 #undef gl_func_0001CA10
 
 // MCamera_updateLookAt — STRUCTURAL PASS (0x194 / 101 words, no episode).
@@ -16020,6 +16026,9 @@ extern u8 sStr_arse_1E280;
 extern u8 sStr_Write_not_at_end_1E29C;
 extern u8 sStr_Write_ve_len_1E2B0;
 #define base ((u8 *)&D_00000000)   /* one hoisted address constant, not a variable (frame + entry order) */
+/* agent-c run 535: the stream words are FsStream members (include/gdl/dma.h), in all three
+ * fs_buf* bodies. Byte lever: the end tests are spelled cursor first (`g->wrPos == g->end`);
+ * as members, end-first loads +0x2C before the cursor, the reverse of the target. */
 void fs_bufWrite_334E8(void) {
     u8 buf[8];
     s32 src;
@@ -16031,7 +16040,7 @@ void fs_bufWrite_334E8(void) {
     u32 cnt;
     s32 cpsrc;
     u8 *cpdst;
-    u8 *g = &gFsStream0_334e8_dst;
+    FsStream *g = (FsStream *)&gFsStream0_334e8_dst;
     u8 *p;
 
     p = buf;
@@ -16039,7 +16048,7 @@ void fs_bufWrite_334E8(void) {
     src = (s32)p; rem = 8; CALL(fs_stub_00066200)(base);
     do {
         chunk = rem;
-        avail = *(s32 *)(g + 0x2C) - *(s32 *)(g + 8);
+        avail = g->end - g->wrPos;
         if (avail < (u32)rem) {
             chunk = avail;
         } else {
@@ -16062,40 +16071,40 @@ void fs_bufWrite_334E8(void) {
                         cpdst += 1;
                     } while (cnt < chunk);
                 }
-                CALL(fs_writeBytes_00066330)(base, *(s32 *)(g + 8), base, chunk);
+                CALL(fs_writeBytes_00066330)(base, g->wrPos, base, chunk);
             } else {
-                CALL(fs_writeBytes_00066330)(base, *(s32 *)(g + 8), src, chunk);
+                CALL(fs_writeBytes_00066330)(base, g->wrPos, src, chunk);
             }
-            *(s32 *)(g + 8) += chunk;
-            p = *(u8 **)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, p, *(s32 *)(g + 8));
+            g->wrPos += chunk;
+            p = (u8 *)g->hdr, CALL(fs_piWriteWord_000662E8)(base, p, g->wrPos);
         }
-        if (*(s32 *)(g + 0x2C) == *(s32 *)(g + 8)) {    /* hit segment end */
-            cur = *(s32 *)(g + 8);
-            *(s32 *)(g + 0x14) = cur;
-            CALL(fs_piWriteWord_000662E8)(base, *(s32 *)(g + 0x28) + 12, cur);
-            if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
+        if (g->wrPos == g->end) {    /* hit segment end */
+            cur = g->wrPos;
+            g->committed = cur;
+            CALL(fs_piWriteWord_000662E8)(base, g->hdr + 12, cur);
+            if (g->wrPos != g->end) {
                 CALL(fs_fatal_000661D8)(base, &sStr_Write_not_at_end_1E29C);
             }
-            p = *(u8 **)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, p + 8, 0x12340001);   /* kick DMA */
-            if (p = *(u8 **)(g + 0x28), CALL(fs_piReadWord_00066210)(base, p + 8) == 0x12340002) {
+            p = (u8 *)g->hdr, CALL(fs_piWriteWord_000662E8)(base, p + 8, 0x12340001);   /* kick DMA */
+            if (p = (u8 *)g->hdr, CALL(fs_piReadWord_00066210)(base, p + 8) == 0x12340002) {
                 goto spun1;
             }
         spin1:
             CALL(fs_yield_00066364)(base);
-            if (p = *(u8 **)(g + 0x28), CALL(fs_piReadWord_00066210)(base, p + 8) != 0x12340002) {
+            if (p = (u8 *)g->hdr, CALL(fs_piReadWord_00066210)(base, p + 8) != 0x12340002) {
                 goto spin1;
             }
         spun1:
-            cur = *(s32 *)(g + 0x24);                 /* rebase to saved start */
-            *(s32 *)(g + 8) = cur;
-            p = *(u8 **)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, p, cur);
-            p = *(u8 **)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, p + 8, 0x12340003);   /* kick second DMA */
-            if (p = *(u8 **)(g + 0x28), CALL(fs_piReadWord_00066210)(base, p + 8) == 0x12340002) {
+            cur = g->data;                 /* rebase to saved start */
+            g->wrPos = cur;
+            p = (u8 *)g->hdr, CALL(fs_piWriteWord_000662E8)(base, p, cur);
+            p = (u8 *)g->hdr, CALL(fs_piWriteWord_000662E8)(base, p + 8, 0x12340003);   /* kick second DMA */
+            if (p = (u8 *)g->hdr, CALL(fs_piReadWord_00066210)(base, p + 8) == 0x12340002) {
                 goto spun2;
             }
         spin2:
             CALL(fs_yield_00066364)(base);
-            if (p = *(u8 **)(g + 0x28), CALL(fs_piReadWord_00066210)(base, p + 8) != 0x12340002) {
+            if (p = (u8 *)g->hdr, CALL(fs_piReadWord_00066210)(base, p + 8) != 0x12340002) {
                 goto spin2;
             }
         spun2:;
@@ -16494,7 +16503,7 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
     s32 cpsrc;
     u8 *cpdst;
     s32 sent;
-    u8 *g = &gFsStream1_33be4_dst;
+    FsStream *g = (FsStream *)&gFsStream1_33be4_dst;
 
     rem = flags; src = src0;
     if (flags & 1) { base = (u8 *)&gFsStream1; CALL(fs_fatal_000661D8)(base, &sStr_Write_bad_length_1E330);
@@ -16505,7 +16514,7 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
         sent = 0x12340002;
         do {
         chunk = rem;
-        avail = *(s32 *)(g + 0x2C) - *(s32 *)(g + 8);
+        avail = g->end - g->wrPos;
         if (avail < (u32)rem) {
             chunk = avail;
         } else {
@@ -16528,40 +16537,40 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
                         cpdst += 1;
                     } while (cnt < chunk);
                 }
-                CALL(fs_writeBytes_00066330)(base, *(s32 *)(g + 8), base, chunk);
+                CALL(fs_writeBytes_00066330)(base, g->wrPos, base, chunk);
             } else {
-                CALL(fs_writeBytes_00066330)(base, *(s32 *)(g + 8), src, chunk);
+                CALL(fs_writeBytes_00066330)(base, g->wrPos, src, chunk);
             }
-            *(s32 *)(g + 8) += chunk;
-            flags = *(s32 *)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, flags, *(s32 *)(g + 8));
+            g->wrPos += chunk;
+            flags = g->hdr, CALL(fs_piWriteWord_000662E8)(base, flags, g->wrPos);
         }
-        if (*(s32 *)(g + 0x2C) == *(s32 *)(g + 8)) {    /* hit segment end */
-            cur = *(s32 *)(g + 8);
-            *(s32 *)(g + 0x14) = cur;
-            CALL(fs_piWriteWord_000662E8)(base, *(s32 *)(g + 0x28) + 12, cur);
-            if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
+        if (g->wrPos == g->end) {    /* hit segment end */
+            cur = g->wrPos;
+            g->committed = cur;
+            CALL(fs_piWriteWord_000662E8)(base, g->hdr + 12, cur);
+            if (g->wrPos != g->end) {
                 CALL(fs_fatal_000661D8)(base, &sStr_Write_not_at_end_1E344);
             }
-            flags = *(s32 *)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, flags + 8, 0x12340001);   /* kick DMA */
-            if (flags = *(s32 *)(g + 0x28), CALL(fs_piReadWord_00066210)(base, flags + 8) == sent) {
+            flags = g->hdr, CALL(fs_piWriteWord_000662E8)(base, flags + 8, 0x12340001);   /* kick DMA */
+            if (flags = g->hdr, CALL(fs_piReadWord_00066210)(base, flags + 8) == sent) {
                 goto spun1;
             }
         spin1:
             CALL(fs_yield_00066364)(base);
-            if (flags = *(s32 *)(g + 0x28), CALL(fs_piReadWord_00066210)(base, flags + 8) != sent) {
+            if (flags = g->hdr, CALL(fs_piReadWord_00066210)(base, flags + 8) != sent) {
                 goto spin1;
             }
         spun1:
-            cur = *(s32 *)(g + 0x24);                 /* rebase to saved start */
-            *(s32 *)(g + 8) = cur;
-            flags = *(s32 *)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, flags, cur);
-            flags = *(s32 *)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, flags + 8, 0x12340003);   /* kick second DMA */
-            if (flags = *(s32 *)(g + 0x28), CALL(fs_piReadWord_00066210)(base, flags + 8) == sent) {
+            cur = g->data;                 /* rebase to saved start */
+            g->wrPos = cur;
+            flags = g->hdr, CALL(fs_piWriteWord_000662E8)(base, flags, cur);
+            flags = g->hdr, CALL(fs_piWriteWord_000662E8)(base, flags + 8, 0x12340003);   /* kick second DMA */
+            if (flags = g->hdr, CALL(fs_piReadWord_00066210)(base, flags + 8) == sent) {
                 goto spun2;
             }
         spin2:
             CALL(fs_yield_00066364)(base);
-            if (flags = *(s32 *)(g + 0x28), CALL(fs_piReadWord_00066210)(base, flags + 8) != sent) {
+            if (flags = g->hdr, CALL(fs_piReadWord_00066210)(base, flags + 8) != sent) {
                 goto spin2;
             }
         spun2:;
@@ -16677,7 +16686,7 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
     u32 cnt;
     u8 *src;
     s32 cpdst;
-    u8 *g = &gFsStream2_33eb8_src;
+    FsStream *g = (FsStream *)&gFsStream2_33eb8_src;
 
     rem = flags; dst = dst0;
     if (flags & 1) { base = (u8 *)&gFsStream2; CALL(fs_fatal_000661D8)(base, &sStr_Read_bad_length_1E368);
@@ -16686,34 +16695,34 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
     CALL(fs_stub_00066200)(base);
     if (flags != 0) {
         do {
-            *(s32 *)(g + 8) = CALL(fs_piReadWord_00066210)(base, *(s32 *)(g + 0x28));
-            if (*(s32 *)(g + 0x2C) == *(s32 *)(g + 0xC)) {
-                tmp = CALL(fs_piReadWord_00066210)(base, *(s32 *)(g + 0x28) + 8);
-                *(s32 *)(g + 0x10) = tmp;
+            g->wrPos = CALL(fs_piReadWord_00066210)(base, g->hdr);
+            if (g->rdPos == g->end) {
+                tmp = CALL(fs_piReadWord_00066210)(base, g->hdr + 8);
+                g->handshake = tmp;
                 if (tmp == 0x12340001) {
-                    if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 0xC)) {
+                    if (g->rdPos != g->end) {
                         CALL(fs_fatal_000661D8)(base, &sStr_Read_read_not_at_end_1E37C);
                     }
-                    if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
+                    if (g->wrPos != g->end) {
                         CALL(fs_fatal_000661D8)(base, &sStr_Read_write_not_at_end_1E394);
                     }
-                    CALL(fs_piWriteWord_000662E8)(base, *(s32 *)(g + 0x28) + 8, 0x12340002); if (1) {}
-                    tmp = *(s32 *)(g + 0x24);
-                    *(s32 *)(g + 0xC) = tmp;
-                    *(s32 *)(g + 8) = tmp;
-                    if (CALL(fs_piReadWord_00066210)(base, *(s32 *)(g + 0x28) + 8) == 0x12340003) {
+                    CALL(fs_piWriteWord_000662E8)(base, g->hdr + 8, 0x12340002); if (1) {}
+                    tmp = g->data;
+                    g->rdPos = tmp;
+                    g->wrPos = tmp;
+                    if (CALL(fs_piReadWord_00066210)(base, g->hdr + 8) == 0x12340003) {
                         goto flushed;
                     }
                 flush:
                     CALL(fs_yield_00066364)(base);
-                    if (CALL(fs_piReadWord_00066210)(base, *(s32 *)(g + 0x28) + 8) != 0x12340003) {
+                    if (CALL(fs_piReadWord_00066210)(base, g->hdr + 8) != 0x12340003) {
                         goto flush;
                     }
                 flushed:
-                    CALL(fs_piWriteWord_000662E8)(base, *(s32 *)(g + 0x28) + 8, 0x12340002);
+                    CALL(fs_piWriteWord_000662E8)(base, g->hdr + 8, 0x12340002);
                 }
             }
-            flags = *(s32 *)(g + 8) - *(s32 *)(g + 0xC);
+            flags = g->wrPos - g->rdPos;
             if ((u32)rem < flags) {
                 flags = rem;
             }
@@ -16723,7 +16732,7 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
                         flags = 8 - (dst & 7); if (flags) {}
                     }
                     cnt = 0;
-                    CALL(fs_readBytes_00066264)(base, *(s32 *)(g + 0xC), base, flags);
+                    CALL(fs_readBytes_00066264)(base, g->rdPos, base, flags);
                     if (flags != 0) {
                         src = (cpdst = dst, &gFsStream2_33eb8_src);
                         do {
@@ -16734,9 +16743,9 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
                         } while (cnt < flags);
                     }
                 } else {
-                    CALL(fs_readBytes_00066264)(base, *(s32 *)(g + 0xC), dst, flags);
+                    CALL(fs_readBytes_00066264)(base, g->rdPos, dst, flags);
                 }
-                *(s32 *)(g + 0xC) = *(s32 *)(g + 0xC) + flags;
+                g->rdPos = g->rdPos + flags;
             }
             rem -= flags;
             dst += flags;
@@ -16859,6 +16868,7 @@ void sys_fatalSwapBuffer_00034180(void) {
 extern int D_00000000;
 extern char *gConsoleNode_3EF04_34240_G;
 extern char D_0001E21C, gGfxLib_34240_X, gSysDevBlock_3A4E8_34240_P, gGfxLib_34240_Y;
+#define CONMGR ((ConsoleMgr *)gConsoleNode_3EF04_34240_G) /* agent-c run 535: gdl/console.h; d is the PadCtl pad_open fills */
 void sys_fatalHaltLoop(void) {
     char d[0x80];
     int saved34;
@@ -16866,10 +16876,10 @@ void sys_fatalHaltLoop(void) {
     char *s0;
     char *dp;
 
-    *(int *)(gConsoleNode_3EF04_34240_G + 0x38) = 1;
+    CONMGR->unk38 = 1;
     if (gConsoleNode_3EF04_34240_G) {}
     CALL(pad_open)(dp = d, -1);
-    saved34 = *(int *)(gConsoleNode_3EF04_34240_G + 0x34);
+    saved34 = CONMGR->input;
     CALL(gfx_viBlack)(&gGfxLib_34240_X, 1);
 
     cfg = &D_0001E21C;
@@ -16878,8 +16888,8 @@ void sys_fatalHaltLoop(void) {
         do {
             CALL(pad_sync_0006719C)(&gSysDevBlock_3A4E8_34240_P);
             CALL(pad_update)(dp);
-            if (*(int *)(dp + 0x18) != 0) {
-                if (*(int *)(dp + 0x18) == *(int *)s0) {
+            if (PADCTL(dp)->pressed != 0) {
+                if (PADCTL(dp)->pressed == *(int *)s0) {
                     s0 += 4;
                 } else {
                     s0 = cfg;
@@ -16891,19 +16901,19 @@ void sys_fatalHaltLoop(void) {
     CALL(gfx_setVideoMode)(0);
     CALL(gfx_viBlack)(&gGfxLib_34240_Y, 0);
 
-    (*(void (**)(char *))(*(char **)(gConsoleNode_3EF04_34240_G + 0x28) + 0x1C))(gConsoleNode_3EF04_34240_G + *(short *)(*(char **)(gConsoleNode_3EF04_34240_G + 0x28) + 0x18));
+    VT_SLOT(CONMGR->node.vptr, 2).fn(gConsoleNode_3EF04_34240_G + VT_SLOT(CONMGR->node.vptr, 2).delta);
     CALL(sys_fatalSwapBuffer_00034180)();
     CALL(sys_fatalSwapBuffer_00034180)();
 
     for (;;) {
-        *(int *)(gConsoleNode_3EF04_34240_G + 0x34) = (int)dp;
-        if (*(int *)(dp + 0x10) != 0) {
+        CONMGR->input = (int)dp;
+        if (PADCTL(dp)->held != 0) {
             CALL(sys_fatalSwapBuffer_00034180)();
         }
-        if (*(int *)(dp + 0x1C) & 0x40000) {
+        if (PADCTL(dp)->released & 0x40000) {
             break;
         }
-        if (*(int *)(dp + 0x18) & 0x100) {
+        if (PADCTL(dp)->pressed & 0x100) {
             CALL(heap_printStats)();
             CALL(dbg_printThreads)();
         }
@@ -16911,9 +16921,10 @@ void sys_fatalHaltLoop(void) {
         CALL(pad_update)(dp);
     }
     CALL(gfx_setVideoMode)(0x202);
-    *(int *)(gConsoleNode_3EF04_34240_G + 0x38) = 0;
-    *(int *)(gConsoleNode_3EF04_34240_G + 0x34) = saved34;
+    CONMGR->unk38 = 0;
+    CONMGR->input = saved34;
 }
+#undef CONMGR
 
 // Indexed read from the segment-base int table: return D[a0]. Builds byte-exact
 // as plain C (single &D_00000000 segment-base ref, resolves to addr 0). No
