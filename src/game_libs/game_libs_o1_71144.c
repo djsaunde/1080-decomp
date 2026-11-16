@@ -48,8 +48,7 @@ extern void gl_func_00000000_rstint711(u32);
 void osViSetSpecialFeatures(u32 func)
 {
     register u32 saveMask;
-    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
-    saveMask = gl_func_00000000_disint711();
+    saveMask = gl_func_00000000_disint711(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
     if ((func & OS_VI_GAMMA_ON) != 0) {
         gl_func_00000000_vinext711->control |= VI_CTRL_GAMMA_ON;
     }

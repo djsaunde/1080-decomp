@@ -23,8 +23,7 @@ s32 gl___osSiRawStartDma(s32 direction, void *dramAddr) {
         return -1;
 
     if (direction == 1)
-        /* UNNAMED: mid-entry gl_osWritebackDCache+0x4 (libultra osWritebackDCache entry, one insn into the build symbol) */
-        gl_func_00000001(dramAddr, 64);
+        gl_func_00000001(dramAddr, 64); /* UNNAMED: mid-entry jal gl_osWritebackDCache+0x4 (osWritebackDCache, entry 4 bytes into the build function, no symbol) */
 
     *(volatile u32 *)0xA4800000 = XCALL(gl_func_00000002, gl_osVirtualToPhysical)(dramAddr);
 

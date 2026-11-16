@@ -26,14 +26,12 @@ extern OSThread *gl___osRunningThread_runthread;                 /* __osRunningT
 
 s32 gl_osJamMesg(OSMesgQueue *mq, OSMesg msg, s32 flag)
 {
-    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
-    register u32 saveMask = gl_func_00000000_disint();
+    register u32 saveMask = gl_func_00000000_disint(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
 
     while (mq->validCount >= mq->msgCount) {
         if (flag == OS_MESG_BLOCK) {
             gl___osRunningThread_runthread->state = 8; /* OS_STATE_WAITING */
-            /* UNNAMED: mid-entry gl___osExceptionPreamble+0x630 (libultra __osEnqueueAndYield inside the exceptasm block) */
-            gl_func_00000000_enqyield(&mq->fullqueue);
+            gl_func_00000000_enqyield(&mq->fullqueue); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x630 (= __osEnqueueAndYield, no symbol of its own) */
         } else {
             XCALL(gl_func_00000000_resint, gl___osRestoreInt)(saveMask);
             return -1;

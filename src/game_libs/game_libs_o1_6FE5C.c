@@ -24,8 +24,7 @@ OSTime __osInsertTimer(OSTimer *t)
     OSTimer *timep;
     OSTime tim;
     u32 savedMask;
-    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
-    savedMask = gl_func_00000000_disint();
+    savedMask = gl_func_00000000_disint(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
     for (timep = gl___osTimerList_timerlist->next, tim = t->value;
          timep != gl___osTimerList_timerlist && tim > timep->value;
          tim -= timep->value, timep = timep->next)

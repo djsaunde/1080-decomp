@@ -17,8 +17,7 @@ extern int gl_func_00000000();
 extern int D_00000000; /* __osRunningThread (OSThread *) */
 
 int gl_osRecvMesg(OSMesgQueue *mq, OSMesg *msg, int flags) {
-    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
-    register int saveMask = gl_func_00000000();
+    register int saveMask = gl_func_00000000(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
 
     while (mq->validCount == 0) {
         if (flags == OS_MESG_NOBLOCK) {
@@ -26,8 +25,7 @@ int gl_osRecvMesg(OSMesgQueue *mq, OSMesg *msg, int flags) {
             return -1;
         }
         ((OSThread *)gl___osRunningThread)->state = 8; /* OS_STATE_WAITING */
-        /* UNNAMED: mid-entry gl___osExceptionPreamble+0x630 (libultra __osEnqueueAndYield inside the exceptasm block) */
-        gl_func_00000000((int *)&mq->mtqueue);
+        gl_func_00000000((int *)&mq->mtqueue); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x630 (= __osEnqueueAndYield, no symbol of its own) */
     }
     if (msg != 0) {
         *msg = mq->msg[mq->first];

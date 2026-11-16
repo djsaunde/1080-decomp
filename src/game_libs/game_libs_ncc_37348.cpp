@@ -9,6 +9,7 @@
  * happens after candidate selection, so these stores get their own local zero in f0 instead of joining the head's
  * 0.0 candidate, whose LR forbids f0); the FP pool words read through the per-site aliases kRo_StickCtrlA_update_00037348_19F0 / _19F4
  * (pinned 0: the target's baked `lui at, 0; lwc1 0x19F0(at)`), which costs the end-of-body volatile. */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 typedef float f32;
 struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } };
 struct Node { char pad[0x30]; char m30[0x30]; V3 v60; };
@@ -25,10 +26,8 @@ inline void rz(Node *n, V3 &o) { if (0) { n = 0; } n->v60.z = o.z; }
 inline void sx(Node *n, f32 v) { if (0) { n = 0; } n->v60.x = v; }
 inline void sy(Node *n, f32 v) { if (0) { n = 0; } n->v60.y = v; }
 inline void sz(Node *n, f32 v) { if (0) { n = 0; } n->v60.z = v; }
-/* UNNAMED: unknown-role inline helper inlined at two jals with different callees (math_mtxAddTranslation, math_mtxRotateEuler); one spelling cannot name both */
-inline void call(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } gl_func_00000000(n->m30, v, o); }
-/* UNNAMED: no-reloc unused inline helper (callr), never emitted, no jal */
-inline void callr(Node *n, const V3 &v, Obj *o) { if (0) { n = 0; } gl_func_00000000(n->m30, &v, o); }
+inline void rot(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } CALL(math_mtxRotateEuler)(n->m30, v, o); }
+inline void trans(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } CALL(math_mtxAddTranslation)(n->m30, v, o); }
 inline void z3(V3 &v, int z) { v.x = z; v.y = z; v.z = z; }
 extern "C" void StickCtrlA_update_00037348(Obj *o) {
     Node *s = o->s;
@@ -37,8 +36,7 @@ extern "C" void StickCtrlA_update_00037348(Obj *o) {
     V3 v2;
     f32 x, y;
     f32 ab;
-    /* UNNAMED: no-reloc dead if (0) codegen lever, emits no jal */
-    if (0) { gl_func_00000000(&s); }
+    if (0) { gl_func_00000000(&s); } /* UNNAMED: no-reloc dead if (0) arm: keeps s in its home, folded away, no jal */
     x = o->in->x * kRo_StickCtrlA_update_00037348_19F0[0x19F0 / 4];
     y = o->in->y * kRo_StickCtrlA_update_00037348_19F0[0x19F0 / 4];
     if (x < 0.0f) ab = -x; else ab = x;
@@ -48,7 +46,7 @@ extern "C" void StickCtrlA_update_00037348(Obj *o) {
     gv(s, save);
         zy(s);
     zz(s);
-    { V3 v1(y, x, 0.0f); call(s, &v1, o); }
+    { V3 v1(y, x, 0.0f); rot(s, &v1, o); }
     rx(s, save); ry(s, save); rz(s, save);
     z3(v2, 0);
     if (o->in->fl() & 4) v2.y = 10.0f;
@@ -57,5 +55,5 @@ extern "C" void StickCtrlA_update_00037348(Obj *o) {
     if (o->in->fl() & 2) v2.x = 10.0f;
     if (o->in->fl() & 0x40) v2.z = 10.0f;
     if (o->in->fl() & 0x80) v2.z = -10.0f;
-    call(s, &v2, o);
+    trans(s, &v2, o);
 }

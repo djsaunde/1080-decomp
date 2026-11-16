@@ -41,7 +41,6 @@ typedef struct { float x, y, z; } Vec3;
 extern char D_2D064_148;
 extern char D_2D064_152;
 extern char D_tbl_288ac;
-extern float D_0001C1D8[];
 extern int *D_2D8D8_X;
 extern int D_00000000;
 extern int D_24360_a;
@@ -173,7 +172,6 @@ extern void gl_func_0003D074();
 //   gSysApi_34458_obj fix it. Templates as &D_00000000 + K (lui 2; addiu -X).
 //   Frame: outA/outB at sp+0x50/0x54 need `volatile int pad;` first and
 //   outB declared before outA.
-extern char D_0001E3F4, D_0001E400;
 /* agent-b run 566: n walks libultra's active-thread list (OSThread, libultra/os_thread.h) by
  * tlnext up to the priority -1 tail sentinel, printing name, id, state, the symbol of
  * context.pc, and the pc. */
@@ -7351,12 +7349,7 @@ int SNodeItemType_getItem(int a0, int a1) {
     return v1;
 }
 
-extern char D_0002F2E4;
 extern int D_00000000;
-extern char D_0002F730;
-extern char D_0002F970;
-extern char D_0002FD34, D_0002FD40, D_0002FD50, D_0002FD58, D_0002FD64;
-extern char D_0002FD6C, D_0002FD78, D_0002FD88, D_0002FD94, D_0002FDA4, D_0002FDD4;
 
 /* MNode_ctor: 49-insn (0xC4) constructor. NATURAL CEILING: 81.71%
  * NM. Multi-class cap: frame-offset shifts (sp+0x30/0x4C vs sp+0x3C/...),
@@ -11620,6 +11613,10 @@ void FogParms_lerp_0004406C(FogParms *arg0, FogParms *arg1, f32 arg2) {
 // Raw-.word USO: cb = gl_func_00000000 placeholder, all globals are
 // &D_00000000 + offset (the lui a0,0x0 / addiu a0,a0,0 base-load pair).
 // a0 base = g = &D_00000000 throughout.
+/* string keys / default of the registrations: only this reference body spells them (agent-b run 601) */
+extern char D_0002F970;
+extern char D_0002FD34, D_0002FD40, D_0002FD50, D_0002FD58, D_0002FD64;
+extern char D_0002FD6C, D_0002FD78, D_0002FD88, D_0002FD94, D_0002FDA4, D_0002FDD4;
 extern void gl_func_00000000_44144v();
 void GfxLib_hostioParms(char *arg0) {
     extern int gl_func_00000000f(void *, void *, void *, int, float, int);

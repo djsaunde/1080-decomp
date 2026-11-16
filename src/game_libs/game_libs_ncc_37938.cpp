@@ -47,8 +47,7 @@ extern "C" void SeekNode_update(Obj *o) {
     gp(&a, c.getOut());
     o->t->mtx.getPos0(&b);
     Node *n = o->s;
-    /* UNNAMED: no-reloc dead if (0) codegen lever, emits no jal */
-    if (0) { gl_func_00000000(&a, &b); }
+    if (0) { gl_func_00000000(&a, &b); } /* UNNAMED: no-reloc dead if (0) arm: keeps a and b in its home, folded away, no jal */
     arg = (b - a) * (kk = o->k); if (1) {}
     if (n) {}
     n = c.getOut(); CALL(math_mtxAddTranslation)(n->m30, &arg);

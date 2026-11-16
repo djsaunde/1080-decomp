@@ -42,6 +42,7 @@
 #include "libultra/os_pi.h"    /* OSMesgQueue, OSIoMesgHdr, OSIoMesg, OSDevMgr, OSThread (were private copies) */
 #include "uso_call.h"
 #include "libultra/os_timer.h" /* OSTime */
+#include "uso_call.h"
 
 typedef struct {
     u16 state;       /* 0x00 */
@@ -117,8 +118,7 @@ void osCreateViManager(OSPri pri)
             oldPri = myPri;
             XCALL(gl_func_00000000_setpri, gl_osSetThreadPri)(NULL, pri);
         }
-        /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
-        savedMask = gl_func_00000000_dint();
+        savedMask = gl_func_00000000_dint(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
         gl___osViDevMgr_site.active = 1;
         gl___osViDevMgr_site.thread = &viThread;
         gl___osViDevMgr_site.cmdQueue = &viEventQueue;
@@ -171,14 +171,12 @@ static void viMgrMain(void *arg)
             if (first)
             {
 
-                /* UNNAMED: mid-entry gl_osGetCount+0x8 (libultra osGetCount entry, 2 insns into the build symbol) */
-                count = gl_func_00000000_getcount();
+                count = gl_func_00000000_getcount(); /* UNNAMED: mid-entry jal gl_osGetCount+0x8 (osGetCount, entry 8 bytes into the build function, no symbol) */
                 gl___osCurrentTime_site = count;
                 first = 0;
             }
             count = gl_BaseCounter;
-            /* UNNAMED: mid-entry gl_osGetCount+0x8 (libultra osGetCount entry, 2 insns into the build symbol) */
-            gl_BaseCounter = gl_func_00000000_getcount();
+            gl_BaseCounter = gl_func_00000000_getcount(); /* UNNAMED: mid-entry jal gl_osGetCount+0x8 (osGetCount, entry 8 bytes into the build function, no symbol) */
             count = gl_BaseCounter - count;
             gl___osCurrentTime_site = gl___osCurrentTime_site + count;
             break;

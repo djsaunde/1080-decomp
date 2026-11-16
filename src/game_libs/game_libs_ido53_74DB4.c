@@ -16,8 +16,7 @@ extern unsigned short *gl___osViNext_74DB4_p2; /* &__osViNext->state (its own re
 void gl_osViSetXScale(float f) {
     register int v;
     register int sr;
-    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
-    sr = gl_func_00000000();
+    sr = gl_func_00000000(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
     gl___osViNext_74DB4_p1->x.factor = f;
     *gl___osViNext_74DB4_p2 |= VI_STATE_XSCALE_UPDATED;
     v = gl___osViNext_74DB4_p1->modep->comRegs.xScale & VI_SCALE_MASK;

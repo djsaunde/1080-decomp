@@ -35,7 +35,6 @@ void gl___osLeoResume(void) {
     mq->validCount = mq->validCount + 1;
     if (mq->mtqueue->next != 0) {
         res = CALL(gl___osPopThread)(&mq->mtqueue);
-        /* UNNAMED: mid-entry gl___osExceptionPreamble+0x730 (libultra __osEnqueueThread inside the exceptasm block) */
-        gl_func_00000000((char *)&gl___osRunQueue, res);
+        gl_func_00000000((char *)&gl___osRunQueue, res); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x730 (= __osEnqueueThread, no symbol of its own) */
     }
 }

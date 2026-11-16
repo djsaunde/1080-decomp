@@ -28,8 +28,7 @@ typedef struct Thread {
 } Thread;
 
 void gl_osSetThreadPri(Thread *thread, int pri) {
-    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
-    register int sr = gl_func_00000000();
+    register int sr = gl_func_00000000(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
     if (thread == 0) {
         thread = (Thread *)gl___osRunningThread;
     }
@@ -37,13 +36,11 @@ void gl_osSetThreadPri(Thread *thread, int pri) {
         thread->pri = pri;
         if ((Thread *)(void *)thread != (Thread *)gl___osRunningThread && thread->state != 1) {
             CALL(gl___osDequeueThread)(thread->queue, thread);
-            /* UNNAMED: mid-entry gl___osExceptionPreamble+0x730 (libultra __osEnqueueThread inside the exceptasm block) */
-            gl_func_00000000(thread->queue, thread);
+            gl_func_00000000(thread->queue, thread); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x730 (= __osEnqueueThread, no symbol of its own) */
         }
         if (((Thread *)gl___osRunningThread)->pri < ((Thread *)gl_data_00000000)->pri) {
             ((Thread *)gl___osRunningThread)->state = 2;
-            /* UNNAMED: mid-entry gl___osExceptionPreamble+0x630 (libultra __osEnqueueAndYield inside the exceptasm block) */
-            gl_func_00000000(&gl_data_00000000);
+            gl_func_00000000(&gl_data_00000000); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x630 (= __osEnqueueAndYield, no symbol of its own) */
         }
     }
     CALL(gl___osRestoreInt)(sr);

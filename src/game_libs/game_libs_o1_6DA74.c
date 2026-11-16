@@ -57,8 +57,7 @@ void gl_osCreatePiManager(OSPri pri, void *cmdQ, void *cmdBuf, int cmdMsgCnt) {
             oldPri = myPri;
             XCALL(gl_func_00000005, gl_osSetThreadPri)(0, pri);
         }
-        /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
-        savedMask = gl_func_00000006();
+        savedMask = gl_func_00000006(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
         gl___osPiDevMgr_devmgr_6DA74.f0 = 1;
         gl___osPiDevMgr_devmgr_6DA74.f4 = gl_ref_00042CE0;
         gl___osPiDevMgr_devmgr_6DA74.f8 = cmdQ;

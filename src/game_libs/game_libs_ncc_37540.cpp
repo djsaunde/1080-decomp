@@ -14,6 +14,7 @@
  * 0.65f, 0.9f; agent-g run 289 literal audit): the donor's .rodata reloc is renamed by the splice to
  * StickCtrlB_update_00037540_rodata and pinned to 0x19F8 in undefined_syms_auto.txt (the USO already ships the words).
  * The three calls are blank USO jal words: gl_func_00000000. */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 typedef float f32;
 struct P3 { f32 x, y, z; };
 struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
@@ -33,8 +34,8 @@ inline Node *id(Node *n) { if (0) { n = 0; } return n; }
 inline void sx(Node *n, f32 v) { if (0) { n = 0; } n->v60.x = v; }
 inline void sy(Node *n, f32 v) { if (0) { n = 0; } n->v60.y = v; }
 inline void sz(Node *n, f32 v) { if (0) { n = 0; } n->v60.z = v; }
-/* UNNAMED: unknown-role inline helper inlined at two jals with different callees (math_mtxAddTranslation, math_mtxRotateEuler); one spelling cannot name both */
-inline void call(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } gl_func_00000000(n->m30, v, o); }
+inline void rot(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } CALL(math_mtxRotateEuler)(n->m30, v, o); }
+inline void trans(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } CALL(math_mtxAddTranslation)(n->m30, v, o); }
 extern "C" void StickCtrlB_update_00037540(Obj *o) {
     /* declaration order = the target's homes (agent-g runs 206 / 249 / 288): vB4 first, hz 176 / hy 172, hx at the
      * 168 spill word, v9C / v90 at 156 / 144, the unused p1 / p2 frame pads, v6C 108, then b, a, s 96, ab */
@@ -51,8 +52,7 @@ extern "C" void StickCtrlB_update_00037540(Obj *o) {
     Node *s;
     f32 ab;
     s = o->s;
-    /* UNNAMED: no-reloc dead if (0) codegen lever, emits no jal */
-    if (0) { gl_func_00000000(&s); }
+    if (0) { gl_func_00000000(&s); } /* UNNAMED: no-reloc dead if (0) arm: keeps s in its home, folded away, no jal */
     int pad9C = 0;
     a = o->in->y * o->k3C;
     if (a < 0.0f) ab = -a; else ab = a;
@@ -62,7 +62,7 @@ extern "C" void StickCtrlB_update_00037540(Obj *o) {
     if (ab < 0.65f) b = 0.0f;
     { Node *n = id(s); hx = n->v60.x; hy = n->v60.y; hz = n->v60.z; n->v60.x = 0.0f; }
     sy(s, 0.0f); sz(s, 0.0f);
-    { V3 v1(0.0f, -b, 0.0f); call(s, &v1, o); }
+    { V3 v1(0.0f, -b, 0.0f); rot(s, &v1, o); }
     vB4.set(s->v50.x, s->v50.y, s->v50.z);
     vB4 *= a;
     sx(s, hx); sy(s, hy); sz(s, hz);
@@ -72,11 +72,11 @@ extern "C" void StickCtrlB_update_00037540(Obj *o) {
     v6C.copy(vB4);
     u9C.v.x = s->vA0.x; u9C.v.y = s->vA0.y; u9C.v.z = s->vA0.z;
     u9C.v.x = u9C.w.x + v6C.x; u9C.v.y = u9C.w.y + v6C.y; u9C.v.z = u9C.w.z + v6C.z;
-    call(s, &o->v30, o);
+    trans(s, &o->v30, o);
     v90 = u9C.v;
     v90 += o->v30;
     v90 += v6C;
     o->v30.x = o->v30.x * 0.9f;
     o->v30.z = o->v30.z * 0.9f;
-    call(s, &vB4, o);
+    trans(s, &vB4, o);
 }

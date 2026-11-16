@@ -38,8 +38,7 @@ void osSpTaskLoad(OSTask_6A420 *intp) {
             tp->ucode = (char *)*(volatile unsigned int *)(((unsigned int)intp->yield_data_ptr + 0xC00 - 4) | 0xA0000000);
         }
     }
-    /* UNNAMED: mid-entry gl_osWritebackDCache+0x4 (libultra osWritebackDCache entry, one insn into the build symbol) */
-    gl_func_00000000(tp, sizeof(OSTask_6A420));
+    gl_func_00000000(tp, sizeof(OSTask_6A420)); /* UNNAMED: mid-entry jal gl_osWritebackDCache+0x4 (osWritebackDCache, entry 4 bytes into the build function, no symbol) */
     CALL(gl___osSpSetStatus)(0x2B00);
     while (CALL(gl___osSpSetPc)(0x04001000) == -1)
         ;

@@ -29,10 +29,8 @@ OSTime osGetTime(void)
     u32 elapseCount;
     OSTime currentCount;
     register u32 saveMask;
-    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
-    saveMask = gl_func_00000000_disint();
-    /* UNNAMED: mid-entry gl_osGetCount+0x8 (libultra osGetCount entry, 2 insns into the build symbol) */
-    tmptime = gl_func_00000000_count();
+    saveMask = gl_func_00000000_disint(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
+    tmptime = gl_func_00000000_count(); /* UNNAMED: mid-entry jal gl_osGetCount+0x8 (osGetCount, entry 8 bytes into the build function, no symbol) */
     elapseCount = tmptime - D_00000000_basecnt;
     currentCount = gl___osCurrentTime_curtime;
     XCALL(gl_func_00000000_resint, gl___osRestoreInt)(saveMask);

@@ -19,25 +19,20 @@ extern int D_00000000;        /* run queue   (kernel __osRunQueue) */
 extern int gl_data_00000000;  /* running ptr  (kernel __osRunningThread) */
 
 void gl_osStartThread(Thread_74C04 *t) {
-    /* UNNAMED: mid-entry gl___osDisableInt+0x4 (libultra __osDisableInt entry, one insn into the build symbol) */
-    register int saveMask = gl_func_00000000();
+    register int saveMask = gl_func_00000000(); /* UNNAMED: mid-entry jal gl___osDisableInt+0x4 (__osDisableInt, entry 4 bytes into the build function, no symbol) */
     switch (t->state) {
     case 8:
         t->state = 2;
-        /* UNNAMED: mid-entry gl___osExceptionPreamble+0x730 (libultra __osEnqueueThread inside the exceptasm block) */
-        gl_func_00000000(&gl___osRunQueue, t);
+        gl_func_00000000(&gl___osRunQueue, t); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x730 (= __osEnqueueThread, no symbol of its own) */
         break;
     case 1:
         if (t->queue == 0 || t->queue == (int)&gl___osRunQueue) {
             t->state = 2;
-            /* UNNAMED: mid-entry gl___osExceptionPreamble+0x730 (libultra __osEnqueueThread inside the exceptasm block) */
-            gl_func_00000000(&gl___osRunQueue, t);
+            gl_func_00000000(&gl___osRunQueue, t); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x730 (= __osEnqueueThread, no symbol of its own) */
         } else {
             t->state = 8;
-            /* UNNAMED: mid-entry gl___osExceptionPreamble+0x730 (libultra __osEnqueueThread inside the exceptasm block) */
-            gl_func_00000000((void *)t->queue, t);
-            /* UNNAMED: mid-entry gl___osExceptionPreamble+0x730 (libultra __osEnqueueThread inside the exceptasm block) */
-            gl_func_00000000(&gl___osRunQueue, CALL(gl___osPopThread)((void *)t->queue));
+            gl_func_00000000((void *)t->queue, t); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x730 (= __osEnqueueThread, no symbol of its own) */
+            gl_func_00000000(&gl___osRunQueue, CALL(gl___osPopThread)((void *)t->queue)); /* UNNAMED: mid-entry outer jal gl___osExceptionPreamble+0x730 (= __osEnqueueThread, no symbol of its own) */
         }
         break;
     }
@@ -46,8 +41,7 @@ void gl_osStartThread(Thread_74C04 *t) {
     } else {
         if (((Thread_74C04 *)gl_data_00000000)->pri < ((Thread_74C04 *)gl___osRunQueue)->pri) {
             ((Thread_74C04 *)gl_data_00000000)->state = 2;
-            /* UNNAMED: mid-entry gl___osExceptionPreamble+0x630 (libultra __osEnqueueAndYield inside the exceptasm block) */
-            gl_func_00000000(&gl___osRunQueue);
+            gl_func_00000000(&gl___osRunQueue); /* UNNAMED: mid-entry jal gl___osExceptionPreamble+0x630 (= __osEnqueueAndYield, no symbol of its own) */
         }
     }
     CALL(gl___osRestoreInt)(saveMask);
