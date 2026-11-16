@@ -408,7 +408,7 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
             CALL(RaceTracker_ctor)(o2);
             NODE(o2)->vptr = (char *)&D_00000000;
         }
-        H2HRACE(obj)->dataMgr = (int)o2;
+        H2HRACE(obj)->dataMgr = (H2HDataManager *)o2;
         INPUT_MGR(D_00000000).dataMgr = (RaceTracker *)o2;
 
         XCALL(gl_func_00000000_620v, h2h_DataManager_init)(H2HRACE(obj)->dataMgr, obj, RACEPROC(obj)->spriteSet);

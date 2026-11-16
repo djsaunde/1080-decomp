@@ -152,7 +152,7 @@ typedef struct H2HRace {
                                       * WinsDisplay reads ((int *)wins)[0] / [1]) */
     /* 0x6AC */ s32 postMenu;        /* onRaceOver: the post-race menu (onTimeout waits for its
                                       * +0x34 ->0x3C alpha to reach 0xFF) */
-    /* 0x6B0 */ s32 dataMgr;         /* H2HDataManager * (also InputMgr.dataMgr) */
+    /* 0x6B0 */ struct H2HDataManager *dataMgr; /* also InputMgr.dataMgr */
     /* 0x6B4 */ s32 pausePlayer;     /* onPause: the player who pressed START */
     /* 0x6B8 */ s32 winner;          /* h2h_winByFinish / winByRetire; -1 = draw */
 } H2HRace;
