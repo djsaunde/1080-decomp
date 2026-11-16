@@ -175,26 +175,31 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     gDPWord(c->next(), 0xBA000602, 0);
 }
 
-/* snoweffects_uso_func_000028E0 (DRAFT, not spliced: objdiff 74 %, below the NM threshold): the snowfall draw. Moves every flake by the
- * camera motion since the last frame (camera +0x70 position * the gGfxLib world scale, minus +0x98,
+/* snoweffects_uso_func_000028E0 (NON_MATCHING, objdiff 88.9 %, frame 520 as the target): the snowfall draw. Moves every
+ * flake by the camera motion since the last frame (camera +0x70 position * the gGfxLib world scale, minus +0x98,
  * times +0xA4), wraps it inside the camera-space box (x / y +-30, z -100..0) along the box axes
  * (+0x50 / +0x5C / +0x68; a y wrap re-rolls the flake's alpha against +0x4C), then projects the
  * visible flakes (alpha > 0, counted in +0xBC) as gDPSetPrimDepth + texture rectangles of size
  * +0x38 (the 0xC90 projection). Prim colour from +0xC0..+0xCC, first-call fill (+0xB4).
- * Frame levers found: function-scope cam / scalars / x y z w above the two matrices (m at vfp-116, rot at
- * vfp-180 as the target), the loop's named locals at the loop-body top, and the motion as ONE expression
- * `p->pos += (cam - last) * follow` with by-value operator* / operator+= parameters (the target's two
- * three-word copy chains; mnemonics 76.8 -> 82 %). Left: frame 504 vs 520 (the temps' order: the target
- * has += param, op* param, op- return, op- r, 3 words, op* return, op* r) and float colouring. Splicing
- * it needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale) in undefined_syms_auto.txt; keep the body at
- * <= 793 words, or 0xA8D0 moves past TRUNCATE_TEXT and the gate fails. */
+ * Levers: function-scope scalars above the two matrices (m at vfp-116, rot at vfp-180); the motion as ONE
+ * expression `p->pos += (cam - last) * follow` (the target's two three-word copy chains), with `last` a reference
+ * local (the target hoists &self->lastCam into t4 and spills it at the frame bottom) and operator- returning a
+ * constructed SnowV3d (its store / copy schedule); `if (cz) {} if (cy) {} if (cx) {}` keeps the three camera-space
+ * coordinates computed before the first wrap test (uopt otherwise sinks cy / cz into the branch blocks).
+ * Left: c and halfW lose their s2 / f30 homes (spilled; the target also keeps &gGfxLib in s3), the temps'
+ * frame order (the target: += param, op* param, op- return, op- r, 4 words, op* return, op* r) and float colouring.
+ * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
+ * TRUNCATE_TEXT and the gate fails. */
 extern "C" float gl_func_00000000_snow_randf(...);   /* sys_randf (typed blank jal: float return) */
 struct SnowV3d {
     float x, y, z;
-    SnowV3d &operator+=(SnowV3d v) { x += v.x; y += v.y; z += v.z; return *this; }
+    SnowV3d() {}
+    SnowV3d(float a, float b, float c) { x = a; y = b; z = c; }
+    SnowV3d &operator+=(const SnowV3d &v) { x += v.x; y += v.y; z += v.z; return *this; }
+
     SnowV3d &operator=(SnowV3d o) { x = o.x; y = o.y; z = o.z; return *this; }
 };
-inline SnowV3d operator-(const SnowV3d &a, const SnowV3d &b) { SnowV3d r; r.x = a.x - b.x; r.y = a.y - b.y; r.z = a.z - b.z; return r; }
+inline SnowV3d operator-(const SnowV3d &a, const SnowV3d &b) { return SnowV3d(a.x - b.x, a.y - b.y, a.z - b.z); }
 inline SnowV3d operator*(SnowV3d a, float s) { SnowV3d r; r.x = a.x * s; r.y = a.y * s; r.z = a.z * s; return r; }
 struct SnowFlake {
     SnowV3d pos;            /* 0x00 */
@@ -252,6 +257,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     float w;
     float m[4][4];
     float rot[4][4];
+    SnowV3d &last = self->lastCam;
 
     gl_func_00000000(self);
     cam.x = SNOW_CAM2->obj->pos.x * SNOW_SCALE(0);
@@ -276,11 +282,12 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
         float cx, cy, cz;
         float inv; int sz; float sx, sy; int x0, y0;
         float wx = 0.0f, wy = 0.0f, wz = 0.0f;
-        p->pos += (cam - self->lastCam) * self->follow;
+        p->pos += (cam - last) * self->follow;
         x = p->pos.x; y = p->pos.y; z = p->pos.z;
         cx = rot[0][0] * x + rot[1][0] * y + rot[2][0] * z + rot[3][0];
         cy = rot[0][1] * x + rot[1][1] * y + rot[2][1] * z + rot[3][1];
         cz = rot[0][2] * x + rot[1][2] * y + rot[2][2] * z + rot[3][2];
+        if (cz) {} if (cy) {} if (cx) {}
         if (cx < -30.0f) {
             wx = 60.0f;
         } else if (cx >= 30.0f) {

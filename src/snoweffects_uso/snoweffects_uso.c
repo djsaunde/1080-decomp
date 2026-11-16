@@ -455,7 +455,15 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 void SnowFall_moveFlakes_000027A8(SnowFall *this) {
 }
 
+#ifdef NON_MATCHING
+/* snowfall draw (camera-motion integration, camera-space box wrap, projected texture rectangles): NCC donor
+ * src/snoweffects_uso/snoweffects_uso_ncc_c.cpp (agent-c run 667), REPLACE_FUNC_BODY-spliced over this
+ * placeholder on the non_matching build. */
+void snoweffects_uso_func_000028E0(void) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000028E0);
+#endif
 
 void SnowFall_rotateNormal_00003544(char *this, float *out, Vec3 *v) {
     out[0] = snoweffects_uso_func_00000000(v, (Vec3 *)(this + 0x74));
