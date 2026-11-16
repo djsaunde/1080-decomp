@@ -90,10 +90,10 @@ void gl_osContGetReadData(OSContPad *data, char *cursor, int count) {
         i = 0;
         do {
             *(int *)rec = *(int *)cur;
-            *(int *)(rec + 4) = *(int *)(cur + 4);
+            *(int *)(rec + 4) = *(int *)(cur + 4); /* RAW: data-table: __OSContReadFormat raw bytes in a local buffer (libultra layout) */
             data->errno = (rec[2] & 0xC0) >> 4;
             if (data->errno == 0) {
-                data->button = *(unsigned short *)(rec + 4);
+                data->button = *(unsigned short *)(rec + 4); /* RAW: data-table: __OSContReadFormat raw bytes in a local buffer (libultra layout) */
                 data->stick_x = rec[6];
                 data->stick_y = rec[7];
             }

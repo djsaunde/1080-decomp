@@ -809,7 +809,7 @@ int dma_invalCache(void *a0, void *a1) {
  * 2026-10-16 -- the table base &D_00000000+0x11FA links to the ROM words
  * because D_00000000 is an absolute symbol at 0. */
 int pad_decodeButtonMap_00034CC8(int a0, char *a1) {
-    signed char *t = (signed char *)((char *)&D_00000000 + 0x11FA + *(int *)(a1 + 0x34) * 6);
+    signed char *t = (signed char *)((char *)&D_00000000 + 0x11FA + *(int *)(a1 + 0x34) * 6); /* RAW: unknown-object: a1 is the caller's button-map record (+0x34 map index, +0x10 decoded mask); class not identified */
     int v1 = 0;
     int v0;
     int flags;
@@ -830,7 +830,7 @@ int pad_decodeButtonMap_00034CC8(int a0, char *a1) {
     if (flags & 0x1) v1 |= 0x20;
     if (flags & 0x8) v1 |= 0x40;
     if (flags & 0x4) v1 |= 0x80;
-    *(int *)(a1 + 0x10) = v1;
+    *(int *)(a1 + 0x10) = v1; /* RAW: unknown-object: a1 is the caller's button-map record (+0x34 map index, +0x10 decoded mask); class not identified */
     return 1;
 }
 
@@ -1706,13 +1706,13 @@ int MemberCallback_invoke(char *a0) {
     int (*fnptr)(char *);
     int idx;
     v1 = a0 + 8;
-    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg;
-    if (*(short*)(a0 + 0xA) < 0) {
+    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg; /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
+    if (*(short*)(a0 + 0xA) < 0) { /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         fnptr = *(int (**)(char *))(a0 + 0xC);
     } else {
-        int selector = *(int*)(v1 + 4);
+        int selector = *(int*)(v1 + 4); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         if (selector == 0 && *(short*)v1 == 0) idx = 0x28; else idx = selector;
-        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx);
+        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         arg = *(short*)entry + arg;
         fnptr = *(int (**)(char *))(entry + 4);
     }
@@ -2542,10 +2542,10 @@ void CamFollow_update(CamFollow *o) {
     }
 
     cb = (char *)(*pc)->child;
-    r[0] = *(float *)(cb + 0xA0);
+    r[0] = *(float *)(cb + 0xA0); /* RAW: byte-lock: lever = the cb += 0x70 pointer step between the reads (S36C08 sub.v at +0xA0); the member spelling removes the step */
     cb += 0x70;
-    r[1] = *(float *)(cb + 0x34);
-    r[2] = *(float *)(cb + 0x38);
+    r[1] = *(float *)(cb + 0x34); /* RAW: byte-lock: lever = the cb += 0x70 pointer step between the reads (S36C08 sub.v at +0xA0); the member spelling removes the step */
+    r[2] = *(float *)(cb + 0x38); /* RAW: byte-lock: lever = the cb += 0x70 pointer step between the reads (S36C08 sub.v at +0xA0); the member spelling removes the step */
     r[0] = r[0] * -1.0f;
     r[1] = r[1] * -1.0f;
     r[2] = r[2] * -1.0f;
@@ -2624,7 +2624,7 @@ char *CamMan_ctor(char *o, int a1, int a2) {
     ((FreeCam *)o)->pitch = -90.0f;
     ((FreeCam *)o)->yaw = 180.0f;
     ((FreeCam *)o)->unk38 = 0.0f;
-    *(int *)(o + 0x00) = 0x40;
+    *(int *)(o + 0x00) = 0x40; /* RAW: unknown-object: CamMan has no header struct; inline 4-byte member at +0x0 (statement order is the match lever) */
     ((FreeCam *)o)->accel = 0;
 out:
     return o;
@@ -2902,7 +2902,7 @@ void Spinner_update(int *a0) {
     float y, z;
     int pad[3];
     s.p = (int)NODE(a0)->parent;
-    y = *(float*)((char*)a0 + 0x2C); z = 0.0f;
+    y = *(float*)((char*)a0 + 0x2C); z = 0.0f; /* RAW: unknown-object: Spinner has no header struct; +0x2C is its float spin rate */
     s.v.y = y;
     s.v.z = z;
     s.v.x = z;
@@ -2927,7 +2927,7 @@ int *SeekNode_ctor(int *a0, int a1, float a2) {
     if (a0 != 0 || (a0 = (int*)FCALL(mem_new)(0x34)) != 0) {
         FCALL(Node_ctor)(a0, GL_DATA_STR(0x1EA20, "<Node>"));
         ((Node *)a0)->vptr = (char *)&SeekNode_vtbl;
-        *(float*)((char*)a0 + 0x30) = a2;
+        *(float*)((char*)a0 + 0x30) = a2; /* RAW: unknown-object: SeekNode has no header struct; +0x30 float ctor arg */
         a0[0x2C/4] = a1;
     }
     return a0;
@@ -3670,7 +3670,7 @@ void Node_hostioLink(int *arg0) {
             v1[1] = (int)arg0;
             {
                 extern int D_3829C_1EA30[];
-                *(Pair3829C *)(v1 + 2) = *(Pair3829C *)D_3829C_1EA30;
+                *(Pair3829C *)(v1 + 2) = *(Pair3829C *)D_3829C_1EA30; /* RAW: data-table: 8-byte hostio parm-pair template copied into the inline parm record words 2..3 */
             }
         }
         *a2 = (int)(GL_DATA(0x1EB40));
@@ -3742,7 +3742,7 @@ void Node_hostioParms(char *arg0) {
                 *a1 = (int)(GL_DATA(0x1EB10));
             }
             v1[1] = (int)arg0;
-            *(Pair38360 *)(v1 + 2) = *(Pair38360 *)(GL_DATA(0x1EA38));
+            *(Pair38360 *)(v1 + 2) = *(Pair38360 *)(GL_DATA(0x1EA38)); /* RAW: data-table: 8-byte hostio parm-pair template copied into the inline parm record words 2..3 */
         }
         *a2 = (int)(GL_DATA(0x1EB40));
     }
@@ -3758,7 +3758,7 @@ void Node_hostioParms(char *arg0) {
                     *v1b = (int)(GL_DATA(0x1EB10));
                 }
                 a1[1] = (int)arg0;
-                *(Pair38360 *)(a1 + 2) = *(Pair38360 *)(GL_DATA(0x1EA40));
+                *(Pair38360 *)(a1 + 2) = *(Pair38360 *)(GL_DATA(0x1EA40)); /* RAW: data-table: 8-byte hostio parm-pair template copied into the inline parm record words 2..3 */
             }
         }
         a2[0] = (int)(GL_DATA(0x1EB58));
@@ -4163,7 +4163,7 @@ extern char sFmt_Global_out_of_range_1EC6C[], sFmt_Global_out_of_range_1EC84[], 
  * the donor-local jumptable reloc to Node_doCommand_rodata, pinned to the USO RoData at
  * +0x1A1C. Body below is a placeholder for the splice. */
 void Node_doCommand(char *o, char *c) {
-    *(volatile int *)(o + 4) = 7;
+    *(volatile int *)(o + 4) = 7; /* RAW: donor-mirror: placeholder body; REPLACE_FUNC_BODY splices the real C from the -O2 donor unit */
 }
 
 void Node_saveData(int a0) {}
@@ -4528,7 +4528,7 @@ void MNode_handleMsg(int *a0, int *a1) {
     switch (cmd) {
     case 6:
         if (a0[0x18/4] & 0x40) {
-            *(struct GL396V *) scratch = *(struct GL396V *) ((char *) a1[0x4/4] + 0xEC);
+            *(struct GL396V *) scratch = *(struct GL396V *) ((char *) a1[0x4/4] + 0xEC); /* RAW: unknown-object: message 6 payload is the sender node; its +0xEC Vec3 (sender class not pinned) */
             CALL(math_mtxAddTranslation)((char*)a0 + 0x30, scratch);
             CALL(math_mtxAddTranslation)((char*)a0 + 0x70, scratch);
         }
@@ -4817,7 +4817,7 @@ void SNode_hostioParms(int *a0) {
     gl_proto_39C8C(&gHostio, GL_DATA_STR(0x1ED14, "RotY"), (char*)a0 + 0x78, -180.0f, 180.0f, 1);
     gl_proto_39C8C(&gHostio, GL_DATA_STR(0x1ED1C, "RotZ"), (char*)a0 + 0x7C, -180.0f, 180.0f, 1);
     gl_proto_39C8C(&gHostio, GL_DATA_STR(0x1ED24, "Height"), (char*)a0 + 0x6C, -500.0f, 500.0f, 1);
-    gl_proto_39C8C(&gHostio, GL_DATA_STR(0x1ED2C, "Radius"), (char*)a0 + 0x80, 0.0f, *(float*)((char*)&D_39C8C_max + 0x1A80), 1);
+    gl_proto_39C8C(&gHostio, GL_DATA_STR(0x1ED2C, "Radius"), (char*)a0 + 0x80, 0.0f, *(float*)((char*)&D_39C8C_max + 0x1A80), 1); /* RAW: data-table: rodata float read through the placeholder symbol + addend (USO reloc addend, not a field) */
     CALL(hostio_msg35_0003F244)(&gHostio, 0, 0);
     CALL(hostio_addMatrix)(&gHostio, GL_DATA_STR(0x1ED34, "Mtx"), (char*)a0 + 0x2C, 0);
     CALL(hostio_endGroup)(&gHostio);
@@ -4919,13 +4919,13 @@ int MemberCallback_invoke_0003A044(char *a0) {
     int (*fnptr)(char *);
     int idx;
     v1 = a0 + 8;
-    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg;
-    if (*(short*)(a0 + 0xA) < 0) {
+    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg; /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
+    if (*(short*)(a0 + 0xA) < 0) { /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         fnptr = *(int (**)(char *))(a0 + 0xC);
     } else {
-        int selector = *(int*)(v1 + 4);
+        int selector = *(int*)(v1 + 4); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         if (selector == 0 && *(short*)v1 == 0) idx = 0x28; else idx = selector;
-        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx);
+        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         arg = *(short*)entry + arg;
         fnptr = *(int (**)(char *))(entry + 4);
     }
@@ -5012,18 +5012,18 @@ int MemberCallback_invoke_0003A0C4(char *r) {
     int (*fp)(int, int, int);
     int off;
     v1 = r + 8;
-    base = *(char **)(r + 4); base = *(short *)(r + 8) + base;
+    base = *(char **)(r + 4); base = *(short *)(r + 8) + base; /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
     if (r) {}
-    if (*(short *)(r + 0xA) < 0) {
+    if (*(short *)(r + 0xA) < 0) { /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         fp = *(int (**)(int, int, int))(r + 0xC);
     } else {
-        int selector = *(int *)(v1 + 4);
+        int selector = *(int *)(v1 + 4); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         if (selector == 0 && *(short *)v1 == 0) off = 0x28; else off = selector;
-        e = (*(short *)(v1 + 2) << 3) + *(char **)(base + off);
+        e = (*(short *)(v1 + 2) << 3) + *(char **)(base + off); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         fp = *(int (**)(int, int, int))(e + 4);
         base = *(short *)e + base;
     }
-    return fp((int)base, *(int *)(r + 0x10), *(int *)(r + 0x14));
+    return fp((int)base, *(int *)(r + 0x10), *(int *)(r + 0x14)); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
 }
 
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0003A0C4_pad.s")
@@ -5452,8 +5452,8 @@ void coll_offsetPointsByMtx(char *a0, f32 *m) {
     V3_3B1A8 t;
     f32 pad[3];
     f32 X, Y, Z;
-    for (i = 0; i < (*(L3B1A8 **)(a0 + 0x8C))->n; ) {
-        t = (*(L3B1A8 **)(a0 + 0x8C))->buf[i].v;
+    for (i = 0; i < (*(L3B1A8 **)(a0 + 0x8C))->n; ) { /* RAW: unknown-object: CollObj +0x8C is the point list (coll.h unk8C); a0 is passed as char * by every caller */
+        t = (*(L3B1A8 **)(a0 + 0x8C))->buf[i].v; /* RAW: unknown-object: CollObj +0x8C is the point list (coll.h unk8C); a0 is passed as char * by every caller */
         q = &p;
         q->x = t.x; q->y = t.y; q->z = t.z;
         X = m[12] + (m[8] * q->z + (m[4] * q->y + m[0] * q->x));
@@ -5463,7 +5463,7 @@ void coll_offsetPointsByMtx(char *a0, f32 *m) {
         q->x = X;
         q->z = Z;
         {
-            V3_3B1A8 *d = &(*(L3B1A8 **)(a0 + 0x8C))->buf[i].v;
+            V3_3B1A8 *d = &(*(L3B1A8 **)(a0 + 0x8C))->buf[i].v; /* RAW: unknown-object: CollObj +0x8C is the point list (coll.h unk8C); a0 is passed as char * by every caller */
             i++;
             d->x = d->x + q->x;
             d->y = d->y + q->y;
@@ -7446,7 +7446,7 @@ void *MNode_ctor(char *arg0) {
         zero[2] = 0.0f;
         CALL(math_mtxAddTranslation)(o + 0x30, zero);
     }
-    { int x = *(int *)(arg0 + 0x40); p2 = (int *)o; o = 0; CALL(MNode_addChild)(tmp = (char *)p2, x); }
+    { int x = *(int *)(arg0 + 0x40); p2 = (int *)o; o = 0; CALL(MNode_addChild)(tmp = (char *)p2, x); } /* RAW: unknown-object: arg0 is the parent passed to MNode_addChild; its +0x40 class not identified */
     return tmp;
 }
 
@@ -8066,13 +8066,13 @@ int MemberCallback_invoke_0003EBDC(char *a0) {
     int (*fnptr)(char *);
     int idx;
     v1 = a0 + 8;
-    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg;
-    if (*(short*)(a0 + 0xA) < 0) {
+    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg; /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
+    if (*(short*)(a0 + 0xA) < 0) { /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         fnptr = *(int (**)(char *))(a0 + 0xC);
     } else {
-        int selector = *(int*)(v1 + 4);
+        int selector = *(int*)(v1 + 4); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         if (selector == 0 && *(short*)v1 == 0) idx = 0x28; else idx = selector;
-        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx);
+        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         arg = *(short*)entry + arg;
         fnptr = *(int (**)(char *))(entry + 4);
     }
@@ -8124,13 +8124,13 @@ int MemberCallback_invoke_0003EC5C(char *a0) {
     int (*fnptr)(char *);
     int idx;
     v1 = a0 + 8;
-    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg;
-    if (*(short*)(a0 + 0xA) < 0) {
+    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg; /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
+    if (*(short*)(a0 + 0xA) < 0) { /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         fnptr = *(int (**)(char *))(a0 + 0xC);
     } else {
-        int selector = *(int*)(v1 + 4);
+        int selector = *(int*)(v1 + 4); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         if (selector == 0 && *(short*)v1 == 0) idx = 0x28; else idx = selector;
-        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx);
+        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         arg = *(short*)entry + arg;
         fnptr = *(int (**)(char *))(entry + 4);
     }
@@ -9484,7 +9484,7 @@ void QNode_handleMsg(char *a0, int *a1) {
 
     switch (*a1) {
     case 6: {
-        d = *(V3_40CAC *)((char *)a1[1] + 0xEC);
+        d = *(V3_40CAC *)((char *)a1[1] + 0xEC); /* RAW: unknown-object: message 6 payload is the sender node; its +0xEC Vec3 (sender class not pinned) */
         QNODE(a0)->cvqs.trans[0] = QNODE(a0)->cvqs.trans[0] + d.x;
         QNODE(a0)->cvqs.trans[1] = QNODE(a0)->cvqs.trans[1] + d.y;
         QNODE(a0)->cvqs.trans[2] = QNODE(a0)->cvqs.trans[2] + d.z;
@@ -9636,15 +9636,15 @@ void QNode_setAnimPose(char *a0, char *a1) {
 
     ib = (W3 *)buf;
     if (0) { ib = 0; }                                       /* multi-def: block buf<->ib base CSE (float reads stay sp-based) */
-    *ib = *(W3 *)(a1 + 0xD0);                                /* first lw is IDO-hoisted ABOVE addiu sp (was the splat mis-split) */
+    *ib = *(W3 *)(a1 + 0xD0);                                /* first lw is IDO-hoisted ABOVE addiu sp (was the splat mis-split) */ /* RAW: byte-lock: lever = raw char * W3 block copies with the if (0) ib multi-def (comments on the line); pose-record class not identified either */
     QNODE(a0)->vqs.trans[0] = buf[0];
     QNODE(a0)->vqs.trans[1] = buf[1];
     QNODE(a0)->vqs.trans[2] = buf[2];
-    *ib = *(W3 *)(a1 + 0xDC);
+    *ib = *(W3 *)(a1 + 0xDC); /* RAW: byte-lock: lever = raw char * W3 block copies with the if (0) ib multi-def (comments on the line); pose-record class not identified either */
     QNODE(a0)->vqs.scale[0] = buf[0];
     QNODE(a0)->vqs.scale[1] = buf[1];
     QNODE(a0)->vqs.scale[2] = buf[2];
-    *ib = *(W3 *)(a1 + 0xE8);
+    *ib = *(W3 *)(a1 + 0xE8); /* RAW: byte-lock: lever = raw char * W3 block copies with the if (0) ib multi-def (comments on the line); pose-record class not identified either */
     QNODE(a0)->vqs.quat[0] = buf[0];
     QNODE(a0)->vqs.quat[1] = buf[1];
     QNODE(a0)->vqs.quat[2] = buf[2];
@@ -9902,7 +9902,7 @@ void App_main(O415A4 *self) {
     WindowDefaults *t;
     float *v;
 
-    *(int *)((char *)&D_415A4_z + 0x3C160) = 0;
+    *(int *)((char *)&D_415A4_z + 0x3C160) = 0; /* RAW: data-table: Bss placeholder symbol + addend (USO reloc addend) / gConsoleNode inline member at +0x34 */
     CALL(sys_getRegion_00034BDC)(gSysLib_415A4_s1, &a, &b);
     if (1) {}
     CALL(Mem_init)(gMainHeap_415A4_s2, a, a + b);
@@ -9950,7 +9950,7 @@ void App_main(O415A4 *self) {
     if (p != 0) {
         CALL(pad_open)(p, 1);
     }
-    *(char **)(gConsoleNode_3EF04_415A4_g4 + 0x34) = p;
+    *(char **)(gConsoleNode_3EF04_415A4_g4 + 0x34) = p; /* RAW: data-table: Bss placeholder symbol + addend (USO reloc addend) / gConsoleNode inline member at +0x34 */
     p = (char *)self->vt;
     ((VT415A4 *)p)->fn6C(((VT415A4 *)p)->off68 + (char *)self); /* agent-g run 257: the vtable held in the dead p (its alloc web sits in a2) -- the target loads vt into a2 and self into v0: 95.27 -> 95.53 */
     CALL(app_run)(gSysLib_415A4_s6, self);
@@ -10233,7 +10233,7 @@ void fs_readRecord_00041F90(char *obj, int a1) {
     CALL(sys_setWord4_00061D80)(&gSysLib_41f_o0, 1);
     if (CALL(fs_gdlOpenFile)(&gSysLib_41f_o1, a1, GL_DATA(0x1F6E0)) != 0) {
         CALL(fs_gdlReadFile)(&gSysLib_41f_o2, &buf, 68);
-        *(B68 *)(obj + 60) = buf;
+        *(B68 *)(obj + 60) = buf; /* RAW: unknown-object: 68-byte record stored at obj +60; owner class not identified */
         CALL(fs_gdlCloseFile)(&gSysLib_41f_o3);
         CALL(sys_formatVersion)(obj + 60, buf2);
         CALL(dbg_printf)(GL_DATA_STR(0x1F6E4, "%s\n"), buf2);
@@ -10382,8 +10382,8 @@ void* app_newListHead_000422AC(void *a0) {
         q = (void*)gl_func_00000000(8);
         if (q == 0) goto end;
     }
-    *(int*)(q + 4) = 0;
-    *(int*)(q + 0) = 0;
+    *(int*)(q + 4) = 0; /* RAW: unknown-object: fresh 8-byte list head from alloc(8), words zeroed (no list-head type in the headers) */
+    *(int*)(q + 0) = 0; /* RAW: unknown-object: fresh 8-byte list head from alloc(8), words zeroed (no list-head type in the headers) */
 end:
     return a0;
 }
@@ -10980,7 +10980,7 @@ void gfx_setLightDirs_000430D8(char *self, int flag) {
     Iter_430D8 *p = &it;
     char *node;
     char *obj;
-    char *base = **(char ***)(self + 0x2C);
+    char *base = **(char ***)(self + 0x2C); /* RAW: unknown-object: self +0x2C holds a pointer to the light-slot buffer; owner class not identified */
     int idx = 0;
     char *slot;
     p->next = ((Link_430D8 *)gGfx->lights); if (1) {}
@@ -11403,7 +11403,7 @@ void BaseMat_emitDisplayLists_00043BEC(char *arg0, char *arg1) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", BaseMat_emitDisplayLists_00043BEC);
 #endif
 
-void gfx_copyField64_00043D2C(int *a0, int *a1) { *(int*)((char*)a0 + 0x64) = *(int*)((char*)a1 + 0x64); }
+void gfx_copyField64_00043D2C(int *a0, int *a1) { *(int*)((char*)a0 + 0x64) = *(int*)((char*)a1 + 0x64); } /* RAW: unknown-object: two objects of an unidentified class, word +0x64 copied */
 
 // PolyShape_clipRows_00043D38 — STRUCTURAL PASS (0x170 / 93 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x38
@@ -11711,7 +11711,7 @@ void gfx_initDdm(int* a0, int a1) {
     a0[1] = 0;
     a0[2] = a1;
     s1 = &a0[1];
-    a0[0] = *(int*)(((char*)s0[3]) + 0x4);
+    a0[0] = *(int*)(((char*)s0[3]) + 0x4); /* RAW: unknown-object: s0[3] is a render-state record whose word +4 is copied; class not identified */
     CALL(gfx_emitCycleType)(s0, s1);
     CALL(gfx_emitRenderMode)(s0, s1);
     CALL(gfx_emitCombineMode)(s0, s1);
@@ -12073,7 +12073,7 @@ void gfx_start(GfxLib *arg0) {
     for (i = 0; i < arg0->nFrameStartCbs; i++) {
         e = arg0->frameStartCbs[i];
         if (e != 0) {
-            vt = (char *)FW(e, 0x5C);
+            vt = (char *)FW(e, 0x5C); /* RAW: unknown-object: frame-start callback object, vptr at +0x5C; class not identified */
             ((void (*)(char *, int))VT_SLOT(vt, 0).fn)(e + VT_SLOT(vt, 0).delta, 0);
         }
     }
@@ -12196,7 +12196,7 @@ void gfx_end(GfxLib *arg0) {
     CALL(prof_endSection)(GL_DATA_STR(0x1FF18, "CPU"));
     *(char **)&gGfxPhase_44EDC_h = GL_DATA_STR(0x1FF1C, "DoneSwap");
     CALL(prof_timerStart)(GL_DATA_STR(0x1FF28, "1GFrame"));
-    obj = *(char **)(&gSysLib_44EDC_i + 0x1C);
+    obj = *(char **)(&gSysLib_44EDC_i + 0x1C); /* RAW: unknown-object: gSysLib (0x28-byte system-services object) has no struct type; +0x1C is its message queue */
     CALL(gl_osSendMesg)(obj, 0x68, 1);
     CALL(gfx_setEvery4thFrameFlag)(arg0);
 }
@@ -12698,7 +12698,7 @@ void gfx_submitFrameTask_000469A8(GfxLib *arg0, s32 arg1) {
      * read, with folded `0 * (int)&D` uses (kit CCCLXXII form): the loaded value is a ugen temp (t6) and &D the
      * coloured v1 like the target; with the in-call pDC above (one ugen ring slot) the second vcall keeps its
      * jalr delay fill, and the a10 fold drops to one p100 use: 98.786 -> 99.175, same length */
-    (*(ScreenWindow **)((int)&gGfxLib + 0x254) = (ScreenWindow *)((char *)GFX_MAINWIN_I(arg0) + 0 * (int)&gGfxLib))->dl = (DLContext *)((int)temp_s1 + 0 * (int)&gGfxLib);
+    (*(ScreenWindow **)((int)&gGfxLib + 0x254) = (ScreenWindow *)((char *)GFX_MAINWIN_I(arg0) + 0 * (int)&gGfxLib))->dl = (DLContext *)((int)temp_s1 + 0 * (int)&gGfxLib); /* RAW: byte-lock: lever = the 0 * (int)&gGfxLib terms on the +0x254 window store (agent-c run 318 search, comment above); the member spelling would drop them, not re-tried this run */
     if (temp_s0) {} /* agent-c run 318: code-free test of the vcall result after the store (random test search): temp_v0_2 takes v0 like the target, 99.369 -> 99.515 */
     temp_v0_2 = (char *)arg0->unk290;
     temp_s0 = (char *)NODE(temp_v0_2)->vptr;
@@ -13536,7 +13536,7 @@ int gfx_findVtx_00048720(int *a0, int a1, int a2) {
     if (i < end) {
         hdr = *a0;
         do {
-            int rec = *(volatile int *)(*(volatile int *)(hdr + 0x1C)) + (i * 16);
+            int rec = *(volatile int *)(*(volatile int *)(hdr + 0x1C)) + (i * 16); /* RAW: unknown-object: hdr +0x1C points to the GdlVtx record array; hdr class not identified (volatile double load is the match lever) */
             if (GDLVTX(a2)->ob[0] == GDLVTX(rec)->ob[0] &&
                 GDLVTX(a2)->ob[1] == GDLVTX(rec)->ob[1] &&
                 GDLVTX(a2)->ob[2] == GDLVTX(rec)->ob[2] &&
@@ -13575,17 +13575,17 @@ int gfx_findVtx_00048720(int *a0, int a1, int a2) {
  * Entry-copy ORDER is region placement, not allocno scheduling. */
 extern int gl_func_00000000();
 int gfx_findFaceVtxs_0004880C(int a0, int a1) {
-    int v1 = *(int *)(a0 + 0x594);
+    int v1 = *(int *)(a0 + 0x594); /* RAW: unknown-object: a0 (int) is a shape object with a face count at +0x594; class not identified */
     int i = 0;
     int p;
     if (v1 > 0) {
         p = a1;
         do {
-            int flag = (i == 0) || (*(int *)(a0 + 0x594) == 2);
+            int flag = (i == 0) || (*(int *)(a0 + 0x594) == 2); /* RAW: unknown-object: a0 (int) is a shape object with a face count at +0x594; class not identified */
             if (CALL(gfx_findVtx_00048720)(a0, flag, p) < 0) {
                 return 0;
             }
-            v1 = *(int *)(a0 + 0x594);
+            v1 = *(int *)(a0 + 0x594); /* RAW: unknown-object: a0 (int) is a shape object with a face count at +0x594; class not identified */
             p += 0x10;
             i++;
         } while (i < v1);
@@ -14621,7 +14621,7 @@ void MorphPoly_allocUpdateList(int *self) {
     {
         int *g = ((int *)gGfx->staticDL);
         ((MorphPoly *)self)->vtxStart =
-            *(int *)((char *)(*(int *)((char *)g + 0x1C)) + 4);
+            *(int *)((char *)(*(int *)((char *)g + 0x1C)) + 4); /* RAW: unknown-object: gGfx->staticDL record +0x1C points to a vertex-count record (word +4); class not identified */
     }
 }
 
@@ -15998,7 +15998,7 @@ void gfx_submitFrame_0004CDB0(ScreenWindow *self, int flag)
     if (flag) {
         { int i; unsigned int *p; g = GFX_4CDB0(obj); i = DLBUF(g)->count; DLBUF(g)->count = i + 1; p = (unsigned int *)(*(char **)&DLBUF(GFX_4CDB0(obj))->base + i * 8); p[0] = (0xE9000000); p[1] = (0); }
     }
-    *(int *)((char *)CALL(gfx_queueGfxTask_0004CEFC)(self, 4) + 0x70) = self->unk1B4;
+    *(int *)((char *)CALL(gfx_queueGfxTask_0004CEFC)(self, 4) + 0x70) = self->unk1B4; /* RAW: unknown-object: gfx_queueGfxTask_0004CEFC result is a task record (+0x70 = DL word); type not identified */
 }
 #undef GFX_4CDB0
 #undef PACKET_4CDB0
@@ -16124,7 +16124,7 @@ extern int gl_func_00000000();
 void vFP1_call(int a0) { CALL(sys_fatal)(GL_DATA_STR(0x201B0, "vFP1")); (void)a0; }
 
 void vFP1_invokeFn_0004D084(int *a0) {
-    (*(int(**)())((char*)a0 + 0x4))(*(int*)((char*)a0 + 0x8), a0);
+    (*(int(**)())((char*)a0 + 0x4))(*(int*)((char*)a0 + 0x8), a0); /* RAW: unknown-object: callback record {?, fn at +4, arg at +8}; class not identified */
 }
 /* RcpTask_ctor (history) + its 1-word leading pad: the pad sat between two
  * matched C fns (no emission host; a standalone 1-word block emits +4),
@@ -16764,7 +16764,7 @@ void gfx_initMtxBlock_0004E00C(int *s0) {
 }
 
 void gfx_setEvery4thFrameFlag(GfxLib *a0) {
-    a0->every4thFrame = (*(int *)((char *)&gSysLib + 0x14) & 3) == 0;
+    a0->every4thFrame = (*(int *)((char *)&gSysLib + 0x14) & 3) == 0; /* RAW: unknown-object: gSysLib (0x28-byte system-services object) has no struct type; +0x14 is its frame counter */
 }
 
 /* Vtable-call wrapper. Promoted 97.5%->100% via IDO load-CSE trick:
@@ -17386,7 +17386,7 @@ void Window_setupView(Window *o) {
         /* agent-c run 183: the 0x14C word goes through src (dead-web reuse): its a1 call-arg web
          * steers the post-call *(o+0x70) reload into a1 like the target (a new named local would
          * add an 8-byte dead home). The camera fov word, aspect and near go as raw words. */
-        src = (float *)*(int *)(o->camera + 0x14C);
+        src = (float *)*(int *)(o->camera + 0x14C); /* RAW: unknown-object: Window.camera is an MCamera (char *) with no struct; +0x14C is its fov word */
         aEE44_a(m30, (int)src, *(int *)&o->aspect, *(int *)&o->near, o->far);
         src = (float *)(o->camera + 0xB4); /* the camera's view matrix */
         for (r = 0; r < 4; r++) {
@@ -18144,7 +18144,7 @@ s32 BasePolyShape_emitTriPosUv_000510F0(s32 arg0, volatile s32 arg1, Obj_510F0 *
     p2.x = ((P_510F0 *)q)->x;
     p2.y = ((P_510F0 *)q)->y;
     p2.z = ((P_510F0 *)q)->z;
-    CALL(BasePolyShape_subdivide)(arg1, *(s32 *)(arg4 + 0x40), arg0, arg4, arg5, arg6, (o->tri + idx)->h0, p0, p1, p2, t0, t1, t2);
+    CALL(BasePolyShape_subdivide)(arg1, *(s32 *)(arg4 + 0x40), arg0, arg4, arg5, arg6, (o->tri + idx)->h0, p0, p1, p2, t0, t1, t2); /* RAW: unknown-object: arg4 is an untyped shape pointer (s32) passed through; +0x40 vertex count */
     return arg0;
 }
 
@@ -18505,7 +18505,7 @@ void BaseMat_hostioParms(char *arg0) {
                 if (o3 != 0 || (o3 = (void **)XCALL(gl_func_00034458_5185C, mem_new)(4)) != 0) {
                     *o3 = (char *)&D_00000000_a[0] + 0x20740;
                 }
-                *(Pair2 *)((o2[1] = arg0, o2) + 2) =
+                *(Pair2 *)((o2[1] = arg0, o2) + 2) = /* RAW: data-table: 8-byte hostio parm-pair template copied into the inline parm record words 2..3 */
                     *(Pair2 *)((char *)&D_00000000_b[0] + 0x20638);
             }
             *o1 = (char *)&D_00000000_d + 0x20D88;
@@ -18570,7 +18570,7 @@ void Mat_print(char *self) {
                 if ((v1 != 0) || (a0p = (int *)CALL(mem_new)(4), (a0p != 0))) {
                     *a0p = (int)(GL_DATA(0x20740));
                 }
-                *(Pair519A4 *)((v1[1] = (int)self, v1) + 2) =
+                *(Pair519A4 *)((v1[1] = (int)self, v1) + 2) = /* RAW: data-table: 8-byte hostio parm-pair template copied into the inline parm record words 2..3 */
                     *(Pair519A4 *)(GL_DATA(0x20630));
             }
             *a2 = (int)(GL_DATA(0x20D88));
@@ -19998,7 +19998,7 @@ s32 *BaseLight_ctor(char *self, int arg1) {
             ((Node *)s1)->vptr = (char *)&MNode_vtbl_546E8_a;
             if (((v1 = (char *)&MNODE(s1)->mflags) != 0 || (v1 = (char *)CALL(mem_new)(4)) != 0) &&
                 ((m = v1) != 0 || (m = (char *)CALL(mem_new)(4)) != 0)) {
-                FW(m, 0) = 0;
+                FW(m, 0) = 0; /* RAW: unknown-object: Cfront inline member ctors (m may be a fresh new(4) / new(0x24)) and the col tag read through its placeholder + addend */
             }
             CALL(MNode_initMatrices)(s1);
             zv.x = 0.0f;
@@ -20009,14 +20009,14 @@ s32 *BaseLight_ctor(char *self, int arg1) {
         sp20 = (int *)s1;
         if ((s1 != 0 || (s1 = (char *)CALL(mem_new)(4)) != 0) &&
             ((v1 = s1) != 0 || (v1 = (char *)CALL(mem_new)(4)) != 0)) {
-            FW(v1, 0) = 0;
+            FW(v1, 0) = 0; /* RAW: unknown-object: Cfront inline member ctors (m may be a fresh new(4) / new(0x24)) and the col tag read through its placeholder + addend */
         }
         if ((s1 = (char *)&BL_546E8->parms) != 0 || (s1 = (char *)CALL(mem_new)(0x2C)) != 0) {
             if ((v1 = s1) != 0 || (v1 = (char *)CALL(mem_new)(8)) != 0) {
                 ((BaseLightParms *)v1)->name = &sStr_Parms_21084 + 0x21084;
                 ((BaseLightParms *)v1)->first = 0;
             }
-            u1.v = *(int *)(&sTag_col_2108C + 0x2108C);
+            u1.v = *(int *)(&sTag_col_2108C + 0x2108C); /* RAW: unknown-object: Cfront inline member ctors (m may be a fresh new(4) / new(0x24)) and the col tag read through its placeholder + addend */
             sp94.x = 0.0f;
             sp94.y = 0.0f;
             sp94.z = 0.0f;
@@ -20036,8 +20036,8 @@ s32 *BaseLight_ctor(char *self, int arg1) {
             if ((m = (char *)&((BaseLightParms *)s1)->colParm) != 0 || (m = (char *)CALL(mem_new)(0x24)) != 0) {
                 CALL(Parms_addParm)(m, s1, t, 1);
                 ((GdlParmBase *)m)->type = &gl_ref_546E8_e + 0x20758;
-                FW(m, 0x20) = 0;
-                *(struct V4_546E8 *)(m + 0x10) = sp48;
+                FW(m, 0x20) = 0; /* RAW: unknown-object: Cfront inline member ctors (m may be a fresh new(4) / new(0x24)) and the col tag read through its placeholder + addend */
+                *(struct V4_546E8 *)(m + 0x10) = sp48; /* RAW: unknown-object: Cfront inline member ctors (m may be a fresh new(4) / new(0x24)) and the col tag read through its placeholder + addend */
             }
         }
         BL_546E8->node.flags |= 0x20;
@@ -20425,13 +20425,13 @@ int CMod_callbackInvoke_000551E0(char *a0) {
     int (*fnptr)(char *);
     int idx;
     v1 = a0 + 8;
-    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg;
-    if (*(short*)(a0 + 0xA) < 0) {
+    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg; /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
+    if (*(short*)(a0 + 0xA) < 0) { /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         fnptr = *(int (**)(char *))(a0 + 0xC);
     } else {
-        int selector = *(int*)(v1 + 4);
+        int selector = *(int*)(v1 + 4); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         if (selector == 0 && *(short*)v1 == 0) idx = 0x5C; else idx = selector;
-        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx);
+        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx); /* RAW: unknown-object: Cfront pointer-to-member callback record (+4 object, +8 s16 this-delta, +0xA s16 vslot / -1, +0xC fn or vtable offset); no shared type, and this recipe hangs on the one-line statement layout */
         arg = *(short*)entry + arg;
         fnptr = *(int (**)(char *))(entry + 4);
     }
@@ -20708,9 +20708,9 @@ NodeListState *a3;
         extern int D_5591C_z0a, gSkinMgrs_41700_5591C_z0b, gSkinMgrs_41700_5591C_z4, gSkinMgrs_41700_5591C_z8, gSkinMgrs_41700_5591C_zc;
         D_5591C_z0a = 0;
         gSkinMgrs_41700_5591C_z0b = 0;
-        *(int*)((char*)&gSkinMgrs_41700_5591C_z4 + 0x4) = 0;
-        *(int*)((char*)&gSkinMgrs_41700_5591C_z8 + 0x8) = 0;
-        *(int*)((char*)&gSkinMgrs_41700_5591C_zc + 0xC) = 0;
+        *(int*)((char*)&gSkinMgrs_41700_5591C_z4 + 0x4) = 0; /* RAW: data-table: Bss placeholder symbol + addend (USO reloc addend), gSkinMgrs words 1..3 */
+        *(int*)((char*)&gSkinMgrs_41700_5591C_z8 + 0x8) = 0; /* RAW: data-table: Bss placeholder symbol + addend (USO reloc addend), gSkinMgrs words 1..3 */
+        *(int*)((char*)&gSkinMgrs_41700_5591C_zc + 0xC) = 0; /* RAW: data-table: Bss placeholder symbol + addend (USO reloc addend), gSkinMgrs words 1..3 */
     }
     v0 = 0;
     if (a0 == 0) {
@@ -20956,7 +20956,7 @@ s32 gfx_renderModeWord(char *a0) {
     s32 f;
     s32 m;
 
-    v = *(s32 *)(a0 + 4);
+    v = *(s32 *)(a0 + 4); /* RAW: unknown-object: render-mode record (word +4 = mode flags); caller passes an int */
     f = v & 0x80000;
     if (f != 0) {
         return 0xC8000000;
@@ -21055,7 +21055,7 @@ s32 gfx_renderMode2Word(char *arg0) {
     s32 temp_a1;
     s32 temp_v0;
 
-    temp_a1 = FW(arg0, 0x4);
+    temp_a1 = FW(arg0, 0x4); /* RAW: unknown-object: render-mode record (word +4 = mode flags); caller passes an int */
     temp_v0 = temp_a1 & 0xFF;
     if (temp_v0 == 0) goto c0;
     if (temp_v0 == 3) goto c3;
@@ -21349,7 +21349,7 @@ void gfx_emitGeometryMode(DLContext *a0, int *a1) {
 extern int gl_func_00000000();
 void gfx_emitRenderMode(DLContext *a0, int a1) {
     int r = CALL(gfx_renderModeWord)(a1);
-    int flags = *(int *)((char *)a1 + 4);
+    int flags = *(int *)((char *)a1 + 4); /* RAW: unknown-object: render-mode record (word +4 = mode flags); caller passes an int */
     int v = r;
     if ((flags << 12) < 0 || (flags << 8) < 0) {
         v = CALL(gfx_renderMode2Word)(a1);
@@ -22088,8 +22088,8 @@ void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 *ar
         rgba = DLBUF((char *)cnt)->count;
         DLBUF((char *)cnt)->count = rgba + 1;
         cnt = (s32)((char *)DLCTX(arg0)->gfx.cur->base + rgba * 8); /* agent-g run 307: the next base in p (reuse-map walk, 99.678 -> 99.712) */
-        *(s32 *)((char *)cnt + 0) = 0xF7000000;
-        *(s32 *)((char *)cnt + 4) = 0xFFFCFFFC;
+        *(s32 *)((char *)cnt + 0) = 0xF7000000; /* RAW: data-table: raw RDP Gfx command words (w0 / w1) written into the DL buffer */
+        *(s32 *)((char *)cnt + 4) = 0xFFFCFFFC; /* RAW: data-table: raw RDP Gfx command words (w0 / w1) written into the DL buffer */
         p = (char *)DLCTX(arg0)->gfx.cur;
         c2 = DLBUF(p)->count;
         DLBUF(p)->count = c2 + 1;
@@ -22108,8 +22108,8 @@ void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 *ar
         /* agent-g run 308: this packet pointer is g (cast both ways; g's colour value is dead here and g is always
          * written before this read): the target's t1 = g + this pointer (zdbug:5/6 replay -> g t1, const 0xE700 t2) */
         g = (s32)((char *)DLCTX(arg0)->gfx.cur->base + cnt * 8);
-        *(s32 *)((char *)g + 0) = 0xE7000000;
-        *(s32 *)((char *)g + 4) = 0;
+        *(s32 *)((char *)g + 0) = 0xE7000000; /* RAW: data-table: raw RDP Gfx command words (w0 / w1) written into the DL buffer */
+        *(s32 *)((char *)g + 4) = 0; /* RAW: data-table: raw RDP Gfx command words (w0 / w1) written into the DL buffer */
         XCALL(func_00000000_5a2c4v, gfx_setColorImage)(arg0, arg1, arg10); /* agent-c run 260: void (discarded result) */
         base = (char *)DLCTX(arg0)->gfx.cur;
         cnt = DLBUF(base)->count;
@@ -25476,7 +25476,7 @@ void TextWin_clear(int *a0) {
     if (TEXTWIN(a0)->nRows > 0) {
         do {
             *(char *)(*(int *)((char *)TEXTWIN(a0)->rows + off)) = 0;
-            *(int *)((char *)TEXTWIN(a0)->rows + off + 4) = 0;
+            *(int *)((char *)TEXTWIN(a0)->rows + off + 4) = 0; /* RAW: unknown-object: TextWin row records (8 bytes: text pointer, length) walked by a byte offset cursor */
             off += 8;
             i++;
         } while (i < TEXTWIN(a0)->nRows);
@@ -26358,7 +26358,7 @@ void AnimData_init(AnimData *a0, int a1) {
  * donor-local jumptable reloc to AnimData_load_rodata, pinned to the USO
  * RoData at +0x2080. Body below is a placeholder for the splice. */
 void AnimData_load(char *self) {
-    *(volatile int *)(self + 4) = 7;
+    *(volatile int *)(self + 4) = 7; /* RAW: donor-mirror: placeholder body; REPLACE_FUNC_BODY splices the real C from the donor unit */
 }
 
 /* AnimData_readFrames: 65-insn 64-bit-multiply-based scale + dispatch (0x104, frame 0x28).
@@ -26915,7 +26915,7 @@ void *Animator_ctor(char *self, int arg1, int arg2, int arg3, int arg4) {
  * spliced over this placeholder via REPLACE_FUNC_BODY. The old cfe NM wrap
  * (210 vs 209 words, FP colouring residual) is gone. */
 void anim_blendPose(char *o) {
-    *(volatile int *)(o + 0x50) = 22;
+    *(volatile int *)(o + 0x50) = 22; /* RAW: donor-mirror: placeholder body; REPLACE_FUNC_BODY splices the real C from the donor unit */
 }
 
 /* anim_unpackKey: unpack a packed s16 record into floats: q =

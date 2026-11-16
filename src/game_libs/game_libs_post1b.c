@@ -1284,11 +1284,11 @@ void *DNode_ctor(void *arg0, void *arg1) {
         }
         if ((base = (char *)&DNODE(arg0)->attached) != 0 ||
             (base = (char *)CALL(mem_new)(4)) != 0) {
-            FW64(base, 0) = 0;
+            FW64(base, 0) = 0; /* RAW: unknown-object: Cfront inline member ctor; base may be a fresh new(8), 64-bit zero store */
         }
         if ((base = (char *)&DNODE(arg0)->unk3A0) != 0 ||
             (base = (char *)CALL(mem_new)(4)) != 0) {
-            FW64(base, 0) = 0;
+            FW64(base, 0) = 0; /* RAW: unknown-object: Cfront inline member ctor; base may be a fresh new(8), 64-bit zero store */
         }
         CALL(DNode_init_00065060)(arg0);
     }
@@ -1883,7 +1883,7 @@ void DNode_handleMsg(char *self, int *event) {
     tag = event[0];
     do {
         if (tag == 6) {
-            *(Vec3 *)position = *(Vec3 *)((char *)event[1] + 0xEC);
+            *(Vec3 *)position = *(Vec3 *)((char *)event[1] + 0xEC); /* RAW: unknown-object: message 6 payload is the sender node; its +0xEC Vec3 (sender class not pinned) */
             args[0] = position[0]; args[1] = position[1]; args[2] = position[2];
             gl_add_position_65C54(self, args[0], args[1], args[2]);
             DNODE(self)->angVel[0] = 0.0f;
@@ -2297,7 +2297,7 @@ int DynArr_push_0006656C(int *a0) {
     return (int)(DYNARR(a0)->items + idx * 8);
 }
 
-void DynArr_init_000665A4(int *a0, int a1) { *(int*)a0 = a1; *(int*)((char*)a0 + 8) = 0; *(int*)((char*)a0 + 4) = 0; }
+void DynArr_init_000665A4(int *a0, int a1) { *(int*)a0 = a1; *(int*)((char*)a0 + 8) = 0; *(int*)((char*)a0 + 4) = 0; } /* RAW: unknown-object: DynArr has no header struct (words: data, count, cap) */
 
 /* list_allocNode_000665B4: alloc-retry cache-lookup loop. MATCHED 2026-06-20 via
  * chained-assignment `v1 = *(p+4) = alloc(...)` forcing store-before-call-arg
@@ -4601,8 +4601,8 @@ void skin_cmdSkinAnim(NodeListState *self) {
 
     entry = (short *)(saved[0x90 / 4] + a1 * 8);
     h = entry[0];
-    if (*(int *)(entry + 2) != 0) {
-        CALL(SkinMgr_addAnim)(saved, CALL(SkinAnim_ctor)(0, h, *(int *)(entry + 2), self->parent->mnode));
+    if (*(int *)(entry + 2) != 0) { /* RAW: data-table: SkinMgr anim table, 8-byte records {s16 handle, pad, anim} indexed as short * */
+        CALL(SkinMgr_addAnim)(saved, CALL(SkinAnim_ctor)(0, h, *(int *)(entry + 2), self->parent->mnode)); /* RAW: data-table: SkinMgr anim table, 8-byte records {s16 handle, pad, anim} indexed as short * */
     }
 }
 
@@ -5622,7 +5622,7 @@ void gl_osDestroyThread(int *target) {
     if (target == 0) {
         target = *(int **)&gl___osRunningThread;
     } else {
-        if (*(unsigned short *)((char *)target + 0x10) != 1) {
+        if (*(unsigned short *)((char *)target + 0x10) != 1) { /* RAW: donor-mirror: -O2 stand-in; the real C is the -O1 donor game_libs_o1_6AF44.c (OSThread.state) */
             gl_func_00000000(target[2], target);
         }
     }
