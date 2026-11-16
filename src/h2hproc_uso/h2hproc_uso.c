@@ -149,7 +149,7 @@ void h2h_openSession_0000020C(int *a0) {
 }
 
 void h2h_closeSession_00000274(int *a0) {
-    gl_func_00000000((int*)a0[2]);
+    CALL(mem_delete)((int*)a0[2]);
     a0[2] = 0;
 }
 /* Trailing alignment nop at 0x2A0 emitted via all-zero SUFFIX_BYTES_FORCE on

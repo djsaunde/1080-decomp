@@ -1839,14 +1839,14 @@ int app_flowModeBit(int a0) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_00004104(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadQuad_00004140(Quad4 *dst) {
     Quad4 scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16);
     *dst = scratch;
 }
 
@@ -1854,7 +1854,7 @@ extern int gl_func_00000000();
 void fs_gdlReadFloat_00004198(float *dst) {
     int pad;
     float scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 

@@ -168,7 +168,7 @@ void tim_openSession_000005A4(int **arg0, int arg1, int arg2) {
  * landed only because its 0xE90 baked into an ADDIU (struct-by-value base-
  * materialization), not a load/store %lo. Default build = donor splice. */
 void tim_closeSession_0000065C(int *a0) {
-    gl_func_00000000((int*)a0[0], 3);
+    CALL(Backup_closeSession)((int*)a0[0], 3);
     a0[0] = 0;
     *(int*)((char*)&D_00000000 + 0x14C) = 0;
 }

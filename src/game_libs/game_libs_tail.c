@@ -22,7 +22,7 @@ typedef struct { float x, y, z; } Vec3;
 extern int gl_func_00000000();
 void fs_gdlReadInt_00009674(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -30,7 +30,7 @@ extern int gl_func_00000000();
 void fs_gdlReadFloat_000096B0(float *dst) {
     int pad;
     float scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -1989,9 +1989,9 @@ int *ColourItem_create_0000C5B0(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)gl_func_00000000(0x40);
+    p1 = (int*)CALL(mem_new)(0x40);
     if (p1 != 0) {
-        gl_func_00000000(p1);
+        CALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
         ((ColourSubItem *)p1)->unk3C = 0;
     }
@@ -1999,7 +1999,7 @@ int *ColourItem_create_0000C5B0(int *arg0) {
     p1 = arg0;
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
-        gl_func_00000000((char*)p2 + 0x10, head);
+        CALL(list_append)((char*)p2 + 0x10, head);
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
@@ -2011,7 +2011,7 @@ int *ColourItem_create_0000C5B0(int *arg0) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_0000C644(int *dst) {
     int pad, scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
@@ -2019,14 +2019,14 @@ extern int gl_func_00000000();
 void fs_gdlReadFloat_0000C680(float *dst) {
     int pad;
     float scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadQuad_0000C6BC(Quad4 *dst) {
     Quad4 scratch;
-    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16);
     *dst = scratch;
 }
 

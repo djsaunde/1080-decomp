@@ -4828,20 +4828,20 @@ void *TreeTmpl_create(char *arg0) {
         /* gPolyGeomMode_3EEC8's two mode words (gl_data.h): [1] = the geometry-mode bits */
         ((int *)&gPolyGeomMode_3EEC8_87A4_cfg)[1] = 0xAA002;
         ((int *)&gPolyGeomMode_3EEC8_87A4_cfg)[0] = 0;
-        TREETMPL(arg0)->shape = func_00000000(0, &sStr_tree_7FF4, TREETMPL(arg0)->shapeData, 0);
+        TREETMPL(arg0)->shape = FCALL(PolyShape_ctor)(0, &sStr_tree_7FF4, TREETMPL(arg0)->shapeData, 0);
     }
-    s1 = (char *)func_00000000(0xC8);
+    s1 = (char *)FCALL(mem_new)(0xC8);
     if (s1 != 0) {
-        func_00000000_087A4(s1);
+        XCALL(func_00000000_087A4, SNode_ctor)(s1);
         NODE(s1)->vptr = (char *)(D_087A4_vtable + 0x10);
         s0 = (char *)&TREE(s1)->coll;
         if (s0 == 0) {
-            s0 = (char *)func_00000000(0x40);
+            s0 = (char *)FCALL(mem_new)(0x40);
             if (s0 == 0) {
                 goto skip;
             }
         }
-        func_00000000_087A4(s0);
+        XCALL(func_00000000_087A4, coll_boxCtor_0003CAA0)(s0);
         COLLOBJ(s0)->vptr = (char *)&D_87A4_vt;
     }
 skip:
@@ -4850,14 +4850,14 @@ skip:
     s0 = s1;
     ((void (*)(char *, int *))VT_SLOT(NODE(s1)->vptr, 4).fn)(s1 + VT_SLOT(NODE(s1)->vptr, 4).delta, &kind);
     s1 = (char *)TREETMPL(arg0)->shape;
-    func_00000000_087A4(&NODE(s0)->children, s1);
+    XCALL(func_00000000_087A4, list_append)(&NODE(s0)->children, s1);
     if (NODE(s1)->parent != 0) {
         NODE(s1)->unk04 = 1;
     }
     NODE(s1)->parent = (Node *)s0;
-    func_00000000_087A4_f((char *)&TREE(s0)->coll, s0, 0x74, 150.0f, kRo_TreeTmpl_create_5F0);
+    XCALL(func_00000000_087A4_f, CollObj_initCylinder)((char *)&TREE(s0)->coll, s0, 0x74, 150.0f, kRo_TreeTmpl_create_5F0);
     TREE(s0)->coll.obj.flags |= 1;
-    func_00000000_087A4(D_87A4_tail, &TREE(s0)->coll);
+    XCALL(func_00000000_087A4, CollObjMgr_addStatic)(D_87A4_tail, &TREE(s0)->coll);
     return s0;
 }
 
@@ -6890,8 +6890,8 @@ int *boot_ItemType_create_0000EBE8(int *caller_a0) {
     int *ret;
     int *target;
     int *p;
-    if ((p = (int*)func_00000000(0x40)) != 0) {
-        func_00000000(p);
+    if ((p = (int*)FCALL(mem_new)(0x40)) != 0) {
+        FCALL(ColourItem_ctor)(p);
         NODE(p)->vptr = (char *)&ColourItem_vtbl_75A0;
         p[0x3C/4] = 0;
     }
@@ -6899,7 +6899,7 @@ int *boot_ItemType_create_0000EBE8(int *caller_a0) {
     p += 0x10/4;
     if (caller_a0[0x40/4] != 0) {
         target = (int*)caller_a0[0x40/4];
-        func_00000000(p, target);
+        FCALL(list_append)(p, target);
         if (target[0x14/4] != 0) {
             target[0x4/4] = 1;
         }
@@ -6981,10 +6981,10 @@ void *boot_ItemType_create_0000EE8C(void *caller_a0) {
   void *ret;
   void *target;
   register void *p;
-  p = (void *) func_00000000(0x40);
+  p = (void *) FCALL(mem_new)(0x40);
   if (p != 0)
   {
-    func_00000000(p);
+    FCALL(ColourItem_ctor)(p);
     NODE(p)->vptr = (char *)&ColourItem_vtbl_75A0;
     *((int *) (((char *) p) + 0x3C)) = 0;
   }
@@ -6993,7 +6993,7 @@ void *boot_ItemType_create_0000EE8C(void *caller_a0) {
   target = *((void **) (((char *) caller_a0) + 0x40));
   if ((*((void **) (((char *) caller_a0) + 0x40))) != 0)
   {
-    func_00000000(p, target);
+    FCALL(list_append)(p, target);
     if ((*((int *) (((char *) target) + 0x14))) != 0)
     {
       *((int *) (((char *) target) + 0x4)) = 1;

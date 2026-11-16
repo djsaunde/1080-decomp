@@ -187,7 +187,7 @@ void trk_openSession_000005A4(int **arg0, int arg1, int arg2) {
  * objdiff reject the object. This -O2 body is what the main object compiles;
  * the donor's -O0 bytes are spliced over it. */
 void trk_closeSession_0000065C(int *a0) {
-    gl_func_00000000((int*)a0[0], 3);
+    CALL(Backup_closeSession)((int*)a0[0], 3);
     a0[0] = 0;
     *(int*)((char*)&D_00000000 + 0x14C) = 0;
 }
