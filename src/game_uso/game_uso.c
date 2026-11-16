@@ -714,23 +714,25 @@ void *SnowChaseActorCamParms_ctor(char *s0) {
             ((CamVec3Parm *)o1)->value.y = tmp.y;
             ((CamVec3Parm *)o1)->value.z = tmp.z;
         }
-#define STAGE(OFF, T, SYM, TOFF) \
+/* NEW / ADDPARM: the two callees, passed per use so each jal has a source site
+ * (name-placeholder-calls.py names macro arguments, not macro bodies) */
+#define STAGE(OFF, T, SYM, TOFF, NEW, ADDPARM) \
         T.w = ((T4_18FC *)(&(SYM) + (TOFF)))->w; \
         prm = T; \
         o = s0 + (OFF); \
-        if (o != 0 || (o = (char *)game_uso_func_055750(0x18)) != 0) { \
-            game_uso_func_04A188(o, s0, prm, 1); \
+        if (o != 0 || (o = (char *)NEW(0x18)) != 0) { \
+            ADDPARM(o, s0, prm, 1); \
             ((CamParm *)o)->vptr = &game_uso_D_807FE608 + 24; \
             ((CamParm *)o)->unk14 = 0; \
             ((CamParm *)o)->value = 0.0f; \
         }
-        STAGE(40,  t2, game_uso_D_807FE914, 0x324)
-        STAGE(64,  t3, game_uso_D_807FE918, 0x328)
-        STAGE(88,  t4, game_uso_D_807FE91C, 0x32C)
-        STAGE(112, t5, game_uso_D_807FE920, 0x330)
-        STAGE(136, t6, game_uso_D_807FE924, 0x334)
-        STAGE(160, t7, game_uso_D_807FE928, 0x338)
-        STAGE(184, t8, game_uso_D_807FE92C, 0x33C)
+        STAGE(40,  t2, game_uso_D_807FE914, 0x324, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(64,  t3, game_uso_D_807FE918, 0x328, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(88,  t4, game_uso_D_807FE91C, 0x32C, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(112, t5, game_uso_D_807FE920, 0x330, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(136, t6, game_uso_D_807FE924, 0x334, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(160, t7, game_uso_D_807FE928, 0x338, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(184, t8, game_uso_D_807FE92C, 0x33C, game_uso_func_055750, game_uso_func_04A188)
 #undef STAGE
     }
     return s0;
@@ -1407,22 +1409,23 @@ void *SnowChaseActorParms_ctor(char *s0) {
             ((CamVec3Parm *)o1)->value.y = tmp.y;
             ((CamVec3Parm *)o1)->value.z = tmp.z;
         }
-#define STAGE(OFF, T, SYM, TOFF) \
+/* NEW / ADDPARM: the two callees, passed per use (see SnowChaseActorCamParms_ctor) */
+#define STAGE(OFF, T, SYM, TOFF, NEW, ADDPARM) \
 T.w = ((T4_3018 *)(&(SYM) + (TOFF)))->w; prm = T; o = s0 + (OFF); \
-        if (o != 0 || (o = (char *)game_uso_func_055750(0x18)) != 0) { \
-            game_uso_func_04A188(o, s0, prm, 1); \
+        if (o != 0 || (o = (char *)NEW(0x18)) != 0) { \
+            ADDPARM(o, s0, prm, 1); \
             ((CamParm *)o)->vptr = &game_uso_D_807FE608 + 24; \
             ((CamParm *)o)->unk14 = 0; \
             ((CamParm *)o)->value = 0.0f; \
         }
-        STAGE(40,  t2, game_uso_D_807FE970, 0x380)
-        STAGE(64,  t3, game_uso_D_807FE974, 0x384)
-        STAGE(88,  t4, game_uso_D_807FE978, 0x388)
-        STAGE(112, t5, game_uso_D_807FE97C, 0x38C)
-        STAGE(136, t6, game_uso_D_807FE980, 0x390)
-        STAGE(160, t7, game_uso_D_807FE984, 0x394)
-        STAGE(184, t8, game_uso_D_807FE988, 0x398)
-        STAGE(208, t9, game_uso_D_807FE98C, 0x39C)
+        STAGE(40,  t2, game_uso_D_807FE970, 0x380, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(64,  t3, game_uso_D_807FE974, 0x384, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(88,  t4, game_uso_D_807FE978, 0x388, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(112, t5, game_uso_D_807FE97C, 0x38C, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(136, t6, game_uso_D_807FE980, 0x390, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(160, t7, game_uso_D_807FE984, 0x394, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(184, t8, game_uso_D_807FE988, 0x398, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(208, t9, game_uso_D_807FE98C, 0x39C, game_uso_func_055750, game_uso_func_04A188)
 #undef STAGE
     }
     return s0;
