@@ -5801,6 +5801,7 @@ ne_vt_entry = 0x00000000;  /* nameent Data+0x18 entry vtable, in-place 0 (nameen
 ne_gRowBase = 0x00000000;  /* bootup Bss+0x28C gui string-table base (nameent NCC donor 760) */
 nameent_uso_func_00000760_rodata = 0x00000000;  /* nameent RoData+0: 760 donor literal 0.2f */
 nameent_uso_func_00000E44_rodata = 0x0000000C;  /* nameent RoData+0x10: E44 donor literal 0.05f (donor .rodata 4) */
+ne_gui_drawSpriteScroll = 0x00000000;  /* float-scale typed alias of the blank import (nameent NCC donor 9BC, NM) */
 ne_input_getStickX = 0x00000000;  /* float-returning alias of the blank import (nameent NCC donor E44) */
 ne_func_00000000_v = 0x00000000;  /* void-typed call alias (nameent_uso.c 150: frees v0 for the phase) */
 snow_ro_20 = 0x00000020;  /* snoweffects RoData+0x20 float (0x3EE4 emitter default, own lui) */

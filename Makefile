@@ -131,6 +131,8 @@ $(NE_NCC_DONOR): src/nameent_uso/nameent_uso_ncc.cpp
 NE_NCC_FUNCS := nameent_uso_func_000002F4 nameent_uso_func_00000760 nameent_uso_func_00000E44
 build/src/nameent_uso/nameent_uso.c.o build/non_matching/src/nameent_uso/nameent_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(NE_NCC_FUNCS),$(f)=$(NE_NCC_DONOR))
 build/src/nameent_uso/nameent_uso.c.o build/non_matching/src/nameent_uso/nameent_uso.c.o: $(NE_NCC_DONOR)
+# 9BC is NM (286/290): its donor body goes into the NON_MATCHING object only.
+build/non_matching/src/nameent_uso/nameent_uso.c.o: private REPLACE_FUNC_BODY += nameent_uso_func_000009BC=$(NE_NCC_DONOR)
 # trnproc.uso is C++: functions only edg reproduces come from one NCC donor (agent-c run 643).
 TRN_NCC_DONOR := build/src/trnproc_uso/trnproc_uso_ncc.cpp.o
 $(TRN_NCC_DONOR): src/trnproc_uso/trnproc_uso_ncc.cpp
