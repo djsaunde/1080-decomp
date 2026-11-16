@@ -204,3 +204,5 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: BaseMat_emitDisplayLists_00043BEC gl_43BEC_call_44540 gfx_callStaticDL_00044540 */
+/* port-bind: BaseMat_emitDisplayLists_00043BEC gl_43BEC_virtual_to_physical gl_osVirtualToPhysical */

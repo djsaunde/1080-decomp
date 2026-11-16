@@ -204,3 +204,5 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: MorphPoly_display gl_4A7C4_render PolyShape_display */
+/* port-bind: MorphPoly_display gl_4A7C4_report sys_fatal */

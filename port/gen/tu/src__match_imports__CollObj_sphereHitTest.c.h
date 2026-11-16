@@ -204,3 +204,6 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: CollObj_sphereHitTest gl_3cbb4_magnitude_5bbcc math_vec3Length_0005BBCC */
+/* port-bind: CollObj_sphereHitTest gl_3cbb4_normalize_5c9bc math_vec3Normalize */
+/* port-bind: CollObj_sphereHitTest gl_3cbb4_segment_3a58c coll_raySphere */

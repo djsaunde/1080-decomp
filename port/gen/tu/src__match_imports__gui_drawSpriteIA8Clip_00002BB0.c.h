@@ -10,3 +10,7 @@
 /* port-drop: gui_setPrimColor_000006B8 */ /* helper copy; shipped body in src/gui_uso/gui_uso_ncc_06B8.cpp */
 #pragma weak gui_setupRenderMode_0000055C
 /* port-drop: gui_setupRenderMode_0000055C */ /* helper copy; shipped body in src/gui_uso/gui_uso_ncc_055C.cpp */
+/* port-bind: gui_drawSpriteIA8Clip_00002BB0 gui_import_2CEC gui_loadTileIA8 */
+/* port-bind: gui_drawSpriteIA8Clip_00002BB0 gui_import_2D0C gui_texRect_00004568 */
+/* port-bind: gui_drawSpriteIA8Clip_00002BB0 gui_import_2D4C gui_loadTileIA8 */
+/* port-bind: gui_drawSpriteIA8Clip_00002BB0 gui_import_2DA0 gui_texRect_00004568 */

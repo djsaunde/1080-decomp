@@ -204,3 +204,9 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: gfx_pickNode gl_4C928_find Node_sendMsg14 */
+/* port-bind: gfx_pickNode gl_4C928_log dbg_printf */
+/* port-bind: gfx_pickNode gl_4C928_mode gfx_submitFrame_0004CDB0 */
+/* port-bind: gfx_pickNode gl_4C928_poll gl_osYieldThread */
+/* port-bind: gfx_pickNode gl_4C928_process ScreenWindow_display */
+/* port-bind: gfx_pickNode gl_4C928_send gl_osSendMesg */

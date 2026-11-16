@@ -204,3 +204,5 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: gfx_setupMatTextures_00045E20 gl_45E20_emit_node gfx_loadTexture */
+/* port-bind: gfx_setupMatTextures_00045E20 gl_45E20_node_bytes gfx_texImageBytes */

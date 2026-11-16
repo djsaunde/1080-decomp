@@ -8,3 +8,15 @@
 /* port-drop: tim_main */ /* placeholder copy; shipped body in src/timproc_uso_b1/timproc_uso_b1_o0_B0.c */
 #pragma weak tim_openSession_000005A4
 /* port-drop: tim_openSession_000005A4 */ /* placeholder copy; shipped body in src/timproc_uso_b1/timproc_uso_b1_o0_5A4.c */
+/* port-bind: ParmFloat_read_00001E74 timproc_uso_b1_func_0000083C_jal tim_streamReadS32_0000083C */
+/* port-bind: ParmFloat_read_00001E74 timproc_uso_b1_func_00000878_jal tim_streamReadF32_00000878 */
+/* port-bind: ParmInt_read_00001E44 timproc_uso_b1_func_0000083C_jal tim_streamReadS32_0000083C */
+/* port-bind: ParmQuad_read_00001EA4 timproc_uso_b1_func_0000083C_jal tim_streamReadS32_0000083C */
+/* port-bind: ParmQuad_read_00001EA4 timproc_uso_b1_func_000008B4_jal tim_streamReadQuad_000008B4 */
+/* port-bind: ParmVec3_read_00001F64 timproc_uso_b1_func_0000083C_jal tim_streamReadS32_0000083C */
+/* port-bind: ParmVec3_read_00001F64 timproc_uso_b1_func_0000090C_jal tim_streamReadVec3_0000090C */
+/* port-bind: TimDataManager_update_00001BCC gl_proto_1c68 CourseGadget_setVec4_00002580 */
+/* port-bind: TimDataManager_update_00001BCC gl_proto_1c94 CourseGadget_setFloat2_0000254C */
+/* port-bind: TimMenu_handleInput_00002A8C tim_imp_input_checkPressed input_checkPressed_00011E00 */
+/* port-bind: TimMenu_handleInput_00002A8C tim_imp_replay_saveGhost replay_saveGhost */
+/* port-bind: TimMenu_handleInput_00002A8C tim_imp_snd_postEvent snd_postEvent */

@@ -6,3 +6,7 @@
 /* port-drop: func_00000000 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
 #pragma weak stream_readQuad_00013CE8
 /* port-drop: stream_readQuad_00013CE8 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso_tail4.c */
+/* port-bind: Fader_ctor boot12E00_alloc mem_new */
+/* port-bind: Fader_ctor boot12E00_alloc_aligned mem_newAligned */
+/* port-bind: Fader_ctor boot12E00_base_init Node_ctor */
+/* port-bind: Fader_ctor boot12E00_exchange_context app_setHeapMode */

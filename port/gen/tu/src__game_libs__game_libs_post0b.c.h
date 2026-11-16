@@ -236,6 +236,59 @@
 /* port-drop: nodelist_walk_0005534C */ /* placeholder copy; shipped body in src/game_libs/game_libs_ncc_5534C.cpp */
 #pragma weak sys_hang
 /* port-drop: sys_hang */ /* placeholder copy; shipped body in src/game_libs/game_libs_o2_34548.c */
+/* port-bind: AnimDataMgr_loadFile gl_ref_0007644C fs_gdlReadInt_00061DE0 */
+/* port-bind: AnimDataMgr_loadFile gl_ref_00076488 fs_gdlReadInt_00061E1C */
+/* port-bind: AnimGroup_load gl_ref_0007644C fs_gdlReadInt_00061DE0 */
+/* port-bind: ColourItem_load gl_func_0003D68C_51708 fs_gdlReadInt_0003D09C */
+/* port-bind: ItemMgr_saveData gl_ref_0005166C fs_gdlWriteInt_0003D000 */
+/* port-bind: ItemMgr_saveData gl_ref_000516A0 fs_gdlWriteInt_0003D034 */
+/* port-bind: ItemMgr_saveData gl_ref_000516D4 fs_gdlWriteInt_0003D068 */
+/* port-bind: ItemType_load gl_func_0003D3C4_51630 fs_gdlReadInt_0003CFC4 */
+/* port-bind: Mem_allocHigh gl_ref_0006F620 Mem_listInsert_0005AFB0 */
+/* port-bind: Mem_allocLow gl_ref_0006F620 Mem_listInsert_0005AFB0 */
+/* port-bind: Mem_free gl_ref_0006F620 Mem_listInsert_0005AFB0 */
+/* port-bind: Node_handleMsg gl_func_00000000 str_compare_00067B04 */
+/* port-bind: QNode_def gl_proto_FF44 QNode_ctor */
+/* port-bind: SNode_hostioParms gl_proto_39C8C hostio_addFloat */
+/* port-bind: SNode_loadData func_0004C2DC fs_gdlReadVec3_00037C70 */
+/* port-bind: SNode_loadData func_0004C34C fs_gdlRead24_00037CE0 */
+/* port-bind: SNode_saveData func_0004C3B4 fs_gdlWriteVec3_00037D48 */
+/* port-bind: SNode_saveData func_0004C414 fs_gdlWrite24_00037DA8 */
+/* port-bind: Spinner_hostioParms gl_proto_3787C hostio_addFloat */
+/* port-bind: Window_setupView aEE44_a math_perspectiveF */
+/* port-bind: Window_setupView aEE44_c math_orthoF */
+/* port-bind: fault_printThread game_libs_func_00062F08_55C34 fault_printFlags */
+/* port-bind: gfx_flushTexture_00046C4C gl_fn_578F0 gfx_assertTexAligned */
+/* port-bind: gfx_flushTexture_00046C4C gl_retf_46C4C gfx_texelBytes */
+/* port-bind: gfx_loadQuadIntInt_00044034 gl_ref_00056C5C fs_gdlReadQuad_000425F0 */
+/* port-bind: gfx_loadQuadIntInt_00044034 gl_ref_00056CB4 fs_gdlReadInt_00042648 */
+/* port-bind: gfx_saveQuadIntInt_00043FFC gl_ref_00056BDC fs_gdlWriteQuad_00042570 */
+/* port-bind: gfx_saveQuadIntInt_00043FFC gl_ref_00056C28 fs_gdlWriteInt_000425BC */
+/* port-bind: gfx_texImageBytes gl_func_returns_float gfx_texelBytes */
+/* port-bind: gfx_texRowBytes gl_func_returns_float gfx_texelBytes */
+/* port-bind: gfx_texelBytes gl_func_00000000 sys_fatal */
+/* port-bind: heap_new gl_proto_41148 dbg_printf */
+/* port-bind: hostio_readQuadParm_0003A014 gl_ref_0004C470 fs_gdlReadInt_00037E04 */
+/* port-bind: hostio_readQuadParm_0003A014 gl_ref_0004C4AC fs_gdlReadQuad_00037E40 */
+/* port-bind: hostio_readQuadParm_0003CF94 gl_ref_0004F018 fs_gdlReadInt_0003A9AC */
+/* port-bind: hostio_readQuadParm_0003CF94 gl_ref_0004F054 fs_gdlReadQuad_0003A9E8 */
+/* port-bind: hostio_readQuadParm_0003EBAC gl_ref_00051744 fs_gdlReadInt_0003D0D8 */
+/* port-bind: hostio_readQuadParm_0003EBAC gl_ref_00051780 fs_gdlReadQuad_0003D114 */
+/* port-bind: hostio_readQuadParm_000410AC gl_func_00054648 fs_gdlReadInt_0003FFDC */
+/* port-bind: hostio_readQuadParm_000410AC gl_func_00054684 fs_gdlReadQuad_00040018 */
+/* port-bind: hostio_readQuadParm_0004D02C gl_ref_00056C5C fs_gdlReadQuad_000425F0 */
+/* port-bind: hostio_readQuadParm_0004D02C gl_ref_00056CB4 fs_gdlReadInt_00042648 */
+/* port-bind: hostio_readQuadParm_0004E3F4 gl_ref_000623D0 fs_gdlReadInt_0004DD64 */
+/* port-bind: hostio_readQuadParm_0004E3F4 gl_ref_0006240C fs_gdlReadQuad_0004DDA0 */
+/* port-bind: hostio_readQuadParm_0004F9AC gl_ref_00062B54 fs_gdlReadInt_0004E4E8 */
+/* port-bind: hostio_readQuadParm_0004F9AC gl_ref_00062B90 fs_gdlReadQuad_0004E524 */
+/* port-bind: hostio_readQuadParm_000551B0 gl_ref_00065C2C fs_gdlReadInt_000515C0 */
+/* port-bind: hostio_readQuadParm_000551B0 gl_ref_00065C68 fs_gdlReadQuad_000515FC */
+/* port-bind: hostio_readQuadParm_00055B10 gl_ref_0006A0E8 fs_gdlReadInt_00055A7C */
+/* port-bind: hostio_readQuadParm_00055B10 gl_ref_0006A124 fs_gdlReadQuad_00055AB8 */
+/* port-bind: math_logFloatDiffs gl_proto_5c810 hostio_addFloat */
+/* port-bind: math_mtxRotateAngle_0005DB00 gl_func_DB00_a fsin */
+/* port-bind: math_mtxRotateAngle_0005DB00 gl_func_DB00_f fcos */
 int gl_func_00000000_5f3e0(); /* CALL placeholder token: file-scope K&R declaration */
 int gl_func_00034458_4EB54(); /* CALL placeholder token: file-scope K&R declaration */
 int gl_func_00034458_4F85C(); /* CALL placeholder token: file-scope K&R declaration */

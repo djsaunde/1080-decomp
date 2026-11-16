@@ -24,6 +24,10 @@ assembled:
                           decision 4), under its shipped name.
   port-local: SYM         SYM's `.globl` is removed (file-local junk such as the
                           asm-processor `_asmpp_large_func*` stubs).
+  port-bind: FUNC TOK TGT inside FUNC's body (and its gcc clones FUNC.part.N / .isra.N
+                          ...), every reference to the placeholder token TOK becomes TGT:
+                          the ROM callee of all of FUNC's unnamed TOK calls
+                          (scripts/port-gen-binds.py, plan section 14).
 
 Units without such a header are compiled unchanged.
 """
@@ -32,7 +36,10 @@ import re
 import subprocess
 import sys
 
-DIRECTIVE_RE = re.compile(r"/\*\s*port-(drop|alias|noinit|local):\s*([^*]*?)\s*\*/")
+DIRECTIVE_RE = re.compile(r"/\*\s*port-(drop|alias|noinit|local|bind):\s*([^*]*?)\s*\*/")
+
+
+BINDS = {}
 
 
 def parse_header(path):
@@ -45,6 +52,8 @@ def parse_header(path):
                     drop.add(parts[0])
                 elif kind == "local":
                     local.add(parts[0])
+                elif kind == "bind":
+                    BINDS.setdefault(parts[0], {})[parts[1]] = parts[2]
                 elif kind == "alias":
                     alias.append((parts[0], parts[1]))
                 else:
@@ -52,7 +61,32 @@ def parse_header(path):
     return drop, alias, noinit, local
 
 
+def bind_calls(text, binds):
+    """rename placeholder tokens to their ROM callee inside the bound functions' bodies"""
+    if not binds:
+        return text
+    out, cur = [], None
+    for line in text.splitlines():
+        m = re.match(r"^([\w.$]+):", line)
+        if m:
+            base = m.group(1).split(".")[0]
+            if m.group(1) in binds or (base in binds and not m.group(1).startswith(".")):
+                cur = binds.get(m.group(1)) or binds[base]
+            elif not m.group(1).startswith("."):
+                cur = None
+        elif cur and re.match(r"\s*\.size\s", line):
+            out.append(line)
+            cur = None
+            continue
+        if cur and not line.lstrip().startswith("."):
+            for tok, tgt in cur.items():
+                line = re.sub(r"(?<![\w.$])%s(?![\w$])" % re.escape(tok), tgt, line)
+        out.append(line)
+    return "\n".join(out) + "\n"
+
+
 def filter_asm(text, drop, alias, noinit, local=()):
+    text = bind_calls(text, BINDS)
     out = []
     dead = None
     found = set()

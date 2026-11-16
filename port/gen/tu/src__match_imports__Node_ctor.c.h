@@ -204,3 +204,7 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: Node_ctor gl_3800C_alloc mem_new */
+/* port-bind: Node_ctor gl_3800C_get Node_getNewNodeMask */
+/* port-bind: Node_ctor gl_3800C_init Node_newTag_00037FAC */
+/* port-bind: Node_ctor gl_3800C_set Node_setUnk24 */

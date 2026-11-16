@@ -14,4 +14,17 @@
 /* port-drop: RaceProcess_drawResult */ /* placeholder copy; shipped body in src/game_libs/game_libs_o2_7344.c */
 #pragma weak RaceProcess_handleInput
 /* port-drop: RaceProcess_handleInput */ /* placeholder copy; shipped body in src/game_libs/game_libs_mp72_76F0.cpp */
+/* port-bind: Parm_read_0000405C gl_ref_00013C70 stream_readS32_00013C70 */
+/* port-bind: Parm_read_0000408C gl_ref_00013C70 stream_readS32_00013C70 */
+/* port-bind: Parm_read_0000408C gl_ref_00013CAC stream_readF32_00013CAC */
+/* port-bind: Parm_read_000040BC gl_ref_00013C70 stream_readS32_00013C70 */
+/* port-bind: Parm_read_000040BC gl_ref_00013CE8 stream_readQuad_00013CE8 */
+/* port-bind: Parm_read_000087F4 gl_ref_00018770 fs_gdlReadInt_00004104 */
+/* port-bind: Parm_read_000087F4 gl_ref_000187AC fs_gdlReadQuad_00004140 */
+/* port-bind: Parm_read_00008824 gl_ref_00018770 fs_gdlReadInt_00004104 */
+/* port-bind: Parm_read_00008854 gl_ref_00018770 fs_gdlReadInt_00004104 */
+/* port-bind: Parm_read_00008854 gl_ref_00018804 fs_gdlReadFloat_00004198 */
+/* port-bind: Parm_read_00008884 gl_ref_00018770 fs_gdlReadInt_00004104 */
+/* port-bind: Parm_read_00008884 gl_ref_00018840 fs_gdlReadVec3_000041D4 */
+/* port-bind: TrickPointsGadget_reset_00003298 gl_reset_3298 PointsPopup_setPosScale */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

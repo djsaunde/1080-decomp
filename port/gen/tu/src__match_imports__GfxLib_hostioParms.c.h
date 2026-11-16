@@ -204,3 +204,14 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: GfxLib_hostioParms FogParms_hostioParms_44144 FogParms_hostioParms */
+/* port-bind: GfxLib_hostioParms Node_hostioParms_44144 Node_hostioParms */
+/* port-bind: GfxLib_hostioParms gl_sprintf_44144 gl_sprintf */
+/* port-bind: GfxLib_hostioParms hostio_addBool_44144 hostio_addBool */
+/* port-bind: GfxLib_hostioParms hostio_addButton_44144 hostio_addButton */
+/* port-bind: GfxLib_hostioParms hostio_addFloat_44144 hostio_addFloat */
+/* port-bind: GfxLib_hostioParms hostio_addInt_44144 hostio_addInt */
+/* port-bind: GfxLib_hostioParms hostio_addText_44144 hostio_addText */
+/* port-bind: GfxLib_hostioParms hostio_beginGroup_44144 hostio_beginGroup */
+/* port-bind: GfxLib_hostioParms hostio_endGroup_44144 hostio_endGroup */
+/* port-bind: GfxLib_hostioParms mem_new_44144 mem_new */

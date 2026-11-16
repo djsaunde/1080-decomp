@@ -28,3 +28,9 @@
 /* port-drop: gen_streamReadQuad_000003A8 */ /* helper copy; shipped body in src/timproc_uso_b5/timproc_uso_b5.c */
 /* port-local: _asmpp_func1 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func73 */ /* asm-processor stub from the context header */
+/* port-bind: BoardList_createItem gen_imp_MNode_addChild MNode_addChild */
+/* port-bind: BoardList_createItem gen_imp_Node_ctor Node_ctor */
+/* port-bind: BoardList_createItem gen_imp_QNode_ctor QNode_ctor */
+/* port-bind: BoardList_createItem gen_imp_list_append list_append */
+/* port-bind: BoardList_createItem gen_imp_mem_new mem_new */
+/* port-bind: BoardList_createItem import_000A12EC SnowBoarder_createBoardShape_0000B49C */

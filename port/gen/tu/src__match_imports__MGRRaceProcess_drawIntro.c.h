@@ -6,3 +6,7 @@
 /* port-drop: mgr_drawResults_000023FC */ /* helper copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_23FC.cpp */
 /* port-local: _asmpp_func14 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func17 */ /* asm-processor stub from the context header */
+/* port-bind: MGRRaceProcess_drawIntro import_0024E608 gui_setColor_00001A5C */
+/* port-bind: MGRRaceProcess_drawIntro import_0024EAA0 gui_setEnvPrimColor_00001EF4 */
+/* port-bind: MGRRaceProcess_drawIntro import_0024F2C8 gui_spriteRefresh */
+/* port-bind: MGRRaceProcess_drawIntro import_0024F34C gui_drawSprite */

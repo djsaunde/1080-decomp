@@ -69,3 +69,7 @@
 #pragma weak stream_readVec3_00000080
 /* port-drop: stream_readVec3_00000080 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
 /* port-local: _asmpp_func13 */ /* asm-processor stub from the context header */
+/* port-bind: game_createPlayers func_3638_attach list_append */
+/* port-bind: game_createPlayers func_3638_finalize memtrack_end */
+/* port-bind: game_createPlayers func_3638_node SnowBoarder_ctor */
+/* port-bind: game_createPlayers func_3638_notify game_addPlayer_000020AC */

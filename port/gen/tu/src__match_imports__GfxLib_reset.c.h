@@ -204,3 +204,10 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: GfxLib_reset gl_44918_init_43EAC FogParms_setDefault_00043EAC */
+/* port-bind: GfxLib_reset gl_44918_notify_4DD4C prof_timerReset_0004DD4C */
+/* port-bind: GfxLib_reset gl_44918_range_3523C sys_initHeap */
+/* port-bind: GfxLib_reset gl_44918_reset_4E00C gfx_initMtxBlock_0004E00C */
+/* port-bind: GfxLib_reset gl_44918_reset_56814 gfx_resetDLContext */
+/* port-bind: GfxLib_reset gl_44918_set_46788 gfx_setCpuDraw */
+/* port-bind: GfxLib_reset gl_44918_yield_732C4 gl_osYieldThread */

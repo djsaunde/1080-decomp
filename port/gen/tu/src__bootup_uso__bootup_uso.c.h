@@ -52,4 +52,13 @@
 /* port-drop: item_registerTemplates */ /* placeholder copy; shipped body in src/bootup_uso/bootup_uso_ncc_55A0.cpp */
 #pragma weak map_addEntry_00007204
 /* port-drop: map_addEntry_00007204 */ /* placeholder copy; shipped body in src/bootup_uso/bootup_uso_ncc_7204.cpp */
+/* port-bind: Mountain_hostioParms func_477c_reg hostio_addFloat */
+/* port-bind: SnowBCollider_ctor func_8b44_init Friction_ctor_00063DC4 */
+/* port-bind: SnowBoarder_createColliders_0000CCE0 func_cce0 SnowBCollider_ctor */
+/* port-bind: Tv1Tmpl_blitFrame_000077D0 func_411c_rf sys_randf */
+/* port-bind: Tv1Tmpl_stepPicture_00007D04 func_7D04_randf sys_randf */
+/* port-bind: game_setupDemoSolo func_3734_r1 game_createPlayers */
+/* port-bind: game_setupReplay func_3b78_r game_createPlayers */
+/* port-bind: game_setupSolo func_38c0_r game_createPlayers */
+/* port-bind: game_setupVsGhost func_39d8_r game_createPlayers */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

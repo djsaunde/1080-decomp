@@ -24,3 +24,5 @@
 /* port-local: _asmpp_func24 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func3 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func2 */ /* asm-processor stub from the context header */
+/* port-bind: CountDownGadget_setTime game_libs_B94_format gl_sprintf */
+/* port-bind: CountDownGadget_setTime game_libs_B94_notify snd_sendEvent */

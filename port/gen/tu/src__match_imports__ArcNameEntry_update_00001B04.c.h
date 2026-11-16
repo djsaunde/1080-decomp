@@ -17,3 +17,6 @@
 #pragma weak fs_gdlReadQuad_arc_00000974
 /* port-drop: fs_gdlReadQuad_arc_00000974 */ /* helper copy; shipped body in src/arcproc_uso/arcproc_uso_tail1.c */
 /* port-local: _asmpp_func7 */ /* asm-processor stub from the context header */
+/* port-bind: ArcNameEntry_update_00001B04 arcproc_uso_import_116_1B04 Backup_sessionHasNew */
+/* port-bind: ArcNameEntry_update_00001B04 arcproc_uso_import_117_1B04 Process_fadeOut_0000F954 */
+/* port-bind: ArcNameEntry_update_00001B04 arcproc_uso_import_165_1B04 input_checkPressed_00011E00 */

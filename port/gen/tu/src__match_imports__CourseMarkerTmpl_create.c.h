@@ -32,5 +32,6 @@
 /* port-local: _asmpp_func51 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func55 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func74 */ /* asm-processor stub from the context header */
+/* port-bind: CourseMarkerTmpl_create uso_base_init_051C28 ColourItem_ctor */
 int game_uso_func_04A188(); /* CALL placeholder token: file-scope K&R declaration */
 int game_uso_func_07ACE0(); /* CALL placeholder token: file-scope K&R declaration */

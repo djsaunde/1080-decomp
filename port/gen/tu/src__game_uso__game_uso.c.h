@@ -54,6 +54,25 @@
 /* port-drop: cam_updateView_00000B3C */ /* placeholder copy; shipped body in src/game_uso/game_uso_mp72_B3C.cpp */
 #pragma weak game_uso_func_00000000
 /* port-drop: game_uso_func_00000000 */ /* placeholder copy; shipped body in src/game_uso/game_uso_ncc_0000.cpp */
+/* port-bind: LensFlare_create import_000F5ADC Sprite_ctor_0004B620 */
+/* port-bind: RiderAnim_checkGroundSpin_0000E91C import_00096704 SndHandle_setScaleIdx15 */
+/* port-bind: RiderAnim_checkGroundSpin_0000E91C import_00096724 SndHandle_setScaleIdx31 */
+/* port-bind: RiderAnim_checkGroundSpin_0000E91C import_0010DB28 AnimPlayer_startIfChanged */
+/* port-bind: RiderAnim_ctor_0000C48C import_0010D33C AnimPlayer_ctor */
+/* port-bind: RiderAnim_endTrick_0000D63C import_000B8698 RaceTracker_showComboBonus */
+/* port-bind: RiderAnim_init_0000D458 import_0010D420 AnimPlayer_update */
+/* port-bind: RiderAnim_jumpTakeoff_0000F360 import_00096874 SndHandle_disable */
+/* port-bind: RiderAnim_startOllie_0000FC34 import_0010DB28 AnimPlayer_startIfChanged */
+/* port-bind: RiderAnim_stateBrake import_0010DB78 AnimPlayer_setBlend */
+/* port-bind: RiderAnim_stateHopAir import_0010DB28_void AnimPlayer_startIfChanged */
+/* port-bind: RiderAnim_stateHopRise import_0010DB28 AnimPlayer_startIfChanged */
+/* port-bind: RiderAnim_stateOllieTakeoff import_0010DB28 AnimPlayer_startIfChanged */
+/* port-bind: RiderAnim_stateRow import_0010DB28 AnimPlayer_startIfChanged */
+/* port-bind: RiderAnim_stateTrickRelease import_0010DB28 AnimPlayer_startIfChanged */
+/* port-bind: SnowAI_findNearestMarker_0000A374 game_uso_func_053104 ItemMgr_findType_0003EA98 */
+/* port-bind: SnowAI_isInSegmentWidth game_uso_func_047B1C sys_assertFail */
+/* port-bind: SnowAI_isInSegmentWidth game_uso_func_071028 math_vec3Normalize */
+/* port-bind: Sun_ctor import_000F5ADC Sprite_ctor_0004B620 */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int game_uso_func_000003F4(); /* CALL placeholder token: file-scope K&R declaration */
 int game_uso_func_00E124(); /* CALL placeholder token: file-scope K&R declaration */

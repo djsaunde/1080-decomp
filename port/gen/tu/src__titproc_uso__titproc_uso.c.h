@@ -2,6 +2,29 @@
 /* src/titproc_uso/titproc_uso.c: 43 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak TitleDemoProcess_handleInput
 /* port-drop: TitleDemoProcess_handleInput */ /* placeholder copy; shipped body in src/titproc_uso/titproc_uso_mp72_116C.cpp */
+/* port-bind: GameDemoProcess_ctor import_000A5D38 PauseMenu_create */
+/* port-bind: GameDemoProcess_ctor import_000A5F40 gui_initRows_000100F0 */
+/* port-bind: GameDemoProcess_ctor import_000A5FBC gui_centerRows_0001016C */
+/* port-bind: GameDemoProcess_ctor import_000A7ECC input_setActivePad_0001207C */
+/* port-bind: GameDemoProcess_ctor import_000AE700 ColourParms_ctor */
+/* port-bind: GameDemoProcess_ctor import_000B0DBC RaceProcess_init */
+/* port-bind: GameDemoProcess_ctor import_000B6C40 RaceTracker_ctor */
+/* port-bind: GameDemoProcess_ctor import_000B88CC Node_enableAll_0000E410 */
+/* port-bind: GameDemoProcess_ctor import_0024CCF4 gui_fontCreate */
+/* port-bind: GameDemoProcess_handleInput import_000A53B4 Node_clearFlag8_0000F564 */
+/* port-bind: GameDemoProcess_handleInput import_000B1BAC RaceProcess_handleInput */
+/* port-bind: GameDemoProcess_onQuitButton import_000A53B4 Node_clearFlag8_0000F564 */
+/* port-bind: MainLogo_display import_0024E388 gui_setColorEnvPrim_000017DC */
+/* port-bind: MainLogo_display import_0024F2C8 gui_spriteRefresh */
+/* port-bind: MainLogo_display import_0024F34C gui_drawSprite */
+/* port-bind: TitleDemoProcess_ctor import_000A5D38 PauseMenu_create */
+/* port-bind: TitleDemoProcess_ctor import_000A5F40 gui_initRows_000100F0 */
+/* port-bind: TitleDemoProcess_ctor import_000A5FBC gui_centerRows_0001016C */
+/* port-bind: TitleDemoProcess_ctor import_000A7ECC input_setActivePad_0001207C */
+/* port-bind: TitleDemoProcess_ctor import_000B6C40 RaceTracker_ctor */
+/* port-bind: TitleDemoProcess_ctor import_000B88CC Node_enableAll_0000E410 */
+/* port-bind: TitleDemoProcess_ctor import_0024CCF4 gui_fontCreate */
+/* port-bind: tit_nextDemo_000000C0 titproc_uso_func_01EEE4 Backup_ghostGetMode */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int titproc_uso_func_000098(); /* CALL placeholder token: file-scope K&R declaration */
 int titproc_uso_func_0002DC(); /* CALL placeholder token: file-scope K&R declaration */

@@ -204,3 +204,8 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: memtrack_begin gl_600A4_alloc MemTracker_listAppend */
+/* port-bind: memtrack_begin gl_600A4_diag sys_fatal */
+/* port-bind: memtrack_begin gl_600A4_init MemTracker_ctor */
+/* port-bind: memtrack_begin gl_600A4_lookup memtrack_walk */
+/* port-bind: memtrack_begin gl_600A4_read memtrack_heapUsed */

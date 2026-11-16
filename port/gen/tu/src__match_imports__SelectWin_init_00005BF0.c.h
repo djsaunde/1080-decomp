@@ -26,3 +26,5 @@
 /* port-drop: gen_streamReadQuad_000003A8 */ /* helper copy; shipped body in src/timproc_uso_b5/timproc_uso_b5.c */
 /* port-local: _asmpp_func1 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func73 */ /* asm-processor stub from the context header */
+/* port-bind: SelectWin_init_00005BF0 import_0024CCF4 gui_fontCreate */
+/* port-bind: SelectWin_init_00005BF0 timproc_uso_b5_func_00008A38_entry SelectWin_curItem_00008A38 */

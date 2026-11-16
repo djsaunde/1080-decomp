@@ -202,3 +202,7 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: light_setShadowMatrix_00054D04 gl_54d04_get gfx_getShadowLight */
+/* port-bind: light_setShadowMatrix_00054D04 gl_54d04_normalize math_vec3Normalize */
+/* port-bind: light_setShadowMatrix_00054D04 gl_54d04_project math_mtxPlanarShadow */
+/* port-bind: light_setShadowMatrix_00054D04 gl_54d04_report sys_fatal */

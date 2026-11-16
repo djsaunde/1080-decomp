@@ -8,4 +8,9 @@
 /* port-drop: trk_main */ /* placeholder copy; shipped body in src/timproc_uso_b3/timproc_uso_b3_o0_B0.c */
 #pragma weak trk_openSession_000005A4
 /* port-drop: trk_openSession_000005A4 */ /* placeholder copy; shipped body in src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c */
+/* port-bind: TrkDataManager_init_000019CC gl_proto_19cc PointsPopup_setPosScale */
+/* port-bind: TrkDataManager_update_00001C68 gl_proto_1c94 CourseGadget_setFloat2_0000254C */
+/* port-bind: TrkMenu_handleInput_00002C98 trk_imp_input_checkPressed input_checkPressed_00011E00 */
+/* port-bind: TrkMenu_handleInput_00002C98 trk_imp_replay_saveGhost replay_saveGhost */
+/* port-bind: TrkMenu_handleInput_00002C98 trk_imp_snd_postEvent snd_postEvent */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

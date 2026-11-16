@@ -69,3 +69,15 @@
 #pragma weak stream_readVec3_00000080
 /* port-drop: stream_readVec3_00000080 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
 /* port-local: _asmpp_func13 */ /* asm-processor stub from the context header */
+/* port-bind: SnowBoarder_update bootup_D440_000610 snd_updatePlayer */
+/* port-bind: SnowBoarder_update bootup_D440_000A50 SndHandle_setUnk1F_00000A50 */
+/* port-bind: SnowBoarder_update bootup_D440_000A94 SndHandle_setContactSurface */
+/* port-bind: SnowBoarder_update bootup_D440_00BF8C SnowBoarder_updateDyn */
+/* port-bind: SnowBoarder_update bootup_D440_02258C RaceTracker_setEntrySpeed */
+/* port-bind: SnowBoarder_update bootup_D440_0225B8 RaceTracker_setEntryHealth */
+/* port-bind: SnowBoarder_update bootup_D440_0225F8 RaceTracker_setEntryXZ */
+/* port-bind: SnowBoarder_update bootup_D440_054FE0 QNode_update */
+/* port-bind: SnowBoarder_update bootup_D440_062380 prof_timerStart */
+/* port-bind: SnowBoarder_update bootup_D440_062388 prof_timerStop */
+/* port-bind: SnowBoarder_update bootup_D440_075E90 sys_randFromSeed */
+/* port-bind: SnowBoarder_update bootup_D440_0779E8 AnimPlayer_applyPose */

@@ -50,3 +50,8 @@
 /* port-local: _asmpp_large_func42 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func43 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func44 */ /* asm-processor stub from the context header */
+/* port-bind: skin_cmdSkinMgr gl_68C14_append list_append */
+/* port-bind: skin_cmdSkinMgr gl_68C14_assert sys_assertFail */
+/* port-bind: skin_cmdSkinMgr gl_68C14_check nodelist_checkPrevMNode */
+/* port-bind: skin_cmdSkinMgr gl_68C14_create SkinMgr_ctor */
+/* port-bind: skin_cmdSkinMgr gl_68C14_report sys_fatal */

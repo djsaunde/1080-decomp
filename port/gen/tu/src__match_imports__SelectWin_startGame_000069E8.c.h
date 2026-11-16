@@ -26,3 +26,6 @@
 /* port-drop: gen_streamReadQuad_000003A8 */ /* helper copy; shipped body in src/timproc_uso_b5/timproc_uso_b5.c */
 /* port-local: _asmpp_func1 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func73 */ /* asm-processor stub from the context header */
+/* port-bind: SelectWin_startGame_000069E8 gen_imp_Process_fadeOut_0000F954 Process_fadeOut_0000F954 */
+/* port-bind: SelectWin_startGame_000069E8 import_000A53B4 Node_clearFlag8_0000F564 */
+/* port-bind: SelectWin_startGame_000069E8 timproc_uso_b5_69E8_print dbg_printf */

@@ -2,3 +2,12 @@
 /* src/h2hproc_uso/h2hproc_uso.c: 36 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak h2h_WinsDisplay_update_00001204
 /* port-drop: h2h_WinsDisplay_update_00001204 */ /* placeholder copy; shipped body in src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp */
+/* port-bind: H2HRaceProcess_onRaceOver h2hproc_call_00000C18 h2h_setupCameras_00000C18 */
+/* port-bind: h2h_DataManager_init gl_func_15f0 CourseGadget_setVec4_00002580 */
+/* port-bind: h2h_DataManager_update gl_func_15f0 CourseGadget_setVec4_00002580 */
+/* port-bind: h2h_winByFinish_000008EC gl_func_h2hproc_8EC_f RaceProcess_finishCourse */
+/* port-bind: h2h_winByFinish_000008EC gl_func_h2hproc_8EC_pre h2h_incCounter_00000014 */
+/* port-bind: h2h_winByFinish_000008EC gl_func_h2hproc_8EC_t RaceProcess_endResult3_00006DF8 */
+/* port-bind: h2h_winByRetire_00000944 gl_func_h2hproc_8EC_f RaceProcess_endResult5_00006F60 */
+/* port-bind: h2h_winByRetire_00000944 gl_func_h2hproc_8EC_pre h2h_incCounter_00000014 */
+/* port-bind: h2h_winByRetire_00000944 gl_func_h2hproc_8EC_t RaceProcess_endResult4_00006EE0 */

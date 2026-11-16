@@ -2,3 +2,11 @@
 /* src/timproc_uso_b5/timproc_uso_b5_8FC8.c: 1 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak SelItem_reset_00003890
 /* port-drop: SelItem_reset_00003890 */ /* helper copy; shipped body in src/timproc_uso_b5/timproc_uso_b5.c */
+/* port-bind: SelItemsMgr_ctor gen_imp_MNode_addChild MNode_addChild */
+/* port-bind: SelItemsMgr_ctor gen_imp_Node_Load Node_Load */
+/* port-bind: SelItemsMgr_ctor gen_imp_Node_ctor Node_ctor */
+/* port-bind: SelItemsMgr_ctor gen_imp_PolyShape_ctor PolyShape_ctor */
+/* port-bind: SelItemsMgr_ctor gen_imp_QNode_ctor QNode_ctor */
+/* port-bind: SelItemsMgr_ctor gen_imp_dbg_printf dbg_printf */
+/* port-bind: SelItemsMgr_ctor gen_imp_list_append list_append */
+/* port-bind: SelItemsMgr_ctor gen_imp_mem_new mem_new */

@@ -34,3 +34,5 @@
 /* port-local: _asmpp_func51 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func55 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func74 */ /* asm-processor stub from the context header */
+/* port-bind: SnowChaseActorLook_update game_uso_28C0_normalize math_vec3Normalize */
+/* port-bind: SnowChaseActorLook_update game_uso_28C0_rotate cam_toTargetLocal_000023D4 */

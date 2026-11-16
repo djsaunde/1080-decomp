@@ -17,3 +17,18 @@
 #pragma weak fs_gdlReadQuad_arc_00000974
 /* port-drop: fs_gdlReadQuad_arc_00000974 */ /* helper copy; shipped body in src/arcproc_uso/arcproc_uso_tail1.c */
 /* port-local: _asmpp_func7 */ /* asm-processor stub from the context header */
+/* port-bind: arc_DataManager_update arcproc_import_174 PointsGadget_setPoints */
+/* port-bind: arc_DataManager_update arcproc_import_176 PointsGadget_setValue */
+/* port-bind: arc_DataManager_update arcproc_import_177 PointsPopup_setPosScale */
+/* port-bind: arc_DataManager_update arcproc_import_179 RaceTracker_passCheckpoints */
+/* port-bind: arc_DataManager_update arcproc_import_180 RaceTracker_passGates */
+/* port-bind: arc_DataManager_update arcproc_import_181 CountDownGadget_setTime */
+/* port-bind: arc_DataManager_update arcproc_import_182 RaceProcess_timeUp */
+/* port-bind: arc_DataManager_update arcproc_import_183 RaceTracker_update */
+/* port-bind: arc_DataManager_update arcproc_import_184 RaceTracker_endAllTricks */
+/* port-bind: arc_DataManager_update arcproc_import_185 RaceTracker_popFinalScore */
+/* port-bind: arc_DataManager_update arcproc_import_186 RaceProcess_finishCourse */
+/* port-bind: arc_DataManager_update arcproc_import_187 CourseGadget_setFloat2_0000254C */
+/* port-bind: arc_DataManager_update arcproc_import_188 CourseGadget_setVec4_00002580 */
+/* port-bind: arc_DataManager_update arcproc_import_189 snd_sendEvent */
+/* port-bind: arc_DataManager_update arcproc_import_40 Node_update */
