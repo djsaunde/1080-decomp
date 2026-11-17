@@ -1,5 +1,6 @@
-/* MIPSpro 7.2.1 (EDG 2.29, tools/ncc721.sh) donor for snoweffects.uso 0x6B28 (EXACT since agent-e run 723) and
- * 0x718C (EXACT since agent-e run 736), both spliced over their empty placeholders in both build trees. Agent-e run 713. Moved here from the IDO 7.1 NCC donor snoweffects_uso_ncc_nm_e.cpp.
+/* MIPSpro 7.2.1 (EDG 2.29, tools/ncc721.sh) donor for snoweffects.uso 0x64B8 (EXACT since agent-e run 744), 0x6B28
+ * (EXACT since run 723) and 0x718C (EXACT since run 736), all spliced over their empty placeholders in both build
+ * trees. Agent-e run 713; moved here from the IDO 7.1 NCC donor snoweffects_uso_ncc_nm_e.cpp (removed in run 744).
  * Compiler: 0x718C's chained operator* temporaries (v3B0 * f20C * |a| and v114 * .. * f210) take sp+320 / sp+308 in
  * the target; EDG 2.29 gives that order (first statement temporary = higher word), the 7.1 NCC donor the reverse.
  * 0x6B28 has no chained temporary (both front ends give it the same frame); it sits between 0x64B8 and 0x718C,
@@ -11,6 +12,7 @@
 
 struct M44 { float m[4][4]; };
 extern "C" void *snow_nw(unsigned);
+extern "C" float snow_ro_50, snow_ro_54;  /* RoData+0x50 / +0x54: the 0x64B8 burst speed scale / bias */
 template<class T> inline T *ct0(T *p) { if (p == 0) p = (T *)snow_nw(sizeof(T)); return p; }
 struct SV {
     float x, y, z;
@@ -19,7 +21,14 @@ struct SV {
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     SV operator*(float s) const { SV r; ct3(&r, x * s, y * s, z * s); return r; }
     SV &operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
-    SV &operator+=(const SV &v) { x += v.x; y += v.y; z += v.z; return *this; }
+    /* run 744: 0x64B8's `n += v318 * k * ..`. The plain `x = x + v.x` form has no compound-lvalue pointer word, one
+     * edg word fewer below the op* temporaries. */
+    SV &operator+=(const SV &v) { x = x + v.x; y = y + v.y; z = z + v.z; return *this; }
+    /* run 744: 0x64B8's first product (v318 * k). A declaration plus a single return, so edg substitutes k for s
+     * (no pooled float word): the three products take the three oldest pooled float words (target f0 / f2 / f12).
+     * q is the named word above r (target sp+200), and the loads through it keep the dead `addiu v1,v1,792`. */
+    void setIf(float a, float b, float c) { if (this != 0) { x = a; y = b; z = c; } }
+    SV scaled(float s) const { const SV *q = this; SV r; return (r.setIf(q->x * s, q->y * s, q->z * s), r); }
 };
 /* SVb: the same Vec3 with operator* built through set() (a named r per expansion). Run 673: with it, 0x6B28 and the
  * 0x64B8 lerp materialise &vFC (addiu v0,a1,252) like the target, and 0x6B28's |speed| colours f2. */
@@ -85,7 +94,7 @@ struct SPart {
     void setSz3(float s, float u, float f) { size = s; fadeAt = f; unk3C = u; }
     void setAlpha3(float a, float unused, float v) { alpha = a; alphaVel = v; }
 };
-extern "C" void gl_func_00000000_snow_norm(SV *);  /* math_vec3Normalize: blank jal */
+extern "C" int gl_func_00000000_snow_norm(SV *);  /* math_vec3Normalize (int return): blank jal */
 extern "C" SPart *gl_func_00000000_snow_pool(void *);  /* SnowPool_alloc_000006D0 / SnowPool_oldest_00000680: pointer-return blank jal */
 struct SnowEm {
     char pad00[0x2C];
@@ -122,6 +131,84 @@ struct SnowEm {
     /* 0x1A8 */ int burst;
     /* 0x1AC */ int count;
 };
+/* 0x64B8: spawn update of effect A (flag bit 0). EXACT (agent-e run 744). Levers: run 707's POD class set; the
+ * scaled() / setIf() first product and the plain op+= (above); math_vec3Normalize returns int, and the call's
+ * v0 result makes uopt keep the v318 pointer word out of v0 (target v1). */
+extern "C" void snoweffects_uso_func_000064B8(SnowEm *t) {
+    int i;
+    float spd;
+    float k;
+    t->count = 1;
+    if (t->cam->state == 98) {
+        t->s1A4 = 5;
+        if (t->state7C != 98) {
+            t->burst = 4;
+        }
+    }
+    if (t->on > 0) {
+        i = 0;
+        t->timer--;
+        if (t->timer < 0) {
+            t->timer = t->period;
+            i = 1;
+        }
+        spd = t->speed < 0.0f ? -t->speed : t->speed;
+        if (t->s1A4 >= 5 && t->cam->state == 98) {
+            t->burst = 2;
+        }
+        k = t->f198;
+        if (t->burst != 0) {
+            t->burst--;
+            spd = gl_func_00000000_snow_randf() * snow_ro_50 + snow_ro_54;
+            k = t->f194;
+        }
+        if (t->cam->state == 98 && (t->burst != 0 || 20.0f < t->cam->f348) && i && t->f190 < spd) {
+            SV v;
+            v.x = 0.0f;
+            v.y = 0.0f;
+            v.z = t->f40;
+            xformB(v, *t->mtx);
+            SV n = v - t->pos;
+            gl_func_00000000_snow_norm(&n);
+            n *= t->f180 * t->speed;
+            n += t->cam->v318.scaled(k) * (t->f184 + spd);
+            if (n.y > 0.0f) {
+                n.y = 0.0f;
+            }
+            if (gl_func_00000000_snow_randf() < spd) {
+                for (i = 0; i < t->count; i++) {
+                    float x, y, z, r;
+                    SPart *p = gl_func_00000000_snow_pool(t->pool);
+                    if (p == 0) {
+                        p = gl_func_00000000_snow_pool(t->pool);
+                    }
+                    if (p != 0) {
+                        SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f);
+                        r = gl_func_00000000_snow_randf();
+                        u.lerpTo(t->vF0, r);
+                        x = u.x; y = u.y; z = u.z;
+                        p->pos.set(x, y + t->f178, z);
+                        p->vel.set(n.x, n.y, n.z);
+                        p->size = 1.0f;
+                        p->unk3C = 0.5f;
+                        p->fadeAt = 256.0f;
+                        p->col = t->cam->col;
+                        if (t->burst != 0) {
+                            p->sizeVel = t->f17C * spd;
+                            p->gravity = t->f174 * 1.5f;
+                        } else {
+                            p->sizeVel = t->f17C * (0.5f + spd / 2.0f);
+                            p->gravity = t->f174;
+                        }
+                        p->setLife(256.0f, t->f18C);
+                        p->setAlpha(256.0f, t->f188);
+                    }
+                }
+            }
+        }
+    }
+}
+
 /* 0x6B28: spawn update of effect B (flag bit 1), run 668: two RoData default sets picked by the game
  * flags, the course-state counters +0x1C8 / +0x1CC, then a camera-relative burst spawn. EXACT (run 723).
  * Levers: run 673's SVb (the &vFC materialisation, |speed| in f2); run 692's `fA20 == 0.0f` operand order and

@@ -190,23 +190,13 @@ $(SNOW_NM_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
 SNOW_NM_FUNCS := snoweffects_uso_func_000015D0 snoweffects_uso_func_00001A18 snoweffects_uso_func_00001E60 snoweffects_uso_func_00002310
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_FUNCS),$(f)=$(SNOW_NM_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_DONOR)
-# agent-e runs 664 / 668 / 673: NON_MATCHING-only NCC donor for 0x64B8 (97.0 %), 0x6B28 (93.8 %) and
-# 0x718C (96.9 %), each the target's length.
-SNOW_NM_E_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp.o
-$(SNOW_NM_E_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h
-	@mkdir -p $(dir $@)
-	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-# Run 713: 0x6B28 / 0x718C moved to the MIPSpro 7.2.1 donor below (their copies in the NCC donor are unused).
-SNOW_NM_E_FUNCS := snoweffects_uso_func_000064B8
-build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_E_FUNCS),$(f)=$(SNOW_NM_E_DONOR))
-build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_E_DONOR)
-# agent-e run 713: MIPSpro 7.2.1 donor (tools/ncc721.sh) for 0x6B28 (EXACT since run 723) and 0x718C (EXACT
-# since run 736), both spliced in both build trees.
+# agent-e run 713: MIPSpro 7.2.1 donor (tools/ncc721.sh) for 0x64B8 (EXACT since run 744), 0x6B28 (EXACT since
+# run 723) and 0x718C (EXACT since run 736), all spliced in both build trees.
 SNOW_MP72_E_DONOR := build/src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp.o
 $(SNOW_MP72_E_DONOR): src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h $(TOOLS)/ncc721.sh
 	@mkdir -p $(dir $@)
 	$(TOOLS)/ncc721.sh $< $@ $(OPT_FLAGS)
-SNOW_MP72_E_EX_FUNCS := snoweffects_uso_func_00006B28 snoweffects_uso_func_0000718C
+SNOW_MP72_E_EX_FUNCS := snoweffects_uso_func_000064B8 snoweffects_uso_func_00006B28 snoweffects_uso_func_0000718C
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_MP72_E_EX_FUNCS),$(f)=$(SNOW_MP72_E_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_MP72_E_DONOR)
 # 0x9328 (the SnowTarget Cfront ctor): EXACT MIPSpro 7.2.1 (EDG 2.29) donor, agent-b run 711 (replaces agent-e's

@@ -870,15 +870,10 @@ void snoweffects_uso_func_00006420(SnowEffect *this) {
 
 /* 0x64B8: spawn update of effect A (flag bit 0): burst / timer gating, a direction from the +0x30-matrix
  * point minus +0x138 (normalized, scaled, plus the camera +0x318 lean) and per-particle pool spawns.
- * NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e runs 668 / 673, 97.0 %, 404 words =
- * target), spliced over this placeholder on the non_matching build. Left: frame 352 vs 344 (the edg Vec3
- * temporaries below the spawn block sit 4..12 bytes off) and the lerp loads are scheduled apart. */
-#ifdef NON_MATCHING
+ * EXACT via a MIPSpro 7.2.1 (C++) donor: src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp (agent-e run 744),
+ * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
 void snoweffects_uso_func_000064B8(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000064B8);
-#endif
 
 void snoweffects_uso_func_00006B08(char *a0) {
     *(int *)(a0 + 0x1C8) = 0;
