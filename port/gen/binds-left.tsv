@@ -47,21 +47,4 @@ src/trnproc_uso/trnproc_uso.c	TrnDataManager_drawResults	gl_func_00000000	ambigu
 src/trnproc_uso/trnproc_uso.c	TrnDataManager_isLessonAvailable	gl_func_00000000	ambiguous	TrickTable_getField34_0000C394*1 TrickTable_getFlags_0000C3B0*1	2
 src/trnproc_uso/trnproc_uso.c	TrnDataManager_update	gl_func_00000000	ambiguous	RaceTracker_passCheckpoints*1 RaceTracker_update*1 TrnRace_forceEnd*1 input_checkPressed_00011E00*4 snd_postEvent*1 Process_pause_0000F9E8*1 input_checkReleased_00011FA8*1 TrnDataManager_isLessonAvailable*1 TrnDataManager_buildLessonInputs*1 Process_resume_0000FAE8*1 Node_update*1	14
 src/trnproc_uso/trnproc_uso.c	TrnDataManager_update	gl_func_00000000_void	ambiguous	Process_stop*1 TrnDataManager_scrollResults*1	2
-src/bootup_uso/bootup_uso_o2_2DA4.c	game_setupMode	D_2DA4_obj	ambiguous	+0:port_game_bss+0x8*1|port_bootup_bss+0xD8*1|port_bootup_data+0x7768*1	3
-src/game_libs/game_libs_mp72_76F0.cpp	RaceProcess_handleInput	D_76F0_fadeB	ambiguous	+0:port_bootup_data+0xC75C*1|port_bootup_data+0xC760*1	2
-src/game_libs/game_libs_mp72_76F0.cpp	RaceProcess_handleInput	D_76F0_fadeC	ambiguous	+0:port_bootup_data+0xC760*1|port_bootup_data+0xC75C*1	2
-src/game_libs/game_libs_ncc_445AC.cpp	GfxLib_init	D_445AC_ga	ambiguous	+0:port_bootup_data+0x1F974*1|port_bootup_data+0x1FC8C*1	2
-src/game_libs/game_libs_ncc_445AC.cpp	GfxLib_init	D_445AC_gb	ambiguous	+0:port_bootup_data+0x1F978*1|port_bootup_data+0x1FC90*1	2
 src/game_libs/game_libs_ncc_493AC.cpp	PolyShape_init	D_00000000	ambiguous	+0:port_bootup_bss+0x3C740*2|port_bootup_data+0x1F7A8*1	3
-src/game_libs/game_libs_o2_26214.c	AudioThread_UpdateImpl	gl_26214_aspMainTextStart	unnamed	+0:	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DEX	D_00000000_a	unnamed	+0:	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DEX_NoN	D_00000000_a	unnamed	+0:	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DLP_Rej	D_00000000_a	unnamed	+0:	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DLX_Rej	D_00000000_a	unnamed	+0:	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20HFifo_0004D1C0	D_00000000_a	unnamed	+0:	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20HOut_0004D1F4	D_4D1F4_a	unnamed	+0:	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20H_0004D16C	D_4D16C_a	unnamed	+0:	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20H_0004D188	D_4D188_a	unnamed	+0:	1
-src/game_libs/game_libs_post0b.c	hostio_start	D_349E0_b	ambiguous	+0:port_bootup_bss+0x3C768*2|port_bootup_bss+0x3C79C*1	3
-src/timproc_uso_b1/timproc_uso_b1.c	TimMenu_ctor	D_b1_21D4_d1	ambiguous	+0:TimMenu_rowRetry_00001FA0*1|TimMenu_rowGhost_00001FE4*1|TimMenu_rowToggle_00002028*1|TimMenu_rowChangeCourse*1|TimMenu_rowChangeBoard*1|TimMenu_rowChangeCharacter*1|TimMenu_rowQuit_00002178*1	7
-src/timproc_uso_b3/timproc_uso_b3.c	TrkMenu_ctor	D_b3_23E4_d1	ambiguous	+0:TrkMenu_rowRetry_000021B0*1|TrkMenu_rowGhost_000021F4*1|TrkMenu_rowToggle_00002238*1|TrkMenu_rowChangeCourse*1|TrkMenu_rowChangeBoard*1|TrkMenu_rowChangeCharacter*1|TrkMenu_rowQuit_00002388*1	7

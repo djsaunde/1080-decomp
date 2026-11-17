@@ -64,8 +64,6 @@
 /* port-bind: RiderAnim_blendWeight_00010BAC D_00000000 port_game_data+0x0 */
 /* port-bind: RiderAnim_checkBrake_0000D8A8 D_00000000 port_game_data+0x0 */
 /* port-bind: RiderAnim_checkReverseBrake_0000D7F4 D_00000000 port_game_data+0x0 */
-/* port-bind: RiderAnim_checkRow_0000E1FC game_uso_D_807FF458+520 port_game_rodata+0x0 */
-/* port-bind: RiderAnim_checkRow_0000E1FC game_uso_D_807FF458+3688 port_game_data+0x0 */
 /* port-bind: RiderAnim_crashRecover_000116D4 D_00000000 port_game_data+0x0 */
 /* port-bind: RiderAnim_hitFeedback_0001189C D_00000000 port_game_data+0x0 */
 /* port-bind: RiderAnim_restartRide_00010E2C D_00000000 port_game_data+0x0 */

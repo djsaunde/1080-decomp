@@ -1176,8 +1176,6 @@ src/game_uso/game_uso.c	RiderAnim_blendWeightDeep_00010C4C	D_00000000	port_game_
 src/game_uso/game_uso.c	RiderAnim_blendWeight_00010BAC	D_00000000	port_game_data+0x0	2
 src/game_uso/game_uso.c	RiderAnim_checkBrake_0000D8A8	D_00000000	port_game_data+0x0	1
 src/game_uso/game_uso.c	RiderAnim_checkReverseBrake_0000D7F4	D_00000000	port_game_data+0x0	1
-src/game_uso/game_uso.c	RiderAnim_checkRow_0000E1FC	game_uso_D_807FF458+520	port_game_rodata+0x0	1
-src/game_uso/game_uso.c	RiderAnim_checkRow_0000E1FC	game_uso_D_807FF458+3688	port_game_data+0x0	1
 src/game_uso/game_uso.c	RiderAnim_crashRecover_000116D4	D_00000000	port_game_data+0x0	1
 src/game_uso/game_uso.c	RiderAnim_hitFeedback_0001189C	D_00000000	port_game_data+0x0	5
 src/game_uso/game_uso.c	RiderAnim_restartRide_00010E2C	D_00000000	port_game_data+0x0	1
