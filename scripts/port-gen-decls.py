@@ -296,8 +296,9 @@ def main():
         text = (ROOT / src).read_text(errors="replace")
         for m in CALL_RE.finditer(text):
             want[m.group(1) or m.group(2)].add(src)
-        # PORT branches call the real names directly (they are not declarations)
-        nop = re.sub(r"^#ifdef PORT\n.*?^#(else|endif)", " ", text, flags=re.S | re.M)
+        # PORT branches call the real names directly (they are not declarations); the
+        # `#ifdef PORT` line may carry a comment (`#ifdef PORT /* ... */`)
+        nop = re.sub(r"^#ifdef PORT\b[^\n]*\n.*?^#(else|endif)", " ", text, flags=re.S | re.M)
         rest = CALL_RE.sub(" ", re.sub(r"/\*.*?\*/|//[^\n]*", " ", nop, flags=re.S))
         rests[src] = set(re.findall(r"\b[A-Za-z_]\w*\b", rest))
     for src, idents in rests.items():

@@ -108,6 +108,26 @@ class RomTargets:
             return None
         return md, sec, (v if info & 7 == 2 else 0)
 
+    # N64 boot globals at fixed kernel low-memory addresses (set by IPL3 / osInitialize): a USO
+    # imports them from bootup.uso as ABSOLUTE Syms (kind 3, value = the KSEG0 address; e.g.
+    # mgr_openSession's `== 0x17D7` read is bootup Sym 1820 = 0x80000310), which raw() does not
+    # resolve.  The port defines them under their libultra names (port/ultra/misc.c).
+    LOWMEM = {0x80000300: "osTvType", 0x80000304: "osRomType", 0x80000308: "osRomBase",
+              0x8000030C: "osResetType", 0x80000310: "osCicId", 0x80000318: "osMemSize",
+              0x8000031C: "osAppNMIBuffer"}
+
+    def absolute(self, md, idx):
+        """-> the libultra name of Sym idx when it is (an import of) an absolute low-memory
+        boot global, else None"""
+        if idx >= len(md.syms):
+            return None
+        info, v, w3 = md.syms[idx]
+        info >>= 16
+        if info & 7 == 1:
+            ex = self.byid.get(info >> 4)
+            return self.absolute(ex, w3 >> 16) if ex is not None and ex is not md else None
+        return self.LOWMEM.get(v) if info & 7 == 3 else None
+
     def target(self, md, off, pin=0):
         """the port spelling of what the ROM reloc at Text offset off points at, or None:
         a function name (`f`, `f+0xK` mid-entry, `Text+0xK` unnamed) or `port_<mod>_<sec>+0xK`.
@@ -119,7 +139,8 @@ class RomTargets:
         typ, idx = r
         t = self.raw(md, idx)
         if t is None:
-            return None
+            a = self.absolute(md, idx) if typ != 1 else None
+            return a if a is None or not pin else "%s+0x%X" % (a, pin)
         ex, sec, v = t
         if sec == "Text":
             if typ == 1:     # R_MIPS_26: the jal field holds the offset (sym value + field << 2)

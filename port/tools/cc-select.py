@@ -113,6 +113,12 @@ def bind_calls(text, binds):
 
 
 def filter_asm(text, drop, alias, noinit, local=()):
+    # a bound label that gcc emitted as a `.set` alias of another body binds inside that body:
+    # a C++ ctor / dtor's complete-object symbol (C1 / D1) is `.set` to the base-object one
+    # (C2 / D2), which holds the code (Shadow_ctor_0004B0A8 = _ZN3ObjC1EP3Src, plan 18.8)
+    for a, b in re.findall(r"^\s*\.set\s+([\w.$]+)\s*,\s*([\w.$]+)\s*$", text, re.M):
+        if a in BINDS:
+            BINDS.setdefault(b, {}).update(BINDS[a])
     text = bind_calls(text, BINDS)
     out = []
     dead = None
@@ -125,6 +131,12 @@ def filter_asm(text, drop, alias, noinit, local=()):
         if toks and toks[0] in (".section", ".text", ".data", ".bss"):
             section = toks[1] if toks[0] == ".section" and len(toks) > 1 else toks[0]
         if len(toks) >= 2 and toks[0] in (".globl", ".weak") and toks[1] in drop | DROPDATA:
+            continue
+        if section.startswith(".debug") and len(toks) == 2 and toks[1] in DROPDATA:
+            # the dropped object's DWARF location (DW_OP_addr) names the local dead copy: the
+            # global SYM is a placeholder the code binds per function, and is defined nowhere
+            # (bootup_uso_ncc_6204's `Bu6204Ob D_00000000`, plan 18.8)
+            out.append(line.replace(toks[1], "__port_dead_" + toks[1], 1))
             continue
         if len(toks) >= 2 and toks[0] in (".type", ".size") and toks[1] in DROPDATA:
             found.add(toks[1])

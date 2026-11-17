@@ -106,7 +106,8 @@ def site_targets(md, rt, base, rb, rv, rsz, rel, want, pins, sym_of=None):
         r = rt.site(md, base + off - rv)
         raw = r and rt.raw(md, r[1])
         if not raw:
-            out[sym].add(None)
+            ab = r and rt.absolute(md, r[1])     # a low-memory boot global (osCicId ...)
+            out[sym].add((ab, pin) if ab else None)
             continue
         ex, sec, v = raw
         field = struct.unpack_from(">I", rb, off - rv)[0]
@@ -275,6 +276,20 @@ def cmd_plan(a):
     return 0
 
 
+def cpp_alias(path, fn, rfuncs):
+    """a C++ donor's member function (`Mgr::run`: the header name is `run`) under its shipped
+    name: the port's `port-alias: NEW _ZN3Mgr3runEv` line (port/gen/tu) whose mangled target
+    holds fn, when exactly one does and NEW is in the object"""
+    if not fn or not path.endswith(".cpp"):
+        return None
+    hdr = ROOT / "port/gen/tu" / (path.replace("/", "__") + ".h")
+    if not hdr.exists():
+        return None
+    hits = {new for new, tgt in re.findall(r"port-alias:\s*(\w+)\s+(\w+)", hdr.read_text())
+            if tgt.startswith("_Z") and ("%d%s" % (len(fn), fn)) in tgt and new in rfuncs}
+    return hits.pop() if len(hits) == 1 else None
+
+
 def cmd_check(a):
     rom, mv = npc.Rom(), npc.MakeVars()
     rt = pgb.RomTargets(rom)
@@ -305,7 +320,8 @@ def cmd_check(a):
         for fn, tok, sym, off in uses:
             n += 1
             real = resolve_tok(tok, al)
-            fo = fn and (fn if fn in rfuncs else ("gl_" + fn) if ("gl_" + fn) in rfuncs else None)
+            fo = fn and (fn if fn in rfuncs else ("gl_" + fn) if ("gl_" + fn) in rfuncs else
+                         cpp_alias(path, fn, rfuncs))
             if fo is None:
                 print("%s: XDATA(%s, %s, %s) outside a built function (%s)" % (path, tok, sym, fmt_off(off), fn))
                 bad += 1
