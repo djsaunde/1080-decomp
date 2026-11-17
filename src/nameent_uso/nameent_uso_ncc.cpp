@@ -55,12 +55,12 @@ struct NeProc {
     int cursorX;        /* 0x58 */
 };
 
-/* nameent_uso_func_000002F4: board draw: the name-board image (a copy of the Data+0x158 header
+/* NameEntry_drawBoard: board draw: the name-board image (a copy of the Data+0x158 header
  * with the current rider's board texture, virtual slot 11) centred on the cursor x at y 40 in
  * white, then the two black letterbox bars. The dead one-element stores to `scratch1` /
  * `scratch2` emit no code; their frame words give the target's frame (0x80: x at 0x7C, col at
  * 0x64, img at 0x4C, black at 0x3C). */
-extern "C" void nameent_uso_func_000002F4(NeProc *self) {
+extern "C" void NameEntry_drawBoard(NeProc *self) {
     int x;
     int scratch1[2];
     Colour col;
@@ -119,10 +119,10 @@ struct NeEntry {
     char spr2[0x18];            /* 0x104 */
 };
 
-/* nameent_uso_func_00000760: the name-entry ctor (`this == 0` allocates 0x11C; the inlined Node
+/* NameEnterMessage_ctor: the name-entry ctor (`this == 0` allocates 0x11C; the inlined Node
  * base ctor, then the layout constants, the last name from GameFlow +0x158, the colours and three
- * gui sprites). The 0.2f literal is RoData+0 (nameent_uso_func_00000760_rodata pinned at 0). */
-extern "C" NeEntry *nameent_uso_func_00000760(NeEntry *self, void *owner, int mode) {
+ * gui sprites). The 0.2f literal is RoData+0 (NameEnterMessage_ctor_rodata pinned at 0). */
+extern "C" NeEntry *NameEnterMessage_ctor(NeEntry *self, void *owner, int mode) {
     int i;
     char *o;
     if (self != 0 || (self = (NeEntry *)gl_func_00000000(0x11C)) != 0) { /* mem_new */
@@ -181,7 +181,7 @@ extern "C" NeEntry *nameent_uso_func_00000760(NeEntry *self, void *owner, int mo
     return self;
 }
 
-/* the owning NameEnter process: +0x6C = a name was entered (nameent_uso_func_000004D0) */
+/* the owning NameEnter process: +0x6C = a name was entered (NameEntry_updateEntry) */
 struct NeOwner { char pad0[0x6C]; int entered; };
 /* input_getStickX_00011D78 returns a float: a typed alias of the blank import (pinned at 0) */
 extern "C" float ne_input_getStickX(void *input);
@@ -190,14 +190,14 @@ extern "C" float ne_input_getStickX(void *input);
  * import (pinned at 0) */
 extern "C" int ne_gui_drawSpriteScroll(char *spr, int x, int y, int idx, int h, float sx, float sy);
 
-/* nameent_uso_func_000009BC: the name-entry display: the board sprites fade in (+0xD0 += 0.05),
+/* NameEnterMessage_display: the name-entry display: the board sprites fade in (+0xD0 += 0.05),
  * the entered letters and the three cursor slots (the current one tinted +0x80), then the letter
  * wheel: 2 * +0x50 + 1 letters around the wheel position, each scaled by its distance from the
  * centre (x 160) and the centre letter enlarged (1.2) at full alpha, clipped to x 40..284.
  * Frame: the colour is four member stores and the fade a plain `x = x + k` (an inline set() or a
  * `+=` on self->fD0 takes an edg temporary word, which would push the loop-1 spill slot down);
  * the two dead scratch words put the scales at sp+0x74 / +0x70. */
-extern "C" void nameent_uso_func_000009BC(NeEntry *self) {
+extern "C" void NameEnterMessage_display(NeEntry *self) {
     char *spr;
     Colour col;
     float wheel;
@@ -289,14 +289,14 @@ extern "C" void nameent_uso_func_000009BC(NeEntry *self) {
     gl_func_00000000(&ne_gGui, 0, 0, 319, 239);
 }
 
-/* nameent_uso_func_00000E44: the name-entry input: the letter wheel (42 entries: letters, 39 =
+/* NameEnterMessage_update: the name-entry input: the letter wheel (42 entries: letters, 39 =
  * space, 40 = back, 41 = END) steps with 0x10000 / 0x4000 or the stick (auto-repeat), the
  * position eases toward the target (gain +0x7C, clamped to +-maxVel, wrapping at 42); 0x200
  * deletes a letter, A / 0x40000 picks the letter under the wheel (END fades out with
  * owner->entered set). Once 3 letters are in, the wheel is held on END. The 0.05f literal is
- * RoData+0x10 (nameent_uso_func_00000E44_rodata pinned). The dead stores to `scratch1` /
+ * RoData+0x10 (NameEnterMessage_update_rodata pinned). The dead stores to `scratch1` /
  * `scratch2` emit no code; their words give the target's frame (0x30: sel at 0x24, stick 0x1C). */
-extern "C" void nameent_uso_func_00000E44(NeEntry *self) {
+extern "C" void NameEnterMessage_update(NeEntry *self) {
     float d;
     float tgt;
     int sel;

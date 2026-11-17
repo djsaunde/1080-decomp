@@ -90,13 +90,13 @@ struct TrnDataManager {
     int button;             /* 0x198: the button that picked the results row */
 };
 
-/* trnproc_uso_func_000013C4: build lesson idx's input list from the TrickTable input mask
+/* TrnDataManager_buildLessonInputs: build lesson idx's input list from the TrickTable input mask
  * (TrickTable_getInputMask_0000C378): 35 = button, 8 / 9 = the 0x5000 / 0xA000 pairs, 33 / 34,
  * 255 = new line, the stick direction (16C8) - 1, then the single-button bits.
  * edg's n++ temporary keeps the index in its own register at every store (no strength
  * reduction, unlike cfe). `scratch` is a dead one-word array: its frame word sits above n
  * and mask, which puts them at the target's sp+0x20 / +0x1C (frame 0x28). */
-extern "C" void trnproc_uso_func_000013C4(TrnDataManager *self, int idx) {
+extern "C" void TrnDataManager_buildLessonInputs(TrnDataManager *self, int idx) {
     int scratch[1];
     int n;
     int mask;
@@ -123,7 +123,7 @@ extern "C" void trnproc_uso_func_000013C4(TrnDataManager *self, int idx) {
         self->inputs[n++] = 255;
     }
     if (mask & 4) self->inputs[n++] = 35;
-    dir = gl_func_00000000(self, mask); /* trnproc_uso_func_000016C8 */
+    dir = gl_func_00000000(self, mask); /* TrnDataManager_stickDirSprite */
     if (dir != 0) self->inputs[n++] = dir - 1;
     if (mask & 0x1000) self->inputs[n++] = 6;
     if (mask & 0x2000) self->inputs[n++] = 2;
@@ -136,11 +136,11 @@ extern "C" void trnproc_uso_func_000013C4(TrnDataManager *self, int idx) {
     self->inputs[n] = -1;
 }
 
-/* trnproc_uso_func_00001778: is lesson idx available: its trick's unlock mask
+/* TrnDataManager_isLessonAvailable: is lesson idx available: its trick's unlock mask
  * (TrickTable_getField34_0000C394) against the player's unlocked bits; on the restricted
  * course a trick flagged 4 (TrickTable_getFlags_0000C3B0) is excluded. edg evaluates the
  * `&` left operand (the spilled mask) first, which cfe never does. */
-extern "C" int trnproc_uso_func_00001778(TrnDataManager *self, int idx) {
+extern "C" int TrnDataManager_isLessonAvailable(TrnDataManager *self, int idx) {
     int mask = gl_func_00000000(trn_gTrickTable, idx);
     int flags = gl_func_00000000(trn_gTrickTable, idx);
     if (mask & self->info->player->unlocked) {
@@ -155,14 +155,14 @@ extern "C" int trnproc_uso_func_00001778(TrnDataManager *self, int idx) {
     return 0;
 }
 
-/* trnproc_uso_func_0000188C: TrnDataManager update. A run that is over pauses the race (9A0).
+/* TrnDataManager_update: TrnDataManager update. A run that is over pauses the race (9A0).
  * While the race runs: Start (0x20) either disarms the lesson (sound 0x802) or opens the results
  * screen at the current lesson (race paused, its +0x48 process stopped); on the results screen
  * the list scrolls (1098), A (0x100) or 0x40000 picks a row, and on that button's release an
  * available lesson (1778) becomes current and armed (13C4); a pick or Start closes the screen.
  * The two void callees (Process_stop, 1098) go through the void import: v0 then holds the
  * lesson / the results state. */
-extern "C" void trnproc_uso_func_0000188C(TrnDataManager *self) {
+extern "C" void TrnDataManager_update(TrnDataManager *self) {
     int picked = 0;
     if (self->info->player->flags9A8 & 1) {
         self->course = 0;
@@ -170,7 +170,7 @@ extern "C" void trnproc_uso_func_0000188C(TrnDataManager *self) {
     gl_func_00000000(self); /* RaceTracker_passCheckpoints */
     gl_func_00000000(self); /* RaceTracker_update */
     if (self->info->over != 0) {
-        gl_func_00000000(self->race); /* trnproc_uso_func_000009A0 */
+        gl_func_00000000(self->race); /* TrnRace_forceEnd */
         return;
     }
     if (self->race->running == 1) {
@@ -191,7 +191,7 @@ extern "C" void trnproc_uso_func_0000188C(TrnDataManager *self) {
                 }
             }
         } else {
-            gl_func_00000000_void(self); /* trnproc_uso_func_00001098 */
+            gl_func_00000000_void(self); /* TrnDataManager_scrollResults */
             switch (self->results) {
             case 1:
                 if (gl_func_00000000(&D_00000000, 0x100)) { /* input_checkPressed_00011E00 */
@@ -204,11 +204,11 @@ extern "C" void trnproc_uso_func_0000188C(TrnDataManager *self) {
                 }
                 break;
             case 2:
-                /* input_checkReleased_00011FA8, trnproc_uso_func_00001778 */
+                /* input_checkReleased_00011FA8, TrnDataManager_isLessonAvailable */
                 if (gl_func_00000000(&D_00000000, self->button) && gl_func_00000000(self, self->cursor)) {
                     self->armed = 1;
                     self->lesson = self->cursor;
-                    gl_func_00000000(self, self->lesson); /* trnproc_uso_func_000013C4 */
+                    gl_func_00000000(self, self->lesson); /* TrnDataManager_buildLessonInputs */
                     picked = 1;
                     self->button = 0;
                 }
@@ -223,13 +223,13 @@ extern "C" void trnproc_uso_func_0000188C(TrnDataManager *self) {
     gl_func_00000000(self); /* Node_update */
 }
 
-/* trnproc_uso_func_00000B78: TrnDataManager lesson HUD: the lesson title ("%d: %s" with the
+/* TrnDataManager_drawLesson: TrnDataManager lesson HUD: the lesson title ("%d: %s" with the
  * TrickTable entry name, red once the lesson's trick is done), then the input list (+0x118, -1
  * terminated): 255 starts a new line, any other entry is a button sprite, with the "+" sprite
  * (Bss+0x168) between two buttons on one line. The 0.2f / 0.8f literals are RoData 0x20 / 0x24
- * (trnproc_uso_func_00000B78_rodata pinned at 0x20). Only the button draw goes through the
+ * (TrnDataManager_drawLesson_rodata pinned at 0x20). Only the button draw goes through the
  * int-returning import: its block then keeps the image pointer off v0 (a0, as the target). */
-extern "C" void trnproc_uso_func_00000B78(TrnDataManager *self) {
+extern "C" void TrnDataManager_drawLesson(TrnDataManager *self) {
     char buf[64];
     int x;
     int y;
@@ -239,7 +239,7 @@ extern "C" void trnproc_uso_func_00000B78(TrnDataManager *self) {
     RaceSprite *spr;
 
     gl_func_00000000(self->gui); /* gui_setupRenderMode_0000055C */
-    if (gl_func_00000000(self, self->lesson)) { /* trnproc_uso_func_000013A0 */
+    if (gl_func_00000000(self, self->lesson)) { /* TrnDataManager_isTrickDone */
         col[0] = 0.8f;
         col[1] = 0.2f;
         col[2] = 0.2f;
@@ -285,13 +285,13 @@ extern "C" void trnproc_uso_func_00000B78(TrnDataManager *self) {
     }
 }
 
-/* trnproc_uso_func_00000DD4: TrnDataManager results screen: the header sprite (+0x180), then 12
+/* TrnDataManager_drawResults: TrnDataManager results screen: the header sprite (+0x180), then 12
  * rows from the window top (+0x104): "%d" right-aligned at 86 and the trick name at 90, red
  * (0.8, 0.2, 0.2) once the lesson is done (13A0); the current available lesson blinks
  * (alpha +0xD0), available ones are opaque, the rest alpha 64; then the cursor sprite (+0x198)
  * tinted (233, 255, 0) at the cursor row. The float literals are the RoData words at 0x28 /
- * 0x2C (after B78's two in the donor .rodata: trnproc_uso_func_00000DD4_rodata is pinned at 0x20). */
-extern "C" void trnproc_uso_func_00000DD4(TrnDataManager *self) {
+ * 0x2C (after B78's two in the donor .rodata: TrnDataManager_drawResults_rodata is pinned at 0x20). */
+extern "C" void TrnDataManager_drawResults(TrnDataManager *self) {
     Colour col;
     Colour hl(233, 255, 0, 255);
     char buf[128];
@@ -308,7 +308,7 @@ extern "C" void trnproc_uso_func_00000DD4(TrnDataManager *self) {
     gl_func_00000000(self->gui); /* gui_setPrimColorClamped_000008C0 */
     for (row = 0, y = 40; row < 12; row++, y += 14) {
         idx = row + self->top;
-        if (gl_func_00000000(self, idx)) { /* trnproc_uso_func_000013A0 */
+        if (gl_func_00000000(self, idx)) { /* TrnDataManager_isTrickDone */
             col.r = 0.8f;
             col.g = 0.2f;
             col.b = 0.2f;
@@ -319,7 +319,7 @@ extern "C" void trnproc_uso_func_00000DD4(TrnDataManager *self) {
             col.b = 1.0f;
             col.a = 1.0f;
         }
-        /* trnproc_uso_func_00001778, gui_setPrimColor_000006B8 */
+        /* TrnDataManager_isLessonAvailable, gui_setPrimColor_000006B8 */
         if (idx == self->lesson && gl_func_00000000(self, idx)) {
             gl_func_00000000(self->gui, self->pulse, &col, 255);
         } else if (gl_func_00000000(self, idx)) {

@@ -1,0 +1,13 @@
+nonmatching TrnDataManager_isTrickDone, 0x24
+
+glabel TrnDataManager_isTrickDone
+    /* 5BA45A 000013A0 8C8E00B8 */  .word 0x8C8E00B8
+    /* 5BA45E 000013A4 000578C3 */  .word 0x000578C3
+    /* 5BA462 000013A8 30A80007 */  .word 0x30A80007
+    /* 5BA466 000013AC 01CFC021 */  .word 0x01CFC021
+    /* 5BA46A 000013B0 931906B0 */  .word 0x931906B0
+    /* 5BA46E 000013B4 24090001 */  .word 0x24090001
+    /* 5BA472 000013B8 01095004 */  .word 0x01095004
+    /* 5BA476 000013BC 03E00008 */  .word 0x03E00008
+    /* 5BA47A 000013C0 032A1024 */  .word 0x032A1024
+endlabel TrnDataManager_isTrickDone

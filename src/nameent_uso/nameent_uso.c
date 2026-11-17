@@ -17,25 +17,25 @@ extern char ne_gGui;
 void nameent_uso_func_00000000(void) {
 }
 
-/* nameent_uso_func_00000008: empty function. */
-void nameent_uso_func_00000008(void) {
+/* ne_nop_00000008: empty function. */
+void ne_nop_00000008(void) {
 }
 
-/* nameent_uso_func_00000010: empty function. */
-void nameent_uso_func_00000010(void) {
+/* ne_nop_00000010: empty function. */
+void ne_nop_00000010(void) {
 }
 
-/* nameent_uso_func_00000018: NameEnter process init: name (Data+0x140), mode a1 at +0x50,
+/* NameEntry_init: NameEnter process init: name (Data+0x140), mode a1 at +0x50,
  * cursor 160 / 85, the entry object (760) at +0x54, pad 0 active, three gui sprites
  * 0x280000..2. */
-void nameent_uso_func_00000018(char *self, int mode) {
+void NameEntry_init(char *self, int mode) {
     *(char **)(self + 0xC) = ne_data + 0x140;
     *(int *)(self + 0x50) = mode;
     *(int *)(self + 0x6C) = 0;
     *(int *)(self + 0x58) = 160;
     *(int *)(self + 0x5C) = 85;
     *(int *)(self + 0x70) = 1;
-    *(int *)(self + 0x54) = CALL(nameent_uso_func_00000760)(0, self, mode);
+    *(int *)(self + 0x54) = CALL(NameEnterMessage_ctor)(0, self, mode);
     CALL(input_setActivePad_0001207C)(&D_00000000, 0);
     CALL(gui_spriteInit)(self + 0x8C, 0x280000);
     CALL(gui_spriteInit)(self + 0xA4, 0x280001);
@@ -45,9 +45,9 @@ void nameent_uso_func_00000018(char *self, int mode) {
     *(int *)(self + 0x2C) = 0;
 }
 
-/* nameent_uso_func_000000C8: start: phase 1 (+0x60), bump GameFlow procState, link this under
+/* NameEntry_startEntry: start: phase 1 (+0x60), bump GameFlow procState, link this under
  * the shared Fader and fade in. */
-void nameent_uso_func_000000C8(char *self) {
+void NameEntry_startEntry(char *self) {
     char *head;
     *(int *)(self + 0x70) = 0;
     *(int *)(self + 0x60) = 1;
@@ -61,11 +61,11 @@ void nameent_uso_func_000000C8(char *self) {
     CALL(Fader_start)(INPUT_MGR(D_00000000).fader, 1, 0);
 }
 
-/* nameent_uso_func_00000150: update: stick sound from pad 1, then the phase's virtual
+/* NameEntry_handleInput: update: stick sound from pad 1, then the phase's virtual
  * (slots 14 / 15 / 16 by +0x60). */
 /* The stick-sound call goes through a void alias: its dead int return would hold v0, and the
  * target keeps the phase (then the vtable) in v0. */
-void nameent_uso_func_00000150(char *self) {
+void NameEntry_handleInput(char *self) {
     char *pad = (char *)CALL(input_getPad_00011D40)(&D_00000000, 1);
     XCALL(ne_func_00000000_v, snd_setPlayer3FreqScaleFromStick)(*(signed char *)(pad + 8), *(signed char *)(pad + 9));
     switch (*(int *)(self + 0x60)) {
@@ -81,25 +81,25 @@ void nameent_uso_func_00000150(char *self) {
     }
 }
 
-/* nameent_uso_func_00000204: display by phase (+0x60): phases 0 / 1 draw the sprites (5B4) and
+/* NameEntry_drawGui: display by phase (+0x60): phases 0 / 1 draw the sprites (5B4) and
  * the board (2F4) or a cleared screen (458), then the phase's virtual (slots 17 / 18 / 19). */
-void nameent_uso_func_00000204(char *self) {
+void NameEntry_drawGui(char *self) {
     switch (*(int *)(self + 0x60)) {
     case 0:
-        CALL(nameent_uso_func_000005B4)(self);
+        CALL(NameEntry_drawFrame)(self);
         if (*(int *)(self + 0x70) != 0) {
-            CALL(nameent_uso_func_000002F4)(self);
+            CALL(NameEntry_drawBoard)(self);
         } else {
-            CALL(nameent_uso_func_00000458)(self);
+            CALL(NameEntry_clearScreen)(self);
         }
         VT_SLOT(NODE(self)->vptr, 17).fn(VT_SLOT(NODE(self)->vptr, 17).delta + self);
         break;
     case 1:
-        CALL(nameent_uso_func_000005B4)(self);
+        CALL(NameEntry_drawFrame)(self);
         if (*(int *)(self + 0x70) != 0) {
-            CALL(nameent_uso_func_000002F4)(self);
+            CALL(NameEntry_drawBoard)(self);
         } else {
-            CALL(nameent_uso_func_00000458)(self);
+            CALL(NameEntry_clearScreen)(self);
         }
         VT_SLOT(NODE(self)->vptr, 18).fn(VT_SLOT(NODE(self)->vptr, 18).delta + self);
         break;
@@ -109,16 +109,16 @@ void nameent_uso_func_00000204(char *self) {
     }
 }
 
-/* nameent_uso_func_000002F4: board draw: the name-board image (a copy of the Data+0x158 image
+/* NameEntry_drawBoard: board draw: the name-board image (a copy of the Data+0x158 image
  * header with the current rider's texture from virtual slot 11) centred on the cursor x (+0x58)
  * at y 40 in white, then the two black letterbox bars. */
 /* EXACT via the NCC (C++) donor src/nameent_uso/nameent_uso_ncc.cpp (REPLACE_FUNC_BODY). */
-void nameent_uso_func_000002F4(char *self) {
+void NameEntry_drawBoard(char *self) {
 }
 
-/* nameent_uso_func_00000458: clear the screen: fill colour {0, 0, 0, 0} at alpha 255, then a
+/* NameEntry_clearScreen: clear the screen: fill colour {0, 0, 0, 0} at alpha 255, then a
  * full-screen 320x240 fillRect (as tit_WhiteFader_display). */
-void nameent_uso_func_00000458(char *self) {
+void NameEntry_clearScreen(char *self) {
     float colour[4];
     int pad[6]; /* frame 0x48: 24 bytes below the colour, as the target */
     colour[0] = 0.0f;
@@ -129,15 +129,15 @@ void nameent_uso_func_00000458(char *self) {
     CALL(gui_fillRect)(&D_00000000, 0, 0, 0x13F, 0xEF, 0x10001);
 }
 
-/* nameent_uso_func_000004C8: empty one-argument function (a no-op virtual). */
-void nameent_uso_func_000004C8(int a0) {
+/* NameEntry_updateResult: empty one-argument function (a no-op virtual). */
+void NameEntry_updateResult(int a0) {
 }
 
-/* nameent_uso_func_000004D0: finish: with a name entered (+0x6C) and a record session (+0x50),
+/* NameEntry_updateEntry: finish: with a name entered (+0x6C) and a record session (+0x50),
  * copy the 3-char name + the +0xB0 word into GameFlow +0x158 / +0x15C, write it to the session
  * (with GameFlow +0x4F / +0x57) and set the new names; fade the process out. Without a name,
  * forward to the entry object's virtual slot 3. */
-void nameent_uso_func_000004D0(char *self) {
+void NameEntry_updateEntry(char *self) {
     char name[4];
     char *dst;
     int i;
@@ -163,15 +163,15 @@ void nameent_uso_func_000004D0(char *self) {
     }
 }
 
-/* nameent_uso_func_000005AC: empty one-argument function (a no-op virtual). */
-void nameent_uso_func_000005AC(int a0) {
+/* NameEntry_updatePhase2: empty one-argument function (a no-op virtual). */
+void NameEntry_updatePhase2(int a0) {
 }
 
-/* nameent_uso_func_000005B4: board frame sprites: the left (+0xA4) and right (+0xBC) edge
+/* NameEntry_drawFrame: board frame sprites: the left (+0xA4) and right (+0xBC) edge
  * columns every 32 px, and the top piece (+0x8C) along rows y 8 / 136 / 168 / 200 every 64 px.
  * The right column's `!=` test (the target's held-232 bnel) also leaves self homed in memory
  * (each sprite address is a fresh `lw; addiu`). */
-void nameent_uso_func_000005B4(int *self) {
+void NameEntry_drawFrame(int *self) {
     char *spr;
     int i;
 
@@ -202,42 +202,42 @@ void nameent_uso_func_000005B4(int *self) {
     }
 }
 
-/* nameent_uso_func_00000710: empty one-argument function (a no-op virtual). */
-void nameent_uso_func_00000710(int a0) {
+/* NameEntry_drawEntryOverlay: empty one-argument function (a no-op virtual). */
+void NameEntry_drawEntryOverlay(int a0) {
 }
 
-/* nameent_uso_func_00000718: forward to the +0x54 child's virtual slot 2 (as
+/* NameEntry_drawExitOverlay: forward to the +0x54 child's virtual slot 2 (as
  * CommonInfo_loadData_00008F98). */
-void nameent_uso_func_00000718(char *self) {
+void NameEntry_drawExitOverlay(char *self) {
     int *p2 = (int *)NODE(*(char **)(self + 0x54))->vptr;
     char *p1 = *(char **)(self + 0x54);
     VT_SLOT(p2, 2).fn(VT_SLOT(p2, 2).delta + p1);
 }
 
-/* nameent_uso_func_00000748: empty one-argument function (a no-op virtual). */
-void nameent_uso_func_00000748(int a0) {
+/* NameEntry_drawPhase2: empty one-argument function (a no-op virtual). */
+void NameEntry_drawPhase2(int a0) {
 }
 
-/* nameent_uso_func_00000750: empty one-argument function (a no-op virtual). */
-void nameent_uso_func_00000750(int a0) {
+/* NameEntry_nopSlot20: empty one-argument function (a no-op virtual). */
+void NameEntry_nopSlot20(int a0) {
 }
 
-/* nameent_uso_func_00000758: empty one-argument function (a no-op virtual). */
-void nameent_uso_func_00000758(int a0) {
+/* NameEntry_nopSlot21: empty one-argument function (a no-op virtual). */
+void NameEntry_nopSlot21(int a0) {
 }
 
-/* nameent_uso_func_00000760: the name-entry object's ctor. EXACT via the NCC (C++) donor
+/* NameEnterMessage_ctor: the name-entry object's ctor. EXACT via the NCC (C++) donor
  * src/nameent_uso/nameent_uso_ncc.cpp (REPLACE_FUNC_BODY). */
-int nameent_uso_func_00000760(char *self, char *owner, int mode) {
+int NameEnterMessage_ctor(char *self, char *owner, int mode) {
 }
 
-/* nameent_uso_func_000009BC: the name-entry display (board sprites, letters, the letter wheel).
+/* NameEnterMessage_display: the name-entry display (board sprites, letters, the letter wheel).
  * EXACT via the NCC (C++) donor src/nameent_uso/nameent_uso_ncc.cpp (REPLACE_FUNC_BODY). */
-void nameent_uso_func_000009BC(char *self) {
+void NameEnterMessage_display(char *self) {
 }
 
-/* nameent_uso_func_00000E44: the name-entry input (the letter wheel). EXACT via the NCC (C++)
+/* NameEnterMessage_update: the name-entry input (the letter wheel). EXACT via the NCC (C++)
  * donor src/nameent_uso/nameent_uso_ncc.cpp (REPLACE_FUNC_BODY). */
-void nameent_uso_func_00000E44(char *self) {
+void NameEnterMessage_update(char *self) {
 }
 

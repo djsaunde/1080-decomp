@@ -5798,16 +5798,16 @@ trn_vt_dm = 0x00000000;  /* trnproc vptr / import pin (trnproc_uso.c 3A8) */
 trn_gRowBase = 0x00000000;  /* trnproc vptr / import pin (trnproc_uso.c 3A8) */
 trn_gInputMgr = 0x00000000;  /* trnproc InputMgr alias pin (trnproc_uso.c 3A8) */
 trn_func_00000A2C_v = 0x00000000;  /* void-typed call alias (trnproc_uso.c 3A8) */
-trnproc_uso_func_000001B0_ref = 0x00000000;  /* Text-reloc callback address pin (trnproc_uso.c 3A8) */
-trnproc_uso_func_000001E4_ref = 0x00000000;  /* Text-reloc callback address pin (trnproc_uso.c 3A8) */
-trnproc_uso_func_00000214_ref = 0x00000000;  /* Text-reloc callback address pin (trnproc_uso.c 3A8) */
+TrnRace_pauseContinue_ref = 0x00000000;  /* Text-reloc callback address pin (trnproc_uso.c 3A8) */
+TrnRace_pauseRestart_ref = 0x00000000;  /* Text-reloc callback address pin (trnproc_uso.c 3A8) */
+TrnRace_pauseQuit_ref = 0x00000000;  /* Text-reloc callback address pin (trnproc_uso.c 3A8) */
 trn_gGui = 0x00000000;  /* gui.uso Bss+0x8 (trnproc import) */
 trn_ro_20 = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_uso.c) */
 trn_ro_24 = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_uso.c) */
 trn_ro_28 = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_uso.c) */
 trn_ro_2C = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_uso.c) */
-trnproc_uso_func_00000B78_rodata = 0x00000020;  /* trnproc RoData+0x20: B78 NCC donor float literals (0.2f, 0.8f at donor .rodata 0 / 4) */
-trnproc_uso_func_00000DD4_rodata = 0x00000020;  /* trnproc RoData+0x28: DD4 NCC donor float literals (0.8f, 0.2f at donor .rodata 8 / 0xC) */
+TrnDataManager_drawLesson_rodata = 0x00000020;  /* trnproc RoData+0x20: B78 NCC donor float literals (0.2f, 0.8f at donor .rodata 0 / 4) */
+TrnDataManager_drawResults_rodata = 0x00000020;  /* trnproc RoData+0x28: DD4 NCC donor float literals (0.8f, 0.2f at donor .rodata 8 / 0xC) */
 trn_sprites_F0 = 0x000000F0;  /* trnproc Bss+0xF0: second button sprite table (B78 NCC donor) */
 trn_sprites = 0x00000000;  /* trnproc Bss+0x0 sprite table pin (trnproc_uso.c B78) */
 ne_data = 0x00000000;  /* nameent.uso Data section base */
@@ -5815,9 +5815,9 @@ ne_gGui = 0x00000000;  /* gui.uso Bss draw state (nameent import) */
 ne_vt_node = 0x00000000;  /* bootup Data+0xC338 Node vtable import (nameent NCC donor 760) */
 ne_vt_entry = 0x00000000;  /* nameent Data+0x18 entry vtable, in-place 0 (nameent NCC donor 760) */
 ne_gRowBase = 0x00000000;  /* bootup Bss+0x28C gui string-table base (nameent NCC donor 760) */
-nameent_uso_func_00000760_rodata = 0x00000000;  /* nameent RoData+0: 760 donor literal 0.2f */
-nameent_uso_func_000009BC_rodata = 0x00000000;  /* nameent RoData+0x4: 9BC donor literals 0.05f 1.2f 0.92f (donor .rodata 4) */
-nameent_uso_func_00000E44_rodata = 0x00000000;  /* nameent RoData+0x10: E44 donor literal 0.05f (donor .rodata 0x10) */
+NameEnterMessage_ctor_rodata = 0x00000000;  /* nameent RoData+0: 760 donor literal 0.2f */
+NameEnterMessage_display_rodata = 0x00000000;  /* nameent RoData+0x4: 9BC donor literals 0.05f 1.2f 0.92f (donor .rodata 4) */
+NameEnterMessage_update_rodata = 0x00000000;  /* nameent RoData+0x10: E44 donor literal 0.05f (donor .rodata 0x10) */
 ne_gui_drawSpriteScroll = 0x00000000;  /* float-scale typed alias of the blank import (nameent NCC donor 9BC, NM) */
 ne_input_getStickX = 0x00000000;  /* float-returning alias of the blank import (nameent NCC donor E44) */
 ne_func_00000000_v = 0x00000000;  /* void-typed call alias (nameent_uso.c 150: frees v0 for the phase) */
