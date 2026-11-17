@@ -442,6 +442,9 @@ class MakeVars:
     def for_target(self, obj):
         loc = {}
         for tgts, k, op, v in self.tgt:
+            # targets may be $(VAR)s (run 801: `$(GAMELIBS_O0_9204_DONOR): OPT_FLAGS := -O0` was
+            # missed, so the -O0 NCC donors' verify copies built at -O2 and never matched)
+            tgts = [x for t in tgts for x in (self.expand(t, {}).split() if '$(' in t else [t])]
             hit = any(t == obj or ('%' in t and re.fullmatch(re.escape(t).replace('%', '.*'), obj))
                       for t in tgts)
             if hit:
@@ -1244,6 +1247,8 @@ def check_fast(path, src, rom, quiet=False):
 
 def cmd_selftest(a, rom, mv):
     """check must catch a wrong name (fast) and a swapped pair inside one function (--strict)."""
+    # target-specific flags on a $(VAR) target reach the verify compile (run 801)
+    assert mv.for_target('build/src/game_libs/game_libs_ncc_o0_9204.cpp.o')['OPT_FLAGS'] == '-O0'
     path = 'src/game_uso/game_uso.c'
     src = open(path).read()
     n, bad = check_fast(path, src, rom, quiet=True)
