@@ -81,7 +81,9 @@ struct GCtx {
  * deletes. ugen's t-register rotation depends on the temps that come AFTER a point, so this one hidden temp in
  * the loop puts every block before it (prologue, both post-call blocks, the loop head) on the target's
  * registers. The texture's display-list call also passes the texture (self->tex) as a second argument: the
- * target loads it into a1 before the call (lw a1,44(a0)). */
+ * target loads it into a1 before the call (lw a1,44(a0)). Then (-> 98.62) the first two tail packets go
+ * through gDPWord's own _g pointer (a0 / a1 as in the target) and the rest reuse g; the two _g words fill the
+ * two free words below r, so the frame stays 400 (a third _g makes it 408+). */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -200,10 +202,10 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
             }
         }
     }
-    g = c->me_1(0)->me()->me()->next(); gW(g, 0xE7000000, 0);
-    g = c->me_1(0)->me()->me()->next(); gW(g, 0xBB000000, 0);
+    gDPWord(c->me_1(0)->me()->me()->next(), 0xE7000000, 0);
+    gDPWord(c->me_1(0)->me()->me()->next(), 0xBB000000, 0);
     g = c->me_1(0)->me()->me()->next(); gW(g, 0xBA001301, 0x80000);
-    gDPWord(c->me_1(0)->me()->me()->next(), 0xBA000C02, 0x2000);
+    g = c->me_1(0)->me()->me()->next(); gW(g, 0xBA000C02, 0x2000);
     g = c->me_1(0)->me()->me()->next(); gW(g, 0xB9000201, 0);
     g = c->me_1(0)->me()->me()->next(); gW(g, 0xBA000602, 0);
 }
