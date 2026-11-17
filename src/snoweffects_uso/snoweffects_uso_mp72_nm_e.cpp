@@ -1,6 +1,5 @@
-/* MIPSpro 7.2.1 (EDG 2.29, tools/ncc721.sh) donor for snoweffects.uso 0x6B28 (EXACT since agent-e run 723, spliced
- * in both build trees) and 0x718C (NON_MATCHING, spliced over its empty placeholder on the non_matching build only;
- * the matching build keeps INCLUDE_ASM). Agent-e run 713. Moved here from the IDO 7.1 NCC donor snoweffects_uso_ncc_nm_e.cpp.
+/* MIPSpro 7.2.1 (EDG 2.29, tools/ncc721.sh) donor for snoweffects.uso 0x6B28 (EXACT since agent-e run 723) and
+ * 0x718C (EXACT since agent-e run 736), both spliced over their empty placeholders in both build trees. Agent-e run 713. Moved here from the IDO 7.1 NCC donor snoweffects_uso_ncc_nm_e.cpp.
  * Compiler: 0x718C's chained operator* temporaries (v3B0 * f20C * |a| and v114 * .. * f210) take sp+320 / sp+308 in
  * the target; EDG 2.29 gives that order (first statement temporary = higher word), the 7.1 NCC donor the reverse.
  * 0x6B28 has no chained temporary (both front ends give it the same frame); it sits between 0x64B8 and 0x718C,
@@ -27,6 +26,10 @@ struct SV {
 struct SVb {
     float x, y, z;
     SVb &operator=(SVb o) { x = o.x; y = o.y; z = o.z; return *this; }
+    /* run 736: 0x718C's w assignment. The code-free pointer parameters take edg pooled words: the two before o are
+     * fresh, so o (the struct copy) lands two words lower (target sp+188); the two after it are fresh below the copy,
+     * so a1's / a2's op* temporaries land three words lower (sp+168 / 152 / 128 / 116). */
+    SVb &asg(void *a0, void *a1, SVb o, void *b0, void *b1) { a0 = a0; a1 = a1; b0 = b0; b1 = b1; x = o.x; y = o.y; z = o.z; return *this; }
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     SVb operator*(float s) const { SVb r; ct0(&r); r.set(x * s, y * s, z * s); return r; }
     /* run 727: operator* with a code-free block end after set(), so the next scalar load (0x718C's f210) starts a new
@@ -256,10 +259,9 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
  * +0x1FC / +0x204 timer, then (a != 0) one pool +0xA0 spawn: pos = lerp(+0x138, +0xF0, randf), vel =
  * v318 * f208 + v114 * (1 + randf * RoData+0xB0) * f210 * |a| * (a > 0 ? -1 : 1) + v3B0 * f20C * |a|, fields
  * from +0x1DC..+0x1F8, alpha 128 + randf * 127, colour lerped from the camera colour to +0x224 by +0x220.
- * NM (run 727: 471 words and frame 368 = target). Since run 727 the |speed| / op* scalar LR is f16, |a| f0 and
- * the op* products f2 / f12 / f14 as in the target (mulS, no `int sc[2]` pad). Run 732: every register matches
- * (named ramp d, setSz3 / setLife / setAlpha3, three colour c's); left are the frame offsets of the a1 / u / w /
- * a2 temporaries. */
+ * EXACT (run 736). Run 727: the |speed| / op* scalar LR is f16, |a| f0 and the op* products f2 / f12 / f14 as in
+ * the target (mulS). Run 732: every register matches (named ramp d, setSz3 / setLife / setAlpha3). Run 736: the frame
+ * words (go reused for n, the asg pooled words, colB's pooled f / c0). */
 extern "C" float snow_ro_B0;  /* RoData+0xB0: the 0x718C spin scale */
 struct SnowCamC {
     char pad000[0x318];
@@ -309,11 +311,20 @@ struct SnowEmC {
     /* 0x220 */ float f220;
     /* 0x224 */ float col[3];
 };
+/* run 736: the colour lerp. f and c0 are pooled parameter words (f reuses the word that colours f2, c0 one that
+ * colours f14), so only c1 / c2 take fresh frame words; with three named c's the frame was 376. q0 / m0 pick the
+ * pooled words. */
+static inline void colB(float q0, float f, float m0, float c0, SPart *p, SnowEmC *t) {
+    float c1, c2;
+    p->col.c[0] = (int)(c0 + (t->col[0] * 255.0f - c0) * f);
+    c1 = t->cam->col.c[1];
+    p->col.c[1] = (int)(c1 + (t->col[1] * 255.0f - c1) * f);
+    c2 = t->cam->col.c[2];
+    p->col.c[2] = (int)(c2 + (t->col[2] * 255.0f - c2) * f);
+}
 extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
     float a, sp, r;
-    int i, n, go;
-    { int sc[1]; sc[0] = 0; } /* run 732: one dead frame word above the loop block's temporaries puts a1 / a2 / u / w
-                               * at the target's sp+260..328 */
+    int i, go;
     if (t->cam->state != 99 || t->i80 != 0) {
         return;
     }
@@ -344,8 +355,8 @@ extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
     if (!go || !(60.0f < t->cam->f348)) {
         return;
     }
-    n = a != 0.0f;
-    if ((n < 0 ? -n : n) == 0) return;
+    go = a != 0.0f; /* run 736: go reused (a separate n cost one frame word) */
+    if ((go < 0 ? -go : go) == 0) return;
     for (i = 0; i < 1; i++) {
         SPart *p = gl_func_00000000_snow_pool(t->pool);
         if (p == 0) {
@@ -356,7 +367,7 @@ extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
             SVb u = t->pos;
             r = gl_func_00000000_snow_randf();
             u.lerpEach(t->vF0, r);
-            w = t->cam->v318 * t->f208;
+            w.asg(t, t, t->cam->v318 * t->f208, t, t);
             if (0) w *= t->f20C; /* run 698: one more edg float temporary (objdiff 96.99 -> 97.07) */
             SVb a1 = t->cam->v3B0 * t->f20C * (a < 0.0f ? -a : a);
             SVb a2 = t->v114.mulS(1.0f + gl_func_00000000_snow_randf() * snow_ro_B0) * t->f210;
@@ -374,15 +385,7 @@ extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
             p->setLife(256.0f, t->f1E8);
             r = gl_func_00000000_snow_randf();
             p->setAlpha3(128.0f + r * 127.0f, t->f1EC, t->f1EC);
-            {
-                float c0, c1, c2, f = t->f220; /* run 732: three c's, three LRs (target f14 / f16 / f18) */
-                c0 = t->cam->col.c[0];
-                p->col.c[0] = (int)(c0 + (t->col[0] * 255.0f - c0) * f);
-                c1 = t->cam->col.c[1];
-                p->col.c[1] = (int)(c1 + (t->col[1] * 255.0f - c1) * f);
-                c2 = t->cam->col.c[2];
-                p->col.c[2] = (int)(c2 + (t->col[2] * 255.0f - c2) * f);
-            }
+            colB(r, t->f220, r, t->cam->col.c[0], p, t);
         }
     }
 }
