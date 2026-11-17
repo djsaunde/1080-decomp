@@ -36,6 +36,9 @@
 #              Match Race reaches the goal (before the CPU when the script says `# WIN`), and an
 #              options change survives a reload in a new process.  Physics-tied like the race step:
 #              the failure prints the regenerate command for each script
+#   progress   port/tools/progress-check.py --sram (~3 s, run 871): port/host/progress_level<n>.sram (Match Race
+#              levels cleared by port/host/match_race_full.input) reload with seqStep n + 1, valid sums /
+#              mirrors, Select Level reaching level n + 1 (MgrCourseList count, trace ml=) and no further
 #   soak       port/tools/soak.py --gate (~8 s, plan 20.7): 12 fixed fuzz seeds x 5000 steps and every
 #              port/host/repro/*.input (soak-found crash repros) run clean: no signal / sys_fatal / trap /
 #              hang / NaN rider fields / stuck retrace / stuck screen (scr=, run 869) / audio badAddr; a failure prints its class and step
@@ -295,6 +298,22 @@ start; if have tenshoe; then
   txt=$(grep -E '^  [a-z0-9]+ +(ok|FAIL)' "$MC/check.log" | awk '{printf "%s %s; ", $1, $2}' | sed 's/; $//')
   if [ $rc = 0 ]; then line modes PASS "$txt"
   else line modes FAIL "${txt:-$(tail -1 "$MC/check.log")}"; grep -E 'FAIL|regenerate' "$MC/check.log" | sed 's/^/           /'; fi
+fi
+
+# ---- progress (run 871): the Match Race progression's saves reload with their levels open
+# (port/tools/progress-check.py --sram: seqStep, the chunk sums / mirrors, Select Level in a new process
+# lands on the right level and a locked card stays locked, the save file unchanged).  ~3 s
+start; if have tenshoe; then
+  PC="$(mktemp -d "$LOG/progress.XXXXXX")"  # a fresh dir per run (no rm of a variable path)
+  txt=""; prc=0
+  for lv in 1 2; do
+    sv="port/host/progress_level$lv.sram"; [ -f "$sv" ] || continue
+    python3 port/tools/progress-check.py -b "$B" -r "$ROM" -o "$PC/level$lv" --sram "$sv" --expect-levels $lv \
+      >"$PC/level$lv.log" 2>&1 || prc=1
+    txt="$txt level $lv: $(grep -c PASS "$PC/level$lv.log") pass $(grep -c FAIL "$PC/level$lv.log") fail;"
+  done
+  if [ $prc = 0 ]; then line progress PASS "${txt% ;}"
+  else line progress FAIL "$txt"; grep -h FAIL "$PC"/level*.log | sed 's/^/           /'; fi
 fi
 
 # ---- soak (plan 20.7, run 864): port/tools/soak.py --gate: fixed fuzz seeds (random menus, rides, pauses,

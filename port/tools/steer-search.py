@@ -68,6 +68,7 @@ from STEER_TRICK_ACTS=fast STEER_POINTS_W=0.2 STEER_POINTS_CAP=150 STEER_JUMP_UN
 two tricks, five checkpoints, the goal (`# GOAL`: port/tools/modes-check.py then requires it).
 """
 import argparse, os, re, shutil, struct, subprocess, sys, tempfile, time
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from concurrent.futures import ThreadPoolExecutor
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -267,6 +268,7 @@ class Runner:
         self.tenshoe = os.path.join(build, 'tenshoe')
         self.rom, self.work, self.n = rom, work, 0
         self.env = {k: v for k, v in os.environ.items() if not k.startswith('PORT_RDBG')}
+        self.sram = None  # --sram: the save every run starts from (default: blank)
         self.after = 0  # --mode rounds: the current round's first step (last_state ignores earlier lines)
         self.runner = [] if os.environ.get('RUN32') == 'env' else [RUN32]
 
@@ -276,6 +278,8 @@ class Runner:
         for f in ('1080.sram', 'state.log'):
             if os.path.exists(os.path.join(d, f)):
                 os.remove(os.path.join(d, f))
+        if self.sram:   # --sram: every run starts from a copy (the game writes its own)
+            shutil.copy(self.sram, os.path.join(d, '1080.sram'))
         with open(os.path.join(d, 's.input'), 'w') as fh:
             fh.write(text)
         subprocess.run(['timeout', '300'] + self.runner + [self.tenshoe, '--rom', self.rom, '--input', 's.input',
@@ -286,6 +290,8 @@ class Runner:
 
 CRASH_W = float(os.environ.get('STEER_CRASH_W', 50))   # --mode match: a crash (health lost) in the window
 LINE_W = float(os.environ.get('STEER_LINE_W', 0.001))  # --mode match: per unit of x off the CPU rider's line
+STALL_W = float(os.environ.get('STEER_STALL_W', 5))   # --mode match / rounds: under 15 km/h at the scored step (run 871)
+LEAD_W = float(os.environ.get('STEER_LEAD_W', 1))   # --mode match / rounds: per pct point ahead of the CPU rider (run 871)
 CPU_PATH = []           # --mode match: the CPU rider's (z, x) along the course, from a full-length run
 
 
@@ -325,6 +331,7 @@ def score(st, goal, match=False, hp0=None):
         return pct + 0.1 * min(hp, 100)
     off = line_off(*st[7]) if st[7] else 0.0
     return (pct + 0.1 * min(hp, 100) + SPEED_W * st[9] - (CRASH_W if hp0 is not None and hp < hp0 else 0.0)
+            - (STALL_W if st[9] < 15 else 0.0) + (LEAD_W * (pct - st[8][0]) if st[8] else 0.0)
             - LINE_W * max(0.0, off - 500))
 
 
@@ -340,6 +347,8 @@ def main():
     ap.add_argument('--keep-prefix', type=int, default=0,
                     help='reuse the STICK windows of the existing --out before this step')
     ap.add_argument('--rounds', type=int, default=6, help='--mode rounds: the last round to ride (default 6)')
+    ap.add_argument('--levels', type=int, default=1,
+                    help='--mode rounds: Match Race levels to ride (1 Normal .. 3 Expert; default 1; run 871)')
     ap.add_argument('--from', dest='src', default=os.path.join(GAME, 'port/host/match_race.input'),
                     help='--mode rounds: the script whose won rounds are kept (default match_race.input)')
     ap.add_argument('--mode', choices=('time', 'trick', 'match', 'contest', 'rounds'), default='time',
@@ -461,8 +470,8 @@ def rounds_main(a):
              if re.match(r'^F \d+:\d+ ', ln) and int(re.match(r'^F (\d+)', ln).group(1)) <= last_goal]
     partial = [sg for sg in segs if sg[0] > last_goal]  # a round cut by the budget: resumed below
     segs = [sg for sg in segs if sg[0] <= last_goal]
-    notes = ['# ROUND %d GOAL %d %s\n' % (k, g, w) for k, g, w in
-             re.findall(r'^# ROUND (\d+) GOAL (\d+) (\w+)', text, re.M)] or ['# ROUND 1 GOAL %d WIN\n' % last_goal]
+    notes = [ln + '\n' for ln in re.findall(r'^# (?:ROUND \d+ GOAL \d+ \w+|LEVEL \d+ START \d+).*$', text, re.M)
+             if not ln.startswith('# LEVEL') or int(ln.split()[4]) <= max(g for _, g in goals)] or ['# ROUND 1 GOAL %d WIN\n' % last_goal]
     rnd = len(goals)
     work = tempfile.mkdtemp(prefix='steer-rounds-')
     R = Runner(a.build, a.rom, work)
@@ -486,10 +495,35 @@ def rounds_main(a):
             starts = race_starts(log, last_goal + 420)
             if not starts:
                 flw = [ln.split()[3] for ln in open(log) if ln.startswith('F ')][-1:]
-                print('round %d: no race start after step %d (flow %s): the mode ended' % (rnd, last_goal + 420, flw))
+                print('round %d: no race start after step %d (flow %s): the level ended' % (rnd, last_goal + 420, flw))
                 fixed = fixed[:-2]
-                rnd -= 1
-                break
+                level = len([n for n in notes if n.startswith('# LEVEL')]) + 1
+                if level >= a.levels:
+                    rnd -= 1
+                    break
+                # the next level (run 871): A every 120 steps through the result / ending / name entry /
+                # Best Times screens and the main menu (Match Race is its first item) until Select Level
+                # opens (flow 0,3,3), then DR x level (the cards run Normal / Hard / Expert left to right),
+                # then A every 120 steps (level, rider, board) into round 1
+                tail = [press(last_goal + d, 'A', 'level %d over: next screen' % level) for d in range(300, 4000, 120)]
+                R.run(body(extra=tail), last_goal + 4000, 0)
+                sel = next((st for st, f in ((int(ln.split()[1]), ln.split()[3]) for ln in open(log) if ln.startswith('F '))
+                            if st > last_goal + 300 and f == 'flow=0,3,3'), None)
+                if sel is None:
+                    sys.exit('steer-search: no Select Level (flow 0,3,3) after level %d (scratch %s)' % (level, work))
+                fixed += [ln for ln in tail if int(ln.split()[1].split(':')[0]) < sel]
+                t = max(int(ln.split()[1].split(':')[0]) for ln in fixed) + 120
+                for k in range(level):
+                    fixed.append(press(t + 60 * k, 'DR', 'Select Level: -> %s' % ('Hard', 'Expert')[k]))
+                t += 60 * level
+                fixed += [press(t + 120 * k, 'A', ('level', 'rider', 'rider confirm', 'board', 'board confirm')[k])
+                          for k in range(5)]
+                notes.append('# LEVEL %d START %d   (Select Level at %d)\n' % (level + 1, t, sel))
+                R.run(body(), t + 1500, 0)
+                starts = race_starts(log, t)
+                if not starts:
+                    sys.exit('steer-search: no race start after the level %d select (scratch %s)' % (level + 1, work))
+                print('level %d: Select Level at %d, round 1 at %d' % (level + 1, sel, starts[0][0]), flush=True)
             start, pos = starts[0]
             print('round %d: race at step %d, start position %s' % (rnd, start, pos), flush=True)
             R.after = start
@@ -500,7 +534,9 @@ def rounds_main(a):
             if partial and partial[0][0] >= start:
                 rsegs, t, partial = [sg + (0, '') for sg in partial], partial[-1][1] + 1, []
                 print('  resuming round %d at step %d (%d windows kept)' % (rnd, t, len(rsegs)), flush=True)
-            while time.time() - t0 < a.budget and t < start + 6000:
+            if BEAM > 0:
+                rsegs, goal, t = beam_round(R, a, body, rsegs, t, start, W, rnd, t0)
+            while BEAM <= 0 and time.time() - t0 < a.budget and t < start + 6000:
                 jobs = [(body(rsegs + [(t, t + 2 * W - 1, x, y, 0, b)]), t + 2 * W, k)
                         for k, (x, y, b) in enumerate(MATCH_ACTS)]
                 res = list(ex.map(lambda j: R.run(*j), jobs))
@@ -531,15 +567,40 @@ def rounds_main(a):
                 break
             rsegs[-1] = (rsegs[-1][0], goal) + tuple(rsegs[-1][2:])
             segs += rsegs
-            R.after = start
-            R.run(body(), goal + 200, 0)
-            cpu = None
-            for ln in open(log, errors='replace'):
-                e = E1.search(ln)
-                if e and int(ln.split()[1]) >= start and int(e.group(2)) > 0:
-                    cpu = int(ln.split()[1])
-                    break
-            win = 'WIN' if cpu is None or goal < cpu else 'LOSE'
+            retry = 0
+            while True:
+                R.after = start
+                st, g = R.run(body(), goal + 200, 0)
+                if g != goal:     # the fork server's line must replay from boot (run 871)
+                    sys.exit('steer-search: round %d: the goal at %d does not replay from boot (%s)' % (rnd, goal, g))
+                cpu = None
+                for ln in open(log, errors='replace'):
+                    e = E1.search(ln)
+                    if e and int(ln.split()[1]) >= start and int(e.group(2)) > 0:
+                        cpu = int(ln.split()[1])
+                        break
+                win = 'WIN' if cpu is None or goal < cpu else 'LOSE'
+                if win == 'WIN' or BEAM <= 0 or retry >= 2 or os.environ.get('STEER_ACCEPT_LOSE') == '1':
+                    break     # STEER_ACCEPT_LOSE=1: keep the loss; the game offers the round again (3 retries)
+                if time.time() - t0 >= a.budget:   # no time for a retry: keep the earlier rounds only
+                    del segs[len(segs) - len(rsegs):]
+                    open(a.out, 'w').write(body())
+                    sys.exit('round %d: LOSE (goal %d, cpu %s) and no budget left: re-run (e.g. STEER_BEAM=16 '
+                             'STEER_LOOK=3 STEER_LEAD_W=2) with --from %s' % (rnd, goal, cpu, a.out))
+                retry += 1    # a wider beam, once or twice (run 871)
+                print('round %d: LOSE (goal %d, cpu %s): again with beam %d, lookahead %d, lead weight %g' % (
+                    rnd, goal, cpu, BEAM + 4 * retry, LOOK + retry, LEAD_W * 2 ** retry), flush=True)
+                del segs[len(segs) - len(rsegs):]
+                old = (BEAM, LOOK, LEAD_W)    # wider, longer-sighted, more weight on the lead (run 871)
+                globals().update(BEAM=BEAM + 4 * retry, LOOK=LOOK + retry, LEAD_W=LEAD_W * 2 ** retry)
+                rsegs, goal, _ = beam_round(R, a, body, [], start, start, W, rnd, t0)
+                globals().update(BEAM=old[0], LOOK=old[1], LEAD_W=old[2])
+                if goal is None:
+                    open(a.out, 'w').write(body())
+                    sys.exit('steer-search: round %d: the retry found no goal within the budget: re-run with --from %s'
+                             % (rnd, a.out))
+                rsegs[-1] = (rsegs[-1][0], goal) + tuple(rsegs[-1][2:])
+                segs += rsegs
             notes.append('# ROUND %d GOAL %d %s   (start %d at %s; the CPU rider %s)\n' % (
                 rnd, goal, win, start, pos, 'finishes at %d' % cpu if cpu else 'has not finished'))
             print('round %d: GOAL %d %s (cpu %s), %.0f s' % (rnd, goal, win, cpu, time.time() - t0), flush=True)
@@ -551,6 +612,98 @@ def rounds_main(a):
     open(a.out, 'w').write(body(extra=tail) + '# END %d\n' % end)
     print('steer-search: %d round(s), END %d -> %s (%.0f s)' % (rnd, end, a.out, time.time() - t0))
     shutil.rmtree(work, ignore_errors=True)
+
+
+BEAM = int(os.environ.get('STEER_BEAM', 12))     # --mode rounds: beam width (0 = run 869's greedy search)
+DEDUP = float(os.environ.get('STEER_DEDUP', 300))  # --mode rounds: beam lines closer than this (x / z units) are one
+LOOK = int(os.environ.get('STEER_LOOK', 2))     # --mode rounds: a candidate is scored after LOOK windows of its stick
+
+
+def beam_round(R, a, body, rsegs, t, start, W, rnd, t0):
+    """--mode rounds (run 871): a beam search over one round on tenshoe's fork server (port/main.c
+    --fork-at, port/tools/forksrv.py).  The beam holds BEAM partial lines, each a tenshoe process
+    parked at the window start t.  Every line forks one child per MATCH_ACTS stick, held for LOOK
+    windows and scored as --mode match scores; the BEAM best distinct (rider x / z at the scored
+    step) children are spawned on to t + W as the next beam.  A candidate's steps after the fork
+    cost nothing else, so the beam is about as fast as run 869's greedy search from boot.  Returns
+    (rsegs, goal step or None, last t)."""
+    from forksrv import Server
+    work = os.path.join(R.work, 'beam')
+    os.makedirs(work, exist_ok=True)
+    seq = [0]
+
+    def path(tag):
+        seq[0] += 1
+        return os.path.join(work, '%s%d' % (tag, seq[0]))
+
+    def save(text):
+        p = path('s') + '.input'
+        open(p, 'w').write(text)
+        return p
+    if R.sram:
+        os.makedirs(os.path.join(work, 'srv0'), exist_ok=True)
+        shutil.copy(R.sram, os.path.join(work, 'srv0', '1080.sram'))
+    root = Server.boot(R.tenshoe, R.rom, save(body(rsegs)), t, os.path.join(work, 'srv0'), runner=R.runner, env=R.env)
+    beam = [(0.0, rsegs, root, None)]       # (score, segments, server, hp at t)
+    goal, best = None, None
+    with ThreadPoolExecutor(max(1, len(beam) * 0 + BEAM)) as ex:
+        while time.time() - t0 < a.budget and t < start + 6000:
+            def expand(node):
+                _, segs, srv, hp0 = node
+                jobs = []
+                for act in MATCH_ACTS:
+                    sp = save(body(segs + [(t, t + LOOK * W - 1, act[0], act[1], 0, act[2])]))
+                    jobs.append((sp, t + LOOK * W, path('o')))
+                srv.run_many(jobs)
+                out = []
+                for act, (_, _, o) in zip(MATCH_ACTS, jobs):
+                    st, g = last_state(os.path.join(o, 'state.log'), start)
+                    sc = score(st, g, True, hp0)
+                    if sc is not None:
+                        out.append((sc, act, st, g, node))
+                for sp, _, o in jobs:
+                    shutil.rmtree(o, ignore_errors=True)
+                    os.remove(sp)
+                return out
+            cands = sorted((c for lst in ex.map(expand, beam) for c in lst), key=lambda c: -c[0])
+            if not cands:
+                print('  r%d t=%d: every line retires' % (rnd, t), flush=True)
+                break
+            sc, act, st, g, node = cands[0]
+            if g is not None and g < t + W:     # the best line reaches the goal inside this window
+                goal, best = g, node[1] + [(t, g, act[0], act[1], 0, act[2])]
+                break
+            keep, seen = [], set()
+            for c in cands:
+                key = (round(c[2][7][0] / DEDUP), round(c[2][7][1] / DEDUP)) if c[2][7] else (c[1], id(c[4]))
+                if key in seen:
+                    continue
+                seen.add(key)
+                keep.append(c)
+                if len(keep) >= BEAM:
+                    break
+
+            def grow(c):
+                sc, act, st, g, node = c
+                segs = node[1] + [(t, t + W - 1, act[0], act[1], 0, act[2])]
+                srv = node[2].spawn(save(body(segs)), t + W, path('srv'))
+                return (sc, segs, srv, st[4])
+            nbeam = list(ex.map(grow, keep))
+            for node in beam:
+                node[2].quit()
+            beam = nbeam
+            if (t - start) % (10 * W) == 0:
+                st = cands[0][2]
+                print('  r%d t=%d pct %.2f health %d speed %.0f%s  beam %d (%.0f s)' % (
+                    rnd, t, st[2], st[4], st[9], ' cpu %.2f%s' % (st[8][0], ' fin' if st[8][1] else '') if st[8] else '',
+                    len(beam), time.time() - t0), flush=True)
+            t += W
+    for node in beam:
+        node[2].quit()
+    shutil.rmtree(work, ignore_errors=True)
+    if goal is None:
+        return beam[0][1] if beam else rsegs, None, t
+    return best, goal, t
 
 
 def chk_misses(path, after):
