@@ -23,7 +23,9 @@ struct SV {
     SV &operator=(SV o) { x = o.x; y = o.y; z = o.z; return *this; }
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     SV operator*(float s) const { return SV(x * s, y * s, z * s); }
-    SV &operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
+    /* run 698: the named f gives 0x64B8's `n *= ..` a float word above the later operator* temporaries, so the
+     * v318 * k result lands at the target's sp+200 */
+    SV &operator*=(float s) { float f = s; x *= f; y *= f; z *= f; return *this; }
     SV &operator+=(const SV &v) { x += v.x; y += v.y; z += v.z; return *this; }
 };
 /* SVb: the same Vec3 with operator* built through set() (a named r per expansion). Run 673: with it, 0x6B28 and the
@@ -284,6 +286,7 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
         gl_func_00000000_snow_randf();
         if (t->c1CC != 0 && t->c1CC < 3) {
             SVb n = t->cam->v318 * t->f1C4;
+            if (0) n *= t->f1B8; /* run 698: an edg float temporary between the two products (r2 at the target's sp+132) */
             n += t->cam->v3B0 * t->f1B8;
             SPart *p = gl_func_00000000_snow_pool(t->pool);
             if (p == 0) {
@@ -423,6 +426,7 @@ extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
             u.lerpEach(t->vF0, r);
             { int sc[2]; sc[0] = 0; }
             w = t->cam->v318 * t->f208;
+            if (0) w *= t->f20C; /* run 698: one more edg float temporary (objdiff 96.99 -> 97.07) */
             SVb a1 = t->cam->v3B0 * t->f20C * (a < 0.0f ? -a : a);
             SVb a2 = t->v114 * (1.0f + gl_func_00000000_snow_randf() * snow_ro_B0) * t->f210;
             a2 *= (a < 0.0f ? -a : a);
