@@ -544,6 +544,43 @@ def reloc_offsets(path):
                 for r in sec.iter_relocations()}
 
 
+def reloc_types(path):
+    """{.text offset: reloc type} for every .text reloc"""
+    with open(path, 'rb') as f:
+        e = ELFFile(f)
+        return {r['r_offset']: r['r_info_type'] for sec in e.iter_sections()
+                if sec.name in ('.rel.text', '.rela.text') for r in sec.iter_relocations()}
+
+
+# the bits of a relocated word that the reloc does not fill (R_MIPS_26: opcode; HI16 / LO16 /
+# GPREL16 / GOT16 / CALL16: opcode + registers). Unknown types compare nothing.
+_RELOC_KEEP = {4: 0xFC000000, 5: 0xFFFF0000, 6: 0xFFFF0000, 7: 0xFFFF0000, 9: 0xFFFF0000, 11: 0xFFFF0000}
+
+
+def same_code(vb, vv, vtypes, rb, rv, rtypes):
+    """The verify copy's function (vb at offset vv) is the real object's (rb at rv): same size,
+    relocs at the same offsets, and every word identical outside the fields the relocs fill.
+    Run 804: the verify copy drops `static` (strip_static_funcs), so a jal to a static callee
+    is a symbol reloc with a zero field there but a .text reloc with the callee's offset in the
+    real object; comparing raw bytes rejected every caller of a static helper (game_uso.c
+    camPath_read_00000724 / TrickTable_load_0000C3F8 call the static stream readers)."""
+    if len(vb) != len(rb):
+        return False
+    vr = {o - vv: t for o, t in vtypes.items() if vv <= o < vv + len(vb)}
+    rr = {o - rv: t for o, t in rtypes.items() if rv <= o < rv + len(rb)}
+    if vr.keys() != rr.keys():
+        return False
+    for k in range(0, len(rb), 4):
+        a, b = int.from_bytes(vb[k:k + 4], 'big'), int.from_bytes(rb[k:k + 4], 'big')
+        if k in rr:
+            keep = _RELOC_KEEP.get(rr[k], 0) if vr[k] == rr[k] else 0
+            if vr[k] != rr[k] or (a ^ b) & keep:
+                return False
+        elif a != b:
+            return False
+    return True
+
+
 def rom_bytes_match(md, base, rb, rv, relocs):
     """The real object's function (rb at .o offset rv) is the code in the module's Text at
     base: every word without a reloc is identical. Guards donors that are not spliced (an NM
@@ -770,6 +807,8 @@ def plan_file(path, rom, mv, verbose=False):
         return out
     rfuncs, rrel = elf_info(obj_of(path))
     rall = reloc_offsets(obj_of(path))
+    rtypes = reloc_types(obj_of(path))
+    vtypes = reloc_types(os.path.join(SCRATCH, path) + '.v.o')
     # npc offsets per site, per function
     site_offs = collections.defaultdict(list)       # i -> [(func, reloff)]
     for off, sym in vrel.items():
@@ -788,7 +827,7 @@ def plan_file(path, rom, mv, verbose=False):
             bad_funcs[fn] = 'not in the real object'
             continue
         rv, rsz, rb = rfuncs[fn]
-        if rb != b:
+        if not same_code(b, v, vtypes, rb, rv, rtypes):
             donor = mv.splices().get(obj_of(path), {}).get(fn)
             alt = donor_offsets(path, src, m, sites, mv, fn, donor, rb, rv, rall) if donor else None
             if isinstance(alt, dict):
