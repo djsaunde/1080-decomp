@@ -5758,6 +5758,7 @@ gInputMgr_vr4698 = 0x00000000;  /* bootup Bss 0xF8 GameFlow import (viewrec 0x46
 gInputMgr_vr4990 = 0x00000000;  /* bootup Bss 0xF8 GameFlow import (viewrec MIPSpro 7.2.1 donor 4990) */
 vr_sndTbl_4990 = 0x00000000;  /* viewrec Data+0x318 sound-id table, in-place 0 (viewrec donor 4990) */
 viewrec_uso_func_00004990_rodata = 0x00000038;  /* viewrec 4990 MIPSpro 7.2.1 donor: renamed donor .rodata reloc; its tables are viewrec RoData +0x38 / +0x48 (in-place %lo) */
+viewrec_uso_func_00003878_rodata = 0x00000000;  /* viewrec 3878 MIPSpro 7.2.1 donor: renamed donor .rodata reloc; its literals and table are viewrec RoData +0x0 / +0x10 (in-place %lo) */
 heli_data_00000000 = 0x00000000;  /* heli.uso Data section base (module-local zero symbol: vtables, names) */
 heli_rodata_00000000 = 0x00000000;  /* heli.uso RoData section base (float constants) */
 heli_polyFlags_ld = 0x00000000;  /* heli 0x274: gPolyFlags_3EEC4 (bootup Bss+0x3EEC4) per-site load alias */

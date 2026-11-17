@@ -1938,11 +1938,10 @@ SECTIONS
     }
 
     /* viewrec 0x3F24 (erase-select pad handling) is a 5-case C switch; its table sits at viewrec.uso
-     * RoData+0x24 (after 0x3878's four 0.1f literals and 5-entry table, which stays INCLUDE_ASM), with
-     * the reloc-form dispatch `lui at,0; lw t5,0x24(at)`. Pin the unit's .rodata (only this table)
-     * NOLOAD at VMA 0x24 (trnproc 10 recipe; SUBALIGN(4) overrides the .o's 16-byte .rodata
-     * alignment): %hi = 0, %lo = 0x24, no ROM bytes. When 0x3878 is
-     * decompiled its literals and table come first and this VMA goes back to 0. */
+     * RoData+0x24 (after 0x3878's four 0.1f literals and 5-entry table, which come from 0x3878's
+     * spliced MIPSpro donor, not this unit), with the reloc-form dispatch `lui at,0; lw t5,0x24(at)`.
+     * Pin the unit's .rodata (only this table) NOLOAD at VMA 0x24 (trnproc 10 recipe; SUBALIGN(4)
+     * overrides the .o's 16-byte .rodata alignment): %hi = 0, %lo = 0x24, no ROM bytes. */
     .viewrec_uso_3F24_jtbl 0x24 (NOLOAD) : SUBALIGN(4)
     {
         build/src/viewrec_uso/viewrec_uso.c.o(.rodata);
