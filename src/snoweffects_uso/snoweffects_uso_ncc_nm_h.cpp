@@ -3,8 +3,10 @@
  * INCLUDE_ASM). The trail emitter update: u4C = +-cam+0x970 (flag 0x80); p / q zeroed; call 0x4374; hits /
  * u80; on = 0x46BC(t); alpha from u160..u168; 0x4714(t, on, prev, alpha); then for each i < stride the point
  * w = lerp(P, Q, i / (stride - 1)) (+ the normalized cam+0x318 * u154 and - u158 for i == 1 / 2 in mode 98),
- * written to points[writeOfs + i] and vtx[writeOfs + i]. Left: FP colouring (the target keeps w.x / w.y / w.z
- * in uopt colours, alpha in f22 and 5.0f in f20 across the 0x46BC call) and the 184-byte frame. */
+ * written to points[writeOfs + i] and vtx[writeOfs + i]. The x lerp and the x += dv go through `float &` inline
+ * helpers that copy the old value (lerpTo / addTo; y / z stay plain): w.x then gets a uopt colour (f2) and the
+ * frame is the target's 184 (89.96 -> 94.58 %). Left: FP colouring in the loop (f in f0, (float)i f12 where
+ * the target has f12 / f14 with w.y / w.z in f0), so lim stays caller-saved (f18; target f20, alpha f22). */
 extern "C" int gl_func_00000000(...);
 extern "C" char D_00000000[];
 struct SnowBV3 {
@@ -69,6 +71,10 @@ struct SnowEm {
 };
 extern "C" int gl_func_00000000_snow_46bc(SnowEm *);  /* 0x46BC, typed blank jal */
 extern "C" void gl_func_00000000_snow_4714(SnowEm *, int, int, float);
+static inline void lerpTo(float &a, float f, float b) { float c = a; a = (b - c) * f + c; }
+static inline void lerpT1(float &a, float f, float b) { a = (b - a) * f + a; }
+static inline void addTo(float &a, float b) { float c = a; a = c + b; }
+static inline void subTo(float &a, float b) { float c = a; a = c - b; }
 extern "C" void snoweffects_uso_func_000047D4(SnowEm *t) {
     SnowECam *cam;
     float a, alpha, f, ab, drop;
@@ -132,12 +138,12 @@ extern "C" void snoweffects_uso_func_000047D4(SnowEm *t) {
         for (i = 0; i < t->stride; i++) {
             SnowBV3 w = P;
             f = (float)i / (float)(t->stride - 1);
-            w.x = (Q.x - w.x) * f + w.x;
+            lerpTo(w.x, f, Q.x);
             w.y = (Q.y - w.y) * f + w.y;
             w.z = (Q.z - w.z) * f + w.z;
             if (i == 1 || i == 2) {
-                w.x += dv.x; w.y += dv.y; w.z += dv.z;
-                w.y -= lim;
+                addTo(w.x, dv.x); w.y += dv.y; w.z += dv.z;
+                addTo(w.y, -lim);
             }
             t->points[t->writeOfs + i].pos = w;
             t->points[t->writeOfs + i].w18 = 0.0f;
