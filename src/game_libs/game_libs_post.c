@@ -6095,7 +6095,11 @@ void AudioLoad_FinishSlowLoad(int *a0) {
     if (v0 == 0) return;
     *(struct gl_func_00024B94_Four*)&((AudioSlowLoad *)a0)->sample = *v0;
     ((int*)v0)[1] = a0[4];
+#ifdef PORT
+    ((Sample *)v0)->medium = 0; /* MEDIUM_RAM: bits 2-3 of byte 0 on IDO, 4-5 in the host's order (plan 18.3) */
+#else
     *(char*)v0 &= ~0x0C;
+#endif
 }
 
 /* AudioLoad_ProcessSlowLoads: 98-insn two-slot state pump over the D+0x157C record
@@ -8166,7 +8170,11 @@ void Audio_NoteSetResamplingRate(char *arg0, f32 arg1) {
     temp_v0_2 = ((int) arg0) + 0xB0;
     if (1)
     {
+#ifdef PORT
+      ((NoteSampleState *)temp_v0_2)->hasTwoParts = 0; /* IDO mask 2 of byte 1 (plan 18.3) */
+#else
       *((u8 *) (((char *) temp_v0_2) + 0x1)) = (u8) ((*((u8 *) (((char *) temp_v0_2) + 0x1))) & 0xFFFD);
+#endif
     }
     if (temp_f2 < arg1)
     {
@@ -8180,7 +8188,11 @@ void Audio_NoteSetResamplingRate(char *arg0, f32 arg1) {
   else
   {
     new_var = &D_00000000;
+#ifdef PORT
+    ((NoteSampleState *)temp_v0)->hasTwoParts = 1; /* IDO mask 2 of byte 1 (plan 18.3) */
+#else
     *((u8 *) (((char *) temp_v0) + 0x1)) = (u8) (((*((u8 *) (((char *) temp_v0) + 0x1))) & 0xFFFF) | 2);
+#endif
     if ((*((f32 *) (((char *) new_var) + 0xFCC))) < arg1)
     {
       var_f0 = *((f32 *) (((char *) new_var) + 0xFD0));
@@ -10405,8 +10417,13 @@ void AudioSeq_SeqLayerDisable(unsigned char *a0) {
     return;
   }
   CALL(Audio_SeqLayerNoteDecay)((void *) a0);
+#ifdef PORT
+  *a0 &= ~AUDIO_FLAGBIT(0); /* layer->enabled = 0 */
+  *a0 |= AUDIO_FLAGBIT(1);  /* layer->finished = 1 */
+#else
   *a0 = (unsigned short)(*a0 & 0xFF7F);
   *a0 |= 0x40;
+#endif
 }
 
 /* AudioSeq_SeqLayerFree: obj-deinit helper. obj = a0[a1].field_0x50 (slot = a0 + a1*4,
@@ -10651,8 +10668,13 @@ void AudioSeq_SequenceChannelEnable(SequencePlayer *seqPlayer, unsigned char idx
     o = seqPlayer->channels[idx];
     o->scriptState.depth = 0;
     o->scriptState.pc = script;
+#ifdef PORT
+    *(unsigned char *)o |= AUDIO_FLAGBIT(0);  /* enabled = 1 */
+    *(unsigned char *)o &= ~AUDIO_FLAGBIT(1); /* finished = 0 */
+#else
     *(unsigned char *)o = (*(unsigned char *)o & 0xFFFF) | 0x80; /* enabled = 1 (byte form) */
     *(unsigned char *)o &= 0xBF;                                  /* finished = 0 */
+#endif
     o->delay = 0;
     p = (char *)o; /* layers[i] through a shifted cursor */
     for (i = 0; i < 8; i++) {
@@ -11670,7 +11692,11 @@ void AudioSeq_InitSequencePlayerChannels(int a0) {
             int i;
             p = (int *)CHANNEL_SLOT(s1);
             ((SequenceChannel *)p)->seqPlayer = (SequencePlayer *)s3;
+#ifdef PORT
+            *(unsigned char*)p &= ~AUDIO_FLAGBIT(0); /* enabled = 0 */
+#else
             *(unsigned char*)p &= 0xFF7F; /* enabled = 0 */
+#endif
             for (i = 0; i < 8; i += 4) { /* layers[0..7] = NULL, four per pass */
                 ((SequenceChannel *)p)->layers[1] = NULL;
                 ((SequenceChannel *)p)->layers[2] = NULL;

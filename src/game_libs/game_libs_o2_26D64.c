@@ -123,7 +123,11 @@ void AudioThread_ProcessCmds(u32 arg0) {
                     case 0x41:
                         if (obj->fadeVolumeScale != ent->arg.asFloat) { /* field-first = the target c.eq.s $f0,$f4 order (run 522) */
                             obj->fadeVolumeScale = ent->arg.asFloat;
+#ifdef PORT
+                            obj->flags |= AUDIO_FLAGBIT(5); /* recalculateVolume (plan 18.3) */
+#else
                             obj->flags = (obj->flags & 0xFF) | 4; /* run 132: dead u8 mask = one t-register burn */
+#endif
                         }
                         break;
                     case 0x42:
@@ -173,18 +177,30 @@ block_24:
                         break;
                     case 0x4C:
                         obj->bend = ent->arg.asFloat;
+#ifdef PORT
+                        if (obj->bend == 1.0f) {
+                            obj->flags &= ~AUDIO_FLAGBIT(7); /* applyBend (plan 18.3) */
+                        } else {
+                            obj->flags |= AUDIO_FLAGBIT(7);
+                        }
+#else
                         if (obj->bend == 1.0f) {
                             obj->flags &= ~1;
                         } else {
                             obj->flags = (obj->flags & 0xFF) | 1;
                         }
+#endif
                         break;
                     case 0x4D:
                     case 0x4E:
                         break;
                     }
                 } else {
+#ifdef PORT
+                    if (*(u32 *)obj & AUDIO_WORDBIT(0)) { /* seqPlayer->enabled (plan 18.3) */
+#else
                     if (((u32) *(s32 *)obj >> 0x1F) != 0) {
+#endif
                         sel = ent->arg1;
                         if (sel < 0x10) {
                             gl_func_0003BA24(obj->channels[sel], ent);
