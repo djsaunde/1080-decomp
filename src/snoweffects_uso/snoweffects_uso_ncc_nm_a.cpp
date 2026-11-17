@@ -66,12 +66,28 @@ int snoweffects_uso_func_000046BC(...);
  *   *|s|, v114 * k and *f184 results land on the target's slots and the cam pointer / ?: index use the target's
  *   v0 / v1. Still left: fwd / up op* y / z (f14 / f2 vs f2 / f14), up * f180's r 2 words high, the two loop-top
  *   __Vs swapped, the vel statement's cam pointer (v1 vs v0) and the or a1 / addiu t3 order.
+ * Run 701 (52 -> 40 words differ; frame now word-for-word the target's): up * f180 is assigned into `ua`, a
+ *   ctor-less vector declared in the if (on) block (sp+336), inside the a statement through a comma expression,
+ *   so the second op* still copies through the t1 temp (a statement split in two copies through a3). That leaves
+ *   one loop-body __V (d's, sp+324) where we had two in the wrong order. idw2(t->f180) with two dead int locals
+ *   gives the two words ahead of up * f180's r, and |s| is a plain ?: (one word after the r, as in the target).
+ *   Still left: the fwd / up op* y / z colours (f14 / f2 vs f2 / f14), the |s| / v114 * k / *f184 / d / e
+ *   colour rotation, the vel statement's cam pointer (v1 vs v0) and the or a1 / addiu t3 order.
  * Left: pool word 1 colours f2 where the target has f12 (it wins the f2 race against the TV ctor's second
  *   parameter word; a forcing-uopt probe puts it on f12 for 97.9 %), the frame (368 vs 384: one TV pool
  *   word too many at the loop-body top and one word too many above it) and the hoisted sp addresses. ---- */
 extern "C" void SnowRing_setSlotState_00004714(void *, int, int, float);
 
 inline float fabs_(float x) { return x < 0.0f ? -x : x; }
+/* run 701: the cam's up vector type. TQ has no user operator=, so `(TQ &)ua = up * f180` is a word copy from the
+ * return temp (lw / sw), as in the target; TQ0 is a ctor-less view of the same layout for `ua` (a TV / TQ with a
+ * default ctor costs an inline `this` word after it in the frame). */
+struct TQ0 { float x, y, z; };
+struct TQ {
+    float x, y, z;
+    TQ(float a, float b, float c) { x = a; y = b; z = c; }
+    TQ operator*(float s) const { TQ r(x * s, y * s, z * s); return r; }
+};
 struct TV {
     float x, y, z;
     TV() {}
@@ -90,7 +106,7 @@ struct TCam {
     char pad324[0x348 - 0x324];
     /* 0x348 */ float speed;
     char pad34C[0x3B0 - 0x34C];
-    /* 0x3B0 */ TV up;
+    /* 0x3B0 */ TQ up;
     char pad3BC[0x970 - 0x3BC];
     /* 0x970 */ float lean;
     char pad974[0x9A2 - 0x974];
@@ -162,6 +178,9 @@ struct TTrail {
 inline float idf(float a) { return a; }
 inline const TV &idv(const TV &v) { return v; }
 inline float lerpf(float a, float b, float t) { return (b - a) * t + a; }
+/* run 701: two dead int locals = the target's two frame words just ahead of up * f180's result (sp+168);
+ * float locals copy f into pool words and recolour the a statement */
+inline float idw2(float f) { int g = 0, h = 0; return f; }
 inline void lerp3(TV &p, const TV &b, float f) {
     float g = f, h = f; /* unused: the target's two frame words ahead of the fwd * f188 result */
     p.x = lerpf(p.x, b.x, f);
@@ -225,6 +244,7 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
         }
         TV *v114 = &t->v114;
         TV *vFC = &t->vFC;
+        TQ0 ua; /* run 701: up * f180 lives here (sp+336, the first word below vFC), not in a loop-body __V */
         for (i = 0; i < t->stride; i++) {
             TV p;
             if (t->mode == 2) {
@@ -238,7 +258,7 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
             t->points[t->writeOfs + i].f28 = 0;
             t->points[t->writeOfs + i].w[1] = w;
             t->points[t->writeOfs + i].w[2] = t->f16C;
-            TV a = t->cam->up * t->f180 * idf(fabs_(s));
+            TV a = ((TQ &)ua = t->cam->up * idw2(t->f180), (TV &)ua) * (s < 0.0f ? -s : s);
             float k = (float)(0.0f < s ? t->stride - i - 1 : i) / (float)t->stride;
             TV d(*v114 * k * t->f184, s);
             TV e = *vFC * -1.0f;
