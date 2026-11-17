@@ -12,6 +12,7 @@ typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
 typedef signed char s8; typedef signed short s16; typedef signed int s32; typedef float f32; typedef double f64;
 #include "../../include/gdl/node.h"
 #include "../../include/game/guimenu.h" /* PauseMenu = GuiMenu (0x304) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* QuitProcess (0x50): the in-place Node (0x2C) -> Process (0x50) cascade, then QuitProcess_vtbl. No shared
  * Process header yet; this view names the two slots QuitProcess_ctor clears. +0x48 is the Process child-menu
  * slot (RaceProcess.menu, MenuProcess.menu: a GuiMenu); +0x44 is the word before it. */
@@ -73,12 +74,12 @@ extern int D_bootup_scratch0;         /* int-typed base-0 alias of D_00000000; $
 void *QuitProcess_ctor0(void *a0) {
     register void *s0, *s1;
 
-    if (a0 != 0 || (a0 = (void*)func_00000000(0x50)) != 0) {
+    if (a0 != 0 || (a0 = (void*)FCALL(mem_new)(0x50)) != 0) {
         s0 = a0;
-        if (s0 != 0 || (s0 = (void*)func_00000000(0x50)) != 0) {
+        if (s0 != 0 || (s0 = (void*)FCALL(mem_new)(0x50)) != 0) {
             s1 = s0;
-            if (s1 != 0 || (s1 = (void*)func_00000000(0x2C)) != 0) {
-                func_00000000(s1, &sStr_Node_C58C);
+            if (s1 != 0 || (s1 = (void*)FCALL(mem_new)(0x2C)) != 0) {
+                FCALL(Node_ctor)(s1, &sStr_Node_C58C);
                 NODE(s1)->vptr = (char *)&Process_vtbl;
             }
             NODE(s0)->vptr = (char *)&Process_vtbl_C3A0;
@@ -87,9 +88,9 @@ void *QuitProcess_ctor0(void *a0) {
         s0 = a0;
         s1 = (void*)&sStr_Quit_Process_C594;
         NODE(s0)->name = (const char *)s1;
-        D_bootup_scratch0 = func_00000000(a0, 0);
+        D_bootup_scratch0 = FCALL(game_createProcessWindow)(a0, 0);
         s0 = a0;
-        func_00000000(D_bootup_scratch0, s0);
+        FCALL(node_linkBack_0004E888)(D_bootup_scratch0, s0);
     }
     return a0;
 }
@@ -128,12 +129,12 @@ void *QuitProcess_ctor0(void *a0) {
 void *QuitProcess_ctor(void *a0, int a1, int a2) {
     register void *s0, *s1;
 
-    if (a0 != 0 || (a0 = (void*)func_00000000(0x50)) != 0) {
+    if (a0 != 0 || (a0 = (void*)FCALL(mem_new)(0x50)) != 0) {
         s0 = a0;
-        if (s0 != 0 || (s0 = (void*)func_00000000(0x50)) != 0) {
+        if (s0 != 0 || (s0 = (void*)FCALL(mem_new)(0x50)) != 0) {
             s1 = s0;
-            if (s1 != 0 || (s1 = (void*)func_00000000(0x2C)) != 0) {
-                func_00000000(s1, &sStr_Node_C5A4);
+            if (s1 != 0 || (s1 = (void*)FCALL(mem_new)(0x2C)) != 0) {
+                FCALL(Node_ctor)(s1, &sStr_Node_C5A4);
                 NODE(s1)->vptr = (char *)&Process_vtbl;
             }
             NODE(s0)->vptr = (char *)&Process_vtbl_C3A0;
@@ -146,9 +147,9 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
         stream_readS32_00000008.f38 = a2;
         ((QuitProcess *)a0)->unk44 = 0;
         ((QuitProcess *)a0)->menu = 0;
-        D_bootup_scratch0 = func_00000000(a0, 0);
+        D_bootup_scratch0 = FCALL(game_createProcessWindow)(a0, 0);
         s0 = a0;
-        func_00000000(D_bootup_scratch0, s0);
+        FCALL(node_linkBack_0004E888)(D_bootup_scratch0, s0);
     }
     return a0;
 }
@@ -212,9 +213,9 @@ void QuitProcess_onQuit(char *a0) {
 void *PauseMenu_create(char *a0) {
     register char *s;
     register char *d;
-    if (a0 != 0 || (a0 = (char *)func_00000000(0x304)) != 0) {
-        if ((s = a0) != 0 || (s = (char *)func_00000000(0x2C)) != 0) {
-            func_00000000(s, &sStr_Node_C5BC);
+    if (a0 != 0 || (a0 = (char *)FCALL(mem_new)(0x304)) != 0) {
+        if ((s = a0) != 0 || (s = (char *)FCALL(mem_new)(0x2C)) != 0) {
+            FCALL(Node_ctor)(s, &sStr_Node_C5BC);
             NODE(s)->vptr = (char *)&Process_vtbl;
         }
         NODE(a0)->vptr = (char *)&PauseMenu_vtbl;
@@ -232,7 +233,7 @@ void *PauseMenu_create(char *a0) {
         ((f32 *)s)[2] = (float)(0, 229) / 255.0f;
         ((f32 *)s)[3] = (float)(0, 255) / 255.0f;
         GUIMENU(a0)->locked = 0;
-        func_00000000(a0);
+        FCALL(gui_clearRows_00010A9C)(a0);
     }
     return a0;
 }

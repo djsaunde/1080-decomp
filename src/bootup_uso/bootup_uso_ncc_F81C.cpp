@@ -5,6 +5,7 @@
 typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
 typedef signed char s8; typedef signed short s16; typedef signed int s32; typedef float f32; typedef double f64;
 #include "../../include/game/course.h" /* GameFlow.game is the WorldRegistry: windows[3] (+0x114) = ProcessWindow */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 extern int func_00000000(...);
 extern char D_00000000;
@@ -55,11 +56,11 @@ void *game_createProcessWindow(int a0, int a1) {
     f3 = f2;
     p[1] = f3;
     p[0] = f3;
-    result = func_00000000(0, 0x64, &sStr_ProcessWindow_C57C, 0x6D, 0, 0x6E, 0, 0, 0x6F,
+    result = FCALL(ScreenWindow_ctor)(0, 0x64, &sStr_ProcessWindow_C57C, 0x6D, 0, 0x6E, 0, 0, 0x6F,
                            0x140, 0xF0, 0x70, flags | 0x400, 0x71, 2, 0);
     p = (float *)result;
     q = &gSnowBoard_0000002C;
-    func_00000000(q, p);
+    FCALL(list_append)(q, p);
     stream_readQuad_000000F0.game->windows[3] = result; /* the ProcessWindow slot (GameFlow_startMode reads it) */
     return (void *)result;
 }

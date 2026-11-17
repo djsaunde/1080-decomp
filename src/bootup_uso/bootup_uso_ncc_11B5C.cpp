@@ -5,6 +5,7 @@
 typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
 typedef signed char s8; typedef signed short s16; typedef signed int s32; typedef float f32; typedef double f64;
 #include "../../include/game/input.h"  /* InputMgr (GameFlow) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 extern int func_00000000(...);
 
@@ -28,7 +29,7 @@ s32 input_pauseRacePads(s32 *a0) {
     i = 0;
     if (GAMEFLOW(a0)->numRacePads > 0) {
         do {
-            func_00000000(GAMEFLOW(a0)->racePads[i], 1);
+            FCALL(pad_setPause_00067470)(GAMEFLOW(a0)->racePads[i], 1);
         } while (++i < GAMEFLOW(a0)->numRacePads);
     }
     return saved;
@@ -40,7 +41,7 @@ void input_unpauseRacePads(char *a0) {
     i = 0;
     if (GAMEFLOW(a0)->numRacePads > 0) {
         do {
-            func_00000000(GAMEFLOW(a0)->racePads[i], 0);
+            FCALL(pad_setPause_00067470)(GAMEFLOW(a0)->racePads[i], 0);
         } while (++i < GAMEFLOW(a0)->numRacePads);
     }
     GAMEFLOW(a0)->racePadsPaused = 0;
