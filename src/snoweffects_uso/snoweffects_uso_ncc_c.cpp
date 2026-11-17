@@ -151,7 +151,11 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * Draw-block x is carried in the (dead there) wx, so x's live range no longer reaches the draw block and
  * x / the p->pos.x load can share f18 as in the target; zf1(-halfH) on the third compare gives -halfH f16,
  * and zf1(y) + zf1(z) on the first loop compare put y / z ahead of wx in the colouring (wx f24).
- * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
+ * agent-c run 791: the depth scale is read through a 0-based RoData alias (`snow_rodata_28E0.depthScale`,
+ * lo16 = 0x10 in the instruction as in the target); the EE depth adds a plain 1.0f (FP ring rows 614-621);
+ * the B3 word masks the dsdx quotient before the shift (`/ sw & 0xFFFF) << 16`, gImmp1 / _SHIFTL form), which
+ * keeps the 0xB3 w0 constant live across the first divide as in the target (int ring and div order).
+ * Needs `snow_rodata_28E0 = 0`; keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
 extern "C" float gl_func_00000000_snow_randf(...);   /* sys_randf (typed blank jal: float return) */
 struct SnowV3d {
@@ -209,8 +213,8 @@ struct SnowFallD {
 };
 #define SNOW_CAM2 (*(SnowCam2 **)(&snow_gGfxLib + 0x254))
 #define SNOW_SCALE(i) (((float *)(&snow_gGfxLib + 0x128))[i])
-extern "C" float snow_ro_10;
-inline int snowOne() { return 1; }
+struct SnowRoData28E0 { float ro[4]; float depthScale; };
+extern "C" SnowRoData28E0 snow_rodata_28E0;
 /* zero-code priority folds (agent-e run 756): z is always 0, uopt counts each v use and then folds the product */
 static inline int zf1(float v, int z) { return z * (int)(v); }
 static inline int zf2(float v, int z) { return z * (int)(v + v); }
@@ -327,14 +331,14 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
                     y0 = (int)(cy + halfH - (float)(sz / 2) + (float)(&SNOW_CAM2->offY)[zf4(cx, 0)]);
                     cz = m[0][2] * p->pos.x + m[1][2] * y + m[2][2] * z + m[3][2];
                     gDPWord(c->next(), 0xEE000000,
-                            ((int)((cz * w + (float)snowOne()) * snow_ro_10) + zf1(halfW, 0) + zf1(cx, 0) + zf4(cz, 0) & 0x7FFF) << 16);
+                            ((int)((cz * w + 1.0f) * snow_rodata_28E0.depthScale) + zf1(halfW, 0) + zf1(cx, 0) + zf4(cz, 0) & 0x7FFF) << 16);
                     self->drawn++;
                     if (1) {}
                     gDPWord(c->nextM(), 0xE4000000 | ((((x0 + sw) << 2) & 0xFFF) << 12) | (((y0 + sz) << 2) & 0xFFF),
                             (((x0 << 2) & 0xFFF) << 12) | ((y0 << 2) & 0xFFF));
                     gDPWord(c->next(), 0xB4000000, 0);
                     gDPWord(c->next(), 0xB3000000,
-                            ((((self->texW << 10) - 1024) / sw) << 16) | ((((self->texH << 10) - 1024) / sz) & 0xFFFF));
+                            ((((self->texW << 10) - 1024) / sw & 0xFFFF) << 16) | ((((self->texH << 10) - 1024) / sz) & 0xFFFF));
                 }
             }
             self->visible++;
