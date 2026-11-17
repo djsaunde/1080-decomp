@@ -1175,10 +1175,16 @@ void snoweffects_uso_func_000092C8(Quad4 *dst) {
 void snoweffects_uso_func_00009320(void) {
 }
 
-/* 0x9328: the SnowTarget Cfront ctor (SNode base, Parms at +0x240 with five inline Parm ctors). NM: a
- * real-C++ draft (78 / 247 words; register / frame residual) is in ncc_drafts/snoweffects_nm_e.cpp
- * (agent-e run 653). */
+/* 0x9328: the SnowTarget Cfront ctor (SNode base, Parms at +0x240 with five inline Parm ctors).
+ * NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e9.cpp (agent-e run 692, 246 / 247 words), spliced
+ * over this placeholder on the non_matching build. Left: frame 192 vs 224 (the Colour argument temps), one
+ * forwarded name copy, the +0x234 / +0x238 store order. */
+#ifdef NON_MATCHING
+void snoweffects_uso_func_00009328(void) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009328);
+#endif
 
 void snoweffects_uso_func_00009704(char *a0) {
     CALL(gfx_setBlendColour)(&D_00000000, a0 + 0x288);

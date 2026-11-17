@@ -5923,3 +5923,11 @@ snowb_gfxY_559C = 0x00000000;  /* snoweffects 0x559C NM donor: gGfxLib alias for
 snowb_gfxZ_559C = 0x00000000;  /* snoweffects 0x559C NM donor: gGfxLib alias for the world-scale z load */
 snowb_texTbl_588 = 0x00000000;  /* snoweffects Data+0x588 texture table (0x559C; reloc on the object, lo16 0) */
 gl_func_00000000_snowb_lights = 0x00000000;  /* gfx_emitLights_000454C4 typed (float k in a3), snoweffects 0x559C */
+snowe9_SNode_ctor = 0x00000000;  /* SNode_ctor (snoweffects 0x9328 NM donor, blank jal) */
+snowe9_Parms_addParm = 0x00000000;  /* GdlParmBase ctor = Parms_addParm (snoweffects 0x9328 NM donor, blank jal) */
+snowe9_new = 0x00000000;  /* operator new (snoweffects 0x9328 NM donor, blank jal) */
+snowe9_mem_new = 0x00000000;  /* mem_new (snoweffects 0x9328 NM donor, blank jal) */
+snowe9_vtbl_SnowTarget_0 = 0x00000000;  /* snoweffects Data+0x0 SnowTarget vtable (0x9328 NM donor; lo16 0x0) */
+snowe9_vtbl_ParmF_838 = 0x00000838;  /* snoweffects Data+0x838 Parm<float> vtable (0x9328 NM donor; lo16 0x838) */
+snowe9_vtbl_ParmC_850 = 0x00000850;  /* snoweffects Data+0x850 Parm<Colour> vtable (0x9328 NM donor; lo16 0x850) */
+snowe9_vtbl_ParmI_868 = 0x00000868;  /* snoweffects Data+0x868 Parm<int> vtable (0x9328 NM donor; lo16 0x868) */

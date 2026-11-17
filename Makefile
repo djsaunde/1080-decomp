@@ -199,6 +199,15 @@ $(SNOW_NM_E_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp src/snoweff
 SNOW_NM_E_FUNCS := snoweffects_uso_func_000064B8 snoweffects_uso_func_00006B28 snoweffects_uso_func_0000718C
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_E_FUNCS),$(f)=$(SNOW_NM_E_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_E_DONOR)
+# agent-e run 692: NON_MATCHING-only NCC donor for 0x9328 (the SnowTarget ctor, 246 / 247 words); callees and
+# vtables renamed to 0-pinned / Data-offset-pinned aliases (undefined_syms_auto.txt snowe9_*).
+SNOW_NM_E9_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_e9.cpp.o
+$(SNOW_NM_E9_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_e9.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym __ct__11SnowTarget9Fv=snoweffects_uso_func_00009328 --redefine-sym __ct__6SNode9Fv=snowe9_SNode_ctor --redefine-sym __ct__12GdlParmBase9FP6Parms95PNamei=snowe9_Parms_addParm --redefine-sym __nw__FUi=snowe9_new --redefine-sym mem_new=snowe9_mem_new --redefine-sym __vtbl__11SnowTarget9=snowe9_vtbl_SnowTarget_0 --redefine-sym __vtbl__6ParmF9=snowe9_vtbl_ParmF_838 --redefine-sym __vtbl__6ParmC9=snowe9_vtbl_ParmC_850 --redefine-sym __vtbl__6ParmI9=snowe9_vtbl_ParmI_868 $@
+build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += snoweffects_uso_func_00009328=$(SNOW_NM_E9_DONOR)
+build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_E9_DONOR)
 # viewrec.uso Text ends with one zero pad word after 0x55A4's `jr ra; sw a0,0(sp)`: all-zero SUFFIX
 # on the last function, then clip .text back to the Text size (same mechanism as h2hproc / snoweffects).
 build/src/viewrec_uso/viewrec_uso.c.o: SUFFIX_BYTES_FORCE := viewrec_uso_func_000055A4=0x00000000
