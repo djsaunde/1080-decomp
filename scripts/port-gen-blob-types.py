@@ -31,6 +31,9 @@ so the map covers modules with no src/ yet:
            then bytes); covers textures only code reaches (a built G_SETTIMG).
   vtbl     cfront vtable slots {s16 delta, s16 index, fn}: the head word of a relocated pointer
            to Text in an 8-byte-stride table (u16 x 2; every slot on this ROM is 0 today).
+  pmf      cfront pointer-to-member records {s16 delta, s16 vslot, fn} (GdlPmf / PortCfPmf): a
+           {small delta, -1} head the code copies, before a relocated pointer to Text, and the
+           null {0, 0, 0} next to one (u16 x 2, the fn word ptr / u32).
   str      NUL-terminated printable runs (>= 4 chars) at an aligned or referenced start, and
            1-3 chars at a referenced start (parm tags "he1", formats "%s").
   zero     all-zero bytes outside every typed run (any swap is a no-op).
@@ -622,6 +625,47 @@ def vtables(m, bounds, stats):
         stats["vtable slots"] += 1
 
 
+def pmfs(m, bounds, stats, found):
+    """cfront pointer-to-member records (include/gdl/pmf.h GdlPmf {s16 delta, s16 vslot, fn},
+    read as s16 by the C MemberCallback_invoke family and by port_cfront.h PortCfPmf in the
+    game_uso RiderAnim donors): the vtable-slot rule's other half.  A head {small delta, -1}
+    (non-virtual) before a relocated pointer to Text, which the code copies into the callback /
+    state objects (a code access at the head: the readers themselves go through those heap
+    copies), and the null PMF {0, 0, 0} the code takes the address of next to such a record (the
+    RiderAnim `!= null` compares).  The head was typed u32 by the copy; it is retyped as two u16,
+    or the host reads delta -1 / index 0 (a virtual call through garbage)."""
+    d = m.data
+    heads = set()
+    for p in sorted(m.text_ptrs):
+        h = p - 4
+        if h < 0 or h % 4:
+            continue
+        w = struct.unpack_from(">I", d, h)[0]
+        if w & 0xFFFF != 0xFFFF or 0x1000 <= w >> 16 < 0xF000:      # vslot -1, a small delta
+            continue
+        if any(c not in (None, "u32") for c in m.t[h:p]):
+            continue
+        if not any(s in ("field", "access", "index") for s in m.src[h:p]) and h not in m.addr_taken:
+            stats["pmf: head without a code access"] += 1
+            continue
+        heads.add(h)
+    for h in sorted(heads):
+        m.put(h, "u16", "pmf", 2, force=True)
+        found.append(h)
+        stats["pmf records"] += 1
+    for h in sorted(m.addr_taken):
+        if h % 4 or h + 8 > m.n or bytes(d[h:h + 8]) != bytes(8) or not (h - 8 in heads or h + 8 in heads):
+            continue
+        if any(c not in (None, "u32", "zero") for c in m.t[h:h + 8]):
+            continue
+        if m.src[h + 8] == "vtbl":    # a vtable's {0, 0} header (the constructors store its address)
+            continue
+        m.put(h, "u16", "pmf:null", 2, force=True)
+        m.put(h + 4, "u32", "pmf:null", force=True)
+        found.append(h)
+        stats["pmf null records"] += 1
+
+
 def walk_mats(maps, ptrs, key, o, stats):
     """parseMats token loop: 100 (a material: GDL_MC commands up to 0), 101, 0 ends"""
     if key not in maps:
@@ -783,6 +827,8 @@ def main():
         bounds = m.starts | set(targets[(short, sec)])
         tex_headers(m, bounds, stats)
         vtables(m, bounds, stats)
+        m.pmfs = []
+        pmfs(m, bounds, stats, m.pmfs)
     # 4. strings, index extension, zeros
     for (short, sec), m in maps.items():
         md = rom.by_short[short]
@@ -880,6 +926,9 @@ def main():
             n = sum(mc.values())
             print("  %-10s %-6s %7d  unknown %6d (%.0f%%)  %s" % (short, sec, n, mc["unknown"], 100.0 * mc["unknown"] / n,
                   " ".join("%s=%d" % kv for kv in mc.most_common(5))))
+        for (short, sec), m in sorted(maps.items()):
+            if m.pmfs:
+                print("  pmf %s %s: %s" % (short, sec, " ".join("0x%X" % h for h in m.pmfs)))
         for c in conflicts[:60]:
             print("  conflict %s %s +0x%X: %s vs %s (%s / %s)" % c)
     return 0
