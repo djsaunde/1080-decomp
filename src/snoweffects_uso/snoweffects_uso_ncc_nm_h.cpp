@@ -15,6 +15,7 @@ struct GCtx {
     char pad0[0xC];
     DList *dl;
     Gfx *next() { return &dl->buf[dl->count++]; } Gfx *nextN() { int n = dl->count++; return &dl->buf[n]; }
+    Gfx *nextI() { int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
 };
 /* snoweffects_uso_func_00000C90 (NON_MATCHING draft): the particle sprite draw. Calls the texture's
  * display list (+0x2C, its +0x60 through a blank import), builds the camera view matrix (camera +0x30),
@@ -52,7 +53,9 @@ struct GCtx {
  * map now matches); the texrect's E4 packet appends through nextN().
  * agent-h run 740 (-> 96.17): the env colour word is the stock gDPSetEnvColor body, _SHIFTL(col[0], 24, 8) |
  * .. | _SHIFTL((int)alpha, 0, 8) in r, g, b, a order: the unsigned (u32) terms keep the target's load order
- * col[0], col[1], alpha, col[2] (no plain-int order of the four terms gives it). */
+ * col[0], col[1], alpha, col[2] (no plain-int order of the four terms gives it). Then (-> 96.23) xl clamps
+ * through MAX like yl (yl written first), E4 / B4 append through nextI() / nextN(), and the E7 tail packet reuses g
+ * (frame kept at 400). */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -63,7 +66,7 @@ inline int imax0(int a) { return a > 0 ? a : 0; }
 #define gTR(g0, pkt, g1, pkt2, g2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
 { g0 = (pkt); \
     g0->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(imax0((s16)(yh)), 0, 12) | _SHIFTL(imax0((s16)(xh)), 12, 12)); \
-    g0->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(imax0((s16)(xl)), 12, 12) | _SHIFTL(MAX((s16)(yl),0), 0, 12)); \
+    g0->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(yl),0), 0, 12) | _SHIFTL(MAX((s16)(xl),0), 12, 12)); \
     gImmpV(g1, pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmpV(g2, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
@@ -164,12 +167,12 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 y1 = y0 + hgt;
                 if (y0) {}
                 self->drawn++;
-                gTR(gt, c->nextN(), g1, c->next(), g2, c->nextN(), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
+                gTR(gt, c->nextI(), g1, c->nextN(), g2, c->nextN(), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
                     ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
             }
         }
     }
-    gDPWord(c->next(), 0xE7000000, 0);
+    g = c->next(); gW(g, 0xE7000000, 0);
     g = c->next(); gW(g, 0xBB000000, 0);
     gDPWord(c->next(), 0xBA001301, 0x80000);
     gDPWord(c->next(), 0xBA000C02, 0x2000);
