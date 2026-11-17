@@ -196,9 +196,18 @@ SNOW_NM_E_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp.o
 $(SNOW_NM_E_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NM_E_FUNCS := snoweffects_uso_func_000064B8 snoweffects_uso_func_00006B28 snoweffects_uso_func_0000718C
+# Run 713: 0x6B28 / 0x718C moved to the MIPSpro 7.2.1 donor below (their copies in the NCC donor are unused).
+SNOW_NM_E_FUNCS := snoweffects_uso_func_000064B8
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_E_FUNCS),$(f)=$(SNOW_NM_E_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_E_DONOR)
+# agent-e run 713: NON_MATCHING-only MIPSpro 7.2.1 donor (tools/ncc721.sh) for 0x6B28 and 0x718C.
+SNOW_MP72_E_DONOR := build/src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp.o
+$(SNOW_MP72_E_DONOR): src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h $(TOOLS)/ncc721.sh
+	@mkdir -p $(dir $@)
+	$(TOOLS)/ncc721.sh $< $@ $(OPT_FLAGS)
+SNOW_MP72_E_FUNCS := snoweffects_uso_func_00006B28 snoweffects_uso_func_0000718C
+build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_MP72_E_FUNCS),$(f)=$(SNOW_MP72_E_DONOR))
+build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_MP72_E_DONOR)
 # agent-e run 692: NON_MATCHING-only NCC donor for 0x9328 (the SnowTarget ctor, 246 / 247 words); callees and
 # vtables renamed to 0-pinned / Data-offset-pinned aliases (undefined_syms_auto.txt snowe9_*).
 SNOW_NM_E9_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_e9.cpp.o
