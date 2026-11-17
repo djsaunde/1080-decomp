@@ -86,29 +86,45 @@ static void game_entry(void) {
     sRet = port_main(sArgc, (char **)argv32);
 }
 
+#ifdef PORT_GFX_NATIVE
+/* The native host (plan 21.9) links libEGL / libGL / libX11 and starts threads (the GL driver's, the audio
+ * thread); opening the window mallocs ~280 MB, from the same brk heap as the game. Two things then put a
+ * game allocation above 4 GB, where x32 code truncates it (seen: fopen's FILE in port_audio.c read_maps,
+ * a crash in 1 run of 3):
+ * 1. the brk start is randomised over 1 GB (64-bit kernels), so the heap can reach the MAP_32BIT region
+ *    at 0x40000000 (the game's stack); brk then fails and glibc's main arena falls back to mmap, high;
+ * 2. glibc fixes its arena limit at the first arena decision, which can come before main, so mallopt's
+ *    M_ARENA_MAX can be late: a driver thread's arena is mmap'd high, and a chunk it allocated and the
+ *    main thread freed returns to x32 code from the main thread's tcache.
+ * So the process re-executes itself once with brk randomisation off (personality ADDR_NO_RANDOMIZE: the
+ * heap starts right after .bss) and the malloc tunables set (they apply from the first malloc). */
+static void native_reexec(char **argv) {
+    static const char want[] = "glibc.malloc.arena_max=1:glibc.malloc.mmap_max=0";
+    const char *t = getenv("GLIBC_TUNABLES");
+    const int pers = personality(0xffffffff);
+    char buf[1024];
+    if (pers != -1 && (pers & ADDR_NO_RANDOMIZE) != 0 && t != NULL && strstr(t, "glibc.malloc.arena_max=1") != NULL) {
+        return;
+    }
+    if (t == NULL || strstr(t, "glibc.malloc.arena_max=1") == NULL) {
+        snprintf(buf, sizeof(buf), "%s%s%s", t != NULL ? t : "", t != NULL && *t != '\0' ? ":" : "", want);
+        setenv("GLIBC_TUNABLES", buf, 1);
+    }
+    if (pers != -1) {
+        personality((unsigned long)pers | ADDR_NO_RANDOMIZE);
+    }
+    execv("/proc/self/exe", argv);
+    fprintf(stderr, "main64: re-exec (no brk randomisation, malloc tunables) failed; continuing\n");
+}
+#endif
+
 int main(int argc, char **argv) {
     int n;
     void *stack;
 
-    /* Run 869 (the 64-bit soak: ~2.5 % of runs died at step 0 reading the ROM): with ASLR the kernel puts
-     * the brk heap of a non-PIE image anywhere in the 1 GB after .bss, so it can start just below
-     * 0x40000000, where the MAP_32BIT game stack (below) and every MAP_32BIT mmap (x32_glue.c) land.  The
-     * heap then cannot grow, glibc malloc falls back to mmap above 4 GB, and the x32 code truncates the
-     * pointer.  Re-exec once without address randomisation: brk then starts right after .bss, ~1 GB of
-     * room below the MAP_32BIT window (and the layout is the same on every run).  PORT64_ASLR=1 keeps
-     * ASLR; the heap's room is checked below either way. */
-    if (getenv("PORT64_ASLR") == NULL) {
-        int pers = personality(0xffffffff);
-        if (pers != -1 && !(pers & ADDR_NO_RANDOMIZE) && personality(pers | ADDR_NO_RANDOMIZE) != -1) {
-            execv("/proc/self/exe", argv);
-            personality(pers); /* the exec failed: carry on as we are */
-        }
-    }
-    if ((uintptr_t)sbrk(0) > 0x40000000ul - (256ul << 20)) {
-        fprintf(stderr, "main64: the brk heap starts at %p, less than 256 MB below the MAP_32BIT window "
-                "(0x40000000): malloc would fall back to high mmap (unset PORT64_ASLR)\n", sbrk(0));
-        return 1;
-    }
+#ifdef PORT_GFX_NATIVE
+    native_reexec(argv);
+#endif
     mallopt(M_MMAP_MAX, 0);          /* brk only: every malloc block stays low */
     mallopt(M_ARENA_MAX, 1);
     sArgc = argc;

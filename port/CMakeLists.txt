@@ -176,16 +176,56 @@ if(PORT_GFX_FAST3D)
   target_compile_definitions(porthost PRIVATE PORT_GFX_FAST3D)
 endif()
 
+# PORT_NATIVE (plan 21.9): the native single-process 64-bit game. tenshoe links the in-process host
+# (gfx/fast3d/native_host.cpp: the presenter's X11 + EGL window and input, live_audio.cpp, Fast3D compositing a
+# step per frame) and, run with PORT_NATIVE=1, opens its own window: no presenter, no shared memory. The host is
+# ordinary LP64 code: its boundary with the x32 game is gfx/port_native.h (u32 arguments only). Needs PORT_64,
+# tools/lus (setup-lus.sh), tools/gl-dev, tools/x11-dev and tools/pulse-dev (headers only; libpulse-simple is
+# dlopen'd). PORT_NATIVE_X11_DEV / _PULSE_DEV / PORT_GL_DEV locate them.
+option(PORT_NATIVE "M6 / plan 21.9: link the in-process window / audio / Fast3D host into the 64-bit tenshoe" OFF)
+if(PORT_NATIVE)
+  if(NOT PORT_64)
+    message(FATAL_ERROR "PORT_NATIVE needs PORT_64")
+  endif()
+  set(PORT_LUS "${GAME_ROOT}/../../tools/lus" CACHE PATH "libultraship + prism (gfx/fast3d/setup-lus.sh)")
+  set(PORT_GL_DEV "${GAME_ROOT}/../../tools/gl-dev/root/usr/include" CACHE PATH "EGL / GL headers")
+  set(PORT_NATIVE_X11_DEV "${GAME_ROOT}/../../tools/x11-dev/root/usr/include" CACHE PATH "Xlib headers")
+  set(PORT_NATIVE_PULSE_DEV "${GAME_ROOT}/../../tools/pulse-dev/root/usr/include" CACHE PATH "libpulse headers")
+  set(PORT_NATIVE_LIBDIR "/lib/x86_64-linux-gnu" CACHE PATH "libEGL.so.1 / libGL.so.1 / libX11.so.6")
+  if(NOT EXISTS "${PORT_LUS}/.complete")
+    message(FATAL_ERROR "PORT_NATIVE: ${PORT_LUS} missing; run port/gfx/fast3d/setup-lus.sh")
+  endif()
+  set(_lus "${PORT_LUS}/libultraship")
+  file(GLOB _prism_cpp "${PORT_LUS}/prism/src/prism/*.cpp" "${PORT_LUS}/prism/src/prism/utils/*.cpp")
+  file(GLOB _prism_c "${PORT_LUS}/prism/src/prism/utils/*.c")
+  add_library(port_native STATIC gfx/fast3d/native_host.cpp gfx/fast3d/live_window.cpp gfx/fast3d/live_audio.cpp
+              gfx/fast3d/live_gamepad.cpp gfx/fast3d/port_fast3d.cpp gfx/fast3d/ship_shim.cpp gfx/replay/egl_png.c
+              ${_lus}/src/fast/interpreter.cpp ${_lus}/src/fast/backends/gfx_opengl.cpp
+              ${_lus}/src/fast/debug/GfxDebugger.cpp ${_lus}/src/fast/resource/type/Texture.cpp
+              ${_prism_cpp} ${_prism_c})
+  target_include_directories(port_native PRIVATE gfx/fast3d/shim ${_lus}/include ${_lus}/include/fast ${_lus}/src
+                             ${PORT_LUS}/prism/src ${PORT_GL_DEV} ${PORT_NATIVE_X11_DEV} ${PORT_NATIVE_PULSE_DEV})
+  target_compile_definitions(port_native PRIVATE ENABLE_OPENGL CVAR_MSAA_VALUE="gMSAAValue"
+                             CVAR_INTERNAL_RESOLUTION="gInternalResolution" CVAR_Z_FIGHTING_MODE="gZFightingMode"
+                             LUS_FAST_DIR="${_lus}/src/fast")
+  target_compile_options(port_native PRIVATE -O2 -fno-pie -w $<$<COMPILE_LANGUAGE:CXX>:-std=c++20>)
+  target_compile_definitions(porthost PRIVATE PORT_GFX_NATIVE)
+endif()
+
 if(PORT_64)
   # the LP64 entry (plan 21): low stack, low heap, argv / environ copied below 2 GB, then port_main
   add_library(porthost64 OBJECT host/main64.c host/x32_glue.c)
   target_compile_options(porthost64 PRIVATE -fno-pie -O2 -g)
+  if(PORT_NATIVE)
+    target_compile_definitions(porthost64 PRIVATE PORT_GFX_NATIVE)
+  endif()
   target_compile_definitions(porthost PRIVATE main=port_main)
   set(PORT_ENTRY64 $<TARGET_OBJECTS:porthost64>)
   # the libc calls whose x32 / LP64 memory layouts differ go through host/x32_glue.c (plan 21.4)
   set(PORT64_WRAP)
-  foreach(f __vfprintf_chk __vsnprintf_chk __vsprintf_chk vfprintf vsnprintf vsprintf strtol strtoul strtod
-            fseek sbrk __errno_location mmap sigaction backtrace backtrace_symbols_fd)
+  set(PORT64_WRAP_FNS __vfprintf_chk __vsnprintf_chk __vsprintf_chk vfprintf vsnprintf vsprintf strtol strtoul strtod
+      fseek sbrk __errno_location mmap sigaction backtrace backtrace_symbols_fd)
+  foreach(f ${PORT64_WRAP_FNS})
     list(APPEND PORT64_WRAP -Wl,--wrap=${f})
   endforeach()
 endif()
@@ -199,6 +239,21 @@ if(PORT_LINK)
                         ${PORT_GEN}/aliases.ld m)
   if(PORT_GFX_FAST3D)
     target_link_libraries(tenshoe PRIVATE port_fast3d EGL GL stdc++)
+  endif()
+  if(PORT_NATIVE)
+    # The link's --wrap list (PORT64_WRAP) turns every reference to those libc calls into the x32 glue's
+    # converters; the host is LP64 and must reach the real ones, so its archive refers to __real_<f> (which
+    # --wrap resolves to <f>) instead.
+    set(_redef "")
+    foreach(f ${PORT64_WRAP_FNS})
+      string(APPEND _redef "${f} __real_${f}\n")
+    endforeach()
+    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/port_native.redefine "${_redef}")
+    add_custom_command(TARGET port_native POST_BUILD
+      COMMAND objcopy --redefine-syms=${CMAKE_CURRENT_BINARY_DIR}/port_native.redefine $<TARGET_FILE:port_native>
+      COMMENT "port_native: the LP64 host calls the real libc (not the x32 --wrap glue)" VERBATIM)
+    target_link_libraries(tenshoe PRIVATE port_native ${PORT_NATIVE_LIBDIR}/libEGL.so.1 ${PORT_NATIVE_LIBDIR}/libGL.so.1
+                          ${PORT_NATIVE_LIBDIR}/libX11.so.6 stdc++ dl pthread)
   endif()
 
   # PORT_TRAP_UNDEFINED (DEBUG ONLY, plan 18.9; never on in a normal build): tenshoe links

@@ -1,0 +1,356 @@
+/* port/gfx/fast3d: the native 64-bit game's in-process host (plan 21.9; ../port_native.h).
+ *
+ * The 64-bit tenshoe built with -DPORT_NATIVE=ON and run with PORT_NATIVE=1 opens its own window and
+ * renders, plays and reads input itself: no shared memory, no presenter process.
+ *   - window / input: live_window.cpp (the presenter's X11 + EGL window and keyboard / gamepad code);
+ *   - frames: port_fast3d.cpp's step compositing (port_fast3d_native.h) into the window, presented once
+ *     per game step;
+ *   - audio: live_audio.cpp's thread, unchanged, over a LiveAudio ring in this process's block;
+ *   - read-backs: a LiveFbReply in the block, which port_live.c takes as it takes the presenter's.
+ *
+ * Environment (port/tools/play.sh --native sets them from its options):
+ *   PORT_NATIVE=1             use this host (port_live.c)
+ *   PORT_NATIVE_SCALE=N       window = N x 320x240 (default 3); the window resizes, F11 = fullscreen
+ *   PORT_NATIVE_VSYNC=1       swap interval 1 (default 0: the game's 30 Hz step paces the frames)
+ *   PORT_NATIVE_MUTE=1, PORT_NATIVE_LATENCY=MS (default 80), PORT_NATIVE_AUDIO_DUMP=FILE
+ *   PORT_NATIVE_PNG=DIR       DIR/native_sSTEP.png after each frame (PORT_NATIVE_PNG_STEPS=A-B,C,... limits it)
+ *   PORT_NATIVE_INJECT=STEP:KEY:d|u,...   synthetic X keys (tests), as presenter --inject
+ *   PORT_NATIVE_JS=PATH       the joystick (default /dev/input/js0, else the first evdev gamepad)
+ *   PORT_NATIVE_FB_LOG=1      the read-back answers per frame
+ * Keys: live_window.h. At exit: frames, render ms mean / p50 / p95 / p99 / max, frames over 33 ms, the
+ * step interval, audio. */
+#include <sys/mman.h>
+#include <unistd.h>
+
+#include <algorithm>
+#include <atomic>
+#include <thread>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+
+#define GL_GLEXT_PROTOTYPES 1
+#include <GL/gl.h>
+
+#include "live_audio.h"
+#include "live_backend.h"
+#include "live_window.h"
+#include "port_fast3d_native.h"
+extern "C" {
+#include "../port_fb_impl.h"
+#include "../port_native.h"
+#include "../replay/egl_png.h"
+}
+
+namespace {
+
+/* PortFbRequests as the x32 game lays it out (every field 4 bytes) */
+struct FbRequestsX32 {
+    uint32_t color[PORT_FB_MAX_COLOR];
+    int32_t nColor;
+    uint32_t depthImg[PORT_FB_MAX_DEPTH];
+    int32_t depthIdx[PORT_FB_MAX_DEPTH];
+    int32_t nDepth;
+    struct {
+        uint32_t img;
+        int32_t x, y, w, h;
+    } write[PORT_FB_MAX_WRITE];
+    int32_t nWrite;
+};
+
+struct Inject {
+    uint32_t step;
+    std::string key;
+    bool down, sent;
+};
+
+struct Host {
+    uint8_t* block = nullptr;
+    size_t blockBytes = 0;
+    LiveShmHeader* H = nullptr;
+    LiveFbReply* reply = nullptr;
+    LiveX11 win;
+    LiveWindow* wapi = nullptr;
+    LiveInput in;
+    LivePad lastPad = {};
+    std::string pngDir;
+    std::vector<std::pair<uint32_t, uint32_t>> pngSteps;
+    std::vector<Inject> injects;
+    bool fbLog = false, audio = false;
+    uint32_t seq = 0, lastStep = 0, frames = 0, empty = 0;
+    uint32_t rtt = 0, depthFar = 0, depthNear = 0, colorServed = 0, unresolved = 0;
+    std::vector<float> renderMs, stepMs;
+    double lastFrameT = 0, secStart = 0;
+    uint32_t secFrames = 0;
+};
+Host* sHost;
+
+const char* env(const char* name) {
+    const char* v = std::getenv(name);
+    return (v != nullptr && *v != '\0') ? v : nullptr;
+}
+
+bool png_wanted(const Host& h, uint32_t step) {
+    if (h.pngDir.empty()) {
+        return false;
+    }
+    if (h.pngSteps.empty()) {
+        return true;
+    }
+    for (const auto& r : h.pngSteps) {
+        if (step >= r.first && step <= r.second) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void write_window_png(const Host& h, uint32_t step) {
+    std::vector<uint8_t> px((size_t)h.win.w * h.win.h * 4);
+    char path[1024];
+    glFinish();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glReadPixels(0, 0, (GLsizei)h.win.w, (GLsizei)h.win.h, GL_RGBA, GL_UNSIGNED_BYTE, px.data());
+    std::snprintf(path, sizeof(path), "%s/native_s%06u.png", h.pngDir.c_str(), step);
+    write_png(path, px.data(), (int)h.win.w, (int)h.win.h);
+}
+
+void pump(Host& h) {
+    live_pump(h.win, h.in, h.lastStep);
+    h.in.pollJoystick();
+    if (h.in.quit) {
+        __atomic_store_n(&h.H->quit, 1, __ATOMIC_RELEASE);
+    }
+    LivePad pad = h.in.pad();
+    if (std::memcmp(&pad, &h.lastPad, sizeof(pad)) != 0) {
+        h.H->pads[0] = pad;
+        __atomic_fetch_add(&h.H->padSeq, 1, __ATOMIC_RELEASE);
+        h.lastPad = pad;
+    }
+}
+
+float pct(std::vector<float> v, double p) {
+    if (v.empty()) {
+        return 0;
+    }
+    std::sort(v.begin(), v.end());
+    return v[std::min(v.size() - 1, (size_t)(p * (double)(v.size() - 1) + 0.5))];
+}
+
+std::string summary(const std::vector<float>& v, float over) {
+    double sum = 0;
+    float mx = 0;
+    uint32_t n = 0;
+    for (float x : v) {
+        sum += x;
+        mx = std::max(mx, x);
+        n += x > over;
+    }
+    char b[256];
+    std::snprintf(b, sizeof(b), "mean %.2f / p50 %.2f / p95 %.2f / p99 %.2f / max %.1f ms, %u > %.0f ms",
+                  v.empty() ? 0.0 : sum / (double)v.size(), pct(v, 0.5), pct(v, 0.95), pct(v, 0.99), mx, n, over);
+    return b;
+}
+
+} // namespace
+
+extern "C" unsigned port_native_open(void) {
+    if (sHost != nullptr) {
+        return (unsigned)(uintptr_t)sHost->block;
+    }
+    Host* h = new Host();
+    h->win.tag = "native";
+    const int scale = env("PORT_NATIVE_SCALE") ? std::max(1, std::atoi(env("PORT_NATIVE_SCALE"))) : 3;
+    const int vsync = env("PORT_NATIVE_VSYNC") ? std::atoi(env("PORT_NATIVE_VSYNC")) : 0;
+    if (!h->win.open(320u * scale, 240u * scale, "1080 Snowboarding (native)", vsync)) {
+        return 0;
+    }
+    /* the block the game reads (live_shm.h layout): low, as every address the x32 code holds must be */
+    h->blockBytes = PORT_NATIVE_FB_REPLY + sizeof(LiveFbReply);
+    void* m = mmap(nullptr, h->blockBytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
+    if (m == MAP_FAILED || (uintptr_t)m + h->blockBytes > 0x80000000u) {
+        std::fprintf(stderr, "native: no low memory for the host block\n");
+        return 0;
+    }
+    h->block = (uint8_t*)m;
+    h->H = (LiveShmHeader*)m;
+    h->H->version = LIVE_VERSION;
+    h->H->pads[0].connected = 1;
+    h->lastPad = h->H->pads[0];
+    live_audio_layout((LiveAudio*)(h->block + LIVE_AUDIO_HDR), PORT_NATIVE_AUDIO_DATA, LIVE_AUDIO_DEFAULT_BYTES);
+    h->reply = (LiveFbReply*)(h->block + PORT_NATIVE_FB_REPLY);
+    h->reply->magic = LIVE_FB_MAGIC;
+    h->reply->version = LIVE_FB_VERSION;
+    h->H->magic = LIVE_MAGIC;
+
+    h->wapi = new LiveWindow(&h->win);
+    h->wapi->mSwap = true;
+    port_fast3d_init_window(h->wapi, h->win.w, h->win.h);
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
+    h->win.swap();
+    h->in.openJoystick(env("PORT_NATIVE_JS") ? env("PORT_NATIVE_JS") : "/dev/input/js0");
+
+    LiveAudioOptions ao;
+    ao.mute = env("PORT_NATIVE_MUTE") != nullptr && std::strcmp(env("PORT_NATIVE_MUTE"), "0") != 0;
+    ao.latencyMs = env("PORT_NATIVE_LATENCY") ? (uint32_t)std::max(20, std::atoi(env("PORT_NATIVE_LATENCY"))) : 80;
+    if (env("PORT_NATIVE_AUDIO_DUMP")) {
+        ao.dumpPath = env("PORT_NATIVE_AUDIO_DUMP");
+    }
+    live_audio_start(h->block, ao);
+    h->audio = true;
+
+    if (env("PORT_NATIVE_PNG")) {
+        h->pngDir = env("PORT_NATIVE_PNG");
+        std::string spec = env("PORT_NATIVE_PNG_STEPS") ? env("PORT_NATIVE_PNG_STEPS") : "";
+        for (size_t p = 0; p < spec.size();) {
+            size_t e = spec.find(',', p);
+            std::string item = spec.substr(p, e == std::string::npos ? std::string::npos : e - p);
+            size_t d = item.find('-');
+            uint32_t a = (uint32_t)std::strtoul(item.c_str(), nullptr, 10);
+            uint32_t b = d == std::string::npos ? a : (uint32_t)std::strtoul(item.c_str() + d + 1, nullptr, 10);
+            h->pngSteps.push_back({ a, b });
+            p = e == std::string::npos ? spec.size() : e + 1;
+        }
+    }
+    if (env("PORT_NATIVE_INJECT")) {
+        std::string spec = env("PORT_NATIVE_INJECT");
+        for (size_t p = 0; p < spec.size();) {
+            size_t e = spec.find(',', p);
+            std::string item = spec.substr(p, e == std::string::npos ? std::string::npos : e - p);
+            size_t c1 = item.find(':'), c2 = item.rfind(':');
+            if (c1 != std::string::npos && c2 > c1) {
+                h->injects.push_back({ (uint32_t)std::strtoul(item.c_str(), nullptr, 10), item.substr(c1 + 1, c2 - c1 - 1),
+                                       item.substr(c2 + 1) == "d", false });
+            }
+            p = e == std::string::npos ? spec.size() : e + 1;
+        }
+    }
+    h->fbLog = env("PORT_NATIVE_FB_LOG") != nullptr;
+    h->secStart = live_now_s();
+    sHost = h;
+    std::printf("native: in-process host: window %ux%u, audio %s, block at %p\n", h->win.w, h->win.h,
+                ao.mute ? "muted" : "on", (void*)h->block);
+    std::fflush(stdout);
+    return (unsigned)(uintptr_t)h->block;
+}
+
+extern "C" int port_native_task(unsigned root, unsigned rq, unsigned imgs, int maxImgs) {
+    if (sHost == nullptr) {
+        return 0;
+    }
+    const FbRequestsX32* r = (const FbRequestsX32*)(uintptr_t)rq;
+    if (r != nullptr) {
+        for (int i = 0; i < r->nColor && i < PORT_FB_MAX_COLOR; i++) {
+            port_fast3d_ask_color(r->color[i]);
+        }
+        for (int i = 0; i < r->nDepth && i < PORT_FB_MAX_DEPTH; i++) {
+            port_fast3d_ask_depth(r->depthImg[i], (uint32_t)r->depthIdx[i]);
+        }
+    }
+    return port_fast3d_queue(root, (uint32_t*)(uintptr_t)imgs, maxImgs);
+}
+
+extern "C" void port_native_frame(unsigned step) {
+    Host* h = sHost;
+    if (h == nullptr) {
+        return;
+    }
+    const double t0 = live_now_s();
+    uint32_t vx, vy, vw, vh;
+    h->win.viewport(&vx, &vy, &vw, &vh);
+    PortFast3dStep st;
+    h->lastStep = step;
+    if (!port_fast3d_step(vx, vy, vw, vh, h->reply, step, h->seq++, &st)) {
+        h->empty++;
+        pump(*h);
+        return;
+    }
+    if (png_wanted(*h, step)) {
+        write_window_png(*h, step);
+    }
+    port_fast3d_end_frame(); /* -> LiveWindow::SwapBuffersEnd -> eglSwapBuffers */
+    const double t1 = live_now_s();
+    h->renderMs.push_back((float)((t1 - t0) * 1000.0));
+    if (h->lastFrameT != 0) {
+        h->stepMs.push_back((float)((t1 - h->lastFrameT) * 1000.0));
+    }
+    h->lastFrameT = t1;
+    h->frames++;
+    h->secFrames++;
+    h->rtt += st.rttTasks;
+    h->depthFar += st.depthFar;
+    h->depthNear += st.depthNear;
+    h->colorServed += st.colorServed;
+    h->unresolved += st.unresolved;
+    if (h->fbLog && (st.depthFar + st.depthNear + st.colorServed + st.rttTasks) != 0) {
+        std::printf("native: step %u: %u tasks, rtt %u, depth far %u near %u other %u, colour %u\n", step, st.tasks,
+                    st.rttTasks, st.depthFar, st.depthNear, st.depthOther, st.colorServed);
+    }
+    for (Inject& j : h->injects) {
+        if (!j.sent && step >= j.step) {
+            if (!h->win.sendKey(j.key.c_str(), j.down)) {
+                std::fprintf(stderr, "native: unknown key %s\n", j.key.c_str());
+            }
+            j.sent = true;
+        }
+    }
+    pump(*h);
+    if (t1 - h->secStart >= 1.0) {
+        char title[160];
+        std::snprintf(title, sizeof(title), "1080 Snowboarding (native) - step %u - %u fps", step, h->secFrames);
+        h->win.setTitle(title);
+        h->secFrames = 0;
+        h->secStart = t1;
+    }
+}
+
+extern "C" int port_native_poll(void) {
+    Host* h = sHost;
+    if (h == nullptr) {
+        return 0;
+    }
+    pump(*h);
+    return __atomic_load_n(&h->H->quit, __ATOMIC_ACQUIRE) != 0;
+}
+
+extern "C" void port_native_close(void) {
+    Host* h = sHost;
+    if (h == nullptr) {
+        return;
+    }
+    std::string a = live_audio_status();
+    if (a.size() > 2 && a.compare(0, 2, ", ") == 0) {
+        a.erase(0, 2);
+    }
+    /* the audio thread can sit in a blocking pa_simple_write (plan 19.14's open PulseAudio stall): stop it
+     * from a helper and wait at most 2 s; if it does not stop, the process ends with _exit at exit time,
+     * after the game's own teardown (its trace / save files are closed by then), instead of hanging in
+     * the join or std::terminate in live_audio.cpp's static std::thread destructor */
+    static std::atomic<bool> stopped{ false };
+    std::thread([] {
+        live_audio_stop();
+        stopped = true;
+    }).detach();
+    for (int i = 0; i < 200 && !stopped; i++) {
+        usleep(10000);
+    }
+    if (!stopped) {
+        std::printf("native: the audio thread did not stop (blocked in PulseAudio): abandoned at exit\n");
+        std::atexit([] {
+            std::fflush(nullptr);
+            _exit(0);
+        });
+    }
+    std::printf("native: %u frames (%u steps without tasks), %u unresolved G_DL, %u render-to-texture passes, depth "
+                "answers far %u / near %u, %u colour images\n", h->frames, h->empty, h->unresolved, h->rtt, h->depthFar,
+                h->depthNear, h->colorServed);
+    std::printf("native: render %s\n", summary(h->renderMs, 33.3f).c_str());
+    std::printf("native: frame interval %s\n", summary(h->stepMs, 50.0f).c_str());
+    std::printf("native: audio %s\n", a.c_str());
+    std::fflush(stdout);
+}

@@ -25,6 +25,9 @@
 #include "dlump.h"
 #include "port_fb_impl.h"
 #include "port_live.h"
+#ifdef PORT_GFX_NATIVE
+#include "port_native.h"
+#endif
 #ifdef PORT_GFX_FAST3D
 #include "fast3d/port_fast3d.h"
 #endif
@@ -448,6 +451,22 @@ static void live_task(OSTask_t *task, u32 seq) {
     port_live_task(buf.data, buf.size);
 }
 
+#ifdef PORT_GFX_NATIVE
+/* PORT_NATIVE (plan 21.9): the task to the in-process renderer, which draws the step's tasks at its end;
+ * the boundary takes u32s only (port_native.h) and reads the requests in this ILP32 layout */
+typedef char port_fb_requests_x32_[sizeof(PortFbRequests) ==
+                                       4 * (PORT_FB_MAX_COLOR + 1 + 2 * PORT_FB_MAX_DEPTH + 1 + 5 * PORT_FB_MAX_WRITE + 1)
+                                   ? 1 : -1];
+
+static void native_task(OSTask_t *task) {
+    if (sLiveTasks++ == 0) {
+        sLiveStep = cur_step();
+    }
+    sNTaskImgs = port_native_task((unsigned)(size_t)task->data_ptr, (unsigned)(size_t)port_fb_requests(),
+                                  (unsigned)(size_t)sTaskImgs, 16);
+}
+#endif
+
 /* main.c, at the end of every step: publish the step's tasks as one live frame */
 void port_gfx_step_end(void) {
     if (sLiveTasks != 0) {
@@ -521,6 +540,11 @@ void port_gfx_task(OSTask_t *task) {
         }
     }
     if (port_live_active()) {
+#ifdef PORT_GFX_NATIVE
+        if (port_live_native()) {
+            native_task(task);
+        } else
+#endif
         live_task(task, seq);
     }
 #ifdef PORT_GFX_FAST3D

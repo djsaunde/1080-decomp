@@ -25,6 +25,9 @@
 #include "live_shm.h"
 #include "port_live.h"
 #include "port_fb_impl.h"
+#ifdef PORT_GFX_NATIVE
+#include "port_native.h" /* plan 21.9: the native 64-bit game's in-process host */
+#endif
 
 #ifdef PORT_LIBC_DECLS_ONLY
 void *realloc(void *p, size_t n);
@@ -66,6 +69,7 @@ static live_u32 sPadReads;     /* scripted input: the pad reads asked for (live_
 static unsigned sQuitPolls;    /* port_live_quit calls, for the presenter liveness check */
 static int sPresenterGone;
 static char sShmPath[256]; /* /dev/shm/<name>: removed here when the presenter died without doing it */
+static int sNative;        /* plan 21.9: the in-process host's block, not a presenter's files */
 
 static void live_sleep_ms(int ms) {
     struct timespec ts;
@@ -82,6 +86,26 @@ static void live_open(void) {
     size_t total;
 
     sInited = 1;
+#ifdef PORT_GFX_NATIVE
+    /* PORT_NATIVE=1 (plan 21.9): the same structures, in a low block of this process that
+     * fast3d/native_host.cpp fills; frames go to port_native_frame instead of the ring */
+    {
+        const char *nat = getenv("PORT_NATIVE");
+        if (nat != NULL && *nat != '\0' && strcmp(nat, "0") != 0) {
+            unsigned base = port_native_open();
+            if (base == 0) {
+                live_fatal("PORT_NATIVE: no window (the reason is above)");
+            }
+            sNative = 1;
+            sShm = (LiveShmHeader *)(size_t)base;
+            sAudio = (LiveAudio *)((unsigned char *)sShm + LIVE_AUDIO_HDR);
+            sAudioData = (unsigned char *)sShm + sAudio->dataOffset;
+            sFb = (LiveFbReply *)((unsigned char *)sShm + PORT_NATIVE_FB_REPLY);
+            live_log("native: in-process window, audio and read-backs");
+            return;
+        }
+    }
+#endif
     if (name == NULL || *name == '\0') {
         return;
     }
@@ -157,6 +181,10 @@ int port_live_active(void) {
     return sShm != NULL;
 }
 
+int port_live_native(void) {
+    return port_live_active() && sNative;
+}
+
 void port_live_task(const void *dlmp, size_t size) {
     if (!port_live_active()) {
         return;
@@ -188,6 +216,14 @@ void port_live_frame_end(unsigned step) {
     LiveFrame *f;
     live_u32 head, tail;
 
+#ifdef PORT_GFX_NATIVE
+    if (port_live_native()) {
+        sFrames++;
+        sPublished++;
+        port_native_frame(step);
+        return;
+    }
+#endif
     if (!port_live_active() || sFrameBytes == 0) {
         return;
     }
@@ -375,6 +411,11 @@ int port_live_quit(void) {
     if (!port_live_active()) {
         return 0;
     }
+#ifdef PORT_GFX_NATIVE
+    if (sNative) {
+        return port_native_poll(); /* the window's events, the pads, Esc / close */
+    }
+#endif
     if (__atomic_load_n(&sShm->quit, __ATOMIC_ACQUIRE) != 0) {
         return 1;
     }
@@ -396,5 +437,10 @@ void port_live_close(void) {
             live_log("audio: %llu bytes (%.2f s) sent, fnv1a64 %016llx, %u overruns", sAudioBytes,
                      sAudioBytes / (4.0 * 32000.0), sAudioHash, sAudio->overruns);
         }
+#ifdef PORT_GFX_NATIVE
+        if (sNative) {
+            port_native_close();
+        }
+#endif
     }
 }

@@ -7,6 +7,7 @@
 #include "../host.h"
 
 int port_live_active(void);                       /* PORT_LIVE set and the presenter attached */
+int port_live_native(void);                       /* PORT_NATIVE: the in-process host (plan 21.9) */
 void port_live_task(const void *dlmp, size_t size); /* append one task's DLMP image to the frame */
 void port_live_frame_end(unsigned step);          /* publish the frame (end of a game step) */
 int port_live_read_pads(HostPad pads[HOST_MAX_PADS]); /* 1 = pads filled from the presenter */
