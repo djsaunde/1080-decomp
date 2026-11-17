@@ -213,11 +213,16 @@ build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects
 # vtables renamed to 0-pinned / Data-offset-pinned aliases (undefined_syms_auto.txt snowe9_*).
 SNOW_NM_E9_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_e9.cpp.o
 $(SNOW_NM_E9_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_e9.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h
+# 0x9328 (the SnowTarget Cfront ctor): EXACT MIPSpro 7.2.1 (EDG 2.29) donor, agent-b run 711 (replaces agent-e's
+# run 692 NCC NM donor). Written as an extern "C" function so EDG 2.29 keeps the object pointer in s0; callees
+# renamed to the 0-pinned blank-jal aliases (undefined_syms_auto.txt snowe9_*). Spliced in both trees.
+SNOW_9328_DONOR := build/src/snoweffects_uso/snoweffects_uso_mp72_9328.cpp.o
+$(SNOW_9328_DONOR): src/snoweffects_uso/snoweffects_uso_mp72_9328.cpp $(TOOLS)/ncc721.sh
 	@mkdir -p $(dir $@)
-	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__11SnowTarget9Fv=snoweffects_uso_func_00009328 --redefine-sym __ct__6SNode9Fv=snowe9_SNode_ctor --redefine-sym __ct__12GdlParmBase9FP6Parms95PNamei=snowe9_Parms_addParm --redefine-sym __nw__FUi=snowe9_new --redefine-sym mem_new=snowe9_mem_new --redefine-sym __vtbl__11SnowTarget9=snowe9_vtbl_SnowTarget_0 --redefine-sym __vtbl__6ParmF9=snowe9_vtbl_ParmF_838 --redefine-sym __vtbl__6ParmC9=snowe9_vtbl_ParmC_850 --redefine-sym __vtbl__6ParmI9=snowe9_vtbl_ParmI_868 $@
-build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += snoweffects_uso_func_00009328=$(SNOW_NM_E9_DONOR)
-build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_E9_DONOR)
+	$(TOOLS)/ncc721.sh $< $@ $(OPT_FLAGS)
+	$(OBJCOPY) --redefine-sym snow_target_ctor=snoweffects_uso_func_00009328 --redefine-sym SNode_ctor=snowe9_SNode_ctor --redefine-sym GdlParmBase_ctor=snowe9_Parms_addParm --redefine-sym mem_new=snowe9_mem_new $@
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += snoweffects_uso_func_00009328=$(SNOW_9328_DONOR)
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_9328_DONOR)
 # viewrec.uso Text ends with one zero pad word after 0x55A4's `jr ra; sw a0,0(sp)`: all-zero SUFFIX
 # on the last function, then clip .text back to the Text size (same mechanism as h2hproc / snoweffects).
 build/src/viewrec_uso/viewrec_uso.c.o: SUFFIX_BYTES_FORCE := viewrec_uso_func_000055A4=0x00000000

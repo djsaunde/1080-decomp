@@ -1155,15 +1155,11 @@ void snoweffects_uso_func_00009320(void) {
 }
 
 /* 0x9328: the SnowTarget Cfront ctor (SNode base, Parms at +0x240 with five inline Parm ctors).
- * NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e9.cpp (agent-e run 692; 247 / 247 words, 99.6 % since
- * agent-b run 697), spliced over this placeholder on the non_matching build. Left: frame 192 vs 224 (edg temp
- * homes bottom-up vs top-down) and the +0x234 / +0x238 store order. */
-#ifdef NON_MATCHING
+ * EXACT via the MIPSpro 7.2.1 (EDG 2.29) donor src/snoweffects_uso/snoweffects_uso_mp72_9328.cpp (agent-b run
+ * 711; agent-e run 692 / agent-b runs 697 / 705 NCC drafts before it), REPLACE_FUNC_BODY-spliced over this
+ * placeholder in both build trees. */
 void snoweffects_uso_func_00009328(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009328);
-#endif
 
 void snoweffects_uso_func_00009704(char *a0) {
     CALL(gfx_setBlendColour)(&D_00000000, a0 + 0x288);
