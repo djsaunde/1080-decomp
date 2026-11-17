@@ -195,7 +195,9 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         if (HF(0xE4) < (*(Vec3 *)&ppr).z + 4000.0f) {
             HI(0x16C) = 1;
         }
-        goto L4; /* = break (as1 retargets it to the join); see L4 */
+        if (1) {} /* keeps L4 a block of its own after the if's join (which takes case 3's tg def) */
+    L4:
+        break;
     case 4:
         V3(0x114) = (*(Vec3 *)&ppr);
         HF(0x118) += (5000.0f);
@@ -204,11 +206,11 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         HF(0x158) = 1.0f;
         HF(0x150) = 800.0f;
         V3(0x12C) = *tg;
-    /* empty block with a second predecessor (case 3): uopt's split of the sp+252 lda live range then sees
-     * case 4 as two entry units with two uses (num 0), so case 4 is not coloured v1 and rematerializes
-     * t8 / t4 as in the target (run 747; 96.39 -> 97.43) */
-    L4:
-        break;
+        /* = break. L4 (end of case 3) is a code-free block with two predecessors, so uopt's split of the sp+252
+         * lda live range sees case 4's piece with two entry units and two uses (num 0): case 4 is not coloured v1
+         * and rematerializes t8 / t4 as in the target. L4 takes the ps (a2) PRE def; ending in `b join`, as1 copies
+         * it into case 4, and case 3 falls into it with a2 in the delay slot, as in the target (run 747) */
+        goto L4;
     case 7:
         V3(0x114) = V3(0x108);
         HF(0x15C) = 250.0f;
@@ -313,7 +315,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         if ((3.1415927f) < yaw) {
             yaw -= (6.2831855f);
         } else if (yaw < (-3.1415927f)) {
-            yaw += (6.2831855f);
+            yaw = (6.2831855f) + yaw; /* target add.s keeps the constant first */
         }
         g = -(side.x * dir.x + side.y * dir.y + side.z * dir.z) * 1.5;
         if (HF(0x154) < 100.0f) {
