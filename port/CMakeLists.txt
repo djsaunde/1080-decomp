@@ -91,6 +91,8 @@ target_compile_options(uso PRIVATE ${PORT_ARCH_FLAGS})
 set(PORT_ULTRA_SOURCES ultra/thread.c ultra/message.c ultra/vi.c ultra/pi.c ultra/si.c
     ultra/ai_sp.c ultra/misc.c)
 set(PORT_HOST_SOURCES main.c host_headless.c trace.c)
+# port/gfx (plan section 19, M2): port_gfx_task (the M_GFXTASK hook) and the PORT_GFX_DUMP writer
+list(APPEND PORT_HOST_SOURCES gfx/port_gfx.c gfx/dlump.c)
 # agent-g run 619: the SysApi table and the cartridge file system (host side)
 foreach(f sysapi.c fs/fs.c)
   if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${f})
