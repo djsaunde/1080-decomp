@@ -1,16 +1,24 @@
-# tenshoe --input script: two pads, boot -> title -> main menu -> 2P VS -> rider selects.
-# Steps are SysLib.frameCount (state.log F). Run 846 (agent-a).
+# tenshoe --input script: two pads, boot -> title -> main menu -> 2P VS -> selects -> race -> result.
+# Steps are SysLib.frameCount (state.log F). Run 846 (agent-a); run 853 (agent-c): P2 needs its own
+# board confirm (1500) before P1 picks the course; the race starts at ~1792 (flow 5,2,2). Both ride
+# straight; on agent-a's tag-convention physics P2 retires at 3679 (health -2: P1 wins), the A presses
+# go through the result to the next round (race state 1 again at ~4238).
 PADS 2
 F 480:3 START          # title
-F 560:3 A              # English
-F 620:3 DD             # Match Race -> Time Attack
-F 680:3 DD             # Trick Attack
-F 740:3 DD             # Contest
-F 800:3 DD             # 2P VS (enabled with two pads)
+F 560:3 A
+F 620:3 DD
+F 680:3 DD
+F 740:3 DD
+F 800:3 DD
 F 860:3 A
-F 1100:3 P1 A P2 A     # both riders
-F 1200:3 P1 A P2 A     # confirm
-F 1300:3 P1 A P2 A     # boards
+F 1100:3 P1 A P2 A
+F 1200:3 P1 A P2 A
+F 1300:3 P1 A P2 A
 F 1400:3 P1 A P2 A
-F 1500:3 P1 A          # course
+F 1500:3 P2 A
 F 1600:3 P1 A
+F 1700:3 P1 A
+F 1800:3 P1 A
+F 1900-3700 P1 STICK 0,80 P2 STICK 0,80
+F 3900:3 P1 A
+F 4050:3 P1 A

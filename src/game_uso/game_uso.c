@@ -8002,10 +8002,21 @@ void port_trace_collect(PortTraceFrame *f) {
     if (PORT_TRACE_PTR(dm)) {
         f->elapsed = dm->elapsed;
         f->have |= PORT_TRACE_HAVE_ELAPSED;
-        if (PORT_TRACE_PTR(dm->owner)) {
-            f->raceState = dm->owner->raceState;
-            f->raceFlags = (u32)dm->owner->flags;
-            f->have |= PORT_TRACE_HAVE_RACE;
+        {
+            /* the owning RaceProcess: RaceTracker.owner (tim / trk init store it there); the
+             * Match Race / Contest DataManagers keep it at +0xBC and 2P VS's at +0xB8
+             * (game/modeproc.h MgrDataManager / ArcDataManager / H2HDataManager .race) */
+            RaceProcess *owner = dm->owner;
+            if (flow->flowMode == 3 || flow->flowMode == 5) {
+                owner = *(RaceProcess **)((char *)dm + 0xBC);
+            } else if (flow->flowMode == 2) {
+                owner = *(RaceProcess **)((char *)dm + 0xB8);
+            }
+            if (PORT_TRACE_PTR(owner)) {
+                f->raceState = owner->raceState;
+                f->raceFlags = (u32)owner->flags;
+                f->have |= PORT_TRACE_HAVE_RACE;
+            }
         }
         if (PORT_TRACE_PTR(dm->entries) && dm->numEntries > 0) {
             f->entryPct = dm->entries[0].pct;

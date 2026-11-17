@@ -1,0 +1,39 @@
+# tenshoe --input script: boot -> title -> main menu -> Training (flow mode 7, trnproc; D-pad up twice
+# wraps from Match Race) -> rider / board -> the lesson course, then hop + grab (A 20 steps, B held
+# in the air, stick centred) every 120 steps.  Run 853 (agent-c): lesson 1 MELANCHOLY is done
+# ("MELANCHOLY 100 PTS"), the TrnDataManager moves on to lesson 3 METHOD (B + stick left).
+PADS 1
+F 480:3 START
+F 560:3 A
+F 620:3 DU
+F 680:3 DU
+F 740:3 A
+F 1000:3 A
+F 1100:3 A
+F 1200:3 A
+F 1300:3 A
+F 1400:3 A
+F 1500:3 A
+F 1600:3 A
+F 1700-1719 A
+F 1715-1750 B
+F 1820-1839 A
+F 1835-1870 B
+F 1940-1959 A
+F 1955-1990 B
+F 2060-2079 A
+F 2075-2110 B
+F 2180-2199 A
+F 2195-2230 B
+F 2300-2319 A
+F 2315-2350 B
+F 2420-2439 A
+F 2435-2470 B
+F 2540-2559 A
+F 2555-2590 B
+F 2660-2679 A
+F 2675-2710 B
+F 2780-2799 A
+F 2795-2830 B
+F 2900-2919 A
+F 2915-2950 B

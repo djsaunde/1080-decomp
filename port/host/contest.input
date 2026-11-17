@@ -1,0 +1,76 @@
+# Contest (flow mode 5, ARCADEMODE: gates + tricks for points against the countdown), ridden by
+# port/tools/steer-search.py --mode contest (run 853); the first course.  Format:
+# port/host/input_script.c; steps are SysLib.frameCount.  Tied to the exact race physics.
+PADS 1
+F 480:3 START          # title
+F 560:3 A              # English
+F 620:3 DD             # Match Race -> Time Attack
+F 680:3 DD             # -> Trick Attack
+F 740:3 DD             # -> Contest
+F 800:3 A              # Contest (flow 0,5,5)
+F 1000:3 A             # rider
+F 1100:3 A             # rider confirm
+F 1200:3 A             # board
+F 1300:3 A             # board confirm -> race load (flow 3, 5); race state 1 at ~1493
+F 1493-1552 STICK 0,0
+F 1493-1512 A
+F 1508-1543 B
+F 1553-1612 STICK 0,80
+F 1613-1672 STICK 0,0
+F 1613-1632 A
+F 1628-1663 B
+F 1673-1732 STICK 0,80
+F 1733-1792 STICK 0,80
+F 1793-1852 STICK 0,0
+F 1793-1812 A
+F 1808-1843 B
+F 1853-1912 STICK 40,80
+F 1913-1972 STICK -80,0
+F 1913-1932 A
+F 1928-1963 B
+F 1973-2032 STICK 0,0
+F 1973-1992 A
+F 1988-2023 B
+F 2033-2092 STICK 0,0
+F 2033-2052 A
+F 2048-2083 B
+F 2093-2152 STICK 40,80
+F 2153-2212 STICK 0,0
+F 2153-2172 A
+F 2168-2203 B
+F 2213-2272 STICK 0,0
+F 2213-2232 A
+F 2228-2263 B
+F 2273-2332 STICK -40,0
+F 2273-2292 A
+F 2288-2323 B
+F 2333-2392 STICK -80,0
+F 2333-2352 A
+F 2348-2383 B
+F 2393-2452 STICK 0,80
+F 2453-2512 STICK 40,80
+F 2513-2572 STICK 0,0
+F 2513-2532 A
+F 2528-2563 B
+F 2573-2632 STICK 0,0
+F 2573-2592 A
+F 2588-2623 B
+F 2633-2692 STICK 40,80
+F 2693-2752 STICK -80,0
+F 2693-2712 A
+F 2708-2743 B
+F 2753-2812 STICK -40,80
+F 2813-2872 STICK 40,80
+F 2873-2932 STICK 0,80
+F 2933-2992 STICK 0,80
+F 2993-3052 STICK 40,0
+F 2993-3012 A
+F 3008-3043 B
+F 3053-3112 STICK 80,80
+F 3113-3172 STICK 0,80
+F 3173-3232 STICK 80,0
+F 3173-3192 A
+F 3188-3223 B
+F 3233-3292 STICK -80,80
+# RACE END 3311   (race state 2: Time Up)
+# END 3611

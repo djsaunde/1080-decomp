@@ -1,12 +1,74 @@
-# tenshoe --input script: boot -> title -> main menu -> Match Race (mode 3) -> rider / board / course.
-# Steps are SysLib.frameCount (state.log F). Start from a fresh directory (no 1080.sram: a saved
-# language choice skips the language menu and shifts every step). Run 846 (agent-a).
+# Match Race vs the CPU rider (port/tools/steer-search.py --mode match; run 853), level Normal,
+# course 1 (Crystal Lake).  Format: port/host/input_script.c; steps are SysLib.frameCount.
+# Tied to the exact race physics (regenerate: port/tools/steer-search.py -b <build> --mode match).
+# Start from a fresh directory (a saved SRAM skips the language menu and shifts every step).
 PADS 1
 F 480:3 START          # title
 F 560:3 A              # English
-F 640:3 A              # Match Race (flow 0,3,1; agent-c run 845's charmap shape crash)
-F 950:3 A              # rider
-F 1050:3 A             # confirm
-F 1150:3 A             # board
-F 1300:3 A             # course / level
-F 1450-1900 STICK 0,60
+F 640:3 A              # Match Race (flow mode 3, MULTIGAMERACE)
+F 900:3 A              # Select Level: Normal
+F 1000:3 A             # Select Rider
+F 1100:3 A             # rider confirm
+F 1200:3 A             # Select Board
+F 1300:3 A             # board confirm -> race load (flow 2, 4); race state 1 at ~1501
+F 1500-1559 STICK 0,80
+F 1560-1619 STICK 0,80
+F 1620-1679 STICK 0,80
+F 1680-1739 STICK 40,80
+F 1740-1799 STICK 0,80
+F 1800-1859 STICK -40,80
+F 1860-1919 STICK 0,80
+F 1920-1979 STICK 0,80
+F 1980-2039 STICK 0,80
+F 2040-2099 STICK 0,80
+F 2100-2159 STICK 0,80
+F 2160-2219 STICK 0,80
+F 2220-2279 STICK 0,80
+F 2280-2339 STICK 0,80
+F 2340-2399 STICK 0,80
+F 2400-2459 STICK 40,80
+F 2460-2519 STICK 40,80
+F 2520-2579 STICK 0,80
+F 2580-2639 STICK -40,80
+F 2640-2699 STICK 0,80
+F 2700-2759 STICK -80,80
+F 2760-2819 STICK 40,80
+F 2820-2879 STICK 40,80
+F 2880-2939 STICK 0,80
+F 2940-2999 STICK 0,80
+F 3000-3059 STICK -40,80
+F 3060-3119 STICK 80,80
+F 3120-3179 STICK -80,80
+F 3180-3239 STICK -40,80
+F 3240-3299 STICK 0,80
+F 3300-3359 STICK -40,80
+F 3360-3419 STICK 0,80
+F 3420-3479 STICK 0,80
+F 3480-3539 STICK 40,80
+F 3540-3599 STICK 0,80
+F 3600-3659 STICK 0,80
+F 3660-3719 STICK 40,80
+F 3720-3779 STICK 40,80
+F 3780-3839 STICK 40,80
+F 3840-3899 STICK 40,80
+F 3900-3959 STICK -80,80
+F 3960-4019 STICK 0,80
+F 4020-4079 STICK -40,80
+F 4080-4139 STICK 40,80
+F 4140-4199 STICK 0,80
+F 4200-4259 STICK 0,80
+F 4260-4319 STICK 0,80
+F 4320-4379 STICK 0,80
+F 4380-4439 STICK 0,80
+F 4440-4499 STICK 0,80
+F 4500-4525 STICK -40,80
+# GOAL 4525   (entries[0].pct reaches 100)
+F 4825:3 A      # result screens
+F 4945:3 A      # result screens
+F 5065:3 A      # result screens
+F 5185:3 A      # result screens
+F 5305:3 A      # result screens
+F 5425:3 A      # result screens
+F 5545:3 A      # result screens
+F 5665:3 A      # result screens
+# END 5985
