@@ -29,6 +29,9 @@
  *  - run 710: operator* without a constructor temp: the products go through set3() (by-value float args, so
  *    the three mul.s are issued before the stores, as in the target) into a ctor-less V3b, which makes the
  *    temp a one-use LR in a t-reg (target `addiu t5,sp,136`); `if (1) {}` ahead of the mode test (93.21 -> 93.27).
+ *  - run 714: the heading pointer h = self+0x138 as a named local for the normalise call, the three slerp
+ *    stores and vel; it is spilled and reloaded per store as in the target (93.27 -> 93.25 objdiff, but 7 fewer
+ *    sp+reg-masked diff rows: 93 -> 86).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -92,6 +95,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     Vec3 tmp;
     Vec3 mpos;
     Vec3 *tg;
+    Vec3 *h;
     Vec3 *ps;
     float t;
     float f;
@@ -218,18 +222,19 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     dir = *tg - *ps;
     dist = gl_func_00000000_heli_ff(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z) * *(float *)(&heli_gGfxLib_d + 0x128);
     gl_func_00000000(&dir);
-    gl_func_00000000(FWD);
+    h = FWD; /* the heading pointer: one LR, spilled across the slerp calls (target sw a0,48(sp)) */
+    gl_func_00000000(h);
     t = HF(0x164);
     ang = gl_func_00000000_heli_ff(FWD->x * dir.x + FWD->y * dir.y + FWD->z * dir.z);
     s = gl_func_00000000_heli_ff(ang);
     Vec3 old = *FWD;
     if ((s < 0.0f ? -s : s) > (0.001)) {
         sa = gl_func_00000000_heli_ff(t * ang);
-        FWD->x = gl_func_00000000_heli_ff((1.0f - t) * ang) * old.x / s + dir.x * sa / s;
+        h->x = gl_func_00000000_heli_ff((1.0f - t) * ang) * old.x / s + dir.x * sa / s;
         sa = gl_func_00000000_heli_ff(t * ang);
-        FWD->y = gl_func_00000000_heli_ff((1.0f - t) * ang) * old.y / s + dir.y * sa / s;
+        h->y = gl_func_00000000_heli_ff((1.0f - t) * ang) * old.y / s + dir.y * sa / s;
         sa = gl_func_00000000_heli_ff(t * ang);
-        FWD->z = gl_func_00000000_heli_ff((1.0f - t) * ang) * old.z / s + dir.z * sa / s;
+        h->z = gl_func_00000000_heli_ff((1.0f - t) * ang) * old.z / s + dir.z * sa / s;
     }
     if (dist < HF(0x15C)) {
         HF(0x154) = HF(0x160) * (dist / HF(0x15C));
@@ -240,7 +245,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     if (HF(0x150) < HF(0x154)) {
         HF(0x154) = HF(0x150);
     }
-    Vec3 vel = *FWD * HF(0x154);
+    Vec3 vel = *h * HF(0x154);
     V3(0xDC) += vel;
     tg = (Vec3 *)((char *)ps + 0x50);
     toTgt = *tg - *ps;
