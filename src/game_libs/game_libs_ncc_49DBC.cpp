@@ -43,9 +43,17 @@ extern "C" u8 *PolyShape_shade_00049DBC(BasePolyShape *shape, s32 arg1, s32 arg2
     s16 sp88;
     s16 sp86;
     s16 sp84;
+#ifdef PORT /* plan 18.21: the three Vtx are read as ONE array (PolyShape_addFace / gfx_findFaceVtxs walk
+            * &sp50[0..2]); IDO lays them out contiguously, a host compiler need not (the spike polygons) */
+    long long spVtx[3][2];
+#define sp50 (spVtx[0])
+#define sp60 (spVtx[1])
+#define sp70 (spVtx[2])
+#else
     long long sp70[2];
     long long sp60[2];
     long long sp50[2];
+#endif
     u8 sp38[24];
     s32 var_a0;
 

@@ -32,8 +32,15 @@ extern "C" s32 PolyShape_makeEdgeVtxs(char *arg0, int arg1, int arg2, int arg3, 
     unsigned char sp70[4];
     short sp6E, sp6C;
     char *entryd = 0; /* run 219: the home of the named entry (frame-24), kept */
+#ifdef PORT /* plan 18.21: the two Vtx are read as ONE array (gfx_findFaceVtxs walks sp48[0..1]); IDO lays
+            * them out contiguously, a host compiler need not */
+    unsigned char spVtx[2][0x10];
+#define sp48 (spVtx[0])
+#define sp58 (spVtx[1])
+#else
     unsigned char sp58[0x10];
     unsigned char sp48[0x10];
+#endif
     int t0;
 #define pal (P->alphas)
 #define entry ((char *)P->unk6C + arg3 * 8 + 0 * (int)P->verts) /* run 219: expression, not a local */
