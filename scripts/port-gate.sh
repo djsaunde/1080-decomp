@@ -366,7 +366,7 @@ PY
     abi=$(python3 port/tools/abi-scan.py --x64 "$B64/tenshoe" 2>/dev/null | cut -f1 | sed 's/X64P[0-9]*/X64P/' | sort | uniq -c | awk '{printf "%s %s ", $2, $1}')
     rr=$( [ -n "$R64" ] && { grep -qE ' FAIL ' "$R64/check.log" && echo "race64 FAIL" || echo "race64 ok"; } )
     mm=$( [ -n "$M64" ] && { grep -qE ' FAIL ' "$M64/check.log" && echo "modes64 FAIL" || echo "modes64 ok"; } )
-    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; $rr; $mm; $cmpr; gfx: $gfx; abi-scan --x64 (INFO): ${abi:-0}"
+    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; $rr; $mm; $cmpr; gfx: $gfx; $sk64; abi-scan --x64 (INFO): ${abi:-0}"
   else ok=0; fi
   [ $ok = 1 ] && line build64 PASS "$why" || line build64 FAIL "$why"
 fi
