@@ -76,7 +76,7 @@ void * ItemType_ctor(...);
 int /*void*/ ItemType_setNext(void *, int, ...);
 void * LanguageOptions_ctor(void *, void *, ...);
 #ifndef PORT_NODECL_LocalLight_buildLitVerts_00009884
-int /*void*/ LocalLight_buildLitVerts_00009884(void *, ...);
+int /*void*/ LocalLight_buildLitVerts_00009884(void *, void *, ...);
 #endif
 #ifndef PORT_NODECL_LocalLight_checkDirty_00009768
 int /*void*/ LocalLight_checkDirty_00009768(void *, ...);
@@ -92,7 +92,7 @@ int /*void*/ MainLogo_reset(void *, ...);
 int /*void*/ MainOptions_buildMenu(void *, ...);
 void * MainOptions_ctor(void *, void *, ...);
 #ifndef PORT_NODECL_MapLighter_addDiffuse_00009FE8
-int /*void*/ MapLighter_addDiffuse_00009FE8(void *, ...);
+int /*void*/ MapLighter_addDiffuse_00009FE8(void *, void *, void *, ...);
 #endif
 #ifndef PORT_NODECL_Mat_clone_0004FBA4
 void * Mat_clone_0004FBA4(void *, void *, ...);
@@ -192,10 +192,10 @@ int /*void*/ SnowRing_init_00003EE4(void *, int, int, int, int, float, float, ..
 float SnowRing_probe_000052D4(void *, int, void *, int, ...);
 int /*void*/ SnowRing_setSlotState_00004714(void *, int, int, int, ...);
 #ifndef PORT_NODECL_SnowRing_setupDL_00004188
-int /*void*/ SnowRing_setupDL_00004188(...);
+int /*void*/ SnowRing_setupDL_00004188(void *, void *, ...);
 #endif
 #ifndef PORT_NODECL_SnowRing_updateBasis_00004374
-int /*void*/ SnowRing_updateBasis_00004374(...);
+int /*void*/ SnowRing_updateBasis_00004374(void *, ...);
 #endif
 void * SoundOptions_ctor(void *, void *, ...);
 void * TrickTable_getEntry_0000C344(int, int, ...);
@@ -428,7 +428,7 @@ int /*void*/ math_quatScaleToMtx4(void *, void *, ...);
 int /*void*/ math_quatSlerp(void *, void *, float, int, ...);
 int /*void*/ math_rotate2D(float, void *, void *, ...);
 int /*void*/ math_vec3Cross(void *, void *, void *, ...);
-int /*void*/ math_vec3Length_0005BBCC(...);
+float math_vec3Length_0005BBCC(float, ...);
 int math_vec3Normalize(void *, ...);
 int /*void*/ math_xformCombine(void *, void *, void *, ...);
 int /*void*/ mem_delete(int, ...);
