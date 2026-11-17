@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) -O0 donor for arc_nextCourse_000000B4 (0x78 / 30 words).
  * arcproc is C++: edg -O0 has no closing-brace b-epilogue (cfe +2 words), and
  * edg keeps source evaluation order, so the compare is spelled with the
@@ -8,7 +9,7 @@ extern "C" {
 int gl_func_00000000(...);
 int arc_nextCourse_000000B4(int *a0, int a1) {
     register int *p;
-    gl_func_00000000(a0, a1);
+    CALL(arc_recordCourseTime_0000019C)(a0, a1);
     if (a0[1] + 1 == a0[2]) {
         return 1;
     }

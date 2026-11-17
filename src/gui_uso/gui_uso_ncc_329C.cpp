@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for gui_drawSpriteScaled_0000329C (286 words = target), spliced over an empty placeholder in
  * both trees (REPLACE_FUNC_BODY). agent-g run 309 (docs/IDO_CODEGEN.md kit CCCXCVIII): the target's t2 is ONE
  * variable for spr, the yh / yl MAX results AND the RDPHALF_1 x middle `?:` result, so the x middle arm assigns into
@@ -77,9 +78,9 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; ret
     Gfx *nR1() { Gfx *r = &dl->buf[dl->n++]; return r; }
     /* one inline loader per texel format (the switch's three jals are three different TextReloc targets;
      * identical bodies, same bytes as the former single load()) */
-    void loadIA8(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); }
-    void loadRGBA32(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); }
-    void loadRGBA16(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
+    void loadIA8(int t, s32 w, s32 h) { XCALL(gui_func_00000000, gui_loadTileIA8)(this, t, w, h, 0, 0, w, h, 0); }
+    void loadRGBA32(int t, s32 w, s32 h) { XCALL(gui_func_00000000, gui_loadTileRGBA32)(this, t, w, h, 0, 0, w, h, 0); }
+    void loadRGBA16(int t, s32 w, s32 h) { XCALL(gui_func_00000000, gui_loadTileRGBA16)(this, t, w, h, 0, 0, w, h, 0); } };
 #define CTX (*(Ctx **)&D_00000000)
 template <class T> inline T I2(T v) { if (0) { v = 0; } return v; } /* agent-g run 309: zero-code kept-parameter identity (kit CCCXCV) */
 template <class T> inline T I4(T v) { T r = v; return r; } /* agent-g run 308: zero-code named-local identity (kit CCCXCV) */
