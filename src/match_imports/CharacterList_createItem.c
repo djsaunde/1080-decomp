@@ -4,6 +4,18 @@
 #include "gdl/light.h" /* LightTarget (the model's light-target child) */
 #define ITEM(p) ((SelCharacterItem *)(p))
 #define MODEL(p) ((SelCharModel *)(p))
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define d14c_ee64_ld (*(__typeof__(d14c_ee64_ld) *)(port_bootup_bss + 0x3EEC4))
+#define d14c_ee64_st (*(__typeof__(d14c_ee64_st) *)(port_bootup_bss + 0x3EEC4))
+#define d14c_ee6c_l1 (*(__typeof__(d14c_ee6c_l1) *)(port_bootup_bss + 0x3EEC8))
+#define d14c_ee6c_l2 (*(__typeof__(d14c_ee6c_l2) *)(port_bootup_bss + 0x3EEC8))
+#define d14c_ee6c_l3 (*(__typeof__(d14c_ee6c_l3) *)(port_bootup_bss + 0x3EEC8))
+#define d14c_ee6c_l4 (*(__typeof__(d14c_ee6c_l4) *)(port_bootup_bss + 0x3EEC8))
+#define d14c_ee6c_s1 (*(__typeof__(d14c_ee6c_s1) *)(port_bootup_bss + 0x3EEC8))
+#define d14c_ee6c_s2 (*(__typeof__(d14c_ee6c_s2) *)(port_bootup_bss + 0x3EEC8))
+#define d14c_ee6c_s3 (*(__typeof__(d14c_ee6c_s3) *)(port_bootup_bss + 0x3EEC8))
+#endif
 SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, u32 arg3,
                                  u32 arg4, u32 arg5, float arg6,
                                  float arg7, float arg8) {
@@ -127,3 +139,14 @@ SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, 
     a0->items[child.index] = (SelItem *)r;
     return ITEM(r);
 }
+#ifdef PORT
+#undef d14c_ee64_ld
+#undef d14c_ee64_st
+#undef d14c_ee6c_l1
+#undef d14c_ee6c_l2
+#undef d14c_ee6c_l3
+#undef d14c_ee6c_l4
+#undef d14c_ee6c_s1
+#undef d14c_ee6c_s2
+#undef d14c_ee6c_s3
+#endif

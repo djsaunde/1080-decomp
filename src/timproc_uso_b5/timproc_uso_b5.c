@@ -315,6 +315,9 @@ extern char import_80800228;
 extern char import_80020228;
 extern char import_80020098;
 
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+#define import_80800228 (*(__typeof__(import_80800228) *)((char *)&timproc_uso_b5_D_807FE8AC + 0))
+#endif
 int *GenSelectChar_ctor(int *arg0, int arg1, int arg2, int arg3) {
     int result0;
     register int *node;   /* s0: reused sub-cascade + every registration node */
@@ -426,6 +429,9 @@ after_sub:
 done:
     return arg0;
 }
+#ifdef PORT
+#undef import_80800228
+#endif
 
 /* GenSelectChar_update_00000770: 2-insn save-arg sentinel.
  * Body is `jr ra; sw $a0, 0($sp)` — arg spilled to caller's arg-save slot
@@ -5616,6 +5622,16 @@ void SelectWin_resetCheat_00008D90(SelectWin *w, int a1) {
 // bootup:Bss+0x3C168, and the symbols are 0 in undefined_syms_auto, so the immediates
 // (+0x1C4 flags, +0x294 fog.colour, +0x2A0 fog.colour[3]) are the field offsets.
 extern GfxLib import_8005C2CC;
+#ifdef PORT /* the function's block-scope externs, at file scope so the #defines below can respell them */
+extern GfxLib import_8005C2CC_w, import_8005C39C, import_8005EBA4;
+#endif
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define import_8005C2CC (*(__typeof__(import_8005C2CC) *)(port_bootup_bss + 0x3C168))
+#define import_8005C2CC_w (*(__typeof__(import_8005C2CC_w) *)(port_bootup_bss + 0x3C168))
+#define import_8005C39C (*(__typeof__(import_8005C39C) *)(port_bootup_bss + 0x3C168))
+#define import_8005EBA4 (*(__typeof__(import_8005EBA4) *)(port_bootup_bss + 0x3C168))
+#endif
 char *gen_createScene_00008DB4(char *self, int a1) {
     extern int gen_imp_mem_new();
     extern int gen_imp_game_initDdm_00002C94();
@@ -5623,8 +5639,10 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     extern int gen_imp_game_setParams_00002060();
     extern int gen_imp_list_append();
     extern char import_800201CC;
+#ifndef PORT
     extern GfxLib import_8005C39C;
     extern GfxLib import_8005EBA4;
+#endif
     extern char import_800200A8;
     extern char import_80020098;
     extern char timproc_uso_b5_D_807FEBA4;
@@ -5643,7 +5661,9 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     }
     gen_imp_game_initDdm_00002C94(INPUT_MGR(import_800201CC).game, 2);
     {
+#ifndef PORT
         extern GfxLib import_8005C2CC_w; /* same-value alias (=import_8005C2CC): distinct extern per site busts the read/write base CSE -> twin form-a luis */
+#endif
         import_8005C2CC_w.flags = import_8005C2CC.flags & ~GFX_FLAG_MAPPARMS;
     }
     if (1) { }
@@ -5686,6 +5706,12 @@ char *gen_createScene_00008DB4(char *self, int a1) {
 end:
     return self;
 }
+#ifdef PORT
+#undef import_8005C2CC
+#undef import_8005C2CC_w
+#undef import_8005C39C
+#undef import_8005EBA4
+#endif
 
 /* Indirect-call wrapper. Promoted 97.5%->100% via IDO load-CSE trick:
  * declare p2 FIRST with the full deref chain inline (including p1's load),

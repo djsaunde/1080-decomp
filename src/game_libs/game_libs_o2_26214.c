@@ -58,6 +58,11 @@ extern u64 *gl_26214_AudioSynth_Update(u64 *, s32 *, s16 *, s32);
 extern unsigned char *port_audio_noise_base(void);
 #endif
 
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_data[];
+#define gl_26214_sMaxAbiCmdCnt (*(__typeof__(gl_26214_sMaxAbiCmdCnt) *)(port_bootup_data + 0x1B3D0))
+#define gl_26214_sMaxAbiCmdCntW (*(__typeof__(gl_26214_sMaxAbiCmdCntW) *)(port_bootup_data + 0x1B3D0))
+#endif
 AudioTask *AudioThread_UpdateImpl(void) {
     u32 samplesRemainingInAi;
     s32 abiCmdCnt;
@@ -222,3 +227,7 @@ AudioTask *AudioThread_UpdateImpl(void) {
         return NULL;
     }
 }
+#ifdef PORT
+#undef gl_26214_sMaxAbiCmdCnt
+#undef gl_26214_sMaxAbiCmdCntW
+#endif

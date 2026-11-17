@@ -41,6 +41,11 @@ extern int D_2DA4_obj, D_2DA4_obj_rd;
 extern char D_00000000;
 extern int gPolyGeomMode_3EEC8_2DA4_cfg[]; /* gPolyGeomMode_3EEC8 read alias: mode words [0], [1] */
 
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define D_00000000 (*(__typeof__(D_00000000) *)(port_bootup_bss + 0x3EEC8))
+#define gPolyGeomMode_3EEC8_2DA4_cfg (*(__typeof__(gPolyGeomMode_3EEC8_2DA4_cfg) *)(port_bootup_bss + 0x3EEC8))
+#endif
 void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     char *a1;
     char *v1;
@@ -78,3 +83,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
         break;
     }
 }
+#ifdef PORT
+#undef D_00000000
+#undef gPolyGeomMode_3EEC8_2DA4_cfg
+#endif

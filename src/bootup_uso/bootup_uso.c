@@ -1747,6 +1747,13 @@ extern f32 gGfxLib_2c94_dst[];
 extern char gGfxLib_2c94_src[], gGfxLib_2c94_ctx[], sStr_ddm_73E8;
 extern int bu_2c94_mode, gPolyFlags_3EEC4_2c94_x_ld, gPolyFlags_3EEC4_2c94_x_st, gPolyGeomMode_3EEC8_2c94_y_ld[], gPolyGeomMode_3EEC8_2c94_y_st[];
 extern int bu_2c94_tbl[], bu_2c94_gate;
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define gPolyFlags_3EEC4_2c94_x_ld (*(__typeof__(gPolyFlags_3EEC4_2c94_x_ld) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_2c94_x_st (*(__typeof__(gPolyFlags_3EEC4_2c94_x_st) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyGeomMode_3EEC8_2c94_y_ld (*(__typeof__(gPolyGeomMode_3EEC8_2c94_y_ld) *)(port_bootup_bss + 0x3EEC8))
+#define gPolyGeomMode_3EEC8_2c94_y_st (*(__typeof__(gPolyGeomMode_3EEC8_2c94_y_st) *)(port_bootup_bss + 0x3EEC8))
+#endif
 void game_initDdm_00002C94(void *a0, void *a1) {
     f32 k;
     int *p;
@@ -1776,6 +1783,12 @@ void game_initDdm_00002C94(void *a0, void *a1) {
     }
     FCALL(memtrack_end)();
 }
+#ifdef PORT
+#undef gPolyFlags_3EEC4_2c94_x_ld
+#undef gPolyFlags_3EEC4_2c94_x_st
+#undef gPolyGeomMode_3EEC8_2c94_y_ld
+#undef gPolyGeomMode_3EEC8_2c94_y_st
+#endif
 
 /* game_setupMode: bootup_uso subsystem init + 12-way command dispatch
  * (0x1EC / 123 words). init(&sStr_ImgFileMgr_73EC, 0); create -> global; attach the
@@ -4374,6 +4387,11 @@ void Tv1Tmpl_update(int *a0) {
 
 extern int D_func_00007E70_a;
 extern int D_func_00007E70_b;
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define D_func_00007E70_a (*(__typeof__(D_func_00007E70_a) *)(port_bootup_bss + 0x24))
+#define D_func_00007E70_b (*(__typeof__(D_func_00007E70_b) *)(port_bootup_bss + 0x24))
+#endif
 void Tv1Tmpl_display(char *a0) {
     D_func_00007E70_a = 0;
     FCALL(Node_display)(a0);
@@ -4385,6 +4403,10 @@ void Tv1Tmpl_display(char *a0) {
         }
     }
 }
+#ifdef PORT
+#undef D_func_00007E70_a
+#undef D_func_00007E70_b
+#endif
 
 /* Fog_display - verified structural decode (0x1B0, 108 insns,
  * FP 1D collision / threshold-crossing test).
@@ -4871,6 +4893,11 @@ extern char gPolyGeomMode_3EEC8_87A4_cfg, D_87A4_vt;
 extern char D_087A4_vtable[];
 extern void func_00000000_087A4();
 extern void func_00000000_087A4_f(char *, char *, int, float, float);
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define gPolyFlags_3EEC4_87A4_rd (*(__typeof__(gPolyFlags_3EEC4_87A4_rd) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_87A4_wr (*(__typeof__(gPolyFlags_3EEC4_87A4_wr) *)(port_bootup_bss + 0x3EEC4))
+#endif
 void *TreeTmpl_create(char *arg0) {
     char *s1;
     char *s0;
@@ -4914,6 +4941,10 @@ skip:
     XCALL(func_00000000_087A4, CollObjMgr_addStatic)(D_87A4_tail, &TREE(s0)->coll);
     return s0;
 }
+#ifdef PORT
+#undef gPolyFlags_3EEC4_87A4_rd
+#undef gPolyFlags_3EEC4_87A4_wr
+#endif
 
 extern char *gInputMgr_00000130;
 int game_isUsoLoaded(int a0) {

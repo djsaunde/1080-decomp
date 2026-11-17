@@ -1,5 +1,10 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post0b.c. Target bytes unchanged. */
 #include "context_game_libs_post0b.h"
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define D_4F9E4_itr (*(__typeof__(D_4F9E4_itr) *)(port_bootup_bss + 0x3EC60))
+#define D_4F9E4_tab (*(__typeof__(D_4F9E4_tab) *)(port_bootup_bss + 0x3EC60))
+#endif
 void BasePolyShape_genPointNormals(Tbls_5330C *arg0) {
     s16 cur[8];
     GLRec4F9E4 *r;
@@ -33,3 +38,7 @@ void BasePolyShape_genPointNormals(Tbls_5330C *arg0) {
         } while (i < (u32)arg0->field_40);
     }
 }
+#ifdef PORT
+#undef D_4F9E4_itr
+#undef D_4F9E4_tab
+#endif

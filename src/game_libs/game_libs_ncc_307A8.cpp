@@ -22,6 +22,18 @@ extern "C" St308 gSndCueQueues_307A8_a, gSndCueQueues_307A8_d, gSndCueQueues_307
     gSndCueQueues_307A8_m, gSndCueQueues_307A8_n, gSndCueQueues_307A8_o, gSndCueQueues_307A8_p;
 extern "C" int D_00000000_1c0a8;
 extern "C" void gl_func_00000000_f(int, f32);
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern "C" char port_bootup_bss[];
+#define gSndCueQueues_307A8_d (*(__typeof__(gSndCueQueues_307A8_d) *)(port_bootup_bss + 0x338))
+#define gSndCueQueues_307A8_e (*(__typeof__(gSndCueQueues_307A8_e) *)(port_bootup_bss + 0x338))
+#define gSndCueQueues_307A8_g (*(__typeof__(gSndCueQueues_307A8_g) *)(port_bootup_bss + 0x338))
+#define gSndCueQueues_307A8_h (*(__typeof__(gSndCueQueues_307A8_h) *)(port_bootup_bss + 0x338))
+#define gSndCueQueues_307A8_i (*(__typeof__(gSndCueQueues_307A8_i) *)(port_bootup_bss + 0x338))
+#define gSndCueQueues_307A8_j (*(__typeof__(gSndCueQueues_307A8_j) *)(port_bootup_bss + 0x338))
+#define gSndCueQueues_307A8_n (*(__typeof__(gSndCueQueues_307A8_n) *)(port_bootup_bss + 0x338))
+#define gSndCueQueues_307A8_o (*(__typeof__(gSndCueQueues_307A8_o) *)(port_bootup_bss + 0x338))
+#define gSndCueQueues_307A8_p (*(__typeof__(gSndCueQueues_307A8_p) *)(port_bootup_bss + 0x338))
+#endif
 extern "C" void snd_TickChannel8Fade(void) {
     int c;
     f32 f;
@@ -55,3 +67,14 @@ extern "C" void snd_TickChannel8Fade(void) {
     f = gSndCueQueues_307A8_p.f10;
     XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x01000800, f);
 }
+#ifdef PORT
+#undef gSndCueQueues_307A8_d
+#undef gSndCueQueues_307A8_e
+#undef gSndCueQueues_307A8_g
+#undef gSndCueQueues_307A8_h
+#undef gSndCueQueues_307A8_i
+#undef gSndCueQueues_307A8_j
+#undef gSndCueQueues_307A8_n
+#undef gSndCueQueues_307A8_o
+#undef gSndCueQueues_307A8_p
+#endif

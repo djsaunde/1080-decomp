@@ -47,6 +47,13 @@ struct Msg {
     int p4C;
     char pad50[0x50];
 };
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern "C" char port_bootup_bss[];
+#define gSysLib_3FC58_flags (*(__typeof__(gSysLib_3FC58_flags) *)(port_bootup_bss + 0x3C740))
+#define gSysLib_3FC58_flags2 (*(__typeof__(gSysLib_3FC58_flags2) *)(port_bootup_bss + 0x3C740))
+#define gSysLib_3FC58_flags2W (*(__typeof__(gSysLib_3FC58_flags2W) *)(port_bootup_bss + 0x3C740))
+#define gSysLib_3FC58_flagsW (*(__typeof__(gSysLib_3FC58_flagsW) *)(port_bootup_bss + 0x3C740))
+#endif
 extern "C" void hostio_dispatch(int arg0) {
     Msg msg;
     Msg out;
@@ -117,3 +124,9 @@ extern "C" void hostio_dispatch(int arg0) {
     }
     gSysLib_3FC58_flags2W = gSysLib_3FC58_flags2 & ~4;
 }
+#ifdef PORT
+#undef gSysLib_3FC58_flags
+#undef gSysLib_3FC58_flags2
+#undef gSysLib_3FC58_flags2W
+#undef gSysLib_3FC58_flagsW
+#endif

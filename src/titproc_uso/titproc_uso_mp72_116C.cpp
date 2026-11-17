@@ -75,6 +75,11 @@ void titproc_uso_func_000005DC_lay(int x, int *o) {
     }
 }
 
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern "C" char port_bootup_bss[];
+#undef XDATA
+#define XDATA(tok, sym, off) (*(__typeof__(tok) *)((char *)&sym + (off)))
+#endif
 void TitleDemoProcess_handleInput(char *s0) {
     char *v1, *vt;
     char *d3;
@@ -248,5 +253,9 @@ fire:
     }
     }
 }
+#ifdef PORT
+#undef XDATA
+#define XDATA(tok, sym, off) PORT_XDATA(tok, sym, off, __COUNTER__)
+#endif
 
 }

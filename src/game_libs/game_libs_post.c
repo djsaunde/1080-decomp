@@ -5080,6 +5080,13 @@ extern int gAudioContext_23494_d;
  * = 0x23FA / 0x2406, persistent.entries[i].id = 0x2308 + 0x1E + i * 0xC. Each
  * alias symbol is still its own base (one AUDIO_23494(sym) per site). */
 #define AUDIO_23494(sym) ((AudioContext *)&(sym))
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define D_00000000 (*(__typeof__(D_00000000) *)(port_bootup_bss + 0x345C0))
+#define gAudioContext_23494_a (*(__typeof__(gAudioContext_23494_a) *)(port_bootup_bss + 0x345C0))
+#define gAudioContext_23494_b (*(__typeof__(gAudioContext_23494_b) *)(port_bootup_bss + 0x345C0))
+#define gAudioContext_23494_c (*(__typeof__(gAudioContext_23494_c) *)(port_bootup_bss + 0x345C0))
+#endif
 void AudioLoad_DiscardFont(int id)
 {
     AudioCache *cache;
@@ -5098,6 +5105,12 @@ void AudioLoad_DiscardFont(int id)
     }
     CALL(AudioHeap_DiscardFont)(id);
 }
+#ifdef PORT
+#undef D_00000000
+#undef gAudioContext_23494_a
+#undef gAudioContext_23494_b
+#undef gAudioContext_23494_c
+#endif
 #undef AUDIO_23494
 
 
@@ -14424,6 +14437,11 @@ void snd_Stub_309A4(void) {
 extern int D_00000000_1c0c0;
 extern int D_309AC_a;
 extern int gl_ref_00046314();
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_data[];
+#define D_00000000_1c0c0 (*(__typeof__(D_00000000_1c0c0) *)(port_bootup_data + 0x1C0C0))
+#define D_309AC_a (*(__typeof__(D_309AC_a) *)(port_bootup_data + 0x1C0C0))
+#endif
 void snd_SetLevelRampTarget(int sel) {
     int p;
     if (sel != ((SndLevelRamp *)&D_309AC_a)->mode) {
@@ -14437,6 +14455,10 @@ void snd_SetLevelRampTarget(int sel) {
         ((SndLevelRamp *)&D_00000000_1c0c0)->mode = sel;
     }
 }
+#ifdef PORT
+#undef D_00000000_1c0c0
+#undef D_309AC_a
+#endif
 
 // snd_StartPlayer2Seq — STRUCTURAL PASS (0xD4 / 53 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no

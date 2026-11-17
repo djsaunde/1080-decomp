@@ -220,6 +220,16 @@ typedef void *(*AddFn)(void *, s32, s32, f32, f32, f32, f32, f32, f32);
 #define self ((char *)arg0)
 #define MGR ((SelItemsMgr *)arg0)
 #define TESURI(k) (MGR->tesuri[k])
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define f8fc8_ee6c_r3 (*(__typeof__(f8fc8_ee6c_r3) *)(port_bootup_bss + 0x3EEC8))
+#define f8fc8_ee6c_sb1 (*(__typeof__(f8fc8_ee6c_sb1) *)(port_bootup_bss + 0x3EEC8))
+#define f8fc8_ee6c_sb2 (*(__typeof__(f8fc8_ee6c_sb2) *)(port_bootup_bss + 0x3EEC8))
+#define f8fc8_ee6c_sb3 (*(__typeof__(f8fc8_ee6c_sb3) *)(port_bootup_bss + 0x3EEC8))
+#define gPolyGeomMode_3EEC8_8005EE6C (*(__typeof__(gPolyGeomMode_3EEC8_8005EE6C) *)(port_bootup_bss + 0x3EEC8))
+#define import_80063D04 (*(__typeof__(import_80063D04) *)(port_bootup_bss + 0x3EEC8))
+#define import_800664C4 (*(__typeof__(import_800664C4) *)(port_bootup_bss + 0x3EEC8))
+#endif
 void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
     VecH v2a, v2b, v3a, v3b;
     char *a, *b, *c, *d;
@@ -398,3 +408,12 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
     }
     return arg0;
 }
+#ifdef PORT
+#undef f8fc8_ee6c_r3
+#undef f8fc8_ee6c_sb1
+#undef f8fc8_ee6c_sb2
+#undef f8fc8_ee6c_sb3
+#undef gPolyGeomMode_3EEC8_8005EE6C
+#undef import_80063D04
+#undef import_800664C4
+#endif

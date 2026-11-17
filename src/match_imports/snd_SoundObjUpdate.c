@@ -35,6 +35,14 @@ extern char D_E354_G[];
 extern void D_E354_GA(void);
 extern s32 D_E354_GB[];
 extern void gl_E354_v(s32, s32);
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_data[];
+#define D_E354_1C738_a (*(__typeof__(D_E354_1C738_a) *)(port_bootup_data + 0x1C738))
+#define D_E354_1C738_b (*(__typeof__(D_E354_1C738_b) *)(port_bootup_data + 0x1C738))
+#define D_E354_1C738_c (*(__typeof__(D_E354_1C738_c) *)(port_bootup_data + 0x1C738))
+#define D_E354_1C73C_a (*(__typeof__(D_E354_1C73C_a) *)(port_bootup_data + 0x1C73C))
+#define D_E354_1C73C_b (*(__typeof__(D_E354_1C73C_b) *)(port_bootup_data + 0x1C73C))
+#endif
 void snd_SoundObjUpdate(char *arg0, s32 arg1) {
     u8 temp_v1_2;
     u8 temp_v1_3;
@@ -439,3 +447,10 @@ block_83:
         }
     }
 }
+#ifdef PORT
+#undef D_E354_1C738_a
+#undef D_E354_1C738_b
+#undef D_E354_1C738_c
+#undef D_E354_1C73C_a
+#undef D_E354_1C73C_b
+#endif

@@ -73,6 +73,13 @@ typedef struct {
 } St26D64;
 extern St26D64 gAudioContext_26D64_arr[];
 #define g (&gAudioContext_26D64_arr[0])
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_data[];
+#define D_26D64_a (*(__typeof__(D_26D64_a) *)(port_bootup_data + 0x0))
+#define D_26D64_b (*(__typeof__(D_26D64_b) *)(port_bootup_data + 0x0))
+#define D_26D64_c (*(__typeof__(D_26D64_c) *)(port_bootup_data + 0x0))
+#define D_26D64_d (*(__typeof__(D_26D64_d) *)(port_bootup_data + 0x0))
+#endif
 void AudioThread_ProcessCmds(u32 arg0) {
     s32 lo;
     s32 cur;
@@ -199,6 +206,12 @@ block_24:
         ent->op = 0;
     }
 }
+#ifdef PORT
+#undef D_26D64_a
+#undef D_26D64_b
+#undef D_26D64_c
+#undef D_26D64_d
+#endif
 #undef g
 #undef CUR_A
 #undef CUR_B

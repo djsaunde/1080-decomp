@@ -39,6 +39,12 @@ struct Strm {
     int f13; int f14; int w15; int f16; int f17; int f18;
     int next() { return cmd = *(*cp)++; }
 };
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern "C" char port_bootup_bss[];
+extern "C" char port_bootup_data[];
+#undef XDATA
+#define XDATA(tok, sym, off) (*(__typeof__(tok) *)((char *)&sym + (off)))
+#endif
 extern "C" void nodelist_dispatch(Strm *s) {
     Two pt;
     Two vt;
@@ -109,3 +115,7 @@ extern "C" void nodelist_dispatch(Strm *s) {
         break;
     }
 }
+#ifdef PORT
+#undef XDATA
+#define XDATA(tok, sym, off) PORT_XDATA(tok, sym, off, __COUNTER__)
+#endif

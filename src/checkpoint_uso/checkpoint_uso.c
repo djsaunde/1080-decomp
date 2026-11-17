@@ -199,6 +199,11 @@ extern int gCollObjMgr_tmpl;
  * after the ctor, `if (1) {}` after the flag store); here o lands in s0.
  * The ROM leaves these local ctor jal fields 0 (filled by the USO TextReloc),
  * so the ctor calls go through CALL (the zero placeholder), not a direct call. */
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define gPolyFlags_3EEC4_tmpl_rd (*(__typeof__(gPolyFlags_3EEC4_tmpl_rd) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_tmpl_wr (*(__typeof__(gPolyFlags_3EEC4_tmpl_wr) *)(port_bootup_bss + 0x3EEC4))
+#endif
 Node *CheckpointCylTmpl_create(char *tmpl) {
     NodeMsg msg;
     Node *o;
@@ -227,10 +232,19 @@ Node *CheckpointCylTmpl_create(char *tmpl) {
     CALL(CollObjMgr_addStatic)(gCollObjMgr_tmpl, (char *)o + 0xCC);
     return o;
 }
+#ifdef PORT
+#undef gPolyFlags_3EEC4_tmpl_rd
+#undef gPolyFlags_3EEC4_tmpl_wr
+#endif
 
 /* CheckpointBoxTmpl_create: box CheckpointTmpl create: the 6F0 shape with
  * geomMode 0x8A002, the shape data at tmpl+0x4C, new box checkpoint
  * (0x58C, passed tmpl+0x48) and one static CollObj (+0x88). */
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define gPolyFlags_3EEC4_tmpl_rd (*(__typeof__(gPolyFlags_3EEC4_tmpl_rd) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_tmpl_wr (*(__typeof__(gPolyFlags_3EEC4_tmpl_wr) *)(port_bootup_bss + 0x3EEC4))
+#endif
 Node *CheckpointBoxTmpl_create(char *tmpl) {
     NodeMsg msg;
     Node *o;
@@ -258,6 +272,10 @@ Node *CheckpointBoxTmpl_create(char *tmpl) {
     CALL(CollObjMgr_addStatic)(gCollObjMgr_tmpl, (char *)o + 0x88);
     return o;
 }
+#ifdef PORT
+#undef gPolyFlags_3EEC4_tmpl_rd
+#undef gPolyFlags_3EEC4_tmpl_wr
+#endif
 
 /* CheckpointColourItemType_create: the checkpoint ColourItem type's create: alloc
  * 0x40, ColourItem_ctor, vtable (bootup Data+0x75A0), clear +0x3C, attach the

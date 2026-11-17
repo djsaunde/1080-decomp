@@ -144,6 +144,11 @@ void *HeliItemType_ctor(char *self, HeliTypeTag name) {
 /* HeliItemType_create: HeliItemType item create: load the shapes on first use (body "heli"
  * with poly flag 8 and geometry mode 0x2A003, blades "helib" with geometry mode 11, the
  * sprite), then build the Heli. */
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define heli_polyFlags_ld (*(__typeof__(heli_polyFlags_ld) *)(port_bootup_bss + 0x3EEC4))
+#define heli_polyFlags_st (*(__typeof__(heli_polyFlags_st) *)(port_bootup_bss + 0x3EEC4))
+#endif
 void HeliItemType_create(char *self) {
     if (HELIITEMTYPE(self)->bodyShape == 0) {
         heli_polyFlags_st = heli_polyFlags_ld | 8; if (1) {}
@@ -167,6 +172,10 @@ void HeliItemType_create(char *self) {
         CALL(Heli_ctor)(0, body, blades, sprite);
     }
 }
+#ifdef PORT
+#undef heli_polyFlags_ld
+#undef heli_polyFlags_st
+#endif
 
 /* HeliRotor_ctor: HeliRotor ctor (0x118, "<QNode>"; spin speed +0x108 from RoData). */
 char *HeliRotor_ctor(char *self) {

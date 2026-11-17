@@ -143,6 +143,21 @@ extern char sFmt_num_C604;
 extern char sStr_FLOW_free_blocks_1_C60C;
 extern int gModeUsoPaths_C4EC[];
 
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_arcproc_data[];
+extern char port_bootup_bss[];
+extern char port_bootup_data[];
+extern char port_eddproc_data[];
+extern char port_h2hproc_data[];
+extern char port_mgrproc_data[];
+extern char port_n64proc_data[];
+extern char port_timproc_data[];
+extern char port_titproc_data[];
+extern char port_trkproc_data[];
+extern char port_trnproc_data[];
+#undef XDATA
+#define XDATA(tok, sym, off) (*(__typeof__(tok) *)((char *)&sym + (off)))
+#endif
 void GameFlow_startMode(char *arg0, int arg1, int arg2) {
     int sp3C;
     register char *p;   /* s0 */
@@ -329,3 +344,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
      * game_createProcessWindow stores there */
     FCALL(node_linkBack_0004E888)(WORLDREG(GAMEFLOW(arg0)->game)->windows[3], p);
 }
+#ifdef PORT
+#undef XDATA
+#define XDATA(tok, sym, off) PORT_XDATA(tok, sym, off, __COUNTER__)
+#endif

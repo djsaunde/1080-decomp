@@ -74,6 +74,20 @@ extern char D_55A0_lb0, sFmt_register_7E24, gInputMgr_55A0_cfg;
 }
 static inline f32 fi(int v) { return v; }
 #define ESC_55A0(x) ((char *)&(x) - (char *)0)
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern "C" char port_bootup_bss[];
+extern "C" char port_bootup_data[];
+#define D_55A0_g10 (*(__typeof__(D_55A0_g10) *)(port_bootup_data + 0x7B48))
+#define D_55A0_g5 (*(__typeof__(D_55A0_g5) *)(port_bootup_data + 0x7B48))
+#define D_55A0_g6 (*(__typeof__(D_55A0_g6) *)(port_bootup_data + 0x7B48))
+#define D_55A0_g7 (*(__typeof__(D_55A0_g7) *)(port_bootup_data + 0x7B48))
+#define D_55A0_g8 (*(__typeof__(D_55A0_g8) *)(port_bootup_data + 0x7B48))
+#define D_55A0_g9 (*(__typeof__(D_55A0_g9) *)(port_bootup_data + 0x7B48))
+#define D_55A0_list (*(__typeof__(D_55A0_list) *)(port_bootup_data + 0x7B48))
+#define D_55A0_z0 (*(__typeof__(D_55A0_z0) *)(port_bootup_data + 0x7B48))
+#define gPolyFlags_3EEC4_55A0_r0 (*(__typeof__(gPolyFlags_3EEC4_55A0_r0) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_55A0_w0 (*(__typeof__(gPolyFlags_3EEC4_55A0_w0) *)(port_bootup_bss + 0x3EEC4))
+#endif
 extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     S4_55A0 t4, t5, t6, t7, t8, t9, t10;
     float m[40]; /* sp+0xC4 .. sp+0x163 */
@@ -313,3 +327,15 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     }
     FCALL(ItemMgr_addType)(DROOT, obj, 0xFFFF);
 }
+#ifdef PORT
+#undef D_55A0_g10
+#undef D_55A0_g5
+#undef D_55A0_g6
+#undef D_55A0_g7
+#undef D_55A0_g8
+#undef D_55A0_g9
+#undef D_55A0_list
+#undef D_55A0_z0
+#undef gPolyFlags_3EEC4_55A0_r0
+#undef gPolyFlags_3EEC4_55A0_w0
+#endif

@@ -130,6 +130,11 @@ void Balloon_handleMsg(char *self, int *msg) {
  * The ctor jal field is 0 in the ROM (USO TextReloc), so it is called via CALL. */
 extern int gPolyFlags_3EEC4_tmpl_rd, gPolyFlags_3EEC4_tmpl_wr;
 extern int gPolyGeomMode_3EEC8_tmpl[2];
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define gPolyFlags_3EEC4_tmpl_rd (*(__typeof__(gPolyFlags_3EEC4_tmpl_rd) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_tmpl_wr (*(__typeof__(gPolyFlags_3EEC4_tmpl_wr) *)(port_bootup_bss + 0x3EEC4))
+#endif
 Node *BalloonTmpl_create(char *tmpl) {
     NodeMsg msg;
     Node *o;
@@ -156,3 +161,7 @@ Node *BalloonTmpl_create(char *tmpl) {
     shape->parent = o;
     return o;
 }
+#ifdef PORT
+#undef gPolyFlags_3EEC4_tmpl_rd
+#undef gPolyFlags_3EEC4_tmpl_wr
+#endif

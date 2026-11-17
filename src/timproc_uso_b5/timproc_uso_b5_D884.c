@@ -70,6 +70,15 @@ extern char d884_db64_gc;
 #define EE6C_S(s) (*(u32 *)((char *)&s + 4))
 #define MODE (*(s32 *)((char *)&import_800200CC + 0x34))
 
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define d884_ee6c_l1 (*(__typeof__(d884_ee6c_l1) *)(port_bootup_bss + 0x3EEC8))
+#define d884_ee6c_l2 (*(__typeof__(d884_ee6c_l2) *)(port_bootup_bss + 0x3EEC8))
+#define d884_ee6c_s1 (*(__typeof__(d884_ee6c_s1) *)(port_bootup_bss + 0x3EEC8))
+#define d884_ee6c_s2 (*(__typeof__(d884_ee6c_s2) *)(port_bootup_bss + 0x3EEC8))
+#define d884_ee6c_s4 (*(__typeof__(d884_ee6c_s4) *)(port_bootup_bss + 0x3EEC8))
+#define d884_ee6c_s7 (*(__typeof__(d884_ee6c_s7) *)(port_bootup_bss + 0x3EEC8))
+#endif
 char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
     char *volatile r;
     volatile int pad0;
@@ -227,3 +236,11 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
     LIST->items[(s32) child] = (SelItem *)r;
     return r;
 }
+#ifdef PORT
+#undef d884_ee6c_l1
+#undef d884_ee6c_l2
+#undef d884_ee6c_s1
+#undef d884_ee6c_s2
+#undef d884_ee6c_s4
+#undef d884_ee6c_s7
+#endif

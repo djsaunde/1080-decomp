@@ -34,6 +34,11 @@ typedef float f32; typedef int s32; typedef short s16; typedef unsigned char u8;
 #include "../../include/gdl/node.h" /* NODE(p)->name (the DNode mirror has no Node fields) */
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
 #define RIDER(st) ((SnowBoarder *)(st))
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern "C" char port_bootup_bss[];
+#define gPolyFlags_3EEC4_cae8_x_ld (*(__typeof__(gPolyFlags_3EEC4_cae8_x_ld) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_cae8_x_st (*(__typeof__(gPolyFlags_3EEC4_cae8_x_st) *)(port_bootup_bss + 0x3EEC4))
+#endif
 extern "C" void SnowBoarder_reset(char *st) {
     FCALL(Node_Load)(st, 1, gPlayerBinPaths_cae8_ta[RIDER(st)->character]);
     FCALL(Node_Load)(st + 0x3EC, 1, gBoardBinPaths_cae8_tb[RIDER(st)->boardBin[RIDER(st)->board - 1]]);
@@ -68,3 +73,7 @@ extern "C" void SnowBoarder_reset(char *st) {
     *p = *(V3 *)RIDER(st)->dnode.vqs.trans; /* prevPos = pos */
     *q = *(V3 *)RIDER(st)->dnode.vel;       /* prevVel = vel */
 }
+#ifdef PORT
+#undef gPolyFlags_3EEC4_cae8_x_ld
+#undef gPolyFlags_3EEC4_cae8_x_st
+#endif

@@ -488,6 +488,12 @@ extern char import_800200DC_c;
 extern char import_800200D8;
 extern char import_80020100;
 extern char import_80020100_b;
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define import_800200DC (*(__typeof__(import_800200DC) *)(port_bootup_bss + 0xF8))
+#define import_800200DC_b (*(__typeof__(import_800200DC_b) *)(port_bootup_bss + 0xF8))
+#define import_800200DC_c (*(__typeof__(import_800200DC_c) *)(port_bootup_bss + 0xF8))
+#endif
 void MGRRaceProcess_onEndTimerDone(int *a0) {
     int spill;          /* stack 0x24(sp) */
     int *s0 = a0;
@@ -524,6 +530,11 @@ storestate:
     MGRRACE(s0)->race.unk504 = (spill != 0) ? 0 : 4;
     return;
 }
+#ifdef PORT
+#undef import_800200DC
+#undef import_800200DC_b
+#undef import_800200DC_c
+#endif
 
 /* MGRRaceProcess_onTimeout: 40-insn 3-way switch on a0->[0x4D8] (v):
  *   v == 2: func_0139B0(D[0x190], 3, 1, a0); a0->[0x7D4] = 1;
@@ -823,6 +834,11 @@ typedef struct { char c[0]; } Z0_1824; /* zero-byte copy type (kit CDLVI) */
  * block boundary. Each guard costs two ugen temps (ring of 10). */
 #define MGR1824_EMPTY_BB(k) \
     if (sel == (k)) *(Z0_1824 *)(char *)(sel + 0x10) = *(Z0_1824 *)(char *)(sel + 0x20)
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define import_80020098 (*(__typeof__(import_80020098) *)(port_bootup_bss + 0xF8))
+#define import_800200D8 (*(__typeof__(import_800200D8) *)(port_bootup_bss + 0xF8))
+#endif
 void MGRRaceProcess_updateSub2(char *s0) {
     char *v0;
     char *r;
@@ -914,6 +930,10 @@ void MGRRaceProcess_updateSub2(char *s0) {
      * colours it s0 with the extra blocks (callee firstUseCost grows with BBs) */
     if (s0) {}
 }
+#ifdef PORT
+#undef import_80020098
+#undef import_800200D8
+#endif
 
 void MGRRaceProcess_updateSub3(int a0) {
 }

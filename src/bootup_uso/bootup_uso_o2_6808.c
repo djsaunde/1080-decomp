@@ -58,6 +58,25 @@ extern int gPolyFlags_3EEC4_8005EE64_6808_0, gPolyFlags_3EEC4_8005EE64_6808_1, g
     if (*(int *)(x + 0x14) != 0) *(int *)(x + 0x4) = 1; \
     *(int *)(x + 0x14) = (int)L; }
 
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define gGfxLib_8005C108_6808_0 (*(__typeof__(gGfxLib_8005C108_6808_0) *)(port_bootup_bss + 0x3C2F0))
+#define gGfxLib_8005C108_6808_1 (*(__typeof__(gGfxLib_8005C108_6808_1) *)(port_bootup_bss + 0x3C2F0))
+#define gGfxLib_8005C108_6808_2 (*(__typeof__(gGfxLib_8005C108_6808_2) *)(port_bootup_bss + 0x3C2F0))
+#define gGfxLib_8005C108_6808_3 (*(__typeof__(gGfxLib_8005C108_6808_3) *)(port_bootup_bss + 0x3C2F0))
+#define gGfxLib_8005C108_6808_4 (*(__typeof__(gGfxLib_8005C108_6808_4) *)(port_bootup_bss + 0x3C2F0))
+#define gGfxLib_8005C108_6808_5 (*(__typeof__(gGfxLib_8005C108_6808_5) *)(port_bootup_bss + 0x3C2F0))
+#define gPolyFlags_3EEC4_8005EE64_6808_0 (*(__typeof__(gPolyFlags_3EEC4_8005EE64_6808_0) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_8005EE64_6808_1 (*(__typeof__(gPolyFlags_3EEC4_8005EE64_6808_1) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_8005EE64_6808_2 (*(__typeof__(gPolyFlags_3EEC4_8005EE64_6808_2) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_8005EE64_6808_3 (*(__typeof__(gPolyFlags_3EEC4_8005EE64_6808_3) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_8005EE64_6808_4 (*(__typeof__(gPolyFlags_3EEC4_8005EE64_6808_4) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_8005EE64_6808_5 (*(__typeof__(gPolyFlags_3EEC4_8005EE64_6808_5) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_8005EE64_6808_6 (*(__typeof__(gPolyFlags_3EEC4_8005EE64_6808_6) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_8005EE64_6808_7 (*(__typeof__(gPolyFlags_3EEC4_8005EE64_6808_7) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyGeomMode_3EEC8_8005EE6C (*(__typeof__(gPolyGeomMode_3EEC8_8005EE6C) *)(port_bootup_bss + 0x3EEC8))
+#define gPolyGeomMode_3EEC8_8005EE6C_6808r (*(__typeof__(gPolyGeomMode_3EEC8_8005EE6C_6808r) *)(port_bootup_bss + 0x3EEC8))
+#endif
 void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     int g0, g00;
     S4_55A0 e4, e0;
@@ -296,3 +315,21 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     do { g00 = gPolyFlags_3EEC4_8005EE64_6808_7; g00 &= ~8; gPolyFlags_3EEC4_8005EE64_6808_6 = g00; } while (0);
     return res;
 }
+#ifdef PORT
+#undef gGfxLib_8005C108_6808_0
+#undef gGfxLib_8005C108_6808_1
+#undef gGfxLib_8005C108_6808_2
+#undef gGfxLib_8005C108_6808_3
+#undef gGfxLib_8005C108_6808_4
+#undef gGfxLib_8005C108_6808_5
+#undef gPolyFlags_3EEC4_8005EE64_6808_0
+#undef gPolyFlags_3EEC4_8005EE64_6808_1
+#undef gPolyFlags_3EEC4_8005EE64_6808_2
+#undef gPolyFlags_3EEC4_8005EE64_6808_3
+#undef gPolyFlags_3EEC4_8005EE64_6808_4
+#undef gPolyFlags_3EEC4_8005EE64_6808_5
+#undef gPolyFlags_3EEC4_8005EE64_6808_6
+#undef gPolyFlags_3EEC4_8005EE64_6808_7
+#undef gPolyGeomMode_3EEC8_8005EE6C
+#undef gPolyGeomMode_3EEC8_8005EE6C_6808r
+#endif

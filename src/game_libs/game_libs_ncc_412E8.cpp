@@ -41,7 +41,11 @@ struct I : W4 { char p[0x18 - 4]; virtual void f(); I() {} };
 struct HI { I i; };
 struct HM { W4 w; };
 #ifdef PORT
-struct L { char p[0x18]; char *vptr; L() { vptr = SysLib_vtbl_1E1B8_412E8_k; } };
+/* _i and _l are one object in the port too (aliases.ld: both port_bootup_bss+0x3C740), but two
+ * decls to gcc, which may then order L's vptr store before I's (port-alias-audit.py, plan 18.7).
+ * The definitions are port-dropdata, so they cannot be respelled: a compiler barrier keeps I's
+ * store (the static-init order) before this one. */
+struct L { char p[0x18]; char *vptr; L() { __asm__ __volatile__("" ::: "memory"); vptr = SysLib_vtbl_1E1B8_412E8_k; } };
 #else
 struct L { char p[0x18]; virtual void f(); };
 #endif

@@ -1,5 +1,51 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post.c. Target bytes unchanged. */
 #include "context_game_libs_post.h"
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_data[];
+#define D_0001C1BC (*(__typeof__(D_0001C1BC) *)(port_bootup_data + 0x0))
+#define D_0001C1BC_b (*(__typeof__(D_0001C1BC_b) *)(port_bootup_data + 0x0))
+#define D_0001C1C0 (*(__typeof__(D_0001C1C0) *)(port_bootup_data + 0x0))
+#define D_0001C1C0_b (*(__typeof__(D_0001C1C0_b) *)(port_bootup_data + 0x0))
+#define D_0001C1C4 (*(__typeof__(D_0001C1C4) *)(port_bootup_data + 0x0))
+#define D_0001C1C4_b (*(__typeof__(D_0001C1C4_b) *)(port_bootup_data + 0x0))
+#define D_0001C1C4_c (*(__typeof__(D_0001C1C4_c) *)(port_bootup_data + 0x0))
+#define D_0001C1C4_d (*(__typeof__(D_0001C1C4_d) *)(port_bootup_data + 0x0))
+#define D_0001C1C4_e (*(__typeof__(D_0001C1C4_e) *)(port_bootup_data + 0x0))
+#define D_0001C1C4_f (*(__typeof__(D_0001C1C4_f) *)(port_bootup_data + 0x0))
+#define D_0001C1C4_g (*(__typeof__(D_0001C1C4_g) *)(port_bootup_data + 0x0))
+#define D_0001C1C4_h (*(__typeof__(D_0001C1C4_h) *)(port_bootup_data + 0x0))
+#define D_0001C1C4_i (*(__typeof__(D_0001C1C4_i) *)(port_bootup_data + 0x0))
+#define D_0001C1C4_j (*(__typeof__(D_0001C1C4_j) *)(port_bootup_data + 0x0))
+#define D_0001C1C8 (*(__typeof__(D_0001C1C8) *)(port_bootup_data + 0x0))
+#define D_0001C1C8_b (*(__typeof__(D_0001C1C8_b) *)(port_bootup_data + 0x0))
+#define D_0001C1C8_c (*(__typeof__(D_0001C1C8_c) *)(port_bootup_data + 0x0))
+#define D_0001C1CC (*(__typeof__(D_0001C1CC) *)(port_bootup_data + 0x0))
+#define D_0001C1CC_b (*(__typeof__(D_0001C1CC_b) *)(port_bootup_data + 0x0))
+#define D_0001C1CC_c (*(__typeof__(D_0001C1CC_c) *)(port_bootup_data + 0x0))
+#define D_0001C1CC_d (*(__typeof__(D_0001C1CC_d) *)(port_bootup_data + 0x0))
+#define D_0001C1CC_e (*(__typeof__(D_0001C1CC_e) *)(port_bootup_data + 0x0))
+#define D_0001C1CC_f (*(__typeof__(D_0001C1CC_f) *)(port_bootup_data + 0x0))
+#define D_0001C1CC_g (*(__typeof__(D_0001C1CC_g) *)(port_bootup_data + 0x0))
+#define D_0001C1CC_h (*(__typeof__(D_0001C1CC_h) *)(port_bootup_data + 0x0))
+#define D_0001C1CC_i (*(__typeof__(D_0001C1CC_i) *)(port_bootup_data + 0x0))
+#define D_0001C1CC_j (*(__typeof__(D_0001C1CC_j) *)(port_bootup_data + 0x0))
+#define D_0001C1CC_k (*(__typeof__(D_0001C1CC_k) *)(port_bootup_data + 0x0))
+#define D_0001C1D0 (*(__typeof__(D_0001C1D0) *)(port_bootup_data + 0x0))
+#define D_0001C1D0_b (*(__typeof__(D_0001C1D0_b) *)(port_bootup_data + 0x0))
+#define D_0001C1D0_c (*(__typeof__(D_0001C1D0_c) *)(port_bootup_data + 0x0))
+#define D_0001C1D0_d (*(__typeof__(D_0001C1D0_d) *)(port_bootup_data + 0x0))
+#define D_0001C1D0_e (*(__typeof__(D_0001C1D0_e) *)(port_bootup_data + 0x0))
+#define D_0001C1D0_f (*(__typeof__(D_0001C1D0_f) *)(port_bootup_data + 0x0))
+#define D_0001C1D0_g (*(__typeof__(D_0001C1D0_g) *)(port_bootup_data + 0x0))
+#define D_0001C1D0_h (*(__typeof__(D_0001C1D0_h) *)(port_bootup_data + 0x0))
+#define D_0001C1D4 (*(__typeof__(D_0001C1D4) *)(port_bootup_data + 0x0))
+#define D_0001C1D4_b (*(__typeof__(D_0001C1D4_b) *)(port_bootup_data + 0x0))
+#define D_0001C1D4_c (*(__typeof__(D_0001C1D4_c) *)(port_bootup_data + 0x0))
+#define D_0001C1D4_d (*(__typeof__(D_0001C1D4_d) *)(port_bootup_data + 0x0))
+#define D_0001C1D4_e (*(__typeof__(D_0001C1D4_e) *)(port_bootup_data + 0x0))
+#define D_0001C1D4_f (*(__typeof__(D_0001C1D4_f) *)(port_bootup_data + 0x0))
+#define D_0001C1D4_g (*(__typeof__(D_0001C1D4_g) *)(port_bootup_data + 0x0))
+#endif
 void snd_SetPlayer1Channel15IO_2D910(int a0, int a1, int a2, int a3)
 {
   int v0;
@@ -119,3 +165,48 @@ void snd_SetPlayer1Channel15IO_2D910(int a0, int a1, int a2, int a3)
     }
   }
 }
+#ifdef PORT
+#undef D_0001C1BC
+#undef D_0001C1BC_b
+#undef D_0001C1C0
+#undef D_0001C1C0_b
+#undef D_0001C1C4
+#undef D_0001C1C4_b
+#undef D_0001C1C4_c
+#undef D_0001C1C4_d
+#undef D_0001C1C4_e
+#undef D_0001C1C4_f
+#undef D_0001C1C4_g
+#undef D_0001C1C4_h
+#undef D_0001C1C4_i
+#undef D_0001C1C4_j
+#undef D_0001C1C8
+#undef D_0001C1C8_b
+#undef D_0001C1C8_c
+#undef D_0001C1CC
+#undef D_0001C1CC_b
+#undef D_0001C1CC_c
+#undef D_0001C1CC_d
+#undef D_0001C1CC_e
+#undef D_0001C1CC_f
+#undef D_0001C1CC_g
+#undef D_0001C1CC_h
+#undef D_0001C1CC_i
+#undef D_0001C1CC_j
+#undef D_0001C1CC_k
+#undef D_0001C1D0
+#undef D_0001C1D0_b
+#undef D_0001C1D0_c
+#undef D_0001C1D0_d
+#undef D_0001C1D0_e
+#undef D_0001C1D0_f
+#undef D_0001C1D0_g
+#undef D_0001C1D0_h
+#undef D_0001C1D4
+#undef D_0001C1D4_b
+#undef D_0001C1D4_c
+#undef D_0001C1D4_d
+#undef D_0001C1D4_e
+#undef D_0001C1D4_f
+#undef D_0001C1D4_g
+#endif

@@ -7,6 +7,12 @@
  * The gl_2F288_* tokens are zero symbols relocated against a section base (Data / RoData) or
  * gAudioContext; their offsets are the audio.h named section offsets. */
 #define gSndLevelRamp (*(SndLevelRamp *)&D_00000000)
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_data[];
+#define gl_2F288_countdown (*(__typeof__(gl_2F288_countdown) *)(port_bootup_data + 0x0))
+#define gl_2F288_countdown_reset (*(__typeof__(gl_2F288_countdown_reset) *)(port_bootup_data + 0x0))
+#define gl_2F288_countdown_store (*(__typeof__(gl_2F288_countdown_store) *)(port_bootup_data + 0x0))
+#endif
 void snd_SoundObjUpdateChannel(GlState2E0C4 *arg0) {
     f32 value;
     f32 level;
@@ -86,3 +92,8 @@ void snd_SoundObjUpdateChannel(GlState2E0C4 *arg0) {
         gl_2F288_emit_float(aux | 0x01000000, scale);
     }
 }
+#ifdef PORT
+#undef gl_2F288_countdown
+#undef gl_2F288_countdown_reset
+#undef gl_2F288_countdown_store
+#endif
