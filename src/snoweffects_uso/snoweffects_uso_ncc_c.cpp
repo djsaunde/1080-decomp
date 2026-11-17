@@ -26,6 +26,7 @@ struct GCtx {
     Gfx *nextR() { Gfx *g = &dl->buf[dl->count++]; return g; }
     Gfx *nextB() { Gfx *g = &dl->buf[dl->count++]; if (1) {} return g; }
     Gfx *nextBI() { int n = dl->count++; if (1) {} return &dl->buf[n]; }
+    Gfx *atB(int n) { if (1) {} return &dl->buf[n]; }
 };
 /* a texture sprite (name +0xC, 20-packet DL context +0x2C, texture size +0x34 / +0x38) */
 struct SnowTex {
@@ -155,6 +156,8 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * lo16 = 0x10 in the instruction as in the target); the EE depth adds a plain 1.0f (FP ring rows 614-621);
  * the B3 word masks the dsdx quotient before the shift (`/ sw & 0xFFFF) << 16`, gImmp1 / _SHIFTL form), which
  * keeps the 0xB3 w0 constant live across the first divide as in the target (int ring and div order).
+ * agent-h run 792 / agent-c run 794: E7 and B4 append through atB(count++) (an `if (1) {}` cut before the
+ * Gfx address), which fixes uopt's tail-block split: tail packet pointers a0 / a1 / a2 / a0, B4 / B3 g a0 / a1.
  * Needs `snow_rodata_28E0 = 0`; keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
 extern "C" float gl_func_00000000_snow_randf(...);   /* sys_randf (typed blank jal: float return) */
@@ -336,7 +339,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
                     if (1) {}
                     gDPWord(c->nextM(), 0xE4000000 | ((((x0 + sw) << 2) & 0xFFF) << 12) | (((y0 + sz) << 2) & 0xFFF),
                             (((x0 << 2) & 0xFFF) << 12) | ((y0 << 2) & 0xFFF));
-                    gDPWord(c->next(), 0xB4000000, 0);
+                    gDPWord(c->atB(c->dl->count++), 0xB4000000, 0);
                     gDPWord(c->next(), 0xB3000000,
                             ((((self->texW << 10) - 1024) / sw & 0xFFFF) << 16) | ((((self->texH << 10) - 1024) / sz) & 0xFFFF));
                 }
@@ -346,7 +349,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     }
     }
     self->lastCam.assign(cam);
-    gDPWord(c->next(), 0xE7000000, 0);
+    gDPWord(c->atB(c->dl->count++), 0xE7000000, 0);
     gDPWord(c->next(), 0xB9000201, 0);
     gDPWord(c->next(), 0xBA001301, 0x80000);
     gDPWord(c->next(), 0xBB000000, 0);
