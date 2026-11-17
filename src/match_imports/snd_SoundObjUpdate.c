@@ -365,7 +365,12 @@ block_83:
                             }
                             temp_v0 = *(s32 *)D_E354_GA; /* D_E354_GA: the Bss 0x31C (Sym 1439) gain-wobble countdown */
                             if (temp_v0 != 0) {
+#ifdef PORT /* the ROM's lui / addiu pair is relocated against bootup Data; the constant alone is a wild
+             * address on the host (soak.py run 864: SIGSEGV here once the gain-wobble countdown runs) */
+                                temp_f16 = *(f32 *)(port_bootup_data + ((temp_v0 & 0x1F) * 4) + kD_sndGainWobble_1C430);
+#else
                                 temp_f16 = *(f32 *)((char *)(((temp_v0 & 0x1F) * 4)) + kD_sndGainWobble_1C430);
+#endif
                                 temp_f10_2 *= temp_f16;
                                 *(s32 *)D_E354_GA = (s32) (temp_v0 - 1);
                             }

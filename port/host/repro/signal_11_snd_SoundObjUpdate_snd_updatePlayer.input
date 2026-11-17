@@ -1,0 +1,18 @@
+# soak.py repro (run 864): class signal:11:snd_SoundObjUpdate>snd_updatePlayer
+# SOAK seed=183 steps=6000 sram=fresh
+# minimised from 237 to 13 F lines; detail: snd_SoundObjUpdate (snd_SoundObjUpdate.c:368) < snd_updatePlayer (snd_updatePlayer.c:78) < SnowBoarder_update (SnowBoarder_update.c:123) < _ZN8Node387
+# END 1830
+PADS 1
+F 517-519 P1 START
+F 587-589 P1 A
+F 659-661 P1 DD
+F 732-734 P1 DD
+F 772-774 P1 A
+F 930-932 P1 A
+F 981-983 P1 A
+F 1083-1085 P1 A
+F 1145-1164 P1 A
+F 1334-1394 P1 STICK -57,80
+F 1422-1446 P1 A
+F 1749-1764 P1 A
+F 1770-1787 P1 B
