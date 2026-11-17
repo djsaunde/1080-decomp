@@ -11,7 +11,10 @@
  *     native 320x240, big-endian), so the reader sees the last completed frame one frame later,
  *     as it does on the N64 (it reads the buffer that is on screen).
  *   - Depth is read per pixel (Sun_measureVisibility samples 9 points): each requested pixel is
- *     read back and stored at its place in the Z image.
+ *     read back and stored at its place in the Z image. With no renderer in process (headless,
+ *     PORT_GFX_DUMP) port_gfx.c applies the game's Z clear (its G_FILLRECT of 0xFFFC on the Z
+ *     image) to the image in memory instead, so far pixels read 0xFFFC; geometry is not modelled
+ *     (the sun counts as unoccluded). PORT_FB_ZCLEAR=0 turns that off.
  *   - A CPU writer declares the rectangle it wrote. After the next task that renders into that
  *     image the port composites the rectangle (opaque) over the frame.
  *   - A CPU texture writer declares the texels it rewrote, so the texture cache drops them

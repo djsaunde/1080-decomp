@@ -135,6 +135,166 @@ static void make_dirs(const char *dir) {
     }
 }
 
+#ifndef PORT_GFX_FAST3D
+/* The depth-clear model (plan 19.10, run 855): with no renderer in process (headless, or
+ * PORT_GFX_DUMP for f3dreplay) nothing draws into the N64 Z image, so the game's CPU reader
+ * (Sun_measureVisibility: 9 pixels, 0xFFFC = sky) saw whatever the memory held (0xFFFF from the
+ * allocator, i.e. "not far": the sun and lens flare never showed). The RDP's own part that does not
+ * need a rasteriser is the clear: each frame the game sets the colour image to the Z image and fills it
+ * (G_SETCIMG z; G_SETFILLCOLOR 0xFFFCFFFC; G_FILLRECT 0,0 319,239: GPACK_ZDZ(G_MAXFIX, 0)). This walk
+ * applies those fill rectangles to the image in game memory, as the RDP would, so far pixels read
+ * the cleared value. Geometry is NOT modelled: every pixel reads "far", so headless the sun counts
+ * as unoccluded wherever it is on screen (behind a mountain too). It runs only for a task that has
+ * pending depth reads (port_fb_read_depth), and fills only a requested image that this or an earlier
+ * task named with G_SETZIMG (a 16-bit colour clear of the frame buffer is not written: the colour image stays
+ * the renderer's). PORT_FB_ZCLEAR=0 turns it off. */
+#define ZC_MAX_FILLS 8
+static unsigned int sZImgs[4]; /* low 24 bits of the Z images seen (G_SETZIMG) */
+static int sNZImgs;
+
+typedef struct ZcFill {
+    u32 img, widthM1;
+    u32 color;
+    u32 ulx, uly, lrx, lry;
+} ZcFill;
+
+static int zc_is_zimg(u32 a) {
+    int i;
+    for (i = 0; i < sNZImgs; i++) {
+        if (sZImgs[i] == (a & 0xFFFFFFu)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static void zc_note_zimg(u32 a) {
+    if (!zc_is_zimg(a) && sNZImgs < 4) {
+        sZImgs[sNZImgs++] = a & 0xFFFFFFu;
+    }
+}
+
+static void depth_clear_model(u32 root, const PortFbRequests *rq) {
+    u32 stack[DLUMP_DL_STACK], seg[16];
+    ZcFill fills[ZC_MAX_FILLS];
+    int sp = 0, nFills = 0, i;
+    u32 pc = root, cimg = 0, cimgW0 = 0, fillColor = 0, n = 0, cycle = 0;
+    size_t lastPage = (size_t)-1;
+
+    memset(seg, 0, sizeof(seg));
+    for (; n < DLUMP_MAX_COMMANDS; n++) {
+        u32 w0, w1;
+        if ((pc & 7) != 0) {
+            break;
+        }
+        if (((size_t)pc >> 12) != lastPage) {
+            if (pc < 0x1000u || !mapped((const void *)(size_t)pc, 8)) {
+                break;
+            }
+            lastPage = (size_t)pc >> 12;
+        }
+        memcpy(&w0, (const void *)(size_t)pc, 4);
+        memcpy(&w1, (const void *)(size_t)(pc + 4), 4);
+        pc += 8;
+        switch (w0 >> 24) {
+            case 0x06: /* G_DL */ {
+                u32 t = seg[(w1 >> 24) & 15] != 0 ? seg[(w1 >> 24) & 15] + (w1 & 0xFFFFFFu) : w1;
+                if (((w0 >> 16) & 0xFF) == 0) {
+                    if (sp >= DLUMP_DL_STACK) {
+                        goto done;
+                    }
+                    stack[sp++] = pc;
+                }
+                pc = t;
+                break;
+            }
+            case 0xB8: /* G_ENDDL */
+                if (sp == 0) {
+                    goto done;
+                }
+                pc = stack[--sp];
+                break;
+            case 0xBC: /* G_MOVEWORD SEGMENT */
+                if ((w0 & 0xFF) == 0x06) {
+                    seg[((w0 >> 8) & 0xFFFF) / 4 & 15] = w1;
+                }
+                break;
+            case 0xBA: /* G_SETOTHERMODE_H: G_MDSFT_CYCLETYPE (shift 20, 2 bits) */
+                if (((w0 >> 8) & 0xFF) == 20 && (w0 & 0xFF) == 2) {
+                    cycle = (w1 >> 20) & 3;
+                }
+                break;
+            case 0xEF: /* G_RDPSETOTHERMODE */
+                cycle = (w0 >> 20) & 3;
+                break;
+            case 0xFF: /* G_SETCIMG */
+                cimg = w1;
+                cimgW0 = w0;
+                break;
+            case 0xFE: /* G_SETZIMG */
+                zc_note_zimg(w1);
+                break;
+            case 0xF7: /* G_SETFILLCOLOR */
+                fillColor = w1;
+                break;
+            case 0xF6: /* G_FILLRECT: w0 = lrx, lry (10.2); w1 = ulx, uly */
+                /* fill mode (cycle 3) writes the packed colour, lr inclusive; 16-bit images only */
+                if (cycle == 3 && ((cimgW0 >> 19) & 3) == 2 && nFills < ZC_MAX_FILLS) {
+                    ZcFill *f = &fills[nFills++];
+                    f->img = cimg;
+                    f->widthM1 = cimgW0 & 0xFFF;
+                    f->color = fillColor;
+                    f->lrx = (w0 >> 14) & 0x3FF;
+                    f->lry = (w0 >> 2) & 0x3FF;
+                    f->ulx = (w1 >> 14) & 0x3FF;
+                    f->uly = (w1 >> 2) & 0x3FF;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+done:
+    for (i = 0; i < nFills; i++) {
+        const ZcFill *f = &fills[i];
+        u32 width = f->widthM1 + 1, x, y, lrx = f->lrx, lry = f->lry;
+        unsigned char *img = NULL;
+        int k;
+        /* the game masks G_SETCIMG / G_SETZIMG to 24 bits (port_fb.h): the full pointer is the one the
+         * depth reader passed to port_fb_read_depth */
+        for (k = 0; k < rq->nDepth; k++) {
+            if (((u32)(size_t)rq->depthImg[k] & 0xFFFFFFu) == (f->img & 0xFFFFFFu)) {
+                img = (unsigned char *)rq->depthImg[k];
+                break;
+            }
+        }
+        if (img == NULL || !zc_is_zimg(f->img) || width > 1024) {
+            continue;
+        }
+        if (lrx >= width) {
+            lrx = width - 1;
+        }
+        if (lry >= PORT_FB_H) {
+            lry = PORT_FB_H - 1;
+        }
+        if (f->ulx > lrx || f->uly > lry ||
+            !mapped(img + ((size_t)f->uly * width + f->ulx) * 2, ((size_t)(lry - f->uly) * width + lrx - f->ulx + 1) * 2)) {
+            continue;
+        }
+        for (y = f->uly; y <= lry; y++) {
+            for (x = f->ulx; x <= lrx; x++) {
+                /* the 32-bit fill colour packs two 16-bit pixels: the high half on even x; the image is
+                 * big-endian in memory */
+                u32 v = (x & 1) ? f->color & 0xFFFF : f->color >> 16;
+                unsigned char *px = img + ((size_t)y * width + x) * 2;
+                px[0] = (unsigned char)(v >> 8);
+                px[1] = (unsigned char)v;
+            }
+        }
+    }
+}
+#endif
+
 /* the task's images (plan 19.10): the low 24 bits of every G_SETCIMG / G_SETZIMG the walk saw */
 static unsigned int sTaskImgs[16];
 static int sNTaskImgs;
@@ -302,7 +462,20 @@ void port_gfx_task(OSTask_t *task) {
     port_fast3d_last_images(&sTaskImgs[0], &sTaskImgs[1]);
     sNTaskImgs = 2;
 #endif
-    /* option (b), the default here: the dump goes to fast3d/f3dreplay, the DLUMP_FB_* chunks with it. */
+    /* option (b), the default here: the dump goes to fast3d/f3dreplay, the DLUMP_FB_* chunks with it.
+     * The game itself gets the depth-clear model (above) for its depth reads. */
+#ifndef PORT_GFX_FAST3D
+    {
+        static int zclear = -1;
+        if (zclear < 0) {
+            zclear = (int)env_ul("PORT_FB_ZCLEAR", 1);
+        }
+        if (zclear && port_fb_requests()->nDepth > 0) {
+            const PortFbRequests *rq = port_fb_requests();
+            depth_clear_model((u32)(size_t)task->data_ptr, rq);
+        }
+    }
+#endif
     port_fb_task_done(sTaskImgs, sNTaskImgs);
     if (sFbLog && seq % 100 == 0) {
         const PortFbStats *st = port_fb_stats();
