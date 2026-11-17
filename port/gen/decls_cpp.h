@@ -6,7 +6,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/* 329 callees: 326 from a definition, 0 from a header declaration, 3 by hand, 0 fallback int f(...) */
+/* 336 callees: 333 from a definition, 0 from a header declaration, 3 by hand, 0 fallback int f(...) */
 int AnimDataMgr_lookup(void *, int, ...);
 int /*void*/ AnimPlayer_advance(void *, ...);
 int /*void*/ AnimPlayer_start(void *, int, int, int, int, int, ...);
@@ -98,6 +98,7 @@ int /*void*/ Node_pauseUpdate_0000E464(void *, ...);
 int /*void*/ Node_printContents(void *, int, ...);
 #endif
 int /*void*/ Node_resumeUpdate_0000E450(void *, ...);
+int /*void*/ Node_setDisplayMask(int, ...);
 #ifndef PORT_NODECL_Node_update
 int /*void*/ Node_update(void *, ...);
 #endif
@@ -118,6 +119,7 @@ int ProcNodeList(void *, int, int, void *, ...);
 int /*void*/ Process_fadeOut_0000F954(void *, int, int, ...);
 int /*void*/ Process_pause_0000F9E8(void *, ...);
 int /*void*/ Process_stop(void *, ...);
+int /*void*/ QNode_display(void *, ...);
 int /*void*/ RaceProcess_leave(void *, ...);
 #ifndef PORT_NODECL_RcpMgr_ctor
 void * RcpMgr_ctor(void *, ...);
@@ -147,6 +149,8 @@ int /*void*/ SelItem_drawSpriteColor_00004068(void *, int, int, void *, void *, 
 int /*void*/ SelItem_drawSpriteWhite_00003FF8(int, int, int, int, int, ...);
 int /*void*/ SnowAI_reset(void *, ...);
 int /*void*/ SnowBoarder_mirrorFlip_0000E124(void *, ...);
+int /*void*/ SnowBoarder_setReflectionDdms(void *, ...);
+int /*void*/ SnowBoarder_setRiderDdms(void *, ...);
 int SnowRing_emitTick_000046BC(void *, ...);
 int /*void*/ SnowRing_setSlotState_00004714(void *, int, int, int, ...);
 int /*void*/ SnowRing_updateBasis_00004374(...);
@@ -317,8 +321,11 @@ int input_checkReleased_00011FA8(void *, int, ...);
 int input_getPad_00011D40(void *, int, ...);
 int /*void*/ input_setRacePadsActive(void *, int, ...);
 int /*void*/ light_setF124_000550A0(void *, float, ...);
+int /*void*/ light_setMirrorMatrix_00054E78(void *, void *, ...);
+int /*void*/ light_setShadowMatrix_00054D04(void *, void *, void *, ...);
 int /*void*/ list_append(void *, int, ...);
 int /*void*/ list_removeKey_00066620(void *, int, ...);
+float math_acosf(float, ...);
 int /*void*/ math_mtx4Copy(void *, void *, ...);
 int /*void*/ math_mtx4Identity(void *, ...);
 int /*void*/ math_mtx4Inverse(int, void *, ...);

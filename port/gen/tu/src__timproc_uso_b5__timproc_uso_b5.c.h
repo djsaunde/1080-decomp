@@ -42,11 +42,6 @@
 /* port-bind: SelItem_drawSpritePlain_00003FA8 D_00000000 port_gui_bss+0x8 */
 /* port-bind: SelItem_drawSpriteWhite_00003FF8 D_00000000 port_gui_bss+0x8 */
 /* port-bind: SelectWin_resetCheat_00008D90 D_00000000 port_genproc_data+0x0 */
-/* port-bind: SelectWin_state3_00007430 D_00000000+52 port_bootup_bss+0xF8 */
-/* port-bind: SelectWin_state3_00007430 D_00000000+3864 port_genproc_data+0x0 */
-/* port-bind: SelectWin_state3_00007430 D_00000000+3892 port_genproc_data+0x0 */
-/* port-bind: SelectWin_state3_00007430 D_00000000+3936 port_genproc_data+0x0 */
-/* port-bind: SelectWin_state3_00007430 D_00000000+4896 port_genproc_data+0x0 */
 /* port-bind: SelectWin_state3_00007430 D_00000000_a port_bootup_bss+0xF8 */
 /* port-bind: SelectWin_state5_000079A4 D_00000000 port_genproc_rodata+0x0 */
 /* port-bind: SelectWin_state6_00007B2C D_00000000 port_genproc_data+0x0 */

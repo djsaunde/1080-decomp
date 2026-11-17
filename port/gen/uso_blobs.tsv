@@ -48,6 +48,8 @@ nameent	nameent.uso	Data	400
 nameent	nameent.uso	RoData	32
 charfir	charfir.uso	Data	64384
 charfir	charfir.uso	RoData	128
+charmap	charmap.uso	Data	102528
+charmap	charmap.uso	RoData	128
 map5_data	map5_data.uso	Data	72048
 map5_data	map5_data.uso	RoData	16
 game	game.uso	Data	4880

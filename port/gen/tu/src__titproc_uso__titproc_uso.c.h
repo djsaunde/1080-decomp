@@ -32,11 +32,6 @@
 /* port-bind: tit_menuTrick D_00000000 port_bootup_bss+0xF8 */
 /* port-bind: tit_openSession_00000B6C D_00000000 port_bootup_bss+0xF8 */
 /* port-bind: tit_startTitleDemo_00000380 D_00000000 port_bootup_bss+0xF8 */
-/* port-bind: titproc_uso_func_00000000 D_00000000+24 port_titproc_bss+0x0 */
-/* port-bind: titproc_uso_func_00000000 D_00000000+48 port_titproc_bss+0x0 */
-/* port-bind: titproc_uso_func_00000000 D_00000000+72 port_titproc_bss+0x0 */
-/* port-bind: titproc_uso_func_00000000 D_00000000+120 port_titproc_bss+0x0 */
-/* port-bind: titproc_uso_func_00000000 D_00000000+144 port_titproc_bss+0x0 */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int titproc_uso_func_000098(); /* CALL placeholder token: file-scope K&R declaration */
 int titproc_uso_func_0002DC(); /* CALL placeholder token: file-scope K&R declaration */

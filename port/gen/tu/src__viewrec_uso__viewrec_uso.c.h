@@ -41,16 +41,12 @@
 /* port-bind: RecordOptions_ctor D_00000000 port_viewrec_data+0x0 */
 /* port-bind: RecordOptions_drawArcadeRecords D_00000000 port_gui_bss+0x8 */
 /* port-bind: RecordOptions_drawCourseScores D_00000000 port_gui_bss+0x8 */
-/* port-bind: RecordOptions_drawCourseTimes D_00000000+0 port_gui_bss+0x8 */
-/* port-bind: RecordOptions_drawCourseTimes D_00000000+1088 port_viewrec_data+0x0 */
 /* port-bind: RecordOptions_drawGui D_00000000 port_gui_bss+0x8 */
 /* port-bind: ReplayOptions_ctor D_00000000 port_viewrec_data+0x0 */
 /* port-bind: ReplayOptions_drawGui D_00000000 port_gui_bss+0x8 */
 /* port-bind: ReplayOptions_input D_00000000 port_bootup_bss+0xF8 */
 /* port-bind: SoundOptions_ctor D_00000000 port_viewrec_data+0x0 */
 /* port-bind: SoundOptions_drawGui D_00000000 port_gui_bss+0x8 */
-/* port-bind: vr_drawBackground D_00000000+0 port_gui_bss+0x8 */
-/* port-bind: vr_drawBackground D_00000000+980 port_viewrec_data+0x0 */
 /* port-bind: vr_drawNumber D_00000000 port_viewrec_data+0x0 */
 /* port-bind: vr_drawTime D_00000000 port_viewrec_data+0x0 */
 /* port-bind: vr_drawTitleArrows D_00000000 port_gui_bss+0x8 */

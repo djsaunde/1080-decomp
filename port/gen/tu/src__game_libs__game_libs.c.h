@@ -14,10 +14,8 @@
 /* port-drop: RaceProcess_drawResult */ /* placeholder copy; shipped body in src/game_libs/game_libs_o2_7344.c */
 #pragma weak RaceProcess_handleInput
 /* port-drop: RaceProcess_handleInput */ /* placeholder copy; shipped body in src/game_libs/game_libs_mp72_76F0.cpp */
-/* port-bind: BestScoreGadget_ctor D_00000000+52032 port_bootup_data+0x0 */
-/* port-bind: BestScoreGadget_ctor D_00000000+52040 port_bootup_data+0x0 */
-/* port-bind: BestTimeGadget_ctor D_00000000+51992 port_bootup_data+0x0 */
-/* port-bind: BestTimeGadget_ctor D_00000000+52000 port_bootup_data+0x0 */
+/* port-bind: BestScoreGadget_ctor D_00000000 port_bootup_data+0x0 */
+/* port-bind: BestTimeGadget_ctor D_00000000 port_bootup_data+0x0 */
 /* port-bind: BoardsGadget_ctor gl_data_00000000+0 port_bootup_data+0xC914 */
 /* port-bind: BoardsGadget_ctor gl_data_00000000+52256 port_bootup_data+0x0 */
 /* port-bind: BoardsGadget_ctor gl_data_00000000+52264 port_bootup_data+0x0 */
@@ -49,7 +47,7 @@
 /* port-bind: PointsGadget_display_000038F4 D_00000000 port_bootup_data+0xC758 */
 /* port-bind: RaceProcess_callGlobalSlot11_00008674 D_00000000 port_bootup_bss+0x58 */
 /* port-bind: RaceProcess_createReplayCam D_00000000 port_bootup_bss+0xF8 */
-/* port-bind: RaceProcess_drawGui D_00000000+52 port_bootup_bss+0xF8 */
+/* port-bind: RaceProcess_drawGui D_00000000+0 port_bootup_data+0xCF64 */
 /* port-bind: RaceProcess_drawGui D_00000000+3664 port_bootup_rodata+0x0 */
 /* port-bind: RaceProcess_dropMessage D_00000000 port_bootup_rodata+0x0 */
 /* port-bind: RaceProcess_endRace D_00000000 port_bootup_bss+0xF8 */

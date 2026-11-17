@@ -150,9 +150,7 @@
 /* port-bind: Audio_NoteReleaseAndTakeOwnership D_00000000 port_bootup_bss+0x345C0 */
 /* port-bind: Audio_NoteSetResamplingRate D_00000000 port_bootup_rodata+0x0 */
 /* port-bind: Audio_SeqLayerDecayRelease D_00000000 port_bootup_bss+0x345C0 */
-/* port-bind: MCamera_ctor D_00000000+123256 port_bootup_data+0x0 */
-/* port-bind: MCamera_ctor D_00000000+123264 port_bootup_data+0x0 */
-/* port-bind: MCamera_ctor D_00000000+123276 port_bootup_data+0x0 */
+/* port-bind: MCamera_ctor D_00000000 port_bootup_data+0x0 */
 /* port-bind: MCamera_doCommand D_00000000+0 port_bootup_bss+0x3C058 */
 /* port-bind: MCamera_doCommand D_00000000+123284 port_bootup_data+0x0 */
 /* port-bind: MCamera_hostioParms D_00000000+0 port_bootup_bss+0x3C768 */

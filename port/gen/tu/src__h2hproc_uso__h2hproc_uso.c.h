@@ -6,11 +6,6 @@
 /* port-bind: h2h_winByFinish_000008EC gl_func_h2hproc_8EC_t RaceProcess_endResult3_00006DF8 */
 /* port-bind: h2h_winByRetire_00000944 gl_func_h2hproc_8EC_f RaceProcess_endResult5_00006F60 */
 /* port-bind: h2h_winByRetire_00000944 gl_func_h2hproc_8EC_t RaceProcess_endResult4_00006EE0 */
-/* port-bind: H2HRaceProcess_ctor D_00000000+312 port_bootup_bss+0xF8 */
-/* port-bind: H2HRaceProcess_ctor D_00000000+400 port_bootup_bss+0xF8 */
-/* port-bind: H2HRaceProcess_ctor D_00000000+960 port_h2hproc_data+0x0 */
-/* port-bind: H2HRaceProcess_ctor D_00000000+968 port_h2hproc_data+0x0 */
-/* port-bind: H2HRaceProcess_ctor D_00000000+984 port_h2hproc_data+0x0 */
 /* port-bind: H2HRaceProcess_onPause D_00000000 port_bootup_bss+0xF8 */
 /* port-bind: H2HRaceProcess_onPauseSelect D_00000000+0 port_h2hproc_bss+0x0 */
 /* port-bind: H2HRaceProcess_onPauseSelect D_00000000+400 port_bootup_bss+0xF8 */
