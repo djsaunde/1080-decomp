@@ -18,6 +18,12 @@ void port_audio_frame(void);
 /* Run one Acmd list (bytes = 8 x commands) through the mixer. */
 void port_audio_run_list(const void *cmds, unsigned int bytes);
 
+/* 1 if p is a host pointer into the port image (the driver's K0 'relocated' tests, plan 15.8). */
+int port_audio_is_ptr(unsigned int p);
+
+/* debug: called by port_audio_frame after the driver's update, before the mixer runs its list */
+extern void (*port_audio_premix_hook)(const void *cmds, unsigned int bytes);
+
 /* PortUltraConfig.rcpTask helper: returns 1 for an audio task (counted and
  * dropped, port_audio_frame ran it), 0 for anything else. */
 int port_audio_rcp_task_is_audio(const void *task);

@@ -6629,6 +6629,17 @@ void AudioLoad_AsyncDma(void *asyncLoad, u32 size) {
 void AudioLoad_AsyncDmaUnkMedium(int a0, int a1, int a2, int a3) {
 }
 
+#ifdef PORT
+/* OoT's AUDIO_RELOCATED_ADDRESS_START tests: the driver tells a relocated pointer (K0, >= 0x80000000)
+ * from a font offset or garbage by its value.  Port heap pointers are below 0x80000000, so under PORT
+ * the four tests (RelocateSample, ProcessNotes, GetDrum, GetSoundEffect) ask port/audio whether the
+ * value is inside the port image instead.  The ProcessNotes one skipped every note that still had
+ * its layer (only release tails sounded; held / legato notes never did: seq 4 silent), the GetDrum /
+ * GetSoundEffect ones returned no drum / no sound effect (plan 15.8). */
+extern int port_audio_is_ptr(unsigned int p);
+#define AUDIO_IS_RELOCATED_PTR(p) port_audio_is_ptr((unsigned int)(p))
+#endif
+
 /* AudioLoad_RelocateSample EXACT 2026-10-23 (agent-c run 140, 73.66 -> 100): OoT's
  * AudioLoad_RelocateSample (load.c) verbatim, including the AUDIO_RELOC
  * `reloc = ...` assignment macro. usedSamples is gAudioCtx +0x430 (0x80 entries,
@@ -6645,7 +6656,11 @@ void AudioLoad_RelocateSample(TunedSample *tunedSample, gl_253C4_FontData *fontD
 
 #define AUDIO_RELOC(offset, base) (reloc = (void *)((u32)(offset) + (u32)(base)))
 
+#ifdef PORT
+    if (!AUDIO_IS_RELOCATED_PTR(tunedSample->sample)) {
+#else
     if ((u32)tunedSample->sample <= 0x80000000) {
+#endif
 
         sample = tunedSample->sample = AUDIO_RELOC(tunedSample->sample, fontData);
 
@@ -8400,7 +8415,11 @@ void Audio_ProcessNotes(void) {
         note = &gAudioContext_27E24.notes[i];
         playbackState = &note->playbackState;
         if (playbackState->parentLayer != gl_27E24_NO_LAYER) {
+#ifdef PORT
+            if (!AUDIO_IS_RELOCATED_PTR(playbackState->parentLayer)) {
+#else
             if ((u32)playbackState->parentLayer < 0x7FFFFFFF) {
+#endif
                 continue;
             }
 
@@ -8636,7 +8655,11 @@ int Audio_GetDrum(int a0, int a1) {
         *(int *)((char *)&D_00000000 + 0x2158) = (a0 << 8) + a1 + 0x4000000;
         return 0;
     }
+#ifdef PORT
+    if (!AUDIO_IS_RELOCATED_PTR(rec->tbl)) {
+#else
     if ((unsigned int)rec->tbl < 0x80000000U) {
+#endif
         return 0;
     }
     v = rec->tbl[a1];
@@ -8690,7 +8713,11 @@ int Audio_GetSoundEffect(int a0, int a1) {
         *(int *)((char *)&D_00000000 + 0x2158) = (a0 << 8) + a1 + 0x4000000;
         return 0;
     }
+#ifdef PORT
+    if (!AUDIO_IS_RELOCATED_PTR(rec->tbl)) {
+#else
     if ((unsigned int)rec->tbl < 0x80000000U) {
+#endif
         return 0;
     }
     e = (int *)&rec->tbl[a1];

@@ -63,6 +63,12 @@ static void *translate_k0(uint32_t addr, void *user) {
     return NULL; /* counted as badAddr by the mixer */
 }
 
+/* The driver's "is this a relocated pointer" tests (OoT's AUDIO_RELOCATED_ADDRESS_START, K0 on the
+ * N64): under PORT game_libs_post.c asks this instead (plan 15.8). */
+int port_audio_is_ptr(unsigned int p) {
+    return host_mapped(p);
+}
+
 static void mixer_ready(void) {
     if (!sMixerReady) {
         mixer_init(&sMixer, translate_k0, NULL);
@@ -82,11 +88,17 @@ void port_audio_run_list(const void *cmds, unsigned int bytes) {
     port_audio_stats.unk19 = sMixer.n_unk19;
 }
 
+void (*port_audio_premix_hook)(const void *cmds, unsigned int bytes); /* debug (seqrender): after the driver's
+                                                                         * update, before the mixer */
+
 void port_audio_frame(void) {
     OSTask_t *task;
 
     port_audio_stats.updates++;
     task = (OSTask_t *)AudioThread_UpdateImpl(); /* AudioTask: OSTask_t first */
+    if (port_audio_premix_hook != NULL) {
+        port_audio_premix_hook(task != NULL ? task->data_ptr : NULL, task != NULL ? task->data_size : 0);
+    }
     if (task != NULL && task->data_ptr != NULL && task->data_size != 0) {
         port_audio_run_list(task->data_ptr, task->data_size);
     }
