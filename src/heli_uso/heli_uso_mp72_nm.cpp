@@ -2,7 +2,7 @@
  * over the empty NON_MATCHING placeholder in heli_uso.c on the non_matching build only (the matching build
  * keeps INCLUDE_ASM). 0xB08 is the Heli per-frame update (decode: docs/1080_NEW_MODULES.md "heli.uso").
  * MIPSpro 7.2.1 is the right front end: the target's 8-way switch is an inline jump table (RoData+0x7C),
- * which IDO 7.1 NCC (EDG 2.19) never emits. Levers that took mp72 from 77.3 to 88.9:
+ * which IDO 7.1 NCC (EDG 2.19) never emits. Levers that took mp72 from 77.3 to 92.4:
  *  - an explicit empty `default: break;` after case 6. The default edge then gets its own block, so uopt
  *    computes tg / ps (self+0x114 / self+0xDC) at the end of every case, as the target does; without it the
  *    default goes straight to the join and both are computed once there.
@@ -15,9 +15,11 @@
  *  - the three axis-angle angles go through the float local f, assigned before each axis (run 682): the target
  *    loads each angle with lwc1 + mfc1 a2 ahead of the axis stores (a direct HF() argument gives lw a2;
  *    a block-scope float costs frame slots) (85.7 -> 88.2).
- *  - run 682 also: the pitch clamp as an inline clampf() on f re-read from +0x148, and the toTgt length summed
- *    y, x, z (the y-first order only rotates the FP temp ring closer to the target's; the target multiplies
- *    x first) (88.2 -> 88.7); an `if (1) {}` after the clamp (88.9).
+ *  - run 682 also: the pitch clamp as an inline clampf() (88.2 -> 88.9).
+ *  - run 689: the pitch dot product and the 0.2 smoothing as inline helpers (dot(), lerpTo() storing through a
+ *    reference), so the smoothing, its store and the clamp compare share the fwdAx uopt block; 2.0f / 1.0f are
+ *    then rematerialised per use and -pi/8 sits in f18 (88.9 -> 91.9). toTgt.y = 0 through setf() (not
+ *    copy-propagated, so the zero is not coloured) with the length summed x, y, z as in the target (92.4).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -48,6 +50,9 @@ extern float gl_func_00000000_heli_fff(float, float);
 static inline float clampf(float v, float lo, float hi) { return (v < lo) ? lo : ((hi < v) ? hi : v); }
 /* smoothing store through a reference: keeps the store, the pitch dot / lerp and the clamp compare in one uopt
  * block, so -pi/8 and the lerp value take f18 / f16 and 2.0f / 1.0f are rematerialised per use (run 689) */
+/* store through a reference: uopt does not copy-propagate it, so the zero has one use and is not coloured;
+ * ugen then reuses the stored register for the toTgt.y square, as in the target (run 689) */
+static inline void setf(float &d, float v) { d = v; }
 static inline void lerpTo(float &d, float t, float k) { d = (t - d) * k + d; }
 struct Vec3 {
     float x, y, z;
@@ -227,8 +232,8 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     side.x = 1.0f - HF(0xF8) * HF(0xF8) * 2.0f - HF(0xFC) * HF(0xFC) * 2.0f;
     side.y = HF(0xF4) * HF(0xF8) * 2.0f + HF(0x100) * HF(0xFC) * 2.0f;
     side.z = HF(0xF4) * HF(0xFC) * 2.0f - HF(0x100) * HF(0xF8) * 2.0f;
-    toTgt.y = 0.0f;
-    f = gl_func_00000000_heli_ff(toTgt.y * toTgt.y + toTgt.x * toTgt.x + toTgt.z * toTgt.z);
+    setf(toTgt.y, 0.0f);
+    f = gl_func_00000000_heli_ff(toTgt.x * toTgt.x + toTgt.y * toTgt.y + toTgt.z * toTgt.z);
     if (1.0f < f && f < (100000.0f)) {
         yaw = -(gl_func_00000000_heli_fff(toTgt.x, toTgt.z) - (3.1415927f)) - HF(0x14C);
         if ((3.1415927f) < yaw) {
