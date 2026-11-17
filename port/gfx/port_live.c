@@ -49,6 +49,13 @@ static unsigned char *sFrame;     /* the frame being built: a private copy of a 
 static size_t sFrameBytes, sFrameCap;
 static unsigned sFrameTasks;
 static unsigned sFrames, sPublished;
+/* the framebuffer replies (live_shm.h, run 859) */
+static LiveFbReply *sFb;
+static live_u32 sFbSeq = 1; /* the reply last taken (odd: none yet) */
+static LiveFbDepth sFbDepth[LIVE_FB_DEPTH];
+static unsigned sFbNDepth;
+static unsigned sFbTaken, sFbTorn, sFbDepthStored, sFbColorStored;
+static unsigned short sFbPixels[LIVE_FB_W * LIVE_FB_H];
 static LiveAudio *sAudio; /* NULL: the presenter has no audio ring */
 static unsigned char *sAudioData;
 static unsigned long long sAudioHash = 0xcbf29ce484222325ull; /* FNV-1a 64 of every byte written */
@@ -117,6 +124,20 @@ static void live_open(void) {
     }
     live_log("attached to %s: %u slots of %u MB, %s", path, sShm->slotCount, sShm->slotBytes >> 20,
              sAudio != NULL ? "audio ring" : "no audio");
+    /* the reply file: optional (created by the presenter before the magic) */
+    snprintf(path, sizeof(path), "/dev/shm/%s-fb", name);
+    fd = open(path, LIVE_O_RDWR);
+    if (fd >= 0) {
+        LiveFbReply *r = (LiveFbReply *)mmap(NULL, sizeof(LiveFbReply), LIVE_PROT_RW, LIVE_MAP_SHARED, fd, 0);
+        close(fd);
+        if ((void *)r != LIVE_MAP_FAILED && r->magic == LIVE_FB_MAGIC && r->version == LIVE_FB_VERSION) {
+            sFb = r;
+            live_log("framebuffer replies from %s", path);
+        }
+    }
+    if (sFb == NULL) {
+        live_log("no framebuffer replies (%s): depth reads keep the clear model", path);
+    }
 }
 
 int port_live_active(void) {
@@ -186,6 +207,72 @@ void port_live_frame_end(unsigned step) {
     sFrameTasks = 0;
 }
 
+/* the newest reply, if a new one is complete: its depth answers are kept (they are stored again after
+ * every task's depth clear); a colour answer is stored at once into a requested image */
+static void live_fb_take(const PortFbRequests *rq) {
+    live_u32 s1 = __atomic_load_n(&sFb->seq, __ATOMIC_ACQUIRE), n, i;
+    LiveFbDepth depth[LIVE_FB_DEPTH];
+    int k;
+
+    if ((s1 & 1) != 0 || s1 == sFbSeq) {
+        return;
+    }
+    n = sFb->nDepth < LIVE_FB_DEPTH ? sFb->nDepth : LIVE_FB_DEPTH;
+    memcpy(depth, (const void *)sFb->depth, n * sizeof(LiveFbDepth));
+    __atomic_thread_fence(__ATOMIC_ACQUIRE);
+    if (__atomic_load_n(&sFb->seq, __ATOMIC_ACQUIRE) != s1) {
+        sFbTorn++;
+        return;
+    }
+    memcpy(sFbDepth, depth, n * sizeof(LiveFbDepth));
+    sFbNDepth = n;
+    sFbSeq = s1;
+    sFbTaken++;
+    /* colour: the frame, into the image the game reads, only if it still asks for it */
+    n = sFb->nColor < LIVE_FB_COLOR ? sFb->nColor : LIVE_FB_COLOR;
+    for (i = 0; i < n; i++) {
+        live_u32 img = sFb->color[i].img;
+        for (k = 0; k < rq->nColor; k++) {
+            if ((live_u32)(size_t)rq->color[k] == img) {
+                break;
+            }
+        }
+        if (k == rq->nColor) {
+            continue;
+        }
+        memcpy(sFbPixels, (const void *)sFb->pixels[i], sizeof(sFbPixels));
+        __atomic_thread_fence(__ATOMIC_ACQUIRE);
+        if (__atomic_load_n(&sFb->seq, __ATOMIC_ACQUIRE) != s1) {
+            sFbTorn++;
+            return;
+        }
+        memcpy((void *)rq->color[k], sFbPixels, sizeof(sFbPixels));
+        sFbColorStored++;
+    }
+}
+
+void port_live_fb_apply(const PortFbRequests *rq) {
+    unsigned i;
+    int k;
+
+    if (!port_live_active() || sFb == NULL || rq == NULL) {
+        return;
+    }
+    live_fb_take(rq);
+    for (i = 0; i < sFbNDepth; i++) {
+        const LiveFbDepth *d = &sFbDepth[i];
+        for (k = 0; k < rq->nDepth; k++) {
+            if ((live_u32)(size_t)rq->depthImg[k] == d->img && (live_u32)rq->depthIdx[k] == d->idx) {
+                unsigned char *px = (unsigned char *)rq->depthImg[k] + (size_t)d->idx * 2;
+                px[0] = (unsigned char)(d->z >> 8); /* big-endian, as the RDP writes it */
+                px[1] = (unsigned char)d->z;
+                sFbDepthStored++;
+                break;
+            }
+        }
+    }
+}
+
 int port_live_audio_active(void) {
     return port_live_active() && sAudio != NULL;
 }
@@ -246,6 +333,10 @@ void port_live_close(void) {
         __atomic_store_n(&sShm->gameExited, 1, __ATOMIC_RELEASE);
         live_log("%u frames, %u published, %u dropped (ring full), %u too big", sFrames, sPublished,
                  sShm->dropped, sShm->tooBig);
+        if (sFb != NULL) {
+            live_log("framebuffer replies: %u taken (%u torn), %u depth pixels and %u colour images stored",
+                     sFbTaken, sFbTorn, sFbDepthStored, sFbColorStored);
+        }
         if (sAudio != NULL) {
             live_log("audio: %llu bytes (%.2f s) sent, fnv1a64 %016llx, %u overruns", sAudioBytes,
                      sAudioBytes / (4.0 * 32000.0), sAudioHash, sAudio->overruns);
