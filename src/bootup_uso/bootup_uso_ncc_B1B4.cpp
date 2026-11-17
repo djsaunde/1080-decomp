@@ -32,6 +32,10 @@ struct Bb4Word { int a; Bb4Word() { a = 0; } };
 #ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr at +0x5C; the vtable stores NCC emits
  * (__vtbl__7Bb4Base / 6Bb4Mid / 7Bb4Bank = bootup Data 0x20640 / 0x1FBEC / 0x8440, uso-data-sites.py) written out */
 #include "port_game.h"
+#include "port_cfront.h"
+/* edg's global operator new (__nw__FUi) is mem_new in the ROM (its jal reloc); g++'s would be libstdc++ */
+CF_EXT(void *, bb4_mem_new, mem_new, (unsigned));
+inline void *operator new(unsigned n) { return bb4_mem_new(n); }
 #endif
 struct Bb4Base { char p[0x34]; Bb4Pair m; char q[0x58 - 0x3C]; Bb4Word n;
 #ifdef PORT

@@ -67,11 +67,23 @@ struct M { N n; M() {} };
  * emits here (LookAtMNode: __vtbl__11LookAtMNode = bootup Data 0x1EAA8, the D_00000000 cam_create binds;
  * RiderCam: __vtbl__8RiderCam = D_00007120) are written out. MNode / MCamera store their own. */
 #include "port_game.h"
+#include "port_cfront.h"
 extern "C" char D_00007120[];
-struct MNode { char p[0x28]; char *vptr; MNode(void *name); };
+/* The out-of-line ctors (Makefile renames fn_31c0_*, bound by the ROM relocations; port_cfront.h CF_EXT):
+ * MNode = Node_ctor, MCamera = MCamera_ctor (game_libs); CourseCam = cam_ctor_00000858,
+ * SnowChaseActorCam / SnowChaseActorLook / SnowChaseActor = their game.uso ctors. */
+struct LookAtMNode;
+struct LookAtNode;
+CF_EXT(void *, c31_Node_ctor, Node_ctor, (void *, void *));
+CF_EXT(void *, c31_MCamera_ctor, MCamera_ctor, (void *, LookAtMNode *, float, float, float));
+CF_EXT(void *, c31_CourseCam_ctor, cam_ctor_00000858, (void *, char *, LookAtNode *, float, float, float, int, char *));
+CF_EXT(void *, c31_SnowChaseActorCam_ctor, SnowChaseActorCam_ctor, (void *, char *, int, char *));
+CF_EXT(void *, c31_SnowChaseActorLook_ctor, SnowChaseActorLook_ctor, (void *, char *, char *, char *));
+CF_EXT(void *, c31_SnowChaseActor_ctor, SnowChaseActor_ctor, (void *, char *, char *, char *));
+struct MNode { char p[0x28]; char *vptr; CF_INL MNode(void *name) { c31_Node_ctor(this, name); } };
 struct LookAtMNode : MNode { M m; char rest[0xB4 - 0x30]; LookAtMNode(void *u) : MNode(sStr_snowlookat_7460) { vptr = port_bootup_data + 0x1EAA8; { volatile int q0, q1, q2; } fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } };
 struct LookAtNode : LookAtMNode { int chase; LookAtNode() : LookAtMNode(this) { LookAtNode *p = this; } };
-struct MCamera { char p[0x28]; char *vptr; MCamera(LookAtMNode *target, float x, float y, float z); };
+struct MCamera { char p[0x28]; char *vptr; CF_INL MCamera(LookAtMNode *target, float x, float y, float z) { c31_MCamera_ctor(this, target, x, y, z); } };
 struct RiderCam : MCamera { char q[0x14C - 0x2C]; float fov; float baseFov; char *rider; int mode;
     RiderCam(LookAtNode *o, char *a) : MCamera(o, 0.0f, 500.0f, -1500.0f) { vptr = D_00007120; mode = 0; rider = a; baseFov = fov; } };
 #else
@@ -82,10 +94,24 @@ struct MCamera { char p[0x28]; MCamera(LookAtMNode *target, float x, float y, fl
 struct RiderCam : MCamera { char q[0x14C - 0x2C]; float fov; float baseFov; char *rider; int mode;
     RiderCam(LookAtNode *o, char *a) : MCamera(o, 0.0f, 500.0f, -1500.0f) { mode = 0; rider = a; baseFov = fov; } virtual void g(); };
 #endif
+#ifdef PORT
+/* `new T(..)`: g++ allocates sizeof(T) through the donor's operator new (mem_new), then the C ctor runs on it;
+ * the sizes are the C ctors' own this == 0 allocations (game_uso.c). */
+struct CourseCam { char p[0x27C];
+    CF_INL CourseCam(char *rider, LookAtNode *lookat, float x, float y, float z, int pad, char *infoFile) {
+        c31_CourseCam_ctor(this, rider, lookat, x, y, z, pad, infoFile); } };
+struct SnowChaseActorCam { char p[0x124];
+    CF_INL SnowChaseActorCam(char *target, int source, char *parmsFile) { c31_SnowChaseActorCam_ctor(this, target, source, parmsFile); } };
+struct SnowChaseActorLook { char p[0x64];
+    CF_INL SnowChaseActorLook(char *anchor, char *cam, char *parmsFile) { c31_SnowChaseActorLook_ctor(this, anchor, cam, parmsFile); } };
+struct SnowChaseActor { char p[0x138];
+    CF_INL SnowChaseActor(char *target, char *lookBody, char *parmsFile) { c31_SnowChaseActor_ctor(this, target, lookBody, parmsFile); } };
+#else
 struct CourseCam { CourseCam(char *rider, LookAtNode *lookat, float x, float y, float z, int pad, char *infoFile); };
 struct SnowChaseActorCam { SnowChaseActorCam(char *target, int source, char *parmsFile); };
 struct SnowChaseActorLook { SnowChaseActorLook(char *anchor, char *cam, char *parmsFile); };
 struct SnowChaseActor { SnowChaseActor(char *target, char *lookBody, char *parmsFile); };
+#endif
 /* libgdl Node (include/gdl/node.h) up to its parent link; add = Node_addChild's inlined child-attach idiom */
 struct Node { int unk00; int unk04; int flags; const char *name; char list[4] /* 0x10: children */; Node *parent;
     void add(char *n) { fn_31c0_tail(list, n); if (((Node *)n)->parent != 0) ((Node *)n)->unk04 = 1; ((Node *)n)->parent = this; } };

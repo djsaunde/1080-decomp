@@ -15,10 +15,19 @@
  * Symbols renamed after compile (names only, no bytes change):
  * __sti__<timestamp> -> boot_staticInit_00006204, __ct__8Bu6204ObFv -> func_00000000.
  * The object keeps C linkage under its pinned name D_00000000. */
+#ifdef PORT /* Bu6204Ob::Bu6204Ob = FogParms_setDefault_00043EAC (the ROM relocation of the __sti__'s jal) */
+#include "port_cfront.h"
+CF_EXT(void, bu6204_FogParms_setDefault, FogParms_setDefault_00043EAC, (void *));
+struct Bu6204Ob {
+    CF_INL Bu6204Ob() { bu6204_FogParms_setDefault(this); }
+    int w;
+};
+#else
 struct Bu6204Ob {
     Bu6204Ob();
     int w;
 };
+#endif
 
 extern "C" {
 Bu6204Ob D_00000000;

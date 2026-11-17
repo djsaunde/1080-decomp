@@ -49,8 +49,11 @@ inline AIter iter(Arr *a) { return AIter(a); }
 inline void *res(Elem *e1, Elem *e2) { Tex *t = e1->t; int k = e2->k; return XCALL(gl_4b0a8_c34458, gl_osVirtualToPhysical)(*t->base + k * 8, t, k); }
 struct Src { char pad[0x84]; Arr arr; };
 #ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr, the NCC vtable stores written out */
+#include "port_cfront.h"
 extern "C" char Shadow_vtbl_4b0a8_vtbl[]; /* __vtbl__3Obj, bootup Data 0x1FB84 */
-struct Base { int f0; char pad[0x24]; char *vptr; Base(char *name); };
+/* Base::Base = ShapeNode_ctor_000521F8 (__ct__4BaseFPc -> gl_4b0a8_base) */
+CF_EXT(void *, gl4b0a8_ShapeNode_ctor, ShapeNode_ctor_000521F8, (void *, char *));
+struct Base { int f0; char pad[0x24]; char *vptr; CF_INL Base(char *name) { gl4b0a8_ShapeNode_ctor(this, name); } };
 struct Obj : Base {
     char pad2c[0x40 - 0x2C];
     DL *f40;

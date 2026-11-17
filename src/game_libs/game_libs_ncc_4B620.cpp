@@ -85,10 +85,20 @@ struct AIter : IBase {
 inline void addGN(DL *d, unsigned hi, unsigned lo) { Gfx *g = &d->head->buf[d->head->count++]; g->w0 = hi; g->w1 = lo; }
 inline void addGI(DL *d, unsigned hi, unsigned lo) { if (0) { hi = lo = 0; } Gfx *g = &d->head->buf[d->head->inc()]; g->w0 = hi; g->w1 = lo; }
 inline AIter Arr::iter() { return AIter(this); }
+#ifdef PORT
+#include "port_cfront.h"
+/* BB::BB = BasePolyShape_ctor (__ct__2BBFPcPvi -> gl_func_00000000_4b620_base; the 526D0 donor's body) */
+CF_EXT(void *, gl4b620_BasePolyShape_ctor, BasePolyShape_ctor, (void *, char *, void *, int));
+struct BB {
+    char pad[0x84];
+    CF_INL BB(char *name, void *a1, int z) { gl4b620_BasePolyShape_ctor(this, name, a1, z); }
+};
+#else
 struct BB {
     char pad[0x84];
     BB(char *name, void *a1, int z);
 };
+#endif
 struct Base : BB {
     Arr arr;            /* 0x84 */
     char pad94[0xB0 - 0x94];

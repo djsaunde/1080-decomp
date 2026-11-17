@@ -46,4 +46,18 @@ struct PortCfVtEnt {
     CF_INL R name(T1 a1, T2 a2, T3 a3, T4 a4, T5 a5) { \
         return CF_FN(n, R (*)(char *, T1, T2, T3, T4, T5))(CF_THIS(n), a1, a2, a3, a4, a5); }
 
+/* Cross-donor members (agent-a run 810). A donor that uses a class whose constructor / method is
+ * defined OUT OF LINE elsewhere references it by its mangled name; the matching build renames that
+ * reference (Makefile objcopy --redefine-sym) to a token the ROM relocation binds to the real body:
+ * a C function (Node_ctor, MCamera_ctor, ...) or another donor's renamed body. g++ ignores asm labels
+ * on constructors, so under PORT the member gets an inline body that calls the real body through
+ * CF_EXT: `local` is a C++-side name for the C symbol `sym` (a GNU asm label), so the declaration
+ * can carry the donor's own parameter types without clashing with port/gen/decls_cpp.h.
+ * cfront constructors take `this` first and allocate when it is 0; the inline bodies always pass a
+ * live `this` (base / member subobjects; for `new T` the class is given its real size, so g++'s
+ * operator new -- the donor's, mem_new -- allocates the same block the C ctor would). The bodies are
+ * CF_INL: the donors reuse class names (B, M, BB, Base) for different classes, and an out-of-line COMDAT
+ * copy of one unit's B::B could be merged into another unit. */
+#define CF_EXT(R, local, sym, params) extern "C" R local params __asm__(#sym)
+
 #endif /* PORT_CFRONT_H */

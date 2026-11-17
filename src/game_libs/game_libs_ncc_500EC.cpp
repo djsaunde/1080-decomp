@@ -13,6 +13,10 @@ struct S3 {
     int operator==(const S3 &o) const { return x == o.x && y == o.y && z == o.z; }
 };
 struct Tri { short f0; unsigned short i[3]; };
+#ifdef PORT /* Mesh::adj = Mesh_facesConcave (the 4FD00 donor's Col::side; adj__4MeshFiT1 -> gl_func_00000000, ROM jal) */
+#include "port_cfront.h"
+CF_EXT(int, gl500ec_Mesh_facesConcave, Mesh_facesConcave, (void *, int, int));
+#endif
 struct Mesh {
     char pad[0x44];
     unsigned ntri;
@@ -22,7 +26,11 @@ struct Mesh {
     Tri *tris;
     char pad6C[0xC];
     unsigned char *col;
+#ifdef PORT
+    CF_INL int adj(int a, int b) { return gl500ec_Mesh_facesConcave(this, a, b); }
+#else
     int adj(int a, int b);
+#endif
     int paint(unsigned t);
 };
 int Mesh::paint(unsigned t) {

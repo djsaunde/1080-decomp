@@ -31,6 +31,11 @@ struct P { int v; };
 typedef P Name;
 struct Q { P p; Q(const P &x) { p.v = x.v; } };
 extern "C" void game_uso_func_051E64(void *, P, int, int);
+#ifdef PORT /* edg's global operator new (__nw__FUi -> game_uso_func_055750) is mem_new; g++'s would be libstdc++ */
+#include "port_cfront.h"
+CF_EXT(void *, gu3ac0_mem_new, mem_new, (unsigned));
+inline void *operator new(unsigned n) { return gu3ac0_mem_new(n); }
+#endif
 struct Item {
     char pad[0x28];
     void *vt;

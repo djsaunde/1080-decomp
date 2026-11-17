@@ -34,7 +34,10 @@ struct V3 { float x, y, z; void set(V3 v) { x = v.x; y = v.y; z = v.z; } };
 struct Q4 { V3 v; float w; void set(const Q4 &q) { v.set(q.v); w = q.w; } };
 #ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr, the NCC vtable stores written out */
 extern "C" char MNode_vtbl_40070_vta[], QNode_vtbl_40070_vtb[]; /* __vtbl__4Base, __vtbl__3Obj */
-struct BB { int pad0[2]; int flags; int pad[7]; char *vptr; BB(void *a1); };
+#include "port_cfront.h"
+/* BB::BB = Node_ctor (__ct__2BBFPv -> gl_func_00000000_40070_base, ROM import Node_ctor) */
+CF_EXT(void *, gl40070_Node_ctor, Node_ctor, (void *, void *));
+struct BB { int pad0[2]; int flags; int pad[7]; char *vptr; CF_INL BB(void *a1) { gl40070_Node_ctor(this, a1); } };
 #else
 struct BB { int pad0[2]; int flags; int pad[7]; BB(void *a1); virtual void f(); };
 #endif

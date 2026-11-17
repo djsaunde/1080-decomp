@@ -14,10 +14,19 @@
  * __sti__<timestamp> -> SnowBoard_staticCtor_0000E9FC, __ct__9BuE9FCBasFv -> func_00000000,
  * __vtbl__8BuE9FCOb -> SnowBoard_vtbl_func_0000E9FC_arg2. The object keeps C linkage under
  * its pinned name gSnowBoard_func_0000E9FC_arg1. */
+#ifdef PORT /* BuE9FCBas::BuE9FCBas = App_ctor (the ROM relocation of the __sti__'s jal) */
+#include "port_cfront.h"
+CF_EXT(void *, buE9FC_App_ctor, App_ctor, (void *));
+struct BuE9FCBas {
+    CF_INL BuE9FCBas() { buE9FC_App_ctor(this); }
+    int w[10];
+};
+#else
 struct BuE9FCBas {
     BuE9FCBas();
     int w[10];
 };
+#endif
 
 #ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr, the NCC vtable store written out */
 extern "C" char SnowBoard_vtbl_func_0000E9FC_arg2[]; /* __vtbl__8BuE9FCOb, bootup Data 0x8BA8 */

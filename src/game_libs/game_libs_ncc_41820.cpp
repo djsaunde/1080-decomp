@@ -27,12 +27,19 @@ extern int D_41820_g;
 }
 inline void *operator new(unsigned n) { return (void *)CALL(mem_new)(n); }
 struct Rec { int f0; int f4; int f8; int fC; int f10; void *f14; };
+#ifdef PORT /* edg's `new int[c]` (Arr) calls the same allocator as operator new: the ROM jal is mem_new */
+inline void *operator new[](unsigned n) { return (void *)CALL(mem_new)(n); }
+#endif
 struct Arr { int *data; int f4; int cap; int n; int f10; Arr(int c) { cap = c; n = 0; data = new int[c]; } };
-struct B44 : Rec { char pad[0x28 - 0x18]; B44(char *name); };
 #ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): the vptr after B44's 0x28 bytes, stored explicitly */
+#include "port_cfront.h"
+/* B44::B44 = Node_ctor (__ct__3B44FPc -> gl_func_00000000_41820_base, ROM import Node_ctor) */
+CF_EXT(void *, gl41820_Node_ctor, Node_ctor, (void *, char *));
+struct B44 : Rec { char pad[0x28 - 0x18]; CF_INL B44(char *name) { gl41820_Node_ctor(this, name); } };
 extern "C" char Node_vtbl_1F748_41820_h[]; /* __vtbl__3O44 (Makefile objcopy) */
 struct O44 : B44 { char *vptr; O44() : B44(D_00000000 + 0x1F630) { vptr = Node_vtbl_1F748_41820_h; } };
 #else
+struct B44 : Rec { char pad[0x28 - 0x18]; B44(char *name); };
 struct O44 : B44 { O44() : B44(D_00000000 + 0x1F630) {} virtual void f(); };
 #endif
 extern "C" { extern Rec *gConsoleNode_3EF04_41820_b; extern Arr *D_41820_e; extern Rec *D_41820_f; }

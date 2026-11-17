@@ -24,7 +24,13 @@ struct A { char p0[0x138]; M8 m138; M8 m140; char p148[0x18C - 0x148]; M4 m18C; 
 struct E { M8 m; int x; E() {} };
 /* GfxLib.fog (+0x294, FogParms, gfxlib.h): its ctor calls the out-of-line init */
 struct Fog { char p[0x18]; Fog() { CALL(FogParms_setDefault_00043EAC)(this); } };
+#ifdef PORT /* El::El = GfxDdm_ctor (__ct__2ElFv -> D_412E8_h, the ROM's __vec_new ctor argument) */
+#include "port_cfront.h"
+CF_EXT(void *, gl412e8_GfxDdm_ctor, GfxDdm_ctor, (void *));
+struct El { char p[0xC]; CF_INL El() { gl412e8_GfxDdm_ctor(this); } };
+#else
 struct El { char p[0xC]; El(); };
+#endif
 struct G { El e[50]; int n; G() {} };
 #ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr, the NCC vtable stores written out */
 extern "C" char SysLibBase_vtbl_412E8_j[], SysLib_vtbl_1E1B8_412E8_k[]; /* __vtbl__1I, __vtbl__1L */

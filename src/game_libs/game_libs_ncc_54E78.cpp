@@ -30,7 +30,13 @@ inline V3 V3::operator*(const f32 &s) const { f32 a = x * s - 0 * idv(0); return
     +100) without a float pool read in the product block; idv(y * s) with the x product named first gives the
     target's product registers and issue order */
 struct Plane { V3 n; f32 d; };
+#ifdef PORT /* M4::ident = math_mtx4Identity (ident__2M4Fv -> gl_func_00000000, ROM jal) */
+#include "port_cfront.h"
+CF_EXT(void, gl54e78_math_mtx4Identity, math_mtx4Identity, (void *));
+struct M4 { f32 m[4][4]; CF_INL void ident() { gl54e78_math_mtx4Identity(this); } };
+#else
 struct M4 { f32 m[4][4]; void ident(); };
+#endif
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 #include "../../include/gdl/gfxlib.h" /* GfxLib.extraMtx */
 extern "C" char D_00000000[];

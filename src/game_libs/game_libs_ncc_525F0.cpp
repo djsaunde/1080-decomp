@@ -9,8 +9,21 @@ extern char D_00000000[];
 }
 struct Self;
 struct Tgt { int x0; int x4; char pad8[0xC]; struct Foo *x14; };
+#ifdef PORT /* Foo::Foo = Node_ctor (__ct__3FooFPcP4Self -> gl_func_00000000_525f0_ct), Sub::add = list_append
+ * (add__3SubFP3Tgt -> gl_func_00000000_525f0_add): the ROM's `new Foo` is Node_ctor(0, cfg, this), which allocates
+ * 0x2C itself; here Foo has that size and its operator new is the same mem_new (port_cfront.h CF_EXT). */
+#include "port_cfront.h"
+CF_EXT(void *, gl525f0_Node_ctor, Node_ctor, (void *, char *, Self *));
+CF_EXT(void, gl525f0_list_append, list_append, (void *, Tgt *));
+CF_EXT(void *, gl525f0_mem_new, mem_new, (unsigned));
+struct Sub { CF_INL void add(Tgt *t) { gl525f0_list_append(this, t); } };
+struct Foo { char pad[0x10]; Sub s; char rest[0x2C - 0x11];
+    void *operator new(unsigned n) { return gl525f0_mem_new(n); }
+    CF_INL Foo(char *cfg, Self *o) { gl525f0_Node_ctor(this, cfg, o); } };
+#else
 struct Sub { void add(Tgt *t); };
 struct Foo { char pad[0x10]; Sub s; Foo(char *cfg, Self *o); };
+#endif
 struct Self { char pad[0x2C]; Foo *obj; void reg(Tgt *t); };
 void Self::reg(Tgt *t) {
     if (obj == 0) obj = new Foo(D_00000000 + 0x20FC0, this);

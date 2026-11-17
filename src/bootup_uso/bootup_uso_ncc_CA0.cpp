@@ -23,8 +23,11 @@ inline void *operator new(unsigned n) { return FCALL(mem_new)(n); }
 struct V { short x, y, z, w; int p, q; void set(int a, int b, int c) { x = a; y = b; z = c; } };
 extern "C" V bu_ca0_box[];
 #ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr, the NCC vtable store written out */
+#include "port_cfront.h"
 extern "C" char BGBox_vtbl_ca0_desc[]; /* __vtbl__1D, bootup Data 0x65E8 */
-struct B { int p0[3]; int a1; int p1[6]; char *vptr; B(char *); };
+/* B::B = Node_ctor (__ct__1BFPc -> func_00000000_ca0_base, ROM import Node_ctor) */
+CF_EXT(void *, ca0_Node_ctor, Node_ctor, (void *, char *));
+struct B { int p0[3]; int a1; int p1[6]; char *vptr; CF_INL B(char *name) { ca0_Node_ctor(this, name); } };
 struct D : B { float sx, sy, sz, r; int a2; D(int a1, int a2, int a3); };
 #else
 struct B { int p0[3]; int a1; int p1[6]; B(char *); virtual void g(); };

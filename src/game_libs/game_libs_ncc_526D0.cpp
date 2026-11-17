@@ -30,13 +30,19 @@ struct Sub {
     int a, b, c, d, e;
     Sub() { c = 0; d = 0; }
 };
+#ifdef PORT
+#include "port_cfront.h"
+/* Base::Base = ShapeNode_ctor_000521F8 (__ct__4BaseFPv -> gl_func_00000000_526d0_base) */
+CF_EXT(void *, gl526d0_ShapeNode_ctor, ShapeNode_ctor_000521F8, (void *, void *));
+#endif
 struct Base : Blk6 {
     Flags m18;
     int m1C, m20, m24;
-    Base(void *a1);
 #ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr at +0x28 */
+    CF_INL Base(void *a1) { gl526d0_ShapeNode_ctor(this, a1); }
     char *vptr;
 #else
+    Base(void *a1);
     virtual void f();
 #endif
 };
