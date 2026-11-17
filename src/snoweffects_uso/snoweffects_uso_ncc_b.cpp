@@ -162,8 +162,11 @@ extern "C" void snoweffects_uso_func_00001E60(SnowTexB *t) {
  * products), next() as `&buf[count++]` (no pool words: frame 456 with the named-local form 616), the
  * texture test reading slot->tex directly (prevTex then lives in t5 like the target), and the 5-word dead
  * block before the slot loop (pool words: puts k / mask / v / the scaled() temps at the target's slots).
- * Left: s-register choice for the ctor `this` / gfx base / ctx (s0 / s1 / s4 in the target), the ugen
- * temp-register ring offset, and two spill slots (target 84 / 92). */
+ * The texture-list address through an inline holder->phys(): its `this` takes the BaseMat ctor's pool word,
+ * so both share one callee-saved register as in the target (93.0 -> 97.3 %).
+ * Left: s0 / s1 and s2 / s3 / s4 are permuted against the target (ctor this + packet head, member this +
+ * packet count, &m + packet, j, ctx), the ugen temp-register ring offset, and two spill slots (84 / 92). */
+#define V2P(x) gl_func_00000000(/* osVirtualToPhysical */ x)
 struct M8B { int a, b; M8B() { b = 0; a = 0; } };
 struct M4B { int a; M4B() { a = 0; } };
 struct SnowBaseMatB {
@@ -181,7 +184,7 @@ inline SnowV3B scaled(const SnowV3B &a, float sx, float sy, float sz) { return S
 struct SnowPtB { SnowV3B pos; char p0c[0x1C - 0xC]; float alpha; char p20[0x2C - 0x20]; };
 struct SnowSlotB { int state; int tex; int pad; };
 struct SnowVtxB { short ob[3]; short flag; short tc[2]; unsigned char cn[4]; };
-struct SnowDLHolderB { char pad[0x60]; int dl; };
+struct SnowDLHolderB { char pad[0x60]; int dl; int phys() { return V2P(dl); } };
 struct SnowRingB {
     char pad00[0x58];
     int readOfs;     /* 0x58 */
@@ -204,7 +207,6 @@ extern "C" SnowGfxB snowb_gfx_559C;
 extern "C" int snowb_texTbl_588[];  /* Data+0x588: the ring texture table */
 #define gfxB snowb_gfx_559C
 extern "C" void gl_func_00000000_snowb_lights(void *, SnowCtxB *, void *, float);
-#define V2P(x) gl_func_00000000(/* osVirtualToPhysical */ x)
 #define PKTB(pkt, a, b) { Gfx *_g = (pkt); _g->words.w0 = (a); _g->words.w1 = (unsigned int)(b); }
 #define TRIB(pkt, a, b, c) PKTB(pkt, 0xBF000000, _SHIFTL((a) * 2, 16, 8) | _SHIFTL((b) * 2, 8, 8) | _SHIFTL((c) * 2, 0, 8))
 #define LOADTEXB(pkt, timg, width, height) \
@@ -223,7 +225,7 @@ extern "C" void snoweffects_uso_func_0000559C(SnowRingB *t) {
     SnowMatB m;
     m.c[0] = m.c[1] = m.c[2] = m.c[3] = 1.0f;
     SnowCtxB *ctx = gfxB.win->ctx;
-    ctx->put(0x06000000, V2P(t->dlh->dl));
+    ctx->put(0x06000000, t->dlh->phys());
     gl_func_00000000_snowb_lights(/* gfx_emitLights_000454C4 */ &gfxB, ctx, &m, 1.0f);
     int vi = t->readOfs;
     int si = t->read;
@@ -232,7 +234,7 @@ extern "C" void snoweffects_uso_func_0000559C(SnowRingB *t) {
     int prevState = 2;
     int i0 = 0;
     int i1 = 1;
-    { int sc0[5]; sc0[0] = 0; } /* dead: five edg pool words (frame lever) */
+    { int sc0[4]; sc0[0] = 0; } /* dead: four edg pool words (frame lever) */
     if (n >= 2) {
         for (int k = 0; k < n; k++) {
             SnowPtB *p = &t->points[vi];
