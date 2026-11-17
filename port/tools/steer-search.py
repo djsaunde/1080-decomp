@@ -59,6 +59,13 @@ posts, RaceTracker_passCheckpoints / CheckpointCyl_isBetweenPosts; a slalom gate
 RaceTracker_passGates).  In Trick Attack a candidate that crosses a checkpoint's line outside the
 posts is out (backtracking as in --mode time), and the script records `# CHECKPOINTS n`, the
 countdown extensions, for port/tools/modes-check.py.
+
+Run 860 (--mode trick / contest) knobs: STEER_POINTS_W (0.05) per trick point up to STEER_POINTS_CAP
+points, STEER_JUMP_UNTIL (no jump + grab window from that step on), STEER_TRICK_ACTS=fast (x in 0,
++-20, +-40, +-80 at full lean; jumps with x 0, +-40 only).  The greedy line is chaotic: jumps late
+in the run cost the speed the 4th / 5th checkpoints need.  The committed trick_attack.input came
+from STEER_TRICK_ACTS=fast STEER_POINTS_W=0.2 STEER_POINTS_CAP=150 STEER_JUMP_UNTIL=1700 (100 s):
+two tricks, five checkpoints, the goal (`# GOAL`: port/tools/modes-check.py then requires it).
 """
 import argparse, os, re, shutil, struct, subprocess, sys, tempfile, time
 from concurrent.futures import ThreadPoolExecutor
@@ -101,6 +108,8 @@ TRICK_HEAD = """\
 # the trick is the grab + stick direction (include/game/tricktable.h, e.g. B + up = NOSE GRAB).
 # Run 857: the search steers through the "chk" checkpoints (each one passed between its posts adds
 # its seconds to the countdown; the trace's cd=); a window that misses one is backed out.
+# Run 860: STEER_TRICK_ACTS=fast STEER_POINTS_W=0.2 STEER_POINTS_CAP=150 STEER_JUMP_UNTIL=1700 (two
+# early tricks, then finer full-lean steering): all five checkpoints and the goal.
 PADS 1
 F 480:3 START          # title "Press START" -> language select
 F 560:3 A              # English
@@ -170,6 +179,8 @@ if os.environ.get('STEER_MATCH_ACTS') == 'wide':
     MATCH_ACTS += [(x, y, '') for y in (80, -80) for x in (0, -20, 20, -40, 40, -80, 80)]
 SPEED_W = float(os.environ.get('STEER_SPEED_W', 0.05))   # --mode match: score per km/h at the lookahead end
 TRICK_ACTS = [(x, 80, 0) for x in (0, -40, 40, -80, 80)] + [(x, 0, 1) for x in (0, -40, 40, -80, 80)]
+if os.environ.get('STEER_TRICK_ACTS') == 'fast':   # run 860: finer steering at full lean, fewer jumps
+    TRICK_ACTS = [(x, 80, 0) for x in (0, -20, 20, -40, 40, -80, 80)] + [(x, 0, 1) for x in (0, -40, 40)]
 
 LINE = re.compile(r'^F (\d+) .*?race=(\d+),.*? e0=([0-9a-f]{8}),([0-9a-f]{8}),(-?\d+),(-?\d+)(?:,(-?\d+),(-?\d+))?')
 
@@ -209,6 +220,9 @@ def last_state(path):
 
 
 PCT_W = float(os.environ.get('STEER_PCT_W', 8))   # --mode trick / contest: course progress weight
+POINTS_W = float(os.environ.get('STEER_POINTS_W', 0.05))   # --mode trick / contest: per trick point
+POINTS_CAP = float(os.environ.get('STEER_POINTS_CAP', 1e9))  # ... up to this many (run 860: one trick, then speed)
+JUMP_UNTIL = int(os.environ.get('STEER_JUMP_UNTIL', 1 << 30))  # no jump + grab window from this step on
 GATE_NEAR = 20000.0     # course units (world z) ahead of the rider: steer for the next gate
 GATE_W = 1.0 / 400      # score per unit of x on the wrong side of a gate
 
@@ -471,33 +485,33 @@ def trick_main(a, head, first):
     def sc(st):
         if st is None or st[4] <= 0:
             return None
-        return PCT_W * st[2] + st[5] / 20.0 + 0.1 * min(st[4], 100) + gate_score(st)
+        return PCT_W * st[2] + POINTS_W * min(st[5], POINTS_CAP) + 0.1 * min(st[4], 100) + gate_score(st)
     def run(kc):
         st, g = R.run(script(kc[1], head=head), t + 2 * W, kc[0])
         if trick and st is not None and chk_misses(os.path.join(work, 'c%d' % kc[0], 'state.log'), t) > 0:
             return None, g
         return st, g
-    segs, stack, t, t0, nruns, end = [], [], first, time.time(), 0, None
+    segs, stack, t, t0, nruns, end, tgoal = [], [], first, time.time(), 0, None, None
     with ThreadPoolExecutor(min((a.jobs or 5) * 2, len(TRICK_ACTS))) as ex:
         while time.time() - t0 < a.budget and t < a.last:
-            cands = [segs + [(t, t + 2 * W - 1, x, y, j)] for (x, y, j) in TRICK_ACTS]
+            acts = [act for act in TRICK_ACTS if t < JUMP_UNTIL or not act[2]]
+            cands = [segs + [(t, t + 2 * W - 1, x, y, j)] for (x, y, j) in acts]
             res = list(ex.map(run, enumerate(cands)))
             nruns += len(cands)
-            ranked = sorted(((sc(st), k, st) for k, (st, g) in enumerate(res) if sc(st) is not None),
+            ranked = sorted(((sc(st), acts[k], st) for k, (st, g) in enumerate(res) if sc(st) is not None),
                             key=lambda r: -r[0])
             while not ranked:
                 if not stack:
                     sys.exit('steer-search: every candidate failed at step %d (scratch %s)' % (t, work))
                 ranked = stack.pop(); segs.pop(); t -= W
                 print('  backtrack to step %d (%d alternatives left)' % (t, len(ranked)), flush=True)
-            _, k, st = ranked[0]
-            x, y, j = TRICK_ACTS[k]
+            _, (x, y, j), st = ranked[0]
             segs.append((t, t + W - 1, x, y, j)); stack.append(ranked[1:])
             print('t=%d stick=%d,%d%s -> step %d race %d pct %.2f points %.0f countdown %s' % (
                 t, x, y, ' jump+grab' if j else '', st[0], st[1], st[2], st[5],
                 st[6] and '%d (%d chk left)' % (st[6][0], st[6][1])), flush=True)
             if st[1] == 2:      # the race ended within the lookahead (Time Up or the goal): its step
-                st2, _ = R.run(script(segs, head=head), t + 2 * W + 600, 0)
+                st2, tgoal = R.run(script(segs, head=head), t + 2 * W + 600, 0)
                 end = next((s for s, f, r, _ in flows(os.path.join(work, 'c0', 'state.log'))
                             if s > t and r == 2), None)
                 break
@@ -512,6 +526,8 @@ def trick_main(a, head, first):
             ext += 1
         prev = cd
     tail = '# RACE END %d   (race state 2: Time Up or the goal)\n' % end
+    if tgoal is not None:    # the race ended at the goal, not Time Up: modes-check.py then requires it
+        tail += '# GOAL %d   (entries[0].pct reaches 100)\n' % tgoal
     if trick:
         tail += '# CHECKPOINTS %d   (countdown extensions; port/tools/modes-check.py wants at least this many)\n' % ext
     text = script(segs, tail + '# END %d\n' % (end + 300), head=head)

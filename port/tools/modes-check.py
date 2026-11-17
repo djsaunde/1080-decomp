@@ -37,7 +37,8 @@ RUN32 = os.environ.get('RUN32', os.path.join(MONO, 'tools/i386-sysroot/run32'))
 HOST = os.path.join(GAME, 'port/host')
 
 REGEN = {
-    'trick': 'port/tools/steer-search.py -b <port build> --mode trick',
+    'trick': 'STEER_TRICK_ACTS=fast STEER_POINTS_W=0.2 STEER_POINTS_CAP=150 STEER_JUMP_UNTIL=1700 '
+             'port/tools/steer-search.py -b <port build> --mode trick',
     'contest': 'port/tools/steer-search.py -b <port build> --mode contest',
     'match': 'port/tools/steer-search.py -b <port build> --mode match',
     'training': 'edit port/host/training.input (hop + grab windows; header comment)',
@@ -105,10 +106,18 @@ def check_trick(a, name='trick', script='trick_attack.input'):
     text = open(os.path.join(HOST, script)).read()
     m = re.search(r'^# CHECKPOINTS (\d+)', text, re.M)
     want = int(m.group(1)) if m else 1
+    goal_want = re.search(r'^# GOAL', text, re.M) is not None
     rc, log = run(a, name, script, end_of(script, 4000))
     pts, ext = points_and_extensions(log)
-    ok = rc == 0 and pts > 0 and ext >= want
-    return ok, 'rc %d, points %d, countdown extensions %d (want >= %d)' % (rc, pts, ext, want)
+    goal = None
+    for ln in lines(log):
+        m = re.search(r' e0=([0-9a-f]{8}),', ln)
+        if m and f32(m.group(1)) >= 100.0:
+            goal = int(ln.split()[1])
+            break
+    ok = rc == 0 and pts > 0 and ext >= want and (goal is not None or not goal_want)
+    return ok, 'rc %d, points %d, countdown extensions %d (want >= %d)%s' % (
+        rc, pts, ext, want, ', goal %s (script: # GOAL)' % goal if goal_want else '')
 
 
 def check_contest(a):
