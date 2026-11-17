@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for snoweffects.uso 0x7FE0 (agent-a runs 661 / 665 / 669 / 677 / 681 / 688),
+/* IDO 7.1 NCC (C++) NON_MATCHING donor for snoweffects.uso 0x7FE0 (agent-a runs 661 / 665 / 669 / 677 / 681 / 688 / 690),
  * spliced over the placeholder on the non_matching build only (Makefile SNOW_NM_A_FUNCS): 800 / 800 words,
  * objdiff 97.8 %. A donor body has to be exactly the target's length (a size change shifts the later
  * functions of the non_matching object). 0xA10C moved to the exact donor snoweffects_uso_ncc_a.cpp (run 677).
@@ -59,6 +59,9 @@ int snoweffects_uso_func_000046BC(...);
  *   where the target has 2 / 1 (fr: /tmp/claude-1000/agent-a/w688/sl.py, md.py reads -g3 vfp names).
  *   The addiu t3 / t4 vs `or a1` order is uopt's LICM / IV-init order (source line joins and moving the
  *   pointer locals into the loop do not change it).
+ * Run 690 (97.83 -> 99.28 %): the ramp's range `hi - lo` is computed into `w` ahead of the |v| arms. In the
+ *   target it is a uopt LR (f16, the sub.s scheduled before the |v| branch), not a ugen ring temp; as a ring temp
+ *   it shifted the FP temp FIFO for the whole function (every f4 / f6 / f8 / f10 in the body).
  * Left: pool word 1 colours f2 where the target has f12 (it wins the f2 race against the TV ctor's second
  *   parameter word; a forcing-uopt probe puts it on f12 for 97.9 %), the frame (368 vs 384: one TV pool
  *   word too many at the loop-body top and one word too many above it) and the hoisted sp addresses. ---- */
@@ -182,7 +185,8 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
             s = 1.0f;
         }
     } else {
-        float f = (fabs_(v) - t->lo) / (t->hi - t->lo);
+        w = t->hi - t->lo; /* the range, a uopt LR across the |v| arms (target f16) */
+        float f = (fabs_(v) - t->lo) / w;
         if (v < 0.0f) {
             s = -((1.0f - t->base) * f + t->base);
         } else {
