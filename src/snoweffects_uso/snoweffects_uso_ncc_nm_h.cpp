@@ -17,9 +17,10 @@ struct GCtx {
     GCtx *me() { return this; }
     Gfx *nextN_1(int d0) { d0 = d0; int n = dl->count++; return &dl->buf[n]; }
     Gfx *nextBI_1(int d0) { d0 = d0; int n = dl->count++; if (1) {} return &dl->buf[n]; }
+    GCtx *me_1(int d0) { d0 = d0; return this; }
+    Gfx *nextI_3(int d0, int d1, int d2) { d0 = d0; d1 = d1; d2 = d2; int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
     Gfx *next() { return &dl->buf[dl->count++]; } Gfx *nextN() { int n = dl->count++; return &dl->buf[n]; }
     Gfx *nextI() { int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
-    Gfx *nextBI() { int n = dl->count++; if (1) {} return &dl->buf[n]; }
 };
 /* snoweffects_uso_func_00000C90 (NON_MATCHING draft): the particle sprite draw. Calls the texture's
  * display list (+0x2C, its +0x60 through a blank import), builds the camera view matrix (camera +0x30),
@@ -67,11 +68,13 @@ struct GCtx {
  * body: p's uopt priority rises above y0 / the E4 pointer and p takes t1 as in the target.
  * agent-h run 750 (-> 97.09): two code-free `if (c) {}` lines after the EE packet raise c's uopt priority
  * (6.76 -> 7.5) above y0, so c takes t2 as in the target; B4 appends through nextBI().
- * agent-h run 754 (-> 97.37): constant-valued dummy parameters (agent-a's 0x7FE0 lever) on the EE and B3
- * appends (nextBI_1(0) / nextN_1(0)): the dummy takes the next pooled edg word, so the packet's count / dl
- * temps land on other words; scratch[] is gone, the prologue appends through c->me()->next(), five tail
- * packets through c->me()->me()->me()->next() (the tail count gets its own word and takes v0 as in the
- * target) and the BA0C02 tail packet through nextN(). */
+ * agent-h run 754 (-> 97.37 -> 98.01): constant-valued dummy parameters (agent-a's 0x7FE0 lever). Each
+ * dummy takes the next pooled edg word, so an append's count / dl temps land on chosen words. The prologue
+ * appends through plain c->next() (count on the first pooled word, this on the second) and a code-free
+ * dum3(0, 0, 0) fills the third pre-loop word, so the loop count's word is no longer live in the prologue and
+ * takes v0 as in the target; EE appends through c->me()->nextI_3(0, 0, 0), FB / B4 / B3 through nextBI_1(0) /
+ * c->me()->nextBI_1(0) / nextN_1(0); scratch[] is gone; the tail packets append through
+ * c->me_1(0)->me()->me()->next() (tail dl / count v1 / v0 as in the target). */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -87,6 +90,7 @@ inline int imax0(int a) { return a > 0 ? a : 0; }
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmpV(g2, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 
+inline void dum3(int a, int b, int c) { a = a; b = b; c = c; }
 struct SnowV3c { float x, y, z; SnowV3c(float ax, float ay, float az) { x = ax; y = ay; z = az; } };
 struct SnowPartC {
     SnowV3c pos;            /* 0x00 */
@@ -151,7 +155,8 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     SnowPartC *p;
 
     d = gl_func_00000000(self->tex->dl);
-    g = c->me()->next();
+    g = c->next();
+    dum3(0, 0, 0);
     g->words.w0 = 0x06000000;
     g->words.w1 = d;
     gl_func_00000000(SNOW_CAM->view, m);
@@ -173,25 +178,25 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 x0 = (int)(sx + halfW - (float)(wid / 2) + (float)SNOW_CAM->offX);
                 y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
                 z = (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4);
-                ge = c->nextBI_1(0); gW(ge, 0xEE000000, (z & 0x7FFF) << 16);
+                ge = c->me()->nextI_3(0, 0, 0); gW(ge, 0xEE000000, (z & 0x7FFF) << 16);
                 if (c) {}
                 if (c) {}
                 if (y0) {}
-                gf = c->nextN(); gW(gf, 0xFB000000, _SHIFTL(p->col[0], 24, 8) | _SHIFTL(p->col[1], 16, 8) | _SHIFTL(p->col[2], 8, 8) |
+                gf = c->nextBI_1(0); gW(gf, 0xFB000000, _SHIFTL(p->col[0], 24, 8) | _SHIFTL(p->col[1], 16, 8) | _SHIFTL(p->col[2], 8, 8) |
                                                  _SHIFTL((int)p->alpha, 0, 8));
                 x1 = x0 + wid;
                 y1 = y0 + hgt;
                 self->drawn++;
-                gTR(gt, c->nextI(), g1, c->nextBI(), g2, c->nextN_1(0), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
+                gTR(gt, c->nextI(), g1, c->me()->nextBI_1(0), g2, c->nextN_1(0), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
                     ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
                 if (p) {}
             }
         }
     }
-    g = c->me()->me()->me()->next(); gW(g, 0xE7000000, 0);
-    g = c->me()->me()->me()->next(); gW(g, 0xBB000000, 0);
-    g = c->me()->me()->me()->next(); gW(g, 0xBA001301, 0x80000);
-    gDPWord(c->nextN(), 0xBA000C02, 0x2000);
-    g = c->me()->me()->me()->next(); gW(g, 0xB9000201, 0);
-    g = c->me()->me()->me()->next(); gW(g, 0xBA000602, 0);
+    g = c->me_1(0)->me()->me()->next(); gW(g, 0xE7000000, 0);
+    g = c->me_1(0)->me()->me()->next(); gW(g, 0xBB000000, 0);
+    g = c->me_1(0)->me()->me()->next(); gW(g, 0xBA001301, 0x80000);
+    gDPWord(c->me_1(0)->me()->me()->next(), 0xBA000C02, 0x2000);
+    g = c->me_1(0)->me()->me()->next(); gW(g, 0xB9000201, 0);
+    g = c->me_1(0)->me()->me()->next(); gW(g, 0xBA000602, 0);
 }
