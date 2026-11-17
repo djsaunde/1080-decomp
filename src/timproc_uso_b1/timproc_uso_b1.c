@@ -33,10 +33,13 @@ typedef struct { int a, b, c, d; } Quad4;
  * pre-USO-reloc words. Twin: trk_main (4 immediates
  * differ: case5/case7 second-a3 1->2, case12 mask 0x2000->0x4000). */
 extern char D_00000000_raw[]; /* bootup gProcUsoPaths (Data+0xC510 import; the B0 donor's name) */
-tim_main(a0, a1) int * a0; int a1; {
+tim_main(int *a0, int a1) {
     char *d = (char *)&D_00000000;
     int done = 0;
-    int v, s0v;
+    int v;
+    int s0v;
+    char *r, *children;
+    Node *parent;
     do {
         switch (a1) {
         case 0:
@@ -95,12 +98,14 @@ tim_main(a0, a1) int * a0; int a1; {
         case 11:
             v = gl_func_00000000(a0, *a0, 4);
             s0v = gl_func_00000000(0, GAMEFLOW(d)->replayLen[0] + 0x20000, v, *a0);
-            {
-                char *r = (char *)s0v;
-                gl_func_00000000(&NODE(d)->children, r);
-                if (NODE(r)->parent != 0) NODE(r)->unk04 = 1;
-                NODE(r)->parent = (Node *)d;
+            r = (char *)s0v;
+            children = (char *)&NODE(d)->children;
+            gl_func_00000000(children, r);
+            if (NODE(r)->parent != 0) {
+                NODE(r)->unk04 = 1;
             }
+            parent = (Node *)d;
+            NODE(r)->parent = parent;
             gl_func_00000000(a0, *a0);
             done = 1;
             break;
@@ -111,12 +116,14 @@ tim_main(a0, a1) int * a0; int a1; {
             break;
         case 13:
             s0v = gl_func_00000000(0, 1, 0);
-            {
-                char *r = (char *)s0v;
-                gl_func_00000000(&NODE(d)->children, r);
-                if (NODE(r)->parent != 0) NODE(r)->unk04 = 1;
-                NODE(r)->parent = (Node *)d;
+            r = (char *)s0v;
+            children = (char *)&NODE(d)->children;
+            gl_func_00000000(children, r);
+            if (NODE(r)->parent != 0) {
+                NODE(r)->unk04 = 1;
             }
+            parent = (Node *)d;
+            NODE(r)->parent = parent;
             done = 1;
             break;
         }
