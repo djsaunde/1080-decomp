@@ -8,6 +8,10 @@
 extern "C" int gl_func_00000000(...);
 /* void-returning alias of the placeholder (0-pinned): no dead v0 def to colour around */
 extern "C" void gl_func_00000000_vrv(...);
+#ifdef PORT /* named calls are direct calls under PORT: RecordOptions_menuInput calls this unit's own vr_backToMainMenu
+ * above its definition, and the unit is in port/gen/decls_skip.tsv for that name */
+extern "C" void vr_backToMainMenu();
+#endif
 
 /* gdl Node with its cfront vtable: the slots this module calls */
 struct VrNode {

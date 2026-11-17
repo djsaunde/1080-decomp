@@ -41,6 +41,10 @@ struct ColourT : Colour {
     ColourT(float r_, float g_, float b_, float a_) { me()->set2(r_, g_); b = b_; a = a_; }
 };
 
+#ifdef PORT /* the Makefile objcopy renames this reference to snowe9_Parms_addParm (= Parms_addParm);
+ * the port compiles the unit without the objcopy, so name the callee directly */
+#define GdlParmBase_ctor Parms_addParm
+#endif
 extern "C" void *GdlParmBase_ctor(void *self, void *owner, PName name, int flag); /* Parms_addParm */
 extern "C" void *SNode_ctor(void *self);
 

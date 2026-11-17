@@ -35,29 +35,24 @@ struct Q4 { V3 v; float w; void set(const Q4 &q) { v.set(q.v); w = q.w; } };
 #ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr, the NCC vtable stores written out */
 extern "C" char MNode_vtbl_40070_vta[], QNode_vtbl_40070_vtb[]; /* __vtbl__4Base, __vtbl__3Obj */
 struct BB { int pad0[2]; int flags; int pad[7]; char *vptr; BB(void *a1); };
-struct Base : BB {
-    W4 m2c;
-    char m30[0xB4 - 0x30];
-    Base(void *a1) : BB(a1) {
-        vptr = MNode_vtbl_40070_vta;
-        dbg_printThreads(this);
-        zero(); { volatile int p1, p2, p3, p4; }
-    }
-    void zero() { float z[3]; z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f; dbg_printThreads(m30, z); }
-};
 #else
 struct BB { int pad0[2]; int flags; int pad[7]; BB(void *a1); virtual void f(); };
+#endif
 struct Base : BB {
     W4 m2c;
     char m30[0xB4 - 0x30];
     Base(void *a1) : BB(a1) {
+#ifdef PORT
+        vptr = MNode_vtbl_40070_vta;
+#endif
         CALL(MNode_initMatrices)(this);
         zero(); { volatile int p1, p2, p3, p4; }
     }
     void zero() { float z[3]; z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f; CALL(math_mtxAddTranslation)(m30, z); }
+#ifndef PORT
     virtual void f();
-};
 #endif
+};
 struct Obj : Base {
     V3 b4, c0;
     Q4 rq;
