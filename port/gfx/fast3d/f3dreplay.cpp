@@ -344,6 +344,9 @@ struct FbModel {
                     other++;
                 } else {
                     (z == 0xFFFC ? far : near)++;
+                    if (std::getenv("F3D_ZLOG") != nullptr) {
+                        std::printf("fb depth: (%u,%u) z %04x\n", d.idx % 320, d.idx / 320, z);
+                    }
                 }
             }
             std::printf("fb depth: %zu pixels: %u far (0xFFFC), %u nearer, %u not served\n", depths.size(), far,

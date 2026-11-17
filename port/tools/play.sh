@@ -18,7 +18,8 @@
 #
 # The save (1080.sram) is kept in <monorepo>/tools/play/<worktree>/run between sessions.
 # Keys: arrows / WASD stick (Shift = half), X or Space = A, Z = B, C = Z, Enter = START, Q = L,
-# E = R, I / J / K / L = C buttons, T / F / G / H = D-pad, Esc = quit. A Linux joystick
+# E = R, I / J / K / L = C buttons, T / F / G / H = D-pad, F11 = fullscreen (the window also resizes;
+# the frame is letterboxed at 4:3), Esc = quit. A Linux joystick
 # (/dev/input/js0, else the first evdev gamepad /dev/input/event*) is used when present. Needs an
 # X display (WSLg: DISPLAY=:0). Sound goes to PulseAudio ($PULSE_SERVER; WSLg's
 # unix:/mnt/wslg/PulseServer); without a server the game plays silent.
@@ -36,7 +37,7 @@ while getopts "b:r:s:Sml:n:p:h" o; do
     case $o in
     b) BUILD=$OPTARG ;; r) ROM=$OPTARG ;; s) SCALE=$OPTARG ;; S) SOFT=1 ;; n) NAME=$OPTARG ;; p) PARGS=$OPTARG ;;
     m) MUTE=--mute ;; l) LAT=$OPTARG ;;
-    *) sed -n '2,28p' "$0"; exit 2 ;;
+    *) sed -n '2,29p' "$0"; exit 2 ;;
     esac
 done
 shift $((OPTIND - 1))

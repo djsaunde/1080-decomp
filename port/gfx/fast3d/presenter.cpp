@@ -129,10 +129,11 @@ struct Win {
         int scr = DefaultScreen(dpy);
         win = XCreateSimpleWindow(dpy, RootWindow(dpy, scr), 0, 0, w, h, 0, BlackPixel(dpy, scr), BlackPixel(dpy, scr));
         XStoreName(dpy, win, title);
+        /* resizable (run 861): the frame is letterboxed at 4:3 into whatever size the window has (viewport()) */
         XSizeHints* sh = XAllocSizeHints();
-        sh->flags = PMinSize | PMaxSize;
-        sh->min_width = sh->max_width = (int)w;
-        sh->min_height = sh->max_height = (int)h;
+        sh->flags = PMinSize;
+        sh->min_width = 320;
+        sh->min_height = 240;
         XSetWMNormalHints(dpy, win, sh);
         XFree(sh);
         XSelectInput(dpy, win, KeyPressMask | KeyReleaseMask | StructureNotifyMask | FocusChangeMask | ExposureMask);
@@ -172,6 +173,32 @@ struct Win {
     void swap() {
         eglSwapBuffers(edpy, surf);
     }
+    /* the largest centred 4:3 rectangle of the window (x, y from the top-left) */
+    void viewport(uint32_t* x, uint32_t* y, uint32_t* vw, uint32_t* vh) const {
+        *vw = w;
+        *vh = w * 3 / 4;
+        if (*vh > h) {
+            *vh = h;
+            *vw = h * 4 / 3;
+        }
+        *x = (w - *vw) / 2;
+        *y = (h - *vh) / 2;
+    }
+    /* F11: EWMH fullscreen through the window manager (WSLg's weston and the usual X WMs honour it) */
+    void toggleFullscreen() {
+        fullscreen = !fullscreen;
+        XEvent ev = {};
+        ev.xclient.type = ClientMessage;
+        ev.xclient.window = win;
+        ev.xclient.message_type = XInternAtom(dpy, "_NET_WM_STATE", 0);
+        ev.xclient.format = 32;
+        ev.xclient.data.l[0] = fullscreen ? 1 : 0; /* _NET_WM_STATE_ADD / _REMOVE */
+        ev.xclient.data.l[1] = (long)XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", 0);
+        ev.xclient.data.l[3] = 1; /* a normal application */
+        XSendEvent(dpy, RootWindow(dpy, DefaultScreen(dpy)), 0, SubstructureRedirectMask | SubstructureNotifyMask, &ev);
+        XFlush(dpy);
+    }
+    bool fullscreen = false;
 };
 static Win sWin;
 
@@ -703,10 +730,16 @@ struct Renderer {
         if (onRoots.empty()) {
             return false;
         }
-        gfx->mGameWindowViewport.x = 0;
-        gfx->mGameWindowViewport.y = 0;
-        gfx->mGameWindowViewport.width = sWin.w;
-        gfx->mGameWindowViewport.height = sWin.h;
+        /* the window may have been resized: render at its 4:3 letterbox, straight into the window (the
+         * viewport offsets are applied by Fast3D, and by patch 0003's read-backs) */
+        uint32_t vx, vy, vw, vh;
+        sWin.viewport(&vx, &vy, &vw, &vh);
+        gfx->mGameWindowViewport.x = (int32_t)vx;
+        gfx->mGameWindowViewport.y = (int32_t)vy;
+        gfx->mGameWindowViewport.width = vw;
+        gfx->mGameWindowViewport.height = vh;
+        gfx->mCurDimensions.width = vw;
+        gfx->mCurDimensions.height = vh;
         std::unordered_map<Mtx*, MtxF> noReplacements;
         /* the offscreen pass: its pixels are read back at the end of its Run (patch 0003) */
         if (!offRoots.empty()) {
@@ -967,6 +1000,12 @@ int main(int argc, char** argv) {
                     std::printf("presenter: synthetic %s %s (step %u)\n", XKeysymToString(ks),
                                 ev.type == KeyPress ? "down" : "up", lastStep);
                 }
+                if (ev.type == KeyPress && ks == XK_F11) {
+                    sWin.toggleFullscreen();
+                }
+            } else if (ev.type == ConfigureNotify) {
+                sWin.w = (uint32_t)std::max(1, ev.xconfigure.width);
+                sWin.h = (uint32_t)std::max(1, ev.xconfigure.height);
             } else if (ev.type == ClientMessage && (Atom)ev.xclient.data.l[0] == sWin.wmDelete) {
                 quit = true;
             } else if (ev.type == FocusOut) {
