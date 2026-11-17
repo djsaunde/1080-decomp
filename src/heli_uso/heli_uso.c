@@ -66,6 +66,9 @@ typedef struct { int a, b, c, d; } HeliQuad4;
 void heli_gdlReadInt(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -78,6 +81,9 @@ void heli_gdlReadVec3_0000003C(float *dst) {
     HeliTri3i tmp;
     int pad_bot[2];
     CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst[0] = *(float *)&tmp.a;
     dst[1] = *(float *)&tmp.b;
@@ -88,6 +94,9 @@ void heli_gdlReadVec3_0000003C(float *dst) {
 void heli_gdlReadFloat_000000AC(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -96,6 +105,9 @@ void heli_gdlReadFloat_000000AC(float *dst) {
 void heli_gdlReadQuad_000000E8(HeliQuad4 *dst) {
     HeliQuad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 

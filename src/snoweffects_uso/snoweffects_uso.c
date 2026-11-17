@@ -301,18 +301,27 @@ float SnowPlane_solveZ_00000098(float *p, float *pl) {
 void fs_gdlReadInt_snow_000000CC(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void fs_gdlReadFloat_snow_00000108(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void fs_gdlReadQuad_snow_00000144(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -323,6 +332,9 @@ void fs_gdlReadVec3_snow_0000019C(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -626,18 +638,27 @@ void ParmVec3_read_snow_00003D34(char *a0) {
 void fs_gdlReadInt_snow_00003D70(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void fs_gdlReadFloat_snow_00003DAC(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void fs_gdlReadQuad_snow_00003DE8(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -648,6 +669,9 @@ void fs_gdlReadVec3_snow_00003E40(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -1055,18 +1079,27 @@ void *SnowColourItemType_create_00007D8C(int *arg0) {
 void fs_gdlReadInt_snow_00007E20(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void fs_gdlReadFloat_snow_00007E5C(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void fs_gdlReadQuad_snow_00007E98(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -1077,6 +1110,9 @@ void fs_gdlReadVec3_snow_00007EF0(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -1196,18 +1232,27 @@ void *SnowColourItemType_create_000091BC(int *arg0) {
 void fs_gdlReadInt_snow_00009250(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void fs_gdlReadFloat_snow_0000928C(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void fs_gdlReadQuad_snow_000092C8(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 

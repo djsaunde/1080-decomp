@@ -27,6 +27,9 @@ void checkpoint_gdlWriteInt(int *a0) {
 void checkpoint_gdlReadInt_00000034(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -41,6 +44,9 @@ void checkpoint_gdlWriteInt_00000070(int *a0) {
 void checkpoint_gdlReadInt_000000A4(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 

@@ -15695,6 +15695,9 @@ extern int gl_func_00000000();
 void fs_gdlReadInt_00032D84(int *dst) {
     int pad, scratch;
     CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4); /* gSysLib = ROM HI/LO Bss+0x3C740 (sym73) */
+#ifdef PORT
+    PORT_BE_SWAP32S(&scratch, 4);
+#endif
     *dst = scratch;
 }
 
@@ -15702,6 +15705,9 @@ extern int gl_func_00000000();
 void fs_gdlReadQuad_00032DC0(Quad4 *dst) {
     Quad4 scratch;
     CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16); /* gSysLib = ROM HI/LO Bss+0x3C740 (sym73) */
+#ifdef PORT
+    PORT_BE_SWAP32S(&scratch, 16);
+#endif
     *dst = scratch;
 }
 

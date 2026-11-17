@@ -49,6 +49,9 @@ void balloon_gdlReadVec3_00000094(float *dst) {
     BalloonTri3i tmp;
     int pad_bot[2];
     CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst[0] = *(float *)&tmp.a;
     dst[1] = *(float *)&tmp.b;
@@ -59,6 +62,9 @@ void balloon_gdlReadVec3_00000094(float *dst) {
 void balloon_gdlReadFloat_00000104(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 

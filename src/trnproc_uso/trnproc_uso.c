@@ -130,6 +130,9 @@ void TrnRace_pauseQuit(void) {
 void trn_streamReadS32(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -137,6 +140,9 @@ void trn_streamReadS32(int *dst) {
 void trn_streamReadF32(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -145,6 +151,9 @@ void trn_streamReadF32(float *dst) {
 void trn_streamReadQuad(TrnQuad4 *dst) {
     TrnQuad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -157,6 +166,9 @@ void trn_streamReadVec3(float *dst) {
     TrnTri3i tmp;
     int pad_bot[2];
     CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst[0] = *(float *)&tmp.a;
     dst[1] = *(float *)&tmp.b;
