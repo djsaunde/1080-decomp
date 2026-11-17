@@ -128,6 +128,27 @@ KNOWN = [
     # case 0x72) tile 0xA0F8..0xA3A0 in 0x14 strides; the stream reaches 20 of the 34, the
     # symbols at 0xA134 / 0xA1AC / 0xA210 / 0xA238 / 0xA29C / 0xA300 / 0xA328 are on the grid
     ("bootup", "Data", 0xA0F8, [(0, 0x14, "u16")], 34, 0x14, "known:nodecmd:xform"),
+    # --- bootup Data, run 815 (readers in the comments) ---
+    # game_initDdm_00002C94 (addiu + lw Data 0x7198): {s32 id, u32 packed} word pairs up to the
+    # {0, 0} terminator at 0x7278
+    ("bootup", "Data", 0x7198, [(0, 4, "u32")], (0x7278 - 0x7198) // 4, 4, "known:ddm-table"),
+    # item_createSnow (addiu Data 0x7280): four f32 1.0
+    ("bootup", "Data", 0x7280, [(0, 4, "f32")], 4, 4, "known:snow-rgba"),
+    # the camera viewport records gen_createCamera_0000283C / game_setupSolo / game_setupDemoSolo
+    # (0x7290), h2h_setupCameras_00000C18 (0x72AC) and RaceProcess_createReplayCam (0x7300) pass
+    # on: 7 s32 {x, y, w, h, 4, far, 0x400 / 0x800} (320 x 240, 320 x 120 halves, 192 x 96)
+    ("bootup", "Data", 0x7290, [(0, 0x1C, "u32")], 5, 0x1C, "known:cam-viewport"),
+    # item_createFog (addiu Data 0x7B4C): f32 {0, 0.5, 0, 1, 1, 1, 0} fog parameters
+    ("bootup", "Data", 0x7B4C, [(0, 4, "f32")], 8, 4, "known:fog-parms"),
+    # item_registerTemplates (addiu Data 0x7B6C): {s32 offset, s32 0, s32 count} records up to
+    # the {0, 0, 0} terminator at 0x7C14
+    ("bootup", "Data", 0x7B6C, [(0, 0xC, "u32")], 15, 0xC, "known:item-pools"),
+    # SnowBoarder_updateOrient (addiu Data 0x8170) -> pad_startRumble: 0xFF-terminated rumble
+    # motor bytes (gdl/pad.h PadCtl.rumble); the pointer table at 0x81C0 reaches 0x8180 / 0x8190
+    ("bootup", "Data", 0x8170, [(0, 0x50, "u8")], 1, 0x50, "known:rumble"),
+    # SnowBoarder_ctor's tint list (addiu Data 0x8478, Text 0xAD50 loop): 0x18-byte records
+    # {s32 key, s32 slot, f32 rgba[4]} up to key 0 (0x8670); table[slot] = &rec->rgba
+    ("bootup", "Data", 0x8478, [(0, 8, "u32"), (8, 0x10, "f32")], 22, 0x18, "known:sb-tint"),
 ]
 # gamegfx (Data only, no relocs): five images, each an 8-byte header {0, 1} at an exported
 # symbol followed by texel bytes up to the next header.  The header reader is not located
@@ -256,7 +277,57 @@ def analyse_text(md, rt, maps, stats):
         elif op == 0x09:      # addiu: address taken
             stats["address taken"] += 1
             m.addr_taken.add(addr)
+            ADDIU_SITES[(md.short, off)] = ((ex.short, sec), addr, rtg)
             follow(md, text, off + 4, rtg, addr, m, stats)
+
+
+# addiu (address taken) sites: (module, Text offset) -> ((module, section), address, dest reg)
+ADDIU_SITES = {}
+# readers that take an array and its element count in argument registers: (module, Text offset)
+# -> (array reg, count reg, element type).  snd_FindNearestF32_2F1B8(f32 key, f32 *arr, s32 n)
+# (game_libs_post.c): the binary search over a sorted f32 table (snd_SoundObjUpdate's pitch /
+# volume curves, snd_SoundObjSetAngle's angle / pan tables)
+ARRAY_ARGS = {("bootup", 0x43824): (5, 6, "f32")}
+
+
+def call_arrays(rom, rt, maps, stats):
+    """type the array a call to an ARRAY_ARGS reader passes: the addiu that sets the array
+    register and the `addiu reg, zero, n` that sets the count, within the 8 instructions before
+    the jal or in its delay slot"""
+    for md in rom.mods:
+        text = md.secs.get("Text")
+        if not text:
+            continue
+        j26 = {o: f1 >> 4 for f1, o, _ in md.relocs("Text") if f1 & 7 == 1}
+        for pc in range(0, len(text) - 4, 4):
+            ins = struct.unpack_from(">I", text, pc)[0]
+            if ins >> 26 != 0x03:
+                continue
+            tgt = None
+            if pc in j26:
+                t = rt.raw(md, j26[pc])
+                if t and t[1] == "Text":
+                    tgt = (t[0].short, t[2] + ((ins & 0x3FFFFFF) << 2))
+            else:
+                tgt = (md.short, (ins & 0x3FFFFFF) << 2)
+            if tgt not in ARRAY_ARGS:
+                continue
+            areg, nreg, typ = ARRAY_ARGS[tgt]
+            arr = n = None
+            for q in list(range(max(0, pc - 32), pc, 4)) + [pc + 4]:
+                w = struct.unpack_from(">I", text, q)[0]
+                site = ADDIU_SITES.get((md.short, q))
+                if site and site[2] == areg:
+                    arr = site
+                if w >> 26 == 0x09 and (w >> 21) & 31 == 0 and (w >> 16) & 31 == nreg:
+                    n = w & 0xFFFF
+            if arr is None or not n:
+                stats["array call: args not found"] += 1
+                continue
+            m = maps.get(arr[0])
+            if m is not None:
+                m.put(arr[1], typ, "call:array", n)
+                stats["array call"] += 1
 
 
 def func_end(md, off):
@@ -786,6 +857,7 @@ def main():
     # 2. code accesses (every module's Text, imports followed)
     for md in rom.mods:
         analyse_text(md, rt, maps, stats)
+    call_arrays(rom, rt, maps, stats)
     # 3. display lists
     for (short, sec), m in maps.items():
         vtx, mtx = gfx_walk(rom.by_short[short], sec, m, reloc_offs[(short, sec)], stats)
