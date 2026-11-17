@@ -37,6 +37,15 @@ static __inline__ void port_be_swap16s(void *p, int nbytes) {
 #define PORT_BE_HI16(x) ((short)((unsigned int)(x) >> 16))
 #define PORT_BE_LO16(x) ((short)(x))
 
+/* RDP-visible memory (plan 19.9).  Two rules, both what libultraship's Fast3D reads:
+ *  - RSP data (display-list words, Vtx, Mtx, Vp, Lights) is in HOST order: the game writes it with
+ *    stores of the field's own width, and the blob typing swaps static copies (u32 / s16 fields);
+ *  - RDP pixels (texels, TLUTs, the colour and depth images) are the N64 BIG-endian byte image:
+ *    blobs keep texels as bytes, copies u16 for u16 keep the order, and read-backs store
+ *    big-endian.  A CPU store or compare of a 16-bit pixel VALUE goes through PORT_RDP16(v): the
+ *    host u16 whose bytes in memory are v's big-endian bytes. */
+#define PORT_RDP16(v) ((unsigned short)__builtin_bswap16((unsigned short)(v)))
+
 /* Bitfield order (plan 18.3): IDO allocates bitfields MSB-first, gcc / clang on x86 LSB-first.
  * Code that reads every field through the members is consistent either way; the sites that test
  * or set flag bits with masks and shifts (the audio player / channel / layer / note flag words,

@@ -42,10 +42,17 @@ extern "C" void gfx_drawFbChar_00046790(char *o, unsigned char ch, int x, int y)
             for (j = 0; j < 8; j++) {
                 px = 0;
                 if (idx & 1) {
+#ifdef PORT /* plan 19.9: frame-buffer pixels are the big-endian image */
+                    if (D_46790_font[idx >> 1] & 0xF) px = PORT_RDP16(0xFFFE);
+                } else {
+                    if (D_46790_font[idx >> 1] & 0xF0) px = PORT_RDP16(0xFFFE);
+                }
+#else
                     if (D_46790_font[idx >> 1] & 0xF) px = 0xFFFE;
                 } else {
                     if (D_46790_font[idx >> 1] & 0xF0) px = 0xFFFE;
                 }
+#endif
                 put(dst, px);
                 idx++;
             }

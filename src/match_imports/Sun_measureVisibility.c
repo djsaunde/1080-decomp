@@ -19,7 +19,11 @@ void Sun_measureVisibility(GameUsoSentinelObject *obj) {
     for (i = 0; i < 9; i++, cursor += 4) {
         idx = (obj->y + ((B4Offset *)cursor)->row) * w + obj->x + ((B4Offset *)cursor)->column;
         if (idx > 0 && idx < w * h) {
+#ifdef PORT /* plan 19.9: the depth image is big-endian, like the N64's (the read-back stores it so) */
+            if (data[idx] == PORT_RDP16(0xFFFC)) count++;
+#else
             if (data[idx] == 0xFFFC) count++;
+#endif
         }
     }
     result = (float)count / 9.0f;

@@ -278,7 +278,11 @@ void Fader_buildTexture(char *arg0) {
         }
     } else {
         for (j = 0; j != 0x400; j++) {
+#ifdef PORT /* plan 19.9: RGBA5551 black, alpha 1, as the big-endian texel Fast3D reads (host 1 is G = 4: dark green) */
+            FADER(arg0)->texture[j] = PORT_RDP16(1);
+#else
             FADER(arg0)->texture[j] = 1;
+#endif
         }
     }
 }
