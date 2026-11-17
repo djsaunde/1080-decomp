@@ -40,7 +40,7 @@ struct SnowTex {
     int h;
 };
 
-/* snoweffects_uso_func_00000270 (EXACT, agent-c run 683): a texture-sprite init (the 0x15D0 family with the
+/* SnowPool_buildTexDL_00000270 (EXACT, agent-c run 683): a texture-sprite init (the 0x15D0 family with the
  * render state first): name Data+0x2A8, a 20-packet DL context named Data+0x2BC, then PipeSync, cycle 1,
  * persp off, render mode 0x00404240, combine, prim colour 0, w = h = 32, the 2.0I gDPLoadTextureTile of the
  * 32x32 IA8 texture at Data+0 (mask 5 / 5) as its seven packets, gSPTexture and EndDL.
@@ -49,7 +49,7 @@ struct SnowTex {
  * (SNOW_PH: a load of a never-read word, masked away) place the unit cuts where the target has them; found by a
  * layout-scored hill climb (packet-register sequence + the E7 / F568 / 32 constant registers), then minimised. */
 #define SNOW_PH(p, off) (*(int *)((char *)(p) + (off)) & 0)
-extern "C" void snoweffects_uso_func_00000270(SnowTex *t) {
+extern "C" void SnowPool_buildTexDL_00000270(SnowTex *t) {
     t->name = D_00000000 + 0x2A8;
     t->dl = (GCtx *)gl_func_00000000(0, D_00000000 + 0x2BC, 20, 0, 0, 0, 0);
     gl_func_00000000_snow_reset(t->dl);
@@ -75,7 +75,7 @@ extern "C" void snoweffects_uso_func_00000270(SnowTex *t) {
 }
 
 extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at +0x254 */
-/* snoweffects_uso_func_000028E0 (NON_MATCHING, objdiff 95.3 %): the snowfall draw. Moves every
+/* SnowFall_display_000028E0 (NON_MATCHING, objdiff 95.3 %): the snowfall draw. Moves every
  * flake by the camera motion since the last frame (camera +0x70 position * the gGfxLib world scale, minus +0x98,
  * times +0xA4), wraps it inside the camera-space box (x / y +-30, z -100..0) along the box axes
  * (+0x50 / +0x5C / +0x68; a y wrap re-rolls the flake's alpha against +0x4C), then projects the
@@ -229,7 +229,7 @@ static inline int zf8(float v, int z) { return z * (int)(v + v + v + v + v + v +
 static inline int zf12(float v, int z) { return z * (int)(v + v + v + v + v + v + v + v + v + v + v + v); }
 inline void snowW(Gfx *g, unsigned int a, unsigned int b) { g->words.w0 = a; g->words.w1 = b; }
 
-extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
+extern "C" void SnowFall_display_000028E0(SnowFallD *self) {
     SnowV3d cam;
     GCtx *c;
     float halfW;

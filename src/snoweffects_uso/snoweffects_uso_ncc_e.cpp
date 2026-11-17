@@ -8,9 +8,9 @@
  * (0xB900031D / 0x00404A50) and EndDL. The first append goes through two zero-code me() levels and the
  * unnamed-index nextr() (target ctx v0 / head v1 / count a0 / packet a1); the other three are the inline
  * put() emitter. Found by a per-site search over append spellings. */
-extern "C" void snoweffects_uso_func_00008C60(SnowTrail *t) {
+extern "C" void BoardSpray_draw_00008C60(SnowTrail *t) {
     CALL(gfx_resetDLContext)(t->dl);
-    CALL(snoweffects_uso_func_00004188)(t, t->dl);
+    CALL(SnowRing_setupDL_00004188)(t, t->dl);
     { Gfx *g = me(me(t->dl))->nextr(); g->w0 = 0xB6000000; g->w1 = 0x00033000; }
     t->dl->put(0xB7000000, 0x00002205);
     t->dl->put(0xB900031D, 0x00404A50);
@@ -22,7 +22,7 @@ extern "C" void snoweffects_uso_func_00008C60(SnowTrail *t) {
  * direction vector (Bss+0x50) adds d * colour to *out when positive. Both Vec3 locals are declared up
  * front and n is assigned (target v at sp+0x44, n at sp+0x38); the scale vector is reached through a
  * pointer local and a reference to it (frame 0x50, its lui/addiu kept apart from the loads). */
-extern "C" void snoweffects_uso_func_00009FE8(void *self, SnowLightObj *o, SnowVec3 *out) {
+extern "C" void MapLighter_addDiffuse_00009FE8(void *self, SnowLightObj *o, SnowVec3 *out) {
     SnowVec3 v;
     SnowVec3 n;
     v.x = o->pos.x;
@@ -43,9 +43,9 @@ extern "C" void snoweffects_uso_func_00009FE8(void *self, SnowLightObj *o, SnowV
 
 /* 0x9768 (0x11C): SnowTarget dirty check. When the drawn colour, the two float parms or the drawn
  * position differ from the live parm values and the position, set the dirty flag to 2 and copy them
- * over (SnowLink_update_00009F44's copy set). The position copy reads through a pointer local, which
+ * over (MapLighter_syncLight_00009F44's copy set). The position copy reads through a pointer local, which
  * gives the target's x, y, z load order (agent-g's heli 0x3F4 lever). */
-extern "C" void snoweffects_uso_func_00009768(SnowTargetE *t) {
+extern "C" void LocalLight_checkDirty_00009768(SnowTargetE *t) {
     if (t->colour.r != t->colourParm.get().r || t->colour.g != t->colourParm.get().g ||
         t->colour.b != t->colourParm.get().b || t->f98 != t->parm248.get() || t->f9C != t->parm260.get() ||
         t->pos.x != t->drawPos.x || t->pos.y != t->drawPos.y || t->pos.z != t->drawPos.z) {
@@ -68,8 +68,8 @@ extern "C" void snoweffects_uso_func_00009768(SnowTargetE *t) {
  * the scale pointer before the two Vec3 locals, and the vertex local is declared before the position
  * (target position sp+0xB8 under the vertex sp+0xC4). The scale reference binds through the pointer
  * assignment (keeps the lui / addiu 0x128 pair). The 0.1f literal is RoData+0xF0
- * (snoweffects_uso_func_00009884_rodata). */
-extern "C" void snoweffects_uso_func_00009884(SnowGlowE *t, SnowMesh *m) {
+ * (LocalLight_buildLitVerts_00009884_rodata). */
+extern "C" void LocalLight_buildLitVerts_00009884(SnowGlowE *t, SnowMesh *m) {
     unsigned char (*cols)[4] = m->cols;
     SnowLV *gp;
     int i;
@@ -157,13 +157,13 @@ struct SnowProbe {
     /* 0x15C */ float maxDist;
 };
 inline float dot(const SV &a, const SV &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
-extern "C" void snoweffects_uso_func_00008D70(SnowProbe *t) {
+extern "C" void BoardSpray_placeEnds_00008D70(SnowProbe *t) {
     SV n;
     t->hits = 0;
     t->dist = -dot(t->p, t->n);
     t->a = t->startA;
     t->b = t->startB;
-    t->da = XCALL(gl_func_00000000_snow_52d4, snoweffects_uso_func_000052D4)(t, &t->a, &n, &t->qB4);
+    t->da = XCALL(gl_func_00000000_snow_52d4, SnowRing_probe_000052D4)(t, &t->a, &n, &t->qB4);
     { int sc[2]; sc[0] = 0; }
     if (t->da != 0.0f && t->da < t->maxDist) {
         SV push = n * -t->da;
@@ -171,7 +171,7 @@ extern "C" void snoweffects_uso_func_00008D70(SnowProbe *t) {
         t->hits++;
     }
     { int sc2[3]; sc2[0] = 0; }
-    t->db = XCALL(gl_func_00000000_snow_52d4, snoweffects_uso_func_000052D4)(t, &t->b, &n, &t->qC4);
+    t->db = XCALL(gl_func_00000000_snow_52d4, SnowRing_probe_000052D4)(t, &t->b, &n, &t->qC4);
     if (t->db != 0.0f && t->db < t->maxDist) {
         SV push = n * -t->db;
         t->b += push;
@@ -225,7 +225,7 @@ struct SnowBody7 {
     char pad14C[0x15C - 0x14C];
     /* 0x15C */ float maxDist;
 };
-extern "C" void snoweffects_uso_func_00007960(SnowBody7 *t) {
+extern "C" void HandTrail_placeEnds_00007960(SnowBody7 *t) {
     float ang;
     SnowV n;
     t->dist = -dotv(t->p, t->n);
@@ -235,7 +235,7 @@ extern "C" void snoweffects_uso_func_00007960(SnowBody7 *t) {
     }
     t->hits = 0;
     if (!((t->speed < 0.0f ? -t->speed : t->speed) < snow_ro_B4)) {
-        float d = XCALL(gl_func_00000000_snow_52d4, snoweffects_uso_func_000052D4)(t, &t->pos, &n, t->qD4);
+        float d = XCALL(gl_func_00000000_snow_52d4, SnowRing_probe_000052D4)(t, &t->pos, &n, t->qD4);
         if (d != 0.0f && d < t->maxDist) {
             SnowV push = n * -d;
             t->pos += push;

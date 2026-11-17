@@ -423,7 +423,7 @@ void heli_readIntParm_00001A9C(char *dst) {
 }
 
 /* HeliColourItemType_create: ItemType create: a new 0x40 colour item (ColourItem + the int at
- * +0x3C), linked into the type's list (twin of snoweffects_uso_func_00007D8C). */
+ * +0x3C), linked into the type's list (twin of SnowColourItemType_create_00007D8C). */
 void *HeliColourItemType_create(int *arg0) {
     int *p2;
     int *head;

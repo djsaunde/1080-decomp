@@ -98,7 +98,7 @@ build/non_matching/src/gui_uso/gui_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := g
 # snoweffects.uso is four C++ TUs linked into one Text (each TU's reader helpers repeat at
 # 0xCC / 0x3D70 / 0x7E20 / 0x9250); the 16-byte .text pad at the end of each TU is an all-zero
 # SUFFIX on that TU's last function (same mechanism as gui / h2hproc above).
-SNOW_SUFFIX := ParmVec3_read_snow_00003D34=0x00000000,0x00000000,0x00000000 snoweffects_uso_func_00007D8C=0x00000000 snoweffects_uso_func_000091BC=0x00000000
+SNOW_SUFFIX := ParmVec3_read_snow_00003D34=0x00000000,0x00000000,0x00000000 SnowColourItemType_create_00007D8C=0x00000000 SnowColourItemType_create_000091BC=0x00000000
 build/src/snoweffects_uso/snoweffects_uso.c.o: SUFFIX_BYTES_FORCE := $(SNOW_SUFFIX)
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := $(SNOW_SUFFIX)
 # heli.uso: the 16-byte .text pad after the last function (0x1B5C) is an all-zero SUFFIX on it.
@@ -161,14 +161,14 @@ SNOW_9F44_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp.o
 $(SNOW_9F44_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += SnowLink_update_00009F44=$(SNOW_9F44_DONOR)
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += MapLighter_syncLight_00009F44=$(SNOW_9F44_DONOR)
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_9F44_DONOR)
 # agent-h run 628: further NCC donors (shared class model src/snoweffects_uso/snoweffects_ncc.h).
 SNOW_NCC_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc.cpp.o
 $(SNOW_NCC_DONOR): src/snoweffects_uso/snoweffects_uso_ncc.cpp src/snoweffects_uso/snoweffects_ncc.h
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NCC_FUNCS := SnowRing_draw_000040B4 SnowPool_update_00000B44 SnowFall_moveFlakes_000027A8 snoweffects_uso_func_000039C4 snoweffects_uso_func_00004E5C snoweffects_uso_func_00004374 snoweffects_uso_func_00004188
+SNOW_NCC_FUNCS := SnowRing_draw_000040B4 SnowPool_update_00000B44 SnowFall_moveFlakes_000027A8 SnowFall_fill_000039C4 SnowRing_placeEnds_00004E5C SnowRing_updateBasis_00004374 SnowRing_setupDL_00004188
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NCC_FUNCS),$(f)=$(SNOW_NCC_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NCC_DONOR)
 # agent-b run 640: snow effect child-node creators 5FD4 / 6144 / 6248 (new child in the first attach's
@@ -177,8 +177,8 @@ SNOW_B_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_b.cpp.o
 $(SNOW_B_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_b.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym init__10SnowEffectFP4NodeT1iN23fT6=snoweffects_uso_func_00005FD4 --redefine-sym createA__10SnowEffectFv=snoweffects_uso_func_00006144 --redefine-sym createB__10SnowEffectFv=snoweffects_uso_func_00006248 --redefine-sym __ct__4NodeFPc=gl_func_00000000_snowb_node --redefine-sym __vtbl__8SnowNode=snowb_vtbl_SnowNode_60 --redefine-sym __vtbl__10SnowChild0=snowb_vtbl_SnowChild0_1C8 --redefine-sym __vtbl__10SnowChildA=snowb_vtbl_SnowChildA_158 --redefine-sym __vtbl__10SnowChildB=snowb_vtbl_SnowChildB_238 --redefine-sym __vtbl__12SnowBaseMatB=snowb_vtbl_BaseMat_559C --redefine-sym __vtbl__8SnowMatB=snowb_vtbl_Mat_559C $@
-SNOW_B_FUNCS := snoweffects_uso_func_00005FD4 snoweffects_uso_func_00006144 snoweffects_uso_func_00006248 snoweffects_uso_func_0000559C
+	$(OBJCOPY) --redefine-sym init__10SnowEffectFP4NodeT1iN23fT6=BoardTrail_init_00005FD4 --redefine-sym createA__10SnowEffectFv=BoardTrail_createPowder_00006144 --redefine-sym createB__10SnowEffectFv=BoardTrail_createSpec_00006248 --redefine-sym __ct__4NodeFPc=gl_func_00000000_snowb_node --redefine-sym __vtbl__8SnowNode=snowb_vtbl_SnowNode_60 --redefine-sym __vtbl__10SnowChild0=snowb_vtbl_SnowChild0_1C8 --redefine-sym __vtbl__10SnowChildA=snowb_vtbl_SnowChildA_158 --redefine-sym __vtbl__10SnowChildB=snowb_vtbl_SnowChildB_238 --redefine-sym __vtbl__12SnowBaseMatB=snowb_vtbl_BaseMat_559C --redefine-sym __vtbl__8SnowMatB=snowb_vtbl_Mat_559C $@
+SNOW_B_FUNCS := BoardTrail_init_00005FD4 BoardTrail_createPowder_00006144 BoardTrail_createSpec_00006248 SnowRing_display_0000559C
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_B_FUNCS),$(f)=$(SNOW_B_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_B_DONOR)
 # agent-h run 649: NCC donors for the texture-sprite inits 15D0 / 1A18 / 2310 (EXACT since agent-c run 691)
@@ -187,7 +187,7 @@ SNOW_NM_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp.o
 $(SNOW_NM_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NM_FUNCS := snoweffects_uso_func_000015D0 snoweffects_uso_func_00001A18 snoweffects_uso_func_00001E60 snoweffects_uso_func_00002310
+SNOW_NM_FUNCS := PowderParticles_buildTexDL_000015D0 NormalParticles_buildTexDL_00001A18 SpecParticles_buildTexDL_00001E60 SnowFall_buildTexDL_00002310
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_FUNCS),$(f)=$(SNOW_NM_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_DONOR)
 # agent-e run 713: MIPSpro 7.2.1 donor (tools/ncc721.sh) for 0x64B8 (EXACT since run 744), 0x6B28 (EXACT since
@@ -196,7 +196,7 @@ SNOW_MP72_E_DONOR := build/src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp.o
 $(SNOW_MP72_E_DONOR): src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h $(TOOLS)/ncc721.sh
 	@mkdir -p $(dir $@)
 	$(TOOLS)/ncc721.sh $< $@ $(OPT_FLAGS)
-SNOW_MP72_E_EX_FUNCS := snoweffects_uso_func_000064B8 snoweffects_uso_func_00006B28 snoweffects_uso_func_0000718C
+SNOW_MP72_E_EX_FUNCS := BoardTrail_spawnA_000064B8 BoardTrail_spawnB_00006B28 BoardTrail_spawnC_0000718C
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_MP72_E_EX_FUNCS),$(f)=$(SNOW_MP72_E_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_MP72_E_DONOR)
 # 0x9328 (the SnowTarget Cfront ctor): EXACT MIPSpro 7.2.1 (EDG 2.29) donor, agent-b run 711 (replaces agent-e's
@@ -206,8 +206,8 @@ SNOW_9328_DONOR := build/src/snoweffects_uso/snoweffects_uso_mp72_9328.cpp.o
 $(SNOW_9328_DONOR): src/snoweffects_uso/snoweffects_uso_mp72_9328.cpp $(TOOLS)/ncc721.sh
 	@mkdir -p $(dir $@)
 	$(TOOLS)/ncc721.sh $< $@ $(OPT_FLAGS)
-	$(OBJCOPY) --redefine-sym snow_target_ctor=snoweffects_uso_func_00009328 --redefine-sym SNode_ctor=snowe9_SNode_ctor --redefine-sym GdlParmBase_ctor=snowe9_Parms_addParm --redefine-sym mem_new=snowe9_mem_new $@
-build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += snoweffects_uso_func_00009328=$(SNOW_9328_DONOR)
+	$(OBJCOPY) --redefine-sym snow_target_ctor=LocalLight_ctor_00009328 --redefine-sym SNode_ctor=snowe9_SNode_ctor --redefine-sym GdlParmBase_ctor=snowe9_Parms_addParm --redefine-sym mem_new=snowe9_mem_new $@
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += LocalLight_ctor_00009328=$(SNOW_9328_DONOR)
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_9328_DONOR)
 # viewrec.uso Text ends with one zero pad word after 0x55A4's `jr ra; sw a0,0(sp)`: all-zero SUFFIX
 # on the last function, then clip .text back to the Text size (same mechanism as h2hproc / snoweffects).
@@ -6184,7 +6184,7 @@ SNOW_NCC_E_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_e.cpp.o
 $(SNOW_NCC_E_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_e.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NCC_E_FUNCS := snoweffects_uso_func_00008C60 snoweffects_uso_func_00009FE8 snoweffects_uso_func_00009768 snoweffects_uso_func_00009884 snoweffects_uso_func_00008D70 snoweffects_uso_func_00007960
+SNOW_NCC_E_FUNCS := BoardSpray_draw_00008C60 MapLighter_addDiffuse_00009FE8 LocalLight_checkDirty_00009768 LocalLight_buildLitVerts_00009884 BoardSpray_placeEnds_00008D70 HandTrail_placeEnds_00007960
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NCC_E_FUNCS),$(f)=$(SNOW_NCC_E_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NCC_E_DONOR)
 # snoweffects.uso below 0x6000: agent-c's NCC donor for 0x270 / 0xC90 / 0x28E0 (agent-c run 655; kept apart
@@ -6194,7 +6194,7 @@ SNOW_C_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_c.cpp.o
 $(SNOW_C_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_c.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_C_FUNCS := snoweffects_uso_func_00000270 snoweffects_uso_func_000028E0
+SNOW_C_FUNCS := SnowPool_buildTexDL_00000270 SnowFall_display_000028E0
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_C_FUNCS),$(f)=$(SNOW_C_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_C_DONOR)
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_C_DONOR)
@@ -6204,7 +6204,7 @@ SNOW_A_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_a.cpp.o
 $(SNOW_A_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_a.cpp src/snoweffects_uso/snoweffects_ncc.h
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_A_FUNCS := snoweffects_uso_func_0000A10C
+SNOW_A_FUNCS := MapLighter_update_0000A10C
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_A_FUNCS),$(f)=$(SNOW_A_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_A_DONOR)
 # agent-a runs 665-748: EXACT NCC donor for snoweffects 0x7FE0 (trail emitter update), both build paths.
@@ -6212,7 +6212,7 @@ SNOW_7FE0_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_7fe0.cpp.o
 $(SNOW_7FE0_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_7fe0.cpp src/snoweffects_uso/snoweffects_ncc.h
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_7FE0_FUNCS := snoweffects_uso_func_00007FE0
+SNOW_7FE0_FUNCS := BoardSpray_emit_00007FE0
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_7FE0_FUNCS),$(f)=$(SNOW_7FE0_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_7FE0_DONOR)
 # viewrec 0x3878 (erase screen draw): EXACT MIPSpro 7.2.1 donor on both build paths (agent-b run 675 body,
@@ -6229,7 +6229,7 @@ $(SNOW_NM_H_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 # agent-h run 788 (agent-g run 785's source): 0xC90 EXACT, spliced in both trees.
-SNOW_NM_H_FUNCS := snoweffects_uso_func_00000C90
+SNOW_NM_H_FUNCS := SnowPool_display_00000C90
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_H_FUNCS),$(f)=$(SNOW_NM_H_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_H_DONOR)
 # agent-h run 709: 0x47D4 (trail emitter update) EXACT, own NCC donor in both trees.
@@ -6237,5 +6237,5 @@ SNOW_47D4_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_47d4.cpp.o
 $(SNOW_47D4_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_47d4.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += snoweffects_uso_func_000047D4=$(SNOW_47D4_DONOR)
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += SnowRing_emit_000047D4=$(SNOW_47D4_DONOR)
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_47D4_DONOR)

@@ -1,6 +1,6 @@
 /* snoweffects.uso 0x9328: the SnowTarget Cfront constructor, EXACT through the MIPSpro 7.2.1 front end
  * (EDG 2.29, tools/ncc721.sh; agent-b run 711). Spliced over the placeholder in snoweffects_uso.c in both
- * build trees; the objcopy step renames snow_target_ctor to snoweffects_uso_func_00009328 and the three
+ * build trees; the objcopy step renames snow_target_ctor to LocalLight_ctor_00009328 and the three
  * callees to the 0-pinned blank-jal aliases snowe9_* (undefined_syms_auto.txt).
  *
  * Layout: SNode base (out-of-line ctor, then the SnowTarget vptr Data+0x0 at +0x28), a Parms member at +0x240

@@ -5,7 +5,7 @@
 /* agent-h run 762: back to an int return (run 757's long long typing is gone). */
 extern "C" int gl_func_00000000(...);
 
-/* ---- snoweffects_uso_func_00000C90 (moved from agent-c's snoweffects_uso_ncc_c.cpp, agent-h run 699) ---- */
+/* ---- SnowPool_display_00000C90 (moved from agent-c's snoweffects_uso_ncc_c.cpp, agent-h run 699) ---- */
 #include "../game_libs/ncc_drafts/gbi_subset.h"
 struct GCtx;
 /* zero-code use counter for the append inlines (defined before GCtx; z0 below is the same thing) */
@@ -34,7 +34,7 @@ struct GCtx {
     Gfx *atIq(DList *l, int n) { l->count = n + 1; return &dl->buf[n]; }
     Gfx *nextI() { int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
 };
-/* snoweffects_uso_func_00000C90 (EXACT): the particle sprite draw. Calls the texture's
+/* SnowPool_display_00000C90 (EXACT): the particle sprite draw. Calls the texture's
  * display list (+0x2C, its +0x60 through a blank import), builds the camera view matrix (camera +0x30),
  * then for each particle: world position * the gGfxLib world scale (+0x128), projected through the
  * matrix; inside the near / far planes (+0xAC / +0xB0) and the half-screen box it records the prim
@@ -203,7 +203,7 @@ inline SnowV3c scaled(const SnowV3c &a) { return SnowV3c(a.x * snow_gfx_scale_12
  * sits on the second pooled word, which the s-middle ternary temp reuses (a1 as in the target). */
 inline int tcall1(int d0, SnowDLHolder *t) { d0 = d0; return gl_func_00000000(t->dl, t); }
 
-extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
+extern "C" void SnowPool_display_00000C90(SnowSprites *self) {
     GCtx *c = SNOW_CAM->dl;
     DList *l;
     int d;

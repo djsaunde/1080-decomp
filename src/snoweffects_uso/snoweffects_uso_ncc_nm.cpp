@@ -96,7 +96,7 @@ struct SnowTex {
   XgDPNoParam(m5, pkt, G_RDPPIPESYNC); \
   XgDPSetTile(m6, pkt, fmt, siz, (((((lrs)-(uls)+1) * siz##_LINE_BYTES)+7)>>3), 0, G_TX_RENDERTILE, pal, cmt, maskt, shiftt, cms, masks, shifts); \
   XgDPLoadTileGeneric(m7, pkt, G_SETTILESIZE, G_TX_RENDERTILE, (uls)<<G_TEXTURE_IMAGE_FRAC, (ult)<<G_TEXTURE_IMAGE_FRAC, (lrs)<<G_TEXTURE_IMAGE_FRAC, (lrt)<<G_TEXTURE_IMAGE_FRAC) }
-extern "C" void snoweffects_uso_func_000015D0(SnowTex *t) {
+extern "C" void PowderParticles_buildTexDL_000015D0(SnowTex *t) {
     t->name = D_00000000 + 0x2C8;
     t->dl = (GCtx *)gl_func_00000000(0, D_00000000 + 0x2E0, 20, 0, 0, 0, 0);
     gl_func_00000000_snow_reset(t->dl);
@@ -121,7 +121,7 @@ extern "C" void snoweffects_uso_func_000015D0(SnowTex *t) {
     XgDPWord(N0, t->dl->hop(), 0xB8000000, 0);
 }
 
-extern "C" void snoweffects_uso_func_00001A18(SnowTex *t) {
+extern "C" void NormalParticles_buildTexDL_00001A18(SnowTex *t) {
     t->name = D_00000000 + 0x2EC;
     t->dl = (GCtx *)gl_func_00000000(0, D_00000000 + 0x304, 20, 0, 0, 0, 0);
     gl_func_00000000_snow_reset(t->dl);
@@ -152,7 +152,7 @@ extern "C" void snoweffects_uso_func_00001A18(SnowTex *t) {
  * the 0xBA001402 word, the combine word). The hop temps that straddle a cut colour the target's hidden t0, so
  * E700 takes t1 and F568 a3; the 0xBA000602 / EndDL packets straddle a cut (a3). No dead switch is needed
  * for the jr ra delay slot in this form. */
-extern "C" void snoweffects_uso_func_00001E60(SnowTex *t) {
+extern "C" void SpecParticles_buildTexDL_00001E60(SnowTex *t) {
     t->name = D_00000000 + 0x310;
     t->dl = (GCtx *)gl_func_00000000(0, D_00000000 + 0x328, 20, 0, 0, 0, 0);
     gl_func_00000000_snow_reset(t->dl);
@@ -180,7 +180,7 @@ extern "C" void snoweffects_uso_func_00001E60(SnowTex *t) {
     XgDPWord(N0, t->dl->hop(), 0xB8000000, 0);
 }
 
-extern "C" void snoweffects_uso_func_00002310(SnowTex *t) {
+extern "C" void SnowFall_buildTexDL_00002310(SnowTex *t) {
     t->name = D_00000000 + 0x334;
     t->iB4 = 0;
     t->iB8 = 0;

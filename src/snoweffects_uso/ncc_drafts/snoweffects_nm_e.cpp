@@ -10,7 +10,7 @@
 extern "C" float sqrtf(float);
 /* the callees, by name (a matching donor would call them through typed 0-pinned aliases) */
 extern "C" {
-float snoweffects_uso_func_000052D4(void *self, void *pos, void *out, void *a3);
+float SnowRing_probe_000052D4(void *self, void *pos, void *out, void *a3);
 float math_acosf(float);
 float fcos(float);
 float fsin(float);
@@ -75,7 +75,7 @@ struct SnowBody7 {
     char pad14C[0x15C - 0x14C];
     /* 0x15C */ float maxDist;
 };
-extern "C" void snoweffects_uso_func_00007960(SnowBody7 *t) {
+extern "C" void HandTrail_placeEnds_00007960(SnowBody7 *t) {
     float ang;
     SnowV n;
     ang = math_acosf(t->dist = -dotv(t->p, t->n));
@@ -84,7 +84,7 @@ extern "C" void snoweffects_uso_func_00007960(SnowBody7 *t) {
     }
     t->hits = 0;
     if (!((t->speed < 0.0f ? -t->speed : t->speed) < 0.1f)) {
-        float d = snoweffects_uso_func_000052D4(t, &t->pos, &n, t->qD4);
+        float d = SnowRing_probe_000052D4(t, &t->pos, &n, t->qD4);
         if (d != 0.0f && d < t->maxDist) {
             SnowV push = n * -d;
             t->pos += push;
@@ -120,7 +120,7 @@ extern "C" void snoweffects_uso_func_00007960(SnowBody7 *t) {
  * parameter, then 0x84 is the pooled copy for the GdlParmBase call). A non-POD PName (copy ctor)
  * gives both stores but passes the name by address; an identity inline returning the name gives a
  * pooled (shared) word, not one per Parm; an inline GdlParmBase ctor adds this == 0 checks.
- * Run 680 (measured in splice form: objcopy --redefine-sym __ct__11SnowTarget9Fv=snoweffects_uso_func_00009328):
+ * Run 680 (measured in splice form: objcopy --redefine-sym __ct__11SnowTarget9Fv=LocalLight_ctor_00009328):
  * 246 / 247 words (a shorter splice fits), register / offset-normalised 226 / 247, frame 192 vs 224.
  * - The per-Parm name words come from passing each name as an rvalue: PName gets a converting ctor
  *   and NM9() builds `PName(*(char **)..)`, so edg materialises one temp per inline Parm ctor (the

@@ -70,21 +70,21 @@ void SnowEffect::init(Node *gB, Node *gA, int a3, int a4, int a5, float f6, floa
     grpA = gA;
     grpB = gB;
     XCALL(gl_func_00000000_snow_3ee4, SnowRing_init_00003EE4)(this, a3, 4, a4, a5, f6, f7);
-    CALL(snoweffects_uso_func_00006B08)(this);
+    CALL(BoardTrail_enableB_00006B08)(this);
     lnk(child0 = new SnowChild0, gA);
     lnk(child0, gB);
     child0->v11(8);
 }
 
 void SnowEffect::createA() {
-    CALL(snoweffects_uso_func_00006420)(this);
+    CALL(BoardTrail_enableA_00006420)(this);
     lnk(childA = new SnowChildA, grpA);
     lnk(childA, grpB);
     childA->v11(8);
 }
 
 void SnowEffect::createB() {
-    CALL(snoweffects_uso_func_000070C0)(this);
+    CALL(BoardTrail_enableC_000070C0)(this);
     lnk(childB = new SnowChildB, grpA);
     lnk(childB, grpB);
     childB->v11(16);
@@ -172,7 +172,7 @@ extern "C" void gl_func_00000000_snowb_lights(void *, SnowCtxB *, void *, float)
 #define gSPVertexB(pkt, v, n, v0) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = _SHIFTL(4, 24, 8) | _SHIFTL((v0) * 2, 16, 8) | _SHIFTL(((n) << 10) | (sizeof(SnowVtxB) * (n) - 1), 0, 16); _g->words.w1 = (unsigned int)(v); }
 extern "C" SnowGfxB snowb_gfxX_559C, snowb_gfxY_559C, snowb_gfxZ_559C;
 
-extern "C" void snoweffects_uso_func_0000559C(SnowRingB *t) {
+extern "C" void SnowRing_display_0000559C(SnowRingB *t) {
     SnowMatB m;
     m.c[0] = m.c[1] = m.c[2] = m.c[3] = 1.0f;
     SnowCtxB *ctx = gfxB.win->ctx;

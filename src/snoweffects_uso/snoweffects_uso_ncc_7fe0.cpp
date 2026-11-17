@@ -220,7 +220,7 @@ inline void lerp3(TV &p, const TV &b, float f) {
 
 /* run 748: fade blend of a colour byte; the 8 dummies make c the 10th float pool word (shared with |s|) */
 inline float mixq(float d0, float d1, float d2, float d3, float d4, float d5, float d6, float d7, float f, float c) { d0 = d0; d1 = d1; d2 = d2; d3 = d3; d4 = d4; d5 = d5; d6 = d6; d7 = d7; return c + (255.0f - c) * f; }
-extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
+extern "C" void BoardSpray_emit_00007FE0(TTrail *t) {
     int i;
     float s;
     float v;

@@ -272,7 +272,7 @@ void SnowPool_init_0000020C(SnowPool *this, int n) {
 /* texture-sprite init (the 0x15D0 family, render state first): EXACT via the IDO 7.1 NCC donor
  * src/snoweffects_uso/snoweffects_uso_ncc_c.cpp (agent-c runs 655 / 683), REPLACE_FUNC_BODY-spliced over this
  * placeholder in both build trees. */
-void snoweffects_uso_func_00000270(void) {
+void SnowPool_buildTexDL_00000270(void) {
 }
 
 SnowParticle *SnowPool_oldest_00000680(SnowPool *this) {
@@ -403,28 +403,28 @@ void SnowPool_update_00000B44(SnowPool *this) {
 /* particle sprite draw (projected texture rectangles): EXACT via the IDO 7.1 NCC donor
  * src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp (agent-c run 655, agent-h runs 687-783, agent-g run 785),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_00000C90(void) {
+void SnowPool_display_00000C90(void) {
 }
 
 /* texture-sprite init: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
  * (agent-h run 649, agent-c run 691), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_000015D0(void) {
+void PowderParticles_buildTexDL_000015D0(void) {
 }
 
 /* texture-sprite init: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
  * (agent-h run 649, agent-c run 691), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_00001A18(void) {
+void NormalParticles_buildTexDL_00001A18(void) {
 }
 
 /* texture-sprite init (64 x 64 IA8, Data+0x5AC0): EXACT via the IDO 7.1 NCC donor
  * src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp (agent-c run 704), REPLACE_FUNC_BODY-spliced over this placeholder
  * in both build trees. */
-void snoweffects_uso_func_00001E60(void) {
+void SpecParticles_buildTexDL_00001E60(void) {
 }
 
 /* texture-sprite init: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
  * (agent-h run 649, agent-c run 691), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_00002310(void) {
+void SnowFall_buildTexDL_00002310(void) {
 }
 
 /* SnowFall flake motion: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc.cpp
@@ -435,7 +435,7 @@ void SnowFall_moveFlakes_000027A8(SnowFall *this) {
 /* snowfall draw (camera-motion integration, camera-space box wrap, projected texture rectangles): EXACT via
  * the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc_c.cpp (agent-c runs 667-794, agent-g run 793),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_000028E0(void) {
+void SnowFall_display_000028E0(void) {
 }
 
 void SnowFall_rotateNormal_00003544(char *this, float *out, Vec3 *v) {
@@ -528,7 +528,7 @@ void SnowFall_buildFrustum_0000374C(SnowFall *this) {
 
 /* SnowFall fill: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc.cpp
  * (RoData+0x14..+0x1C literal pin), REPLACE_FUNC_BODY-spliced over this placeholder. */
-void snoweffects_uso_func_000039C4(SnowFall *this) {
+void SnowFall_fill_000039C4(SnowFall *this) {
 }
 
 void ParmFloat_read_snow_00003CA4(char *a0) {
@@ -652,15 +652,15 @@ void SnowRing_draw_000040B4(void *self) {
 
 /* display-list setup: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder. */
-void snoweffects_uso_func_00004188(void) {
+void SnowRing_setupDL_00004188(void) {
 }
 
 /* emitter basis rebuild: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder. */
-void snoweffects_uso_func_00004374(void) {
+void SnowRing_updateBasis_00004374(void) {
 }
 
-int snoweffects_uso_func_000046BC(char *this) {
+int SnowRing_emitTick_000046BC(char *this) {
     if (*(int *)(this + 0x144) >= 2) {
         if (--*(int *)(this + 0x84) < 0) {
             *(int *)(this + 0x84) = *(int *)(this + 0x88);
@@ -691,23 +691,23 @@ void SnowRing_setSlotState_00004714(SnowRing *r, int on, int prev, int a3) {
 
 /* trail emitter update: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc_47d4.cpp
  * (agent-h run 709), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_000047D4(void) {
+void SnowRing_emit_000047D4(void) {
 }
 
-void snoweffects_uso_func_00004E4C(char *a0) {
+void SnowRing_calcWidth_00004E4C(char *a0) {
     *(float *)(a0 + 0x50) = 1.0f;
 }
 
 /* basis end points + collision push-back: EXACT via the IDO 7.1 NCC donor
  * src/snoweffects_uso/snoweffects_uso_ncc.cpp, REPLACE_FUNC_BODY-spliced over this placeholder. */
-void snoweffects_uso_func_00004E5C(void) {
+void SnowRing_placeEnds_00004E5C(void) {
 }
 
-void snoweffects_uso_func_000052CC(int a0) {
+void SnowRing_spawn_000052CC(int a0) {
     (void)&a0;
 }
 
-float snoweffects_uso_func_000052D4(char *this, int a1, Vec3 *out, int a3) {
+float SnowRing_probe_000052D4(char *this, int a1, Vec3 *out, int a3) {
     SnowHit hit;
     int pad[3];
     Tri3i tmp;
@@ -752,7 +752,7 @@ int SnowRing_countSlots_000053E8(char *this) {
     return d;
 }
 
-void snoweffects_uso_func_00005440(int a0, int a1) {
+void SnowRing_vslot16_00005440(int a0, int a1) {
     (void)&a0;
     (void)&a1;
 }
@@ -794,38 +794,38 @@ void SnowRing_update_0000544C(SnowRing *this) {
 /* 0x559C: the trail-ring draw (Mat lights, scaled Vtx ring, per-slot texture loads, gSP1Triangle strips).
  * EXACT via the IDO 7.1 NCC donor in snoweffects_uso_ncc_b.cpp (agent-b runs 679 / 686), REPLACE_FUNC_BODY-
  * spliced over this placeholder. */
-void snoweffects_uso_func_0000559C(void) {
+void SnowRing_display_0000559C(void) {
 }
 
-/* snoweffects_uso_func_00005FD4: SnowEffect::init (name, groups, SnowRing_init, child0 at +0x9C).
+/* BoardTrail_init_00005FD4: SnowEffect::init (name, groups, SnowRing_init, child0 at +0x9C).
  * EXACT via an IDO 7.1 NCC (C++) donor, src/snoweffects_uso/snoweffects_uso_ncc_b.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder. */
-void snoweffects_uso_func_00005FD4(char *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
+void BoardTrail_init_00005FD4(char *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
 }
 
-/* snoweffects_uso_func_00006144: SnowEffect::createA (childA at +0x98, attached to both groups).
+/* BoardTrail_createPowder_00006144: SnowEffect::createA (childA at +0x98, attached to both groups).
  * EXACT via the NCC donor src/snoweffects_uso/snoweffects_uso_ncc_b.cpp (placeholder). */
-void snoweffects_uso_func_00006144(char *this) {
+void BoardTrail_createPowder_00006144(char *this) {
 }
 
-/* snoweffects_uso_func_00006248: SnowEffect::createB (childB at +0xA0, attached to both groups).
+/* BoardTrail_createSpec_00006248: SnowEffect::createB (childB at +0xA0, attached to both groups).
  * EXACT via the NCC donor src/snoweffects_uso/snoweffects_uso_ncc_b.cpp (placeholder). */
-void snoweffects_uso_func_00006248(char *this) {
+void BoardTrail_createSpec_00006248(char *this) {
 }
 
-void snoweffects_uso_func_0000634C(char *this) {
+void BoardTrail_spawn_0000634C(char *this) {
     if (*(int *)(this + 0x54) & 1) {
-        CALL(snoweffects_uso_func_000064B8)(this);
+        CALL(BoardTrail_spawnA_000064B8)(this);
     }
     if (*(int *)(this + 0x54) & 2) {
-        CALL(snoweffects_uso_func_00006B28)(this);
+        CALL(BoardTrail_spawnB_00006B28)(this);
     }
     if (*(int *)(this + 0x54) & 4) {
-        CALL(snoweffects_uso_func_0000718C)(this);
+        CALL(BoardTrail_spawnC_0000718C)(this);
     }
 }
 
-void snoweffects_uso_func_000063B4(char *this) {
+void BoardTrail_calcWidth_000063B4(char *this) {
     char *v = *(char **)(this + 0x2C);
     float x, a;
     if (*(s16 *)(v + 0x9A2) != 98) {
@@ -843,7 +843,7 @@ extern f32 snow_ro_2C, snow_ro_30, snow_ro_34, snow_ro_38, snow_ro_3C, snow_ro_4
 extern f32 snow_ro_44, snow_ro_48, snow_ro_4C;
 
 /* default parameters of the 0x6144 child (flag bit 0 at +0x54), the 0x70C0 sibling */
-void snoweffects_uso_func_00006420(SnowEffect *this) {
+void BoardTrail_enableA_00006420(SnowEffect *this) {
     this->flags |= 1;
     this->unk174 = snow_ro_2C;
     this->unk178 = snow_ro_30;
@@ -865,10 +865,10 @@ void snoweffects_uso_func_00006420(SnowEffect *this) {
  * point minus +0x138 (normalized, scaled, plus the camera +0x318 lean) and per-particle pool spawns.
  * EXACT via a MIPSpro 7.2.1 (C++) donor: src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp (agent-e run 744),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_000064B8(void) {
+void BoardTrail_spawnA_000064B8(void) {
 }
 
-void snoweffects_uso_func_00006B08(char *a0) {
+void BoardTrail_enableB_00006B08(char *a0) {
     *(int *)(a0 + 0x1C8) = 0;
     *(int *)(a0 + 0x54) |= 2;
     *(int *)(a0 + 0x1CC) = 0;
@@ -879,7 +879,7 @@ void snoweffects_uso_func_00006B08(char *a0) {
  * counters (+0x1C8 / +0x1CC / +0x1D8 from camera +0x9A0 / +0x9A2 / +0xA20), then a burst spawn along the
  * camera +0x318 / +0x3B0 axes. EXACT via a MIPSpro 7.2.1 (C++) donor: src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp
  * (agent-e run 723), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_00006B28(void *self) {
+void BoardTrail_spawnB_00006B28(void *self) {
 }
 
 /* the RoData floats of the 0x70C0 defaults (each load takes its own lui: one pin per constant) */
@@ -887,7 +887,7 @@ extern f32 snow_ro_80, snow_ro_84, snow_ro_88, snow_ro_8C, snow_ro_90, snow_ro_9
 extern f32 snow_ro_98, snow_ro_9C, snow_ro_A0, snow_ro_A4, snow_ro_A8, snow_ro_AC;
 
 /* default parameters of a new snow effect (called from its create, 0x6248) */
-void snoweffects_uso_func_000070C0(SnowEffect *this) {
+void BoardTrail_enableC_000070C0(SnowEffect *this) {
     this->flags |= 4;
     this->unk1E0 = snow_ro_80;
     this->unk1F0 = 0.0f;
@@ -913,10 +913,10 @@ void snoweffects_uso_func_000070C0(SnowEffect *this) {
  * with a lerped position, a velocity from the camera +0x318 / +0x3B0 axes and +0x114, and a lerped colour.
  * EXACT via a MIPSpro 7.2.1 (C++) donor: src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp (agent-e run 736),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_0000718C(void) {
+void BoardTrail_spawnC_0000718C(void) {
 }
 
-void snoweffects_uso_func_000078E8(char *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
+void HandTrail_init_000078E8(char *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
     (void)&a1;
     (void)&a2;
     (void)&a3;
@@ -928,34 +928,34 @@ void snoweffects_uso_func_000078E8(char *this, int a1, int a2, int a3, int a4, i
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 673),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_00007960(void *self) {
+void HandTrail_placeEnds_00007960(void *self) {
 }
 
-void snoweffects_uso_func_00007CCC(char *a0) {
+void ParmFloat_read_snow_00007CCC(char *a0) {
     int tag;
     fs_gdlReadInt_snow_00003D70(&tag);
     fs_gdlReadFloat_snow_00003DAC((float *)(a0 + 0x10));
 }
 
-void snoweffects_uso_func_00007CFC(char *a0) {
+void ParmQuad_read_snow_00007CFC(char *a0) {
     int tag;
     fs_gdlReadInt_snow_00003D70(&tag);
     fs_gdlReadQuad_snow_00003DE8((Quad4 *)(a0 + 0x10));
 }
 
-void snoweffects_uso_func_00007D2C(char *a0) {
+void ParmInt_read_snow_00007D2C(char *a0) {
     int tag;
     fs_gdlReadInt_snow_00003D70(&tag);
     fs_gdlReadInt_snow_00003D70((int *)(a0 + 0x10));
 }
 
-void snoweffects_uso_func_00007D5C(char *a0) {
+void ParmVec3_read_snow_00007D5C(char *a0) {
     int tag;
     fs_gdlReadInt_snow_00003D70(&tag);
     fs_gdlReadVec3_snow_00003E40((Vec3 *)(a0 + 0x10));
 }
 
-void *snoweffects_uso_func_00007D8C(int *arg0) {
+void *SnowColourItemType_create_00007D8C(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -978,25 +978,25 @@ void *snoweffects_uso_func_00007D8C(int *arg0) {
     return p2;
 }
 
-void snoweffects_uso_func_00007E20(int *dst) {
+void fs_gdlReadInt_snow_00007E20(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void snoweffects_uso_func_00007E5C(float *dst) {
+void fs_gdlReadFloat_snow_00007E5C(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void snoweffects_uso_func_00007E98(Quad4 *dst) {
+void fs_gdlReadQuad_snow_00007E98(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
-void snoweffects_uso_func_00007EF0(Vec3 *dst) {
+void fs_gdlReadVec3_snow_00007EF0(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -1010,37 +1010,37 @@ void snoweffects_uso_func_00007EF0(Vec3 *dst) {
 }
 
 /* emitter ctor tail, the 0x78E8 twin: name = Data+0x810, 0x3EE4 init with stride 4, then 0x9010(this, 97) */
-void snoweffects_uso_func_00007F60(char *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
+void BoardSpray_init_00007F60(char *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
     (void)&a1;
     (void)&a2;
     (void)&a3;
     *(char **)(this + 0xC) = (char *)&D_00000000 + 0x810;
     XCALL(gl_func_00000000_snow_3ee4, SnowRing_init_00003EE4)(this, a3, 4, a4, a5, f6, f7);
-    CALL(snoweffects_uso_func_00009010)(this, 97);
+    CALL(BoardSpray_setDefaults_00009010)(this, 97);
     *(float *)(this + 0x194) = 0.0f;
     *(float *)(this + 0x198) = 100.0f;
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_7fe0.cpp (trail emitter update,
  * agent-a runs 661-748), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_00007FE0(void) {
+void BoardSpray_emit_00007FE0(void) {
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 639),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_00008C60(void *self) {
+void BoardSpray_draw_00008C60(void *self) {
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 659),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_00008D70(void *self) {
+void BoardSpray_placeEnds_00008D70(void *self) {
 }
 
 /* the RoData floats of the 0x9010 defaults (own lui each) */
 extern f32 snow_ro_C0, snow_ro_C4, snow_ro_C8, snow_ro_CC, snow_ro_D0, snow_ro_D4, snow_ro_D8, snow_ro_DC, snow_ro_E0, snow_ro_E4;
 
 /* emitter defaults of the 0x7F60 emitter (a1 unused): parameter floats, counts 3 / 2 */
-void snoweffects_uso_func_00009010(SnowRing *this, int a1) {
+void BoardSpray_setDefaults_00009010(SnowRing *this, int a1) {
     (void)&a1;
     this->unk1F0 = 0.0f;
     this->unk178 = snow_ro_C0;
@@ -1065,36 +1065,36 @@ void snoweffects_uso_func_00009010(SnowRing *this, int a1) {
     this->unk1EC = 2;
 }
 
-void snoweffects_uso_func_000090F0(int a0, int a1) {
+void BoardSpray_vslot16_000090F0(int a0, int a1) {
     (void)&a0;
     (void)&a1;
 }
 
-void snoweffects_uso_func_000090FC(char *a0) {
+void ParmFloat_read_snow_000090FC(char *a0) {
     int tag;
-    snoweffects_uso_func_00007E20(&tag);
-    snoweffects_uso_func_00007E5C((float *)(a0 + 0x10));
+    fs_gdlReadInt_snow_00007E20(&tag);
+    fs_gdlReadFloat_snow_00007E5C((float *)(a0 + 0x10));
 }
 
-void snoweffects_uso_func_0000912C(char *a0) {
+void ParmQuad_read_snow_0000912C(char *a0) {
     int tag;
-    snoweffects_uso_func_00007E20(&tag);
-    snoweffects_uso_func_00007E98((Quad4 *)(a0 + 0x10));
+    fs_gdlReadInt_snow_00007E20(&tag);
+    fs_gdlReadQuad_snow_00007E98((Quad4 *)(a0 + 0x10));
 }
 
-void snoweffects_uso_func_0000915C(char *a0) {
+void ParmInt_read_snow_0000915C(char *a0) {
     int tag;
-    snoweffects_uso_func_00007E20(&tag);
-    snoweffects_uso_func_00007E20((int *)(a0 + 0x10));
+    fs_gdlReadInt_snow_00007E20(&tag);
+    fs_gdlReadInt_snow_00007E20((int *)(a0 + 0x10));
 }
 
-void snoweffects_uso_func_0000918C(char *a0) {
+void ParmVec3_read_snow_0000918C(char *a0) {
     int tag;
-    snoweffects_uso_func_00007E20(&tag);
-    snoweffects_uso_func_00007EF0((Vec3 *)(a0 + 0x10));
+    fs_gdlReadInt_snow_00007E20(&tag);
+    fs_gdlReadVec3_snow_00007EF0((Vec3 *)(a0 + 0x10));
 }
 
-void *snoweffects_uso_func_000091BC(int *arg0) {
+void *SnowColourItemType_create_000091BC(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -1117,55 +1117,55 @@ void *snoweffects_uso_func_000091BC(int *arg0) {
     return p2;
 }
 
-void snoweffects_uso_func_00009250(int *dst) {
+void fs_gdlReadInt_snow_00009250(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void snoweffects_uso_func_0000928C(float *dst) {
+void fs_gdlReadFloat_snow_0000928C(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void snoweffects_uso_func_000092C8(Quad4 *dst) {
+void fs_gdlReadQuad_snow_000092C8(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
-void snoweffects_uso_func_00009320(void) {
+void MapLighter_vslot11_00009320(void) {
 }
 
 /* 0x9328: the SnowTarget Cfront ctor (SNode base, Parms at +0x240 with five inline Parm ctors).
  * EXACT via the MIPSpro 7.2.1 (EDG 2.29) donor src/snoweffects_uso/snoweffects_uso_mp72_9328.cpp (agent-b run
  * 711; agent-e run 692 / agent-b runs 697 / 705 NCC drafts before it), REPLACE_FUNC_BODY-spliced over this
  * placeholder in both build trees. */
-void snoweffects_uso_func_00009328(void) {
+void LocalLight_ctor_00009328(void) {
 }
 
-void snoweffects_uso_func_00009704(char *a0) {
+void LocalLight_display_00009704(char *a0) {
     CALL(gfx_setBlendColour)(&D_00000000, a0 + 0x288);
     CALL(SNode_display)(a0);
 }
 
-void snoweffects_uso_func_0000973C(char *a0) {
+void LocalLight_loadData_0000973C(char *a0) {
     CALL(Parms_load_00035C6C)(a0 + 0x240);
     CALL(SNode_loadData)(a0);
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 645),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_00009768(void *self) {
+void LocalLight_checkDirty_00009768(void *self) {
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 653),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_00009884(void *self) {
+void LocalLight_buildLitVerts_00009884(void *self) {
 }
 
-void snoweffects_uso_func_00009BE8(char *this, char *src) {
+void LocalLight_saveColours_00009BE8(char *this, char *src) {
     SnowRGBA *cols = *(SnowRGBA **)(src + 0x50);
     int i;
     for (i = 0; i < *(int *)(this + 0x22C); i++) {
@@ -1201,7 +1201,7 @@ typedef struct SnowGlow {
     /* 0x2C4 */ s32 period;
 } SnowGlow;
 
-void snoweffects_uso_func_00009C48(SnowGlow *this, char *src) {
+void LocalLight_flicker_00009C48(SnowGlow *this, char *src) {
     SnowRGBA *cols = *(SnowRGBA **)(src + 0x50);
     SnowFlicker *fl = snow_flickerTbl_958[this->seq];
     float f;
@@ -1238,7 +1238,7 @@ void snoweffects_uso_func_00009C48(SnowGlow *this, char *src) {
  * The test re-reads type->head instead of the head local (the target's beqz + delay-slot copy), and the
  * re-read value goes to list_append as an extra third argument: it is what keeps it in a2, with the head
  * copy in a1 (the "invisible extra arg" lever, IDO_CODEGEN kit II; agent-b run 697). */
-void *snoweffects_uso_func_00009E10(char *type) {
+void *LocalLightType_create_00009E10(char *type) {
     int *item;
     int *head;
     item = (int *)gl_func_00000000(0) /* 0x9328 ctor */;
@@ -1259,7 +1259,7 @@ void *snoweffects_uso_func_00009E10(char *type) {
 /* the SnowLink vtable (Data+0x9C4; its USO reloc names the object, so the lo16 is 0: a 0 pin) */
 extern char snowLink_vtbl_9C4;
 
-SnowLink *SnowLink_ctor_00009E88(SnowLink *this, int a1, void *src, int a3) {
+SnowLink *MapLighter_ctor_00009E88(SnowLink *this, int a1, void *src, int a3) {
     Node *c;
     if (this != 0 || (this = (SnowLink *)CALL(mem_new)(0x50)) != 0) {
         CALL(Node_ctor)(this, (char *)&D_00000000 + 0xA64);
@@ -1268,7 +1268,7 @@ SnowLink *SnowLink_ctor_00009E88(SnowLink *this, int a1, void *src, int a3) {
         this->unk2C = a1;
         this->src = src;
         this->unk34 = a3;
-        this->tgt = c = (Node *)CALL(snoweffects_uso_func_00009328)(0);
+        this->tgt = c = (Node *)CALL(LocalLight_ctor_00009328)(0);
         CALL(list_append)(&this->node.children, c);
         if (c->parent != 0) {
             c->unk04 = 1;
@@ -1280,17 +1280,17 @@ SnowLink *SnowLink_ctor_00009E88(SnowLink *this, int a1, void *src, int a3) {
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp
  * (agent-h run 621), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void SnowLink_update_00009F44(void *self) {
+void MapLighter_syncLight_00009F44(void *self) {
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 639),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_00009FE8(void *self) {
+void MapLighter_addDiffuse_00009FE8(void *self) {
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_a.cpp (snow light update,
  * agent-a runs 661 / 665 / 669 / 677), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_0000A10C(void) {
+void MapLighter_update_0000A10C(void) {
 }
 
 /* the ItemType item list walked by 0xA760 (a cursor / next iterator, as game_libs
@@ -1314,7 +1314,7 @@ extern int gl_func_00000000_snow_cull(void *, int, float, float, float, int, flo
  * iterator is block-scoped in the if (so it sits below the call's key copy) and padA is an
  * unidentified 8-byte local; item is assigned before the tests that read it[0]->data again (the
  * target's v0 -> s0 copy). */
-void snoweffects_uso_func_0000A760(char *self) {
+void MapLighter_cullLights_0000A760(char *self) {
     SnowTypeKey key;
     char padA[0x8];
     char *type;
@@ -1336,21 +1336,21 @@ void snoweffects_uso_func_0000A760(char *self) {
     }
 }
 
-void snoweffects_uso_func_0000A870(char *a0) {
+void ParmFloat_read_snow_0000A870(char *a0) {
     int tag;
-    snoweffects_uso_func_00009250(&tag);
-    snoweffects_uso_func_0000928C((float *)(a0 + 0x10));
+    fs_gdlReadInt_snow_00009250(&tag);
+    fs_gdlReadFloat_snow_0000928C((float *)(a0 + 0x10));
 }
 
-void snoweffects_uso_func_0000A8A0(char *a0) {
+void ParmQuad_read_snow_0000A8A0(char *a0) {
     int tag;
-    snoweffects_uso_func_00009250(&tag);
-    snoweffects_uso_func_000092C8((Quad4 *)(a0 + 0x10));
+    fs_gdlReadInt_snow_00009250(&tag);
+    fs_gdlReadQuad_snow_000092C8((Quad4 *)(a0 + 0x10));
 }
 
-void snoweffects_uso_func_0000A8D0(char *a0) {
+void ParmInt_read_snow_0000A8D0(char *a0) {
     int tag;
-    snoweffects_uso_func_00009250(&tag);
-    snoweffects_uso_func_00009250((int *)(a0 + 0x10));
+    fs_gdlReadInt_snow_00009250(&tag);
+    fs_gdlReadInt_snow_00009250((int *)(a0 + 0x10));
 }
 

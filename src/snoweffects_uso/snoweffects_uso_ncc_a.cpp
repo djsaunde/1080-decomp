@@ -1,6 +1,6 @@
 /* IDO 7.1 NCC (C++) EXACT donor for snoweffects.uso 0xA10C (snow light update; agent-a runs 661 / 665 /
  * 669 / 677), REPLACE_FUNC_BODY-spliced over the placeholder in snoweffects_uso.c on both build paths
- * (Makefile SNOW_A_FUNCS). The 1/127 literal is RoData+0xF4 (snoweffects_uso_func_0000A10C_rodata pin). */
+ * (Makefile SNOW_A_FUNCS). The 1/127 literal is RoData+0xF4 (MapLighter_update_0000A10C_rodata pin). */
 #include "snoweffects_ncc.h"
 /* discarded-result callees through a void-typed blank (0-pinned) alias: an int return leaves a dead v0 def */
 extern "C" void gl_func_00000000_snowa_v(...);
@@ -62,20 +62,20 @@ struct SIterB {
  * q must be the assigned variable itself: a cast of the assignment is not substituted and costs a word. */
 inline void buildItem(SLights *t, SItem *p, SType *q) {
     q;
-    if (p->vtxCount == 0) XCALL(gl_func_00000000_snowa_v, snoweffects_uso_func_00009884)(p, t->shape);
-    XCALL(gl_func_00000000_snowa_v, snoweffects_uso_func_00009BE8)(p, t->shape);
+    if (p->vtxCount == 0) XCALL(gl_func_00000000_snowa_v, LocalLight_buildLitVerts_00009884)(p, t->shape);
+    XCALL(gl_func_00000000_snowa_v, LocalLight_saveColours_00009BE8)(p, t->shape);
 }
 inline int itemNormalsDirty(SItem *p, SItem *q) {
     q;
     return p->flags & 2;
 }
-extern "C" void snoweffects_uso_func_0000A10C(SLights *t) {
+extern "C" void MapLighter_update_0000A10C(SLights *t) {
     SType *type;
     unsigned char *c;
     unsigned int i;
     t->tgt->mtx = t->src->mtx;
     t->tgt->colourParm.v = t->src->colour.get();
-    XCALL(gl_func_00000000_snowa_v, snoweffects_uso_func_00009768)(t->tgt);
+    XCALL(gl_func_00000000_snowa_v, LocalLight_checkDirty_00009768)(t->tgt);
     if (t->amb.x != t->ambient->v.get().x || t->amb.y != t->ambient->v.get().y) goto changed;
     if (t->amb.z == t->ambient->v.get().z) goto same;
 changed:
@@ -108,7 +108,7 @@ same:
             col.x += t->ambient->v.get().x;
             col.y += t->ambient->v.get().y;
             col.z += t->ambient->v.get().z;
-            XCALL(gl_func_00000000_snowa_v, snoweffects_uso_func_00009FE8)(t, t->tgt, &col);
+            XCALL(gl_func_00000000_snowa_v, MapLighter_addDiffuse_00009FE8)(t, t->tgt, &col);
             for (j = 0; j < 3; j++) {
                 f = &col.x + j;
                 *f *= 255.0f;
@@ -140,17 +140,17 @@ same:
             while (it.next() != 0) {
                 SItem *item;
                 if (itemNormalsDirty(it.get(), item = (SItem *)it.cur->data)) {
-                    XCALL(gl_func_00000000_snowa_v, snoweffects_uso_func_00009884)(item, t->shape);
+                    XCALL(gl_func_00000000_snowa_v, LocalLight_buildLitVerts_00009884)(item, t->shape);
                     item->flags &= ~2;
                 }
                 if (item->flags & 1) {
-                    XCALL(gl_func_00000000_snowa_v, snoweffects_uso_func_00009BE8)(item, t->shape);
+                    XCALL(gl_func_00000000_snowa_v, LocalLight_saveColours_00009BE8)(item, t->shape);
                     item->f238 = 0;
                     item->f23C = 0;
                     item->flags &= ~1;
                 }
                 if (item->flags & 4) {
-                    XCALL(gl_func_00000000_snowa_v, snoweffects_uso_func_00009C48)(item, t->shape);
+                    XCALL(gl_func_00000000_snowa_v, LocalLight_flicker_00009C48)(item, t->shape);
                     item->flags &= ~4;
                 }
             }

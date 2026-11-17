@@ -81,7 +81,7 @@ extern "C" void gl_func_00000000_snow_4714(SnowEm *, int, int, float);
 static inline void lerpTo(float &a, float f, float b) { float c = a; a = (b - c) * f + c; }
 static inline void lerp2(float &a, float &a2, float f, float b, float b2) { float c = a; a = (b - c) * f + c; c = a2; a2 = (b2 - c) * f + c; }
 static inline void addTo(float &a, float b) { float c = a; a = c + b; }
-extern "C" void snoweffects_uso_func_000047D4(SnowEm *t) {
+extern "C" void SnowRing_emit_000047D4(SnowEm *t) {
     SnowECam *cam;
     float alpha, lim;
     SnowBV3 P, Q;

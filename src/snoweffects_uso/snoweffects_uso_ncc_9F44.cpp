@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for SnowLink_update_00009F44 (0xA4 / 41 words), agent-h run 621.
+/* IDO 7.1 NCC (C++) EXACT donor for MapLighter_syncLight_00009F44 (0xA4 / 41 words), agent-h run 621.
  * REPLACE_FUNC_BODY-spliced over the INCLUDE_ASM placeholder in snoweffects_uso.c on both build paths.
  * The tell that this is C++: every Parm value read keeps the parm's base pointer (addiu v1, v0, 0x114 then
  * lwc1 0x10(v1)), the shape an inline `Parm<T>::get()` returning a reference leaves; cfe folds the offsets.
@@ -41,7 +41,7 @@ struct SnowLink {
     /* 0x40 */ Vec3 pos;
 };
 
-extern "C" void SnowLink_update_00009F44(SnowLink *self) {
+extern "C" void MapLighter_syncLight_00009F44(SnowLink *self) {
     if (self->src) {
         const Vec3 &v = self->src->posParm.get();
         self->pos.x = v.x;

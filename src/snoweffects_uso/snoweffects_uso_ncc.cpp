@@ -7,7 +7,7 @@
  * (the gfx_initRDPState family, game_libs_ncc_59E80.cpp). */
 extern "C" void SnowRing_draw_000040B4(SnowRing *t) {
     CALL(gfx_resetDLContext)(t->dl);
-    CALL(snoweffects_uso_func_00004188)(t, t->dl);
+    CALL(SnowRing_setupDL_00004188)(t, t->dl);
     PKT(t->dl, 0xB6000000, 0x00033000);
     PKT(t->dl, 0xB7000000, 0x00002204);
     PKT(t->dl, 0xB8000000, 0);
@@ -23,7 +23,7 @@ extern "C" void SnowRing_draw_000040B4(SnowRing *t) {
  * costs 2 more counted loads; with the copy, packet 3's buffer pointer lands in the first live unit and
  * takes a3 as in the target (agent-h run 687, instrumented uopt readnxtinst). The two locals also give
  * the 144-byte frame and the sp+44 spill slot. */
-extern "C" void snoweffects_uso_func_00004188(SnowRing *t, DLCtx *c) {
+extern "C" void SnowRing_setupDL_00004188(SnowRing *t, DLCtx *c) {
     float m[4][4];
     DLCtx &ctx = *c;
     DLCtx *dc = &ctx;
@@ -103,10 +103,10 @@ extern "C" void SnowPool_update_00000B44(SnowPool *t) {
 /* 0x39C4 (0x2E0): SnowFall fill. unk98 = camera position * world scale, then unk40 flakes from the pool
  * (0x6D0), each pushed back d along camRotT[2] and spread b / a along camRotT[1] / camRotT[0], with
  * random spin, fall speed and sway. The -0.015f / 0.15f / 0.15f literals are RoData+0x14..+0x1C (donor
- * .rodata 0..8, pinned as snoweffects_uso_func_000039C4_rodata). The `if (1) {}` keeps b's
+ * .rodata 0..8, pinned as SnowFall_fill_000039C4_rodata). The `if (1) {}` keeps b's
  * (r - 0.5) * 60 right after its sys_randf call (else uopt sinks it to its first use); the gravity
  * store first and accel.y between accel.x and accel.z give the target's store schedule. */
-extern "C" void snoweffects_uso_func_000039C4(SnowFall *t) {
+extern "C" void SnowFall_fill_000039C4(SnowFall *t) {
     SnowParticle *p;
     int i;
     float d, a, b;
@@ -234,7 +234,7 @@ struct SnowBasis {
  * origin goes through the matrix; then virtual slots 14 and 15. Frame (160): the `if (1) {}` in operator-
  * puts the result-temp address in v0 right before the copy (as the target), and one dead two-word scratch
  * block after the first normalize gives the 8 bytes under the temps (run 671 placement search). */
-extern "C" void snoweffects_uso_func_00004374(SnowBasis *t) {
+extern "C" void SnowRing_updateBasis_00004374(SnowBasis *t) {
     t->a.x = t->len; t->a.y = 0.0f; t->a.z = 0.0f;
     xf(&t->a, t->m);
     t->b.x = -t->len; t->b.z = 0.0f; t->b.y = 0.0f;
@@ -253,7 +253,7 @@ extern "C" void snoweffects_uso_func_00004374(SnowBasis *t) {
 }
 extern "C" float gl_func_00000000_snow_ff(float);  /* math_acosf / fcos / fsin: float(float) blank jal */
 extern "C" float gl_func_00000000_snow_hitf(SnowBasis *, SnowBV3 *, SnowBV3 *, SnowQuad *);  /* 0x52D4 */
-extern "C" void snoweffects_uso_func_00004E5C(SnowBasis *t) {
+extern "C" void SnowRing_placeEnds_00004E5C(SnowBasis *t) {
     float ang;
     SnowBV3 hit;
     t->cosA = -(t->dir.x * t->v108.x + t->dir.y * t->v108.y + t->dir.z * t->v108.z);
@@ -273,14 +273,14 @@ extern "C" void snoweffects_uso_func_00004E5C(SnowBasis *t) {
     t->q.y = 0.0f;
     t->q.z = XCALL(gl_func_00000000_snow_ff, fsin)(ang) * (t->u40 * t->u50);
     xf(&t->q, t->m);
-    t->d1 = XCALL(gl_func_00000000_snow_hitf, snoweffects_uso_func_000052D4)(t, &t->p, &hit, &t->uB4);
+    t->d1 = XCALL(gl_func_00000000_snow_hitf, SnowRing_probe_000052D4)(t, &t->p, &hit, &t->uB4);
     if (t->d1 != 0.0f && t->d1 < t->maxDist) {
         SnowBV3 push = hit * -t->d1;
         { int sc[4]; sc[0] = 0; }
         t->p += push;
         t->hits++;
     }
-    t->d2 = XCALL(gl_func_00000000_snow_hitf, snoweffects_uso_func_000052D4)(t, &t->q, &hit, &t->uC4);
+    t->d2 = XCALL(gl_func_00000000_snow_hitf, SnowRing_probe_000052D4)(t, &t->q, &hit, &t->uC4);
     if (t->d2 != 0.0f && t->d2 < t->maxDist) {
         SnowBV3 push = hit * -t->d2;
         t->q += push;
