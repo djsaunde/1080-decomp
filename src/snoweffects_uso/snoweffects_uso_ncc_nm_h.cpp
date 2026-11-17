@@ -35,11 +35,12 @@ struct GCtx {
  * count is its own LR: a2 / v1 as in the target), the texrect's w0 clamps go through an imax0() inline
  * (its own temps instead of the pooled edg temps), scratch[] shrinks to one word, and the old
  * `if (hgt) {} if (wid) {}` lines are dropped.
- * agent-h run 722 (-> 92.58, body kept at the target's 592 words so 0xA8D0 stays inside TRUNCATE_TEXT):
+ * agent-h run 722 (-> 94.04, body kept at the target's 592 words so 0xA8D0 stays inside TRUNCATE_TEXT):
  * no h2 variable (`halfH * 2.0f` written in both size expressions: the CSE'd product takes f20 directly,
- * k f18, sx / sy the f28 / f30 homes as in the target); the w0 / w1 clamp terms are written y-first (the
- * target evaluates xh / xl first); the xl clamp goes through imax0 as well; the texrect's third packet
- * appends through nextN(); `if (hgt) {} if (wid) {}` back after drawn++. */
+ * k f18, sx / sy the f28 / f30 homes as in the target); the w0 clamp terms written yh-first (the target
+ * then evaluates xh first); imax0 on xh / yh / xl; the env colour written alpha-first (the target loads
+ * col[0] first); the texrect's third packet appends through nextN(); `if (y0) {}` before the FB packet
+ * and before drawn++ (with them the xh CSE temp is computed right after x0, as in the target). */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -49,7 +50,7 @@ inline int imax0(int a) { return a > 0 ? a : 0; }
 #define gSPScisTextureRectangle(pkt, pkt2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
 { Gfx *_g = (Gfx *)(pkt); \
     _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(imax0((s16)(yh)), 0, 12) | _SHIFTL(imax0((s16)(xh)), 12, 12)); \
-    _g->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(yl),0), 0, 12) | _SHIFTL(imax0((s16)(xl)), 12, 12)); \
+    _g->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(imax0((s16)(xl)), 12, 12) | _SHIFTL(MAX((s16)(yl),0), 0, 12)); \
     gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
@@ -139,10 +140,11 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 int y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
                 int z = (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4);
                 gDPWord(c->next(), 0xEE000000, (z & 0x7FFF) << 16);
+                if (y0) {}
                 gDPWord(c->next(), 0xFB000000,
-                        (p->col[0] << 24) | (p->col[1] << 16) | (p->col[2] << 8) | ((int)p->alpha & 0xFF));
+                        ((int)p->alpha & 0xFF) | (p->col[2] << 8) | (p->col[1] << 16) | (p->col[0] << 24));
+                if (y0) {}
                 self->drawn++;
-                if (hgt) {} if (wid) {}
                 gSPScisTextureRectangle(c->next(), c->next(), c->nextN(), x0 << 2, y0 << 2, (x0 + wid) << 2, (y0 + hgt) << 2, 0, 0, 0,
                                         ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
             }
