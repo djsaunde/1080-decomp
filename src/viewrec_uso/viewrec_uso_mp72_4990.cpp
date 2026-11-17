@@ -30,7 +30,7 @@ extern "C" void SoundOptions_update(VrSoundOptions *self) {
     self->levels[0] = ((u8 *)gInputMgr_vr.options)[0x12];
     self->levels[1] = ((u8 *)gInputMgr_vr.options)[0x13];
     self->levels[2] = ((u8 *)gInputMgr_vr.options)[0x14];
-    self->mode = *(u16 *)(gInputMgr_vr.options + 4) & 3;
+    self->mode = *(u16 *)(gInputMgr_vr.options + 4) & 3; /* RAW: donor-mirror options flags word (gdl/backup.h BackupOptions +4, a C-only header) */
     if (self->cursor > 0 && CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x2004)) {
         CALL(snd_postEvent)(1);
         self->cursor--;

@@ -70,21 +70,21 @@ static float sEnvColour[4];
 static inline char *nodeCtor(char *o3) {
     if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) {
         CALL(Node_ctor)(o3, &D_00000000 + 0x3B4);
-        *(char **)(o3 + 0x28) = &vr_vt_node;
+        *(char **)(o3 + 0x28) = &vr_vt_node; /* RAW: donor-mirror the cfront vptr word (edg keeps its own vptr implicit) */
     }
     return o3;
 }
 static inline char *procCtor(char *o2) {
     if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x50)) != 0) {
         nodeCtor(o2);
-        *(char **)(o2 + 0x28) = &vr_vt_proc;
+        *(char **)(o2 + 0x28) = &vr_vt_proc; /* RAW: donor-mirror the cfront vptr word (edg keeps its own vptr implicit) */
     }
     return o2;
 }
 extern "C" VrProc *GENNewRecordsProcess_ctor(VrProc *obj, int flags, int mode, int *session) {
     if (obj != 0 || (obj = (VrProc *)CALL(mem_new)(0xE0)) != 0) {
         procCtor((char *)obj);
-        *(char **)((char *)obj + 0x28) = &vr_vt_viewrec;
+        *(char **)((char *)obj + 0x28) = &vr_vt_viewrec; /* RAW: donor-mirror the cfront vptr word (edg keeps its own vptr implicit) */
         obj->name = &D_00000000 + 0x3BC;
         obj->session = session;
         obj->flags = flags;

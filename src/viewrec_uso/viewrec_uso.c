@@ -10,32 +10,8 @@ extern char D_00000000;
 
 /* viewrec.uso ("GENNewRecords Process"): the records / options screens. */
 
-/* the records process (the ctor at 0x2D0 allocates 0xE0 bytes) */
-typedef struct ViewRecProc {
-    /* 0x00 */ Node node;
-    /* 0x2C */ s32 started;          /* nonzero once the fade-in has run */
-    /* 0x30 */ s32 unk30;
-    /* 0x34 */ char pad34[0x48 - 0x34];
-    /* 0x48 */ s32 unk48;
-    /* 0x4C */ char pad4C[0x50 - 0x4C];
-    /* 0x50 */ s32 *session;         /* ctor arg 4: Backup_sessionClearNew arg */
-    /* 0x54 */ Node *mainMenu;       /* 0x1748 */
-    /* 0x58 */ Node *screen58;       /* 0x4854 */
-    /* 0x5C */ Node *screen5C;       /* 0x5200 */
-    /* 0x60 */ Node *screen60;       /* 0x1B4C */
-    /* 0x64 */ Node *screen64;       /* 0x4518 */
-    /* 0x68 */ Node *screen68;       /* 0x36B4 */
-    /* 0x6C */ s32 mode;             /* which screen is up: 0x1000 / 0x2000 / 0x4000 / 0x8000 / 0x10000 ... */
-    /* 0x70 */ char pad70[0x74 - 0x70];
-    /* 0x74 */ s32 flags;            /* ctor arg 1 */
-    /* 0x78 */ s32 unk78;            /* (flags >> 4) & 0xFF */
-    /* 0x7C */ s32 font;
-    /* 0x80 */ char pad80[0x88 - 0x80];
-    /* 0x88 */ GuiMenu *menu88;
-    /* 0x8C */ char pad8C[0x9C - 0x8C];
-    /* 0x9C */ GuiMenu *menuStack[16];
-    /* 0xDC */ s32 menuDepth;
-} ViewRecProc;
+/* the process and the six screen classes: include/viewrec.h */
+#include "viewrec.h"
 
 /* The module's Bss statics (relocated against viewrec Bss(base); each symbol is pinned at its
  * Bss offset in undefined_syms_auto.txt, so the linked words carry the offset as in the ROM). */
@@ -70,7 +46,7 @@ typedef struct VrImage {
 extern f32 sVrPrimColour[4];        /* 0x858 */
 extern f32 sVrEnvColour[4];         /* 0x868 */
 extern GuiMenu *sVrMenu;            /* 0x878: the menu that has the pad */
-extern ViewRecProc *sVrProc;        /* 0x87C */
+extern GENNewRecordsProcess *sVrProc;        /* 0x87C */
 extern Node *sVrScreen;             /* 0x880: the screen being shown */
 
 #define gInputMgr_vr (*(InputMgr *)&D_00000000)
@@ -101,31 +77,31 @@ void viewrec_uso_func_00000000(void) {
 
 void vr_showRecordOptions(void) {
     CALL(Process_stop)(sVrScreen);
-    VR_SHOW_SCREEN(screen60);
+    VR_SHOW_SCREEN(recordOptions);
     sVrProc->mode = 0x1000;
 }
 
 void vr_showSoundOptions(void) {
     CALL(Process_stop)(sVrScreen);
-    VR_SHOW_SCREEN(screen58);
+    VR_SHOW_SCREEN(soundOptions);
     sVrProc->mode = 0x40000;
 }
 
 void vr_showLanguageOptions(void) {
     CALL(Process_stop)(sVrScreen);
-    VR_SHOW_SCREEN(screen5C);
+    VR_SHOW_SCREEN(languageOptions);
     sVrProc->mode = 0x20000;
 }
 
 void vr_showEraseOptions(void) {
     CALL(Process_stop)(sVrScreen);
-    VR_SHOW_SCREEN(screen68);
+    VR_SHOW_SCREEN(eraseOptions);
     sVrProc->mode = 0x80000;
 }
 
 void vr_showReplayOptions(void) {
     CALL(Process_stop)(sVrScreen);
-    VR_SHOW_SCREEN(screen64);
+    VR_SHOW_SCREEN(replayOptions);
     sVrProc->mode = 0x4000000;
 }
 
@@ -147,7 +123,7 @@ void GENNewRecordsProcess_ctor(void) {
 }
 
 /* load the 21 sprites of sVrSprites (0x1F0000.., the riders 0x1D0000.., the boards 0x1E0000.., 0x250000) */
-void vr_loadSprites(ViewRecProc *proc) {
+void vr_loadSprites(GENNewRecordsProcess *proc) {
     CALL(gui_spriteLoad)(&sVrSprites[0], 0x1F0000);
     CALL(gui_spriteLoad)(&sVrSprites[1], 0x1F0001);
     CALL(gui_spriteLoad)(&sVrSprites[2], 0x1F0002);
@@ -172,7 +148,7 @@ void vr_loadSprites(ViewRecProc *proc) {
 }
 
 /* init the 68 label sprites of sVrLabels; the language-dependent ones take vr_gLanguage */
-void vr_initLabels(ViewRecProc *proc) {
+void vr_initLabels(GENNewRecordsProcess *proc) {
     CALL(gui_spriteInit)(&sVrLabels[0], 0x260000 | (vr_gLanguage * 8));
     CALL(gui_spriteInit)(&sVrLabels[1], 0x260000 | (vr_gLanguage * 8 + 1));
     CALL(gui_spriteInit)(&sVrLabels[2], 0x260000 | (vr_gLanguage * 8 + 2));
@@ -244,7 +220,7 @@ void vr_initLabels(ViewRecProc *proc) {
 }
 
 /* push the current menu on the process's menu stack and start `menu` */
-void vr_pushMenu(ViewRecProc *proc, GuiMenu *menu) {
+void vr_pushMenu(GENNewRecordsProcess *proc, GuiMenu *menu) {
     CALL(Process_stop)(sVrMenu);
     proc->menuStack[proc->menuDepth] = sVrMenu;
     proc->menuDepth++;
@@ -253,7 +229,7 @@ void vr_pushMenu(ViewRecProc *proc, GuiMenu *menu) {
 }
 
 /* pop the menu stack: stop the current menu and restart the previous one */
-void vr_popMenu(ViewRecProc *proc) {
+void vr_popMenu(GENNewRecordsProcess *proc) {
     CALL(Process_stop)(sVrMenu);
     proc->menuDepth--;
     sVrMenu = proc->menuStack[proc->menuDepth];
@@ -263,7 +239,7 @@ void vr_popMenu(ViewRecProc *proc) {
 /* the menu input: A on an enabled row with a callback plays the select sound and calls the row's
  * callback (sVrProc set for it). snd_postEvent through the void alias: an int return leaves a dead
  * $v0 def that pushes the sVrMenu reload into $v1 (target $v0). */
-void vr_menuSelectInput(ViewRecProc *proc) {
+void vr_menuSelectInput(GENNewRecordsProcess *proc) {
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x40100)) {
         GuiMenu *m = sVrMenu;
         if (m->rows[m->cursor].arg != 0 && m->rows[m->cursor].enabled != 0) {
@@ -274,7 +250,7 @@ void vr_menuSelectInput(ViewRecProc *proc) {
     }
 }
 
-void vr_menuBackInput(ViewRecProc *proc) {
+void vr_menuBackInput(GENNewRecordsProcess *proc) {
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
         CALL(snd_postEvent)(0x802);
         if (proc->menuDepth == 0) {
@@ -315,12 +291,8 @@ void vr_drawBackground(void *arg0) {
 
 /* draw sprite spr centred at y, and every 8 frames the blinking right / left arrows beside it
  * (labels 34 / 35, tinted (233, 255, 0)); col2 is set and unused, as in the target. */
-typedef struct VrBlinkOwner {
-    char pad0[0x98];
-    s32 blink;
-} VrBlinkOwner;
 
-void vr_drawTitleArrows(VrBlinkOwner *self, RaceSprite *spr, s32 y, s32 left, s32 right) {
+void vr_drawTitleArrows(GENNewRecordsProcess *self, RaceSprite *spr, s32 y, s32 left, s32 right) {
     f32 col2[4];
     f32 col[4];
     f32 d;
@@ -341,8 +313,8 @@ void vr_drawTitleArrows(VrBlinkOwner *self, RaceSprite *spr, s32 y, s32 left, s3
     CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, 255, sVrPrimColour, sVrEnvColour);
     CALL(gui_spriteRefresh)(spr);
     CALL(gui_drawSprite)(spr, 160, y, 3);
-    w = self->blink;
-    self->blink = w + 1;
+    w = self->arrowBlink;
+    self->arrowBlink = w + 1;
     if (w & 8) {
         if (right) {
             CALL(gui_spriteRefresh)(&sVrLabels[34]);
@@ -364,13 +336,13 @@ void vr_drawTitleArrows(VrBlinkOwner *self, RaceSprite *spr, s32 y, s32 left, s3
 }
 
 /* draw label sprite i centred at y. EXACT via the NCC (C++) donor src/viewrec_uso/viewrec_uso_ncc.cpp. */
-void vr_drawCenteredLabel(ViewRecProc *proc, int i, int y) {
+void vr_drawCenteredLabel(GENNewRecordsProcess *proc, int i, int y) {
 }
 
 /* with flag 0x10000 set, draw label sprites 57, 56, 55, 54 right to left from x 285 at y 220, each
  * spaced by its image width + 4 (+ 4 more after every odd one). The image and its width read into
  * locals give the target's v0 / v1. */
-void vr_drawFooterLabels(ViewRecProc *proc) {
+void vr_drawFooterLabels(GENNewRecordsProcess *proc) {
     s32 i;
     s32 x;
     RaceSprite *spr;
@@ -394,7 +366,7 @@ void vr_drawFooterLabels(ViewRecProc *proc) {
 /* draw one record's row at y (0x4698 passes a saved ghost's course / rider / board / mode - 1):
  * the course title (label sprite via 0x1488), then the rider and board sprites at x 46 / 240 and
  * the mode label at 160, y + 30 */
-void vr_drawGhostRow(ViewRecProc *self, s32 y, s32 course, s32 rider, s32 board, s32 mode) {
+void vr_drawGhostRow(GENNewRecordsProcess *self, s32 y, s32 course, s32 rider, s32 board, s32 mode) {
     RaceSprite *spr;
 
     CALL(vr_drawCenteredLabel)(self, course, y);
@@ -410,10 +382,10 @@ void vr_drawGhostRow(ViewRecProc *self, s32 y, s32 course, s32 rider, s32 board,
 }
 
 /* EXACT via the NCC (C++) donor src/viewrec_uso/viewrec_uso_ncc.cpp (REPLACE_FUNC_BODY). */
-void GENNewRecordsProcess_update(ViewRecProc *self) {
+void GENNewRecordsProcess_update(GENNewRecordsProcess *self) {
 }
 
-void GENNewRecordsProcess_handleMsg(ViewRecProc *self, int *msg) {
+void GENNewRecordsProcess_handleMsg(GENNewRecordsProcess *self, int *msg) {
     int type = *msg;
     if (type == 21) {
         CALL(dbg_printf)((char *)&D_00000000 + 1000);
@@ -424,27 +396,16 @@ void GENNewRecordsProcess_handleMsg(ViewRecProc *self, int *msg) {
     CALL(Node_handleMsg)(self, msg);
 }
 
-/* the main-menu screen (0x58 bytes, vtable Data+0x98) */
-typedef struct VrMainMenu {
-    /* 0x00 */ Node node;
-    /* 0x2C */ s32 unk2C;
-    /* 0x30 */ s32 unk30;
-    /* 0x34 */ char pad34[0x48 - 0x34];
-    /* 0x48 */ s32 unk48;
-    /* 0x4C */ char pad4C[0x50 - 0x4C];
-    /* 0x50 */ ViewRecProc *proc;
-    /* 0x54 */ s32 font;
-} VrMainMenu;
 
-/* its ctor: create the pause menu (proc->menu88), fill its rows (0x1A08), centre it, start it and
+/* its ctor: create the pause menu (proc->menu), fill its rows (0x1A08), centre it, start it and
  * attach it as a child; the screen starts stopped */
 
-VrMainMenu *MainOptions_ctor(VrMainMenu *self, ViewRecProc *proc) {
+MainOptions *MainOptions_ctor(MainOptions *self, GENNewRecordsProcess *proc) {
     char *o1;
     char *o2;
     char *w;
 
-    if (self != 0 || (self = (VrMainMenu *)CALL(mem_new)(0x58)) != 0) {
+    if (self != 0 || (self = (MainOptions *)CALL(mem_new)(0x58)) != 0) {
         o1 = (char *)self;
         if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {
             o2 = o1;
@@ -457,48 +418,34 @@ VrMainMenu *MainOptions_ctor(VrMainMenu *self, ViewRecProc *proc) {
         self->node.name = (char *)&D_00000000 + 1028;
         self->proc = proc;
         self->font = proc->font;
-        self->proc->menu88 = (GuiMenu *)CALL(PauseMenu_create)(0);
-        CALL(gui_initRows_000100F0)(self->proc->menu88, self);
+        self->proc->menu = (GuiMenu *)CALL(PauseMenu_create)(0);
+        CALL(gui_initRows_000100F0)(self->proc->menu, self);
         CALL(MainOptions_buildMenu)(self);
-        self->proc->menu88->unk30 = self->font;
-        CALL(gui_centerRows_0001016C)(self->proc->menu88);
-        XCALL(gl_func_00000000_vrv, gui_centerAt_000102A4)(self->proc->menu88, 130);
-        w = (char *)self->proc->menu88;
+        self->proc->menu->unk30 = self->font;
+        CALL(gui_centerRows_0001016C)(self->proc->menu);
+        XCALL(gl_func_00000000_vrv, gui_centerAt_000102A4)(self->proc->menu, 130);
+        w = (char *)self->proc->menu;
         o1 = (char *)NODE(w)->vptr;
         ((void (*)(int))VT_SLOT(o1, 10).fn)(VT_SLOT(o1, 10).delta + (int)w);
-        o1 = (char *)self->proc->menu88;
+        o1 = (char *)self->proc->menu;
         CALL(list_append)(&self->node.children, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
         NODE(o1)->parent = &self->node;
         CALL(Process_stop)(self);
-        self->unk30 = 1;
-        self->unk2C = 0;
-        self->unk48 = 0;
+        self->paused = 1;
+        self->fadingOut = 0;
+        self->pauseMenu = 0;
     }
     return self;
 }
 
-typedef struct ViewRecScreen {
-    /* 0x00 */ Node node;
-    /* 0x2C */ char pad2C[0x50 - 0x2C];
-    /* 0x50 */ ViewRecProc *proc;
-    /* 0x54 */ char pad54[0x58 - 0x54];
-    /* 0x58 */ s32 frame;            /* replay screen: counted up per draw (0x4698); 0x2468: the
-                                      * selected row + 1 (0 = none) */
-    /* 0x5C */ s32 unk5C;            /* 0x2468: the highlighted row (0..2) */
-    /* 0x60 */ char pad60[0x80 - 0x60];
-    /* 0x80 */ s32 rowY;             /* replay screen: y of the ghost's row (0x1588) */
-    /* 0x84 */ char pad84[0x98 - 0x84];
-    /* 0x98 */ s32 cursor;           /* options screen: the selected option (0..7) */
-    /* 0x9C */ s32 minCursor;        /* the lowest selectable option */
-} ViewRecScreen;
 
 /* the records screen update: run the menu input (0x1068); B leaves (fade out, clear the session's new
  * marks). The void calls go through the void alias: an int-returning snd_postEvent leaves a dead $v0
  * def that pushes &gInputMgr into $v1 (target $v0). */
-void MainOptions_update(ViewRecScreen *self) {
+void MainOptions_update(MainOptions *self) {
     XCALL(gl_func_00000000_vrv, vr_menuSelectInput)(self->proc);
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
         XCALL(gl_func_00000000_vrv, snd_postEvent)(0x802);
@@ -509,7 +456,7 @@ void MainOptions_update(ViewRecScreen *self) {
     XCALL(gl_func_00000000_vrv, Node_update)(self);
 }
 
-void MainOptions_drawGui(ViewRecScreen *self) {
+void MainOptions_drawGui(MainOptions *self) {
     CALL(vr_drawBackground)(self->proc);
     CALL(vr_drawFooterLabels)(self->proc);
     CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, 255, sVrPrimColour, sVrEnvColour);
@@ -517,7 +464,7 @@ void MainOptions_drawGui(ViewRecScreen *self) {
     CALL(gui_drawSprite)(&sVrLabels[38], 160, 37, 3);
 }
 
-void MainOptions_handleMsg(ViewRecScreen *self, int *msg) {
+void MainOptions_handleMsg(MainOptions *self, int *msg) {
     int type = *msg;
     if (type == 21) {
         CALL(MainOptions_buildMenu)(self);
@@ -532,57 +479,30 @@ extern void vr_showRecordOptions_ref(void), vr_showReplayOptions_ref(void),
 
 /* fill the main menu: rows 1..5 of string bank vr_gLanguage + 42 (row 2 only when the word at
  * 0xA0000284 is 0x240B17D7); row 1 is disabled without a saved ghost */
-void MainOptions_buildMenu(ViewRecScreen *self) {
-    CALL(gui_clearRows_00010A9C)(self->proc->menu88);
-    CALL(gui_addRowSub_00010B6C)(self->proc->menu88, ((vr_gLanguage + 42) << 16) | 1, -1, vr_showRecordOptions_ref);
+void MainOptions_buildMenu(MainOptions *self) {
+    CALL(gui_clearRows_00010A9C)(self->proc->menu);
+    CALL(gui_addRowSub_00010B6C)(self->proc->menu, ((vr_gLanguage + 42) << 16) | 1, -1, vr_showRecordOptions_ref);
     if (*(s32 *)0xA0000284 == 0x240B17D7) {
-        CALL(gui_addRowSub_00010B6C)(self->proc->menu88, ((vr_gLanguage + 42) << 16) | 2, -1, vr_showReplayOptions_ref);
+        CALL(gui_addRowSub_00010B6C)(self->proc->menu, ((vr_gLanguage + 42) << 16) | 2, -1, vr_showReplayOptions_ref);
     }
-    CALL(gui_addRowSub_00010B6C)(self->proc->menu88, ((vr_gLanguage + 42) << 16) | 3, -1, vr_showSoundOptions_ref);
-    CALL(gui_addRowSub_00010B6C)(self->proc->menu88, ((vr_gLanguage + 42) << 16) | 4, -1, vr_showLanguageOptions_ref);
-    CALL(gui_addRowSub_00010B6C)(self->proc->menu88, ((vr_gLanguage + 42) << 16) | 5, -1, vr_showEraseOptions_ref);
+    CALL(gui_addRowSub_00010B6C)(self->proc->menu, ((vr_gLanguage + 42) << 16) | 3, -1, vr_showSoundOptions_ref);
+    CALL(gui_addRowSub_00010B6C)(self->proc->menu, ((vr_gLanguage + 42) << 16) | 4, -1, vr_showLanguageOptions_ref);
+    CALL(gui_addRowSub_00010B6C)(self->proc->menu, ((vr_gLanguage + 42) << 16) | 5, -1, vr_showEraseOptions_ref);
     if (CALL(Backup_ghostGetMode)((char *)gInputMgr_vr.backup + 4) == 0) {
-        self->proc->menu88->rows[1].enabled = 0;
+        self->proc->menu->rows[1].enabled = 0;
     }
 }
 
-/* the options screen (proc->screen60) */
-typedef struct VrScreen60 {
-    /* 0x00 */ Node node;
-    /* 0x2C */ s32 unk2C;
-    /* 0x30 */ s32 unk30;
-    /* 0x34 */ char pad34[0x48 - 0x34];
-    /* 0x48 */ s32 unk48;
-    /* 0x4C */ char pad4C[0x50 - 0x4C];
-    /* 0x50 */ ViewRecProc *proc;
-    /* 0x54 */ s32 font;
-    /* 0x58 */ s32 unk58;
-    /* 0x5C */ s32 unk5C;
-    /* 0x60 */ s32 unk60[3];
-    /* 0x6C */ s32 frame;
-    /* 0x70 */ s32 gridDx;
-    /* 0x74 */ s32 gridDy;
-    /* 0x78 */ s32 gridX;
-    /* 0x7C */ s32 gridY;
-    /* 0x80 */ s32 tabDx;
-    /* 0x84 */ s32 unk84;
-    /* 0x88 */ s32 tabX;
-    /* 0x8C */ s32 tabY;
-    /* 0x90 */ s32 unk90;
-    /* 0x94 */ s32 tab;
-    /* 0x98 */ s32 cursor;
-    /* 0x9C */ s32 minCursor;
-} VrScreen60;
 
 /* its ctor (0xA0 bytes, vtable Data+0x118): the grid / tab layout constants; starts stopped */
 
-VrScreen60 *RecordOptions_ctor(VrScreen60 *self, ViewRecProc *proc) {
+RecordOptions *RecordOptions_ctor(RecordOptions *self, GENNewRecordsProcess *proc) {
     char *o1;
     char *o2;
     char *o3;
     s32 i;
 
-    if (self != 0 || (self = (VrScreen60 *)CALL(mem_new)(0xA0)) != 0) {
+    if (self != 0 || (self = (RecordOptions *)CALL(mem_new)(0xA0)) != 0) {
         o1 = (char *)self;
         o2 = o1;
         if (o1 != 0 || (o2 = (char *)CALL(mem_new)(0x50)) != 0) {
@@ -596,11 +516,11 @@ VrScreen60 *RecordOptions_ctor(VrScreen60 *self, ViewRecProc *proc) {
         self->node.name = (char *)&D_00000000 + 1048;
         self->proc = proc;
         self->font = proc->font;
-        self->unk58 = 0;
-        self->unk5C = 0;
+        self->arcadeSel = 0;
+        self->arcadeRow = 0;
         i = 0;
         do {
-            self->unk60[i] = 0;
+            self->subRows[i] = 0;
             i++;
         } while (i < 3);
         self->frame = 0;
@@ -612,19 +532,19 @@ VrScreen60 *RecordOptions_ctor(VrScreen60 *self, ViewRecProc *proc) {
         self->tabDx = 87;
         self->tabY = 81;
         self->unk84 = 15;
-        self->unk90 = 0;
+        self->state = 0;
         self->tab = 0;
         self->cursor = 0;
         self->minCursor = 0;
         CALL(Process_stop)(self);
-        self->unk30 = 1;
-        self->unk2C = 0;
-        self->unk48 = 0;
+        self->paused = 1;
+        self->fadingOut = 0;
+        self->pauseMenu = 0;
     }
     return self;
 }
 
-void RecordOptions_update(ViewRecScreen *self) {
+void RecordOptions_update(RecordOptions *self) {
     switch (self->proc->mode) {
         case 0x1000:
             CALL(RecordOptions_menuInput)(self);
@@ -643,8 +563,8 @@ void RecordOptions_update(ViewRecScreen *self) {
 }
 
 /* the options screen draw: the 4 x 2 option grid (alpha 64 below minCursor or on tab 2, the cursor
- * blinking when unk90 == 1), the three tabs (the current one blinking), or per mode the sub-screens */
-void RecordOptions_drawGui(VrScreen60 *self) {
+ * blinking when state == 1), the three tabs (the current one blinking), or per mode the sub-screens */
+void RecordOptions_drawGui(RecordOptions *self) {
     f32 col[4];
     s32 pad[2];
     s32 blink;
@@ -678,7 +598,7 @@ void RecordOptions_drawGui(VrScreen60 *self) {
                     if (row * 2 + c < self->minCursor || self->tab == 2) {
                         a = 64;
                     }
-                    if (row * 2 + c == self->cursor && self->unk90 == 1) {
+                    if (row * 2 + c == self->cursor && self->state == 1) {
                         a = blink;
                     }
                     CALL(gui_setColorEnvPrim_000017DC)(spr, a, col, 255);
@@ -712,8 +632,8 @@ void RecordOptions_drawGui(VrScreen60 *self) {
 }
 
 /* options screen: the previous enabled option before the cursor (wrapping 0 -> 7), at least
- * minCursor; proc->unk78 holds the enabled bits. */
-s32 RecordOptions_prevCourse(ViewRecScreen *self) {
+ * minCursor; proc->enabledCourses holds the enabled bits. */
+s32 RecordOptions_prevCourse(RecordOptions *self) {
     s32 c = self->cursor;
     s32 i;
     for (i = 0; i < 8; i++) {
@@ -721,7 +641,7 @@ s32 RecordOptions_prevCourse(ViewRecScreen *self) {
         if (c < 0) {
             c = 7;
         }
-        if ((self->proc->unk78 & (1 << c)) && c >= self->minCursor) {
+        if ((self->proc->enabledCourses & (1 << c)) && c >= self->minCursor) {
             return c;
         }
     }
@@ -729,7 +649,7 @@ s32 RecordOptions_prevCourse(ViewRecScreen *self) {
 }
 
 /* options screen: the next enabled option after the cursor (wrapping 7 -> 0) */
-s32 RecordOptions_nextCourse(ViewRecScreen *self) {
+s32 RecordOptions_nextCourse(RecordOptions *self) {
     s32 c = self->cursor;
     s32 i;
     for (i = 0; i < 8; i++) {
@@ -737,7 +657,7 @@ s32 RecordOptions_nextCourse(ViewRecScreen *self) {
         if (c >= 8) {
             c = 0;
         }
-        if ((self->proc->unk78 & (1 << c)) && c >= self->minCursor) {
+        if ((self->proc->enabledCourses & (1 << c)) && c >= self->minCursor) {
             return c;
         }
     }
@@ -745,44 +665,44 @@ s32 RecordOptions_nextCourse(ViewRecScreen *self) {
 }
 
 /* EXACT via the NCC (C++) donor src/viewrec_uso/viewrec_uso_ncc.cpp (sVrMenu->start()). */
-void RecordOptions_coursePageInput(ViewRecScreen *self) {
+void RecordOptions_coursePageInput(RecordOptions *self) {
 }
 
 /* the arcade-records screen input: up / down move the highlighted row (0..2), A selects it,
  * B deselects or goes back, Start leaves (fade out, or back to the main menu when entered from it) */
-void RecordOptions_arcadePageInput(ViewRecScreen *self) {
+void RecordOptions_arcadePageInput(RecordOptions *self) {
     s32 back = 0;
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x8008)) {
-        if (self->unk5C < 2) {
+        if (self->arcadeRow < 2) {
             CALL(snd_postEvent)(1);
-            self->unk5C++;
+            self->arcadeRow++;
         }
-        if (self->frame) {
-            self->frame = self->unk5C + 1;
+        if (self->arcadeSel) {
+            self->arcadeSel = self->arcadeRow + 1;
         }
     }
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x2004)) {
-        if (self->unk5C > 0) {
+        if (self->arcadeRow > 0) {
             CALL(snd_postEvent)(1);
-            self->unk5C--;
+            self->arcadeRow--;
         }
-        if (self->frame) {
-            self->frame = self->unk5C + 1;
+        if (self->arcadeSel) {
+            self->arcadeSel = self->arcadeRow + 1;
         }
     }
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x100)) {
-        if (self->frame == 0) {
+        if (self->arcadeSel == 0) {
             CALL(snd_postEvent)(5);
-            self->frame = self->unk5C + 1;
+            self->arcadeSel = self->arcadeRow + 1;
         } else if (!(self->proc->flags & 0x1000)) {
             back = 1;
         }
         CALL(snd_postEvent)(5);
     }
     if ((self->proc->flags & 0x1000) && CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
-        if (self->frame) {
+        if (self->arcadeSel) {
             CALL(snd_postEvent)(0x802);
-            self->frame = 0;
+            self->arcadeSel = 0;
         } else {
             back = 1;
         }
@@ -801,11 +721,11 @@ void RecordOptions_arcadePageInput(ViewRecScreen *self) {
 }
 
 /* EXACT via the NCC (C++) donor src/viewrec_uso/viewrec_uso_ncc.cpp: the records menu input. */
-void RecordOptions_menuInput(ViewRecScreen *self) {
+void RecordOptions_menuInput(RecordOptions *self) {
 }
 
 /* a record row's sprites: the rank number i (tinted, skipped when i < 0), rider and board at x + 26 / x + 60 */
-void vr_drawRankRider(ViewRecScreen *self, s32 i, s32 x, s32 y, s32 rider, s32 board) {
+void vr_drawRankRider(RecordOptions *self, s32 i, s32 x, s32 y, s32 rider, s32 board) {
     RaceSprite *spr = &sVrSprites[i];
     f32 col[4];
     f32 d;
@@ -833,7 +753,7 @@ void vr_drawRankRider(ViewRecScreen *self, s32 i, s32 x, s32 y, s32 rider, s32 b
 /* the time digits: three sprite-20 glyphs (digits[i] * 22 + 2) 21 px apart, centred on y. The dead
  * `h = 0` initialiser creates h's pseudo first, which gives it $v0 ahead of the image pointer ($v1),
  * as in the target (permuter-found; early-pseudo lever). */
-void vr_drawTimeDigits(ViewRecScreen *self, s32 x, s32 y, u8 *digits) {
+void vr_drawTimeDigits(RecordOptions *self, s32 x, s32 y, u8 *digits) {
     RaceSprite *spr = &sVrSprites[20];
     f32 col[4];
     f32 d;
@@ -858,7 +778,7 @@ void vr_drawTimeDigits(ViewRecScreen *self, s32 x, s32 y, u8 *digits) {
 /* the time string: t[0..2] sprintf'd with the Data+0x428 format, drawn as label-sprite-11 glyphs 12 px
  * apart ('[' -> 10, ']' -> 11). As 0x2AE4: the dead `h = 0` initialiser gives h $v0; the image
  * pointer is a named local declared first (its home sits above buf[12], as 0x2D9C's buf). */
-void vr_drawTime(ViewRecScreen *self, s32 x, s32 y, u8 *t) {
+void vr_drawTime(RecordOptions *self, s32 x, s32 y, u8 *t) {
     VrImage *img;
     RaceSprite *spr = &sVrLabels[11];
     char buf[12];
@@ -892,7 +812,7 @@ void vr_drawTime(ViewRecScreen *self, s32 x, s32 y, u8 *t) {
 
 /* draw `val` (sprintf'd with the Data+0x438 format) as label-sprite-11 digits from x, 12 px apart,
  * skipping leading zeros ('[' -> glyph 10, ']' -> glyph 11; the last character is always drawn) */
-void vr_drawNumber(ViewRecScreen *self, s32 x, s32 y, s32 val, f32 *col) {
+void vr_drawNumber(RecordOptions *self, s32 x, s32 y, s32 val, f32 *col) {
     RaceSprite *spr = &sVrLabels[11];
     s32 started = 0;
     char buf[12];
@@ -926,7 +846,7 @@ void vr_drawNumber(ViewRecScreen *self, s32 x, s32 y, s32 val, f32 *col) {
 /* draw label sprite i (from 0x378) at (x, y) tinted (255, 175, 44): the colour is r / d with the
  * divisor in a local (fire ctor lever) and int numerators, which keeps the 255.0f dividend apart from
  * the divisor; the colour is declared first for its sp+0x28 slot. */
-void vr_drawTrickLabel(ViewRecScreen *self, s32 i, s32 x, s32 y) {
+void vr_drawTrickLabel(RecordOptions *self, s32 i, s32 x, s32 y) {
     f32 col[4];
     RaceSprite *spr = &sVrLabels_378[i];
     f32 d;
@@ -946,15 +866,7 @@ void vr_drawTrickLabel(ViewRecScreen *self, s32 i, s32 x, s32 y) {
  * dead $v0 def that pushes the rec[5] CSE into $v1. */
 typedef struct VrTime { u8 b[4]; } VrTime;
 typedef struct VrCourse { char e[6][8]; } VrCourse;
-typedef struct VrScreen2 {
-    char pad0[0x50];
-    ViewRecProc *proc;
-    char pad54[0x6C - 0x54];
-    s32 blink;
-    char pad70[0x98 - 0x70];
-    s32 course;
-} VrScreen2;
-void RecordOptions_drawCourseTimes(VrScreen2 *self) {
+void RecordOptions_drawCourseTimes(RecordOptions *self) {
     s32 pad1;
     f32 col[4];
     s32 pad2[3];
@@ -971,16 +883,16 @@ void RecordOptions_drawCourseTimes(VrScreen2 *self) {
     col[1] = 1.0f;
     col[2] = 1.0f;
     col[3] = 1.0f;
-    course = self->course;
+    course = self->cursor;
     y = 123;
     CALL(gui_setCombine_00001794)(&D_00000000);
-    CALL(vr_drawCenteredLabel)(self->proc, self->course, 83);
+    CALL(vr_drawCenteredLabel)(self->proc, self->cursor, 83);
     *(VrTime *)prev = *(VrTime *)((char *)&D_00000000 + 1088);
     for (i = 0; i < 3; y += 34, i++) {
         rec = (u8 *)CALL(Backup_courseRecordGetTime)(*self->proc->session + course * 48, i);
         show = 1;
         if (CALL(Backup_timeEntryIsNew)(((VrCourse *)*self->proc->session)[course].e[i])) {
-            if (self->blink & 8) {
+            if (self->frame & 8) {
                 show = 0;
             }
         }
@@ -1009,7 +921,7 @@ void RecordOptions_drawCourseTimes(VrScreen2 *self) {
  * &col into s8. */
 typedef struct { u8 b0; char name[3]; s32 score; } VrScoreEnt;
 typedef struct { char pad[24]; VrScoreEnt scores[3]; } VrCourseRec;
-void RecordOptions_drawCourseScores(ViewRecScreen *self) {
+void RecordOptions_drawCourseScores(RecordOptions *self) {
     f32 d;
     f32 col[4];
     s32 course;
@@ -1018,7 +930,7 @@ void RecordOptions_drawCourseScores(ViewRecScreen *self) {
     s32 prev;
     s32 show;
     s32 rank;
-    u8 *e;
+    VrScoreEnt *e;
 
     d = 255.0f;
     col[0] = 40 / d;
@@ -1026,31 +938,31 @@ void RecordOptions_drawCourseScores(ViewRecScreen *self) {
     col[2] = 255 / d;
     col[3] = 255 / d;
     y = 123;
-    course = *(s32 *)((char *)self + 0x98);
+    course = self->cursor;
     CALL(gui_setCombine_00001794)(&D_00000000);
     CALL(vr_drawCenteredLabel)(self->proc, course, 83);
     course = course * 1;
     prev = -1;
     i = 0; do {
-        e = (u8 *)CALL(Backup_courseRecordGetScore)(&((VrCourseRec *)*self->proc->session)[course], i);
+        e = (VrScoreEnt *)CALL(Backup_courseRecordGetScore)(&((VrCourseRec *)*self->proc->session)[course], i);
         show = 1;
         if (CALL(Backup_scoreEntryIsNew)(&((VrCourseRec *)*self->proc->session)[course].scores[i]) &&
-            (*(s32 *)((char *)self + 0x6C) & 8)) {
+            (self->frame & 8)) {
             show = 0;
         }
         rank = i;
-        if (prev == *(s32 *)(e + 4)) {
+        if (prev == e->score) {
             rank = -1;
         }
         if (show) {
             if (1) {}
-            CALL(vr_drawRankRider)(self, rank, 38, y, e[0] & 7, (e[0] & 0x78) >> 3);
-            CALL(vr_drawTimeDigits)(self, 132, y, e + 1);
-            XCALL(gl_func_00000000_vrv, vr_drawNumber)(self, 196, y, *(s32 *)(e + 4), col);
+            CALL(vr_drawRankRider)(self, rank, 38, y, e->b0 & 7, (e->b0 & 0x78) >> 3);
+            CALL(vr_drawTimeDigits)(self, 132, y, e->name);
+            XCALL(gl_func_00000000_vrv, vr_drawNumber)(self, 196, y, e->score, col);
         }
-        prev = *(s32 *)(e + 4);
+        prev = e->score;
         y = y * 1;
-        self = (ViewRecScreen *)((s32)self * 1);
+        self = (RecordOptions *)((s32)self * 1);
         y += 34;
         i++;
     } while (i < 3);
@@ -1064,13 +976,13 @@ typedef struct VrArcadeEnt {
     /* 0x1C */ s32 score;
 } VrArcadeEnt;
 /* the arcade records screen's draw: each entry's sub-score row count (+0x60[i]) grows toward the
- * entry's count while it is the selected one (+0x58 is 1-based) and shrinks otherwise; the block is
+ * entry's count while it is the opened one (arcadeSel is 1-based) and shrinks otherwise; the block is
  * centred on y = 150; then per entry: the cursor sprite (label 36) on the selected row, rank / icons,
  * the sub scores (label j, 0x2D9C) and the name / total score. Levers: `d` declared first (its home
  * above the three colours puts them at sp+0x74 / 0x84 / 0x94), int numerators over d, do-while loops
  * (the outer one orders the loop-end increments; the inner guarded do-while, too), `show = 1` after
  * the entry read, the counter updates spelled on the array element (no named temp: one home less). */
-void RecordOptions_drawArcadeRecords(ViewRecScreen *self) {
+void RecordOptions_drawArcadeRecords(RecordOptions *self) {
     f32 d;
     f32 col3[4];
     f32 col1[4];
@@ -1100,15 +1012,16 @@ void RecordOptions_drawArcadeRecords(ViewRecScreen *self) {
     total = 0;
     for (i = 0; i < 3; i++) {
         e = (VrArcadeEnt *)CALL(Backup_arcadeGetEntry)(((VrArcadeEnt **)self->proc->session)[1], i);
-        if (i + 1 == *(s32 *)((char *)self + 0x58)) {
-            if (((s32 *)((char *)self + 0x60))[i] < e->count) {
-                ((s32 *)((char *)self + 0x60))[i]++;
+        /* `*(s32 *)&` keeps the target's registers here (the plain member read reorders the i + 1) */
+        if (i + 1 == *(s32 *)&self->arcadeSel) {
+            if (self->subRows[i] < e->count) {
+                self->subRows[i]++;
             }
-        } else if (((s32 *)((char *)self + 0x60))[i] > 0) {
-            ((s32 *)((char *)self + 0x60))[i]--;
+        } else if (self->subRows[i] > 0) {
+            self->subRows[i]--;
         }
-        if (((s32 *)((char *)self + 0x60))[i] != 0) {
-            total += ((s32 *)((char *)self + 0x60))[i] * 15;
+        if (self->subRows[i] != 0) {
+            total += self->subRows[i] * 15;
         }
         total += 30;
     }
@@ -1121,10 +1034,10 @@ void RecordOptions_drawArcadeRecords(ViewRecScreen *self) {
         e = (VrArcadeEnt *)CALL(Backup_arcadeGetEntry)(((VrArcadeEnt **)self->proc->session)[1], i);
         show = 1;
         if (CALL(Backup_arcadeEntryIsNew)(&((VrArcadeEnt **)self->proc->session)[1][i]) &&
-            (*(s32 *)((char *)self + 0x6C) & 8)) {
+            (self->frame & 8)) {
             show = 0;
         }
-        if (i == *(s32 *)((char *)self + 0x5C)) {
+        if (i == self->arcadeRow) {
             CALL(gui_spriteRefresh)(&sVrLabels[36]);
             CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[36], 255, col3, 255);
             CALL(gui_drawSprite)(&sVrLabels[36], 30, y, 3);
@@ -1137,13 +1050,13 @@ void RecordOptions_drawArcadeRecords(ViewRecScreen *self) {
             CALL(vr_drawRankRider)(self, rank, 38, y, e->b0 & 7, (e->b0 & 0x78) >> 3);
         }
         j = 0;
-        if (((s32 *)((char *)self + 0x60))[i] > 0) {
+        if (self->subRows[i] > 0) {
             do {
                 CALL(vr_drawTrickLabel)(self, j, 132, y);
                 CALL(vr_drawNumber)(self, 196, y, e->sub[j], col2);
                 y += 15;
                 j++;
-            } while (j < ((s32 *)((char *)self + 0x60))[i]);
+            } while (j < self->subRows[i]);
         }
         if (show) {
             CALL(vr_drawTimeDigits)(self, 132, y, e->name);
@@ -1161,11 +1074,11 @@ void RecordOptions_drawArcadeRecords(ViewRecScreen *self) {
  * The three vtables are 0-pinned per-site symbols: bootup Data+0xC338 / +0xC3A0 imports and the
  * module's own Data+0x198. */
 extern char vr_vtNode_36B4[], vr_vtProc_36B4[], vr_vtErase_36B4[];
-ViewRecScreen *EraseOptions_ctor(ViewRecScreen *self, ViewRecProc *proc) {
+EraseOptions *EraseOptions_ctor(EraseOptions *self, GENNewRecordsProcess *proc) {
     char *o1;
     char *o2;
 
-    if (self != 0 || (self = (ViewRecScreen *)CALL(mem_new)(200)) != 0) {
+    if (self != 0 || (self = (EraseOptions *)CALL(mem_new)(200)) != 0) {
         o1 = (char *)self;
         if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {
             o2 = o1;
@@ -1175,35 +1088,35 @@ ViewRecScreen *EraseOptions_ctor(ViewRecScreen *self, ViewRecProc *proc) {
         self->node.vptr = vr_vtErase_36B4;
         self->node.name = &D_00000000 + 0x44C;
         self->proc = proc;
-        *(s32 *)((char *)self + 0x54) = proc->font;
-        *(s32 *)((char *)self + 0x7C) = 101;
-        *(s32 *)((char *)self + 0x6C) = 0;
-        *(s32 *)((char *)self + 0x74) = 119;
-        *(s32 *)((char *)self + 0x80) = 115;
-        *(s32 *)((char *)self + 0x78) = 26;
-        *(s32 *)((char *)self + 0x8C) = 66;
-        *(s32 *)((char *)self + 0x84) = 44;
-        *(s32 *)((char *)self + 0x90) = 72;
-        *(s32 *)((char *)self + 0x88) = 17;
-        *(s32 *)((char *)self + 0x94) = 120;
-        *(s32 *)((char *)self + 0x98) = 161;
-        *(s32 *)((char *)self + 0x9C) = 181;
-        *(s32 *)((char *)self + 0xA0) = 0;
-        *(s32 *)((char *)self + 0xA4) = 0;
-        *(s32 *)((char *)self + 0xA8) = 0;
-        *(s32 *)((char *)self + 0xAC) = 0;
-        *(f32 *)((char *)self + 0xB0) = 0.0f;
-        *(f32 *)((char *)self + 0xB4) = 0.0f;
+        self->font = proc->font;
+        self->gridX = 101;
+        self->frame = 0;
+        self->gridDx = 119;
+        self->gridY = 115;
+        self->gridDy = 26;
+        self->setX = 66;
+        self->setDx = 44;
+        self->setY = 72;
+        self->setDy = 17;
+        self->rowY = 120;
+        self->askY = 161;
+        self->yesY = 181;
+        self->phase = 0;
+        self->set = 0;
+        self->course = 0;
+        self->minCourse = 0;
+        self->selFade = 0.0f;
+        self->askFade = 0.0f;
         CALL(Process_stop)(self);
-        *(s32 *)((char *)self + 0x30) = 1;
-        *(s32 *)((char *)self + 0x2C) = 0;
-        *(s32 *)((char *)self + 0x48) = 0;
+        self->paused = 1;
+        self->fadingOut = 0;
+        self->pauseMenu = 0;
     }
     return self;
 }
 
 /* the erase screen's update: dispatch on the process mode */
-void EraseOptions_update(ViewRecScreen *self) {
+void EraseOptions_update(EraseOptions *self) {
     switch (self->proc->mode) {
         case 0x80000:
             CALL(EraseOptions_selectInput)(self);
@@ -1226,68 +1139,68 @@ void EraseOptions_drawGui(void *self) {
  * phase 1 (course picker), arcade / ghost / everything ask for confirmation (proc mode 0x2000000,
  * +0x70 = 1; the ghost only when one is saved). Phase 1: pick the course +0xA8 on the 2 x 4 grid
  * from +0xAC (2 for course times); A asks for confirmation, B goes back. */
-void EraseOptions_selectInput(ViewRecScreen *self) {
+void EraseOptions_selectInput(EraseOptions *self) {
     s32 old;
 
-    switch (*(s32 *)((char *)self + 0xA0)) {
+    switch (self->phase) {
         case 0:
             if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x10001)) {
                 CALL(snd_postEvent)(1);
-                *(s32 *)((char *)self + 0xA4) -= 1;
-                if (*(s32 *)((char *)self + 0xA4) < 0) {
-                    *(s32 *)((char *)self + 0xA4) = 4;
+                self->set -= 1;
+                if (self->set < 0) {
+                    self->set = 4;
                 }
             }
             if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x4002)) {
                 CALL(snd_postEvent)(1);
-                *(s32 *)((char *)self + 0xA4) += 1;
-                if (*(s32 *)((char *)self + 0xA4) >= 5) {
-                    *(s32 *)((char *)self + 0xA4) = 0;
+                self->set += 1;
+                if (self->set >= 5) {
+                    self->set = 0;
                 }
             }
-            if (*(s32 *)((char *)self + 0xA4) == 0) {
-                *(s32 *)((char *)self + 0xAC) = 2;
+            if (self->set == 0) {
+                self->minCourse = 2;
             } else {
-                *(s32 *)((char *)self + 0xAC) = 0;
+                self->minCourse = 0;
             }
             if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x100)) {
-                switch (*(s32 *)((char *)self + 0xA4)) {
+                switch (self->set) {
                     case 0:
                         XCALL(gl_func_00000000_vrv, snd_postEvent)(5);
-                        *(s32 *)((char *)self->proc + 0x70) = 0x100000;
-                        if (*(s32 *)((char *)self + 0xA8) < *(s32 *)((char *)self + 0xAC)) {
-                            *(s32 *)((char *)self + 0xA8) = *(s32 *)((char *)self + 0xAC);
+                        self->proc->nextMode = 0x100000;
+                        if (self->course < self->minCourse) {
+                            self->course = self->minCourse;
                         }
-                        *(s32 *)((char *)self + 0xA0) += 1;
+                        self->phase += 1;
                         break;
                     case 1:
                         CALL(snd_postEvent)(5);
-                        *(s32 *)((char *)self->proc + 0x70) = 0x200000;
-                        *(s32 *)((char *)self + 0xA0) += 1;
+                        self->proc->nextMode = 0x200000;
+                        self->phase += 1;
                         break;
                     case 2:
                         CALL(snd_postEvent)(0x195);
-                        *(s32 *)((char *)self->proc + 0x70) = 0x400000;
+                        self->proc->nextMode = 0x400000;
                         self->proc->mode = 0x2000000;
-                        *(s32 *)((char *)self + 0x70) = 1;
+                        self->no = 1;
                         break;
                     case 3:
                         if (CALL(Backup_ghostGetMode)((char *)gInputMgr_vr.backup + 4)) {
                             CALL(snd_postEvent)(0x195);
-                            *(s32 *)((char *)self->proc + 0x70) = 0x800000;
+                            self->proc->nextMode = 0x800000;
                             self->proc->mode = 0x2000000;
-                            *(s32 *)((char *)self + 0xB8) = CALL(Backup_ghostGetCourse)((char *)gInputMgr_vr.backup + 4);
-                            *(s32 *)((char *)self + 0xBC) = CALL(Backup_ghostGetRider)((char *)gInputMgr_vr.backup + 4);
-                            *(s32 *)((char *)self + 0xC0) = CALL(Backup_ghostGetBoard)((char *)gInputMgr_vr.backup + 4);
-                            *(s32 *)((char *)self + 0xC4) = CALL(Backup_ghostGetMode)((char *)gInputMgr_vr.backup + 4) - 1;
-                            *(s32 *)((char *)self + 0x70) = 1;
+                            self->ghostCourse = CALL(Backup_ghostGetCourse)((char *)gInputMgr_vr.backup + 4);
+                            self->ghostRider = CALL(Backup_ghostGetRider)((char *)gInputMgr_vr.backup + 4);
+                            self->ghostBoard = CALL(Backup_ghostGetBoard)((char *)gInputMgr_vr.backup + 4);
+                            self->ghostMode = CALL(Backup_ghostGetMode)((char *)gInputMgr_vr.backup + 4) - 1;
+                            self->no = 1;
                         }
                         break;
                     case 4:
                         CALL(snd_postEvent)(0x195);
-                        *(s32 *)((char *)self->proc + 0x70) = 0x1000000;
+                        self->proc->nextMode = 0x1000000;
                         self->proc->mode = 0x2000000;
-                        *(s32 *)((char *)self + 0x70) = 1;
+                        self->no = 1;
                         break;
                 }
             }
@@ -1299,37 +1212,37 @@ void EraseOptions_selectInput(ViewRecScreen *self) {
             }
             break;
         case 1:
-            old = *(s32 *)((char *)self + 0xA8);
-            if (*(s32 *)((char *)self + 0xA8) > *(s32 *)((char *)self + 0xAC) && CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x10001) &&
-                (*(s32 *)((char *)self + 0xA8) & 1)) {
+            old = self->course;
+            if (self->course > self->minCourse && CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x10001) &&
+                (self->course & 1)) {
                 CALL(snd_postEvent)(1);
-                *(s32 *)((char *)self + 0xA8) -= 1;
+                self->course -= 1;
             }
-            if (*(s32 *)((char *)self + 0xA8) < 8 && CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x4002) &&
-                !(*(s32 *)((char *)self + 0xA8) & 1)) {
+            if (self->course < 8 && CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x4002) &&
+                !(self->course & 1)) {
                 CALL(snd_postEvent)(1);
-                *(s32 *)((char *)self + 0xA8) += 1;
+                self->course += 1;
             }
-            if (*(s32 *)((char *)self + 0xA8) - 2 >= *(s32 *)((char *)self + 0xAC) &&
+            if (self->course - 2 >= self->minCourse &&
                 CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x2004)) {
                 CALL(snd_postEvent)(1);
-                *(s32 *)((char *)self + 0xA8) -= 2;
+                self->course -= 2;
             }
-            if (*(s32 *)((char *)self + 0xA8) + 2 < 8 && CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x8008)) {
+            if (self->course + 2 < 8 && CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x8008)) {
                 CALL(snd_postEvent)(1);
-                *(s32 *)((char *)self + 0xA8) += 2;
+                self->course += 2;
             }
-            if (old != *(s32 *)((char *)self + 0xA8)) {
-                *(s32 *)((char *)self + 0x6C) = 0;
+            if (old != self->course) {
+                self->frame = 0;
             }
             if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x100)) {
                 CALL(snd_postEvent)(0x195);
                 self->proc->mode = 0x2000000;
-                *(s32 *)((char *)self + 0x70) = 1;
+                self->no = 1;
             }
             if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
                 CALL(snd_postEvent)(0x802);
-                *(s32 *)((char *)self + 0xA0) -= 1;
+                self->phase -= 1;
             }
             break;
     }
@@ -1340,24 +1253,24 @@ void EraseOptions_selectInput(ViewRecScreen *self) {
  * 0x1000000 everything, which restarts the game flow). The snd_postEvent(5) before the switch goes
  * through the void alias: with no dead int $v0 def at the call, the switch value takes v0 and the
  * reloaded proc v1. */
-void EraseOptions_confirmInput(ViewRecScreen *self) {
-    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x10001) && *(s32 *)((char *)self + 0x70) != 0) {
+void EraseOptions_confirmInput(EraseOptions *self) {
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x10001) && self->no != 0) {
         CALL(snd_postEvent)(1);
-        *(s32 *)((char *)self + 0x70) = 0;
+        self->no = 0;
     }
-    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x4002) && *(s32 *)((char *)self + 0x70) == 0) {
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x4002) && self->no == 0) {
         CALL(snd_postEvent)(1);
-        *(s32 *)((char *)self + 0x70) = 1;
+        self->no = 1;
     }
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x40100)) {
-        if (*(s32 *)((char *)self + 0x70) == 0) {
+        if (self->no == 0) {
             XCALL(gl_func_00000000_vrv, snd_postEvent)(5);
-            switch (*(s32 *)((char *)self->proc + 0x70)) {
+            switch (self->proc->nextMode) {
                 case 0x100000:
-                    CALL(Backup_sessionResetCourseTimes)(self->proc->session, *(s32 *)((char *)self + 0xA8));
+                    CALL(Backup_sessionResetCourseTimes)(self->proc->session, self->course);
                     break;
                 case 0x200000:
-                    CALL(Backup_sessionResetCourseScores)(self->proc->session, *(s32 *)((char *)self + 0xA8));
+                    CALL(Backup_sessionResetCourseScores)(self->proc->session, self->course);
                     break;
                 case 0x400000:
                     CALL(Backup_sessionResetArcade)(self->proc->session);
@@ -1387,11 +1300,11 @@ void EraseOptions_confirmInput(ViewRecScreen *self) {
 
 /* the replay screen's ctor (0x9C bytes): Node -> Process -> replay screen, as the erase screen's 0x36B4 */
 extern char vr_vtNode_4518[], vr_vtProc_4518[], vr_vtReplay_4518[];
-ViewRecScreen *ReplayOptions_ctor(ViewRecScreen *self, ViewRecProc *proc) {
+ReplayOptions *ReplayOptions_ctor(ReplayOptions *self, GENNewRecordsProcess *proc) {
     char *o1;
     char *o2;
 
-    if (self != 0 || (self = (ViewRecScreen *)CALL(mem_new)(156)) != 0) {
+    if (self != 0 || (self = (ReplayOptions *)CALL(mem_new)(156)) != 0) {
         o1 = (char *)self;
         if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {
             o2 = o1;
@@ -1401,32 +1314,32 @@ ViewRecScreen *ReplayOptions_ctor(ViewRecScreen *self, ViewRecProc *proc) {
         self->node.vptr = vr_vtReplay_4518;
         self->node.name = &D_00000000 + 0x464;
         self->proc = proc;
-        *(s32 *)((char *)self + 0x54) = proc->font;
-        *(s32 *)((char *)self + 0x68) = 98;
+        self->font = proc->font;
+        self->unk68 = 98;
         self->frame = 0;
-        *(s32 *)((char *)self + 0x60) = 122;
-        *(s32 *)((char *)self + 0x6C) = 101;
-        *(s32 *)((char *)self + 0x64) = 30;
-        *(s32 *)((char *)self + 0x78) = 46;
-        *(s32 *)((char *)self + 0x70) = 53;
-        *(s32 *)((char *)self + 0x7C) = 59;
-        *(s32 *)((char *)self + 0x74) = 15;
+        self->unk60 = 122;
+        self->unk6C = 101;
+        self->unk64 = 30;
+        self->unk78 = 46;
+        self->unk70 = 53;
+        self->unk7C = 59;
+        self->unk74 = 15;
         self->rowY = 96;
-        *(s32 *)((char *)self + 0x84) = 165;
-        *(s32 *)((char *)self + 0x88) = 181;
-        *(s32 *)((char *)self + 0x8C) = 0;
-        *(s32 *)((char *)self + 0x90) = 0;
-        *(s32 *)((char *)self + 0x94) = 0;
-        *(s32 *)((char *)self + 0x98) = 0;
+        self->unk84 = 165;
+        self->unk88 = 181;
+        self->unk8C[0] = 0;
+        self->unk8C[1] = 0;
+        self->unk8C[2] = 0;
+        self->unk8C[3] = 0;
         CALL(Process_stop)(self);
-        *(s32 *)((char *)self + 0x30) = 1;
-        *(s32 *)((char *)self + 0x2C) = 0;
-        *(s32 *)((char *)self + 0x48) = 0;
+        self->paused = 1;
+        self->fadingOut = 0;
+        self->pauseMenu = 0;
     }
     return self;
 }
 
-void ReplayOptions_update(ViewRecScreen *self) {
+void ReplayOptions_update(ReplayOptions *self) {
     CALL(ReplayOptions_input)(self);
     CALL(Node_update)(self);
 }
@@ -1436,7 +1349,7 @@ void ReplayOptions_update(ViewRecScreen *self) {
  * The white `col` is set and never read, as in the target; the unused locals keep the frame
  * (0x58) and the homes of course / rider (sp+0x40 / 0x3C); the last two reads stay call
  * arguments (one spilled to the temp area at sp+0x28). */
-void ReplayOptions_drawGui(ViewRecScreen *self) {
+void ReplayOptions_drawGui(ReplayOptions *self) {
     f32 col[4];
     s32 unused;
     s32 course, rider;
@@ -1462,7 +1375,7 @@ void ReplayOptions_drawGui(ViewRecScreen *self) {
 
 /* the replay screen's pad handling: A / Start fades out to the saved ghost's mode
  * (procState = Backup_ghostGetMode + 6, then state 1); B goes back to the main menu */
-void ReplayOptions_input(ViewRecScreen *self) {
+void ReplayOptions_input(ReplayOptions *self) {
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x40100)) {
         CALL(snd_postEvent)(5);
         gInputMgr_vr.procState = CALL(Backup_ghostGetMode)((char *)gInputMgr_vr.backup + 4) + 6;
@@ -1479,11 +1392,11 @@ void ReplayOptions_input(ViewRecScreen *self) {
  * constant field store follows the Process_stop call, made through the void alias so that no v0 def
  * sits at the call and the shared constant 76 colours v0 (lever from agent-g) */
 extern char vr_vtNode_4854[], vr_vtProc_4854[], vr_vtScreen_4854[];
-ViewRecScreen *SoundOptions_ctor(ViewRecScreen *self, ViewRecProc *proc) {
+SoundOptions *SoundOptions_ctor(SoundOptions *self, GENNewRecordsProcess *proc) {
     char *o1;
     char *o2;
 
-    if (self != 0 || (self = (ViewRecScreen *)CALL(mem_new)(0x98)) != 0) {
+    if (self != 0 || (self = (SoundOptions *)CALL(mem_new)(0x98)) != 0) {
         o1 = (char *)self;
         if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {
             o2 = o1;
@@ -1493,22 +1406,22 @@ ViewRecScreen *SoundOptions_ctor(ViewRecScreen *self, ViewRecProc *proc) {
         self->node.vptr = vr_vtScreen_4854;
         self->node.name = &D_00000000 + 0x47C;
         self->proc = proc;
-        *(s32 *)((char *)self + 0x54) = proc->font;
+        self->font = proc->font;
         XCALL(gl_func_00000000_vrv, Process_stop)(self);
-        *(s32 *)((char *)self + 0x60) = 76;
-        *(s32 *)((char *)self + 0x58) = 83;
-        *(s32 *)((char *)self + 0x64) = 173;
-        *(s32 *)((char *)self + 0x5C) = 32;
-        *(s32 *)((char *)self + 0x6C) = 38;
-        *(s32 *)((char *)self + 0x70) = 57;
-        *(s32 *)((char *)self + 0x68) = 24;
-        *(s32 *)((char *)self + 0x78) = 111;
-        *(s32 *)((char *)self + 0x74) = 15;
-        *(s32 *)((char *)self + 0x7C) = 76;
-        *(s32 *)((char *)self + 0x84) = 0;
-        *(s32 *)((char *)self + 0x30) = 1;
-        *(s32 *)((char *)self + 0x2C) = 0;
-        *(s32 *)((char *)self + 0x48) = 0;
+        self->modeX = 76;
+        self->modeStep = 83;
+        self->modeY = 173;
+        self->unk5C = 32;
+        self->labelX = 38;
+        self->unk70 = 57;
+        self->rowStep = 24;
+        self->barX = 111;
+        self->barStep = 15;
+        self->rowY = 76;
+        self->cursor = 0;
+        self->paused = 1;
+        self->fadingOut = 0;
+        self->pauseMenu = 0;
     }
     return self;
 }
@@ -1520,28 +1433,6 @@ ViewRecScreen *SoundOptions_ctor(ViewRecScreen *self, ViewRecProc *proc) {
 void SoundOptions_update(void *self) {
 }
 
-/* the sound options screen (proc+0x58, ctor 0x4854): BGM / SE / voice levels (0..10) and the sound
- * mode; 0x4990 handles its pad, 0x4DEC draws it */
-typedef struct VrSoundOptions {
-    /* 0x00 */ Node node;
-    /* 0x2C */ char pad2C[0x50 - 0x2C];
-    /* 0x50 */ ViewRecProc *proc;
-    /* 0x54 */ s32 font;
-    /* 0x58 */ s32 modeStep;         /* x step between the three sound-mode labels */
-    /* 0x5C */ s32 unk5C;
-    /* 0x60 */ s32 modeX;
-    /* 0x64 */ s32 modeY;
-    /* 0x68 */ s32 rowStep;          /* y step between the level rows */
-    /* 0x6C */ s32 labelX;
-    /* 0x70 */ s32 unk70;
-    /* 0x74 */ s32 barStep;          /* x step between the level bar cells */
-    /* 0x78 */ s32 barX;
-    /* 0x7C */ s32 rowY;
-    /* 0x80 */ s32 blink;            /* -16 per frame: the highlighted row's alpha */
-    /* 0x84 */ s32 cursor;           /* rows 0..2 the levels, 3 the sound mode */
-    /* 0x88 */ s32 mode;             /* options flags & 3 */
-    /* 0x8C */ s32 levels[3];        /* options +0x12..+0x14 */
-} VrSoundOptions;
 
 /* 0x7E0 (sVrLabels[63..65]): the three level-row labels. Indexed by the row, so a separate static
  * (the target folds 0x7E0 into the reloc). */
@@ -1554,7 +1445,7 @@ extern RaceSprite sVrLabels_7E0[3];
  * `unused2` keep the 0x100 frame and the homes (white at sp+0xEC); `&sVrLabels_7E0[i]` with no pointer
  * local is a strength-reduced uopt temp spilled to sp+0x64, as in the target; `if (1) {}` lets d take
  * white's f0. */
-void SoundOptions_drawGui(VrSoundOptions *self) {
+void SoundOptions_drawGui(SoundOptions *self) {
     s32 unused;
     f32 white[4];
     f32 hiBar[4];
@@ -1637,13 +1528,13 @@ void SoundOptions_drawGui(VrSoundOptions *self) {
  * white colour at +0x58 spelled 255 / d with the divisor in a local and an int numerator (the 0x2F1C
  * lever), which keeps the 255.0f dividend apart from the divisor (lever from agent-g) */
 extern char vr_vtNode_5200[], vr_vtProc_5200[], vr_vtScreen_5200[];
-ViewRecScreen *LanguageOptions_ctor(ViewRecScreen *self, ViewRecProc *proc) {
+LanguageOptions *LanguageOptions_ctor(LanguageOptions *self, GENNewRecordsProcess *proc) {
     char *o1;
     char *o2;
     f32 c;
     f32 d;
 
-    if (self != 0 || (self = (ViewRecScreen *)CALL(mem_new)(0x70)) != 0) {
+    if (self != 0 || (self = (LanguageOptions *)CALL(mem_new)(0x70)) != 0) {
         o1 = (char *)self;
         if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {
             o2 = o1;
@@ -1653,43 +1544,34 @@ ViewRecScreen *LanguageOptions_ctor(ViewRecScreen *self, ViewRecProc *proc) {
         self->node.vptr = vr_vtScreen_5200;
         self->node.name = &D_00000000 + 0x494;
         self->proc = proc;
-        *(s32 *)((char *)self + 0x54) = proc->font;
+        self->font = proc->font;
         CALL(Process_stop)(self);
-        *(s32 *)((char *)self + 0x68) = vr_gLanguage;
+        self->language = vr_gLanguage;
         d = 255.0f; c = 255 / d;
-        *(s32 *)((char *)self + 0x30) = 1;
-        *(s32 *)((char *)self + 0x2C) = 0;
-        *(s32 *)((char *)self + 0x48) = 0;
-        *(f32 *)((char *)self + 0x58) = c;
-        *(f32 *)((char *)self + 0x5C) = c;
-        *(f32 *)((char *)self + 0x60) = c;
-        *(f32 *)((char *)self + 0x64) = c;
+        self->paused = 1;
+        self->fadingOut = 0;
+        self->pauseMenu = 0;
+        self->colour[0] = c;
+        self->colour[1] = c;
+        self->colour[2] = c;
+        self->colour[3] = c;
     }
     return self;
 }
 
-/* the screen at proc+0x5C (0x70 bytes, ctor 0x5200): the setting flag that 0x5318 toggles */
-typedef struct VrScreen5C {
-    /* 0x00 */ Node node;
-    /* 0x2C */ char pad2C[0x50 - 0x2C];
-    /* 0x50 */ ViewRecProc *proc;
-    /* 0x54 */ char pad54[0x68 - 0x54];
-    /* 0x68 */ s32 flag;             /* from bootup Bss+0x28C; settings_setFlag4 */
-    /* 0x6C */ s32 unk6C;
-} VrScreen5C;
 
-/* 0x5318: VrScreen5C pad handling: left / right set the flag (0 / 1, settings_setFlag4), A / B /
+/* 0x5318: LanguageOptions pad handling: left / right set the flag (0 / 1, settings_setFlag4), A / B /
  * Start clear options bit 3 and save the settings, then return to the caller screen (proc flags
  * bit 16) or fade out to the next process state. */
-void LanguageOptions_update(VrScreen5C *self) {
-    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x10001) && self->flag != 0) {
+void LanguageOptions_update(LanguageOptions *self) {
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x10001) && self->language != 0) {
         CALL(snd_postEvent)(1);
-        self->flag = 0;
+        self->language = 0;
         CALL(settings_setFlag4_000126EC)(&gInputMgr_vr, 0);
     }
-    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x4002) && self->flag == 0) {
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x4002) && self->language == 0) {
         CALL(snd_postEvent)(1);
-        self->flag = 1;
+        self->language = 1;
         CALL(settings_setFlag4_000126EC)(&gInputMgr_vr, 1);
     }
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x40300)) {
@@ -1711,11 +1593,11 @@ void LanguageOptions_update(VrScreen5C *self) {
     CALL(Node_update)(self);
 }
 
-/* 0x5440: VrScreen5C draw: the records draws, the colours, label sprite 42 at (160, 37), then
+/* 0x5440: LanguageOptions draw: the records draws, the colours, label sprite 42 at (160, 37), then
  * the two choice labels 66 / 67 at (90, 126) / (220, 126). The chosen one (flag 0 -> 66,
- * flag 1 -> 67) blinks through the unk6C fade counter (-16 per frame, the alpha wraps through
+ * flag 1 -> 67) blinks through the blink fade counter (-16 per frame, the alpha wraps through
  * the low byte); the other is drawn at 128. `unused` keeps the 0x48 frame (col at sp+0x38). */
-void LanguageOptions_drawGui(VrScreen5C *self) {
+void LanguageOptions_drawGui(LanguageOptions *self) {
     f32 col[4];
     s32 unused[5];
 
@@ -1725,20 +1607,20 @@ void LanguageOptions_drawGui(VrScreen5C *self) {
     col[3] = 1.0f;
     CALL(vr_drawBackground)(self->proc);
     CALL(vr_drawFooterLabels)(self->proc);
-    self->unk6C -= 16;
+    self->blink -= 16;
     CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, 255, sVrPrimColour, sVrEnvColour);
     CALL(gui_spriteRefresh)(&sVrLabels[42]);
     CALL(gui_drawSprite)(&sVrLabels[42], 160, 37, 3);
     CALL(gui_spriteRefresh)(&sVrLabels[66]);
-    if (self->flag == 0) {
-        CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[66], self->unk6C, col, 255);
+    if (self->language == 0) {
+        CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[66], self->blink, col, 255);
     } else {
         CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[66], 128, col, 255);
     }
     CALL(gui_drawSprite)(&sVrLabels[66], 90, 126, 3);
     CALL(gui_spriteRefresh)(&sVrLabels[67]);
-    if (self->flag != 0) {
-        CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[67], self->unk6C, col, 255);
+    if (self->language != 0) {
+        CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[67], self->blink, col, 255);
     } else {
         CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[67], 128, col, 255);
     }

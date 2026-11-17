@@ -110,7 +110,7 @@ extern "C" void RecordOptions_coursePageInput(VrScreen *self) {
     char *pad;
     int back;
     pad = (char *)CALL(input_getPad_00011D40)(&gInputMgr_vrncc, 1);
-    CALL(snd_setPlayer3FreqScaleFromStick)(*(signed char *)(pad + 8), *(signed char *)(pad + 9));
+    CALL(snd_setPlayer3FreqScaleFromStick)(*(signed char *)(pad + 8), *(signed char *)(pad + 9)); /* RAW: donor-mirror InputPad stick x / y bytes +8 / +9 (game/input.h) */
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x10001)) {
         if (CALL(RecordOptions_prevCourse)(self) != self->cursor) {
             CALL(snd_postEvent)(1);
