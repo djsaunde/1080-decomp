@@ -1,6 +1,6 @@
-/* MIPSpro 7.2.1 C++ (tools/ncc721.sh) NON_MATCHING donor for heli.uso 0xB08 (agent-g run 672), spliced
- * over the empty NON_MATCHING placeholder in heli_uso.c on the non_matching build only (the matching build
- * keeps INCLUDE_ASM). 0xB08 is the Heli per-frame update (decode: docs/1080_NEW_MODULES.md "heli.uso").
+/* MIPSpro 7.2.1 C++ (tools/ncc721.sh) EXACT donor for heli.uso 0xB08, Heli_update (agent-g run 672 .. 781,
+ * agent-e run 780), REPLACE_FUNC_BODY-spliced over the empty placeholder in heli_uso.c on both builds (Makefile
+ * HELI_NM_DONOR). Byte-fragile: renames and comments only. Decode: docs/1080_NEW_MODULES.md "heli.uso".
  * MIPSpro 7.2.1 is the right front end: the target's 8-way switch is an inline jump table (RoData+0x7C),
  * which IDO 7.1 NCC (EDG 2.19) never emits. Levers that took mp72 from 77.3 to 92.4:
  *  - an explicit empty `default: break;` after case 6. The default edge then gets its own block, so uopt

@@ -372,7 +372,7 @@ void Heli_display(char *self) {
 }
 
 /* Heli_update: Heli update (C++). EXACT via the MIPSpro 7.2.1 donor
- * src/heli_uso/heli_uso_mp72_nm.cpp (agent-g run 672 .. 781, agent-e run 780), REPLACE_FUNC_BODY-spliced over
+ * src/heli_uso/heli_uso_mp72.cpp (agent-g run 672 .. 781, agent-e run 780), REPLACE_FUNC_BODY-spliced over
  * this placeholder on both builds. */
 void Heli_update(void) {
 }
