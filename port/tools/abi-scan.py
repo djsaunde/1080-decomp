@@ -17,6 +17,18 @@ against the callee's definition (found from the call instruction's target addres
            eax after the call (run 842: the ROM's $v0 was the callee's last result, which the
            matched C drops; fix the callee with PORT_V0_TYPE / PORT_V0_RET, include/uso_call.h).
            The read is found in the objdump disassembly after the call, following direct jumps.
+With --x64 (the PORT_64 build, plan 21.7: x32 units in an x86-64 executable) the i386-only classes are
+dropped (SRETPOP; Pn / UNPROTO, which the register check replaces) and one class is added:
+  X64REG   the caller loads an argument register (DW_TAG_call_site_parameter) that the definition
+           does not read (extra integer registers alone, with every vector argument the definition
+           reads loaded, are trailing K&R arguments and pass): an int / float class mismatch (O32 float bits declared `int`), a
+           double / float, or a by-value struct the two sides size differently.  The definition's
+           registers follow the SysV classes (rdi rsi rdx rcx r8 r9 / xmm0-7; a struct > 16 bytes in
+           memory); definitions with a 1..16-byte struct parameter, or variadic, are not judged.
+  X64Pn    a prototyped declaration's parameter n is in another class than the definition's (int /
+           pointer against float, float against double, a struct against anything else)
+  SRET     (kept) only when the struct is <= 16 bytes: a larger one is the hidden pointer in rdi,
+           which is the C side's explicit out-pointer.
 Prints one line per distinct finding.  With --baseline, exits 1 when a finding is not in the
 baseline (the accepted ones: run 836 left int / float same-size pairs etc. as harmless);
 --update rewrites the baseline.  Needs pyelftools (tools/build-venv).
@@ -28,6 +40,7 @@ ap=argparse.ArgumentParser()
 ap.add_argument('elf')
 ap.add_argument('--baseline')
 ap.add_argument('--update',action='store_true')
+ap.add_argument('--x64',action='store_true')
 args=ap.parse_args()
 path=args.elf
 f=open(path,'rb'); e=ELFFile(f); d=e.get_dwarf_info()
@@ -38,7 +51,7 @@ def tdie(die):
 def tclass(t, depth=0):
     if t is None: return 'void'
     tag=t.tag
-    if tag in ('DW_TAG_typedef','DW_TAG_const_type','DW_TAG_volatile_type'):
+    if tag in ('DW_TAG_typedef','DW_TAG_const_type','DW_TAG_volatile_type','DW_TAG_restrict_type'):
         return tclass(tdie(t),depth+1)
     if tag in ('DW_TAG_pointer_type','DW_TAG_reference_type','DW_TAG_rvalue_reference_type'): return 'ptr'
     if tag=='DW_TAG_base_type':
@@ -93,7 +106,13 @@ for cu in d.iter_CUs():
             p=die.get_parent()
             while p is not None and p.tag!='DW_TAG_subprogram': p=p.get_parent()
             pn=sig(p)[0] if p is not None else '?'
-            sites.append((cun,cpp,pn,sig(od),rp.value,od))
+            regs=[]  # --x64: the argument registers the caller loads (DWARF numbers)
+            for c in die.iter_children():
+                if c.tag in ('DW_TAG_call_site_parameter','DW_TAG_GNU_call_site_parameter') and 'DW_AT_location' in c.attributes:
+                    v=c.attributes['DW_AT_location'].value
+                    if isinstance(v,list) and v and 0x50<=v[0]<=0x6f: regs.append(v[0]-0x50)
+                    elif isinstance(v,list) and len(v)>1 and v[0]==0x90: regs.append(v[1])
+            sites.append((cun,cpp,pn,sig(od),rp.value,od,regs))
 def target(rp):
     o=rp-5-tv
     if 0<=o<len(tb)-5 and tb[o]==0xE8:
@@ -144,11 +163,49 @@ def reads_eax(a,depth=0,seen=None):
         a=nxt
     return False
 found=set()
-for cun,cpp,pn,(dn,dret,dps,dvar,dproto),rp,od in sites:
+X64GP=[5,4,1,2,8,9]  # rdi rsi rdx rcx r8 r9
+def x64_regs(ps,ret):
+    """the argument registers a definition reads, or None when its classes are not judged"""
+    gp=[];xm=[]
+    if ret.startswith('struct') and ret[6:].isdigit() and int(ret[6:])>16: gp.append(None)  # hidden pointer
+    for p in ps:
+        if p in FP: xm.append(p)
+        elif p.startswith('struct'):
+            if not p[6:].isdigit(): return None
+            if int(p[6:])<=16: return None
+        else: gp.append(p)
+    return set(X64GP[:min(len(gp),6)])|set(range(17,17+min(len(xm),8)))
+for cun,cpp,pn,(dn,dret,dps,dvar,dproto),rp,od,regs in sites:
     t=target(rp)
     if t is None or t not in defs: continue
     (n,ret,ps,var,proto),dcun,dcpp,hi=defs[t]
     issues=[]
+    if args.x64:
+        exp=None if var else x64_regs(ps,ret)
+        extra=sorted(set(regs)-exp) if exp is not None else []
+        # extra GP registers alone are trailing arguments the definition ignores (K&R calls with more
+        # arguments than the callee names): harmless unless a vector argument is missing as well
+        if extra and all(r < 17 for r in extra) and not ({r for r in exp if r >= 17} - set(regs)):
+            extra=[]
+        if extra:
+            nm={5:'rdi',4:'rsi',1:'rdx',2:'rcx',8:'r8',9:'r9'}
+            issues.append('X64REG caller sets %s, def(%s) does not read it'%(','.join(nm.get(r,'xmm%d'%(r-17)) for r in extra),','.join(ps)))
+        unp = (not dproto and not cpp) or (dvar and not dps)
+        if not unp:  # a prototyped declaration: the classes position by position
+            kc=lambda t:'G' if t in ('int','ptr','int64','struct4','struct8') else t  # a 4 / 8-byte struct: assumed INTEGER class
+            for k in range(min(len(dps),len(ps))):
+                if kc(dps[k])!=kc(ps[k]):
+                    issues.append('X64P%d decl %s def %s'%(k,dps[k],ps[k]))
+        sz=lambda t:int(t[6:]) if t.startswith('struct') and t[6:].isdigit() else 0
+        if (dret.startswith('struct') != ret.startswith('struct')) and max(sz(dret),sz(ret))<=16:
+            issues.append('SRET decl %s def %s'%(dret,ret))
+        if ret=='void' and dret not in ('void',) and dret not in FP and reads_eax(rp):
+            issues.append('VRET decl %s def void, eax read after the call'%dret)
+        if (dret in FP) != (ret in FP) and dret!='void' and ret!='void':
+            issues.append('RET decl %s def %s'%(dret,ret))
+        for i in issues:
+            found.add('%s\t%s\t%s\t%s\t%s\tdecl(%s%s)->%s'%(i.split()[0],re.sub(r'^.*?/(src|port)/',r'\1/',cun),pn,n,i,','.join(dps),',...' if dvar else '',dret))
+        continue
     if ret=='void' and dret not in ('void',) and dret not in FP and reads_eax(rp):
         issues.append('VRET decl %s def void, eax read after the call'%dret)
     # return

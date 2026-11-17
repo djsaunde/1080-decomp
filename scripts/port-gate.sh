@@ -25,6 +25,9 @@
 #              With >= 2000 frames the attract demo's CPU rider (SnowAI) must reach 60 % of the course
 #              (trace e0 pct; ~75 % at 2000 when it steers, ~35 % against the rock wall when it cannot
 #              find its course markers: plan 18.24, run 854).
+#   build64    (report-only, plan 21.7) the x86-64 build: configure + build, test_*, the smoke, its state.log
+#              against the i386 smoke's, abi-scan --x64; prints INFO and never fails until M6's exit check
+#              holds (PORT_GATE_BUILD64=0 skips it)
 #   race       port/tools/race-check.py (~10 s): port/host/race_crystal_lake.input from a fresh dir
 #              reaches "Goal!" at its `# GOAL` step; View Replay and the saved ghost (reloaded in a
 #              new process) give the race's rider positions bit for bit.  The script is tied to the
@@ -262,6 +265,45 @@ PY
   pctok=1; if [ "$FRAMES" -ge 2000 ] && [ "${pct:-0}" -lt 60 ]; then pctok=0; fi
   if [ $rc = 0 ] && [ "$nf" -ge "$FRAMES" ] && [ "${nanr:-1}" = 0 ] && [ $pctok = 1 ]; then line smoke PASS "$txt"
   else line smoke FAIL "$txt${why:+; $why}"; fi
+fi
+
+# ---- build64 (plan 21.7, M6): the x86-64 build (-DPORT_64=ON, the game in the x32 data model) from a fresh
+# dir, its unit tests, the same smoke run, and its state.log against the i386 smoke's (the `/N` after r0's
+# fields is a host address, dropped).  REPORT-ONLY until the M6 exit check holds: it prints how far the
+# 64-bit build gets (build / tests / frames / first divergent frame / abi-scan --x64 count) as INFO and
+# never fails the gate.  PORT_GATE_BUILD64=0 skips it.
+if [ "${PORT_GATE_BUILD64:-1}" = 1 ]; then
+  start; B64="$LOG/build64"; S64="$LOG/smoke64"; rm -rf "$B64" "$S64"; mkdir -p "$S64"; why=""
+  if ! cmake -S port -B "$B64" -G Ninja -DPORT_64=ON -DPORT_LINK=ON -DPORT_ROM="$ROM" >"$LOG/configure64.log" 2>&1; then why="configure failed"
+  elif ! cmake --build "$B64" -j"$JOBS" -- -k 0 >"$LOG/build64.log" 2>&1; then
+    why="build: $(grep -c 'error:' "$LOG/build64.log") errors ($(grep -m1 'error:' "$LOG/build64.log" | cut -c1-80))"; fi
+  if [ -z "$why" ]; then
+    t=""; for u in test_ultra test_fs test_backup; do
+      case $u in test_ultra) a="$S64/test.sram";; test_fs) a="$ROM";; *) a="";; esac
+      "$B64/$u" $a >"$S64/$u.log" 2>&1 && t="$t $u ok" || t="$t $u FAIL"; done
+    ( cd "$S64" && timeout 300 "$B64/tenshoe" --rom "$ROM" --sram "$S64/1080.sram" --frames "$FRAMES" \
+        --trace "$S64/state.log" >"$S64/out.log" 2>&1 ); rc=$?
+    nf=$(grep -c '^F ' "$S64/state.log" 2>/dev/null); nf=${nf:-0}
+    stop=$(grep -a -m1 -E 'sys_fatal|PORT: signal' "$S64/out.log" | cut -c1-70)
+    cmpr=$(python3 - "$LOG/smoke/state.log" "$S64/state.log" <<'PY'
+import re, sys
+def rows(p):
+    try: return [re.sub(r'/\d+ e0=', ' e0=', l) for l in open(p, errors='replace')]
+    except OSError: return None
+a, b = rows(sys.argv[1]), rows(sys.argv[2])
+if a is None or b is None: print('no i386 smoke trace to compare'); sys.exit()
+for i, (x, y) in enumerate(zip(a, b)):
+    if x != y:
+        f = x.split()[1] if x.startswith('F ') else 'header'
+        print('first divergence at frame %s (line %d)' % (f, i + 1)); break
+else:
+    print('identical over %d lines' % min(len(a), len(b)) + ('' if len(a) == len(b) else ' (lengths %d / %d)' % (len(a), len(b))))
+PY
+)
+    abi=$(python3 port/tools/abi-scan.py --x64 "$B64/tenshoe" 2>/dev/null | cut -f1 | sed 's/X64P[0-9]*/X64P/' | sort | uniq -c | awk '{printf "%s %s ", $2, $1}')
+    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; state.log vs i386: $cmpr; abi-scan --x64: ${abi:-0}"
+  fi
+  line build64 INFO "$why"
 fi
 
 # ---- race (plan 20.3): the scripted Crystal Lake run to the goal, its replay and its ghost
