@@ -1,0 +1,101 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Tue, 17 Nov 2026 12:00:00 -0500
+Subject: [PATCH 9/9] fast: clamp 1:1 TEXRECT strips to the edge when upscaling
+
+N64 games draw large 2D images (logos, title screens) as many narrow
+TEXRECT strips, each a LoadTile of a few columns with a wide wrap mask.
+The RDP samples texel corners, so a 1:1 rectangle that starts on a whole
+texel never blends a neighbour and the strips butt together seamlessly.
+Above native resolution Fast3D's bilinear filter blends each strip's edge
+column with its opposite edge through GL_REPEAT, and a seam line appears
+every strip.
+
+When a TEXRECT maps 1:1 (|dsdx| or |dtdy| == 1.0) from a whole texel and
+its texel range stays inside the texture, set the sampler (only) to clamp
+on that axis. The shader's clamp path is not involved. Native-resolution
+output is unchanged (texel centres); scaled rectangles keep the wrap,
+because the RDP really does blend across it there (the 1080 Fader's
+stretched 32x32 colour texture).
+
+Found on the 1080 port's first real frames (plan 19.8): the N64 logo and
+the trademark screen, 8-texel strips, at --scale 3.
+---
+diff --git a/include/fast/interpreter.h b/include/fast/interpreter.h
+index 6582c94..103cd2d 100644
+--- a/include/fast/interpreter.h
++++ b/include/fast/interpreter.h
+@@ -475,6 +475,8 @@ class Interpreter {
+     void GfxSpVertex(size_t numVertices, size_t destIndex, const F3DVtx* vertices);
+     void GfxSpModifyVertex(uint16_t vtxIdx, uint8_t where, uint32_t val);
+     void GfxSpTri1(uint8_t vtx1Idx, uint8_t vtx2Idx, uint8_t vtx3Idx, bool isRect);
++    bool RectInsideTexture(struct LoadedVertex* const vArr[3], uint32_t tile, uint32_t size, bool s);
++    bool mRectUnitTexel[2] = { false, false }; // the TEXRECT being drawn maps 1:1 from a whole texel in s / t
+     void GfxSpLine3D(uint8_t vtx1Idx, uint8_t vtx2Idx, uint8_t width);
+     void GfxSpGeometryMode(uint32_t clear, uint32_t set);
+     void GfxSpExtraGeometryMode(uint32_t clear, uint32_t set);
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index f7a0b54..2a1b266 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -1824,6 +1824,24 @@ void Interpreter::GfxSpModifyVertex(uint16_t vtx_idx, uint8_t where, uint32_t va
+     v->v = t;
+ }
+ 
++// The texel range (shifted, relative to the tile origin) a rectangle's corners cover lies in
++// [0, size] along one axis, so no sample of it wraps (patch 0009).
++bool Interpreter::RectInsideTexture(struct LoadedVertex* const v_arr[3], uint32_t tile, uint32_t size, bool s) {
++    int shift = s ? mRdp->texture_tile[tile].shifts : mRdp->texture_tile[tile].shiftt;
++    float origin = (s ? mRdp->texture_tile[tile].uls : mRdp->texture_tile[tile].ult) / 4.0f;
++    for (int k = 0; k < 3; k++) {
++        float c = (s ? v_arr[k]->u : v_arr[k]->v) / 32.0f;
++        if (shift != 0) {
++            c = shift <= 10 ? c / (1 << shift) : c * (1 << (16 - shift));
++        }
++        c -= origin;
++        if (c < -0.001f || c > size + 0.001f) {
++            return false;
++        }
++    }
++    return size > 0;
++}
++
+ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bool is_rect) {
+     struct LoadedVertex* v1 = &mRsp->loaded_vertices[vtx1_idx];
+     struct LoadedVertex* v2 = &mRsp->loaded_vertices[vtx2_idx];
+@@ -2099,6 +2117,21 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+                 cmt &= ~G_TX_CLAMP;
+             }
+ 
++            // A 1:1 TEXRECT from a whole texel that stays inside its texture (a strip blit: a big
++            // image drawn as many narrow LoadTile strips with a wide wrap mask) never blends a
++            // neighbour on the RDP, which samples texel corners. Above native resolution bilinear
++            // would blend each strip's edge column with the opposite edge through GL_REPEAT and
++            // draw a seam every strip; clamp the sampler (only) to the edge instead. Native output
++            // is unchanged. Scaled rects keep the wrap: there the RDP really blends across it.
++            if (is_rect && mRectUnitTexel[0] && !(cms & (G_TX_CLAMP | G_TX_MIRROR)) &&
++                RectInsideTexture(v_arr, tile, tex_width[i], true)) {
++                cms |= G_TX_CLAMP;
++            }
++            if (is_rect && mRectUnitTexel[1] && !(cmt & (G_TX_CLAMP | G_TX_MIRROR)) &&
++                RectInsideTexture(v_arr, tile, tex_height[i], false)) {
++                cmt |= G_TX_CLAMP;
++            }
++
+             if (mRenderingState.mTextures[i] == nullptr) {
+                 continue;
+             }
+@@ -3076,7 +3109,11 @@ void Interpreter::GfxDpTextureRectangle(int32_t ulx, int32_t uly, int32_t lrx, i
+     }
+     mRdp->first_tile_index = tile;
+ 
++    // 1:1 from a whole texel: the RDP samples texel corners with no blend (patch 0009)
++    mRectUnitTexel[0] = (dsdx == (1 << 10) || dsdx == -(1 << 10)) && (uls & 31) == 0;
++    mRectUnitTexel[1] = (dtdy == (1 << 10) || dtdy == -(1 << 10)) && (ult & 31) == 0;
+     GfxDrawRectangle(ulx, uly, lrx, lry);
++    mRectUnitTexel[0] = mRectUnitTexel[1] = false;
+     if (saved_tile != tile) {
+         mRdp->textures_changed[0] = true;
+         mRdp->textures_changed[1] = true;
+-- 
+2.34.1
