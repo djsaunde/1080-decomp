@@ -80,6 +80,12 @@ int snoweffects_uso_func_000046BC(...);
  * Run 715 (13 -> 10 words): no &v114 / &vFC pointer locals (t->v114 / t->vFC read in place, LICM hoists the
  *   addresses after the IV init: the or a1 / addiu t3 / addiu t4 order is fixed), two dead ints keep the frame.
  *   Left: the vel statement's cam pointer (v1 vs v0) and the d ctor's |s| (f0 vs f12).
+ * Run 720 (10 -> 5 words): the vel op*'s `this` is its own LR (`if (1) {}` after the pos store, idv through a
+ *   pointer local, lerp3 keeps one dead float). The a-cam / ?: pool word (M-124, 7 refs = num 70) then had to
+ *   lose v0 to the stride load (num 40 / den 2): six code-free `if (1) {}` in TQ::operator* stretch its range
+ *   (den 2 -> 4, priority 17.5). Those loop blocks also lower the loop-wide FP LRs, so st() / spd() (code-free
+ *   blocks around the state / speed reads) add blocks before the loop to put the 255.0f / fade / 0.0f order back
+ *   (f20 / f22 / f24). Left: the d ctor's |s| (f0 vs f12).
  * Left: pool word 1 colours f2 where the target has f12 (it wins the f2 race against the TV ctor's second
  *   parameter word; a forcing-uopt probe puts it on f12 for 97.9 %), the frame (368 vs 384: one TV pool
  *   word too many at the loop-body top and one word too many above it) and the hoisted sp addresses. ---- */
@@ -93,7 +99,8 @@ struct TQ0 { float x, y, z; };
 struct TQ {
     float x, y, z;
     TQ(float a, float b, float c) { x = a; y = b; z = c; }
-    TQ operator*(float s) const { TQ r(x * s, y * s, z * s); return r; }
+    /* run 720: six code-free blocks = a longer range for the a-cam / ?: pool word (priority 35 -> 17.5) */
+    TQ operator*(float s) const { if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} TQ r(x * s, y * s, z * s); return r; }
 };
 struct TV {
     float x, y, z;
@@ -186,13 +193,18 @@ struct TTrail {
 /* identity inlines (run 696): a non-trivial argument gets an edg pool word, which shifts the pool-word
  * membership of the op* temps after it (idv(fwd) / idf(|s|): 66 -> 52 differing words) */
 inline float idf(float a) { return a; }
-inline const TV &idv(const TV &v) { return v; }
+/* run 720: through a pointer local, so the vel op*'s `this` is its own LR (v0) */
+inline const TV &idv(const TV &v) { const TV *q = &v; return *q; }
+/* run 720: code-free blocks around the cam state / speed reads (pre-loop), so fade / 0.0f keep their
+ * f22 / f24 colours under the six extra loop blocks of TQ::operator* */
+inline short st(const TCam *c) { if (1) {} if (1) {} return c->state; }
+inline float spd(const TCam *c) { if (1) {} if (1) {} return c->speed; }
 inline float lerpf(float a, float b, float t) { return (b - a) * t + a; }
 /* run 701: two dead int locals = the target's two frame words just ahead of up * f180's result (sp+168);
  * float locals copy f into pool words and recolour the a statement */
 inline float idw2(float f) { int g = 0, h = 0; return f; }
 inline void lerp3(TV &p, const TV &b, float f) {
-    float g = f, h = f; /* unused: the target's two frame words ahead of the fwd * f188 result */
+    float h = f; /* run 720: one dead float (g went with idv's pointer local) */
     p.x = lerpf(p.x, b.x, f);
     p.y = lerpf(p.y, b.y, f);
     p.z = lerpf(p.z, b.z, f);
@@ -237,7 +249,7 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
         t->hits = 0;
     }
     t->s = s;
-    if (t->cam->state != 97 || t->cam->speed < 60.0f || fabs_(s) == 0.0f) {
+    if (st(t->cam) != 97 || spd(t->cam) < 60.0f || fabs_(s) == 0.0f) {
         t->hits = 0;
     }
     t->on = snoweffects_uso_func_000046BC(t);
@@ -249,12 +261,12 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
     }
     if (t->on != 0) {
         float fade = t->fade;
-        if (t->cam->state == 98) {
+        if (st(t->cam) == 98) {
             fade = 0.0f;
         }
         /* run 715: two dead int words here (the old &v114 / &vFC pointer locals' frame slots). With the pointer
          * locals gone, uopt emits the i*44 IV init ahead of the a0+276 / a0+252 hoists, as in the target. */
-        int g = 0, h = 0;
+        int g = (st(t->cam), 0), h = 0;
         TQ0 ua; /* run 701: up * f180 lives here (sp+336, the first word below vFC), not in a loop-body __V */
         for (i = 0; i < t->stride; i++) {
             TV p;
@@ -265,6 +277,7 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
                 lerp3(p, t->b, (float)i / (float)(t->stride - 1));
             }
             t->points[t->writeOfs + i].pos = p;
+            if (1) {} /* run 720: splits the vel statement from the pos store */
             t->points[t->writeOfs + i].vel = idv(t->cam->fwd) * t->f188;
             t->points[t->writeOfs + i].f28 = 0;
             t->points[t->writeOfs + i].w[1] = w;
