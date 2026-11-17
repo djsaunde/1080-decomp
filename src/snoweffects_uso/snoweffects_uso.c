@@ -74,45 +74,58 @@ typedef struct SnowEffect {
     /* 0x050 */ f32 width;           /* end-point spread scale (virtual slot 13) */
     /* 0x054 */ s32 flags;           /* bit 0 / 1 / 2: spawn effects A / B / C */
     /* 0x058 */ char unk058[0x174 - 0x58];
-    /* 0x174 */ f32 unk174;
-    /* 0x178 */ f32 unk178;
-    /* 0x17C */ f32 unk17C;
-    /* 0x180 */ f32 unk180;
-    /* 0x184 */ f32 unk184;
-    /* 0x188 */ f32 unk188;
-    /* 0x18C */ f32 unk18C;
-    /* 0x190 */ f32 unk190;
-    /* 0x194 */ f32 unk194;
-    /* 0x198 */ f32 unk198;
-    /* 0x19C */ s32 unk19C;
-    /* 0x1A0 */ s32 unk1A0;
-    /* 0x1A4 */ s32 unk1A4;
-    /* 0x1A8 */ s32 unk1A8;
-    /* 0x1AC */ char unk1AC[0x1C8 - 0x1AC];
-    /* 0x1C8 */ s32 unk1C8;          /* effect B course-state counters (BoardTrail_spawnB) */
-    /* 0x1CC */ s32 unk1CC;
-    /* 0x1D0 */ char unk1D0[0x1D8 - 0x1D0];
-    /* 0x1D8 */ f32 unk1D8;
-    /* 0x1DC */ f32 unk1DC;
-    /* 0x1E0 */ f32 unk1E0;
-    /* 0x1E4 */ f32 unk1E4;
-    /* 0x1E8 */ f32 unk1E8;
-    /* 0x1EC */ f32 unk1EC;
-    /* 0x1F0 */ f32 unk1F0;
+    /* effect A (flag bit 0): powder puffs into the +0x98 PowderParticles pool (BoardTrail_spawnA; defaults
+     * BoardTrail_enableA). Names from what spawnA does with each word. */
+    /* 0x174 */ f32 powderGravity;   /* particle gravity (x 1.5 in a burst) */
+    /* 0x178 */ f32 powderRiseY;     /* added to the spawn point's y */
+    /* 0x17C */ f32 powderSizeVel;   /* particle sizeVel, times the |speed| term */
+    /* 0x180 */ f32 powderDirScale;  /* trail-direction velocity, times speed */
+    /* 0x184 */ f32 powderSpeedBias; /* (bias + |speed|) multiplies the owner-velocity term */
+    /* 0x188 */ f32 powderAlphaVel;  /* particle alphaVel */
+    /* 0x18C */ f32 powderDecay;     /* particle decay */
+    /* 0x190 */ f32 powderMinSpeed;  /* no spawn below this |speed| */
+    /* 0x194 */ f32 powderBurstVelScale; /* owner vel (+0x318) scale during a burst */
+    /* 0x198 */ f32 powderVelScale;  /* owner vel (+0x318) scale otherwise */
+    /* 0x19C */ s32 powderPeriod;    /* frames between spawns (timer reload) */
+    /* 0x1A0 */ s32 powderTimer;
+    /* 0x1A4 */ s32 unk1A4;          /* set to 5 on owner state 98; >= 5 re-arms the burst */
+    /* 0x1A8 */ s32 powderBurst;     /* burst frames left (4 on landing, 2 re-armed) */
+    /* 0x1AC */ s32 powderCount;     /* particles per spawn (spawnA sets 1) */
+    /* effect B (flag bit 1): landing spray into the +0x9C NormalParticles pool (BoardTrail_spawnB); spawnB
+     * rewrites +0x1B0..+0x1C4 every frame from one of two RoData sets picked by the game flags. */
+    /* 0x1B0 */ f32 normSizeVel;     /* particle sizeVel */
+    /* 0x1B4 */ f32 normGravity;     /* particle gravity */
+    /* 0x1B8 */ f32 normUpScale;     /* owner up axis (+0x3B0) velocity scale (26 / 41) */
+    /* 0x1BC */ f32 normDecay;       /* particle decay */
+    /* 0x1C0 */ f32 normAlphaVel;    /* particle alphaVel */
+    /* 0x1C4 */ f32 normVelScale;    /* owner vel (+0x318) scale */
+    /* 0x1C8 */ s32 unk1C8;          /* frames with owner speed > 20, SnowRing +0x80 set, hits != 1; >= 7 at state 97 bursts */
+    /* 0x1CC */ s32 normBurst;       /* burst frames left (3; spawns while 1..2) */
+    /* 0x1D0 */ s32 normLastState;   /* owner state, copied while SnowRing +0x80 is clear */
+    /* 0x1D4 */ char unk1D4[0x1D8 - 0x1D4];
+    /* 0x1D8 */ f32 unk1D8;          /* owner +0xA20 last frame (0 after > 0 triggers a burst) */
+    /* effect C (flag bit 2): side spray into the +0xA0 SpecParticles pool (BoardTrail_spawnC; defaults
+     * BoardTrail_enableC). */
+    /* 0x1DC */ f32 specSizeVel;     /* particle sizeVel */
+    /* 0x1E0 */ f32 specGravity;     /* particle gravity */
+    /* 0x1E4 */ f32 unk1E4;          /* enableC default; spawnC does not read it */
+    /* 0x1E8 */ f32 specDecay;       /* particle decay */
+    /* 0x1EC */ f32 specAlphaVel;    /* particle alphaVel */
+    /* 0x1F0 */ f32 unk1F0;          /* enableC clears it; spawnC does not read it */
     /* 0x1F4 */ f32 unk1F4;
-    /* 0x1F8 */ f32 unk1F8;
-    /* 0x1FC */ s32 unk1FC;
+    /* 0x1F8 */ f32 specSize;        /* particle size */
+    /* 0x1FC */ s32 specTimer;
     /* 0x200 */ s32 unk200;
-    /* 0x204 */ s32 unk204;
-    /* 0x208 */ f32 unk208;
-    /* 0x20C */ f32 unk20C;
-    /* 0x210 */ f32 unk210;
-    /* 0x214 */ f32 unk214;
-    /* 0x218 */ f32 unk218;
-    /* 0x21C */ f32 unk21C;
-    /* 0x220 */ f32 unk220;
-    /* 0x224 */ Vec3 scale;
-    /* 0x230 */ f32 unk230;
+    /* 0x204 */ s32 specPeriod;      /* frames between spawns (timer reload) */
+    /* 0x208 */ f32 specVelScale;    /* owner vel (+0x318) scale */
+    /* 0x20C */ f32 specUpScale;     /* owner up axis (+0x3B0) scale, times the side strength */
+    /* 0x210 */ f32 specDirScale;    /* trail direction (+0x114) scale, times the side strength */
+    /* 0x214 */ f32 specMinLean;     /* side strength 0 below this |lean| (+0x4C) */
+    /* 0x218 */ f32 specMaxLean;     /* side strength 1 above it */
+    /* 0x21C */ f32 specRampBase;    /* side strength at specMinLean (ramps to 1) */
+    /* 0x220 */ f32 specTintMix;     /* lerp from the owner colour (+0xA30) to specTint */
+    /* 0x224 */ Vec3 specTint;       /* r, g, b in 0..1 (enableC: white) */
+    /* 0x230 */ f32 unk230;          /* enableC clears it; spawnC does not read it */
 } SnowEffect;
 
 /* the 0x50-byte link node (ctor 0x9E88, update 0x9F44): couples a source object to an SNode-subclass
@@ -870,20 +883,20 @@ extern f32 snow_ro_44, snow_ro_48, snow_ro_4C;
 /* default parameters of the 0x6144 child (flag bit 0 at +0x54), the 0x70C0 sibling */
 void BoardTrail_enableA_00006420(SnowEffect *this) {
     this->flags |= 1;
-    this->unk174 = snow_ro_2C;
-    this->unk178 = snow_ro_30;
-    this->unk180 = snow_ro_34;
-    this->unk184 = 0.0f;
-    this->unk198 = snow_ro_38;
-    this->unk194 = snow_ro_3C;
-    this->unk190 = snow_ro_40;
-    this->unk17C = snow_ro_44;
-    this->unk188 = snow_ro_48;
-    this->unk18C = snow_ro_4C;
-    this->unk19C = 1;
-    this->unk1A0 = 0;
+    this->powderGravity = snow_ro_2C;
+    this->powderRiseY = snow_ro_30;
+    this->powderDirScale = snow_ro_34;
+    this->powderSpeedBias = 0.0f;
+    this->powderVelScale = snow_ro_38;
+    this->powderBurstVelScale = snow_ro_3C;
+    this->powderMinSpeed = snow_ro_40;
+    this->powderSizeVel = snow_ro_44;
+    this->powderAlphaVel = snow_ro_48;
+    this->powderDecay = snow_ro_4C;
+    this->powderPeriod = 1;
+    this->powderTimer = 0;
     this->unk1A4 = 0;
-    this->unk1A8 = 0;
+    this->powderBurst = 0;
 }
 
 /* 0x64B8: spawn update of effect A (flag bit 0): burst / timer gating, a direction from the +0x30-matrix
@@ -896,7 +909,7 @@ void BoardTrail_spawnA_000064B8(void) {
 void BoardTrail_enableB_00006B08(SnowEffect *this) {
     this->unk1C8 = 0;
     this->flags |= 2;
-    this->unk1CC = 0;
+    this->normBurst = 0;
     this->unk1D8 = 0.0f;
 }
 
@@ -914,24 +927,24 @@ extern f32 snow_ro_98, snow_ro_9C, snow_ro_A0, snow_ro_A4, snow_ro_A8, snow_ro_A
 /* default parameters of a new snow effect (called from its create, 0x6248) */
 void BoardTrail_enableC_000070C0(SnowEffect *this) {
     this->flags |= 4;
-    this->unk1E0 = snow_ro_80;
+    this->specGravity = snow_ro_80;
     this->unk1F0 = 0.0f;
     this->unk1E4 = snow_ro_84;
-    this->unk1F8 = snow_ro_88;
-    this->unk1DC = snow_ro_8C;
-    this->unk1EC = 0.0f;
-    this->unk1E8 = snow_ro_90;
-    this->unk1FC = 0;
-    this->unk204 = 0;
-    this->unk20C = snow_ro_94;
-    this->unk210 = snow_ro_98;
-    this->unk208 = snow_ro_9C;
-    this->unk214 = snow_ro_A0;
-    this->unk218 = snow_ro_A4;
-    this->unk21C = snow_ro_A8;
-    this->scale.z = this->scale.y = this->scale.x = 1.0f;
+    this->specSize = snow_ro_88;
+    this->specSizeVel = snow_ro_8C;
+    this->specAlphaVel = 0.0f;
+    this->specDecay = snow_ro_90;
+    this->specTimer = 0;
+    this->specPeriod = 0;
+    this->specUpScale = snow_ro_94;
+    this->specDirScale = snow_ro_98;
+    this->specVelScale = snow_ro_9C;
+    this->specMinLean = snow_ro_A0;
+    this->specMaxLean = snow_ro_A4;
+    this->specRampBase = snow_ro_A8;
+    this->specTint.z = this->specTint.y = this->specTint.x = 1.0f;
     this->unk230 = 0.0f;
-    this->unk220 = snow_ro_AC;
+    this->specTintMix = snow_ro_AC;
 }
 
 /* 0x718C: spawn update of effect C (flag bit 2): speed-ramped side push, the +0x1FC timer, one pool spawn

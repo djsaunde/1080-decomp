@@ -116,16 +116,16 @@ struct SnowEm {
     /* 0x144 */ int on;
     /* 0x148 */ float speed;
     char pad14C[0x174 - 0x14C];
-    /* 0x174 */ float f174;
-    /* 0x178 */ float f178;
-    /* 0x17C */ float f17C;
-    /* 0x180 */ float f180;
-    /* 0x184 */ float f184;
-    /* 0x188 */ float f188;
-    /* 0x18C */ float f18C;
-    /* 0x190 */ float f190;
-    /* 0x194 */ float f194;
-    /* 0x198 */ float f198;
+    /* 0x174 */ float powderGravity;
+    /* 0x178 */ float powderRiseY;
+    /* 0x17C */ float powderSizeVel;
+    /* 0x180 */ float powderDirScale;
+    /* 0x184 */ float powderSpeedBias;
+    /* 0x188 */ float powderAlphaVel;
+    /* 0x18C */ float powderDecay;
+    /* 0x190 */ float powderMinSpeed;
+    /* 0x194 */ float powderBurstVelScale;
+    /* 0x198 */ float powderVelScale;
     /* 0x19C */ int period;
     /* 0x1A0 */ int timer;
     /* 0x1A4 */ int s1A4;
@@ -157,13 +157,13 @@ extern "C" void BoardTrail_spawnA_000064B8(SnowEm *t) {
         if (t->s1A4 >= 5 && t->cam->state == 98) {
             t->burst = 2;
         }
-        k = t->f198;
+        k = t->powderVelScale;
         if (t->burst != 0) {
             t->burst--;
             spd = XCALL(gl_func_00000000_snow_randf, sys_randf)() * snow_ro_50 + snow_ro_54;
-            k = t->f194;
+            k = t->powderBurstVelScale;
         }
-        if (t->cam->state == 98 && (t->burst != 0 || 20.0f < t->cam->f348) && i && t->f190 < spd) {
+        if (t->cam->state == 98 && (t->burst != 0 || 20.0f < t->cam->f348) && i && t->powderMinSpeed < spd) {
             SV v;
             v.x = 0.0f;
             v.y = 0.0f;
@@ -171,8 +171,8 @@ extern "C" void BoardTrail_spawnA_000064B8(SnowEm *t) {
             xformB(v, *t->mtx);
             SV n = v - t->pos;
             XCALL(gl_func_00000000_snow_norm, math_vec3Normalize)(&n);
-            n *= t->f180 * t->speed;
-            n += t->cam->v318.scaled(k) * (t->f184 + spd);
+            n *= t->powderDirScale * t->speed;
+            n += t->cam->v318.scaled(k) * (t->powderSpeedBias + spd);
             if (n.y > 0.0f) {
                 n.y = 0.0f;
             }
@@ -188,21 +188,21 @@ extern "C" void BoardTrail_spawnA_000064B8(SnowEm *t) {
                         r = XCALL(gl_func_00000000_snow_randf, sys_randf)();
                         u.lerpTo(t->vF0, r);
                         x = u.x; y = u.y; z = u.z;
-                        p->pos.set(x, y + t->f178, z);
+                        p->pos.set(x, y + t->powderRiseY, z);
                         p->vel.set(n.x, n.y, n.z);
                         p->size = 1.0f;
                         p->aspect = 0.5f;
                         p->fadeAt = 256.0f;
                         p->col = t->cam->col;
                         if (t->burst != 0) {
-                            p->sizeVel = t->f17C * spd;
-                            p->gravity = t->f174 * 1.5f;
+                            p->sizeVel = t->powderSizeVel * spd;
+                            p->gravity = t->powderGravity * 1.5f;
                         } else {
-                            p->sizeVel = t->f17C * (0.5f + spd / 2.0f);
-                            p->gravity = t->f174;
+                            p->sizeVel = t->powderSizeVel * (0.5f + spd / 2.0f);
+                            p->gravity = t->powderGravity;
                         }
-                        p->setLife(256.0f, t->f18C);
-                        p->setAlpha(256.0f, t->f188);
+                        p->setLife(256.0f, t->powderDecay);
+                        p->setAlpha(256.0f, t->powderAlphaVel);
                     }
                 }
             }
@@ -249,15 +249,15 @@ struct SnowEmB {
     /* 0x144 */ int on;
     /* 0x148 */ float speed;
     char pad14C[0x1B0 - 0x14C];
-    /* 0x1B0 */ float f1B0;
-    /* 0x1B4 */ float f1B4;
-    /* 0x1B8 */ float f1B8;
-    /* 0x1BC */ float f1BC;
-    /* 0x1C0 */ float f1C0;
-    /* 0x1C4 */ float f1C4;
+    /* 0x1B0 */ float normSizeVel;
+    /* 0x1B4 */ float normGravity;
+    /* 0x1B8 */ float normUpScale;
+    /* 0x1BC */ float normDecay;
+    /* 0x1C0 */ float normAlphaVel;
+    /* 0x1C4 */ float normVelScale;
     /* 0x1C8 */ int c1C8;
-    /* 0x1CC */ int c1CC;
-    /* 0x1D0 */ int i1D0;
+    /* 0x1CC */ int normBurst;
+    /* 0x1D0 */ int normLastState;
     char pad1D4[0x1D8 - 0x1D4];
     /* 0x1D8 */ float f1D8;
 };
@@ -265,45 +265,45 @@ extern "C" void BoardTrail_spawnB_00006B28(SnowEmB *t) {
     float s;
     C4 col;
     if (snow_game_6B28.flags & 0x820000) {
-        t->f1B4 = snow_ro_58;
-        t->f1C4 = snow_ro_5C;
-        t->f1B8 = 26.0f;
-        t->f1B0 = snow_ro_60;
-        t->f1C0 = snow_ro_64;
-        t->f1BC = snow_ro_68;
+        t->normGravity = snow_ro_58;
+        t->normVelScale = snow_ro_5C;
+        t->normUpScale = 26.0f;
+        t->normSizeVel = snow_ro_60;
+        t->normAlphaVel = snow_ro_64;
+        t->normDecay = snow_ro_68;
     } else {
-        t->f1B4 = snow_ro_6C;
-        t->f1C4 = snow_ro_70;
-        t->f1B8 = 41.0f;
-        t->f1B0 = snow_ro_74;
-        t->f1C0 = snow_ro_78;
-        t->f1BC = snow_ro_7C;
+        t->normGravity = snow_ro_6C;
+        t->normVelScale = snow_ro_70;
+        t->normUpScale = 41.0f;
+        t->normSizeVel = snow_ro_74;
+        t->normAlphaVel = snow_ro_78;
+        t->normDecay = snow_ro_7C;
     }
     if (20.0f < t->cam->f348 && t->i80 != 0 && t->on != 1) {
         t->c1C8++;
     }
     if ((snow_game_6B28.flags & 0x820000) && t->cam->s9A0 == 97) {
         if (0.0f < t->f1D8 && t->cam->fA20 == 0.0f) { /* run 692: fA20 on the left gives the target's mtc1 zero (f16) before the fA20 load (f18) */
-            t->c1CC = 3;
+            t->normBurst = 3;
         }
         t->f1D8 = t->cam->fA20;
     }
-    if (t->c1CC != 0 || (t->on >= 2 && t->cam->state == 97)) {
+    if (t->normBurst != 0 || (t->on >= 2 && t->cam->state == 97)) {
         if (t->c1C8 >= 7 && t->cam->state == 97) {
-            t->c1CC = 3;
+            t->normBurst = 3;
         }
         if (t->cam->state == 97) {
             t->c1C8 = 0;
         }
-        if (t->c1CC != 0) {
-            t->c1CC--;
+        if (t->normBurst != 0) {
+            t->normBurst--;
         }
         col = t->cam->col;
         XCALL(gl_func_00000000_snow_randf, sys_randf)();
-        if (t->c1CC != 0 && t->c1CC < 3) {
-            SVb n = t->cam->v318 * t->f1C4;
-            if (0) n *= t->f1B8; /* run 698: an edg float temporary between the two products (r2 at the target's sp+132) */
-            n += t->cam->v3B0 * t->f1B8;
+        if (t->normBurst != 0 && t->normBurst < 3) {
+            SVb n = t->cam->v318 * t->normVelScale;
+            if (0) n *= t->normUpScale; /* run 698: an edg float temporary between the two products (r2 at the target's sp+132) */
+            n += t->cam->v3B0 * t->normUpScale;
             SPart *p = XCALL(gl_func_00000000_snow_pool, SnowPool_alloc_000006D0)(t->pool);
             if (p == 0) {
                 p = XCALL(gl_func_00000000_snow_pool, SnowPool_oldest_00000680)(t->pool);
@@ -329,16 +329,16 @@ extern "C" void BoardTrail_spawnB_00006B28(SnowEmB *t) {
                     p->col.c[0] = col.c[0];
                     p->col.c[1] = col.c[1];
                     p->col.c[2] = col.c[2];
-                    p->sizeVel = t->f1B0;
-                    p->gravity = t->f1B4;
-                    p->setLife(256.0f, t->f1BC);
-                    p->setAlpha(256.0f, t->f1C0);
+                    p->sizeVel = t->normSizeVel;
+                    p->gravity = t->normGravity;
+                    p->setLife(256.0f, t->normDecay);
+                    p->setAlpha(256.0f, t->normAlphaVel);
                 }
             }
         }
     }
     if (t->i80 == 0) {
-        t->i1D0 = t->cam->state;
+        t->normLastState = t->cam->state;
     }
 }
 
@@ -379,36 +379,36 @@ struct SnowEmC {
     char pad120[0x138 - 0x120];
     /* 0x138 */ SVb pos;
     char pad144[0x1DC - 0x144];
-    /* 0x1DC */ float f1DC;
-    /* 0x1E0 */ float f1E0;
+    /* 0x1DC */ float specSizeVel;
+    /* 0x1E0 */ float specGravity;
     /* 0x1E4 */ float f1E4;
-    /* 0x1E8 */ float f1E8;
-    /* 0x1EC */ float f1EC;
+    /* 0x1E8 */ float specDecay;
+    /* 0x1EC */ float specAlphaVel;
     /* 0x1F0 */ float f1F0;
     /* 0x1F4 */ float f1F4;
-    /* 0x1F8 */ float f1F8;
+    /* 0x1F8 */ float specSize;
     /* 0x1FC */ int timer;
     /* 0x200 */ int i200;
     /* 0x204 */ int period;
-    /* 0x208 */ float f208;
-    /* 0x20C */ float f20C;
-    /* 0x210 */ float f210;
-    /* 0x214 */ float lo;
-    /* 0x218 */ float hi;
-    /* 0x21C */ float f21C;
-    /* 0x220 */ float f220;
-    /* 0x224 */ float col[3];
+    /* 0x208 */ float specVelScale;
+    /* 0x20C */ float specUpScale;
+    /* 0x210 */ float specDirScale;
+    /* 0x214 */ float specMinLean;
+    /* 0x218 */ float specMaxLean;
+    /* 0x21C */ float specRampBase;
+    /* 0x220 */ float specTintMix;
+    /* 0x224 */ float specTint[3];
 };
 /* run 736: the colour lerp. f and c0 are pooled parameter words (f reuses the word that colours f2, c0 one that
  * colours f14), so only c1 / c2 take fresh frame words; with three named c's the frame was 376. q0 / m0 pick the
  * pooled words. */
 static inline void colB(float q0, float f, float m0, float c0, SPart *p, SnowEmC *t) {
     float c1, c2;
-    p->col.c[0] = (int)(c0 + (t->col[0] * 255.0f - c0) * f);
+    p->col.c[0] = (int)(c0 + (t->specTint[0] * 255.0f - c0) * f);
     c1 = t->cam->col.c[1];
-    p->col.c[1] = (int)(c1 + (t->col[1] * 255.0f - c1) * f);
+    p->col.c[1] = (int)(c1 + (t->specTint[1] * 255.0f - c1) * f);
     c2 = t->cam->col.c[2];
-    p->col.c[2] = (int)(c2 + (t->col[2] * 255.0f - c2) * f);
+    p->col.c[2] = (int)(c2 + (t->specTint[2] * 255.0f - c2) * f);
 }
 extern "C" void BoardTrail_spawnC_0000718C(SnowEmC *t) {
     float a, sp, r;
@@ -417,21 +417,21 @@ extern "C" void BoardTrail_spawnC_0000718C(SnowEmC *t) {
         return;
     }
     sp = t->speed;
-    if (t->cam->f348 < 60.0f || (sp < 0.0f ? -sp : sp) < t->lo) {
+    if (t->cam->f348 < 60.0f || (sp < 0.0f ? -sp : sp) < t->specMinLean) {
         a = 0.0f;
-    } else if (t->hi < (sp < 0.0f ? -sp : sp)) {
+    } else if (t->specMaxLean < (sp < 0.0f ? -sp : sp)) {
         if (sp < 0.0f) {
             a = -1.0f;
         } else {
             a = 1.0f;
         }
     } else {
-        float d = t->hi - t->lo; /* run 732: named d gives the target's lo f12 / d f14 / r f2 */
-        r = ((sp < 0.0f ? -sp : sp) - t->lo) / d;
+        float d = t->specMaxLean - t->specMinLean; /* run 732: named d gives the target's lo f12 / d f14 / r f2 */
+        r = ((sp < 0.0f ? -sp : sp) - t->specMinLean) / d;
         if (sp < 0.0f) {
-            a = -((1.0f - t->f21C) * r + t->f21C);
+            a = -((1.0f - t->specRampBase) * r + t->specRampBase);
         } else {
-            a = (1.0f - t->f21C) * r + t->f21C;
+            a = (1.0f - t->specRampBase) * r + t->specRampBase;
         }
     }
     go = 0;
@@ -455,10 +455,10 @@ extern "C" void BoardTrail_spawnC_0000718C(SnowEmC *t) {
             SVb u = t->pos;
             r = XCALL(gl_func_00000000_snow_randf, sys_randf)();
             u.lerpEach(t->vF0, r);
-            w.asg(t, t, t->cam->v318 * t->f208, t, t);
-            if (0) w *= t->f20C; /* run 698: one more edg float temporary (objdiff 96.99 -> 97.07) */
-            SVb a1 = t->cam->v3B0 * t->f20C * (a < 0.0f ? -a : a);
-            SVb a2 = t->v114.mulS(1.0f + XCALL(gl_func_00000000_snow_randf, sys_randf)() * snow_ro_B0) * t->f210;
+            w.asg(t, t, t->cam->v318 * t->specVelScale, t, t);
+            if (0) w *= t->specUpScale; /* run 698: one more edg float temporary (objdiff 96.99 -> 97.07) */
+            SVb a1 = t->cam->v3B0 * t->specUpScale * (a < 0.0f ? -a : a);
+            SVb a2 = t->v114.mulS(1.0f + XCALL(gl_func_00000000_snow_randf, sys_randf)() * snow_ro_B0) * t->specDirScale;
             a2 *= (a < 0.0f ? -a : a);
             if (0.0f < a) {
                 a2 *= -1.0f;
@@ -467,13 +467,13 @@ extern "C" void BoardTrail_spawnC_0000718C(SnowEmC *t) {
             w += a1;
             p->pos.set(u.x, u.y, u.z);
             p->vel.set(w.x, w.y, w.z);
-            p->setSz3(t->f1F8, 1.0f, 256.0f);
-            p->sizeVel = t->f1DC;
-            p->gravity = t->f1E0;
-            p->setLife(256.0f, t->f1E8);
+            p->setSz3(t->specSize, 1.0f, 256.0f);
+            p->sizeVel = t->specSizeVel;
+            p->gravity = t->specGravity;
+            p->setLife(256.0f, t->specDecay);
             r = XCALL(gl_func_00000000_snow_randf, sys_randf)();
-            p->setAlpha3(128.0f + r * 127.0f, t->f1EC, t->f1EC);
-            colB(r, t->f220, r, t->cam->col.c[0], p, t);
+            p->setAlpha3(128.0f + r * 127.0f, t->specAlphaVel, t->specAlphaVel);
+            colB(r, t->specTintMix, r, t->cam->col.c[0], p, t);
         }
     }
 }
