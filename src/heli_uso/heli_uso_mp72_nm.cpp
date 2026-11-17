@@ -337,28 +337,28 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         } else if (yaw < (-3.1415927f)) {
             yaw = (6.2831855f) + yaw; /* target add.s keeps the constant first */
         }
-        g = -(side.x * dir.x + side.y * dir.y + side.z * dir.z) * 1.5;
+        dist = -(side.x * dir.x + side.y * dir.y + side.z * dir.z) * 1.5;
         if (HF(0x154) < 100.0f) {
             hh = 100;
-            g *= HF(0x154) / hh;
+            dist *= HF(0x154) / hh;
         }
         if (1) {}
-        *(float *)(self + 0x144 + zf6(-0.3f, 0) + 0 * (unsigned)(yaw + yaw)) = (g - HF(0x144)) * (0.07f) + HF(0x144);
+        *(float *)(self + 0x144 + zf6(-0.3f, 0) + 0 * (unsigned)(yaw + yaw)) = (dist - HF(0x144)) * (0.07f) + HF(0x144);
         yaw = clampf(yaw, -0.3f, 0.3f);
         *(float *)(self + 0x14C + zf4(-0.3926991f, 0)) = HF(0x14C) + yaw * (0.06);
         if (1) {}
         fwdOf(fwdAx, &HF(0xF4));
         pf = dot(fwdAx, vel) / 200.0f;
         pf = pf + fwdAx.y * (0.1);
-        /* three code-free dumf() calls hold three pooled edg float words, so idm()'s parameter (the lerp value) takes
-         * the slerp's sin-term word M-220 (target lwc1 f16,148(sp)); clampP's copy / return take M-160 / M-164
-         * (agent-g run 770 m3c0, agent-e run 771) */
-        f = (dumf(pf), dumf(pf), dumf(pf), idm((pf - HF(0x148)) * 0.2f + HF(0x148)));
+        /* the lerp value goes in g (the earlier roll value in dist, dead by then), not in the slerp's sin-term word
+         * M-220: with 8 appearances M-220 cost-splits as in the target, so its def-only blocks stay in memory (the
+         * sin result is stored at its def) and as1 puts the cos argument reload in the jal slot (agent-e run 780) */
+        g = (((pf - HF(0x148)) * 0.2f + HF(0x148)));
         /* the (unsigned) fold adds an old-h use like zf1(), but zf1()'s (int) conversion costs one hidden ugen t-ring
          * temp in the store address (run 770) */
-        *(float *)(self + 0x148 + 0 * (unsigned)(HF(0x148))) = f;
+        *(float *)(self + 0x148 + 0 * (unsigned)(HF(0x148))) = g;
         if (1) {}
-        *(float *)(self + 0x148) = clampP(f, -0.3926991f, 0.3926991f, 0);
+        *(float *)(self + 0x148) = clampP(g, -0.3926991f, 0.3926991f, 0);
         /* the five zeros go through the int hh: the int-to-float conversion folds only in uopt, so they form their
          * own web (num 4 / den 1), picked before the angle value and given f0; the angle value is f, not g, so
          * g's live range ends at the HF(0x144) store and g takes f14 there, HF(0x144) f2 (agent-e run 756, run 774) */
