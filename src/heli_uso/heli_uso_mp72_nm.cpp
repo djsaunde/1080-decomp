@@ -163,13 +163,13 @@ extern "C" void Heli_update(char *self) {
     Vec3 toTgt;
     Vec3 dir;
     float dist;
-    if (COURSE == 0 && *(int *)(COURSE + 0x48) == 0) {
+    if (COURSE == 0 && *(int *)(COURSE + 0x48) == 0) { /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); course state (GameFlow+0x138): +0x48 flag */
         return;
     }
-    player = **(char ***)(COURSE + 0x44);
-    ppr.x = *(float *)(player + 0xA0);
-    ppr.y = *(float *)(player + 0xA4);
-    ppr.z = *(float *)(player + 0xA8);
+    player = **(char ***)(COURSE + 0x44); /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); course state +0x44: the player pointer */
+    ppr.x = *(float *)(player + 0xA0); /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); player position +0xA0 (SnowBoarder) */
+    ppr.y = *(float *)(player + 0xA4); /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); player position +0xA0 (SnowBoarder) */
+    ppr.z = *(float *)(player + 0xA8); /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); player position +0xA0 (SnowBoarder) */
     if (1) {}
     {
     int mode;
@@ -178,26 +178,26 @@ extern "C" void Heli_update(char *self) {
     } else {
         HeliTypeTag key;
         char *p;
-        if (*(int *)(player + 0xA54) == 6) {
+        if (*(int *)(player + 0xA54) == 6) { /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); player state +0xA54 (6 = finished?) */
             CALL(Heli_placeAtMarker)(self);
             HI(0x170) = 8;
         }
-        if (*(char **)(self + 0x168) == 0) {
-            key.v = *(int *)(&heli_data_00000000 + 0xCBAC);
+        if (*(char **)(self + 0x168) == 0) { /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); Heli.marker (+0x168) */
+            key.v = *(int *)(&heli_data_00000000 + 0xCBAC); /* RAW: data-table the "mrk" ItemType tag word (module Data+0xCBAC) */
             p = (char *)CALL(ItemMgr_findType_0003EA98)(heli_itemMgr_b08, key);
             if (p != 0) {
 #define VT (((Node *)(p))->vptr)
-                *(char **)(self + 0x168) = (char *)((int (*)(...))(((GdlVtEnt *)((char *)(VT) + 8))[12]).fn)((char *)((((GdlVtEnt *)((char *)(VT) + 8))[12]).delta + (int)p), &(*(Vec3 *)&ppr), 0);
+                *(char **)(self + 0x168) = (char *)((int (*)(...))(((GdlVtEnt *)((char *)(VT) + 8))[12]).fn)((char *)((((GdlVtEnt *)((char *)(VT) + 8))[12]).delta + (int)p), &(*(Vec3 *)&ppr), 0); /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); Heli.marker = the "mrk" type slot-12 virtual (nearest marker) */
                 /* this-adjust as an int sum, delta first (run 777): target addu a0,t4,v1 (delta, p); the pointer
                  * sum puts p first */
             }
         }
-        p = *(char **)(self + 0x168);
+        p = *(char **)(self + 0x168); /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); Heli.marker */
         if (p != 0) {
-            if ((*(char **)(p + 0x2C)) != 0) { p = (*(char **)(p + 0x2C)); if (*(float *)(p + 0x38) < (*(Vec3 *)&ppr).z) {
-                *(char **)(self + 0x168) = p;
+            if ((*(char **)(p + 0x2C)) != 0) { p = (*(char **)(p + 0x2C)); if (*(float *)(p + 0x38) < (*(Vec3 *)&ppr).z) { /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); marker item +0x2C next, +0x38 z */
+                *(char **)(self + 0x168) = p; /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); Heli.marker */
             } }
-            HI(0x16C) = *(int *)(*(char **)(self + 0x168) + 0x3C);
+            HI(0x16C) = *(int *)(*(char **)(self + 0x168) + 0x3C); /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); Heli.mode = marker id (+0x3C) */
         }
         mode = HI(0x16C);
     }
@@ -261,15 +261,15 @@ extern "C" void Heli_update(char *self) {
         break;
     case 2: {
         char *p;
-        key2.v = *(int *)(&heli_data_00000000 + 0xCBB0);
+        key2.v = *(int *)(&heli_data_00000000 + 0xCBB0); /* RAW: data-table the "mrk" query tag word (module Data+0xCBB0) */
         p = (char *)CALL(ItemMgr_queryType)(heli_itemMgr2_b08, key2, ps, 0);
         if (zp(p, 0)) p = 0;
-        if (p != 0 && *(int *)(p + 0x2C) != 0) {
+        if (p != 0 && *(int *)(p + 0x2C) != 0) { /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); queried item +0x2C next */
             char *q;
             Vec3 mpos;
-            q = *(char **)(p + 0x2C);
+            q = *(char **)(p + 0x2C); /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); queried item +0x2C next */
             dum4A(q, q, q, q);
-            mpos = *(Vec3 *)(q + 0x30);
+            mpos = *(Vec3 *)(q + 0x30); /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); marker rgb (+0x30) = position */
             mpos.y += (3000.0f);
             HF(0x114) = HF(0x114) + (mpos.x - HF(0x114)) * (0.2);
             HF(0x118) = HF(0x118) + (mpos.y - HF(0x118)) * (0.2);
@@ -278,7 +278,7 @@ extern "C" void Heli_update(char *self) {
             V3(0x12C) = V3(0x114);
             HF(0x15C) = 0.0f;
             HF(0x158) = 2.0f;
-            HF(0x150) = *(float *)(player + 0x348) + 5.0f;
+            HF(0x150) = *(float *)(player + 0x348) + 5.0f; /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); player +0x348 speed */
             if (HF(0x150) < 100.0f) {
                 HF(0x150) = 100.0f;
             }
@@ -294,7 +294,7 @@ extern "C" void Heli_update(char *self) {
     /* ctor-less like toTgt's (run 739): the op- result temp (sp+212) is no longer a coloured this-or-new join
      * value; ugen recomputes it in t3 and the op= temp (sp+252) takes v0 as in the target */
     dir = tg->sub(*ps);
-    dist = XCALL(gl_func_00000000_heli_ff, math_vec3Length_0005BBCC)(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z) * *(float *)(&heli_gGfxLib_d + 0x128);
+    dist = XCALL(gl_func_00000000_heli_ff, math_vec3Length_0005BBCC)(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z) * *(float *)(&heli_gGfxLib_d + 0x128); /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); gGfxLib.worldScale[0] (+0x128) */
     CALL(math_vec3Normalize)(&dir);
     CALL(math_vec3Normalize)(FWD);
     slerp(FWD, dir, HF(0x164));
@@ -361,7 +361,7 @@ extern "C" void Heli_update(char *self) {
          * temp in the store address (run 770) */
         *(float *)(self + 0x148 + 0 * (unsigned)(HF(0x148))) = g;
         if (1) {}
-        *(float *)(self + 0x148) = clampP(g, -0.3926991f, 0.3926991f, 0);
+        *(float *)(self + 0x148) = clampP(g, -0.3926991f, 0.3926991f, 0); /* RAW: donor-mirror byte-fragile mp72 donor (renames and comments only); Heli.pitch (+0x148) */
         /* the five zeros go through the int hh: the int-to-float conversion folds only in uopt, so they form their
          * own web (num 4 / den 1), picked before the angle value and given f0; the angle value is f, not g, so
          * g's live range ends at the HF(0x144) store and g takes f14 there, HF(0x144) f2 (agent-e run 756, run 774) */

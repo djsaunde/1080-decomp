@@ -3,6 +3,8 @@
 #include "gdl/node.h"
 #include "gdl/mnode.h"
 #include "gdl/item.h"
+#include "gdl/gfxlib.h"
+#include "game/course_objects.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -106,11 +108,11 @@ void *HeliMarkerItemType_create(char *type) {
     if (p != 0) {
         CALL(ColourItem_ctor)(p);
         NODE(p)->vptr = &heli_data_00000000 + 0x18;
-        *(int *)(p + 0x3C) = 0;
+        HELIMARKER(p)->id = 0;
     }
     q = p;
-    p = *(char **)(type + 0x40);
-    if (*(char **)(type + 0x40) != 0) {
+    p = (char *)ITEMTYPE(type)->unk40;
+    if ((char *)ITEMTYPE(type)->unk40 != 0) {
         CALL(list_append)(q + 0x10, p);
         if (NODE(p)->parent != 0) {
             NODE(p)->unk04 = 1;
@@ -133,8 +135,8 @@ void *HeliItemType_ctor(char *self, HeliTypeTag name) {
             CALL(ItemType_ctor)(base, tag, 0); NODE(base)->vptr = (char *)&D_00000000; /* bootup ItemType vtable Data+0x1F050 */
         }
         NODE(self)->vptr = (char *)&D_00000000; /* HeliItemType vtable (Data+0xCAF0) */
-        *(void **)(self + 0x4C) = 0;
-        *(void **)(self + 0x48) = 0;
+        HELIITEMTYPE(self)->bladeShape = 0;
+        HELIITEMTYPE(self)->bodyShape = 0;
     }
     return self;
 }
@@ -143,25 +145,25 @@ void *HeliItemType_ctor(char *self, HeliTypeTag name) {
  * with poly flag 8 and geometry mode 0x2A003, blades "helib" with geometry mode 11, the
  * sprite), then build the Heli. */
 void HeliItemType_create(char *self) {
-    if (*(void **)(self + 0x48) == 0) {
+    if (HELIITEMTYPE(self)->bodyShape == 0) {
         heli_polyFlags_st = heli_polyFlags_ld | 8; if (1) {}
         heli_polyGeomMode.geomMode = 0x2A003;
         heli_polyGeomMode.mode0 = 0;
-        *(void **)(self + 0x40) = *(void **)(self + 0x48) =
+        *(void **)&HELIITEMTYPE(self)->type.unk40 = HELIITEMTYPE(self)->bodyShape =
             (void *)CALL(PolyShape_ctor)(0, &heli_data_00000000 + 0xCB78, &heli_model_1C1C, 0); /* "heli" */
         heli_polyFlags_st = heli_polyFlags_ld & ~8;
         heli_polyGeomMode.geomMode = 11;
         heli_polyGeomMode.mode0 = 0;
-        *(void **)(self + 0x4C) = (void *)CALL(PolyShape_ctor)(0, &heli_data_00000000 + 0xCB80, &heli_model_B984, 0); /* "helib" */
-        *(char **)(self + 0x50) = (char *)CALL(Sprite_ctor_0004B620)(0, &heli_data_00000000 + 0xCA10);
-        *(int *)(*(char **)(self + 0x50) + 0xC4) = 1;
-        *(float *)(*(char **)(self + 0x50) + 0xC8) = -200.0f;
+        HELIITEMTYPE(self)->bladeShape = (void *)CALL(PolyShape_ctor)(0, &heli_data_00000000 + 0xCB80, &heli_model_B984, 0); /* "helib" */
+        HELIITEMTYPE(self)->sprite = (Sprite *)CALL(Sprite_ctor_0004B620)(0, &heli_data_00000000 + 0xCA10);
+        HELIITEMTYPE(self)->sprite->perspective = 1;
+        HELIITEMTYPE(self)->sprite->depthBias = -200.0f;
     }
     heli_mode_1EBD8 = 6;
     {
-        void *blades = *(void **)(self + 0x4C);
-        void *body = *(void **)(self + 0x48);
-        void *sprite = *(void **)(self + 0x50);
+        void *blades = HELIITEMTYPE(self)->bladeShape;
+        void *body = HELIITEMTYPE(self)->bodyShape;
+        void *sprite = HELIITEMTYPE(self)->sprite;
         CALL(Heli_ctor)(0, body, blades, sprite);
     }
 }
@@ -171,7 +173,7 @@ char *HeliRotor_ctor(char *self) {
     if (self != 0 || (self = (char *)CALL(mem_new)(0x118)) != 0) {
         XCALL(gl_func_00000000f3, QNode_ctor)(self, &heli_data_00000000 + 0xCB88, 0.0f, 0.0f, 0.0f);
         NODE(self)->vptr = (char *)&D_00000000; /* HeliRotor vtable (Data+0xCA20) */
-        *(float *)(self + 0x108) = HELI_RODATA_F(0x50);
+        HELIROTOR(self)->spinSpeed = HELI_RODATA_F(0x50);
     }
     return self;
 }
@@ -184,13 +186,13 @@ void HeliRotor_update(char *self) {
     int pad_top[5];
     HeliVec3f axis;
     int pad_bot[1];
-    HeliVec3f *a = (HeliVec3f *)(self + 0x10C);
+    HeliVec3f *a = (HeliVec3f *)HELIROTOR(self)->axis;
     float x = a->x, y = a->y, z = a->z;
-    float angle = *(float *)(self + 0x108) / HELI_RODATA_F(0x54);
+    float angle = HELIROTOR(self)->spinSpeed / HELI_RODATA_F(0x54);
     axis.z = z;
     axis.y = y;
     axis.x = x;
-    XCALL(gl_func_00000000_heli_ppf, math_quatRotateAxisAngle)(self + 0xCC, &axis, angle);
+    XCALL(gl_func_00000000_heli_ppf, math_quatRotateAxisAngle)(QNODE(self)->vqs.quat, &axis, angle);
     CALL(QNode_update)(self);
 }
 
@@ -233,32 +235,32 @@ char *Heli_ctor(char *self, void *body, void *blades, void *sprite) {
         CALL(MNode_addChild)(self, tailRotor);
         CALL(MNode_addChild)(mainRotor, blades);
         CALL(MNode_addChild)(tailRotor, blades);
-        XCALL(gl_func_00000000_heli_euler, math_eulerToQuat)(mainRotor + 0xCC, 90.0f, 0.0f, 0.0f);
-        *(float *)(mainRotor + 0xB4) = (float)0;
-        *(float *)(mainRotor + 0xB8) = 480.0f;
-        *(float *)(mainRotor + 0xBC) = (float)0;
-        *(float *)(mainRotor + 0x10C) = (float)0;
-        *(float *)(mainRotor + 0x110) = 1.0f;
-        *(float *)(mainRotor + 0x114) = (float)0;
-        XCALL(gl_func_00000000_heli_euler, math_eulerToQuat)(tailRotor + 0xCC, 0.0f, 90.0f, 0.0f);
+        XCALL(gl_func_00000000_heli_euler, math_eulerToQuat)(QNODE(mainRotor)->vqs.quat, 90.0f, 0.0f, 0.0f);
+        QNODE(mainRotor)->vqs.trans[0] = (float)0;
+        QNODE(mainRotor)->vqs.trans[1] = 480.0f;
+        QNODE(mainRotor)->vqs.trans[2] = (float)0;
+        HELIROTOR(mainRotor)->axis[0] = (float)0;
+        HELIROTOR(mainRotor)->axis[1] = 1.0f;
+        HELIROTOR(mainRotor)->axis[2] = (float)0;
+        XCALL(gl_func_00000000_heli_euler, math_eulerToQuat)(QNODE(tailRotor)->vqs.quat, 0.0f, 90.0f, 0.0f);
         {
             float scale = HELI_RO_SITE(58);
             if (1) {}
-            *(float *)(tailRotor + 0xB4) = HELI_RO_SITE(5C);
-            *(float *)(tailRotor + 0xB8) = HELI_RO_SITE(60);
-            *(float *)(tailRotor + 0xBC) = HELI_RO_SITE(64);
-            *(float *)(tailRotor + 0xC8) = scale;
-            *(float *)(tailRotor + 0xC4) = scale;
-            *(float *)(tailRotor + 0xC0) = scale;
-            *(float *)(tailRotor + 0x114) = (float)0;
-            *(float *)(tailRotor + 0x110) = (float)0;
-            *(float *)(tailRotor + 0x10C) = 1.0f;
+            QNODE(tailRotor)->vqs.trans[0] = HELI_RO_SITE(5C);
+            QNODE(tailRotor)->vqs.trans[1] = HELI_RO_SITE(60);
+            QNODE(tailRotor)->vqs.trans[2] = HELI_RO_SITE(64);
+            QNODE(tailRotor)->vqs.scale[2] = scale;
+            QNODE(tailRotor)->vqs.scale[1] = scale;
+            QNODE(tailRotor)->vqs.scale[0] = scale;
+            HELIROTOR(tailRotor)->axis[2] = (float)0;
+            HELIROTOR(tailRotor)->axis[1] = (float)0;
+            HELIROTOR(tailRotor)->axis[0] = 1.0f;
         }
         n = (char *)XCALL(gl_func_00000000f3, QNode_ctor)(0, &heli_data_00000000 + 0xCBA0, 0.0f, 0.0f, 0.0f);
         CALL(MNode_addChild)(self, n);
-        *(float *)(n + 0xB4) = 0.0f;
-        *(float *)(n + 0xB8) = HELI_RO_SITE(68);
-        *(float *)(n + 0xBC) = HELI_RO_SITE(6C);
+        QNODE(n)->vqs.trans[0] = 0.0f;
+        QNODE(n)->vqs.trans[1] = HELI_RO_SITE(68);
+        QNODE(n)->vqs.trans[2] = HELI_RO_SITE(6C);
         CALL(MNode_addChild)(n, sprite);
         CALL(Heli_resetFlight)(self);
     }
@@ -273,13 +275,13 @@ void Heli_loadData(char *self) {
     int pad_mid[3];
     HeliTri3i t2;
     int pad_bot[4];
-    heli_gdlReadVec3_0000003C((float *)(self + 0x108));
-    HELI_VEC3_SET(self + 0xB4, self + 0x108, t1);
-    *(float *)(self + 0xB8) += HELI_RODATA_F(0x70);
-    HELI_VEC3_SET(self + 0xDC, self + 0xB4, t1);  /* cvqs.trans = vqs.trans */
-    HELI_VEC3_SET(self + 0xE8, self + 0xC0, t2);  /* cvqs.scale = vqs.scale */
-    HELI_VEC3_SET(self + 0xF4, self + 0xCC, t2);  /* cvqs.quat = vqs.quat */
-    *(float *)(self + 0x100) = *(float *)(self + 0xD8);
+    heli_gdlReadVec3_0000003C(HELI(self)->startPos);
+    HELI_VEC3_SET(QNODE(self)->vqs.trans, HELI(self)->startPos, t1);
+    QNODE(self)->vqs.trans[1] += HELI_RODATA_F(0x70);
+    HELI_VEC3_SET(QNODE(self)->cvqs.trans, QNODE(self)->vqs.trans, t1);
+    HELI_VEC3_SET(QNODE(self)->cvqs.scale, QNODE(self)->vqs.scale, t2);
+    HELI_VEC3_SET(QNODE(self)->cvqs.quat, QNODE(self)->vqs.quat, t2); /* quat x / y / z; w below */
+    QNODE(self)->cvqs.quat[3] = QNODE(self)->vqs.quat[3];
 }
 
 /* Heli_handleMsg: Heli handleMsg. 9 (reset): put the Heli back at its start position
@@ -296,12 +298,12 @@ void Heli_handleMsg(char *self, int *msg) {
     if (*msg != 7) goto out;
     goto store;
 reset:
-    HELI_VEC3_SET(self + 0xDC, self + 0x108, t1);
-    HELI_VEC3_SET(self + 0xB4, self + 0xDC, t2);
+    HELI_VEC3_SET(QNODE(self)->cvqs.trans, HELI(self)->startPos, t1);
+    HELI_VEC3_SET(QNODE(self)->vqs.trans, QNODE(self)->cvqs.trans, t2);
     CALL(Heli_resetFlight)(self); /* global: blank reloc'd jal */
     goto out;
 store:
-    HELI_VEC3_SET(self + 0x108, self + 0xB4, t1);
+    HELI_VEC3_SET(HELI(self)->startPos, QNODE(self)->vqs.trans, t1);
 out:;
 }
 
@@ -334,20 +336,20 @@ void Heli_placeAtMarker(char *self) {
     char *type;
     char *item;
     HeliTri3i t;
-    key.v = *(int *)(&heli_data_00000000 + 0xCBA8); /* "hem" */
+    key.v = *(int *)(&heli_data_00000000 + 0xCBA8); /* RAW: data-table the "hem" ItemType tag word (module Data+0xCBA8) */
     type = (char *)CALL(ItemMgr_findType_0003EA98)(heli_itemMgr, key);
     if (type != 0) {
         float dy;
         char *r;
-        it[1] = *(HeliIterNode **)(type + 0x10);
+        it[1] = (HeliIterNode *)NODE(type)->children;
         r = HELI_ITER_NEXT(it);
         if (r != 0) {
             item = r;
             dy = HELI_RODATA_F(0x78);
             do {
-                if (*(int *)(item + 0x3C) == 8) {
-                    HELI_VEC3_SET(self + 0xDC, item + 0x30, t);
-                    *(float *)(self + 0xE0) += dy;
+                if (HELIMARKER(item)->id == 8) {
+                    HELI_VEC3_SET(QNODE(self)->cvqs.trans, HELIMARKER(item)->item.rgb, t);
+                    QNODE(self)->cvqs.trans[1] += dy;
                 }
             } while ((item = HELI_ITER_NEXT(it)) != 0);
         }
@@ -359,10 +361,10 @@ void Heli_placeAtMarker(char *self) {
 void Heli_display(char *self) {
     HeliColour col;
     int pad[2];
-    if (XCALL(gl_func_00000000_heli_cull, cam_isSphereInView)(*(void **)(&heli_gGfxLib_a + 0x254), 3,
-            *(float *)(self + 0xDC), *(float *)(self + 0xE0), *(float *)(self + 0xE4), 0, 0.0f)) {
-        void *win = *(void **)(&heli_gGfxLib_b + 0x254); /* GfxLib current ScreenWindow */
-        CALL(snd_updateChannel10Emitter)(1, self + 0xDC, win);
+    if (XCALL(gl_func_00000000_heli_cull, cam_isSphereInView)(GFXLIB(&heli_gGfxLib_a)->curWindow, 3,
+            QNODE(self)->cvqs.trans[0], QNODE(self)->cvqs.trans[1], QNODE(self)->cvqs.trans[2], 0, 0.0f)) {
+        void *win = GFXLIB(&heli_gGfxLib_b)->curWindow;
+        CALL(snd_updateChannel10Emitter)(1, QNODE(self)->cvqs.trans, win);
         col.r = col.g = col.b = col.a = 1.0f;
         CALL(gfx_setPrimColour)(&heli_gGfxLib_c, &col);
         CALL(QNode_display)(self);
@@ -390,7 +392,7 @@ int heli_getItemPosStub_000019CC(int a0, int a1, int a2) {
 
 /* HeliMarkerItem_load: the colour item's load: the int at +0x3C, then ColourItem_load. */
 void HeliMarkerItem_load(char *self) {
-    heli_gdlReadInt((int *)(self + 0x3C));
+    heli_gdlReadInt(&HELIMARKER(self)->id);
     CALL(ColourItem_load)(self);
 }
 

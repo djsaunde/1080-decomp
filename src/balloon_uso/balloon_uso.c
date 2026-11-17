@@ -2,6 +2,7 @@
 #include "uso_call.h"
 #include "gdl/node.h"  /* Node, NodeMsg, VT_SLOT */
 #include "gdl/mnode.h" /* SNode (scale +0x70) */
+#include "game/course_objects.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -65,12 +66,13 @@ void balloon_gdlReadFloat_00000104(float *dst) {
 int *Balloon_ctor(char *self) {
     if (self != 0 || (self = (char *)CALL(mem_new)(0x9C)) != 0) {
         CALL(SNode_ctor)(self);
-        *(char **)(self + 0x28) = &D_00000000; /* Data+0x4128: Balloon vtable */
-        *(float *)(self + 0x88) = 0.0f;
-        *(float *)(self + 0x8C) = 0.0f;
-        *(float *)(self + 0x90) = 0.0f;
-        *(float *)(self + 0x94) = *(float *)(&gl_data_00000000 + 0x1C); /* RoData+0x1C (a separate zero symbol: RoData base) */
-        *(float *)(self + 0x98) = 0.0f;
+        NODE(self)->vptr = &D_00000000; /* Data+0x4128: Balloon vtable */
+        BALLOON(self)->off[0] = 0.0f;
+        BALLOON(self)->off[1] = 0.0f;
+        BALLOON(self)->off[2] = 0.0f;
+        /* RAW: data-table RoData+0x1C float constant (gl_data_00000000 here is the RoData base, a separate zero symbol) */
+        BALLOON(self)->speed = *(float *)(&gl_data_00000000 + 0x1C);
+        BALLOON(self)->phase = 0.0f;
     }
     return (int *)self;
 }
@@ -83,28 +85,28 @@ void Balloon_display(char *self) {
 
 /* Balloon_saveData: saveData: bob amplitude, bob speed, then the SNode part. */
 void Balloon_saveData(char *self) {
-    balloon_gdlWriteVec3((int *)(self + 0x88));
-    balloon_gdlWriteFloat_00000060((float *)(self + 0x94));
+    balloon_gdlWriteVec3((int *)BALLOON(self)->off);
+    balloon_gdlWriteFloat_00000060(&BALLOON(self)->speed);
     CALL(SNode_saveData)(self);
 }
 
 /* Balloon_loadData: loadData (mirror of saveData). */
 void Balloon_loadData(char *self) {
-    balloon_gdlReadVec3_00000094((float *)(self + 0x88));
-    balloon_gdlReadFloat_00000104((float *)(self + 0x94));
+    balloon_gdlReadVec3_00000094(BALLOON(self)->off);
+    balloon_gdlReadFloat_00000104(&BALLOON(self)->speed);
     CALL(SNode_loadData)(self);
 }
 
 /* Balloon_hostioParms: hostioParms (group named by the node's name). */
 extern void gl_func_00000000_ff(void *, char *, void *, float, float, int);
 void Balloon_hostioParms(char *self) {
-    char *name = *(char **)(self + 0xC); /* Node name */
+    char *name = (char *)NODE(self)->name;
 #define h (&D_00000000)
     CALL(hostio_beginGroup)(h, name, 0);
-    XCALL(gl_func_00000000_ff, hostio_addFloat)(h, &D_00000000 + 0x4188, self + 0x94, 0.0f, 1.0f, 1);
-    XCALL(gl_func_00000000_ff, hostio_addFloat)(h, &D_00000000 + 0x4190, self + 0x88, -500.0f, 500.0f, 1);
-    XCALL(gl_func_00000000_ff, hostio_addFloat)(h, &D_00000000 + 0x4198, self + 0x8C, -500.0f, 500.0f, 1);
-    XCALL(gl_func_00000000_ff, hostio_addFloat)(h, &D_00000000 + 0x41A0, self + 0x90, -500.0f, 500.0f, 1);
+    XCALL(gl_func_00000000_ff, hostio_addFloat)(h, &D_00000000 + 0x4188, &BALLOON(self)->speed, 0.0f, 1.0f, 1); /* "Speed" */
+    XCALL(gl_func_00000000_ff, hostio_addFloat)(h, &D_00000000 + 0x4190, &BALLOON(self)->off[0], -500.0f, 500.0f, 1); /* "Off.x" */
+    XCALL(gl_func_00000000_ff, hostio_addFloat)(h, &D_00000000 + 0x4198, &BALLOON(self)->off[1], -500.0f, 500.0f, 1); /* "Off.y" */
+    XCALL(gl_func_00000000_ff, hostio_addFloat)(h, &D_00000000 + 0x41A0, &BALLOON(self)->off[2], -500.0f, 500.0f, 1); /* "Off.z" */
     CALL(hostio_endGroup)(h);
     CALL(SNode_hostioParms)(self);
 }
@@ -114,7 +116,7 @@ void Balloon_hostioParms(char *self) {
 void Balloon_handleMsg(char *self, int *msg) {
     CALL(SNode_handleMsg)(self, msg);
     if (*msg == 7 || *msg == 19) {
-        *(float *)(self + 0x98) = 0.0f;
+        BALLOON(self)->phase = 0.0f;
     }
 }
 
@@ -134,19 +136,19 @@ Node *BalloonTmpl_create(char *tmpl) {
     Node *shape;
     volatile int pad;
 
-    if (*(Node **)(tmpl + 0x40) == 0) {
+    if ((Node *)ITEMTYPE(tmpl)->unk40 == 0) {
         gPolyFlags_3EEC4_tmpl_wr = gPolyFlags_3EEC4_tmpl_rd | 8;
         if (1) {}
         gPolyGeomMode_3EEC8_tmpl[1] = 0xAA002;
         gPolyGeomMode_3EEC8_tmpl[0] = 0;
-        *(Node **)(tmpl + 0x40) = (Node *)CALL(PolyShape_ctor)(0, &D_00000000 + 0x41A8, *(int *)(tmpl + 0x48), 0);
+        *(Node **)&ITEMTYPE(tmpl)->unk40 = (Node *)CALL(PolyShape_ctor)(0, &D_00000000 + 0x41A8, SHAPETMPL(tmpl)->model, 0); /* "ball" */
     }
     o = (Node *)CALL(Balloon_ctor)(0);
     if (o) {}
     SNODE(o)->scale = 10.0f;
     msg.tag = 19;
     VT_SLOT(o->vptr, 4).fn((char *)o + VT_SLOT(o->vptr, 4).delta, &msg);
-    shape = *(Node **)(tmpl + 0x40);
+    shape = (Node *)ITEMTYPE(tmpl)->unk40;
     CALL(list_append)(&o->children, shape);
     if (shape->parent != 0) {
         shape->unk04 = 1;

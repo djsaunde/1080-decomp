@@ -3,6 +3,7 @@
 #include "gdl/node.h"  /* Node, NodeMsg, VT_SLOT */
 #include "gdl/mnode.h" /* SNode (scale +0x70) */
 #include "gdl/item.h"  /* ItemType */
+#include "game/course_objects.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -45,9 +46,9 @@ char *FireTmpl_ctor(char *self, FireTag tag) {
         gPolyGeomMode_3EEC8_tmpl[1] = 10;
         gPolyGeomMode_3EEC8_tmpl[0] = 0;
         ((ItemType *)self)->unk40 = CALL(Sprite_ctor_0004B620)(0, &gl_data_00000000);
-        *(s32 *)(((ItemType *)self)->unk40 + 0xC4) = 1;
-        FIRE_SETCOLOUR((f32 *)(self + 0x58), 219.0f, 196.0f, 0.0f, 255);
-        FIRE_SETCOLOUR((f32 *)(self + 0x48), 126.0f, 33.0f, 3.0f, 255);
+        ((Sprite *)((ItemType *)self)->unk40)->perspective = 1;
+        FIRE_SETCOLOUR(FIRETMPL(self)->primColour, 219.0f, 196.0f, 0.0f, 255);
+        FIRE_SETCOLOUR(FIRETMPL(self)->envColour, 126.0f, 33.0f, 3.0f, 255);
     }
     return self;
 }
@@ -68,13 +69,13 @@ Node *FireTmpl_create(char *tmpl) {
     Node *node;
     volatile int pad;
 
-    node = *(Node **)(tmpl + 0x40);
+    node = (Node *)ITEMTYPE(tmpl)->unk40;
     o = (Node *)CALL(Fire_ctor)(0, (int)node);
     if (o) {}
     SNODE(o)->scale = 1.0f;
     msg.tag = 19;
     VT_SLOT(o->vptr, 4).fn((char *)o + VT_SLOT(o->vptr, 4).delta, &msg);
-    node = *(Node **)(tmpl + 0x40);
+    node = (Node *)ITEMTYPE(tmpl)->unk40;
     CALL(list_append)(&o->children, node);
     if (node->parent != 0) {
         node->unk04 = 1;
@@ -85,41 +86,41 @@ Node *FireTmpl_create(char *tmpl) {
 
 /* FireTmpl_declColourParms: hostio colour parms for the env (0x48) and prim (0x58) colours. */
 void FireTmpl_declColourParms(char *self) {
-    CALL(gfx_declColourParm)(self + 0x48, &D_00000000 + 0x237C);
-    CALL(gfx_declColourParm)(self + 0x58, &D_00000000 + 0x2380);
+    CALL(gfx_declColourParm)(FIRETMPL(self)->envColour, &D_00000000 + 0x237C); /* "Env" */
+    CALL(gfx_declColourParm)(FIRETMPL(self)->primColour, &D_00000000 + 0x2380); /* "Prim" */
 }
 
 void FireTmpl_display(char *self) {
-    CALL(gfx_setPrimColour)(&D_00000000, self + 0x58);
-    CALL(gfx_setEnvColour)(&D_00000000, self + 0x48);
+    CALL(gfx_setPrimColour)(&D_00000000, FIRETMPL(self)->primColour);
+    CALL(gfx_setEnvColour)(&D_00000000, FIRETMPL(self)->envColour);
     CALL(Node_display)(self);
 }
 
 int *Fire_ctor(char *self, int sprite) {
     if (self != 0 || (self = (char *)CALL(mem_new)(0x94)) != 0) {
         CALL(SNode_ctor)(self);
-        *(char **)(self + 0x28) = &D_00000000;
-        *(short *)(self + 0x8C) = 0;
-        *(float *)(self + 0x90) = 0.0f;
-        *(int *)(self + 0x88) = sprite;
-        *(float *)(self + 0x6C) = 6.0f;
+        NODE(self)->vptr = &D_00000000; /* Fire vtable (Data+0x231C) */
+        FIRE(self)->frame = 0;
+        FIRE(self)->alpha = 0.0f;
+        FIRE(self)->sprite = (Sprite *)sprite;
+        SNODE(self)->height = 6.0f;
         CALL(Node_setUnk24)(self, 2);
     }
     return (int *)self;
 }
 
 void Fire_display(char *self) {
-    *(short *)(*(char **)(self + 0x88) + 0xC0) = *(short *)(self + 0x8C);
-    *(float *)(*(char **)(self + 0x88) + 0xB0) = *(float *)(self + 0x70);
-    *(float *)(*(char **)(self + 0x88) + 0xB4) = *(float *)(self + 0x70);
-    *(short *)(self + 0x8C) = (*(short *)(self + 0x8C) + 1) & 7;
+    FIRE(self)->sprite->unkC0 = FIRE(self)->frame;
+    FIRE(self)->sprite->scaleX = SNODE(self)->scale;
+    FIRE(self)->sprite->scaleY = SNODE(self)->scale;
+    FIRE(self)->frame = (FIRE(self)->frame + 1) & 7;
     CALL(SNode_display)(self);
 }
 
 extern void gl_func_00000000_ff(void *, char *, void *, float, float, int);
 void Fire_hostioParms(char *self) {
-    CALL(hostio_beginGroup)(&D_00000000, &D_00000000 + 0x2388, 0);
-    XCALL(gl_func_00000000_ff, hostio_addFloat)(&D_00000000, &D_00000000 + 0x2390, self + 0x90, 0.0f, 1.0f, 0);
+    CALL(hostio_beginGroup)(&D_00000000, &D_00000000 + 0x2388, 0); /* "Fire" */
+    XCALL(gl_func_00000000_ff, hostio_addFloat)(&D_00000000, &D_00000000 + 0x2390, &FIRE(self)->alpha, 0.0f, 1.0f, 0); /* "alpha" */
     CALL(hostio_endGroup)(&D_00000000);
     CALL(SNode_hostioParms)(self);
 }

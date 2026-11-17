@@ -2,6 +2,8 @@
 #include "uso_call.h"
 #include "gdl/node.h"  /* Node, NodeMsg, VT_SLOT */
 #include "gdl/mnode.h" /* SNode (scale +0x70) */
+#include "gdl/gfxlib.h"
+#include "game/course_objects.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -60,14 +62,14 @@ int *CheckpointCyl_ctor(char *self) {
         p = self + 0x8C;
         if (p != 0 || (p = (char *)CALL(mem_new)(0x40)) != 0) {
             CALL(coll_boxCtor_0003CAA0)(p);
-            *(char **)(p + 0x30) = &CollObj_vtbl_chkE0;
+            ((CollObj *)p)->vptr = &CollObj_vtbl_chkE0;
         }
         p = self + 0xCC;
         if (p != 0 || (p = (char *)CALL(mem_new)(0x40)) != 0) {
             CALL(coll_boxCtor_0003CAA0)(p);
-            *(char **)(p + 0x30) = &CollObj_vtbl_chkE0;
+            ((CollObj *)p)->vptr = &CollObj_vtbl_chkE0;
         }
-        *(s32 *)(self + 0x88) = 20;
+        CHECKPOINTCYL(self)->time = 20;
         XCALL(gl_func_00000000_chkcyl, CollObj_initCylinder)(self + 0x8C, self, 100, 100.0f, 1000.0f);
         XCALL(gl_func_00000000_chkcyl, CollObj_initCylinder)(self + 0xCC, self, 100, 100.0f, 1000.0f);
     }
@@ -76,21 +78,21 @@ int *CheckpointCyl_ctor(char *self) {
 
 /* CheckpointCyl_loadData: cylinder checkpoint loadData (int at 0x88). */
 void CheckpointCyl_loadData(char *self) {
-    checkpoint_gdlReadInt_00000034((int *)(self + 0x88));
+    checkpoint_gdlReadInt_00000034(&CHECKPOINTCYL(self)->time);
     CALL(SNode_loadData)(self);
 }
 
 /* CheckpointCyl_saveData: cylinder checkpoint saveData. */
 void CheckpointCyl_saveData(char *self) {
-    checkpoint_gdlWriteInt((int *)(self + 0x88));
+    checkpoint_gdlWriteInt(&CHECKPOINTCYL(self)->time);
     CALL(SNode_saveData)(self);
 }
 
 /* CheckpointCyl_hostioParms: cylinder checkpoint hostioParms (one int, 0..100). */
 void CheckpointCyl_hostioParms(char *self) {
-    char *name = *(char **)(self + 0xC); /* Node name */
+    char *name = (char *)NODE(self)->name;
     CALL(hostio_beginGroup)(&D_00000000, name, 0);
-    CALL(hostio_addInt)(&D_00000000, &D_00000000 + 0x3EE0, self + 0x88, 0, 100, 0);
+    CALL(hostio_addInt)(&D_00000000, &D_00000000 + 0x3EE0, &CHECKPOINTCYL(self)->time, 0, 100, 0); /* "Time" */
     CALL(hostio_endGroup)(&D_00000000);
     CALL(SNode_hostioParms)(self);
 }
@@ -114,22 +116,22 @@ void CheckpointCyl_handleMsg(char *self, int *msg) {
 
     CALL(SNode_handleMsg)(self, msg);
     if (*msg == 7 || *msg == 19) {
-        r = 117.0f / *(float *)(&D_00000000 + 0x128); /* GfxLib.worldScale[0] */
+        r = 117.0f / GFXLIB(&D_00000000)->worldScale[0];
         z = 0.0;
         nr = -r;
         m = (float *)SNODE(self)->mtx;
         a.x = m[12] + (m[8] * z + (m[4] * z + m[0] * nr));
         a.y = m[13] + (m[9] * z + (m[5] * z + m[1] * nr));
         a.z = m[14] + (m[10] * z + (m[6] * z + m[2] * nr));
-        *(float *)(self + 0xA4) = a.x;
-        *(float *)(self + 0xA8) = a.y;
-        *(float *)(self + 0xAC) = a.z;
+        CHECKPOINTCYL(self)->postA.obj.pos[0] = a.x;
+        CHECKPOINTCYL(self)->postA.obj.pos[1] = a.y;
+        CHECKPOINTCYL(self)->postA.obj.pos[2] = a.z;
         b.x = m[12] + (m[8] * z + (m[4] * z + m[0] * r));
         b.y = m[13] + (m[9] * z + (m[5] * z + m[1] * r));
         b.z = m[14] + (m[10] * z + (m[6] * z + m[2] * r));
-        *(float *)(self + 0xE4) = b.x;
-        *(float *)(self + 0xE8) = b.y;
-        *(float *)(self + 0xEC) = b.z;
+        CHECKPOINTCYL(self)->postB.obj.pos[0] = b.x;
+        CHECKPOINTCYL(self)->postB.obj.pos[1] = b.y;
+        CHECKPOINTCYL(self)->postB.obj.pos[2] = b.z;
     }
 }
 
@@ -152,23 +154,23 @@ int *CheckpointBox_ctor(char *self, int arg) {
         p = self + 0x88;
         if (p != 0 || (p = (char *)CALL(mem_new)(0x40)) != 0) {
             CALL(coll_boxCtor_0003CAA0)(p);
-            *(char **)(p + 0x30) = &CollObj_vtbl_chkE0;
+            ((CollObj *)p)->vptr = &CollObj_vtbl_chkE0;
         }
         XCALL(gl_func_00000000_chkcyl, CollObj_initCylinder)(self + 0x88, self, 100, 20.0f, 500.0f);
-        *(int *)(self + 0xC8) = arg;
+        CHECKPOINTBOX(self)->tmplArg = arg;
     }
     return (int *)self;
 }
 
 /* CheckpointBox_loadData: box checkpoint loadData (int at 0xC8). */
 void CheckpointBox_loadData(char *self) {
-    checkpoint_gdlReadInt_000000A4((int *)(self + 0xC8));
+    checkpoint_gdlReadInt_000000A4(&CHECKPOINTBOX(self)->tmplArg);
     CALL(SNode_loadData)(self);
 }
 
 /* CheckpointBox_saveData: box checkpoint saveData. */
 void CheckpointBox_saveData(char *self) {
-    checkpoint_gdlWriteInt_00000070((int *)(self + 0xC8));
+    checkpoint_gdlWriteInt_00000070(&CHECKPOINTBOX(self)->tmplArg);
     CALL(SNode_saveData)(self);
 }
 
@@ -177,9 +179,9 @@ void CheckpointBox_saveData(char *self) {
 void CheckpointBox_handleMsg(char *self, int *msg) {
     CALL(SNode_handleMsg)(self, msg);
     if (*msg == 7 || *msg == 19) {
-        *(float *)(self + 0xA0) = *(float *)(self + 0x5C);
-        *(float *)(self + 0xA4) = *(float *)(self + 0x60);
-        *(float *)(self + 0xA8) = *(float *)(self + 0x64);
+        CHECKPOINTBOX(self)->coll.obj.pos[0] = SNODE(self)->pos[0];
+        CHECKPOINTBOX(self)->coll.obj.pos[1] = SNODE(self)->pos[1];
+        CHECKPOINTBOX(self)->coll.obj.pos[2] = SNODE(self)->pos[2];
     }
 }
 
@@ -203,19 +205,19 @@ Node *CheckpointCylTmpl_create(char *tmpl) {
     Node *shape;
     volatile int pad;
 
-    if (*(Node **)(tmpl + 0x40) == 0) {
+    if ((Node *)ITEMTYPE(tmpl)->unk40 == 0) {
         gPolyFlags_3EEC4_tmpl_wr = gPolyFlags_3EEC4_tmpl_rd | 8;
         if (1) {}
         gPolyGeomMode_3EEC8_tmpl[1] = 0xAA002;
         gPolyGeomMode_3EEC8_tmpl[0] = 0;
-        *(Node **)(tmpl + 0x40) = (Node *)CALL(PolyShape_ctor)(0, &D_00000000 + 0x3EE8, *(int *)(tmpl + 0x48), 0);
+        *(Node **)&ITEMTYPE(tmpl)->unk40 = (Node *)CALL(PolyShape_ctor)(0, &D_00000000 + 0x3EE8, SHAPETMPL(tmpl)->model, 0); /* "chkp" */
     }
     o = (Node *)CALL(CheckpointCyl_ctor)(0);
     if (o) {}
     SNODE(o)->scale = 10.0f;
     msg.tag = 19;
     VT_SLOT(o->vptr, 4).fn((char *)o + VT_SLOT(o->vptr, 4).delta, &msg);
-    shape = *(Node **)(tmpl + 0x40);
+    shape = (Node *)ITEMTYPE(tmpl)->unk40;
     CALL(list_append)(&o->children, shape);
     if (shape->parent != 0) {
         shape->unk04 = 1;
@@ -235,19 +237,19 @@ Node *CheckpointBoxTmpl_create(char *tmpl) {
     Node *shape;
     volatile int pad;
 
-    if (*(Node **)(tmpl + 0x40) == 0) {
+    if ((Node *)ITEMTYPE(tmpl)->unk40 == 0) {
         gPolyFlags_3EEC4_tmpl_wr = gPolyFlags_3EEC4_tmpl_rd | 8;
         if (1) {}
         gPolyGeomMode_3EEC8_tmpl[1] = 0x8A002;
         gPolyGeomMode_3EEC8_tmpl[0] = 0;
-        *(Node **)(tmpl + 0x40) = (Node *)CALL(PolyShape_ctor)(0, &D_00000000 + 0x3EF0, *(int *)(tmpl + 0x4C), 0);
+        *(Node **)&ITEMTYPE(tmpl)->unk40 = (Node *)CALL(PolyShape_ctor)(0, &D_00000000 + 0x3EF0, CHECKPOINTBOXTMPL(tmpl)->model, 0); /* "flag" */
     }
-    o = (Node *)CALL(CheckpointBox_ctor)(0, *(int *)(tmpl + 0x48));
+    o = (Node *)CALL(CheckpointBox_ctor)(0, CHECKPOINTBOXTMPL(tmpl)->boxArg);
     if (o) {}
     SNODE(o)->scale = 10.0f;
     msg.tag = 19;
     VT_SLOT(o->vptr, 4).fn((char *)o + VT_SLOT(o->vptr, 4).delta, &msg);
-    shape = *(Node **)(tmpl + 0x40);
+    shape = (Node *)ITEMTYPE(tmpl)->unk40;
     CALL(list_append)(&o->children, shape);
     if (shape->parent != 0) {
         shape->unk04 = 1;

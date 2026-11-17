@@ -44,7 +44,7 @@ extern "C" void Heli_resetFlight(Heli *h) {
     h->accel = 5.0f;
     h->maxSpeed = 200.0f;
     h->nearDist = 250.0f;
-    h->slerp = *(float *)(&heli_rodata_00000000 + 0x74);
+    h->slerp = *(float *)(&heli_rodata_00000000 + 0x74); /* RAW: data-table RoData+0x74 float constant */
     h->target.x = 0.0f;
     h->speed2 = 0.0f;
     h->target.z = 0.0f;
