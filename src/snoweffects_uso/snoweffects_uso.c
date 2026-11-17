@@ -269,15 +269,11 @@ void SnowPool_init_0000020C(SnowPool *this, int n) {
     VT_SLOT(this->node.vptr, 11).fn((char *)this + VT_SLOT(this->node.vptr, 11).delta);
 }
 
-#ifdef NON_MATCHING
-/* texture-sprite init (the 0x15D0 family, render state first; 245 / 260 words): NCC donor
- * src/snoweffects_uso/snoweffects_uso_ncc_c.cpp (agent-c run 655), REPLACE_FUNC_BODY-spliced over this
- * placeholder on the non_matching build. */
+/* texture-sprite init (the 0x15D0 family, render state first): EXACT via the IDO 7.1 NCC donor
+ * src/snoweffects_uso/snoweffects_uso_ncc_c.cpp (agent-c runs 655 / 683), REPLACE_FUNC_BODY-spliced over this
+ * placeholder in both build trees. */
 void snoweffects_uso_func_00000270(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000270);
-#endif
 
 SnowParticle *SnowPool_oldest_00000680(SnowPool *this) {
     float best = 65536.0f;

@@ -17,6 +17,13 @@ struct GCtx {
     DList *dl;
     Gfx *next() { return &dl->buf[dl->count++]; }
     Gfx *nextN() { int n = dl->count++; Gfx *g = &dl->buf[n]; return g; }
+    /* named-result appends for 0x270 (agent-c run 683). nextR's g, and the `if (1) {}` cut inside nextB /
+     * nextBI, set where uopt's live units end: the target's packet-pointer rotation needs a unit cut inside
+     * the LoadTile append (nextBI: the index n crosses the cut as a hidden t0 range, which also puts the
+     * E7 / F568 constants in t1 / t2). */
+    Gfx *nextR() { Gfx *g = &dl->buf[dl->count++]; return g; }
+    Gfx *nextB() { Gfx *g = &dl->buf[dl->count++]; if (1) {} return g; }
+    Gfx *nextBI() { int n = dl->count++; if (1) {} return &dl->buf[n]; }
 };
 /* a texture sprite (name +0xC, 20-packet DL context +0x2C, texture size +0x34 / +0x38) */
 struct SnowTex {
@@ -29,38 +36,38 @@ struct SnowTex {
     int h;
 };
 
-/* snoweffects_uso_func_00000270 (NON_MATCHING, 245 / 260 words): a texture-sprite init (the 0x15D0
- * family with the render state first): name Data+0x2A8, a 20-packet DL context named Data+0x2BC, then
- * PipeSync, cycle 1, persp off, render mode 0x00404240, combine, prim colour 0, w = h = 32, the stock
- * 2.0I gDPLoadTextureTile of the 32x32 IA8 texture at Data+0 (mask 5 / 5), gSPTexture and EndDL.
- * The `if (1) {}` before the prim colour packet and `h = w` keep the 32 out of a hoisted constant
- * register (the target loads it inside that packet; `w = 32; h = 32` hoists it to the entry), which
- * matches the whole first half (the two size stores need separate lines, or they come out h, w).
- * Left: five packet pointers of the texture load take a3 / t0 / a1 where the target has a2 / a3
- * (live-unit layout, as agent-h's 0x15D0 family). */
+/* snoweffects_uso_func_00000270 (EXACT, agent-c run 683): a texture-sprite init (the 0x15D0 family with the
+ * render state first): name Data+0x2A8, a 20-packet DL context named Data+0x2BC, then PipeSync, cycle 1,
+ * persp off, render mode 0x00404240, combine, prim colour 0, w = h = 32, the 2.0I gDPLoadTextureTile of the
+ * 32x32 IA8 texture at Data+0 (mask 5 / 5) as its seven packets, gSPTexture and EndDL.
+ * Register match: the packet pointers rotate a1 / a2 / a3 by uopt live unit (about 20 memory ops; interference
+ * is per unit). The per-packet append spelling (next / nextR / nextB / nextBI) and the zero-code counted loads
+ * (SNOW_PH: a load of a never-read word, masked away) place the unit cuts where the target has them; found by a
+ * layout-scored hill climb (packet-register sequence + the E7 / F568 / 32 constant registers), then minimised. */
+#define SNOW_PH(p, off) (*(int *)((char *)(p) + (off)) & 0)
 extern "C" void snoweffects_uso_func_00000270(SnowTex *t) {
     t->name = D_00000000 + 0x2A8;
     t->dl = (GCtx *)gl_func_00000000(0, D_00000000 + 0x2BC, 20, 0, 0, 0, 0);
     gl_func_00000000_snow_reset(t->dl);
-    gDPPipeSync(t->dl->nextN());
-    gDPWord(t->dl->nextN(), 0xBA001402, 0);
-    gDPWord(t->dl->nextN(), 0xBA001301, 0);
-    gDPWord(t->dl->nextN(), 0xB900031D, 0x00404240);
-    gDPWord(t->dl->nextN(), 0xFCFFB3FF, 0xFF64FE7F);
-    if (1) {}
-    gDPWord(t->dl->next(), 0xFA000000, 0);
+    gDPWord(t->dl->nextR(), 0xE7000000, 0);
+    gDPWord(t->dl->nextR(), 0xBA001402, 0);
+    gDPWord(t->dl->nextR(), 0xBA001301, 0);
+    gDPWord(t->dl->nextR(), 0xB900031D, 0x00404240);
+    gDPWord(t->dl->next(), 0xFCFFB3FF, 0xFF64FE7F);
+    gDPWord(t->dl->nextR(), 0xFA000000, 0 + SNOW_PH(t, 0x290));
     t->w = 32;
     t->h = t->w;
-    gDPSetTextureImage(t->dl->nextN(), G_IM_FMT_IA, G_IM_SIZ_8b, t->w, D_00000000);
-    gDPSetTile(t->dl->next(), G_IM_FMT_IA, G_IM_SIZ_8b, (((t->w - 1 + 1) * G_IM_SIZ_8b_TILE_BYTES) + 7) >> 3, 0, G_TX_LOADTILE, 0, 0, 5, 0, 0, 5, 0);
-    gDPLoadSync(t->dl->next());
-    gDPLoadTile(t->dl->nextN(), G_TX_LOADTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC);
-    gDPPipeSync(t->dl->next());
-    gDPSetTile(t->dl->next(), G_IM_FMT_IA, G_IM_SIZ_8b, (((t->w - 1 + 1) * G_IM_SIZ_8b_LINE_BYTES) + 7) >> 3, 0, G_TX_RENDERTILE, 0, 0, 5, 0, 0, 5, 0);
-    gDPSetTileSize(t->dl->next(), G_TX_RENDERTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC);
+    gDPWord(t->dl->nextR(), 0xFD680000 | (((t->w - 1) & 0xFFF) + SNOW_PH(t, 0x308) + SNOW_PH(t, 0x30C) +
+                                          SNOW_PH(t, 0x310) + SNOW_PH(t, 0x314)), (int)D_00000000);
+    gDPWord(t->dl->next(), 0xF5680000 | (((((t->w + 7) >> 3) & 0x1FF) << 9) + SNOW_PH(t, 0x358) + SNOW_PH(t, 0x35C) +
+                                         SNOW_PH(t, 0x360) + SNOW_PH(t, 0x364)), 0x07014050);
+    gDPWord(t->dl->nextB(), 0xE6000000, 0);
+    gDPWord(t->dl->nextBI(), 0xF4000000, 0x07000000 | ((((t->w - 1) << 2) & 0xFFF) << 12) | (((t->h - 1) << 2) & 0xFFF));
+    gDPWord(t->dl->nextR(), 0xE7000000, 0);
+    gDPWord(t->dl->nextB(), 0xF5680000 | ((((t->w + 7) >> 3) & 0x1FF) << 9), 0x00014050);
+    gDPWord(t->dl->next(), 0xF2000000, ((((t->w - 1) << 2) & 0xFFF) << 12) | (((t->h - 1) << 2) & 0xFFF));
     gDPWord(t->dl->next(), 0xBB000001, 0x80008000);
-    if (1) {}
-    gDPWord(t->dl->nextN(), 0xB8000000, 0);
+    gDPWord(t->dl->next(), 0xB8000000, 0);
 }
 
 /* snoweffects_uso_func_00000C90 (NON_MATCHING draft): the particle sprite draw. Calls the texture's
