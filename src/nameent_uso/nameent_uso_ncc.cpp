@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donors for nameent.uso (agent-c run 643), REPLACE_FUNC_BODY-spliced over
  * the empty placeholders in nameent_uso.c on both build paths (Makefile NE_NCC_DONOR).
  * nameent.uso is C++: these are the functions whose shape only edg's lowering reproduces (a
@@ -73,14 +74,14 @@ extern "C" void NameEntry_drawBoard(NeProc *self) {
     col.set(1.0f, 1.0f, 1.0f, 1.0f);
     img = *(NeImage *)(ne_data + 0x158);
     img.tex = D_00000000.player->rider->getBoardTexture();
-    gl_func_00000000(&img); /* gui_beginFrame_000016A4 */
+    CALL(gui_beginFrame_000016A4)(&img); /* gui_beginFrame_000016A4 */
     x = self->cursorX - img.width / 2;
-    gl_func_00000000(&img, 128, &col, 255); /* gui_setColorEnvPrim_00002334 */
-    gl_func_00000000(&img, x, 40); /* gui_drawImage_00003B80 */
+    CALL(gui_setColorEnvPrim_00002334)(&img, 128, &col, 255); /* gui_setColorEnvPrim_00002334 */
+    CALL(gui_drawImage_00003B80)(&img, x, 40); /* gui_drawImage_00003B80 */
     black.set(0.0f, 0.0f, 0.0f, 0.0f);
-    gl_func_00000000(&ne_gGui, 255, &black); /* gui_setFillColor_00001CA8 */
-    gl_func_00000000(&ne_gGui, 0, 0, 319, 7, 0x10001); /* gui_fillRect */
-    gl_func_00000000(&ne_gGui, 0, 232, 319, 239, 0x10001); /* gui_fillRect */
+    CALL(gui_setFillColor_00001CA8)(&ne_gGui, 255, &black); /* gui_setFillColor_00001CA8 */
+    CALL(gui_fillRect)(&ne_gGui, 0, 0, 319, 7, 0x10001); /* gui_fillRect */
+    CALL(gui_fillRect)(&ne_gGui, 0, 232, 319, 239, 0x10001); /* gui_fillRect */
 }
 
 /* the Node vtable (bootup Data+0xC338), the entry's own vtable (nameent Data+0x18) and the gui
@@ -125,10 +126,10 @@ struct NeEntry {
 extern "C" NeEntry *NameEnterMessage_ctor(NeEntry *self, void *owner, int mode) {
     int i;
     char *o;
-    if (self != 0 || (self = (NeEntry *)gl_func_00000000(0x11C)) != 0) { /* mem_new */
+    if (self != 0 || (self = (NeEntry *)CALL(mem_new)(0x11C)) != 0) { /* mem_new */
         o = (char *)self;
-        if (o != 0 || (o = (char *)gl_func_00000000(0x2C)) != 0) {
-            gl_func_00000000(o, ne_data + 0x170); /* Node_ctor */
+        if (o != 0 || (o = (char *)CALL(mem_new)(0x2C)) != 0) {
+            CALL(Node_ctor)(o, ne_data + 0x170); /* Node_ctor */
             *(void **)(o + 0x28) = &ne_vt_node;
         }
         self->vptr = &ne_vt_entry;
@@ -136,7 +137,7 @@ extern "C" NeEntry *NameEnterMessage_ctor(NeEntry *self, void *owner, int mode) 
         self->mode = mode;
         self->owner = owner;
         if (mode != 0) {
-            self->newCount = gl_func_00000000(self->mode); /* Backup_sessionCountNew */
+            self->newCount = CALL(Backup_sessionCountNew)(self->mode); /* Backup_sessionCountNew */
         } else {
             self->newCount = 0;
         }
@@ -174,9 +175,9 @@ extern "C" NeEntry *NameEnterMessage_ctor(NeEntry *self, void *owner, int mode) 
         self->c90.clear();
         self->cA0.set255(128, 128, 128, 255);
         self->fD0 = 0.0f;
-        gl_func_00000000(self->spr0, (ne_gRowBase + 4) | 0x250000); /* gui_spriteInit */
-        gl_func_00000000(self->spr1, 0x250003);
-        gl_func_00000000(self->spr2, 0x250000);
+        CALL(gui_spriteInit)(self->spr0, (ne_gRowBase + 4) | 0x250000); /* gui_spriteInit */
+        CALL(gui_spriteInit)(self->spr1, 0x250003);
+        CALL(gui_spriteInit)(self->spr2, 0x250000);
     }
     return self;
 }
@@ -225,32 +226,32 @@ extern "C" void NameEnterMessage_display(NeEntry *self) {
     if (self->fD0 < 1.0f) {
         self->fD0 = self->fD0 + 0.05f;
     }
-    gl_func_00000000(self->spr1);
-    gl_func_00000000(self->spr1, (int)(255.0f * self->fD0), &col, 255);
-    gl_func_00000000(self->spr1, self->w38, self->w3C, 3);
-    gl_func_00000000(self->spr0);
-    gl_func_00000000(self->spr0, (int)(255.0f * self->fD0), &self->cA0, 255);
-    gl_func_00000000(self->spr0, self->w40, self->w44, 3);
+    CALL(gui_spriteRefresh)(self->spr1);
+    CALL(gui_setColorEnvPrim_000017DC)(self->spr1, (int)(255.0f * self->fD0), &col, 255);
+    CALL(gui_drawSprite)(self->spr1, self->w38, self->w3C, 3);
+    CALL(gui_spriteRefresh)(self->spr0);
+    CALL(gui_setColorEnvPrim_000017DC)(self->spr0, (int)(255.0f * self->fD0), &self->cA0, 255);
+    CALL(gui_drawSprite)(self->spr0, self->w40, self->w44, 3);
     spr = self->spr2;
-    gl_func_00000000(spr);
-    gl_func_00000000(spr, (int)(255.0f * self->fD0), &col, 255);
+    CALL(gui_spriteRefresh)(spr);
+    CALL(gui_setColorEnvPrim_000017DC)(spr, (int)(255.0f * self->fD0), &col, 255);
     for (i = 0; i < self->len; i++) {
         if (self->name2[i] < 41) {
-            gl_func_00000000(self->spr2, self->w48 + i * self->w58 - 12, self->w4C - 12, self->name2[i] * 22 + 2, 20);
+            CALL(gui_drawSpriteIA8Clip_00002BB0)(self->spr2, self->w48 + i * self->w58 - 12, self->w4C - 12, self->name2[i] * 22 + 2, 20);
         }
     }
     for (i = 0; i < 3; i++) {
         if (i == self->len) {
-            gl_func_00000000(self->spr2, (int)(255.0f * self->fD0), &self->c80, 255);
+            CALL(gui_setColorEnvPrim_000017DC)(self->spr2, (int)(255.0f * self->fD0), &self->c80, 255);
         } else {
-            gl_func_00000000(self->spr2, (int)(255.0f * self->fD0), &col, 255);
+            CALL(gui_setColorEnvPrim_000017DC)(self->spr2, (int)(255.0f * self->fD0), &col, 255);
         }
-        gl_func_00000000(self->spr2, self->w48 + i * self->w58 - 12, self->w4C - 12, 926, 20);
+        CALL(gui_drawSpriteIA8Clip_00002BB0)(self->spr2, self->w48 + i * self->w58 - 12, self->w4C - 12, 926, 20);
     }
-    gl_func_00000000(self->spr2);
+    CALL(gui_spriteRefresh)(self->spr2);
     wheel = self->pos;
     x0 = (int)((float)self->w38 - (wheel - (float)(int)wheel) * (float)self->w54);
-    gl_func_00000000(&ne_gGui, 40, 0, 284, 239); /* gui_setScissor */
+    CALL(gui_setScissor)(&ne_gGui, 40, 0, 284, 239); /* gui_setScissor */
     for (j = -self->w50; j <= self->w50; j++) {
         k = (int)self->pos + j;
         if (k < 0) {
@@ -283,10 +284,10 @@ extern "C" void NameEnterMessage_display(NeEntry *self) {
             sx = 1.0f;
             sy = 1.0f;
         }
-        gl_func_00000000(self->spr2, alpha, &col, 255);
+        CALL(gui_setColorEnvPrim_000017DC)(self->spr2, alpha, &col, 255);
         ne_gui_drawSpriteScroll(self->spr2, x, self->w3C, k * 22 + 2, 20, sx, sy);
     }
-    gl_func_00000000(&ne_gGui, 0, 0, 319, 239);
+    CALL(gui_setScissor)(&ne_gGui, 0, 0, 319, 239);
 }
 
 /* NameEnterMessage_update: the name-entry input: the letter wheel (42 entries: letters, 39 =
@@ -315,20 +316,20 @@ extern "C" void NameEnterMessage_update(NeEntry *self) {
         }
         stick = ne_input_getStickX(&D_00000000);
         if (self->repeat < self->repeatDelay) {
-            if (gl_func_00000000(&D_00000000, 0x10000)) { /* input_checkPressed_00011E00 */
+            if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x10000)) { /* input_checkPressed_00011E00 */
                 self->target -= 1.0f;
                 if (self->len == 3 && self->target < 40.0f) {
                     self->target = 40.0f;
                 } else {
-                    gl_func_00000000_void(157); /* snd_postEvent */
+                    XCALL(gl_func_00000000_void, snd_postEvent)(157); /* snd_postEvent */
                 }
             }
-            if (gl_func_00000000(&D_00000000, 0x4000)) {
+            if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x4000)) {
                 self->target += 1.0f;
                 if (self->len == 3 && self->target >= 42.0f) {
                     self->target = 41.0f;
                 } else {
-                    gl_func_00000000_void(157);
+                    XCALL(gl_func_00000000_void, snd_postEvent)(157);
                 }
             }
         }
@@ -346,7 +347,7 @@ extern "C" void NameEnterMessage_update(NeEntry *self) {
                         if (self->len == 3 && self->target < 40.0f) {
                             self->target = 40.0f;
                         } else {
-                            gl_func_00000000_void(157);
+                            XCALL(gl_func_00000000_void, snd_postEvent)(157);
                         }
                     }
                     if (stick > 0.0f) {
@@ -354,7 +355,7 @@ extern "C" void NameEnterMessage_update(NeEntry *self) {
                         if (self->len == 3 && self->target >= 42.0f) {
                             self->target = 41.0f;
                         } else {
-                            gl_func_00000000_void(157);
+                            XCALL(gl_func_00000000_void, snd_postEvent)(157);
                         }
                     }
                 }
@@ -392,23 +393,23 @@ extern "C" void NameEnterMessage_update(NeEntry *self) {
         self->pos -= 42.0f;
     }
     sel = (int)(self->pos + 0.5f);
-    if (self->done == 0 && self->len > 0 && gl_func_00000000(&D_00000000, 0x200)) {
-        gl_func_00000000_void(168);
+    if (self->done == 0 && self->len > 0 && CALL(input_checkPressed_00011E00)(&D_00000000, 0x200)) {
+        XCALL(gl_func_00000000_void, snd_postEvent)(168);
         self->done = 0;
         self->len--;
         self->name2[self->len] = 42;
     }
-    if (self->done == 0 && gl_func_00000000(&D_00000000, 0x40100)) {
+    if (self->done == 0 && CALL(input_checkPressed_00011E00)(&D_00000000, 0x40100)) {
         if (sel == 41) {
-            if (gl_func_00000000(D_00000000.fader)) { /* Fader_isDone_00013980 */
-                gl_func_00000000_void(160);
+            if (CALL(Fader_isDone_00013980)(D_00000000.fader)) { /* Fader_isDone_00013980 */
+                XCALL(gl_func_00000000_void, snd_postEvent)(160);
                 ((NeOwner *)self->owner)->entered = 1;
             }
             return;
         }
         if (sel == 40) {
             if (self->len > 0) {
-                gl_func_00000000_void(168);
+                XCALL(gl_func_00000000_void, snd_postEvent)(168);
                 self->len--;
                 self->name2[self->len] = 42;
             }
@@ -416,13 +417,13 @@ extern "C" void NameEnterMessage_update(NeEntry *self) {
         }
         if (sel == 39) {
             if (self->len < 3) {
-                gl_func_00000000_void(167);
+                XCALL(gl_func_00000000_void, snd_postEvent)(167);
                 self->name2[self->len] = 42;
                 self->len++;
             }
         } else {
             if (self->len < 3) {
-                gl_func_00000000_void(167);
+                XCALL(gl_func_00000000_void, snd_postEvent)(167);
                 self->name2[self->len] = self->pos + 0.5f;
                 if (self->name2[self->len] >= 42) {
                     self->name2[self->len] -= 42;

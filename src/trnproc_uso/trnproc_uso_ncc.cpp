@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donors for trnproc.uso (agent-c run 643), REPLACE_FUNC_BODY-spliced over
  * the empty placeholders in trnproc_uso.c on both build paths (Makefile TRN_NCC_DONOR).
  * trnproc.uso is C++: these are the functions whose shape only edg's lowering reproduces. */
@@ -104,7 +105,7 @@ extern "C" void TrnDataManager_buildLessonInputs(TrnDataManager *self, int idx) 
 
     n = 0;
     scratch[0] = 0;
-    mask = gl_func_00000000(trn_gTrickTable, idx); /* TrickTable_getInputMask_0000C378 */
+    mask = CALL(TrickTable_getInputMask_0000C378)(trn_gTrickTable, idx); /* TrickTable_getInputMask_0000C378 */
     if (mask & 0x100000) {
         self->inputs[n++] = 35;
         if (mask & 0x5000) self->inputs[n++] = 8;
@@ -123,7 +124,7 @@ extern "C" void TrnDataManager_buildLessonInputs(TrnDataManager *self, int idx) 
         self->inputs[n++] = 255;
     }
     if (mask & 4) self->inputs[n++] = 35;
-    dir = gl_func_00000000(self, mask); /* TrnDataManager_stickDirSprite */
+    dir = CALL(TrnDataManager_stickDirSprite)(self, mask); /* TrnDataManager_stickDirSprite */
     if (dir != 0) self->inputs[n++] = dir - 1;
     if (mask & 0x1000) self->inputs[n++] = 6;
     if (mask & 0x2000) self->inputs[n++] = 2;
@@ -141,8 +142,8 @@ extern "C" void TrnDataManager_buildLessonInputs(TrnDataManager *self, int idx) 
  * course a trick flagged 4 (TrickTable_getFlags_0000C3B0) is excluded. edg evaluates the
  * `&` left operand (the spilled mask) first, which cfe never does. */
 extern "C" int TrnDataManager_isLessonAvailable(TrnDataManager *self, int idx) {
-    int mask = gl_func_00000000(trn_gTrickTable, idx);
-    int flags = gl_func_00000000(trn_gTrickTable, idx);
+    int mask = CALL(TrickTable_getField34_0000C394)(trn_gTrickTable, idx);
+    int flags = CALL(TrickTable_getFlags_0000C3B0)(trn_gTrickTable, idx);
     if (mask & self->info->player->unlocked) {
         if (self->course == 1) {
             if (flags & 4) {
@@ -167,21 +168,21 @@ extern "C" void TrnDataManager_update(TrnDataManager *self) {
     if (self->info->player->flags9A8 & 1) {
         self->course = 0;
     }
-    gl_func_00000000(self); /* RaceTracker_passCheckpoints */
-    gl_func_00000000(self); /* RaceTracker_update */
+    CALL(RaceTracker_passCheckpoints)(self); /* RaceTracker_passCheckpoints */
+    CALL(RaceTracker_update)(self); /* RaceTracker_update */
     if (self->info->over != 0) {
-        gl_func_00000000(self->race); /* TrnRace_forceEnd */
+        CALL(TrnRace_forceEnd)(self->race); /* TrnRace_forceEnd */
         return;
     }
     if (self->race->running == 1) {
         if (self->results == 0) {
-            if (self->course >= 0 && gl_func_00000000(&D_00000000, 0x20)) { /* input_checkPressed_00011E00 */
+            if (self->course >= 0 && CALL(input_checkPressed_00011E00)(&D_00000000, 0x20)) { /* input_checkPressed_00011E00 */
                 if (self->armed != 0) {
                     self->armed = 0;
-                    gl_func_00000000(0x802); /* snd_postEvent */
+                    CALL(snd_postEvent)(0x802); /* snd_postEvent */
                 } else {
-                    gl_func_00000000(self->race); /* Process_pause_0000F9E8 */
-                    gl_func_00000000_void(self->race->proc48); /* Process_stop */
+                    CALL(Process_pause_0000F9E8)(self->race); /* Process_pause_0000F9E8 */
+                    XCALL(gl_func_00000000_void, Process_stop)(self->race->proc48); /* Process_stop */
                     self->results = 1;
                     self->top = self->lesson;
                     if (self->lesson > self->count - 12) {
@@ -191,36 +192,36 @@ extern "C" void TrnDataManager_update(TrnDataManager *self) {
                 }
             }
         } else {
-            gl_func_00000000_void(self); /* TrnDataManager_scrollResults */
+            XCALL(gl_func_00000000_void, TrnDataManager_scrollResults)(self); /* TrnDataManager_scrollResults */
             switch (self->results) {
             case 1:
-                if (gl_func_00000000(&D_00000000, 0x100)) { /* input_checkPressed_00011E00 */
+                if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x100)) { /* input_checkPressed_00011E00 */
                     self->button = 0x100;
                     self->results = 2;
                 }
-                if (gl_func_00000000(&D_00000000, 0x40000)) {
+                if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x40000)) {
                     self->button = 0x40000;
                     self->results = 2;
                 }
                 break;
             case 2:
                 /* input_checkReleased_00011FA8, TrnDataManager_isLessonAvailable */
-                if (gl_func_00000000(&D_00000000, self->button) && gl_func_00000000(self, self->cursor)) {
+                if (CALL(input_checkReleased_00011FA8)(&D_00000000, self->button) && CALL(TrnDataManager_isLessonAvailable)(self, self->cursor)) {
                     self->armed = 1;
                     self->lesson = self->cursor;
-                    gl_func_00000000(self, self->lesson); /* TrnDataManager_buildLessonInputs */
+                    CALL(TrnDataManager_buildLessonInputs)(self, self->lesson); /* TrnDataManager_buildLessonInputs */
                     picked = 1;
                     self->button = 0;
                 }
                 break;
             }
-            if (picked || gl_func_00000000(&D_00000000, 0x20)) {
-                gl_func_00000000(self->race); /* Process_resume_0000FAE8 */
+            if (picked || CALL(input_checkPressed_00011E00)(&D_00000000, 0x20)) {
+                CALL(Process_resume_0000FAE8)(self->race); /* Process_resume_0000FAE8 */
                 self->results = 0;
             }
         }
     }
-    gl_func_00000000(self); /* Node_update */
+    CALL(Node_update)(self); /* Node_update */
 }
 
 /* TrnDataManager_drawLesson: TrnDataManager lesson HUD: the lesson title ("%d: %s" with the
@@ -238,8 +239,8 @@ extern "C" void TrnDataManager_drawLesson(TrnDataManager *self) {
     int nl;
     RaceSprite *spr;
 
-    gl_func_00000000(self->gui); /* gui_setupRenderMode_0000055C */
-    if (gl_func_00000000(self, self->lesson)) { /* TrnDataManager_isTrickDone */
+    CALL(gui_setupRenderMode_0000055C)(self->gui); /* gui_setupRenderMode_0000055C */
+    if (CALL(TrnDataManager_isTrickDone)(self, self->lesson)) { /* TrnDataManager_isTrickDone */
         col[0] = 0.8f;
         col[1] = 0.2f;
         col[2] = 0.2f;
@@ -250,10 +251,10 @@ extern "C" void TrnDataManager_drawLesson(TrnDataManager *self) {
         col[2] = 1.0f;
         col[3] = 1.0f;
     }
-    gl_func_00000000(&trn_gGui, 255, col); /* gui_setColor_00001A5C */
+    CALL(gui_setColor_00001A5C)(&trn_gGui, 255, col); /* gui_setColor_00001A5C */
     /* gl_sprintf "%d: %s" with TrickTable_getEntry_0000C344, then gui_drawString */
-    gl_func_00000000(buf, trn_data + 0x328, self->lesson + 1, gl_func_00000000(trn_gTrickTable, self->lesson));
-    gl_func_00000000(self->gui, 32, self->hudY + 8, buf);
+    CALL(gl_sprintf)(buf, trn_data + 0x328, self->lesson + 1, CALL(TrickTable_getEntry_0000C344)(trn_gTrickTable, self->lesson));
+    CALL(gui_drawString)(self->gui, 32, self->hudY + 8, buf);
     self->frame++;
     x = self->hudX + self->hudDX;
     y = self->hudY + self->hudDY;
@@ -266,9 +267,9 @@ extern "C" void TrnDataManager_drawLesson(TrnDataManager *self) {
             } else {
                 spr = &trn_sprites_F0[self->inputs[i] - 32];
             }
-            gl_func_00000000_void(spr); /* gui_spriteRefresh */
-            gl_func_00000000_void(spr); /* gui_setCombine_00001794 */
-            gl_func_00000000(spr, x, y, 2); /* gui_drawSprite */
+            XCALL(gl_func_00000000_void, gui_spriteRefresh)(spr); /* gui_spriteRefresh */
+            XCALL(gl_func_00000000_void, gui_setCombine_00001794)(spr); /* gui_setCombine_00001794 */
+            CALL(gui_drawSprite)(spr, x, y, 2); /* gui_drawSprite */
             x += spr->width();
         } else {
             y += 28;
@@ -277,9 +278,9 @@ extern "C" void TrnDataManager_drawLesson(TrnDataManager *self) {
         }
         i++;
         if (self->inputs[i] != -1 && self->inputs[i] != 255 && nl == 0) {
-            gl_func_00000000_void(trn_bss + 0x168);
-            gl_func_00000000_void(trn_bss + 0x168);
-            gl_func_00000000_void(trn_bss + 0x168, x, y, 2);
+            XCALL(gl_func_00000000_void, gui_spriteRefresh)(trn_bss + 0x168);
+            XCALL(gl_func_00000000_void, gui_setCombine_00001794)(trn_bss + 0x168);
+            XCALL(gl_func_00000000_void, gui_drawSprite)(trn_bss + 0x168, x, y, 2);
             x += ((RaceSprite *)(trn_bss + 0x168))->width();
         }
     }
@@ -301,14 +302,14 @@ extern "C" void TrnDataManager_drawResults(TrnDataManager *self) {
     int cy;
 
     self->pulse -= 16;
-    gl_func_00000000(&trn_gGui, 255, &col); /* gui_setColor_00001A5C */
-    gl_func_00000000(trn_bss + 0x180); /* gui_spriteRefresh */
-    gl_func_00000000(trn_bss + 0x180, 160, 30, 3); /* gui_drawSprite */
-    gl_func_00000000(self->gui); /* gui_setupRenderMode_0000055C */
-    gl_func_00000000(self->gui); /* gui_setPrimColorClamped_000008C0 */
+    CALL(gui_setColor_00001A5C)(&trn_gGui, 255, &col); /* gui_setColor_00001A5C */
+    CALL(gui_spriteRefresh)(trn_bss + 0x180); /* gui_spriteRefresh */
+    CALL(gui_drawSprite)(trn_bss + 0x180, 160, 30, 3); /* gui_drawSprite */
+    CALL(gui_setupRenderMode_0000055C)(self->gui); /* gui_setupRenderMode_0000055C */
+    CALL(gui_setPrimColorClamped_000008C0)(self->gui); /* gui_setPrimColorClamped_000008C0 */
     for (row = 0, y = 40; row < 12; row++, y += 14) {
         idx = row + self->top;
-        if (gl_func_00000000(self, idx)) { /* TrnDataManager_isTrickDone */
+        if (CALL(TrnDataManager_isTrickDone)(self, idx)) { /* TrnDataManager_isTrickDone */
             col.r = 0.8f;
             col.g = 0.2f;
             col.b = 0.2f;
@@ -320,22 +321,22 @@ extern "C" void TrnDataManager_drawResults(TrnDataManager *self) {
             col.a = 1.0f;
         }
         /* TrnDataManager_isLessonAvailable, gui_setPrimColor_000006B8 */
-        if (idx == self->lesson && gl_func_00000000(self, idx)) {
-            gl_func_00000000(self->gui, self->pulse, &col, 255);
-        } else if (gl_func_00000000(self, idx)) {
-            gl_func_00000000(self->gui, 255, &col, 255);
+        if (idx == self->lesson && CALL(TrnDataManager_isLessonAvailable)(self, idx)) {
+            CALL(gui_setPrimColor_000006B8)(self->gui, self->pulse, &col, 255);
+        } else if (CALL(TrnDataManager_isLessonAvailable)(self, idx)) {
+            CALL(gui_setPrimColor_000006B8)(self->gui, 255, &col, 255);
         } else {
-            gl_func_00000000(self->gui, 64, &col, 255);
+            CALL(gui_setPrimColor_000006B8)(self->gui, 64, &col, 255);
         }
-        gl_func_00000000(buf, trn_data + 0x330, idx + 1); /* gl_sprintf "%d" */
+        CALL(gl_sprintf)(buf, trn_data + 0x330, idx + 1); /* gl_sprintf "%d" */
         /* gui_drawString_00000D04 at gui_rightAlignStringX_000015F4 */
-        gl_func_00000000(self->gui, gl_func_00000000(self->gui, 86, buf), y, buf);
+        CALL(gui_drawString_00000D04)(self->gui, CALL(gui_rightAlignStringX_000015F4)(self->gui, 86, buf), y, buf);
         /* gl_sprintf "%s" with TrickTable_getEntry_0000C344, gui_drawString */
-        gl_func_00000000(buf, trn_data + 0x334, gl_func_00000000(trn_gTrickTable, idx));
-        gl_func_00000000(self->gui, 90, y, buf);
+        CALL(gl_sprintf)(buf, trn_data + 0x334, CALL(TrickTable_getEntry_0000C344)(trn_gTrickTable, idx));
+        CALL(gui_drawString)(self->gui, 90, y, buf);
     }
     cy = (self->cursor - self->top) * 14 + 49;
-    gl_func_00000000(trn_bss + 0x198); /* gui_spriteRefresh */
-    gl_func_00000000(trn_bss + 0x198, 255, &hl, 255); /* gui_setColorEnvPrim_000017DC */
-    gl_func_00000000(trn_bss + 0x198, 42, cy, 3); /* gui_drawSprite */
+    CALL(gui_spriteRefresh)(trn_bss + 0x198); /* gui_spriteRefresh */
+    CALL(gui_setColorEnvPrim_000017DC)(trn_bss + 0x198, 255, &hl, 255); /* gui_setColorEnvPrim_000017DC */
+    CALL(gui_drawSprite)(trn_bss + 0x198, 42, cy, 3); /* gui_drawSprite */
 }
