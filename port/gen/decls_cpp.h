@@ -6,7 +6,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/* 336 callees: 333 from a definition, 0 from a header declaration, 3 by hand, 0 fallback int f(...) */
+/* 391 callees: 388 from a definition, 0 from a header declaration, 3 by hand, 0 fallback int f(...) */
 int AnimDataMgr_lookup(void *, int, ...);
 int /*void*/ AnimPlayer_advance(void *, ...);
 int /*void*/ AnimPlayer_start(void *, int, int, int, int, int, ...);
@@ -20,6 +20,7 @@ int Backup_ghostGetBoard(void *, ...);
 int Backup_ghostGetBoardFlag(void *, ...);
 int Backup_ghostGetRider(void *, ...);
 int /*void*/ Backup_sessionClearNew(void *, ...);
+int Backup_sessionCountNew(void *, ...);
 int /*void*/ BaseMat_init_000517E4(void *, ...);
 unsigned int BasePolyShape_addPoints(int, void *, void *, void *, unsigned int, ...);
 int BasePolyShape_addTri(void *, int, int, int, int, int, ...);
@@ -32,9 +33,12 @@ int /*void*/ BasePolyShape_reset(void *, ...);
 #ifndef PORT_NODECL_BasePolyShape_subdivide
 int BasePolyShape_subdivide(...);
 #endif
+int /*void*/ BoardTrail_enableNormal_00006B08(void *, ...);
+int /*void*/ BoardTrail_enablePowder_00006420(void *, ...);
+int /*void*/ BoardTrail_enableSpec_000070C0(void *, ...);
 int /*void*/ CollShape_initTriPlane(void *, void *, void *, int, ...);
 #ifndef PORT_NODECL_CollShape_nearestHit
-int CollShape_nearestHit(void *, void *, double, void *, ...);
+int CollShape_nearestHit(void *, void *, float, void *, ...);
 #endif
 int CollShape_query(void *, ...);
 #ifndef PORT_NODECL_CollShape_raycast
@@ -63,11 +67,22 @@ int /*void*/ FogParms_setDefault_00043EAC(int, ...);
 int /*void*/ FogParms_set_00043EF0(void *, void *, int, int, ...);
 int /*void*/ GfxLib_reset(void *, ...);
 int /*void*/ GfxObj_ctor_0004DF90(void *, ...);
+int /*void*/ Heli_placeAtMarker(void *, ...);
 int /*void*/ ItemMgr_addType(void *, void *, int, ...);
+void * ItemMgr_findType_0003EA98(...);
+void * ItemMgr_queryType(...);
 int ItemMgr_registerTemplate(int, void *, ...);
 void * ItemType_ctor(...);
 int /*void*/ ItemType_setNext(void *, int, ...);
 void * LanguageOptions_ctor(void *, void *, ...);
+#ifndef PORT_NODECL_LocalLight_buildLitVerts_00009884
+int /*void*/ LocalLight_buildLitVerts_00009884(void *, ...);
+#endif
+#ifndef PORT_NODECL_LocalLight_checkDirty_00009768
+int /*void*/ LocalLight_checkDirty_00009768(void *, ...);
+#endif
+int /*void*/ LocalLight_flicker_00009C48(void *, void *, ...);
+int /*void*/ LocalLight_saveColours_00009BE8(void *, void *, ...);
 int /*void*/ MNode_display(void *, ...);
 int /*void*/ MNode_initMatrices(void *, ...);
 #ifndef PORT_NODECL_MNode_update
@@ -76,11 +91,18 @@ int MNode_update(void *, ...);
 int /*void*/ MainLogo_reset(void *, ...);
 int /*void*/ MainOptions_buildMenu(void *, ...);
 void * MainOptions_ctor(void *, void *, ...);
+#ifndef PORT_NODECL_MapLighter_addDiffuse_00009FE8
+int /*void*/ MapLighter_addDiffuse_00009FE8(void *, ...);
+#endif
 #ifndef PORT_NODECL_Mat_clone_0004FBA4
 void * Mat_clone_0004FBA4(void *, void *, ...);
 #endif
 int /*void*/ Mat_reset_00043584(void *, ...);
 int /*void*/ MemTracker_walkAll(void *, int, ...);
+#ifndef PORT_NODECL_MorphPoly_applyUpdateList_0004A9F0
+int /*void*/ MorphPoly_applyUpdateList_0004A9F0(void *, void *, void *, ...);
+#endif
+void * MorphPoly_genUpdateList(void *, int, void *, ...);
 int /*void*/ Node_Load(void *, int, void *, ...);
 #ifndef PORT_NODECL_Node_broadcastMsg
 int /*void*/ Node_broadcastMsg(void *, void *, ...);
@@ -118,9 +140,15 @@ int /*void*/ PolyShape_stub_0004C20C(void *, int, ...);
 int ProcNodeList(void *, int, int, void *, ...);
 int /*void*/ Process_fadeOut_0000F954(void *, int, int, ...);
 int /*void*/ Process_pause_0000F9E8(void *, ...);
+int /*void*/ Process_resume_0000FAE8(void *, ...);
 int /*void*/ Process_stop(void *, ...);
 int /*void*/ QNode_display(void *, ...);
+#ifndef PORT_NODECL_QNode_update
+int /*void*/ QNode_update(void *, ...);
+#endif
 int /*void*/ RaceProcess_leave(void *, ...);
+int /*void*/ RaceTracker_passCheckpoints(void *, ...);
+int /*void*/ RaceTracker_update(void *, ...);
 #ifndef PORT_NODECL_RcpMgr_ctor
 void * RcpMgr_ctor(void *, ...);
 #endif
@@ -151,10 +179,39 @@ int /*void*/ SnowAI_reset(void *, ...);
 int /*void*/ SnowBoarder_mirrorFlip_0000E124(void *, ...);
 int /*void*/ SnowBoarder_setReflectionDdms(void *, ...);
 int /*void*/ SnowBoarder_setRiderDdms(void *, ...);
+int /*void*/ SnowFall_buildFrustum_0000374C(void *, ...);
+#ifndef PORT_NODECL_SnowFall_fill_000039C4
+int /*void*/ SnowFall_fill_000039C4(void *, ...);
+#endif
+void * SnowPool_alloc_000006D0(void *, ...);
+void * SnowPool_oldest_00000680(void *, ...);
+int /*void*/ SnowPool_remove_00000718(void *, void *, ...);
+int SnowRing_countSlots_000053E8(void *, ...);
 int SnowRing_emitTick_000046BC(void *, ...);
+int /*void*/ SnowRing_init_00003EE4(void *, int, int, int, int, float, float, ...);
+float SnowRing_probe_000052D4(void *, int, void *, int, ...);
 int /*void*/ SnowRing_setSlotState_00004714(void *, int, int, int, ...);
+#ifndef PORT_NODECL_SnowRing_setupDL_00004188
+int /*void*/ SnowRing_setupDL_00004188(...);
+#endif
+#ifndef PORT_NODECL_SnowRing_updateBasis_00004374
 int /*void*/ SnowRing_updateBasis_00004374(...);
+#endif
 void * SoundOptions_ctor(void *, void *, ...);
+void * TrickTable_getEntry_0000C344(int, int, ...);
+int TrickTable_getField34_0000C394(int, int, ...);
+int TrickTable_getFlags_0000C3B0(int, int, ...);
+int TrickTable_getInputMask_0000C378(int, int, ...);
+#ifndef PORT_NODECL_TrnDataManager_buildLessonInputs
+int /*void*/ TrnDataManager_buildLessonInputs(void *, int, ...);
+#endif
+#ifndef PORT_NODECL_TrnDataManager_isLessonAvailable
+int TrnDataManager_isLessonAvailable(void *, int, ...);
+#endif
+int TrnDataManager_isTrickDone(void *, int, ...);
+int /*void*/ TrnDataManager_scrollResults(void *, ...);
+int TrnDataManager_stickDirSprite(void *, int, ...);
+int /*void*/ TrnRace_forceEnd(void *, ...);
 int /*void*/ Window_display(void *, ...);
 int Window_projectPoint(void *, void *, int, void *, ...);
 int /*void*/ absrot_matrix4(void *, int, float, int, ...);
@@ -189,7 +246,7 @@ int /*void*/ gfx_copyBytes3_00046DA0(int, void *, void *, ...);
 int /*void*/ gfx_dlMarkBegin_00044460(void *, void *, ...);
 int /*void*/ gfx_dlMarkEnd_00044474(void *, ...);
 #ifndef PORT_NODECL_gfx_drawFbChar_00046790
-int /*void*/ gfx_drawFbChar_00046790(void *, int, int, int, ...);
+int /*void*/ gfx_drawFbChar_00046790(void *, unsigned char, int, int, ...);
 #endif
 #ifndef PORT_NODECL_gfx_drawText
 int gfx_drawText(void *, void *, int, ...);
@@ -200,6 +257,7 @@ int /*void*/ gfx_emitCombine1(void *, void *, ...);
 int /*void*/ gfx_emitCombineMode(int, void *, ...);
 int /*void*/ gfx_emitCycleType(void *, void *, ...);
 int /*void*/ gfx_emitGeometryMode(void *, void *, ...);
+int /*void*/ gfx_emitLights_000454C4(void *, void *, void *, float, ...);
 int /*void*/ gfx_emitPerspNorm_00057574(void *, ...);
 int /*void*/ gfx_emitRenderMode(void *, int, ...);
 int /*void*/ gfx_emitStateAndPrimColour_00042684(void *, void *, short, ...);
@@ -222,6 +280,7 @@ int /*void*/ gfx_makeLookAt_00042F4C(void *, void *, void *, ...);
 int /*void*/ gfx_makeVtx_00048104(int, void *, void *, void *, short, void *, ...);
 void * gfx_newDLChild_0005AB84(void *, void *, void *, ...);
 void * gfx_newDLContext(void *, int, int, int, int, int, int, ...);
+int /*void*/ gfx_resetDLContext(void *, ...);
 int /*void*/ gfx_setCpuDraw(void *, int, ...);
 int /*void*/ gfx_setDepthImage(void *, int, ...);
 int /*void*/ gfx_setPrimColour(void *, void *, ...);
@@ -256,11 +315,21 @@ unsigned int gl_osVirtualToPhysical(unsigned int, ...);
 int /*void*/ gl_osYieldThread(...);
 int gl_sprintf(void *, const void *, ...);
 int /*void*/ guMtxF2L(void *, void *, ...);
+int /*void*/ guMtxIdentF(void *, ...);
+#ifndef PORT_NODECL_gui_beginFrame_000016A4
+int /*void*/ gui_beginFrame_000016A4(int, ...);
+#endif
 int /*void*/ gui_clearRows_00010A9C(void *, ...);
+#ifndef PORT_NODECL_gui_drawImage_00003B80
+int /*void*/ gui_drawImage_00003B80(void *, int, int, ...);
+#endif
 #ifndef PORT_NODECL_gui_drawSprite
 int /*void*/ gui_drawSprite(void *, int, int, int, ...);
 #endif
 int /*void*/ gui_drawSpriteIA8Clip_00002BB0(void *, int, int, int, int, ...);
+int /*void*/ gui_drawString(void *, int, int, void *, ...);
+int /*void*/ gui_drawString_00000D04(void *, void *, int, void *, ...);
+int /*void*/ gui_fillRect(int, int, int, int, int, ...);
 int gui_floorPow2(int, ...);
 int /*void*/ gui_fontAdjustAdvance(void *, int, int = 0, ...);
 #ifndef PORT_NODECL_gui_fontCreate
@@ -275,14 +344,32 @@ int /*void*/ gui_loadTileRGBA16(void *, void *, int, int, int, int, int, int, in
 #ifndef PORT_NODECL_gui_loadTileRGBA32
 int /*void*/ gui_loadTileRGBA32(void *, void *, int, int, int, int, int, int, int, ...);
 #endif
+int gui_rightAlignStringX_000015F4(int, int, int, ...);
 #ifndef PORT_NODECL_gui_setColorEnvPrim_000017DC
 int /*void*/ gui_setColorEnvPrim_000017DC(void *, int, void *, int, ...);
+#endif
+#ifndef PORT_NODECL_gui_setColorEnvPrim_00002334
+int /*void*/ gui_setColorEnvPrim_00002334(void *, int, void *, int, ...);
 #endif
 #ifndef PORT_NODECL_gui_setColor_00001A5C
 int /*void*/ gui_setColor_00001A5C(void *, int, void *, ...);
 #endif
+int /*void*/ gui_setCombine_00001794(int, ...);
 #ifndef PORT_NODECL_gui_setEnvPrimColor_00001EF4
 int /*void*/ gui_setEnvPrimColor_00001EF4(void *, int, void *, void *, ...);
+#endif
+#ifndef PORT_NODECL_gui_setFillColor_00001CA8
+int /*void*/ gui_setFillColor_00001CA8(void *, int, void *, ...);
+#endif
+#ifndef PORT_NODECL_gui_setPrimColorClamped_000008C0
+int /*void*/ gui_setPrimColorClamped_000008C0(void *, ...);
+#endif
+#ifndef PORT_NODECL_gui_setPrimColor_000006B8
+int /*void*/ gui_setPrimColor_000006B8(void *, int, void *, int, ...);
+#endif
+int /*void*/ gui_setScissor(int, int, int, int, int, ...);
+#ifndef PORT_NODECL_gui_setupRenderMode_0000055C
+int /*void*/ gui_setupRenderMode_0000055C(void *, ...);
 #endif
 int /*void*/ gui_spriteInit(void *, int, ...);
 int /*void*/ gui_spriteRefresh(void *, ...);
@@ -326,6 +413,7 @@ int /*void*/ light_setShadowMatrix_00054D04(void *, void *, void *, ...);
 int /*void*/ list_append(void *, int, ...);
 int /*void*/ list_removeKey_00066620(void *, int, ...);
 float math_acosf(float, ...);
+float math_atan2s_00068044(float, float, ...);
 int /*void*/ math_mtx4Copy(void *, void *, ...);
 int /*void*/ math_mtx4Identity(void *, ...);
 int /*void*/ math_mtx4Inverse(int, void *, ...);
@@ -343,6 +431,7 @@ int /*void*/ math_vec3Cross(void *, void *, void *, ...);
 int /*void*/ math_vec3Length_0005BBCC(...);
 int math_vec3Normalize(void *, ...);
 int /*void*/ math_xformCombine(void *, void *, void *, ...);
+int /*void*/ mem_delete(int, ...);
 #ifndef PORT_NODECL_mem_new
 int mem_new(int, ...);
 #endif
