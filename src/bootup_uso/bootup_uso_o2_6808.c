@@ -234,10 +234,10 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     FCALL(memtrack_end)();
     FCALL(memtrack_begin)(&sStr_MapLighter_7F44, 0);
     {
-        o = (char *)FCALL(MapLighter_ctor_00009E88)(0, ((char *)p), obj->light0, obj->light1); /* UNNAMED: unknown-role jal T+0x6E74 -> import mod60 sym179; module id 60 is past the 59-entry USO table (ids 0-58) uso-imports reads, so the exporter and its symbol are unknown (under memtrack "MapLighter": creates the map lighter from light0 / light1) */
+        o = (char *)FCALL(MapLighter_ctor_00009E88)(0, ((char *)p), obj->light0, obj->light1); /* jal T+0x6E74 -> import mod60 sym179 = snoweffects.uso MapLighter_ctor_00009E88 (TextReloc import, proven by name-placeholder-calls) */
         t = o;
         ATTACH6808(FCALL(list_append), (char *)obj->bgRoot, t);
-        FCALL(MapLighter_syncLight_00009F44)(o); /* UNNAMED: unknown-role jal T+0x6EA8 -> import mod60 sym180 on the new map lighter; module id 60 is past the 59-entry USO table (ids 0-58) uso-imports reads, so the exporter and its symbol are unknown */
+        FCALL(MapLighter_syncLight_00009F44)(o); /* jal T+0x6EA8 -> import mod60 sym180 on the new map lighter = snoweffects.uso MapLighter_syncLight_00009F44 (TextReloc import, proven by name-placeholder-calls) */
     }
     FCALL(memtrack_end)();
     D_bu_1EBDC[0] = 1;
