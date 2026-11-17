@@ -143,7 +143,11 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * t-register rotations, and the temp area / spill 4 bytes low (r 172, spill 112; target 176 / 116).
  * agent-c run 782 (98.94 -> 98.95 %): `lp = &self->lastCam` before the first SNOW_CAM2 load gives the lp item a
  * lower uopt index than the SNOW_CAM2 item, so lp takes the first spill temp (spill 116, as the target). A dead
- * `i = 0` before it keeps i's pick (t3) ahead of lp's (t4); tex now goes through d. r is still 172 (target 176).
+ * `i = 0` before it keeps i's pick (t3) ahead of lp's (t4); tex now goes through d.
+ * agent-c run 787: r at 176 (target). The SnowV3d ctor calls a single-return set3() (comma body returning *this):
+ * set3's `this` is then a fresh word of op-'s expansion that is released when it ends, so op*'s `a` reuses it
+ * and r lands directly under op*'s return copy. That frees one word at the bottom (M 396), and the BA packet
+ * via gDPWord adds it back (its `_g` block local), so the frame is 520 and every sp offset is the target's.
  * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
 extern "C" float gl_func_00000000_snow_randf(...);   /* sys_randf (typed blank jal: float return) */
@@ -151,7 +155,8 @@ struct SnowV3d {
     float x, y, z;
     SnowV3d() {}
     void set(float a, float b, float c) { x = a; y = b; z = c; }
-    SnowV3d(float a, float b, float c) { set(a, b, c); }
+    SnowV3d &set3(float a, float b, float c) { return (x = a, y = b, z = c, *this); }
+    SnowV3d(float a, float b, float c) { set3(a, b, c); }
     SnowV3d &operator+=(const SnowV3d &v) { x += v.x; y += v.y; z += v.z; return *this; }
 
     SnowV3d &assign(SnowV3d o) { x = o.x; y = o.y; z = o.z; return *this; }
@@ -336,6 +341,6 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     self->lastCam.assign(cam);
     gDPWord(c->next(), 0xE7000000, 0);
     gDPWord(c->next(), 0xB9000201, 0);
-    snowW(c->next(), 0xBA001301, 0x80000);
+    gDPWord(c->next(), 0xBA001301, 0x80000);
     gDPWord(c->next(), 0xBB000000, 0);
 }
