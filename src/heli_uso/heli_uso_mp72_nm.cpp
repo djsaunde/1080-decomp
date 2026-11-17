@@ -20,6 +20,10 @@
  *    reference), so the smoothing, its store and the clamp compare share the fwdAx uopt block; 2.0f / 1.0f are
  *    then rematerialised per use and -pi/8 sits in f18 (88.9 -> 91.9). toTgt.y = 0 through setf() (not
  *    copy-propagated, so the zero is not coloured) with the length summed x, y, z as in the target (92.4).
+ *  - run 695: clampf() with if / return arms and the yaw clamp through clampf() (each arm writes the result
+ *    register directly, as the target's mov.s f2 / f12 arms); the pitch clamp stored through a reference
+ *    (clampTo); tg for toTgt spelled as ps + 0x50 (= self + 0x12C), which keeps the toTgt loads in the
+ *    target's order (92.4 -> 93.1).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -47,13 +51,14 @@ extern float gl_func_00000000_heli_fff(float, float);
 #define HV(off) (*(Vec3 *)(self + (off)))
 
 }
-static inline float clampf(float v, float lo, float hi) { return (v < lo) ? lo : ((hi < v) ? hi : v); }
+static inline float clampf(float v, float lo, float hi) { if (v < lo) return lo; if (hi < v) return hi; return v; }
 /* smoothing store through a reference: keeps the store, the pitch dot / lerp and the clamp compare in one uopt
  * block, so -pi/8 and the lerp value take f18 / f16 and 2.0f / 1.0f are rematerialised per use (run 689) */
 /* store through a reference: uopt does not copy-propagate it, so the zero has one use and is not coloured;
  * ugen then reuses the stored register for the toTgt.y square, as in the target (run 689) */
 static inline void setf(float &d, float v) { d = v; }
 static inline void lerpTo(float &d, float t, float k) { d = (t - d) * k + d; }
+static inline void clampTo(float &d, float lo, float hi) { d = clampf(d, lo, hi); }
 struct Vec3 {
     float x, y, z;
     Vec3() {}
@@ -227,7 +232,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     }
     Vec3 vel = *FWD * HF(0x154);
     V3(0xDC) += vel;
-    tg = (Vec3 *)(self + 0x12C);
+    tg = (Vec3 *)((char *)ps + 0x50);
     toTgt = *tg - *ps;
     side.x = 1.0f - HF(0xF8) * HF(0xF8) * 2.0f - HF(0xFC) * HF(0xFC) * 2.0f;
     side.y = HF(0xF4) * HF(0xF8) * 2.0f + HF(0x100) * HF(0xFC) * 2.0f;
@@ -248,14 +253,14 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         }
         if (1) {}
         HF(0x144) = (f - HF(0x144)) * (0.07f) + HF(0x144);
-        yaw = (yaw < (-0.3f)) ? (-0.3f) : (((0.3f) < yaw) ? (0.3f) : yaw);
+        yaw = clampf(yaw, -0.3f, 0.3f);
         HF(0x14C) = HF(0x14C) + yaw * (0.06);
         fwdAx.x = HF(0xF4) * HF(0xFC) * 2.0f + HF(0x100) * HF(0xF8) * 2.0f;
         fwdAx.y = HF(0xF8) * HF(0xFC) * 2.0f - HF(0x100) * HF(0xF4) * 2.0f;
         fwdAx.z = 1.0f - HF(0xF4) * HF(0xF4) * 2.0f - HF(0xF8) * HF(0xF8) * 2.0f;
         f = dot(fwdAx, vel) / 200.0f + fwdAx.y * (0.1);
         lerpTo(HF(0x148), f, 0.2f);
-        HF(0x148) = clampf(HF(0x148), -0.3926991f, 0.3926991f);
+        clampTo(HF(0x148), -0.3926991f, 0.3926991f);
         HF(0xF4) = 0.0f;
         HF(0xF8) = 0.0f;
         HF(0xFC) = 0.0f;
