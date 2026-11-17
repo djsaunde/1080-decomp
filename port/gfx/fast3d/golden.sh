@@ -22,6 +22,19 @@ for d in $("$OUT/gold" --list); do
     renderer="$(echo "$log" | sed -n 's/^replay: GL //p')"
 done
 python3 "$HERE/../tools/dlump.py" --check "$DIR"/*.dlmp > /dev/null
+# the in-process renderer (port_fast3d.cpp, plan 19.7): every scene, in order, through one interpreter
+# in one process (test_inproc), must give f3dreplay's PNG byte for byte
+if [[ -x "$OUT/test_inproc" ]]; then
+    rm -rf "$DIR/inproc" && mkdir -p "$DIR/inproc"
+    scenes=($("$OUT/gold" --list))
+    PORT_GFX_PNG="$DIR/inproc" "$OUT/test_inproc" $(printf "$DIR/%s.dlmp " "${scenes[@]}") > "$DIR/inproc/log.txt" 2>&1 ||
+        { cat "$DIR/inproc/log.txt"; echo "golden: test_inproc failed"; exit 1; }
+    for i in "${!scenes[@]}"; do
+        cmp -s "$DIR/${scenes[$i]}.png" "$DIR/inproc/$(printf 'frame_%06d.png' "$i")" ||
+            { echo "golden: ${scenes[$i]}: the in-process render differs from f3dreplay's"; exit 1; }
+    done
+    echo "golden: in process: ${#scenes[@]} scenes identical to f3dreplay"
+fi
 (cd "$DIR" && sha1sum $("$OUT/gold" --list | sed 's/$/.png/') $("$OUT/gold" --list | sed 's/$/.rb/')) > "$DIR/actual.sha1"
 if [[ "$MODE" == "--update" ]]; then
     { echo "# port/gfx golden images: sha1 of f3dreplay's PNG and read-back (.rb) per gold.c scene (fast3d/golden.sh)"

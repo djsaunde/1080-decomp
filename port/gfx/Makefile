@@ -36,10 +36,10 @@ test: $(OUT)/test_dlump $(if $(M32),test-hook,golden)
 
 ifneq ($(HAVE_GOLDEN),)
 golden: $(OUT)/gold
-	$(MAKE) -C fast3d OUT=$(abspath $(OUT))
+	$(MAKE) -C fast3d OUT=$(abspath $(OUT)) all
 	fast3d/golden.sh $(abspath $(OUT))
 golden-update: $(OUT)/gold
-	$(MAKE) -C fast3d OUT=$(abspath $(OUT))
+	$(MAKE) -C fast3d OUT=$(abspath $(OUT)) all
 	fast3d/golden.sh $(abspath $(OUT)) --update
 else
 golden golden-update:

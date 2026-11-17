@@ -36,6 +36,10 @@ SHIM_H := $(shell find shim -name '*.h')
 $(OUT)/f3dreplay: $(OBJ)/f3dreplay.o $(OBJS)
 	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 -lm
 
+# the in-process renderer (port_fast3d.cpp, plan 19.7) driven by test_inproc on the 64-bit host
+$(OUT)/test_inproc: $(OBJ)/test_inproc.o $(OBJ)/port_fast3d.o $(OBJS)
+	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 -lm
+
 $(OBJ)/lus/%.o: $(LUS)/src/fast/%.cpp $(SHIM_H) | $(OBJ)/lus
 	$(XX) -w -c $< -o $@
 $(OBJ)/lus/%.o: $(LUS)/src/fast/backends/%.cpp $(SHIM_H) | $(OBJ)/lus
@@ -52,8 +56,12 @@ $(OBJ)/prism/%.c.o: $(PRISM)/src/prism/utils/%.c | $(OBJ)/prism
 	$(CC) -O2 -w -c $< -o $@
 $(OBJ)/ship_shim.o: ship_shim.cpp $(SHIM_H) | $(OBJ)
 	$(XX) -Wall -Wextra -Wno-unused-parameter -c $< -o $@
-$(OBJ)/f3dreplay.o: f3dreplay.cpp ../dlump.h ../replay/egl_png.h $(SHIM_H) | $(OBJ)
+$(OBJ)/f3dreplay.o: f3dreplay.cpp egl_window.h ../dlump.h ../replay/egl_png.h $(SHIM_H) | $(OBJ)
 	$(XX) -Wall -Wextra -Wno-unused-parameter -c $< -o $@
+$(OBJ)/port_fast3d.o: port_fast3d.cpp port_fast3d.h egl_window.h ../replay/egl_png.h $(SHIM_H) | $(OBJ)
+	$(XX) -Wall -Wextra -Wno-unused-parameter -c $< -o $@
+$(OBJ)/test_inproc.o: test_inproc.c port_fast3d.h ../dlump.h | $(OBJ)
+	$(CC) -std=gnu99 -O2 -Wall -Wextra -c $< -o $@
 $(OBJ)/egl_png.o: ../replay/egl_png.c ../replay/egl_png.h | $(OBJ)
 	$(CC) -std=gnu99 -O2 -Wall -Wextra -I$(GL_DEV)/usr/include -c $< -o $@
 
@@ -61,4 +69,4 @@ $(OBJ) $(OBJ)/lus $(OBJ)/prism:
 	mkdir -p $@
 
 .PHONY: all
-all: $(OUT)/f3dreplay
+all: $(OUT)/f3dreplay $(OUT)/test_inproc

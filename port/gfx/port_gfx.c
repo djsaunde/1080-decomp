@@ -2,7 +2,8 @@
  *
  * osSpTaskStartGo -> PortUltraConfig.rcpTask (port/main.c rcp_task) ->
  * port_gfx_task, which replaces main.c's weak no-op. Rendering (Fast3D) plugs
- * in here later; today the task can be dumped:
+ * in here: built with -DPORT_GFX_FAST3D=ON (plan 19.7, option (a)) every task is rendered in
+ * process by libultraship's Fast3D (fast3d/port_fast3d.cpp); in every build the task can be dumped:
  *
  *   PORT_GFX_DUMP=<dir>        write <dir>/gfx_NNNNNN.dlmp for each gfx task
  *   PORT_GFX_DUMP_FIRST=<n>    skip the first n tasks (default 0)
@@ -15,6 +16,9 @@
 #include "../port_libc.h"
 #include "../ultra/ultra.h"
 #include "dlump.h"
+#ifdef PORT_GFX_FAST3D
+#include "fast3d/port_fast3d.h"
+#endif
 
 #if defined(__linux__)
 int mincore(void *addr, size_t len, unsigned char *vec);
@@ -110,5 +114,9 @@ void port_gfx_task(OSTask_t *task) {
         sDump.written < sDump.count) {
         dump_task(task, seq);
     }
-    /* M2: hand the task to Fast3D here (in process), or to the replayer. */
+#ifdef PORT_GFX_FAST3D
+    /* option (a): render in process (the dump above, if any, saw the same lists) */
+    port_fast3d_task((u32)(size_t)task->data_ptr);
+#endif
+    /* option (b), the default here: the dump goes to fast3d/f3dreplay. */
 }

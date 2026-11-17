@@ -93,6 +93,12 @@ set(PORT_ULTRA_SOURCES ultra/thread.c ultra/message.c ultra/vi.c ultra/pi.c ultr
 set(PORT_HOST_SOURCES main.c host_headless.c trace.c)
 # port/gfx (plan section 19, M2): port_gfx_task (the M_GFXTASK hook) and the PORT_GFX_DUMP writer
 list(APPEND PORT_HOST_SOURCES gfx/port_gfx.c gfx/dlump.c)
+# plan 19.7: option (a), Fast3D in process (gfx/fast3d/port_fast3d.cpp + libultraship's src/fast, pinned + the
+# patch series, fetched by gfx/fast3d/setup-lus.sh). Needs a C++20 compiler, libstdc++, EGL / GL and the GL
+# headers for the target ABI: -m32 here, which this machine does not have (plan 19.7); the option stays OFF and
+# the dump + f3dreplay (option (b)) is the default. PORT_FAST3D_FLAGS overrides the arch flags (empty = a 64-bit
+# compile of the library alone).
+option(PORT_GFX_FAST3D "render gfx tasks in process with libultraship's Fast3D (needs target-ABI C++ / GL)" OFF)
 # agent-g run 619: the SysApi table and the cartridge file system (host side)
 foreach(f sysapi.c fs/fs.c)
   if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${f})
@@ -117,6 +123,29 @@ foreach(t ultra porthost audio)
   target_compile_options(${t} PRIVATE ${PORT_HOST_FLAGS})
 endforeach()
 
+if(PORT_GFX_FAST3D)
+  set(PORT_LUS "${GAME_ROOT}/../../tools/lus" CACHE PATH "libultraship + prism (gfx/fast3d/setup-lus.sh)")
+  set(PORT_GL_DEV "${GAME_ROOT}/../../tools/gl-dev/root/usr/include" CACHE PATH "EGL / GL headers")
+  set(PORT_FAST3D_FLAGS "-m32;-msse2;-mfpmath=sse;-fno-pie" CACHE STRING "arch flags of the Fast3D library")
+  if(NOT EXISTS "${PORT_LUS}/.complete")
+    message(FATAL_ERROR "PORT_GFX_FAST3D: ${PORT_LUS} missing; run port/gfx/fast3d/setup-lus.sh")
+  endif()
+  set(_lus "${PORT_LUS}/libultraship")
+  file(GLOB _prism_cpp "${PORT_LUS}/prism/src/prism/*.cpp" "${PORT_LUS}/prism/src/prism/utils/*.cpp")
+  file(GLOB _prism_c "${PORT_LUS}/prism/src/prism/utils/*.c")
+  add_library(port_fast3d STATIC gfx/fast3d/port_fast3d.cpp gfx/fast3d/ship_shim.cpp gfx/replay/egl_png.c
+              ${_lus}/src/fast/interpreter.cpp ${_lus}/src/fast/backends/gfx_opengl.cpp
+              ${_lus}/src/fast/debug/GfxDebugger.cpp ${_lus}/src/fast/resource/type/Texture.cpp
+              ${_prism_cpp} ${_prism_c})
+  target_include_directories(port_fast3d PRIVATE gfx/fast3d/shim ${_lus}/include ${_lus}/include/fast ${_lus}/src
+                             ${PORT_LUS}/prism/src ${PORT_GL_DEV})
+  target_compile_definitions(port_fast3d PRIVATE ENABLE_OPENGL CVAR_MSAA_VALUE="gMSAAValue"
+                             CVAR_INTERNAL_RESOLUTION="gInternalResolution" CVAR_Z_FIGHTING_MODE="gZFightingMode"
+                             LUS_FAST_DIR="${_lus}/src/fast")
+  target_compile_options(port_fast3d PRIVATE ${PORT_FAST3D_FLAGS} -w $<$<COMPILE_LANGUAGE:CXX>:-std=c++20>)
+  target_compile_definitions(porthost PRIVATE PORT_GFX_FAST3D)
+endif()
+
 if(PORT_LINK)
   add_executable(tenshoe $<TARGET_OBJECTS:porthost>)
   target_link_options(tenshoe PRIVATE -m32 -no-pie -Wl,--gc-sections)
@@ -125,6 +154,9 @@ if(PORT_LINK)
   # port/gen/aliases.ld: the token aliases (scripts/port-gen-binds.py), an implicit linker script
   target_link_libraries(tenshoe PRIVATE -Wl,--whole-archive game uso ultra audio -Wl,--no-whole-archive
                         ${PORT_GEN}/aliases.ld m)
+  if(PORT_GFX_FAST3D)
+    target_link_libraries(tenshoe PRIVATE port_fast3d EGL GL stdc++)
+  endif()
 
   # PORT_TRAP_UNDEFINED (DEBUG ONLY, plan 18.9; never on in a normal build): tenshoe links
   # while symbols are still undefined.  A probe link with --warn-unresolved-symbols lists them;
