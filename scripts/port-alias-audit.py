@@ -28,11 +28,19 @@ one function whose blob bytes overlap, where gcc thinks they cannot (different s
 same symbol at disjoint offsets), and at least one of them writes. `--all` also lists the
 read-only pairs (harmless for ordering) and the address-taken pairs (an `&SYM+N` and another
 object's access within 0x100 bytes after it: a pointer to one object used to reach the other's
-bytes; listed for review, not proven).
+bytes; listed for review, not proven). An address that is only pushed or stored to memory (a call
+argument, a global's value) is class `escape` instead: gcc reaches it again only through a loaded
+pointer, which may point anywhere, so those are not hazards. An `addr` row is one where the
+address goes to a register (lea / mov $SYM, %reg) and may be dereferenced in the function.
 
-Not visible here: two decls of the same assembler name in one unit (an asm-label decl such as
-XDATA's next to a plain `extern` of that name are distinct objects to gcc). src/ has no XDATA
-site today; if they come back, compare their sym with the plain spellings by hand.
+XDATA sites (include/uso_call.h): under PORT each site is its own block-scope decl
+`__port_xdata_N` with the asm label of its blob, so it prints as `port_<mod>_<sec>+K` but is a
+distinct object to gcc, from the plain `port_*` decl and from every other XDATA site (two decls
+of one asm label never alias, measured run 812). The units are compiled with -fverbose-asm, whose
+operand comments name `&__port_xdata_N`; such a reference is the object `BLOB@xN` (shown so in
+the report), resolved to the blob bytes it names. `--emit` fixes a pair that involves one by
+redefining XDATA for the function as `(*(__typeof__(tok) *)((char *)&sym + (off)))` (the plain
+blob decl, so one object with the other spellings) and restoring the uso_call.h form after it.
 
 --boot restricts the report to the functions reachable by direct calls from App_main plus the
 title flow roots below (the boot walk of plan 17.8); the default lists every function and marks
@@ -129,8 +137,31 @@ def split_ops(s):
     return ops
 
 
+XD_RE = re.compile(r"__port_xdata_(\d+)\b")
+
+
+def split_comment(ops, comment):
+    """the -fverbose-asm comment operands, one per asm operand when the counts agree"""
+    cs, depth, cur = [], 0, ""
+    for ch in comment.replace("[", "(").replace("]", ")"):
+        depth += (ch == "(") - (ch == ")")
+        if ch == "," and depth == 0:
+            cs.append(cur)
+            cur = ""
+        else:
+            cur += ch
+    cs.append(cur)
+    return cs if len(cs) == len(ops) else [comment] * len(ops)
+
+
+def xobj(sym, cmt):
+    """the object gcc reasons about: an XDATA site's own decl, else the symbol"""
+    xs = set(XD_RE.findall(cmt))
+    return "%s@x%s" % (sym, xs.pop()) if len(xs) == 1 else sym
+
+
 def parse_asm(text):
-    """{function: [(sym, addend, width, kind)]}"""
+    """{function: [(obj, sym, addend, width, kind)]}"""
     out = collections.defaultdict(list)
     cur = None
     for line in text.splitlines():
@@ -142,22 +173,31 @@ def parse_asm(text):
         s = line.strip()
         if not s or s.startswith((".", "#")) or cur is None:
             continue
+        s, _, comment = s.partition("#")
         parts = s.split(None, 1)
         mn = parts[0]
         if mn.startswith(("call", "jmp", "j")) or len(parts) == 1:
             continue
         ops = split_ops(parts[1])
+        cmts = split_comment(ops, comment)
         for i, op in enumerate(ops):
             m = IMM_RE.match(op)
             if m:
-                out[cur].append((m.group(1), int(m.group(2) or 0), 0, "A"))
+                # E: the address only escapes (pushed / stored to memory as a call argument or a
+                # global's value); gcc reaches those bytes again only through a loaded pointer,
+                # which it must assume may point anywhere, so no decl-based reordering
+                esc = mn.startswith("push") or (mn.startswith("mov") and i == 0 and len(ops) == 2
+                                                and not ops[1].startswith("%"))
+                out[cur].append((xobj(m.group(1), cmts[i]), m.group(1), int(m.group(2) or 0), 0,
+                                 "E" if esc else "A"))
                 continue
             if op.startswith(("%", "$", "*")):
                 continue
             m = MEM_RE.match(op)
             if m and m.group(1) and not m.group(1).startswith(".L"):
                 k = kind(mn, i, len(ops))
-                out[cur].append((m.group(1), int(m.group(2) or 0), 0 if k == "A" else width(mn), k))
+                out[cur].append((xobj(m.group(1), cmts[i]), m.group(1), int(m.group(2) or 0),
+                                 0 if k == "A" else width(mn), k))
     return out
 
 
@@ -222,7 +262,7 @@ def compile_s(entry, work):
         cmd.append(a)
     src = entry["file"]
     dst = Path(work) / (re.sub(r"[^\w.]+", "_", os.path.relpath(src, ROOT)) + ".s")
-    return src, hdr, dst, cmd + ["-S", "-w", "-o", str(dst)]
+    return src, hdr, dst, cmd + ["-S", "-w", "-fverbose-asm", "-o", str(dst)]
 
 
 def call_graph(lib):
@@ -242,7 +282,7 @@ def call_graph(lib):
     return g
 
 
-def emit(funcs, rows, units, aliases):
+def emit(funcs, rows, units, aliases, xsyms):
     """The fix: every token of a hazard pair is spelled through its blob for the function
     (`#define TOK (*(__typeof__(TOK) *)(port_<mod>_<sec> + 0xK))` before it, #undef after it).
     gcc then sees one object at known offsets and keeps the order. An aliases.ld token means the
@@ -257,7 +297,10 @@ def emit(funcs, rows, units, aliases):
         unit = mine[0][3]
         binds = read_binds(hdrs.get(unit)).get(fn, {})
         toks = sorted({x.split("+")[0].split("-")[0] for r in mine for x in (r[6], r[7])})
-        defs, blobs, manual = [], set(), []
+        # every blob an XDATA site of the function names needs the plain decl once XDATA is local
+        xblobs = xsyms.get(fn, set()) if any("@x" in t for t in toks) else set()
+        toks = [t for t in toks if "@x" not in t]
+        defs, blobs, manual = [], set(xblobs), []
         # a per-addend bind token in the pairs is the canonical spelling where one of its addends
         # lands on the same bytes: `(char *)&TOK + N` keeps the addend cc-select renames
         perad = {tok: binds[tok] for tok in toks if isinstance(binds.get(tok), dict)}
@@ -283,9 +326,15 @@ def emit(funcs, rows, units, aliases):
               " (scripts/port-alias-audit.py, plan 18.7) */")
         for b in sorted(blobs):
             print("%schar %s[];" % (ext, b))
-        print("\n".join(defs))
+        if xblobs:                                # XDATA sites: the plain blob decl
+            print("#undef XDATA\n#define XDATA(tok, sym, off) "
+                  "(*(__typeof__(tok) *)((char *)&sym + (off)))")
+        if defs:
+            print("\n".join(defs))
         print("#endif")
-        print("#ifdef PORT\n" + "\n".join("#undef %s" % d.split()[1] for d in defs) + "\n#endif")
+        print("#ifdef PORT\n" + "".join("#undef %s\n" % d.split()[1] for d in defs)
+              + ("#undef XDATA\n#define XDATA(tok, sym, off) PORT_XDATA(tok, sym, off, __COUNTER__)\n"
+                 if xblobs else "") + "#endif")
         if manual:
             print("/* per-addend binds, spell by hand: %s */" % " ".join(manual))
 
@@ -327,17 +376,19 @@ def main():
         if f not in boot:
             boot.add(f)
             todo += graph.get(f, ())
-    rows = []
+    rows, xsyms = [], collections.defaultdict(set)
     for src, hdr, dst, _ in units:
         if not dst.exists():
             continue
         binds = read_binds(hdr)
         for fn, refs in parse_asm(dst.read_text(errors="replace")).items():
             acc = []
-            for sym, n, w, k in refs:
+            for obj, sym, n, w, k in refs:
                 r = resolve(fn, sym, n, binds, aliases)
                 if r:
-                    acc.append((sym, n, w, k, r[0], r[1]))
+                    acc.append((obj, n, w, k, r[0], r[1]))
+                if BLOB_RE.match(sym):              # (an XDATA `$blob+K` has no comment)
+                    xsyms[fn].add(sym)
             seen = set()
             for i in range(len(acc)):
                 for j in range(i + 1, len(acc)):
@@ -345,13 +396,13 @@ def main():
                     s2, n2, w2, k2, b2, o2 = acc[j]
                     if b1 != b2:
                         continue
-                    if "A" in (k1, k2):
-                        if k1 == k2 or not a.all or s1 == s2:
+                    if k1 in "AE" or k2 in "AE":
+                        if (k1 in "AE" and k2 in "AE") or not a.all or s1 == s2:
                             continue
-                        base, o = (o1, o2) if k1 == "A" else (o2, o1)
+                        base, o = (o1, o2) if k1 in "AE" else (o2, o1)
                         if not (base <= o < base + 0x100):
                             continue
-                        cls = "addr"
+                        cls = "addr" if "A" in (k1, k2) else "escape"
                     else:
                         if not (o1 < o2 + w2 and o2 < o1 + w1):
                             continue                         # disjoint at run time
@@ -368,7 +419,7 @@ def main():
                                  "%s%+d %s%d" % (s1, n1, k1, w1), "%s%+d %s%d" % (s2, n2, k2, w2)))
     rows.sort(key=lambda r: (r[0] != "HAZARD", not r[1], r[3], r[2]))
     if a.emit:
-        emit(a.emit, rows, units, aliases)
+        emit(a.emit, rows, units, aliases, xsyms)
         return
     print("# class\tboot\tfunction\tunit\tblob\toffset\tref 1\tref 2")
     for r in rows:
