@@ -18,9 +18,11 @@ struct SV {
     static void ct3(SV *p, float a, float b, float c) { if (p != 0) { p->x = a; p->y = b; p->z = c; } }
     SV &operator=(SV o) { x = o.x; y = o.y; z = o.z; return *this; }
     void set(float a, float b, float c) { x = a; y = b; z = c; }
-    /* run 727 (0x718C's pos / vel stores): c as a named local gets a fresh word of its own. Through the pooled
-     * parameter it shared the operator* y-product word, whose priority then beat the |a| word in uopt's colouring. */
-    void setC(float a, float b, float c) { float cc = c; x = a; y = b; z = cc; }
+    /* run 727 (0x718C's pos / vel stores): the two unused middle parameters take the next two pooled float words,
+     * so c lands in the |a| word instead of the operator* y-product word. With c in the y-product word, that word's
+     * uopt priority beat the |a| word's and the whole a1 / a2 colouring shifted. (A named `float cc = c` does the same
+     * colouring but adds two frame words.) */
+    void set5(float a, float b, float d1, float d2, float c) { x = a; y = b; z = c; }
     SV operator*(float s) const { SV r; ct3(&r, x * s, y * s, z * s); return r; }
     SV &operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
     SV &operator+=(const SV &v) { x += v.x; y += v.y; z += v.z; return *this; }
@@ -255,9 +257,9 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
  * +0x1FC / +0x204 timer, then (a != 0) one pool +0xA0 spawn: pos = lerp(+0x138, +0xF0, randf), vel =
  * v318 * f208 + v114 * (1 + randf * RoData+0xB0) * f210 * |a| * (a > 0 ? -1 : 1) + v3B0 * f20C * |a|, fields
  * from +0x1DC..+0x1F8, alpha 128 + randf * 127, colour lerped from the camera colour to +0x224 by +0x220.
- * NM (run 727: 471 words = target, frame 376 vs 368). Since run 727 the |speed| / op* scalar LR is f16, |a| f0 and
- * the op* products f2 / f12 / f14 as in the target (setC, mulS, no `int sc[2]` pad). Left: the frame is 8 high
- * (setC's two named words), the early ramp r / lo colours, the lerp and colour-section FP ring. */
+ * NM (run 727: 471 words and frame 368 = target). Since run 727 the |speed| / op* scalar LR is f16, |a| f0 and
+ * the op* products f2 / f12 / f14 as in the target (set5, mulS, no `int sc[2]` pad). Left: the w / a1 temporaries
+ * sit 4..8 bytes off, the early ramp r / lo colours, the lerp and colour-section FP ring. */
 extern "C" float snow_ro_B0;  /* RoData+0xB0: the 0x718C spin scale */
 struct SnowCamC {
     char pad000[0x318];
@@ -361,8 +363,8 @@ extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
             }
             w += a2;
             w += a1;
-            p->pos.setC(u.x, u.y, u.z);
-            p->vel.setC(w.x, w.y, w.z);
+            p->pos.set5(u.x, u.y, u.x, u.x, u.z);
+            p->vel.set5(w.x, w.y, w.x, w.x, w.z);
             p->size = t->f1F8;
             p->unk3C = 1.0f;
             p->fadeAt = 256.0f;
