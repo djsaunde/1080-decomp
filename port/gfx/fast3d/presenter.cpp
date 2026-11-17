@@ -798,7 +798,7 @@ static void on_signal(int) {
 int main(int argc, char** argv) {
     std::string name = "1080live", pngDir, jsPath = "/dev/input/js0";
     uint32_t scale = 3, pngEvery = 0, maxFrames = 0, slots = LIVE_DEFAULT_SLOTS, slotBytes = LIVE_DEFAULT_SLOT_BYTES;
-    bool stay = false;
+    bool stay = false, fbLog = false, fbReply = true;
     LiveAudioOptions audio;
     std::vector<Inject> injects;
     for (int i = 1; i < argc; i++) {
@@ -808,6 +808,10 @@ int main(int argc, char** argv) {
             stay = true;
         } else if (a == "--mute") {
             audio.mute = true;
+        } else if (a == "--fb-log") {
+            fbLog = true;
+        } else if (a == "--no-fb-reply") {
+            fbReply = false;
         } else if (v == nullptr) {
             std::fprintf(stderr, "presenter: %s needs a value\n", a.c_str());
             return 2;
@@ -854,7 +858,7 @@ int main(int argc, char** argv) {
         } else {
             std::fprintf(stderr, "usage: presenter [--shm NAME] [--scale N] [--png DIR] [--png-every N] [--frames N] "
                                  "[--inject STEP:KEY:d|u,...] [--js DEV] [--slot-mb N] [--stay] "
-                                 "[--mute] [--audio-latency MS] [--audio-dump FILE]\n");
+                                 "[--fb-log] [--no-fb-reply] [--mute] [--audio-latency MS] [--audio-dump FILE]\n");
             return 2;
         }
     }
@@ -885,6 +889,25 @@ int main(int argc, char** argv) {
     H->presenterPid = (live_u32)getpid();
     H->pads[0].connected = 1;
     live_audio_layout((LiveAudio*)(shm + LIVE_AUDIO_HDR), (uint32_t)audioOffset, LIVE_AUDIO_DEFAULT_BYTES);
+    /* the read-back replies (run 859): a file of their own, ready before the magic */
+    std::string fbPath = path + "-fb";
+    LiveFbReply* reply = nullptr;
+    int ffd = fbReply ? ::open(fbPath.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0600) : -1;
+    if (ffd >= 0 && ftruncate(ffd, (off_t)sizeof(LiveFbReply)) == 0) {
+        void* m = mmap(nullptr, sizeof(LiveFbReply), PROT_READ | PROT_WRITE, MAP_SHARED, ffd, 0);
+        if (m != MAP_FAILED) {
+            reply = (LiveFbReply*)m;
+            std::memset(reply, 0, sizeof(*reply));
+            reply->magic = LIVE_FB_MAGIC;
+            reply->version = LIVE_FB_VERSION;
+        }
+    }
+    if (ffd >= 0) {
+        ::close(ffd);
+    }
+    if (reply == nullptr && fbReply) {
+        std::fprintf(stderr, "presenter: no %s: the game's read-backs will not be answered\n", fbPath.c_str());
+    }
     __atomic_store_n(&H->magic, LIVE_MAGIC, __ATOMIC_RELEASE);
 
     const uint32_t w = 320 * scale, h = 240 * scale;
