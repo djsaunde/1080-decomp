@@ -73,7 +73,7 @@ extern "C" void snoweffects_uso_func_00000270(SnowTex *t) {
 }
 
 extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at +0x254 */
-/* snoweffects_uso_func_000028E0 (NON_MATCHING, objdiff 92.52 %): the snowfall draw. Moves every
+/* snoweffects_uso_func_000028E0 (NON_MATCHING, objdiff 92.53 %): the snowfall draw. Moves every
  * flake by the camera motion since the last frame (camera +0x70 position * the gGfxLib world scale, minus +0x98,
  * times +0xA4), wraps it inside the camera-space box (x / y +-30, z -100..0) along the box axes
  * (+0x50 / +0x5C / +0x68; a y wrap re-rolls the flake's alpha against +0x4C), then projects the
@@ -95,6 +95,9 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * Left: the 1.0f constant LR (f30 for the whole function; the target holds it in f26 in the draw block only)
  * pushes halfW to f28; the temps' frame order (the target: += param, op* param, op- return, op- r, 4 words,
  * op* return, op* r).
+ * agent-c run 734: wz / wy / wx declared in that order (92.53). Putting 1 / w and both size sites in the snowOne
+ * group gives the target's draw-block f26 1.0 (alpha / depth rematerialised), but the freed callee-saved register
+ * then goes to another constant (-30, 60 or the alpha / depth 1.0): the target keeps wx in a callee-saved register.
  * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
 extern "C" float gl_func_00000000_snow_randf(...);   /* sys_randf (typed blank jal: float return) */
@@ -189,7 +192,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     for (i = 0, p = self->items; i < self->count; i++, p++) {
         float cx, cy, cz;
         int sz, sw; int x0, y0;
-        float wx = 0.0f, wy = 0.0f, wz = 0.0f;
+        float wz = 0.0f, wy = 0.0f, wx = 0.0f;
         p->pos += (cam - last) * self->follow;
         x = p->pos.x; y = p->pos.y; z = p->pos.z;
         cx = rot[0][0] * x + rot[1][0] * y + rot[2][0] * z + rot[3][0];
