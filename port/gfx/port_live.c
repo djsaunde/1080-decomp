@@ -7,7 +7,9 @@
  * appended to the current frame; main.c's step end publishes the frame into the ring
  * (live_shm.h). The pads the presenter writes replace the headless host's pads
  * (host_headless.c asks port_live_read_pads), and closing the window ends the game
- * (port_live_quit -> host_poll_events). The layout is in live_shm.h.
+ * (port_live_quit -> host_poll_events). The game's AI output goes into the audio ring
+ * (port_live_audio_write, from port/audio/port_audio.c's sink; plan 19.12). The layout is
+ * in live_shm.h.
  *
  * Framebuffer replies (run 859): the presenter answers the frame's depth / colour read requests in
  * /dev/shm/<name>-fb (LiveFbReply); port_gfx.c calls port_live_fb_apply after its depth-clear model
@@ -47,13 +49,10 @@ static unsigned char *sFrame;     /* the frame being built: a private copy of a 
 static size_t sFrameBytes, sFrameCap;
 static unsigned sFrameTasks;
 static unsigned sFrames, sPublished;
-/* the framebuffer replies (live_shm.h, run 859) */
-static LiveFbReply *sFb;
-static live_u32 sFbSeq = 1; /* the reply last taken (odd: none yet) */
-static LiveFbDepth sFbDepth[LIVE_FB_DEPTH];
-static unsigned sFbNDepth;
-static unsigned sFbTaken, sFbTorn, sFbDepthStored, sFbColorStored;
-static unsigned short sFbPixels[LIVE_FB_W * LIVE_FB_H];
+static LiveAudio *sAudio; /* NULL: the presenter has no audio ring */
+static unsigned char *sAudioData;
+static unsigned long long sAudioHash = 0xcbf29ce484222325ull; /* FNV-1a 64 of every byte written */
+static unsigned long long sAudioBytes;
 
 static void live_sleep_ms(int ms) {
     struct timespec ts;
@@ -95,6 +94,13 @@ static void live_open(void) {
                    h->slotBytes);
     }
     total = (size_t)LIVE_HEADER_BYTES + (size_t)h->slotCount * h->slotBytes;
+    {
+        const LiveAudio *a = (const LiveAudio *)((const unsigned char *)h + LIVE_AUDIO_HDR);
+        if (a->magic == LIVE_AUDIO_MAGIC && a->bytes != 0 && (a->bytes & (a->bytes - 1)) == 0 &&
+            a->dataOffset >= LIVE_HEADER_BYTES && (size_t)a->dataOffset + a->bytes > total) {
+            total = (size_t)a->dataOffset + a->bytes;
+        }
+    }
     sShm = (LiveShmHeader *)mmap(NULL, total, LIVE_PROT_RW, LIVE_MAP_SHARED, fd, 0);
     close(fd);
     if ((void *)sShm == LIVE_MAP_FAILED) {
@@ -102,21 +108,15 @@ static void live_open(void) {
     }
     sSlots = (unsigned char *)sShm + LIVE_HEADER_BYTES;
     sShm->gamePid = (live_u32)getpid();
-    live_log("attached to %s: %u slots of %u MB", path, sShm->slotCount, sShm->slotBytes >> 20);
-    /* the reply file: optional (created by the presenter before the magic) */
-    snprintf(path, sizeof(path), "/dev/shm/%s-fb", name);
-    fd = open(path, LIVE_O_RDWR);
-    if (fd >= 0) {
-        LiveFbReply *r = (LiveFbReply *)mmap(NULL, sizeof(LiveFbReply), LIVE_PROT_RW, LIVE_MAP_SHARED, fd, 0);
-        close(fd);
-        if ((void *)r != LIVE_MAP_FAILED && r->magic == LIVE_FB_MAGIC && r->version == LIVE_FB_VERSION) {
-            sFb = r;
-            live_log("framebuffer replies from %s", path);
-        }
+    sAudio = (LiveAudio *)((unsigned char *)sShm + LIVE_AUDIO_HDR);
+    if (sAudio->magic != LIVE_AUDIO_MAGIC || sAudio->bytes == 0 || (sAudio->bytes & (sAudio->bytes - 1)) != 0 ||
+        sAudio->dataOffset < LIVE_HEADER_BYTES || (size_t)sAudio->dataOffset + sAudio->bytes > total) {
+        sAudio = NULL;
+    } else {
+        sAudioData = (unsigned char *)sShm + sAudio->dataOffset;
     }
-    if (sFb == NULL) {
-        live_log("no framebuffer replies (%s): depth reads keep the clear model", path);
-    }
+    live_log("attached to %s: %u slots of %u MB, %s", path, sShm->slotCount, sShm->slotBytes >> 20,
+             sAudio != NULL ? "audio ring" : "no audio");
 }
 
 int port_live_active(void) {
@@ -186,70 +186,38 @@ void port_live_frame_end(unsigned step) {
     sFrameTasks = 0;
 }
 
-/* the newest reply, if a new one is complete: its depth answers are kept (they are stored again after
- * every task's depth clear); a colour answer is stored at once into a requested image */
-static void live_fb_take(const PortFbRequests *rq) {
-    live_u32 s1 = __atomic_load_n(&sFb->seq, __ATOMIC_ACQUIRE), n, i;
-    LiveFbDepth depth[LIVE_FB_DEPTH];
-    int k;
-
-    if ((s1 & 1) != 0 || s1 == sFbSeq) {
-        return;
-    }
-    n = sFb->nDepth < LIVE_FB_DEPTH ? sFb->nDepth : LIVE_FB_DEPTH;
-    memcpy(depth, (const void *)sFb->depth, n * sizeof(LiveFbDepth));
-    __atomic_thread_fence(__ATOMIC_ACQUIRE);
-    if (__atomic_load_n(&sFb->seq, __ATOMIC_ACQUIRE) != s1) {
-        sFbTorn++;
-        return;
-    }
-    memcpy(sFbDepth, depth, n * sizeof(LiveFbDepth));
-    sFbNDepth = n;
-    sFbSeq = s1;
-    sFbTaken++;
-    /* colour: the frame, into the image the game reads, only if it still asks for it */
-    n = sFb->nColor < LIVE_FB_COLOR ? sFb->nColor : LIVE_FB_COLOR;
-    for (i = 0; i < n; i++) {
-        live_u32 img = sFb->color[i].img;
-        for (k = 0; k < rq->nColor; k++) {
-            if ((live_u32)(size_t)rq->color[k] == img) {
-                break;
-            }
-        }
-        if (k == rq->nColor) {
-            continue;
-        }
-        memcpy(sFbPixels, (const void *)sFb->pixels[i], sizeof(sFbPixels));
-        __atomic_thread_fence(__ATOMIC_ACQUIRE);
-        if (__atomic_load_n(&sFb->seq, __ATOMIC_ACQUIRE) != s1) {
-            sFbTorn++;
-            return;
-        }
-        memcpy((void *)rq->color[k], sFbPixels, sizeof(sFbPixels));
-        sFbColorStored++;
-    }
+int port_live_audio_active(void) {
+    return port_live_active() && sAudio != NULL;
 }
 
-void port_live_fb_apply(const PortFbRequests *rq) {
-    unsigned i;
-    int k;
-
-    if (!port_live_active() || sFb == NULL || rq == NULL) {
+/* one AI buffer (32000 Hz stereo s16) into the audio ring: all of it or, when the presenter is
+ * that far behind, none (an overrun) */
+void port_live_audio_write(const void *samples, size_t bytes) {
+    live_u32 head, tail, size, off, first;
+    const unsigned char *p = (const unsigned char *)samples;
+    size_t i;
+    if (!port_live_audio_active() || bytes == 0) {
         return;
     }
-    live_fb_take(rq);
-    for (i = 0; i < sFbNDepth; i++) {
-        const LiveFbDepth *d = &sFbDepth[i];
-        for (k = 0; k < rq->nDepth; k++) {
-            if ((live_u32)(size_t)rq->depthImg[k] == d->img && (live_u32)rq->depthIdx[k] == d->idx) {
-                unsigned char *px = (unsigned char *)rq->depthImg[k] + (size_t)d->idx * 2;
-                px[0] = (unsigned char)(d->z >> 8); /* big-endian, as the RDP writes it */
-                px[1] = (unsigned char)d->z;
-                sFbDepthStored++;
-                break;
-            }
-        }
+    size = sAudio->bytes;
+    head = sAudio->head;
+    tail = __atomic_load_n(&sAudio->tail, __ATOMIC_ACQUIRE);
+    if (bytes > size - (head - tail)) {
+        sAudio->overruns++;
+        return;
     }
+    off = head & (size - 1);
+    first = size - off;
+    if (first > bytes) {
+        first = (live_u32)bytes;
+    }
+    memcpy(sAudioData + off, p, first);
+    memcpy(sAudioData, p + first, bytes - first);
+    for (i = 0; i < bytes; i++) {
+        sAudioHash = (sAudioHash ^ p[i]) * 0x100000001b3ull;
+    }
+    sAudioBytes += bytes;
+    __atomic_store_n(&sAudio->head, head + (live_u32)bytes, __ATOMIC_RELEASE);
 }
 
 int port_live_read_pads(HostPad pads[HOST_MAX_PADS]) {
@@ -278,9 +246,9 @@ void port_live_close(void) {
         __atomic_store_n(&sShm->gameExited, 1, __ATOMIC_RELEASE);
         live_log("%u frames, %u published, %u dropped (ring full), %u too big", sFrames, sPublished,
                  sShm->dropped, sShm->tooBig);
-        if (sFb != NULL) {
-            live_log("framebuffer replies: %u taken (%u torn), %u depth pixels and %u colour images stored",
-                     sFbTaken, sFbTorn, sFbDepthStored, sFbColorStored);
+        if (sAudio != NULL) {
+            live_log("audio: %llu bytes (%.2f s) sent, fnv1a64 %016llx, %u overruns", sAudioBytes,
+                     sAudioBytes / (4.0 * 32000.0), sAudioHash, sAudio->overruns);
         }
     }
 }

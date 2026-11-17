@@ -9,6 +9,7 @@
 REPO ?= $(abspath ../../../../..)
 GL_DEV ?= $(REPO)/tools/gl-dev/root
 X11_DEV ?= $(REPO)/tools/x11-dev/root
+PULSE_DEV ?= $(REPO)/tools/pulse-dev/root
 LUS_TOOLS ?= $(REPO)/tools/lus
 LUS := $(LUS_TOOLS)/libultraship
 PRISM := $(LUS_TOOLS)/prism
@@ -44,10 +45,15 @@ $(OUT)/test_inproc: $(OBJ)/test_inproc.o $(OBJ)/port_fast3d.o $(OBJS)
 	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 -lm
 
 # the live presenter (plan 19.11): X11 + EGL window, the game's frames over shared memory
-$(OUT)/presenter: $(OBJ)/presenter.o $(OBJS)
-	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 $(LIBDIR)/libX11.so.6 -lm
-$(OBJ)/presenter.o: presenter.cpp ../dlump.h ../live_shm.h ../replay/egl_png.h $(SHIM_H) | $(OBJ)
+# (+ plan 19.12: the audio thread, libpulse-simple dlopen'd, headers from setup-pulse-dev.sh; an evdev gamepad)
+$(OUT)/presenter: $(OBJ)/presenter.o $(OBJ)/live_audio.o $(OBJ)/live_gamepad.o $(OBJS)
+	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 $(LIBDIR)/libX11.so.6 -lm -ldl -lpthread
+$(OBJ)/presenter.o: presenter.cpp ../dlump.h ../live_shm.h ../replay/egl_png.h live_audio.h live_gamepad.h $(SHIM_H) | $(OBJ)
 	$(XX) -I$(X11_DEV)/usr/include -Wall -Wextra -Wno-unused-parameter -c $< -o $@
+$(OBJ)/live_audio.o: live_audio.cpp live_audio.h ../live_shm.h | $(OBJ)
+	$(CXX) -std=c++20 $(CXXFLAGS) -I$(PULSE_DEV)/usr/include -Wall -Wextra -c $< -o $@
+$(OBJ)/live_gamepad.o: live_gamepad.cpp live_gamepad.h | $(OBJ)
+	$(CXX) -std=c++20 $(CXXFLAGS) -Wall -Wextra -c $< -o $@
 
 $(OBJ)/lus/%.o: $(LUS)/src/fast/%.cpp $(SHIM_H) | $(OBJ)/lus
 	$(XX) -w -c $< -o $@

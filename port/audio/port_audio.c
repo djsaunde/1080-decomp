@@ -159,9 +159,16 @@ void (*port_audio_premix_hook)(const void *cmds, unsigned int bytes); /* debug (
 
 static void capture_retrace(void);
 
+static void outputs_setup(void);
+
 void port_audio_frame(void) {
     OSTask_t *task;
+    static int setup;
 
+    if (!setup) {
+        outputs_setup(); /* the live presenter's audio ring, if there is one (plan 19.12) */
+        setup = 1;
+    }
     capture_retrace();
     port_audio_stats.updates++;
     task = (OSTask_t *)AudioThread_UpdateImpl(); /* AudioTask: OSTask_t first */
@@ -304,17 +311,71 @@ static void capture_retrace(void) {
     }
 }
 
+/* ---- the outputs: --audio-out and the live presenter (plan 19.12) ---- */
+
+/* PORT_LIVE (port/gfx/port_live.c): weak, so seqrender / the tests link without it */
+extern int port_live_audio_active(void) __attribute__((weak));
+extern void port_live_audio_write(const void *samples, size_t bytes) __attribute__((weak));
+
+static int sLiveAudio;
+static double sDacLevel, sDacTime; /* the wall-clock DAC: frames queued at sDacTime */
+
+static int dac_model_on(void) {
+    return getenv("PORT_AUDIO_DAC") == NULL || getenv("PORT_AUDIO_DAC")[0] != '0';
+}
+
+/* Live, the DAC drains with the wall clock (32000 frames/s, the rate the presenter plays at), not
+ * with the retrace count: the driver then sizes its buffers to real time whatever the step pacing
+ * does (a late step, a catch-up burst, --authentic), and the stream neither drifts ahead of the
+ * presenter nor runs dry. Without PORT_LIVE the retrace model below (capture_clock) is kept, so
+ * --audio-out stays deterministic. */
+static void dac_advance(void) {
+    double now = host_time_seconds();
+    if (sDacTime != 0.0) {
+        sDacLevel -= (now - sDacTime) * 32000.0;
+        if (sDacLevel < 0) {
+            sDacLevel = 0; /* the DAC ran dry: it idles, as the hardware does */
+        }
+    }
+    sDacTime = now;
+}
+
+static host_u32 live_clock(void) {
+    dac_advance();
+    return (host_u32)sDacLevel * 4;
+}
+
+static void audio_sink(const void *samples, host_u32 bytes) {
+    if (sCapFile != NULL) {
+        capture_sink(samples, bytes);
+    }
+    if (sLiveAudio) {
+        dac_advance();
+        sDacLevel += bytes / 4;
+        port_live_audio_write(samples, bytes);
+    }
+}
+
+static void outputs_setup(void) {
+    if (!sLiveAudio && port_live_audio_active != NULL && port_live_audio_active()) {
+        sLiveAudio = 1;
+        host_log("audio: live output to the presenter (DAC model: %s)", dac_model_on() ? "wall clock" : "off");
+    }
+    if (sCapFile == NULL && !sLiveAudio) {
+        return; /* neither output: leave the host's sink alone (seqrender installs its own) */
+    }
+    host_headless_set_audio_sink(audio_sink);
+    host_headless_set_audio_clock(!dac_model_on() ? NULL : sLiveAudio ? live_clock : capture_clock);
+}
+
 int port_audio_capture_open(const char *path) {
     sCapFile = fopen(path, "wb");
     if (sCapFile == NULL) {
         return -1;
     }
     capture_header(0);
-    host_headless_set_audio_sink(capture_sink);
-    if (getenv("PORT_AUDIO_DAC") == NULL || getenv("PORT_AUDIO_DAC")[0] != '0') {
-        /* the DAC model (default since run 840; its old fault was the 0xB5 byte-order bug, plan 15.10) */
-        host_headless_set_audio_clock(capture_clock);
-    }
+    /* the DAC model (default since run 840; its old fault was the 0xB5 byte-order bug, plan 15.10) */
+    outputs_setup();
     return 0;
 }
 
@@ -326,6 +387,7 @@ void port_audio_capture_close(void) {
     capture_header(sCapFrames);
     fclose(sCapFile);
     sCapFile = NULL;
+    sLiveAudio = 0;
     host_headless_set_audio_sink(NULL);
     host_headless_set_audio_clock(NULL);
     n = (double)sCapFrames * 2;

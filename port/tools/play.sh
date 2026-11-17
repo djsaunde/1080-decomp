@@ -2,34 +2,41 @@
 # Play the PC port live in a window (PC port plan 19.11): the 32-bit game (tenshoe, PORT_LIVE)
 # and the 64-bit presenter (port/gfx/fast3d/presenter.cpp) tied by one shared-memory name.
 #
-#   port/tools/play.sh [-b BUILD] [-r ROM] [-s SCALE] [-S] [-n NAME] [-p "PRESENTER ARGS"] [-- TENSHOE ARGS]
+#   port/tools/play.sh [-b BUILD] [-r ROM] [-s SCALE] [-S] [-m] [-l MS] [-n NAME] [-p "PRESENTER ARGS"] [-- TENSHOE ARGS]
 #
 #   -b   a built PORT_LINK=ON port tree holding tenshoe (default: configured and built on first
 #        use in <monorepo>/tools/play/<worktree>/build, about 3 minutes)
 #   -r   the ROM (default <game repo>/baserom.z64)
 #   -s   window scale over 320x240 (default 3: 960x720)
 #   -S   software GL (LIBGL_ALWAYS_SOFTWARE=1, llvmpipe) instead of the GPU
+#   -m   mute (no sound; the game's audio is still produced and drained)
+#   -l   audio buffer in ms (default 80; raise it if the sound crackles)
 #   -n   the shared-memory name (default 1080live-<pid>)
-#   -p   more presenter arguments (--png DIR --png-every N, --inject STEP:KEY:d|u,..., --frames N, --stay)
+#   -p   more presenter arguments (--png DIR --png-every N, --inject STEP:KEY:d|u,..., --frames N, --stay,
+#        --audio-dump FILE)
 #   --   more tenshoe arguments (--frames N, --input SCRIPT, --record LOG, --trace LOG, --audio-out WAV, ...)
 #
 # The save (1080.sram) is kept in <monorepo>/tools/play/<worktree>/run between sessions.
 # Keys: arrows / WASD stick (Shift = half), X or Space = A, Z = B, C = Z, Enter = START, Q = L,
 # E = R, I / J / K / L = C buttons, T / F / G / H = D-pad, Esc = quit. A Linux joystick
-# (/dev/input/js0) is used when present. Needs an X display (WSLg: DISPLAY=:0).
+# (/dev/input/js0, else the first evdev gamepad /dev/input/event*) is used when present. Needs an
+# X display (WSLg: DISPLAY=:0). Sound goes to PulseAudio ($PULSE_SERVER; WSLg's
+# unix:/mnt/wslg/PulseServer); without a server the game plays silent.
 # One-time setup (no sudo): scripts/setup-i386-sysroot.sh (monorepo), port/gfx/fast3d/setup-lus.sh,
-# port/gfx/replay/setup-gl-dev.sh, port/gfx/fast3d/setup-x11-dev.sh; this script runs the last
-# three itself when their tools/ directories are missing.
+# port/gfx/replay/setup-gl-dev.sh, port/gfx/fast3d/setup-x11-dev.sh, port/gfx/fast3d/setup-pulse-dev.sh;
+# this script runs the last four itself when their tools/ directories are missing (the audio one
+# may fail: the game then runs silent).
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 GAME="$(cd "$HERE/../.." && pwd)"
 MONO="$(cd "$GAME/../.." && pwd)"
 WORK="$MONO/tools/play/$(basename "$GAME")"
-BUILD= ROM="$GAME/baserom.z64" SCALE=3 SOFT=0 NAME="1080live-$$" PARGS=
-while getopts "b:r:s:Sn:p:h" o; do
+BUILD= ROM="$GAME/baserom.z64" SCALE=3 SOFT=0 NAME="1080live-$$" PARGS= MUTE= LAT=80
+while getopts "b:r:s:Sml:n:p:h" o; do
     case $o in
     b) BUILD=$OPTARG ;; r) ROM=$OPTARG ;; s) SCALE=$OPTARG ;; S) SOFT=1 ;; n) NAME=$OPTARG ;; p) PARGS=$OPTARG ;;
-    *) sed -n '2,24p' "$0"; exit 2 ;;
+    m) MUTE=--mute ;; l) LAT=$OPTARG ;;
+    *) sed -n '2,28p' "$0"; exit 2 ;;
     esac
 done
 shift $((OPTIND - 1))
@@ -45,6 +52,9 @@ for s in "$MONO/tools/lus:$GAME/port/gfx/fast3d/setup-lus.sh" "$MONO/tools/gl-de
          "$MONO/tools/x11-dev:$GAME/port/gfx/fast3d/setup-x11-dev.sh"; do
     [ -f "${s%%:*}/.complete" ] || "${s#*:}" || { echo "play: ${s#*:} failed"; exit 1; }
 done
+PULSE="$MONO/tools/pulse-dev"
+[ -f "$PULSE/.complete" ] || "$GAME/port/gfx/fast3d/setup-pulse-dev.sh" >"$WORK/setup-pulse.log" 2>&1 ||
+    echo "play: setup-pulse-dev.sh failed (see $WORK/setup-pulse.log): no sound"
 make -s -C "$GAME/port/gfx/fast3d" OUT="$WORK/gfx" "$WORK/gfx/presenter" -j8 >"$WORK/presenter-build.log" 2>&1 ||
     { tail -20 "$WORK/presenter-build.log"; echo "play: presenter build failed"; exit 1; }
 
@@ -63,8 +73,11 @@ fi
 [ -x "$BUILD/tenshoe" ] || { echo "play: no tenshoe in $BUILD"; exit 2; }
 
 [ $SOFT = 1 ] && export LIBGL_ALWAYS_SOFTWARE=1
-# shellcheck disable=SC2086  # PARGS is split on purpose
-"$WORK/gfx/presenter" --shm "$NAME" --scale "$SCALE" $PARGS &
+# libpulse-simple and its dependencies from tools/pulse-dev (dlopen'd by the presenter only)
+PLIB="$PULSE/root/usr/lib/x86_64-linux-gnu"
+# shellcheck disable=SC2086  # PARGS / MUTE are split on purpose
+LD_LIBRARY_PATH="$PLIB:$PLIB/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
+    "$WORK/gfx/presenter" --shm "$NAME" --scale "$SCALE" --audio-latency "$LAT" $MUTE $PARGS &
 PRES=$!
 trap 'kill $PRES 2>/dev/null' INT TERM
 echo "play: presenter pid $PRES; starting the game (PORT_LIVE=$NAME)"

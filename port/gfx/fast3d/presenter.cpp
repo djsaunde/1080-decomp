@@ -3,14 +3,19 @@
  *
  *   presenter [--shm NAME] [--scale N] [--png DIR] [--png-every N] [--frames N]
  *             [--inject STEP:KEY:d|u,...] [--js /dev/input/js0] [--stay]
+ *             [--mute] [--audio-latency MS] [--audio-dump FILE]
  *
  * It creates /dev/shm/NAME (live_shm.h), opens a window, and then, while the game
  * (tenshoe with PORT_LIVE=NAME, port/gfx/port_live.c) runs:
  *   - renders each frame the game publishes (one game step's gfx tasks, each the DLMP image
  *     PORT_GFX_DUMP would write) into the window, the way f3dreplay --then composites a step;
  *     when it falls behind it renders only the newest frame;
- *   - turns the keyboard (and a Linux joystick, if one is present) into pad 1 and writes it
- *     back into the shared header, where the game's host_read_pads picks it up each step.
+ *   - turns the keyboard (and a Linux joystick, if one is present: /dev/input/js0, else the
+ *     first evdev gamepad, live_gamepad.cpp) into pad 1 and writes it back into the shared
+ *     header, where the game's host_read_pads picks it up each step;
+ *   - plays the game's audio from the shm audio ring through PulseAudio on its own thread
+ *     (live_audio.cpp, plan 19.12; --mute drains it silently, --audio-latency sets the buffer,
+ *     default 80 ms, --audio-dump FILE writes the raw PCM received).
  * port/tools/play.sh starts both.
  *
  * The memory image. As in f3dreplay, every data chunk is copied to ITS OWN (32-bit) address
@@ -34,16 +39,8 @@
  * --frames N exits after N rendered frames (tells the game to quit). --stay keeps the window
  * open after the game ends.
  *
- * Render to texture (run 859, f3dreplay's run-855 pass): a task whose colour images are all narrower
- * than the frame (the name-entry board's 192x96 replay) is rendered in a pass of its own first; its
- * pixels are read back (patch 0003) as big-endian RGBA5551 into the arena where the other tasks load
- * that image as a texture, and the textures there are invalidated; the frame is then drawn from the
- * other tasks.
- *
- * Read-backs (run 859): the frame's DLUMP_FB_DEPTH pixels and DLUMP_FB_READ colour images are read
- * back at the end of its Run (patch 0003) and written to /dev/shm/NAME-fb (LiveFbReply, live_shm.h),
- * which the game stores into its images at its next gfx task. CPU writes (FB_WRITE, debug paths
- * only) are not composited. No audio. */
+ * Not yet: the framebuffer model's read-backs (DLUMP_FB_READ / FB_DEPTH) are not answered and
+ * CPU writes (FB_WRITE, debug paths only) are not composited; see live_shm.h. */
 
 #include <fcntl.h>
 #include <linux/joystick.h>
@@ -96,6 +93,8 @@ extern "C" {
 #include "../live_shm.h"
 }
 #include "../replay/egl_png.h"
+#include "live_audio.h"
+#include "live_gamepad.h"
 
 namespace Fast {
 void GfxSetInstance(std::shared_ptr<Interpreter> gfx);
@@ -228,6 +227,7 @@ struct Input {
     uint16_t keys = 0;
     /* the joystick (Linux js API) */
     int js = -1;
+    EvdevPad ev; /* when there is no js device */
     int axis[8] = {};
     uint16_t jsButtons = 0;
 
@@ -264,12 +264,23 @@ struct Input {
             char name[128] = "?";
             ioctl(js, JSIOCGNAME(sizeof(name)), name);
             std::printf("presenter: gamepad %s: %s\n", path, name);
+        } else {
+            ev.open();
         }
     }
     /* an Xbox-style layout: A = A, B / X = B, LB / left trigger = Z, RB / right trigger = R, Back = L,
      * Start = START, right stick = C buttons, hat = D-pad */
     void pollJoystick() {
         if (js < 0) {
+            uint16_t bits = 0;
+            if (ev.fd >= 0) {
+                ev.poll(axis, &bits);
+                static const uint16_t map[] = { B_A, B_B, B_B, C_U, B_Z, B_R, B_L, B_START };
+                jsButtons = 0;
+                for (int i = 0; i < 8; i++) {
+                    jsButtons |= (bits >> i) & 1 ? map[i] : 0;
+                }
+            }
             return;
         }
         js_event e;
@@ -293,7 +304,7 @@ struct Input {
             sy /= 2;
         }
         uint16_t b = keys | jsButtons;
-        if (js >= 0) {
+        if (js >= 0 || ev.fd >= 0) {
             if (std::abs(axis[0]) > 3000 || std::abs(axis[1]) > 3000) {
                 sx = axis[0] * 80 / 32767;
                 sy = -axis[1] * 80 / 32767;
@@ -787,17 +798,16 @@ static void on_signal(int) {
 int main(int argc, char** argv) {
     std::string name = "1080live", pngDir, jsPath = "/dev/input/js0";
     uint32_t scale = 3, pngEvery = 0, maxFrames = 0, slots = LIVE_DEFAULT_SLOTS, slotBytes = LIVE_DEFAULT_SLOT_BYTES;
-    bool stay = false, fbLog = false, fbReply = true;
+    bool stay = false;
+    LiveAudioOptions audio;
     std::vector<Inject> injects;
     for (int i = 1; i < argc; i++) {
         std::string a = argv[i];
         const char* v = i + 1 < argc ? argv[i + 1] : nullptr;
         if (a == "--stay") {
             stay = true;
-        } else if (a == "--fb-log") {
-            fbLog = true;
-        } else if (a == "--no-fb-reply") {
-            fbReply = false;
+        } else if (a == "--mute") {
+            audio.mute = true;
         } else if (v == nullptr) {
             std::fprintf(stderr, "presenter: %s needs a value\n", a.c_str());
             return 2;
@@ -811,6 +821,10 @@ int main(int argc, char** argv) {
             pngEvery = (uint32_t)std::atoi(argv[++i]);
         } else if (a == "--frames") {
             maxFrames = (uint32_t)std::atoi(argv[++i]);
+        } else if (a == "--audio-latency") {
+            audio.latencyMs = (uint32_t)std::max(20, std::atoi(argv[++i]));
+        } else if (a == "--audio-dump") {
+            audio.dumpPath = argv[++i];
         } else if (a == "--js") {
             jsPath = argv[++i];
         } else if (a == "--slot-mb") {
@@ -839,7 +853,8 @@ int main(int argc, char** argv) {
             }
         } else {
             std::fprintf(stderr, "usage: presenter [--shm NAME] [--scale N] [--png DIR] [--png-every N] [--frames N] "
-                                 "[--inject STEP:KEY:d|u,...] [--js DEV] [--slot-mb N] [--stay] [--fb-log] [--no-fb-reply]\n");
+                                 "[--inject STEP:KEY:d|u,...] [--js DEV] [--slot-mb N] [--stay] "
+                                 "[--mute] [--audio-latency MS] [--audio-dump FILE]\n");
             return 2;
         }
     }
@@ -850,6 +865,8 @@ int main(int argc, char** argv) {
     std::string path = "/dev/shm/" + name;
     int fd = ::open(path.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0600);
     size_t total = (size_t)LIVE_HEADER_BYTES + (size_t)slots * slotBytes;
+    const size_t audioOffset = total; /* the audio ring after the slots (live_shm.h LiveAudio) */
+    total += LIVE_AUDIO_DEFAULT_BYTES;
     if (fd < 0 || ftruncate(fd, (off_t)total) != 0) {
         std::fprintf(stderr, "presenter: cannot create %s\n", path.c_str());
         return 1;
@@ -867,25 +884,7 @@ int main(int argc, char** argv) {
     H->slotBytes = slotBytes;
     H->presenterPid = (live_u32)getpid();
     H->pads[0].connected = 1;
-    /* the read-back replies (run 859): a file of their own, ready before the magic */
-    std::string fbPath = path + "-fb";
-    LiveFbReply* reply = nullptr;
-    int ffd = fbReply ? ::open(fbPath.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0600) : -1;
-    if (ffd >= 0 && ftruncate(ffd, (off_t)sizeof(LiveFbReply)) == 0) {
-        void* m = mmap(nullptr, sizeof(LiveFbReply), PROT_READ | PROT_WRITE, MAP_SHARED, ffd, 0);
-        if (m != MAP_FAILED) {
-            reply = (LiveFbReply*)m;
-            std::memset(reply, 0, sizeof(*reply));
-            reply->magic = LIVE_FB_MAGIC;
-            reply->version = LIVE_FB_VERSION;
-        }
-    }
-    if (ffd >= 0) {
-        ::close(ffd);
-    }
-    if (reply == nullptr && fbReply) {
-        std::fprintf(stderr, "presenter: no %s: the game's read-backs will not be answered\n", fbPath.c_str());
-    }
+    live_audio_layout((LiveAudio*)(shm + LIVE_AUDIO_HDR), (uint32_t)audioOffset, LIVE_AUDIO_DEFAULT_BYTES);
     __atomic_store_n(&H->magic, LIVE_MAGIC, __ATOMIC_RELEASE);
 
     const uint32_t w = 320 * scale, h = 240 * scale;
@@ -894,6 +893,7 @@ int main(int argc, char** argv) {
         unlink(fbPath.c_str());
         return 1;
     }
+    live_audio_start(shm, audio);
     Renderer R;
     R.init(w, h);
     R.reply = reply;
@@ -1017,15 +1017,10 @@ int main(int argc, char** argv) {
             char title[160];
             std::snprintf(title, sizeof(title), "1080 Snowboarding (live) - step %u - %u fps", lastStep, secFrames);
             XStoreName(sWin.dpy, sWin.win, title);
-            std::printf("presenter: %u frames/s, %.1f MB/frame, render %.1f ms/frame, step %u, dropped %u, pads %04x %d,%d\n",
+            std::printf("presenter: %u frames/s, %.1f MB/frame, render %.1f ms/frame, step %u, dropped %u, pads %04x %d,%d%s\n",
                         secFrames, secFrames ? secBytes / 1048576.0 / secFrames : 0.0,
                         secFrames ? secRender * 1000.0 / secFrames : 0.0, lastStep, H->dropped, lastPad.button,
-                        lastPad.stick_x, lastPad.stick_y);
-            if (secRtt + secFar + secNear + secOther + secColor != 0) {
-                std::printf("presenter:   render to texture %u, depth replies %u far / %u nearer / %u not served, "
-                            "colour replies %u\n", secRtt, secFar, secNear, secOther, secColor);
-            }
-            secRtt = secFar = secNear = secOther = secColor = 0;
+                        lastPad.stick_x, lastPad.stick_y, live_audio_status().c_str());
             std::fflush(stdout);
             /* a game that died without saying so (a crash) */
             if (H->gamePid != 0 && !__atomic_load_n(&H->gameExited, __ATOMIC_ACQUIRE) && kill((pid_t)H->gamePid, 0) != 0) {
@@ -1046,6 +1041,7 @@ int main(int argc, char** argv) {
     for (int i = 0; i < 200 && !__atomic_load_n(&H->gameExited, __ATOMIC_ACQUIRE) && H->gamePid != 0; i++) {
         usleep(10000);
     }
+    live_audio_stop();
     std::printf("presenter: %u frames rendered, %u dropped by the game, %u too big\n", rendered, H->dropped, H->tooBig);
     unlink(path.c_str());
     unlink(fbPath.c_str());
