@@ -235,5 +235,9 @@ void port_trace_frame_end(u32 frameCount) {
                 fbits(r->pos[1]), fbits(r->pos[2]), fbits(r->quat[0]), fbits(r->quat[1]),
                 fbits(r->quat[2]), fbits(r->quat[3]), fbits(r->speed), (int)r->animState);
     }
+    if (f.have & PORT_TRACE_HAVE_ENTRY) {
+        fprintf(sState, " e0=%08x,%08x,%d,%d", fbits(f.entryPct), fbits(f.entrySpeed),
+                (int)f.entryFinished, (int)f.entryHealth);
+    }
     fputc('\n', sState);
 }

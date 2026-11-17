@@ -7946,6 +7946,7 @@ void *game_ItemType_create_00011A94(int *arg0) {
  *   rt       RcpMgr.retraceCount (virtual: 2 per frame)
  *   el       GameFlow.dataMgr->elapsed (RaceTracker / DataManager, ms)
  *   race     dataMgr->owner->raceState / flags (RaceProcess)
+ *   e0       dataMgr->entries[0]: pct (100 at the goal), speed (the HUD km/h), finished, health
  *   r<i>     dataMgr->entries[i].rider (a SnowBoarder): dnode.vqs.trans, dnode.vqs.quat,
  *            dnode.speed, and the RiderAnim state method (anim->state.b, the PMF's function word;
  *            a host address on the port, a ROM address in an emulator trace: map both to names
@@ -7996,6 +7997,13 @@ void port_trace_collect(PortTraceFrame *f) {
             f->raceState = dm->owner->raceState;
             f->raceFlags = (u32)dm->owner->flags;
             f->have |= PORT_TRACE_HAVE_RACE;
+        }
+        if (PORT_TRACE_PTR(dm->entries) && dm->numEntries > 0) {
+            f->entryPct = dm->entries[0].pct;
+            f->entrySpeed = dm->entries[0].speed;
+            f->entryFinished = dm->entries[0].finished;
+            f->entryHealth = dm->entries[0].health;
+            f->have |= PORT_TRACE_HAVE_ENTRY;
         }
         if (PORT_TRACE_PTR(dm->entries)) {
             for (i = 0; i < dm->numEntries && f->numRiders < PORT_TRACE_MAX_RIDERS; i++) {

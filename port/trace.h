@@ -20,6 +20,10 @@
  *   F <frame> have=<hex> flow=<state>,<next>,<mode> race=<state>,<flags:hex>
  *     rand=<hex8> rt=<retraceCount> vi=<viRetraces> el=<elapsed>
  *     cam=<6 x hex8> r<i>=<px,py,pz,qx,qy,qz,qw,speed as hex8>/<anim>
+ *     [e0=<pct:hex8>,<speed:hex8>,<finished>,<health>]
+ *   e0 is the DataManager's RaceEntry 0 (the player, include/gdl/race.h): pct reaches 100.0 at the
+ *   finish line ("Goal!") and finished counts the frames there; speed is what the HUD's km/h
+ *   gadget prints ((int)speed, RaceTracker_update). Written only when its have bit is set.
  * Floats are written as their IEEE bit patterns (hex8): diffs are exact.
  * Fields whose `have` bit is clear were not collected and are written as 0. */
 
@@ -32,6 +36,7 @@
 #define PORT_TRACE_HAVE_ELAPSED 0x10 /* DataManager elapsed (ms) */
 #define PORT_TRACE_HAVE_RAND 0x20    /* sys_randf state (bootup Data 0x21E04) */
 #define PORT_TRACE_HAVE_RETRACE 0x40 /* RcpMgr retraceCount (virtual) */
+#define PORT_TRACE_HAVE_ENTRY 0x80   /* DataManager entries[0]: pct, speed, finished, health */
 
 #define PORT_TRACE_MAX_RIDERS 4
 
@@ -58,6 +63,10 @@ typedef struct PortTraceFrame {
     u32 randState;
     u32 retraceCount;
     u32 viRetraces; /* the shim's virtual VI count, always filled */
+    f32 entryPct;   /* entries[0].pct (0..100) */
+    f32 entrySpeed; /* entries[0].speed: the HUD km/h value */
+    s32 entryFinished;
+    s32 entryHealth;
 } PortTraceFrame;
 
 /* Open the logs. Any path may be NULL. record: input log written;
