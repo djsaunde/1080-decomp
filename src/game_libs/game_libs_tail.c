@@ -1709,8 +1709,10 @@ void Backup_resetOptions(int a0) {
 #ifdef PORT
     /* the 24-byte BackupOptions is built at &scratch and runs into pad_arr above it in the IDO
      * frame; gcc orders the locals its own way (the fresh-SRAM path smashed the return address,
-     * plan 18.11): one buffer of the full size */
-    BackupOptions scratch;
+     * plan 18.11): one buffer of the full size.  Zeroed: resetOptionsData never writes pad15[3],
+     * which on the N64 (and before run 845 here) went to SRAM as stack garbage; the port writes
+     * zeros so a fresh save is deterministic (plan 20.1) */
+    BackupOptions scratch = { 0 };
 #else
     int pad_arr[5];
     int scratch;
@@ -1949,8 +1951,10 @@ int Backup_checkGhost(void *arg0) {
 
 extern int gl_func_00000000();
 void Backup_resetGhost(int a0) {
-#ifdef PORT /* the record runs from &scratch into pad_arr in the IDO frame: one full-size buffer (see Backup_resetOptions) */
-    BackupGhost scratch;
+#ifdef PORT /* the record runs from &scratch into pad_arr in the IDO frame: one full-size buffer (see Backup_resetOptions).
+             * Zeroed: resetGhostData's setters clear only bits 0-13 and nothing writes unkC, which the
+             * N64 saves as stack garbage; the port writes zeros (deterministic fresh save, plan 20.1) */
+    BackupGhost scratch = { 0 };
 #else
     int pad_arr[3];
     int scratch;

@@ -11,8 +11,9 @@
  *       Builds the N64 image of the ROM's default records independently of the game code
  *       (Backup_resetCourseData / resetArcadeData / resetOptionsData / resetGhostData, the
  *       checksums, the mirrors, the header hash) and requires <save> to be byte-identical
- *       (the bytes the game leaves uninitialized are taken from <save>: options pad15[3],
- *       the ghost header's bits above bit 13 and unkC).  With <out.sra>, writes a synthetic
+ *       (the bytes the ROM leaves uninitialized, options pad15[3] and the ghost header's bits
+ *       above bit 13 and unkC, are stack garbage on the N64; the port zeroes them, run 845, so
+ *       they must be 0).  With <out.sra>, writes a synthetic
  *       big-endian image with NON-default records, a ghost and hardware checksums, and checks
  *       that the port's SRAM reads decode it to the values it was built from; the gate then
  *       boots the game on it and requires the file to stay unchanged (no chunk reset).
@@ -281,6 +282,7 @@ static void build_defaults(u8 *img, const u8 *data, const u8 *save) {
     int k, j, i;
     u8 *e;
 
+    (void)save; /* the uninitialized bytes used to come from it; zeros since run 845 */
     memset(img, 0, SRAM_SIZE);
     for (k = 0; k < BACKUP_NUM_COURSES; k++) {
         u8 *rec = img + BACKUP_SRAM_COURSE + k * sizeof(BackupCourseRecord);
@@ -312,10 +314,10 @@ static void build_defaults(u8 *img, const u8 *data, const u8 *save) {
     put16(e + 2, 1);
     put16(e + 4, 8);
     e[0x12] = e[0x13] = e[0x14] = 8;
-    memcpy(e + 0x15, save + BACKUP_SRAM_OPTIONS + 0x15, 3); /* pad15: not initialized */
+    /* pad15[3]: not initialized by the ROM (N64: stack garbage); the port writes zeros (run 845) */
     e = img + BACKUP_SRAM_GHOST;
-    put32(e, be32(save + BACKUP_SRAM_GHOST) & ~0x3FFFu); /* the setters clear bits 0-13 only */
-    memcpy(e + 0xC, save + BACKUP_SRAM_GHOST + 0xC, 4);  /* unkC: not initialized */
+    /* bits: the setters clear bits 0-13 only; bits 14-31 and unkC are stack garbage on the N64,
+     * zeros on the port (Backup_resetGhost's zeroed scratch, run 845): img is already 0 there */
     hw_seal(img);
 }
 
