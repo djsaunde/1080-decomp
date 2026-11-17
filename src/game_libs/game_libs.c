@@ -3514,13 +3514,23 @@ void RaceProcess_drawGui(RaceProcess *arg0) {
             }
             break;
         case 3:
+#ifndef PORT
             new_var = &D_00000000;
+#else /* PC port (plan 18.8): one source site, two ROM objects: the nextFlowMode read is the GameFlow
+       * (HI16 / LO16 +0x300 / +0x304 = Bss+0xF8, field 0x34 in the lw), the indexed word the result
+       * table (+0x330 / +0x340 = Data+0xCF64); gcc keeps one address, so name each object */
+            new_var = &XDATA(D_00000000, port_bootup_bss, 0xF8);
+#endif
             if (!(arg0->flags & RACEF_NO_RESULT_MSG)) {
                 vt = arg0->vt;
                 vt->slot[RACEVT_DRAW_RESULT].fn((char *)arg0 + vt->slot[RACEVT_DRAW_RESULT].delta, arg0->result, (s32)arg0->msgY);
                 if (GAMEFLOW(new_var)->nextFlowMode == 2) { /* new_var = the GameFlow (Bss+0xF8 Sym 272) */
                     vt = arg0->vt;
+#ifndef PORT
                     vt->slot[RACEVT_DRAW_RESULT].fn((char *)arg0 + vt->slot[RACEVT_DRAW_RESULT].delta, ((int *)new_var)[arg0->result], (s32)(arg0->msgY + 120.0f));
+#else
+                    vt->slot[RACEVT_DRAW_RESULT].fn((char *)arg0 + vt->slot[RACEVT_DRAW_RESULT].delta, ((int *)&XDATA(D_00000000, port_bootup_data, 0xCF64))[arg0->result], (s32)(arg0->msgY + 120.0f));
+#endif
                 }
             }
             break;

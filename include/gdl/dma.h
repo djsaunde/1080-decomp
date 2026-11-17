@@ -32,7 +32,11 @@ typedef struct DmaSlot {
 /* The slot table: bootup.uso Bss object at Bss+0x3A240 (Sym 1504, tag
  * 0x008277D2). Every dma_* TextReloc names that Sym; the instructions carry
  * only the field offsets (include/gdl/gl_data.h). */
+#ifndef PORT
 #define gDmaSlots ((DmaSlot *)&D_00000000)
+#else /* PC port (plan 18.8): the Bss object itself; `gDmaSlots + 1` must not become `D_00000000 + 0x44` */
+#define gDmaSlots ((DmaSlot *)(port_bootup_bss + 0x3A240))
+#endif
 
 /* dma_* error strings, Data-section-base sites (Sym 2): */
 #define sDmaReadNotAligned  GL_DATA(0x1E2C0) /* "read not aligned %d %x" */

@@ -166,7 +166,7 @@ int Mgr::run() {
     u8 *buf;
     if (G1C4(gGfxLib_493AC_a) & 8) {
         pad1 = (int)this; if (1) { pad1 += 0x30; } *(int *)pad1 |= 0x80; /* agent-g run 221: pointer mutation behind if (1) = the target's addiu v0,s6,48 + lw/sw 0(v0) */
-        buf = (u8 *)CALL(heap_tempAlloc)(D_00000000, n44);
+        buf = (u8 *)CALL(heap_tempAlloc)(XDATA(D_00000000, port_bootup_bss, 0x3C740), n44);
         for (pad2 = 0; pad2 < n44; pad2++) { /* agent-c run 302: the clear loop counts in the (zeroed, otherwise dead) pad2 word, not a block-scoped u32 i2: i2's edg temp word sat between the two iter() return temps (second one at sp+132, target sp+136); with it gone and the `Ctx *g = 0;` home-keeping local back in the second loop every sp offset is the target's (pad2 < n44 compares unsigned like i2 did): 99.6467 -> 99.6488, same length */
             buf[pad2] = 0;
         }
@@ -249,7 +249,7 @@ int Mgr::run() {
     }
     CALL(sys_printStub_00067AE8)(S(0x1FFAC), m0c, total);
     if (G1C4(gGfxLib_493AC_c) & 8) {
-        CALL(heap_tempFree)(D_00000000, buf);
+        CALL(heap_tempFree)(XDATA(D_00000000, port_bootup_bss, 0x3C740), buf);
     }
     CALL(sys_imout)();
     CALL(sys_printStub_00067AE8)(S(0x1FFB4));

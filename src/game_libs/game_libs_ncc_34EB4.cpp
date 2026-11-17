@@ -47,14 +47,14 @@ extern "C" void app_run(St *a0, App *a1) {
         do {
             Node *n;
             for (n = a0->list; n != 0; n = n->next) CALL(pad_update)(n);
-            if (GFXLIB(DB)->rcp->preNmi != 0) a1->v15(); /* v15 is vtable slot 14, App_onPreNmi */
+            if (GFXLIB(XDATA(DB, port_bootup_bss, 0x3C168))->rcp->preNmi != 0) a1->v15(); /* v15 is vtable slot 14, App_onPreNmi */
             while (a0->flags & 4) {
                 a0->f10 = 0;
                 CALL(gl_osYieldThread)();
             }
             a0->f10 = 0;
             CALL(sys_imin)(DB + 0x1E484);
-            CALL(gfx_start)(DB);
+            CALL(gfx_start)(XDATA(DB, port_bootup_bss, 0x3C168));
             CALL(prof_timerStart)(DB + 0x1E490);
             CALL(sys_imout)();
             CALL(sys_imin)(DB + 0x1E494);
@@ -68,7 +68,7 @@ extern "C" void app_run(St *a0, App *a1) {
             CALL(prof_timerStop)(DB + 0x1E4D0);
             CALL(sys_imout)();
             CALL(sys_imin)(DB + 0x1E4DC);
-            CALL(gfx_end)(DB);
+            CALL(gfx_end)(XDATA(DB, port_bootup_bss, 0x3C168));
             CALL(sys_imout)();
             CALL(prof_timerStop)(DB + 0x1E4E4);
             CALL(prof_timerStop)(DB + 0x1E4F0);

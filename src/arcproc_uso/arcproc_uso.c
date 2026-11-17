@@ -24,7 +24,13 @@ extern char D_00000000;
  * eddproc_uso_func_00000000, n64proc_uso_func_00000000, h2hproc_uso_func_00000000. */
 void arcproc_uso_func_00000000(int *dst) {
     int buf[2];
+#ifdef PORT /* plan 18.8: the gate tools cannot attribute this PREFIX_BYTES Text+0 function, so it is bound by
+             * hand from its ROM TextRelocs: the jal (Text+0x1C) is fs_gdlReadFile, the HI16 / LO16 at
+             * +0xC / +0x10 bootup Bss+0x3C740 (gSysLib), as in the module's other fs_gdlRead* readers */
+    { extern int fs_gdlReadFile(); extern char port_bootup_bss[]; fs_gdlReadFile(port_bootup_bss + 0x3C740, buf, 4); }
+#else
     gl_func_00000000(&D_00000000, buf, 4); /* UNNAMED: sentinel this gl_func_00000000 must stay: the ROM jal (T+0x1C) is fs_gdlReadFile, but the check attributes T+0x1C to no build function (the post-cc PREFIX_BYTES trampoline of this entry-0 function), so CALL(fs_gdlReadFile) fails the gate */
+#endif
     *dst = buf[0];
 }
 

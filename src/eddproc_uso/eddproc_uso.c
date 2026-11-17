@@ -37,7 +37,13 @@ typedef struct { float x, y, z; } Vec3;
 void eddproc_uso_func_00000000(int *dst) {
     int buf[2];
     /* UNNAMED: sentinel this is the sentinel-named Text+0 function (PREFIX_BYTES trampoline at word 0), which the call resolver cannot place; the ROM jal at Text+0x18 is fs_gdlReadFile */
+#ifdef PORT /* plan 18.8: the gate tools cannot attribute this PREFIX_BYTES Text+0 function, so it is bound by
+             * hand from its ROM TextRelocs: the jal (Text+0x18) is fs_gdlReadFile, the HI16 / LO16 at
+             * +0xC / +0x10 bootup Bss+0x3C740 (gSysLib), as in the module's other fs_gdlRead* readers */
+    { extern int fs_gdlReadFile(); extern char port_bootup_bss[]; fs_gdlReadFile(port_bootup_bss + 0x3C740, buf, 4); }
+#else
     gl_func_00000000(&D_00000000, buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -231,22 +237,22 @@ void edd_EditorsProcess_handleInput(int a0) {
 void edd_readIntParm_0000032C(char *dst) {
     int tmp;
     /* UNNAMED: sentinel callee is eddproc Text+0 = eddproc_uso_func_00000000 (a *_00000000 name, kept) */
-    gl_func_00000000(&tmp);
+    SCALL(gl_func_00000000, eddproc_uso_func_00000000)(&tmp);
     /* UNNAMED: sentinel callee is eddproc Text+0 = eddproc_uso_func_00000000 (a *_00000000 name, kept) */
-    gl_func_00000000(dst + 0x10);
+    SCALL(gl_func_00000000, eddproc_uso_func_00000000)(dst + 0x10);
 }
 
 void edd_readFloatParm_0000035C(char *dst) {
     int tmp;
     /* UNNAMED: sentinel callee is eddproc Text+0 = eddproc_uso_func_00000000 (a *_00000000 name, kept) */
-    gl_func_00000000(&tmp);
+    SCALL(gl_func_00000000, eddproc_uso_func_00000000)(&tmp);
     eddproc_uso_func_edd_3C((float*)(dst + 0x10));
 }
 
 void edd_readQuadParm_0000038C(char *dst) {
     int tmp;
     /* UNNAMED: sentinel callee is eddproc Text+0 = eddproc_uso_func_00000000 (a *_00000000 name, kept) */
-    gl_func_00000000(&tmp);
+    SCALL(gl_func_00000000, eddproc_uso_func_00000000)(&tmp);
     eddproc_uso_func_edd_78((Quad4*)(dst + 0x10));
 }
 
@@ -290,7 +296,7 @@ void *edd_ItemType_create_000003BC(int *arg0) {
 void edd_readVec3Parm_0000044C(char *dst) {
     int tmp;
     /* UNNAMED: sentinel callee is eddproc Text+0 = eddproc_uso_func_00000000 (a *_00000000 name, kept) */
-    gl_func_00000000(&tmp);
+    SCALL(gl_func_00000000, eddproc_uso_func_00000000)(&tmp);
     eddproc_uso_func_edd_D0((Vec3*)(dst + 0x10));
 }
 /* EditorsProcess drawGui (Text record payload +0x478, splat offset 0x47C; Sym 42, the vtable slot

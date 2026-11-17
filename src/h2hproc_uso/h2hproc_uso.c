@@ -1083,10 +1083,21 @@ void h2h_WhiteFader_display(char *a0) {
  *    resident from context IDO 7.1 can't reproduce, or an allocator-order
  *    artifact (uoptlist class).
  */
+/* PC port (plan 18.8): `base` is one register for ten ROM objects (the TextRelocs of this function:
+ * h2hproc Data+0 (+0x3F4 name) and +0x1A0 (vtable), bootup Bss+0x28C (the row-label word), the five
+ * h2h_pause* callbacks, bootup Data+0xD698 (font) and Bss+0xF8 (the GameFlow fields)). H2H_AT(XDATA(..))
+ * is `base` in the matching build and the named object's address on the port. */
+#ifdef PORT
+#define H2H_AT(x) ((char *)&(x))
+#else
+#define H2H_AT(x) base
+#endif
 void *h2h_createPauseMenu_00000FD0(void *a0, int *a1) {
     extern void gl_func_00000000_void();  /* void alias (=0x0): dead-$v0-def lever */
     int *tmp;
+#ifndef PORT
     char *base = &D_00000000;
+#endif
     int *tmp2, *nst;
 
     if (a0 == 0) {
@@ -1095,8 +1106,8 @@ void *h2h_createPauseMenu_00000FD0(void *a0, int *a1) {
                                      target uses beq v0,zero,end, not a separate
                                      `or v0,zero,zero` return-0 path */
     }
-    CALL(Node_ctor)(a0, base + 0x3F4);
-    NODE(a0)->vptr = (char *)base;
+    CALL(Node_ctor)(a0, H2H_AT(XDATA(D_00000000, port_h2hproc_data, 0x0)) + 0x3F4);
+    NODE(a0)->vptr = (char *)H2H_AT(XDATA(D_00000000, port_h2hproc_data, 0x1A0));
     H2HWINS(a0)->race = (int)a1;
     H2HWINS(a0)->fader = CALL(h2h_WhiteFader_ctor)(0);
     H2HWINS(a0)->menu = CALL(PauseMenu_create)(0);
@@ -1107,12 +1118,12 @@ void *h2h_createPauseMenu_00000FD0(void *a0, int *a1) {
      * (feedback_remove_local_recompute_inline_lever). */
     tmp = (int*)H2HWINS(a0)->race;
     CALL(gui_initRows_000100F0)(H2HWINS(a0)->menu, tmp);
-    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)base + 3) << 16) | 0x1, -1, base);
-    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)base + 3) << 16) | 0x4, -1, base);
-    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)base + 3) << 16) | 0x3, -1, base);
-    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)base + 3) << 16) | 0x2, -1, base);
-    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)base + 3) << 16) | 0x5, -1, base);
-    GUIMENU(H2HWINS(a0)->menu)->unk30 = CALL(gui_fontCreate)(0, base, 72, 221, 3, 13);
+    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)H2H_AT(XDATA(D_00000000, port_bootup_bss, 0x28C)) + 3) << 16) | 0x1, -1, H2H_AT(XDATA(D_00000000, h2h_pauseRetry, 0x0)));
+    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)H2H_AT(XDATA(D_00000000, port_bootup_bss, 0x28C)) + 3) << 16) | 0x4, -1, H2H_AT(XDATA(D_00000000, h2h_pauseChangeCourse, 0x0)));
+    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)H2H_AT(XDATA(D_00000000, port_bootup_bss, 0x28C)) + 3) << 16) | 0x3, -1, H2H_AT(XDATA(D_00000000, h2h_pauseChangeBoard, 0x0)));
+    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)H2H_AT(XDATA(D_00000000, port_bootup_bss, 0x28C)) + 3) << 16) | 0x2, -1, H2H_AT(XDATA(D_00000000, h2h_pauseChangeCharacter, 0x0)));
+    CALL(gui_addRowSub_00010B6C)(H2HWINS(a0)->menu, ((*(int*)H2H_AT(XDATA(D_00000000, port_bootup_bss, 0x28C)) + 3) << 16) | 0x5, -1, H2H_AT(XDATA(D_00000000, h2h_pauseQuit, 0x0)));
+    GUIMENU(H2HWINS(a0)->menu)->unk30 = CALL(gui_fontCreate)(0, H2H_AT(XDATA(D_00000000, port_bootup_data, 0xD698)), 72, 221, 3, 13);
     /* void-prototyped alias (=0x0): the unused K&R int return of these two
      * calls left a dead $v0 def that excluded $v0 from tmp2's web (colored
      * $v1). Void callee -> no dead def -> tmp2 colors $v0 (docs/IDO_CODEGEN
@@ -1132,13 +1143,14 @@ void *h2h_createPauseMenu_00000FD0(void *a0, int *a1) {
         NODE(tmp)->unk04 = 1;
     }
     NODE(tmp)->parent = (Node *)a0;
-    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[0], ((InputMgr *)base)->playerRider | (0x1D << 16)); /* base = the GameFlow import here (bootup Bss+0xF8 relocs) */
-    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[1], ((InputMgr *)base)->playerBoard | (0x1E << 16));
-    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[2], ((InputMgr *)base)->rider2 | (0x1D << 16));
-    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[3], ((InputMgr *)base)->board2 | (0x1E << 16));
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[0], ((InputMgr *)H2H_AT(XDATA(D_00000000, port_bootup_bss, 0xF8)))->playerRider | (0x1D << 16)); /* base = the GameFlow import here (bootup Bss+0xF8 relocs) */
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[1], ((InputMgr *)H2H_AT(XDATA(D_00000000, port_bootup_bss, 0xF8)))->playerBoard | (0x1E << 16));
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[2], ((InputMgr *)H2H_AT(XDATA(D_00000000, port_bootup_bss, 0xF8)))->rider2 | (0x1D << 16));
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[3], ((InputMgr *)H2H_AT(XDATA(D_00000000, port_bootup_bss, 0xF8)))->board2 | (0x1E << 16));
 end:
     return a0;
 }
+#undef H2H_AT
 
 /* h2h_WinsDisplay_update_00001204: 87-insn (0x15C) state-machine + indirect call.
  * Two-path counter update on a0->[0x34]->[0x3C] gated by

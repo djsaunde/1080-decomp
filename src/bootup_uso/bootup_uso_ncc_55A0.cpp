@@ -275,7 +275,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
                 }
                 ((Tv1Callback *)n2)->vptr = &D_55A0_n2;
             }
-            DI(0) = 0;
+            (*(int *)((char *)&XDATA(D_00000000, port_bootup_bss, 0x24) + (0))) = 0; /* DI(0): ROM sw at +0x6C4 / +0x6C8 = Bss+0x24 */
             ((Tv1Tmpl *)obj)->state = 2;
             ((Tv1Tmpl *)obj)->frameImage = 0;
             ((Tv1Tmpl *)obj)->timer = 0;
@@ -285,7 +285,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
         FCALL(ItemMgr_addType)(DROOT, obj, 0xFFFF);
     }
 
-    FCALL(ItemType_setNext)(DROOT, DP(0));
+    FCALL(ItemType_setNext)(DROOT, ((void *)((char *)&XDATA(D_00000000, port_bootup_data, 0x7B6C) + (0)))); /* DP(0): ROM a1 at +0x6FC / +0x700 = Data+0x7B6C */
 
     /* trailing 0x48 / 0x58 objects + transform-group registration */
     nl = (char *)FCALL(PolyShape_ctor)(0, &sStr_light01_7E48, &D_55A0_tb, 0);

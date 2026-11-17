@@ -166,7 +166,7 @@ void gui_drawString(int *a0, int a1, int a2, unsigned char *a3) {
     for (i = 0; i < (unsigned int)CALL(str_len)(a3); p++, i++) {
         if (*p != ' ') {
             /* UNNAMED: sentinel callee is gui Text+0 = gui_func_00000000, the char-to-glyph mapper (a *_00000000 name, kept) */
-            idx = gl_func_00000000(*p);
+            idx = SCALL(gl_func_00000000, gui_func_00000000)(*p);
             gi = idx;
             g = (int *)(a0[0x20 / 4] + idx * stride);
             g0 = g[0]; g1 = g[1]; w = g[2];
@@ -270,7 +270,7 @@ void gui_drawString_00000D04(int *a0, int *a1, int a2, char *a3) {
         do {
             if (*p != ' ') {
                 /* UNNAMED: sentinel callee is gui Text+0 = gui_func_00000000, the char-to-glyph mapper (a *_00000000 name, kept) */
-                int g = gl_func_00000000(*p);
+                int g = SCALL(gl_func_00000000, gui_func_00000000)(*p);
                 unsigned int gi = (unsigned char)g;
                 int sd = (scale * 1024) / scale;
                 int *glyph = (int *)((char *)a0[0x20 / 4] + g * 0x14);
@@ -425,7 +425,7 @@ int gui_stringWidth(char *a0, unsigned char *a1) {
             c = *p;
             if (c != 0x20) {
                 /* UNNAMED: sentinel callee is gui Text+0 = gui_func_00000000, the char-to-glyph mapper (a *_00000000 name, kept) */
-                key = gl_func_00000000(c);
+                key = SCALL(gl_func_00000000, gui_func_00000000)(c);
                 total += ((GuiFont *)a0)->glyphs[key].width; /* game/guifont.h */
             } else {
                 total += ((GuiFont *)a0)->spaceWidth;

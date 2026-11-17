@@ -23,6 +23,12 @@
  *   GCALL(f)      game_uso_func_00000000
  *   XCALL(tok, f) tok                      (any other placeholder token, e.g. a
  *                                           per-site alias `gl_func_00000000_send`)
+ *   SCALL(tok, f) tok                      a call whose ROM target is the module's Text+0
+ *                                           function f, a `*_00000000` sentinel that the call
+ *                                           resolver does not place (PREFIX_BYTES trampoline
+ *                                           entries: gui_func_00000000 ...), so the gate cannot
+ *                                           check f; the binds list such sites as `unnamed
+ *                                           Text+0x0` (plan 18.8)
  *
  * NCC .cpp donors build without -I include: include this file by relative path.
  *
@@ -58,6 +64,7 @@
 #define FCALL(f) f
 #define GCALL(f) f
 #define XCALL(tok, f) f
+#define SCALL(tok, f) f
 #else
 #define PORT_CALL_AS(tok, f) PORT_CALL_AS_(tok, f, __COUNTER__)
 #define PORT_CALL_AS_(tok, f, n) PORT_CALL_AS__(tok, f, n)
@@ -67,12 +74,14 @@
 #define FCALL(f) PORT_CALL_AS(func_00000000, f)
 #define GCALL(f) PORT_CALL_AS(game_uso_func_00000000, f)
 #define XCALL(tok, f) PORT_CALL_AS(tok, f)
+#define SCALL(tok, f) PORT_CALL_AS(tok, f)
 #endif
 #else
 #define CALL(f) gl_func_00000000
 #define FCALL(f) func_00000000
 #define GCALL(f) game_uso_func_00000000
 #define XCALL(tok, f) tok
+#define SCALL(tok, f) tok
 #define XDATA(tok, sym, off) tok
 #endif
 

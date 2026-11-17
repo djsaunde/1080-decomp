@@ -176,6 +176,10 @@ extern void gSkinMgrs_41700_90cc_fz();  /* 0x814/818/81C source base: target lui
 typedef struct { s32 rider; s32 slot; char ddm[0x10]; } RiderDdmRow_90cc;
 extern void bu_90cc_fz2();  /* sp174 list-walk head (same blank address), fn-typed for the same reason */
 
+/* PC port (plan 18.8): the XDATA sites are hand-bound from the ROM TextRelocs (the verify compile
+ * of this donor-recipe body differs): Bss+0xF8 (gInputMgr; the addiu bases at +0x12CC / +0x12EC
+ * that the +0x34 / +0x4C / +0x58 / +0x17D field reads share), then the three word loads
+ * Bss+0x10 (+0x16BC, CollObjMgr_addDynamic a0), Bss+0x50 (+0x16D4, a0), Bss+0xD8 (+0x1B30, a1). */
 void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6, s32 arg7, s32 arg8) {
     s32 sp174;
     Vec3 vpos;
@@ -672,10 +676,10 @@ sw_c6:
         arg8 |= 1;
 sw_end:
         sp174 = 0 + 0 * (int)(arg8); /* agent-c run 212: folded counted use (zero code) */
-        if ((arg1 == 1) && (*(s32 *)((char *)&D_00000000 + 0x58) == *(s32 *)((char *)&D_00000000 + 0x4C))) {
+        if ((arg1 == 1) && (*(s32 *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x58) == *(s32 *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x4C))) {
             sp174 = 1;
         }
-        if ((*(s32 *)((char *)&D_00000000 + 0x34) == 3) && (*(u8 *)((char *)&D_00000000 + 0x17D) == *(s32 *)((char *)&D_00000000 + 0x4C)) && (arg1 == 2)) {
+        if ((*(s32 *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x34) == 3) && (*(u8 *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x17D) == *(s32 *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x4C)) && (arg1 == 2)) {
             sp174 = 1 + 0 * (int)(sp174); /* agent-c run 212: folded counted use (zero code) */
         }
         if ((arg2 == 7) || (arg2 == 6)) {
@@ -747,7 +751,7 @@ sw_end:
                 SNOWB(arg0)->tint[1] = temp_f0;
                 SNOWB(arg0)->tint[2] = temp_f0;
                 SNOWB(arg0)->tint[3] = 70.0f / inv;
-                if (*(s32 *)((char *)&D_00000000 + 0x34) != 2) {
+                if (*(s32 *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x34) != 2) {
                     arg7 |= 0x1000;
                 }
             }
@@ -766,11 +770,11 @@ sw_end:
         } else {
             SNOWB(arg0)->collCategory = 1; SNOWB(arg0)->collHitMask = 5; /* agent-c run 221: 0x88E first on the line = the target's 1 / 5 constant order */
         }
-        FCALL(CollObjMgr_addDynamic)(*(s32 *)((char *)&D_00000000 + 0), temp_s1);
+        FCALL(CollObjMgr_addDynamic)(*(s32 *)((char *)&XDATA(D_00000000, port_bootup_bss, 0x10) + 0), temp_s1);
         vpos.x = arg5;
         vpos.y = 0.0f;
         goto bu_90cc_lz;
-    bu_90cc_lc: bu_90cc_call_iipif(*(s32 *)((char *)&D_00000000 + 0), 1, &vpos.y, arg5, arg6); goto bu_90cc_le;
+    bu_90cc_lc: bu_90cc_call_iipif(*(s32 *)((char *)&XDATA(D_00000000, port_bootup_bss, 0x50) + 0), 1, &vpos.y, arg5, arg6); goto bu_90cc_le;
     bu_90cc_lz: if (1) {} vpos.z = arg6; goto bu_90cc_lc;
     bu_90cc_le: ;
         vpos.y += kRo_SnowBoarder_ctor_8B0;
@@ -902,7 +906,7 @@ sw_end:
         ((SnowBVec3 *)var_s0)->x = temp_f0;
         ((SnowBVec3 *)var_s0)->z = temp_f0;
         ((SnowBVec3 *)var_s0)->y = 100.0f;
-        SNOWB(arg0)->anim = (struct RiderAnim *) FCALL(RiderAnim_ctor_0000C48C)(0, *(s32 *)((char *)&D_00000000 + 0), arg0);
+        SNOWB(arg0)->anim = (struct RiderAnim *) FCALL(RiderAnim_ctor_0000C48C)(0, *(s32 *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xD8) + 0), arg0);
         FCALL(memtrack_end)();
         SNOWB(arg0)->input = (RiderInput *) arg4;
         var_v1 = ((s32) SNOWB(arg0)->anim); FCALL(MNode_addChild)(arg0, var_v1);

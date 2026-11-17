@@ -27,10 +27,25 @@
  * its address, so they work with any of those declarations. */
 
 /* a site relocated against the Data section base Sym (tag 0x640000, sym 2) */
+#ifndef PORT
 #define GL_DATA(off) ((char *)&D_00000000 + (off))
 /* ... against the RoData / Bss section base Syms (tag 0x740000 sym 1, 0x840000 sym 4) */
 #define GL_RODATA(off) ((char *)&D_00000000 + (off))
 #define GL_BSS(off) ((char *)&D_00000000 + (off))
+#else
+/* PC port (docs/1080_PC_PORT_PLAN.md 18.8): a section-base site IS that section of bootup.uso
+ * at offset off, so name the port's copy of the section (port/uso blobs).  The `&D + off`
+ * spelling made gcc fold off into the symbol addend, which the per-function binds cannot
+ * tell apart from a named object's field offset. */
+#ifdef __cplusplus
+extern "C" char port_bootup_data[], port_bootup_rodata[], port_bootup_bss[];
+#else
+extern char port_bootup_data[], port_bootup_rodata[], port_bootup_bss[];
+#endif
+#define GL_DATA(off) (port_bootup_data + (off))
+#define GL_RODATA(off) (port_bootup_rodata + (off))
+#define GL_BSS(off) (port_bootup_bss + (off))
+#endif
 /* a section-base site whose K starts a string: the literal is documentation only (the
  * argument is dropped by the preprocessor, so the expansion is GL_DATA(off) exactly).
  * `uso-data-sites.py check` compares every literal with the ROM bytes at that offset, and

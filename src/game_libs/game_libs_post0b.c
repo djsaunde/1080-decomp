@@ -9812,11 +9812,13 @@ int heap_new(unsigned int s1, int arg1) {
     if (arg1 != 0) {
         s1 += arg1;
     }
-    if (*(int *)((char *)&D_00000000 + 0x20) == 1 ||
-        *(int *)((char *)&D_00000000 + 0x20) == 7) {
-        s0 = (int *)CALL(Mem_allocHigh)(&gMainHeap, s1);
+    /* gMainHeap's heap mode (+0x20; the ROM addiu base at +0x24 / +0x28 is Bss+0x3C770): XDATA names
+     * the object for the PC port, where gcc would fold the field into the token's addend (plan 18.8) */
+    if (*(int *)((char *)&XDATA(gMainHeap, port_bootup_bss, 0x3C770) + 0x20) == 1 ||
+        *(int *)((char *)&XDATA(gMainHeap, port_bootup_bss, 0x3C770) + 0x20) == 7) {
+        s0 = (int *)CALL(Mem_allocHigh)(&XDATA(gMainHeap, port_bootup_bss, 0x3C770), s1);
     } else {
-        s0 = (int *)CALL(Mem_allocLow)(&gMainHeap, s1);
+        s0 = (int *)CALL(Mem_allocLow)(&XDATA(gMainHeap, port_bootup_bss, 0x3C770), s1);
     }
     if (s0 == 0) {
         CALL(heap_printStats)();

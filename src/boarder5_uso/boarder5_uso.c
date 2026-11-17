@@ -12,7 +12,13 @@ typedef struct { int a, b, c, d; } Quad4;
 void boarder5_uso_func_00000000(int *dst) {
     int buf[2];
     /* UNNAMED: sentinel this is the sentinel-named Text+0 function (PREFIX_BYTES trampoline at word 0), which the call resolver cannot place; the ROM jal at Text+0x18 is fs_gdlReadFile */
+#ifdef PORT /* plan 18.8: the gate tools cannot attribute this PREFIX_BYTES Text+0 function, so it is bound by
+             * hand from its ROM TextRelocs: the jal (Text+0x18) is fs_gdlReadFile, the HI16 / LO16 at
+             * +0xC / +0x10 bootup Bss+0x3C740 (gSysLib), as in the module's other fs_gdlRead* readers */
+    { extern int fs_gdlReadFile(); extern char port_bootup_bss[]; fs_gdlReadFile(port_bootup_bss + 0x3C740, buf, 4); }
+#else
     gl_func_00000000(&D_00000000, buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -34,7 +40,7 @@ extern int boarder5_uso_func_b5_10C();
 void boarder5_readQuadParm_00000098(char *dst) {
     int tmp;
     /* UNNAMED: sentinel callee is boarder5 Text+0 = boarder5_uso_func_00000000 (a *_00000000 name, kept) */
-    gl_func_00000000(&tmp);
+    SCALL(gl_func_00000000, boarder5_uso_func_00000000)(&tmp);
     boarder5_uso_func_b5_3C((Quad4*)(dst + 0x10));
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/boarder5_uso/boarder5_uso/boarder5_uso_func_00000098_pad.s")

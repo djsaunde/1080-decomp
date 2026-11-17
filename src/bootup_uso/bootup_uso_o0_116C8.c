@@ -41,28 +41,31 @@ typedef int (*FN116C8)();
  * alloc(0xC)) != 0) p->f0 = 8;` (same lever as o0_117FC). (5) frame -0x30 /
  * local at sp+0x24 needs TWO int locals with `local` declared SECOND
  * (first-declared sits at 0x28, unused). */
+/* PC port (plan 18.8): the XDATA sites are hand-bound from the ROM TextRelocs (an -O0 body: the
+ * name-data-sites.py verify compile differs): Bss+0xF8 gInputMgr at +0xC / +0x1C / +0x78, Bss+0x54
+ * at +0x2C (the `= 0` store), Bss+0x58 gSnowBoard at +0x50 / +0x98 / +0xE4. */
 void GameFlow_restart_000116C8(void) {
     register char *p;
     int pad;
     int local;
 
-    FCALL(GameFlow_releaseFiles_00012110)(&gInputMgr);
-    FCALL(GameFlow_unloadUso_00011A34)(&gInputMgr);
-    D_00000000 = 0;
+    FCALL(GameFlow_releaseFiles_00012110)(&XDATA(gInputMgr, port_bootup_bss, 0xF8));
+    FCALL(GameFlow_unloadUso_00011A34)(&XDATA(gInputMgr, port_bootup_bss, 0xF8));
+    XDATA(D_00000000, port_bootup_bss, 0x54) = 0;
     FCALL(app_freeAllOfType)(1);
     FCALL(dbg_printf)(&sStr_starLine_C624);
-    FCALL(SnowBoard_softReset)(&gSnowBoard);
+    FCALL(SnowBoard_softReset)(&XDATA(gSnowBoard, port_bootup_bss, 0x58));
     FCALL(heap_printStats)();
     FCALL(dbg_printf)(&sStr_starLine_C65C);
-    FCALL(GameFlow_startMode)(&gInputMgr, gInputMgr_bu_116C8_34, gInputMgr_bu_116C8_40);
+    FCALL(GameFlow_startMode)(&XDATA(gInputMgr, port_bootup_bss, 0xF8), gInputMgr_bu_116C8_34, gInputMgr_bu_116C8_40);
     ((FN116C8)VT_SLOT(p, 1).fn)(
-        (char *)&gSnowBoard + VT_SLOT(p = NODE(&gSnowBoard)->vptr, 1).delta);
+        (char *)&XDATA(gSnowBoard, port_bootup_bss, 0x58) + VT_SLOT(p = NODE(&XDATA(gSnowBoard, port_bootup_bss, 0x58))->vptr, 1).delta);
     p = (char *)&local;
     if (p != 0 || (p = (char *)FCALL(mem_new)(0xC)) != 0) {
         *(int *)p = 8;
     }
     ((FN116C8)VT_SLOT(p, 5).fn)(
-        (char *)&gSnowBoard + VT_SLOT(p = NODE(&gSnowBoard)->vptr, 5).delta,
+        (char *)&XDATA(gSnowBoard, port_bootup_bss, 0x58) + VT_SLOT(p = NODE(&XDATA(gSnowBoard, port_bootup_bss, 0x58))->vptr, 5).delta,
         &local);
     FCALL(dbg_printf)(&sStr_done_C694);
 }

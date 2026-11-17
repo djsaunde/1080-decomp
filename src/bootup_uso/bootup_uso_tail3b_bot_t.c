@@ -38,6 +38,8 @@ void settings_applySoundMode_0001266C(char *a0, int a1) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_000126EC)();
+/* PC port (plan 18.8): XDATA hand-bound from the ROM TextRelocs (verify compile differs):
+ * Bss+0x28C at +0x60 / +0x64 (the `.a` store), Bss+0x58 gSnowBoard at +0x98 / +0x9C. */
 void settings_setFlag4_000126EC(char *arg0, s32 arg1) {
     register u16 *p;
     register s32 *q;
@@ -51,13 +53,13 @@ void settings_setFlag4_000126EC(char *arg0, s32 arg1) {
         p = &SETTINGS(GAMEFLOW(arg0)->options)->flags;
         *p = *p | 4;
     }
-    D_00000000.a = arg1;
+    XDATA(D_00000000, port_bootup_bss, 0x28C).a = arg1;
     q = &sp34;
     if ((q != 0) || (q = (s32 *)FCALL(mem_new)(0xC), (q != 0))) {
         *q = 0x15;
     }
     p = (u16 *)q;
-    ((GP_000126EC)VT_SLOT(r, 5).fn)((char *)&gSnowBoard + VT_SLOT(r = NODE(&gSnowBoard)->vptr, 5).delta, p);
+    ((GP_000126EC)VT_SLOT(r, 5).fn)((char *)&XDATA(gSnowBoard, port_bootup_bss, 0x58) + VT_SLOT(r = NODE(&XDATA(gSnowBoard, port_bootup_bss, 0x58))->vptr, 5).delta, p);
 }
 
 /* 19-insn 8-byte copy loop. Logic: copy 8 bytes from

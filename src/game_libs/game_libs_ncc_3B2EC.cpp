@@ -22,7 +22,13 @@ extern char D_00000000[];
 void gl_func_00000000(...);
 extern s16 D_3B2EC_a[], D_3B2EC_b[], gTriEdgeNext_3B2EC_c[];
 }
+#ifndef PORT
 #define K(o) (*(f32 *)(D_00000000 + (o)))
+#else /* PC port (plan 18.8): the K sites are gGfxLib fields (the ROM HI16 / LO16 at +0x8 / +0xC of
+       * CollShape_height name Bss+0x3C168; the field offset is in the lwc1); gcc folds o into the addend */
+extern "C" char port_bootup_bss[];
+#define K(o) (*(f32 *)(port_bootup_bss + 0x3C168 + (o)))
+#endif
 struct V3 { f32 x, y, z; };
 struct Tri { s8 a, b, ax, sgn; s16 grp, pad6; f32 d; };
 struct Face { u16 mat; u16 vi[3]; };

@@ -159,7 +159,7 @@ void mgr_openSession_00000504(int *a0) {
     gInputMgr_session_14C = v3;
     CALL(app_setHeapMode)(v1);
     v3 = (int)&XDATA(D_00000000, port_bootup_bss, 0x3C740);
-    if (D_00000000 == 0x17D7) {
+    if (XDATA(D_00000000, osCicId, 0x0) == 0x17D7) { /* the ROM reloc is bootup's absolute Sym 0x80000310 (plan 18.8) */
         ((BackupSession *)a0[0])->modes = 1;
     } else {
         ((BackupSession *)a0[0])->modes = 0;

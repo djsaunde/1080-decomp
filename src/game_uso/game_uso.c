@@ -7567,27 +7567,30 @@ void RiderAnim_stateTimeUp(int *a0) {
  * `sw a1,4(sp); sw a2,8(sp)` outgoing home-stores come from passing the
  * adjacent int pair AS A STRUCT BY VALUE (two separate int args do not home
  * them). See docs/IDO_CODEGEN.md struct-by-value-homes-arg-pair. */
+/* PC port (plan 18.8): XDATA from the ROM TextRelocs: the +0x7C / +0x64 reads are gInputMgr fields
+ * (HI16 +0x18 / LO16 +0x24 = Bss+0xF8), the Pair2 copies are game.uso Data section-base sites (+0xF28..
+ * +0xF40 in the instructions); gcc folds both offsets into the token's addend. */
 void RiderAnim_stateFinish(int *a0) {
     CALL(RiderAnim_stateStand)(a0);
 
     if (RA(a0)->rider->raceResult == 1) {
-        if (*(int*)((char*)&D_00000000 + 0x7C) != 0) {
+        if (*(int*)((char*)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x7C) != 0) {
             /* struct-by-value pass homes a1,a2 to sp+4/sp+8 (the target's
              * `sw a1,4(sp); sw a2,8(sp)`) — NOT reachable from two int args.
              * This solved the prior "precall-arg-spill cap" (was 61%, now 94%). */
-            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateGoalNormal), 1);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&XDATA(D_00000000, port_game_data, 0x0) + kPmf_RiderAnim_stateGoalNormal), 1);
             return;
         }
-        if (*(int*)((char*)&D_00000000 + 0x64) < 2) {
-            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateGoalWinOM), 1);
+        if (*(int*)((char*)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x64) < 2) {
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&XDATA(D_00000000, port_game_data, 0x0) + kPmf_RiderAnim_stateGoalWinOM), 1);
         } else {
-            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateGoalWin), 1);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&XDATA(D_00000000, port_game_data, 0x0) + kPmf_RiderAnim_stateGoalWin), 1);
         }
         return;
     }
     /* flag != 1: default path. Placed last so IDO emits BNEL-skip-to-here
      * with delay-load (matching asm 0x11198 bnel t7,at,+0x26). */
-    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateGoalLose), 1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&XDATA(D_00000000, port_game_data, 0x0) + kPmf_RiderAnim_stateGoalLose), 1);
 }
 
 /* RiderAnim_startEndingCpu_00011258: 34-insn (0x88) init+register-clear helper.
