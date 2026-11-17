@@ -13,15 +13,19 @@ inline int zc(int z) { return z; }
 #define gW(g, a, b) { (g)->words.w0 = (a); (g)->words.w1 = (unsigned int)(b); }
 #define gDPWord(pkt, a, b) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = (a); _g->words.w1 = (unsigned int)(b); }
 typedef struct { Gfx *buf; int count; } DList;
+/* FB append: the count goes in as an inline parameter (a pooled edg word, no named n word in the frame) */
+inline Gfx *atBr(DList *l, int n) { if (1) {} return &l->buf[n]; }
 /* libgdl display-list context: the Gfx head at +0xC; next() appends one packet. */
 struct GCtx {
     char pad0[0xC];
     DList *dl;
     GCtx *me() { return this; }
     Gfx *nextN_1(int d0) { d0 = d0; int n = dl->count++; return &dl->buf[n]; }
-    Gfx *nextBI_1(int d0) { d0 = d0; int n = dl->count++; if (1) {} return &dl->buf[n]; }
-    Gfx *nextBIc_1(int d0) { d0 = d0; int n = dl->count++; if (1) {} return &dl->buf[n + zc(0) * n + zc(0) * (n + n)]; }
-    Gfx *nextNc_1(int d0) { d0 = d0; int n = dl->count++; return &dl->buf[n + zc(0) * n + zc(0) * (n + n)]; }
+    Gfx *nextBI_1(int d0) { d0 = d0; return atBr(dl, dl->count++); }
+    Gfx *atBcm(int n) { if (1) {} return &dl->buf[n + zc(0) * n + zc(0) * (n + n)]; }
+    Gfx *atNcm(int n) { return &dl->buf[n + zc(0) * n + zc(0) * (n + n)]; }
+    Gfx *nextBIc_1(int d0) { d0 = d0; return atBcm(dl->count++); }
+    Gfx *nextNc_1(int d0) { d0 = d0; return atNcm(dl->count++); }
     GCtx *me_1(int d0) { d0 = d0; return this; }
     Gfx *nextI_3(int d0, int d1, int d2) { d0 = d0; d1 = d1; d2 = d2; int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
     Gfx *next() { return &dl->buf[dl->count++]; } Gfx *nextN() { int n = dl->count++; return &dl->buf[n]; }
@@ -102,7 +106,12 @@ struct GCtx {
  * gSPScisTextureRectangle shape) and primDepth takes the depth first, so the depth and the xh / xl clamp results share
  * one pooled word. A constant dummy before the yh clamp (dm1) moves it onto the count word, and dm3 before the yl clamp
  * moves it onto a loop-only pool word (a1 as in the target). The B4 / B3 appends add two code-free folds of their count
- * (nextBIc_1 / nextNc_1), so the count word outranks the dl-temp word: counts v0, dl temps v1, as in the target. */
+ * (nextBIc_1 / nextNc_1), so the count word outranks the dl-temp word: counts v0, dl temps v1, as in the target.
+ * agent-h run 776 (-> 99.10): all six tail packets go through gDPWord's own _g (six block words; the target's tail
+ * pointers are a0 a1 a2 a0 a1 a3), with the 16-term c counter on the last packet (that moves uopt's tail block split
+ * so pkt3 / pkt6 span two blocks and take a2 / a3). The frame stays 400 with exact offsets: the FB / B4 / B3 counts
+ * go in as inline parameters (atBr / atBcm / atNcm: pooled words instead of named n words), the two loop pad words
+ * are gone, and the prologue dummy takes five pooled words (dum5) that the loop then reuses. */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -118,7 +127,7 @@ inline int imax0(int a) { return a > 0 ? a : 0; }
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmpV(g2, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 
-inline void dum3(int a, int b, int c) { a = a; b = b; c = c; }
+inline void dum5(int a, int b, int c, int d, int e) { a = a; b = b; c = c; d = d; e = e; }
 inline int dm1(int a) { a = a; return 0; }
 inline int dm3(int a, int b, int c) { a = a; b = b; c = c; return 0; }
 /* zero-code uopt use counter (agent-e runs 756 / 760): z is a constant inline parameter, so edg cannot fold
@@ -195,16 +204,15 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
 
     d = gl_func_00000000(self->tex->dl, self->tex);
     g = c->next();
-    dum3(0, 0, 0);
+    dum5(0, 0, 0, 0, 0);
     g->words.w0 = 0x06000000;
     g->words.w1 = d;
     gl_func_00000000(SNOW_CAM->view, m);
     halfW = (float)(SNOW_CAM->scrW / 2);
     halfH = (float)(SNOW_CAM->scrH / 2);
     for (i = 0, p = self->items; i < self->count; i++, p++) {
-        int y0, pad0, pad1; Gfx *gf, *gt, *g1, *g2; int x1, y1;
+        int y0; dm3(0, 0, 0); Gfx *gf, *gt, *g1, *g2; int x1, y1;
         SnowV3c v = scaled(p->pos);
-        pad0 = 0; pad1 = 0;
         float w;
         w = m[0][3] * v.x + m[1][3] * v.y + m[2][3] * v.z + m[3][3];
         if (SNOW_CAM->nearZ < w && w < SNOW_CAM->farZ) {
@@ -233,9 +241,9 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
         }
     }
     gDPWord(c->me_1(0)->me()->me()->next(), 0xE7000000, 0);
-    gDPWord(c->me_1(0)->me()->me()->next(), 0xBB000000, z0(0) * ((int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c));
-    g = c->me_1(0)->me()->me()->next(); gW(g, 0xBA001301, 0x80000);
-    g = c->me_1(0)->me()->me()->next(); gW(g, 0xBA000C02, 0x2000);
-    g = c->me_1(0)->me()->me()->next(); gW(g, 0xB9000201, 0);
-    g = c->me_1(0)->me()->me()->next(); gW(g, 0xBA000602, 0);
+    gDPWord(c->me_1(0)->me()->me()->next(), 0xBB000000, 0);
+    gDPWord(c->me_1(0)->me()->me()->next(), 0xBA001301, 0x80000);
+    gDPWord(c->me_1(0)->me()->me()->next(), 0xBA000C02, 0x2000);
+    gDPWord(c->me_1(0)->me()->me()->next(), 0xB9000201, 0);
+    gDPWord(c->me_1(0)->me()->me()->next(), 0xBA000602, z0(0) * ((int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c));
 }
