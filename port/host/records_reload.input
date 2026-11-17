@@ -1,0 +1,15 @@
+# Records persistence, part 2 (run 860, agent-c; port/tools/modes-check.py's match check): a new
+# process on the SRAM file match_race.input wrote (its Round-1 win time, name "AAA", is the
+# Crystal Lake record).  The saved language pick skips the language menu, so START goes straight
+# to the main menu; Time Attack on Crystal Lake: the race HUD's BEST TIME shows the saved record
+# (1'19"16 at step ~1600; capture.sh -F 1600 -M).  The boot must not rewrite any chunk (a
+# damaged chunk would be reset or restored from its mirror): the file stays byte-identical.
+PADS 1
+F 480:3 START          # title -> main menu (no language select)
+F 600:3 DD             # Match Race -> Time Attack
+F 680:3 A              # Time Attack
+F 950:3 A              # rider
+F 1050:3 A             # rider confirm
+F 1150:3 A             # board
+F 1300:3 A             # course: the first (Crystal Lake) -> race, BEST TIME on the HUD
+# END 1650

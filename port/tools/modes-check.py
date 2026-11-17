@@ -15,7 +15,10 @@ input script (port/host/*.input) and reads the --trace state.log (port/trace.h):
   vs2p      vs2p.input (2P VS, two pads): the race ends (race state 2) and the next round starts
             (race state 1 again)
   match     match_race.input (Match Race): the player reaches the goal; when the script says
-            `# WIN`, before the CPU rider (entries[0] finished while entries[1] has not)
+            `# WIN`, before the CPU rider (entries[0] finished while entries[1] has not).  With
+            `# RECORD m'ss"hh` (run 860: Round 2 paused -> Quit closes the session, name "AAA"):
+            that time is saved in SRAM under AAA (course records, mirror equal), and
+            records_reload.input in a NEW process on that file leaves it byte-identical
   options   options_save.input from a blank SRAM: the options record (SRAM 0x1F8, mirror 0x7FC8)
             holds the new settings (flags & 3 = 2 Mono, levels 9 / 7 / 8); options_reload.input in
             a NEW process on that file: BGM read back and stepped once more (levels 10 / 7 / 8)
@@ -132,9 +135,31 @@ def check_vs2p(a):
     return rc == 0 and end is not None and nxt is not None, 'rc %d, race end %s, next round %s' % (rc, end, nxt)
 
 
+def aaa_record(b):
+    """(entry, records index, min, sec, hundredths) of the first SRAM time record named "AAA" (the
+    name entry's A A A), or None.  gdl/backup.h: records[k] entry j at 0x8 + k * 0x30 + j * 8, the
+    name's three letters at +2 (0 = A), time[3] at +5 (steer-search.py writes `# RECORD` the same way)."""
+    for k in range(8):
+        for j in range(3):
+            e = 0x8 + k * 0x30 + j * 8
+            if b[e + 2:e + 5] == bytes(3) and any(b[e + 5:e + 8]):
+                return (j, k) + tuple(b[e + 5:e + 8])
+    return None
+
+
+def read_sram(path):
+    try:
+        b = open(path, 'rb').read()
+    except OSError:
+        return None
+    return b if len(b) == 0x8000 else None
+
+
 def check_match(a):
     text = open(os.path.join(HOST, 'match_race.input')).read()
     win = re.search(r'^# WIN', text, re.M) is not None
+    m = re.search(r'^# RECORD (\d+)\'(\d+)"(\d+)', text, re.M)
+    want = tuple(int(x) for x in m.groups()) if m else None
     rc, log = run(a, 'match', 'match_race.input', end_of('match_race.input', 6000))
     goal, cpu = None, None
     for ln in lines(log):
@@ -146,7 +171,25 @@ def check_match(a):
         if e1 and cpu is None and int(e1.group(2)) > 0:
             cpu = step
     ok = rc == 0 and goal is not None and (not win or cpu is None or goal < cpu)
-    return ok, 'rc %d, player goal %s, CPU finish %s%s' % (rc, goal, cpu, ' (script: # WIN)' if win else '')
+    txt = 'rc %d, player goal %s, CPU finish %s%s' % (rc, goal, cpu, ' (script: # WIN)' if win else '')
+    if want is None:
+        return ok, txt
+    # run 860: pause -> Quit closed the session, the record is saved (primary = mirror), and a new
+    # process boots on that file without rewriting it (records_reload.input: Time Attack, BEST TIME)
+    sram = os.path.join(a.outdir, 'match', '1080.sram')
+    b = read_sram(sram)
+    rec = aaa_record(b) if b else None
+    mirror = b is not None and b[0x8:0x188] == b[0x7DD8:0x7F58]
+    reload_sram = os.path.join(a.outdir, 'match', 'reload.sram')
+    rc2, same = None, False
+    if b:
+        open(reload_sram, 'wb').write(b)
+        rc2, _ = run(a, 'match-reload', 'records_reload.input', end_of('records_reload.input', 1650), reload_sram)
+        same = read_sram(reload_sram) == b
+    ok = ok and rec is not None and rec[2:] == want and mirror and rc2 == 0 and same
+    got = 'none' if rec is None else '%d\'%02d"%02d (records[%d] entry %d)' % (rec[2], rec[3], rec[4], rec[1], rec[0])
+    return ok, txt + '; saved AAA %s (want %d\'%02d"%02d)%s; reload rc %s, file %s' % (
+        got, want[0], want[1], want[2], '' if mirror else ' MIRROR DIFFERS', rc2, 'unchanged' if same else 'CHANGED')
 
 
 def options_rec(path):

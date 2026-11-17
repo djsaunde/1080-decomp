@@ -44,8 +44,9 @@ score; the countdown ends the run).
 
 --mode match (run 853): Match Race (flow mode 3, mgrproc) against the CPU rider (SnowAI, the trace's
 e1 / r1), level Normal, the first course (Crystal Lake).  The same window search as Time Attack
-(the player's pct + health; a retire is out); the tail after the player's goal only presses A
-through the result screens (`# GOAL`, `# END`).  Run 857: 30-step windows, 11 stick states with y
+(the player's pct + health; a retire is out); the tail after the player's goal presses A through
+the result screens into Round 2, pauses, Quits (the session closes and saves), types "AAA" in the
+name entry and returns to the title (`# GOAL`, `# RECORD`, `# END`; run 860).  Run 857: 30-step windows, 11 stick states with y
 centred (x 0, +-17, +-24, +-32, +-48, +-80: the CPU rider steers with |stickX| mostly under 0.15 and
 stickY 0; STEER_MATCH_ACTS=wide adds lean / crouch), the score adds STEER_SPEED_W (0.05) per km/h,
 takes STEER_CRASH_W (50) off a window that loses health and STEER_LINE_W (0.001) per unit of x off
@@ -149,7 +150,17 @@ F 1200:3 A             # board
 F 1300:3 A             # board confirm -> race load (flow 3, 5); race state 1 at ~1493
 """
 CONTEST_FIRST = 1493
-MATCH_TAIL_PRESSES = 8      # A every 120 steps after the goal: the result / standings screens
+# --mode match tail (run 860), relative to the goal step: A A through the result screens into
+# Round 2 (race state 1 at goal + 502), then the pause menu -> Quit (Continue / Retire / Restart /
+# Quit: DD x3, A).  Quitting the mode closes the session (mgr_closeSession_000009A8 ->
+# Backup_closeSession(session, 3)): a top-3 time gets the name entry first (A A A = "AAA", END,
+# END again), then Best Times -> A -> the title.  The record is then in SRAM (`# RECORD`).
+MATCH_TAIL = [(300, 'A', 'result screens'), (420, 'A', 'result screens -> Round 2'),
+              (701, 'START', 'Round 2: pause'), (761, 'DD', 'pause menu: Continue -> Retire'),
+              (821, 'DD', '-> Restart'), (881, 'DD', '-> Quit'), (941, 'A', 'Quit: the session closes'),
+              (1201, 'A', 'name entry: A'), (1261, 'A', 'name entry: A'), (1321, 'A', 'name entry: A'),
+              (1381, 'A', 'name entry: END'), (1441, 'A', 'Best Times -> title')]
+MATCH_TAIL_END = 1700
 # (stick x, stick y, jump + grab)
 # --mode match (run 857): fine steering with the stick y centred, as the CPU rider (SnowAI) rides
 # (its stickX mostly within +-0.15, stickY 0: a 60-step window of full lean or crouch loses to it);
@@ -341,7 +352,7 @@ def main():
         if goal is None:
             sys.exit('steer-search: %s does not reach the goal on this build: run the search' % a.tail_only)
         segs[-1] = (segs[-1][0], goal, segs[-1][2], segs[-1][3])
-        text, end = build_tail(R, segs, goal)
+        text, end = match_tail(R, segs, goal, work) if match else build_tail(R, segs, goal)
         open(a.out, 'w').write(text)
         print('steer-search: goal at step %d, END %d -> %s' % (goal, end, a.out))
         shutil.rmtree(work, ignore_errors=True)
@@ -377,16 +388,7 @@ def main():
         sys.exit('steer-search: no goal within the budget (reached step %d; %d runs; scratch %s)' % (t, nruns, work))
     segs[-1] = (segs[-1][0], goal) + tuple(segs[-1][2:])   # trim the last window to the goal
     if a.mode == 'match':
-        R.run(script(segs), goal + 300, 0)
-        cpu = cpu_finish(os.path.join(work, 'c0', 'state.log'))
-        tail = '# GOAL %d   (entries[0].pct reaches 100)\n' % goal
-        if cpu is None or goal < cpu:   # port/tools/modes-check.py then requires the win
-            tail += '# WIN   (the player finishes first: the CPU rider %s)\n' % (
-                'finishes at %d' % cpu if cpu else 'has not finished')
-        for i in range(MATCH_TAIL_PRESSES):
-            tail += press(goal + 300 + 120 * i, 'A', 'result screens')
-        end = goal + 300 + 120 * MATCH_TAIL_PRESSES + 200
-        text = script(segs, tail + '# END %d\n' % end)
+        text, end = match_tail(R, segs, goal, work)
     else:
         text, end = build_tail(R, segs, goal)
     with open(a.out, 'w') as fh:
@@ -410,6 +412,42 @@ def chk_misses(path, after):
             misses += 1
         prev = cur
     return misses
+
+
+def match_tail(R, segs, goal, work):
+    """--mode match: the post-goal tail (MATCH_TAIL; `# GOAL`, `# WIN`, `# RECORD`, `# END`).
+    Returns (script text, END step)."""
+    R.run(script(segs), goal + 300, 0)
+    cpu = cpu_finish(os.path.join(work, 'c0', 'state.log'))
+    tail = '# GOAL %d   (entries[0].pct reaches 100)\n' % goal
+    if cpu is None or goal < cpu:   # port/tools/modes-check.py then requires the win
+        tail += '# WIN   (the player finishes first: the CPU rider %s)\n' % (
+            'finishes at %d' % cpu if cpu else 'has not finished')
+    for d, b, c in MATCH_TAIL:
+        tail += press(goal + d, b, c)
+    end = goal + MATCH_TAIL_END
+    R.run(script(segs, tail), end, 0)
+    rec = aaa_record(os.path.join(work, 'c0', '1080.sram'))
+    if rec:   # port/tools/modes-check.py then requires this record in SRAM, and after a reload
+        tail += '# RECORD %d\'%02d"%02d   (records[%d], name AAA: saved when Quit closes the session)\n' % (
+            rec[2], rec[3], rec[4], rec[1])
+    return script(segs, tail + '# END %d\n' % end), end
+
+
+def aaa_record(path):
+    """(entry, course, min, sec, hundredths) of the first SRAM time record named "AAA" (the name
+    entry's A A A), or None.  gdl/backup.h: course k's BackupTimeEntry j at 0x8 + k * 0x30 + j * 8,
+    the name's three letters at +2 (0 = A), time[3] at +5."""
+    try:
+        b = open(path, 'rb').read()
+    except OSError:
+        return None
+    for k in range(8):
+        for j in range(3):
+            e = 0x8 + k * 0x30 + j * 8
+            if len(b) >= 0x8000 and b[e + 2:e + 5] == bytes(3) and any(b[e + 5:e + 8]):
+                return (j, k) + tuple(b[e + 5:e + 8])
+    return None
 
 
 def cpu_finish(path):

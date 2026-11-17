@@ -1,7 +1,9 @@
 # Match Race vs the CPU rider (port/tools/steer-search.py --mode match; runs 853, 857), level Normal,
 # course 1 (Crystal Lake).  Format: port/host/input_script.c; steps are SysLib.frameCount.
 # Run 857: 30-step windows of fine steering, stick y centred: the player wins ("You Win! Advance
-# to next round"), the A presses go on to Round 2 (Crystal Peak).
+# to next round"), the A presses go on to Round 2 (Crystal Peak).  Run 860: Round 2 is paused and
+# Quit (START, DD x3, A): the session closes and saves; the name entry ("AAA") and Best Times
+# follow, then the title.  modes-check.py's match check reads the `# RECORD` back from SRAM.
 # Tied to the exact race physics (regenerate: port/tools/steer-search.py -b <build> --mode match).
 # Start from a fresh directory (a saved SRAM skips the language menu and shifts every step).
 PADS 1
@@ -96,11 +98,16 @@ F 3870-3899 STICK 0,0
 # GOAL 3899   (entries[0].pct reaches 100)
 # WIN   (the player finishes first: the CPU rider finishes at 3959)
 F 4199:3 A      # result screens
-F 4319:3 A      # result screens
-F 4439:3 A      # result screens
-F 4559:3 A      # result screens
-F 4679:3 A      # result screens
-F 4799:3 A      # result screens
-F 4919:3 A      # result screens
-F 5039:3 A      # result screens
-# END 5359
+F 4319:3 A      # result screens -> Round 2
+F 4600:3 START  # Round 2: pause
+F 4660:3 DD     # pause menu: Continue -> Retire
+F 4720:3 DD     # -> Restart
+F 4780:3 DD     # -> Quit
+F 4840:3 A      # Quit: the session closes
+F 5100:3 A      # name entry: A
+F 5160:3 A      # name entry: A
+F 5220:3 A      # name entry: A
+F 5280:3 A      # name entry: END
+F 5340:3 A      # Best Times -> title
+# RECORD 1'19"16   (records[2], name AAA: saved when Quit closes the session)
+# END 5599
