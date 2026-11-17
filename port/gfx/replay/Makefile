@@ -7,8 +7,8 @@ CFLAGS ?= -std=gnu99 -O2 -Wall -Wextra
 OUT ?= .
 LIBDIR ?= /lib/x86_64-linux-gnu
 
-$(OUT)/dlreplay: dlreplay.c ../dlump.h
-	$(CC) $(CFLAGS) -I$(GL_DEV)/usr/include -o $@ dlreplay.c $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 -lm
+$(OUT)/dlreplay: dlreplay.c egl_png.c egl_png.h ../dlump.h
+	$(CC) $(CFLAGS) -I$(GL_DEV)/usr/include -o $@ dlreplay.c egl_png.c $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 -lm
 
 .PHONY: all
 all: $(OUT)/dlreplay

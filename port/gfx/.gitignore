@@ -3,3 +3,9 @@ test_port_gfx
 dlreplay
 *.dlmp
 *.png
+/gold
+/f3dreplay
+/f3d-obj/
+/golden-out/
+fast3d/f3dreplay
+fast3d/f3d-obj/

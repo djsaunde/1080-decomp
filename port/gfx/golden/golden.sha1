@@ -1,0 +1,13 @@
+# port/gfx golden images: sha1 of f3dreplay's PNG per gold.c scene (fast3d/golden.sh)
+# renderer: llvmpipe (LLVM 15.0.7, 256 bits)
+73508aec42874d2825a616b183e1b7da136c80b8  fill.png
+54675cc87ac13006f131dae5178a8fc5b41ed1a8  shade.png
+82dc692241d33268a69a0df3dfe3e633653a795c  tex_rgba16.png
+eff881629486e230442ca78843af02fee1621cdc  tex_ci.png
+767370d43e1e12c316a205b48ffbbd3448c15379  tex_ia_i.png
+0a08d7e17f4a2044a39b814ba6caadb0c7a2beb3  combine.png
+65e65506eda53304fe55af2aa71a16237ea24a2a  multitex.png
+0880f7d30112cd030ce4f46528c0b0bfce08e0a3  fog.png
+3d5d953b0d8677e96879ce588b53772915f3ea45  texrect.png
+3cd81b0294cb99d3412dea5ca1bed6922b8e8c60  xlu.png
+6b01785b4e24be27ab0a36288dbc1c5cd2ccba84  line3d.png

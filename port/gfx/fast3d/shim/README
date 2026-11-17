@@ -1,0 +1,7 @@
+port/gfx/fast3d/shim: stand-ins for the parts of libultraship's Ship framework and its
+third-party dependencies (spdlog, ImGui, SDL3, nlohmann_json, BS::thread_pool) that
+the Fast3D sources include. They are searched BEFORE libultraship's own include/, so
+only src/fast/interpreter.cpp, src/fast/backends/gfx_opengl.cpp and
+src/fast/debug/GfxDebugger.cpp are compiled from LUS, against these declarations.
+Each header declares only what those three files use; port/gfx/fast3d/ship_shim.cpp
+defines it. No LUS source is copied here. Plan section 19.6.
