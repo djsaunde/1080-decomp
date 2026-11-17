@@ -145,3 +145,143 @@ extern "C" void snoweffects_uso_func_00001E60(SnowTexB *t) {
     gDPWordB(t->dl->next(), 0xB9000201, 4);
     gDPWordB(t->dl->next(), 0xB8000000, 0);
 }
+
+/* 0x559C (NM, 654 words = target, frame 480 = target): the trail-ring draw (agent-b run 679). A Mat on the
+ * stack (BaseMat ctor protocol: this == 0 test, vptr Data+0x20640 at +0x5C, the 8- / 4-byte members, the
+ * out-of-line BaseMat_init_000517E4; Mat vptr Data+0x1FBEC) with colour 1,1,1,1 is handed to
+ * gfx_emitLights_000454C4 (float k in a3, so a typed void alias) after a gSPDisplayList of the texture's
+ * list (+0xB0 -> +0x60). Then for each live ring slot (SnowRing_countSlots_000053E8 >= 2) from the read
+ * cursor: the stride points scaled by gGfxLib's world scale (+0x128) into s16 Vtx positions (+0.5f) with
+ * alpha (+0x1C, clamped at 0, `dead` counts the clamped ones; slot state 2 if none ran or all dead), a
+ * gSPVertex of the stride vertices at buffer index i0, the 32 x 32 RGBA32 texture load from the Data+0x588
+ * table when the slot's texture changes (and is not 2), then from the third slot on a strip of
+ * stride - 1 quads (two F3DEX gSP1Triangle, ring indices masked by 2 * stride - 1; texture 2 reloads one
+ * table entry per quad). Ends with gSPTexture off and Node_display.
+ * Load-bearing: the scale words through three 0-based aliases (one lui per load as in the target; a
+ * shared base is hoisted, as agent-c's 0xC90), scaled() returning through the 3-float ctor (f0 / f2 / f12
+ * products), next() as `&buf[count++]` (no pool words: frame 456 with the named-local form 616), the
+ * texture test reading slot->tex directly (prevTex then lives in t5 like the target), and the 5-word dead
+ * block before the slot loop (pool words: puts k / mask / v / the scaled() temps at the target's slots).
+ * Left: s-register choice for the ctor `this` / gfx base / ctx (s0 / s1 / s4 in the target), the ugen
+ * temp-register ring offset, and two spill slots (target 84 / 92). */
+struct M8B { int a, b; M8B() { b = 0; a = 0; } };
+struct M4B { int a; M4B() { a = 0; } };
+struct SnowBaseMatB {
+    float c[4];
+    char p10[0x34 - 0x10]; M8B m; char p3c[0x58 - 0x3C]; M4B n;
+    SnowBaseMatB() { gl_func_00000000(/* BaseMat_init_000517E4 */ this); }
+    virtual void v1();
+};
+struct SnowMatB : SnowBaseMatB { char p60[0x90 - 0x60]; SnowMatB() {} virtual void v1(); };
+struct SnowDLB { Gfx *buf; int count; };
+struct SnowCtxB { char pad0[0xC]; SnowDLB *dl; Gfx *next() { return &dl->buf[dl->count++]; }
+    void put(unsigned int w0, unsigned int w1) { Gfx *g = next(); g->words.w0 = w0; g->words.w1 = w1; } };
+struct SnowV3B { float x, y, z; SnowV3B() {} SnowV3B(float a, float b, float c) { x = a; y = b; z = c; } };
+inline SnowV3B scaled(const SnowV3B &a, float sx, float sy, float sz) { return SnowV3B(a.x * sx, a.y * sy, a.z * sz); }
+struct SnowPtB { SnowV3B pos; char p0c[0x1C - 0xC]; float alpha; char p20[0x2C - 0x20]; };
+struct SnowSlotB { int state; int tex; int pad; };
+struct SnowVtxB { short ob[3]; short flag; short tc[2]; unsigned char cn[4]; };
+struct SnowDLHolderB { char pad[0x60]; int dl; };
+struct SnowRingB {
+    char pad00[0x58];
+    int readOfs;     /* 0x58 */
+    int writeOfs;    /* 0x5C */
+    int read;        /* 0x60 */
+    int write;       /* 0x64 */
+    int size;        /* 0x68 */
+    int stride;      /* 0x6C */
+    int count;       /* 0x70 */
+    char pad74[0x8C - 0x74];
+    SnowVtxB *vtx;   /* 0x8C */
+    SnowPtB *points; /* 0x90 */
+    SnowSlotB *slots; /* 0x94 */
+    char pad98[0xA8 - 0x98];
+    int w, h;        /* 0xA8 */
+    SnowDLHolderB *dlh; /* 0xB0 */
+};
+struct SnowGfxB { char pad[0x128]; SnowV3B scale; char pad134[0x254 - 0x134]; struct { char pad[0x158]; SnowCtxB *ctx; } *win; };
+extern "C" SnowGfxB snowb_gfx_559C;
+extern "C" int snowb_texTbl_588[];  /* Data+0x588: the ring texture table */
+#define gfxB snowb_gfx_559C
+extern "C" void gl_func_00000000_snowb_lights(void *, SnowCtxB *, void *, float);
+#define V2P(x) gl_func_00000000(/* osVirtualToPhysical */ x)
+#define PKTB(pkt, a, b) { Gfx *_g = (pkt); _g->words.w0 = (a); _g->words.w1 = (unsigned int)(b); }
+#define TRIB(pkt, a, b, c) PKTB(pkt, 0xBF000000, _SHIFTL((a) * 2, 16, 8) | _SHIFTL((b) * 2, 8, 8) | _SHIFTL((c) * 2, 0, 8))
+#define LOADTEXB(pkt, timg, width, height) \
+{ gDPSetTextureImage(pkt, G_IM_FMT_RGBA, G_IM_SIZ_32b, width, timg); \
+  gDPSetTile(pkt, G_IM_FMT_RGBA, G_IM_SIZ_32b, (((((width) - 1) + 1) * G_IM_SIZ_32b_TILE_BYTES) + 7) >> 3, 0, G_TX_LOADTILE, 0, 0, 5, 0, 0, 5, 0); \
+  gDPLoadSync(pkt); \
+  gDPLoadTile(pkt, G_TX_LOADTILE, 0, 0, ((width) - 1) << G_TEXTURE_IMAGE_FRAC, ((height) - 1) << G_TEXTURE_IMAGE_FRAC); \
+  gDPPipeSync(pkt); \
+  gDPSetTile(pkt, G_IM_FMT_RGBA, G_IM_SIZ_32b, (((((width) - 1) + 1) * G_IM_SIZ_32b_LINE_BYTES) + 7) >> 3, 0, G_TX_RENDERTILE, 0, 0, 5, 0, 0, 5, 0); \
+  gDPSetTileSize(pkt, G_TX_RENDERTILE, 0, 0, ((width) - 1) << G_TEXTURE_IMAGE_FRAC, ((height) - 1) << G_TEXTURE_IMAGE_FRAC) }
+
+#define gSPVertexB(pkt, v, n, v0) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = _SHIFTL(4, 24, 8) | _SHIFTL((v0) * 2, 16, 8) | _SHIFTL(((n) << 10) | (sizeof(SnowVtxB) * (n) - 1), 0, 16); _g->words.w1 = (unsigned int)(v); }
+extern "C" SnowGfxB snowb_gfxX_559C, snowb_gfxY_559C, snowb_gfxZ_559C;
+
+extern "C" void snoweffects_uso_func_0000559C(SnowRingB *t) {
+    SnowMatB m;
+    m.c[0] = m.c[1] = m.c[2] = m.c[3] = 1.0f;
+    SnowCtxB *ctx = gfxB.win->ctx;
+    ctx->put(0x06000000, V2P(t->dlh->dl));
+    gl_func_00000000_snowb_lights(/* gfx_emitLights_000454C4 */ &gfxB, ctx, &m, 1.0f);
+    int vi = t->readOfs;
+    int si = t->read;
+    int n = gl_func_00000000(/* SnowRing_countSlots_000053E8 */ t);
+    int prevTex = -1;
+    int prevState = 2;
+    int i0 = 0;
+    int i1 = 1;
+    { int sc0[5]; sc0[0] = 0; } /* dead: five edg pool words (frame lever) */
+    if (n >= 2) {
+        for (int k = 0; k < n; k++) {
+            SnowPtB *p = &t->points[vi];
+            int any = 0, dead = 0;
+            int j;
+            for (j = 0; j < t->stride; j++) {
+                any = 1;
+                SnowV3B v = scaled(p->pos, snowb_gfxX_559C.scale.x, snowb_gfxY_559C.scale.y, snowb_gfxZ_559C.scale.z);
+                t->vtx[vi + j].ob[0] = (int)(v.x + 0.5f);
+                t->vtx[vi + j].ob[1] = (int)(v.y + 0.5f);
+                t->vtx[vi + j].ob[2] = (int)(v.z + 0.5f);
+                if (p->alpha < 0.0f) {
+                    p->alpha = 0.0f;
+                    dead++;
+                }
+                t->vtx[vi + j].cn[3] = (int)p->alpha;
+                p++;
+            }
+            if (!any || dead == t->stride) t->slots[si].state = 2;
+            gSPVertexB(ctx->next(), V2P(&t->vtx[vi]), t->stride, i0);
+            if (t->slots[si].tex != prevTex && t->slots[si].tex != 2) {
+                t->w = 32;
+                t->h = 32;
+                LOADTEXB(ctx->next(), V2P(snowb_texTbl_588[t->slots[si].tex]), t->w, t->h);
+            }
+            prevTex = t->slots[si].tex;
+            int mask = t->stride * 2 - 1;
+            if (prevState != 2 || t->slots[si].state != 2) {
+                if (k >= 2) {
+                    int a = i0, b = i1;
+                    for (j = 0; j < t->stride - 1; j++, a++, b++) {
+                        if (prevTex == 2) {
+                            t->w = 32;
+                            t->h = 32;
+                            LOADTEXB(ctx->next(), V2P(snowb_texTbl_588[t->slots[si].tex + j]), t->w, t->h);
+                        }
+                        TRIB(ctx->next(), (a - t->stride) & mask, (b - t->stride) & mask, b);
+                        TRIB(ctx->next(), b, a, (a - t->stride) & mask);
+                    }
+                }
+            }
+            prevState = t->slots[si].state;
+            vi += t->stride;
+            i0 = (i0 + t->stride) & mask;
+            i1 = (i1 + t->stride) & mask;
+            if (vi == t->size) vi = 0;
+            if (++si == t->count) si = 0;
+        }
+    }
+    ctx->put(0xBB000000, 0);
+    gl_func_00000000(/* Node_display */ t);
+}
