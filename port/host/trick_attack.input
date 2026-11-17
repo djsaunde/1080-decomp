@@ -1,0 +1,15 @@
+# tenshoe --input script: boot -> title -> main menu -> Trick Attack -> rider / board / course.
+# Steps are SysLib.frameCount (state.log F). Run 846 (agent-a): the course list's ctor dies in
+# sys_fatal "Invalid Shape cmd 64853" (CourseList_createItem item 0, MODE 3: the PolyShape of
+# charmap Data +0x1B4), so this script ends in a crash at step ~838 until that is fixed.
+PADS 1
+F 480:3 START          # title
+F 560:3 A              # English
+F 620:3 DD             # Match Race -> Time Attack
+F 680:3 DD             # Trick Attack
+F 740:3 A              # flow 0,3,1
+F 1000:3 A             # rider
+F 1100:3 A             # confirm
+F 1200:3 A             # board
+F 1350:3 A             # course
+F 1500-1900 STICK 0,60

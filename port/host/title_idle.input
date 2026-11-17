@@ -1,0 +1,3 @@
+# tenshoe --input script: one pad, no input: boot, the title, the attract demo (title demo race).
+# Steps are SysLib.frameCount (state.log F). Run 846 (agent-a).
+PADS 1

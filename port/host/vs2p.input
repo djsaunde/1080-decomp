@@ -1,0 +1,16 @@
+# tenshoe --input script: two pads, boot -> title -> main menu -> 2P VS -> rider selects.
+# Steps are SysLib.frameCount (state.log F). Run 846 (agent-a).
+PADS 2
+F 480:3 START          # title
+F 560:3 A              # English
+F 620:3 DD             # Match Race -> Time Attack
+F 680:3 DD             # Trick Attack
+F 740:3 DD             # Contest
+F 800:3 DD             # 2P VS (enabled with two pads)
+F 860:3 A
+F 1100:3 P1 A P2 A     # both riders
+F 1200:3 P1 A P2 A     # confirm
+F 1300:3 P1 A P2 A     # boards
+F 1400:3 P1 A P2 A
+F 1500:3 P1 A          # course
+F 1600:3 P1 A

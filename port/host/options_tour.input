@@ -1,0 +1,14 @@
+# tenshoe --input script: boot -> title -> main menu -> Options (D-pad up wraps from Match Race).
+# Steps are SysLib.frameCount (state.log F). Run 846 (agent-a).
+PADS 1
+F 480:3 START          # title "Press START" -> language select
+F 560:3 A              # English
+F 620:3 DU             # Match Race -> Options (wrap)
+F 700:3 A              # into Options
+F 820:3 DD             # walk the rows
+F 880:3 DD
+F 940:3 DD
+F 1000:3 DD
+F 1060:3 A             # open a row
+F 1180:3 B             # back
+F 1280:3 B             # back to the main menu

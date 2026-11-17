@@ -101,6 +101,21 @@ __attribute__((noreturn)) void port_sys_fatal(const char *fmt, va_list ap) {
     host_fatal("main: the game called sys_fatal (on the N64: the console message and a halt)");
 }
 
+/* A host crash (SIGSEGV / SIGBUS / SIGFPE / SIGILL) prints the same backtrace and exits
+ * 128 + signal, so capture.sh / scripted-input runs show where the game died (run 846).
+ * signal() is weak: port_libc.h has no <signal.h>; the numbers are Linux's. */
+extern void (*signal(int sig, void (*fn)(int)))(int) __attribute__((weak));
+extern void _exit(int status) __attribute__((noreturn));
+static void port_crash_signal(int sig) {
+    fprintf(stderr, "PORT: signal %d at step %u\n", sig, (unsigned)(port_game_frame_count != 0 ? port_game_frame_count() : 0));
+    if (backtrace != 0 && backtrace_symbols_fd != 0) {
+        void *frames[64];
+        int n = backtrace(frames, 64);
+        backtrace_symbols_fd(frames, n, 2);
+    }
+    _exit(128 + sig);
+}
+
 typedef struct Options {
     const char *romPath;
     const char *sramPath;
@@ -310,6 +325,12 @@ int main(int argc, char **argv) {
         return 2;
     }
     fpu_setup();
+    if (signal != 0) {
+        signal(11, port_crash_signal); /* SIGSEGV */
+        signal(7, port_crash_signal);  /* SIGBUS */
+        signal(8, port_crash_signal);  /* SIGFPE */
+        signal(4, port_crash_signal);  /* SIGILL */
+    }
     memset(&hc, 0, sizeof(hc));
     hc.title = "1080 Snowboarding";
     hc.headless = headless;
