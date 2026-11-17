@@ -29,6 +29,14 @@ static __inline__ void port_be_swap16s(void *p, int nbytes) {
 }
 #define PORT_BE_SWAP16S(p, nbytes) port_be_swap16s((p), (nbytes))
 
+/* Partial reads (plan 18.12): code that packs bytes / halves into a word by shifting
+ * (0xOOAABBCC) and reads them back as u8 / s16 fields of memory relied on big-endian order.
+ * PORT_BE_BYTES32(x) is the host word whose bytes in memory are x's big-endian bytes; the
+ * HI16 / LO16 forms are the halves a big-endian s16 read at +0 / +2 of the int x gives. */
+#define PORT_BE_BYTES32(x) __builtin_bswap32((unsigned int)(x))
+#define PORT_BE_HI16(x) ((short)((unsigned int)(x) >> 16))
+#define PORT_BE_LO16(x) ((short)(x))
+
 /* Bitfield order (plan 18.3): IDO allocates bitfields MSB-first, gcc / clang on x86 LSB-first.
  * Code that reads every field through the members is consistent either way; the sites that test
  * or set flag bits with masks and shifts (the audio player / channel / layer / note flag words,

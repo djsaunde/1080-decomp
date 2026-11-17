@@ -5046,7 +5046,11 @@ char* SnowBCollider_ctor(char *a0, int a1, int a2, int a3, int a4, float f_arg) 
     func_8b44_init(a0, a1, a3, a4, f_arg);
     NODE(a0)->vptr = (char *)&SnowBCollider_vtbl;
     SNOWBCOL(a0)->rider = (struct SnowBoarder *)a1;
+#ifdef PORT
+    SNOWBCOL(a0)->contactFlags = (unsigned short)a2; /* [1] is the low half on big-endian only (plan 18.12) */
+#else
     SNOWBCOL(a0)->contactFlags = ((unsigned short*)&a2)[1];
+#endif
     SNOWBCOL(a0)->unk150 = 1.0f;
     SNOWBCOL(a0)->unk154 = 10.0f;
 end:

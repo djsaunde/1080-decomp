@@ -7311,7 +7311,14 @@ void AudioThread_QueueCmd(int a0, int *a1) {
     Ring26BD8 *e; /* an AudioCmd as its two words: {op arg0 arg1 arg2, arg} */
     e = (Ring26BD8 *)B26BD8->threadCmdBuf;
     e += B26BD8->threadCmdWritePos & 0xFF;
+#ifdef PORT
+    /* a0 packs {op, arg0, arg1, arg2} big-endian (0xOOAABBCC); the readers (ProcessCmds /
+     * ProcessGlobalCmd / ProcessChannelCmd) take the four bytes as u8 fields at +0..+3, so the
+     * word is stored with its big-endian bytes (byte order, plan 18.12) */
+    e->a = PORT_BE_BYTES32(a0);
+#else
     e->a = a0;
+#endif
     e->b = *a1;
     B26BD8->threadCmdWritePos++;
     if (B26BD8->threadCmdWritePos == B26BD8->threadCmdReadPos) {
@@ -7337,7 +7344,11 @@ void AudioThread_QueueCmdS32(int a0, int a1) {
 extern int gl_ref_0003B244();
 void AudioThread_QueueCmdS8(int a0, char a1) {
     int local;
+#ifdef PORT
+    local = (unsigned char)a1; /* read back as the arg union's asSbyte (its first byte; plan 18.12) */
+#else
     local = a1 << 24;
+#endif
     gl_ref_0003B244(a0, &local);
 }
 
@@ -7348,7 +7359,11 @@ void AudioThread_QueueCmdS8(int a0, char a1) {
 extern int gl_ref_0003B244();
 void AudioThread_QueueCmdU16(int a0, short a1) {
     int local;
+#ifdef PORT
+    local = (unsigned short)a1; /* read back as the arg union's asUShort (its first half; plan 18.12) */
+#else
     local = a1 << 16;
+#endif
     gl_ref_0003B244(a0, &local);
 }
 
