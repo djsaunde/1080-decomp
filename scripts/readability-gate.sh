@@ -23,7 +23,8 @@
 #      plus the plain-base-site ratchet that catches a merge dropping a GL_DATA_STR),
 #      and gameflow-import-sites.py check (every INPUT_MGR(tok) token's relocs target
 #      GameFlow, bootup Bss 0xF8, in the ROM), and name-data-sites.py check (every
-#      XDATA(tok, sym, off) names a ROM data target of its function).
+#      XDATA(tok, sym, off) names a ROM data target of its function), and
+#      port/tools/jumptable-audit.py (every switch's case labels agree with the ROM's table).
 #   6. ROM coverage: scripts/rom-coverage.py --check assigns every baserom byte to one
 #      category (code-c / code-asm / data / asset / ucode / padding) from the ROM
 #      filesystem + linker map; fails on any unattributed byte, any USO Text without a
@@ -154,7 +155,7 @@ if [[ $WRITE == 1 ]]; then
     cp "$TMP/report.new.json" report.json
     echo "    report.json refreshed"
 fi
-echo ">>> [5/6] source checks: named placeholder calls, data-site aliases, GameFlow imports"
+echo ">>> [5/6] source checks: named placeholder calls, data-site aliases, GameFlow imports, jump tables"
 # both re-exec under the repo .venv (pyelftools, crunch64). --order (run 826) proves every name per
 # site (verify compile for functions that call 2+ callees through one token): ~60 s on the fresh build
 python3 scripts/name-placeholder-calls.py check --order > "$TMP/calls.log" 2>&1 || { grep -v '^check' "$TMP/calls.log" | head -20; fail "name-placeholder-calls.py check --order (see $TMP/calls.log)"; }
@@ -165,6 +166,10 @@ python3 scripts/gameflow-import-sites.py check > "$TMP/gameflow.log" 2>&1 || { g
 tail -1 "$TMP/gameflow.log" | sed 's/^/    /'
 python3 scripts/name-data-sites.py check > "$TMP/xdata.log" 2>&1 || { grep -v '^XDATA check:' "$TMP/xdata.log" | head -20; fail "name-data-sites.py check (see $TMP/xdata.log)"; }
 tail -1 "$TMP/xdata.log" | sed 's/^/    /'
+# every switch's C case labels against the ROM's own jump table (the matching build checks .text
+# only; the PC port builds its table from the labels: run 822 / 829 / 831), ~10 s
+python3 port/tools/jumptable-audit.py > "$TMP/jumptables.log" 2>&1 || { grep -v '^jumptable-audit:' "$TMP/jumptables.log" | head -30; fail "port/tools/jumptable-audit.py (see $TMP/jumptables.log)"; }
+tail -1 "$TMP/jumptables.log" | sed 's/^/    /'
 echo ">>> [6/6] ROM coverage (every byte attributed; docs/ROM_COVERAGE.md)"
 python3 scripts/rom-coverage.py --check > "$TMP/romcov.log" 2>&1 || { sed -n '/^Gaps/,$p' "$TMP/romcov.log" | head -30; fail "rom-coverage.py --check (see $TMP/romcov.log)"; }
 grep -E 'honest decomp|^Gaps' "$TMP/romcov.log" | sed 's/^ */    /'
