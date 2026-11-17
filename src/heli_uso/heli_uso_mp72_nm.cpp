@@ -127,6 +127,9 @@ static inline void dumf(float a0) { a0 = a0; }
 static inline int zf1(float lo, int z) { return z * (int)(lo); }
 static inline int zf4(float lo, int z) { return z * (int)(lo + lo + lo + lo); }
 static inline int zf6(float lo, int z) { return z * (int)(lo + lo + lo + lo + lo + lo); }
+/* p != 0 on a dead def that uopt folds only after copy propagation: p stays a variable (the call result is
+ * copied into it, not propagated), so v0's call-result range ends at the copy and q takes v0 (run 781) */
+static inline int zp(char *v, int z) { return z * (int)v; }
 static inline float idm(float x) { x = x; return x; }
 static inline float clampP(float v, float lo, float hi, int z) { if ((v < lo)) return lo; if (zf1(v, z)) v = lo; if ((hi < v) + zf4(v, z)) return hi; return v; }
 static inline void slerp(Vec3 *h, const Vec3 &dir, float t) {
@@ -257,6 +260,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         char *p;
         key2.v = *(int *)(&heli_data_00000000 + 0xCBB0);
         p = (char *)gl_func_00000000(heli_itemMgr2_b08, key2, ps, 0);
+        if (zp(p, 0)) p = 0;
         if (p != 0 && *(int *)(p + 0x2C) != 0) {
             char *q;
             Vec3 mpos;
