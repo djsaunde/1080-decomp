@@ -11,7 +11,7 @@ extern void port_ultra_log(const char *fmt, ...) __attribute__((format(printf, 1
 #define INFO_MAGIC 0x12345678u
 #define MAX_DEVICES 16                    /* uso_init: up to 16 device entries */
 #define MAX_ENTRIES 135                   /* gUsoModuleSlots[135] */
-#define MAX_FILES 64                      /* open handles at once */
+#define MAX_FILES 64                      /* static handles; more come from calloc (never reused) */
 
 enum { REC_INFO = 0, REC_DATA = 6, REC_BSS = 8, REC_EOF = 10, REC_END = 11 };
 
@@ -28,6 +28,10 @@ static int sNumDevices;
 static PortFsEntry sEntries[MAX_ENTRIES];
 static int sNumEntries;
 static PortFsFile sFiles[MAX_FILES];
+static int sNextFile;                     /* sFiles[sNextFile..] have never been handed out */
+
+extern void *calloc(__SIZE_TYPE__ n, __SIZE_TYPE__ size);
+extern void free(void *p);
 static int sErrno;
 
 static unsigned int be32(unsigned int romAddr)
@@ -144,6 +148,7 @@ int port_fs_init(const unsigned char *rom, unsigned int romSize)
     sNumEntries = 0;
     sErrno = 0;
     memset(sFiles, 0, sizeof(sFiles));
+    sNextFile = 0;
     if (rom == 0 || romSize < DEVICE_TABLE_ROM + 0x14) {
         port_ultra_log("port/fs: no ROM image");
         return -1;
@@ -324,27 +329,39 @@ PortFsFile *port_fs_open(const char *path)
     const PortFsEntry *e;
     PortFsFile *f = 0;
     unsigned int hdr[4] __attribute__((aligned(8)));
-    int dev = 0, i;
+    int dev = 0, fromPool;
 
     e = port_fs_lookup(path, &dev);
     if (e == 0) {
         sErrno = PORT_FS_ERR_NOT_FOUND; /* the kernel leaves errno alone here; the port reports it */
         return 0;
     }
-    for (i = 0; i < MAX_FILES; i++) {
-        if (!sFiles[i].inUse) {
-            f = &sFiles[i];
-            break;
+    /* A handle is never recycled.  fs_openFile allocates a fresh 0x28-byte struct from the game
+     * heap and fs_closeFile is a no-op, so a closed handle stays valid, and the game relies on it:
+     * an ImageFileMgr's archive handle is closed, then sought and read again later to load each
+     * image lazily (ImageFile_acquire, plan 19.10).  When the port returned closed handles to a
+     * pool, the next open re-aimed that handle at another file, the image read fell outside the
+     * new window and read nothing: the white title-screen panels. */
+    fromPool = sNextFile < MAX_FILES;
+    if (fromPool) {
+        f = &sFiles[sNextFile];
+    } else {
+        f = (PortFsFile *)calloc(1, sizeof(PortFsFile));
+        if (f == 0) {
+            port_ultra_log("port/fs: out of memory for a file handle (%s)", path);
+            sErrno = PORT_FS_ERR_NO_HANDLE;
+            return 0;
         }
-    }
-    if (f == 0) {
-        port_ultra_log("port/fs: more than %d files open (%s)", MAX_FILES, path);
-        sErrno = PORT_FS_ERR_NO_HANDLE;
-        return 0;
     }
     file_at(f, dev, e);
     if (raw_read(f, hdr, 12) != 12) {
+        if (!fromPool) {
+            free(f);
+        }
         return 0;
+    }
+    if (fromPool) {
+        sNextFile++;
     }
     f->window = f->pos;
     f->limit = be32(f->romStart + f->pos - 8) + f->pos;
@@ -381,8 +398,9 @@ int port_fs_tell(const PortFsFile *f)
     return (int)(f->pos + f->romStart);
 }
 
-/* fs_closeFile is a no-op on the N64 (the 0x28-byte struct stays in the heap it came from);
- * the port returns the handle to its pool. */
+/* fs_closeFile is a no-op on the N64 (the 0x28-byte struct stays in the heap it came from, and
+ * the game goes on seeking / reading it: see port_fs_open).  The port marks it closed and keeps
+ * it valid; the handle is never reused. */
 void port_fs_close(PortFsFile *f)
 {
     if (f != 0) {

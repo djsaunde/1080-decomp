@@ -93,6 +93,24 @@ int main(int argc, char **argv)
     }
     CHECK(port_fs_open("rom/nofile.bin") == NULL && port_fs_errno() == PORT_FS_ERR_NOT_FOUND);
 
+    /* a closed handle stays valid and is never reused (fs_closeFile is a no-op; plan 19.10):
+     * opens after the close get other handles, and the closed one still reads its own file */
+    f = port_fs_open("rom/cam_info.bin");
+    CHECK(f != NULL);
+    if (f != NULL) {
+        int start = port_fs_tell(f), k;
+        PortFsFile *g = NULL;
+
+        port_fs_close(f);
+        for (k = 0; k < 80; k++) { /* past the static pool */
+            g = port_fs_open("rom/version.bin");
+            CHECK(g != NULL && g != f);
+            port_fs_close(g);
+        }
+        CHECK(port_fs_tell(f) == start);
+        CHECK(port_fs_read(f, buf, 16) == 16 && ((unsigned char *)buf)[3] == rom[start + 3]);
+    }
+
     printf("test_fs: %d checks, %d failures\n", sChecks, sFail);
     free(rom);
     return sFail != 0;
