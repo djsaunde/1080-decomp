@@ -76,8 +76,9 @@ extern "C" void snoweffects_uso_func_00000270(SnowTex *t) {
  * matrix; inside the near / far planes (+0xAC / +0xB0) and the half-screen box it records the prim
  * depth (EE), the env colour (FB, alpha from +0x50), counts the sprite (+0x44) and records the stock
  * gSPScisTextureRectangle (E4 / B4 / B3; s / t steps from the texture size +0x34 / +0x38). Ends with
- * PipeSync, texture off and the render state reset. Left: float register colouring and the frame
- * (384 vs 400: the target keeps more edg temporaries of the scaled-position copy chain). */
+ * PipeSync, texture off and the render state reset. Frame 400 as the target (agent-c run 667 levers: the
+ * function-scope scalars above m, the dead scratch block). Left: the target keeps i in s2 and the scaled()
+ * return temp address in s3 (ours: ra / s1), and the float colouring after the projection. */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -92,7 +93,6 @@ typedef short s16;
     gImmp1(pkt, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 
 struct SnowV3c { float x, y, z; };
-inline SnowV3c scaled(const SnowV3c &a, float sx, float sy, float sz) { SnowV3c r; r.x = a.x * sx; r.y = a.y * sy; r.z = a.z * sz; return r; }
 struct SnowPartC {
     SnowV3c pos;            /* 0x00 */
     char pad0C[0x38 - 0x0C];
@@ -130,19 +130,33 @@ struct SnowSprites {
 extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at +0x254 */
 #define SNOW_CAM (*(SnowCam **)(&snow_gGfxLib + 0x254))
 /* the gGfxLib world scale (+0x128..+0x130; 0x28E0 shows it on the same base as the camera pointer)
- * as one 0-based pin per word, so each load keeps its own lui as in the target (a shared base is CSE'd),
- * and the RoData+0x4 depth scale */
-extern "C" float snow_gfx_scale_128, snow_gfx_scale_12C, snow_gfx_scale_130;
+ * read through one 0-based gGfxLib alias per word, so each load keeps its own lui and its +0x128 / +0x12C /
+ * +0x130 immediate as in the target (one shared base is hoisted into a register), and the RoData+0x4 depth
+ * scale. scaled() reads the scale inside the inline into named x / y / z: the target holds the three
+ * products in f0 / f2 / f12 before storing them (agent-h run 687, objdiff 82.9 -> 84.9). */
+struct SnowGfxLibS { char pad0[0x128]; float sx, sy, sz; };
+extern "C" SnowGfxLibS snow_gfx_scale_128, snow_gfx_scale_12C, snow_gfx_scale_130;
 extern "C" float snow_ro_4;
+inline SnowV3c scaled(const SnowV3c &a) { float x = a.x * snow_gfx_scale_128.sx; float y = a.y * snow_gfx_scale_12C.sy; float z = a.z * snow_gfx_scale_130.sz; SnowV3c r; r.x = x; r.y = y; r.z = z; return r; }
 
 extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     GCtx *c = SNOW_CAM->dl;
     int d;
+    float inv;
+    float k;
+    float h2;
+    int hgt;
+    float sx;
+    float sy;
+    int wid;
+    int x0;
     float m[4][4];
     float halfW, halfH;
     int i;
     SnowPartC *p;
+    int scratch[5];
 
+    scratch[0] = 0;
     d = gl_func_00000000(self->tex->dl);
     gDPWord(c->next(), 0x06000000, d);
     gl_func_00000000(SNOW_CAM->view, m);
@@ -151,18 +165,18 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     for (i = 0, p = self->items; i < self->count; i++, p++) {
         SnowV3c v;
         float w;
-        v = scaled(p->pos, snow_gfx_scale_128, snow_gfx_scale_12C, snow_gfx_scale_130);
+        v = scaled(p->pos);
         w = m[0][3] * v.x + m[1][3] * v.y + m[2][3] * v.z + m[3][3];
         if (SNOW_CAM->nearZ < w && w < SNOW_CAM->farZ) {
-            float inv = 1.0f / w;
-            float k = p->size * (85.0f / SNOW_CAM->v->fovScale);
-            float h2 = halfH * 2.0f;
-            int hgt = (int)(k * p->aspect * (h2 * inv) + 1.0f);
-            float sx = (m[0][0] * v.x + m[1][0] * v.y + m[2][0] * v.z + m[3][0]) * inv * halfW;
-            float sy = (m[0][1] * v.x + m[1][1] * v.y + m[2][1] * v.z + m[3][1]) * inv * -halfH;
+            inv = 1.0f / w;
+            k = p->size * (85.0f / SNOW_CAM->v->fovScale);
+            h2 = halfH * 2.0f;
+            hgt = (int)(k * p->aspect * (h2 * inv) + 1.0f);
+            sx = (m[0][0] * v.x + m[1][0] * v.y + m[2][0] * v.z + m[3][0]) * inv * halfW;
+            sy = (m[0][1] * v.x + m[1][1] * v.y + m[2][1] * v.z + m[3][1]) * inv * -halfH;
             if (-halfW < sx && sx < halfW && -halfH < sy && sy < halfH) {
-                int wid = (int)(k * (h2 * (1.0f / w)) + 1.0f);
-                int x0 = (int)(sx + halfW - (float)(wid / 2) + (float)SNOW_CAM->offX);
+                wid = (int)(k * (h2 * (1.0f / w)) + 1.0f);
+                x0 = (int)(sx + halfW - (float)(wid / 2) + (float)SNOW_CAM->offX);
                 int y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
                 gDPWord(c->next(), 0xEE000000,
                         ((int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4) & 0x7FFF) << 16);
