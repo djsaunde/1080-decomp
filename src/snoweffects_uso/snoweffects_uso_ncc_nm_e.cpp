@@ -3,7 +3,10 @@
  * build keeps INCLUDE_ASM). Callees go through typed blank (0-pinned) aliases; RoData constants through
  * 0-pinned snow_ro_* symbols. 0x7960 moved to the matching donor snoweffects_uso_ncc_e.cpp (run 673).
  * Spliced (run 673): 0x64B8 (97.0 %, 404 words), 0x6B28 (93.8 %, 358 words) and 0x718C (96.9 %, 471 words), all
- * the target's length. Run 673 levers: the +0x1A0 / +0x1FC timers as `t->timer--; if (t->timer < 0)` (the
+ * the target's length. Run 680: 0x64B8 97.7 % and 0x6B28 95.1 %, both at the target frame (344 / 232): the lerp x, y, z
+ * live in the loop body / p block above the spawn temps, the randf result reuses a dead float (k / s) instead of a new
+ * named r, and life / decay and alpha / alphaVel are stored through inline two-parameter setters (their uopt-coloured
+ * parameters give the target's early f0 loads). Run 673 levers: the +0x1A0 / +0x1FC timers as `t->timer--; if (t->timer < 0)` (the
  * pre-decrement form colours the counter v0 / v1, the target uses t-registers), and the set()-built operator*
  * of SVb (below). */
 #include "snoweffects_ncc_e.h"
@@ -61,6 +64,8 @@ struct SPart {
     int unk4C;
     /* 0x50 */ float alpha;
     /* 0x54 */ float alphaVel;
+    void setLife(float l, float d) { life = l; decay = d; }
+    void setAlpha(float a, float v) { alpha = a; alphaVel = v; }
 };
 extern "C" void gl_func_00000000_snow_norm(SV *);  /* math_vec3Normalize: blank jal */
 extern "C" SPart *gl_func_00000000_snow_pool(void *);  /* SnowPool_alloc_000006D0 / SnowPool_oldest_00000680: pointer-return blank jal */
@@ -142,17 +147,18 @@ extern "C" void snoweffects_uso_func_000064B8(SnowEm *t) {
             }
             if (gl_func_00000000_snow_randf() < spd) {
                 for (i = 0; i < t->count; i++) {
+                    float x, y, z;
                     SPart *p = gl_func_00000000_snow_pool(t->pool);
                     if (p == 0) {
                         p = gl_func_00000000_snow_pool(t->pool);
                     }
                     if (p != 0) {
                         SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f);
-                        float r = gl_func_00000000_snow_randf();
-                        { float x = u.x, y = u.y, z = u.z;
-                        u.x = (t->vF0.x - x) * r + x;
-                        u.y = (t->vF0.y - y) * r + y;
-                        u.z = (t->vF0.z - z) * r + z; }
+                        k = gl_func_00000000_snow_randf();
+                        { x = u.x; y = u.y; z = u.z;
+                        u.x = (t->vF0.x - x) * k + x;
+                        u.y = (t->vF0.y - y) * k + y;
+                        u.z = (t->vF0.z - z) * k + z; }
                         p->pos.set(u.x, u.y + t->f178, u.z);
                         p->vel.set(n.x, n.y, n.z);
                         p->size = 1.0f;
@@ -166,10 +172,8 @@ extern "C" void snoweffects_uso_func_000064B8(SnowEm *t) {
                             p->sizeVel = t->f17C * (0.5f + spd / 2.0f);
                             p->gravity = t->f174;
                         }
-                        p->life = 256.0f;
-                        p->decay = t->f18C;
-                        p->alpha = 256.0f;
-                        p->alphaVel = t->f188;
+                        p->setLife(256.0f, t->f18C);
+                        p->setAlpha(256.0f, t->f188);
                     }
                 }
             }
@@ -281,11 +285,11 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
                     s = 0.5f;
                 }
                 SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f * s);
-                float r = gl_func_00000000_snow_randf();
+                s = gl_func_00000000_snow_randf();
                 { x = u.x; y = u.y; z = u.z;
-                u.x = (t->vF0.x - x) * r + x;
-                u.y = (t->vF0.y - y) * r + y;
-                u.z = (t->vF0.z - z) * r + z; }
+                u.x = (t->vF0.x - x) * s + x;
+                u.y = (t->vF0.y - y) * s + y;
+                u.z = (t->vF0.z - z) * s + z; }
                 p->pos.set(u.x, u.y, u.z);
                 p->vel.set(n.x, n.y, n.z);
                 p->fadeAt = 256.0f;
@@ -296,10 +300,8 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
                 p->col.c[2] = col.c[2];
                 p->sizeVel = t->f1B0;
                 p->gravity = t->f1B4;
-                p->life = 256.0f;
-                p->decay = t->f1BC;
-                p->alpha = 256.0f;
-                p->alphaVel = t->f1C0;
+                p->setLife(256.0f, t->f1BC);
+                p->setAlpha(256.0f, t->f1C0);
             }
         }
     }
