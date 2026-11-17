@@ -43,6 +43,8 @@ struct LiveAudioStats {
     double trimmed;    /* skipped because the output fell behind */
 };
 LiveAudioStats live_audio_stats();
+/* the `audio-stats:` summary (--audio-stats; port/tools/audio-check.sh parses it) */
+std::string live_audio_stats_line();
 /* one line for the presenter's per-second status */
 std::string live_audio_status();
 

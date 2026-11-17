@@ -1,27 +1,29 @@
 #!/usr/bin/env bash
-# Play the PC port live in a window (PC port plan 19.11): the 32-bit game (tenshoe, PORT_LIVE)
+# Play the PC port live in a window.  The default (plan 21.10) is the native 64-bit game (plan 21.9):
+# one process (-DPORT_64=ON -DPORT_NATIVE=ON, run with PORT_NATIVE=1) that renders with Fast3D in process,
+# opens its own window, plays its own audio and reads the keyboard / gamepad itself; no presenter, no shared
+# memory, no i386 sysroot.  --presenter is the fallback (plan 19.11): the 32-bit game (tenshoe, PORT_LIVE)
 # and the 64-bit presenter (port/gfx/fast3d/presenter.cpp) tied by one shared-memory name.
 #
-#   port/tools/play.sh [-b BUILD] [-r ROM] [-s SCALE] [-S] [-m] [-l MS] [-n NAME] [-p "PRESENTER ARGS"] [-- TENSHOE ARGS]
-#   port/tools/play.sh --native [-b BUILD] [-r ROM] [-s SCALE] [-S] [-m] [-l MS] [-V] [-- TENSHOE ARGS]
+#   port/tools/play.sh [-b BUILD] [-r ROM] [-s SCALE] [-S] [-m] [-l MS] [-V] [-- TENSHOE ARGS]
+#   port/tools/play.sh --presenter [-b BUILD] [-r ROM] [-s SCALE] [-S] [-m] [-l MS] [-n NAME] [-p "PRESENTER ARGS"] [-- TENSHOE ARGS]
 #
-# --native (plan 21.9): the 64-bit game alone (-DPORT_64=ON -DPORT_NATIVE=ON, run with PORT_NATIVE=1): it
-#        renders with Fast3D in process, opens its own window, plays its own audio and reads the keyboard /
-#        gamepad itself; no presenter, no shared memory, no i386 sysroot. -b is then a PORT_NATIVE build tree
-#        (default <monorepo>/tools/play/<worktree>/build-native); -V turns vsync on (default off: the game's
-#        30 Hz step paces the frames); -n / -p do not apply. More settings through the environment
-#        (port/gfx/fast3d/native_host.cpp: PORT_NATIVE_PNG, PORT_NATIVE_INJECT, PORT_NATIVE_JS, ...).
+# Native (the default; --native is accepted too): -b is a PORT_NATIVE build tree (default
+#        <monorepo>/tools/play/<worktree>/build-native, configured and built on first use); -V turns vsync on
+#        (default off: the game's 30 Hz step paces the frames); -n / -p do not apply.  More settings through
+#        the environment (port/gfx/fast3d/native_host.cpp: PORT_NATIVE_PNG, PORT_NATIVE_INJECT,
+#        PORT_NATIVE_JS, PORT_NATIVE_AUDIO_STATS, ...).  If the native build or window fails, use --presenter.
 #
 #   -b   a built PORT_LINK=ON port tree holding tenshoe (default: configured and built on first
-#        use in <monorepo>/tools/play/<worktree>/build, about 3 minutes)
+#        use in <monorepo>/tools/play/<worktree>/build-native, or build with --presenter: a few minutes)
 #   -r   the ROM (default <game repo>/baserom.z64)
 #   -s   window scale over 320x240 (default 3: 960x720)
 #   -S   software GL (LIBGL_ALWAYS_SOFTWARE=1, llvmpipe) instead of the GPU: the fallback when the GPU
 #        path fails (no EGL config, "D3D12: Removing Device", a black or frozen window); slower
 #   -m   mute (no sound; the game's audio is still produced and drained)
 #   -l   audio buffer in ms (default 80; raise it if the sound crackles)
-#   -n   the shared-memory name (default 1080live-<pid>)
-#   -p   more presenter arguments (--png DIR --png-every N, --inject STEP:KEY:d|u,..., --frames N, --stay,
+#   -n   (--presenter) the shared-memory name (default 1080live-<pid>)
+#   -p   (--presenter) more presenter arguments (--png DIR --png-every N, --inject STEP:KEY:d|u,..., --frames N, --stay,
 #        --audio-dump FILE, --audio-stats, --input SCRIPT: pads from a port/host/*.input script, in lockstep)
 #   --   more tenshoe arguments (--frames N, --input SCRIPT, --record LOG, --trace LOG, --audio-out WAV, ...)
 #
@@ -32,23 +34,24 @@
 # (/dev/input/js0, else the first evdev gamepad /dev/input/event*) is used when present. Needs an
 # X display (WSLg: DISPLAY=:0). Sound goes to PulseAudio ($PULSE_SERVER; WSLg's
 # unix:/mnt/wslg/PulseServer); without a server the game plays silent.
-# One-time setup (no sudo): scripts/setup-i386-sysroot.sh (monorepo), port/gfx/fast3d/setup-lus.sh,
+# One-time setup (no sudo): scripts/setup-i386-sysroot.sh (monorepo; --presenter only), port/gfx/fast3d/setup-lus.sh,
 # port/gfx/replay/setup-gl-dev.sh, port/gfx/fast3d/setup-x11-dev.sh, port/gfx/fast3d/setup-pulse-dev.sh;
 # this script runs the last four itself when their tools/ directories are missing (the audio one
 # may fail: the game then runs silent). Sound opens 2.5 s after the window (WSLg: a window mapped while
-# a stream plays stalls its PulseAudio; so do other windows opened during play). Check: audio-check.sh.
+# a stream plays stalls its PulseAudio; so do other windows opened during play). Check: audio-check.sh
+# (native; --presenter for the presenter).
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 GAME="$(cd "$HERE/../.." && pwd)"
 MONO="$(cd "$GAME/../.." && pwd)"
 WORK="$MONO/tools/play/$(basename "$GAME")"
-BUILD= ROM="$GAME/baserom.z64" SCALE=3 SOFT=0 NAME="1080live-$$" PARGS= MUTE= LAT=80 NATIVE=0 VSYNC=0
-if [ "${1:-}" = --native ]; then NATIVE=1; shift; fi
+BUILD= ROM="$GAME/baserom.z64" SCALE=3 SOFT=0 NAME="1080live-$$" PARGS= MUTE= LAT=80 NATIVE=1 VSYNC=0
+case "${1:-}" in --native) shift ;; --presenter) NATIVE=0; shift ;; esac
 while getopts "b:r:s:Sml:n:p:Vh" o; do
     case $o in
     b) BUILD=$OPTARG ;; r) ROM=$OPTARG ;; s) SCALE=$OPTARG ;; S) SOFT=1 ;; n) NAME=$OPTARG ;; p) PARGS=$OPTARG ;;
     m) MUTE=--mute ;; l) LAT=$OPTARG ;; V) VSYNC=1 ;;
-    *) sed -n '2,39p' "$0"; exit 2 ;;
+    *) sed -n '2,40p' "$0"; exit 2 ;;
     esac
 done
 shift $((OPTIND - 1))
@@ -75,7 +78,7 @@ if [ $NATIVE = 1 ]; then
         fi
         echo "play: building the native tenshoe (first time: a few minutes)"
         cmake --build "$BUILD" --target tenshoe -j8 >"$WORK/build-native.log" 2>&1 ||
-            { tail -20 "$WORK/build-native.log"; echo "play: build failed"; exit 1; }
+            { tail -20 "$WORK/build-native.log"; echo "play: build failed (play.sh --presenter is the fallback)"; exit 1; }
     fi
     [ -x "$BUILD/tenshoe" ] || { echo "play: no tenshoe in $BUILD"; exit 2; }
     [ $SOFT = 1 ] && export LIBGL_ALWAYS_SOFTWARE=1

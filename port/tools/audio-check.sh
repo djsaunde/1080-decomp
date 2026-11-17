@@ -3,8 +3,11 @@
 # window, in lockstep (presenter --input), with PulseAudio on, and require that the presenter played
 # at least MIN % of the audio it received while its output was open.
 #
-#   port/tools/audio-check.sh [-f STEPS] [-m MIN_PERCENT] [-o DIR] [-- MORE PLAY.SH ARGS]
+#   port/tools/audio-check.sh [--native] [-f STEPS] [-m MIN_PERCENT] [-o DIR] [-- MORE PLAY.SH ARGS]
 #
+#   --native (plan 21.10) checks the native 64-bit game (play.sh --native) instead: it reads the script
+#        itself (tenshoe --input), opens its window, then PulseAudio 2.5 s later (live_audio openDelayMs),
+#        and prints the same line (PORT_NATIVE_AUDIO_STATS=1; PORT_NATIVE_AUDIO_OPEN_DELAY=0 shows the stall)
 #   -f   game steps (default 3300: the menus, then the race from step ~1500, about 60 s of racing)
 #   -m   the pass mark, played / received-while-open in percent (default 95)
 #   -o   where the logs and the run directory go (default a new mktemp dir; a fresh SRAM, as the
@@ -21,7 +24,8 @@
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 GAME="$(cd "$HERE/../.." && pwd)"
-STEPS=3300 MIN=95 OUTDIR=
+STEPS=3300 MIN=95 OUTDIR= NATIVE=0
+if [ "${1:-}" = --native ]; then NATIVE=1; shift; fi
 while getopts "f:m:o:h" o; do
     case $o in
     f) STEPS=$OPTARG ;; m) MIN=$OPTARG ;; o) OUTDIR=$OPTARG ;;
@@ -32,11 +36,17 @@ shift $((OPTIND - 1))
 [ -n "$OUTDIR" ] || OUTDIR="$(mktemp -d /tmp/audio-check.XXXXXX)"
 mkdir -p "$OUTDIR/run"
 LOG="$OUTDIR/play.log"
-echo "audio-check: $STEPS steps of port/host/match_race.input, logs in $OUTDIR"
-"$HERE/play.sh" "$@" -p "--audio-stats ${AUDIO_CHECK_PRESENTER:-} --input $GAME/port/host/match_race.input" -- \
-    --sram "$OUTDIR/run/1080.sram" --frames "$STEPS" >"$LOG" 2>&1
+if [ $NATIVE = 1 ]; then
+    echo "audio-check: native: $STEPS steps of port/host/match_race.input, logs in $OUTDIR"
+    PORT_NATIVE_AUDIO_STATS=1 "$HERE/play.sh" --native "$@" -- --input "$GAME/port/host/match_race.input" \
+        --sram "$OUTDIR/run/1080.sram" --frames "$STEPS" >"$LOG" 2>&1
+else
+    echo "audio-check: $STEPS steps of port/host/match_race.input, logs in $OUTDIR"
+    "$HERE/play.sh" --presenter "$@" -p "--audio-stats ${AUDIO_CHECK_PRESENTER:-} --input $GAME/port/host/match_race.input" -- \
+        --sram "$OUTDIR/run/1080.sram" --frames "$STEPS" >"$LOG" 2>&1
+fi
 rc=$?
-line="$(grep 'presenter: audio-stats:' "$LOG" | tail -1)"
+line="$(grep ': audio-stats:' "$LOG" | tail -1)"
 if [ -z "$line" ]; then
     tail -20 "$LOG"
     echo "audio-check: no audio-stats line (play.sh exit $rc); see $LOG"

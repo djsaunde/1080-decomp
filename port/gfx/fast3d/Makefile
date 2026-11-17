@@ -101,3 +101,8 @@ all: $(OUT)/f3dreplay $(OUT)/test_inproc
 .PHONY: audio-check
 audio-check:
 	../../tools/audio-check.sh $(AUDIO_CHECK_ARGS)
+
+# the same check on the native 64-bit game (plan 21.10: play.sh --native, its own window and audio)
+.PHONY: audio-check-native
+audio-check-native:
+	../../tools/audio-check.sh --native $(AUDIO_CHECK_ARGS)

@@ -373,14 +373,23 @@ void live_audio_stop() {
                 (unsigned long long)sReceived.load(), sReceived.load() / (4.0 * 32000.0), (unsigned long long)sHash,
                 sPlayed.load() / (4.0 * 32000.0), sOutput.load(), sA->underruns, sA->trimmed, sA->overruns);
     if (sOpt.stats) {
-        /* port/tools/audio-check.sh parses this line */
-        LiveAudioStats st = live_audio_stats();
-        double open = st.received - st.beforeOpen;
-        std::printf("presenter: audio-stats: output %s, received %.2f s, before open %.2f s, played %.2f s, trimmed "
-                    "%.2f s, underruns %u, game overruns %u, played/received-while-open %.1f%%\n",
-                    sOutput.load(), st.received, st.beforeOpen, st.played, st.trimmed, sA->underruns, sA->overruns,
-                    open > 0 ? 100.0 * st.played / open : 0.0);
+        std::printf("presenter: %s\n", live_audio_stats_line().c_str());
     }
+}
+
+std::string live_audio_stats_line() {
+    if (sA == nullptr) {
+        return "audio-stats: no audio";
+    }
+    /* port/tools/audio-check.sh parses this line */
+    LiveAudioStats st = live_audio_stats();
+    double open = st.received - st.beforeOpen;
+    char s[320];
+    std::snprintf(s, sizeof(s), "audio-stats: output %s, received %.2f s, before open %.2f s, played %.2f s, trimmed "
+                  "%.2f s, underruns %u, game overruns %u, played/received-while-open %.1f%%",
+                  sOutput.load(), st.received, st.beforeOpen, st.played, st.trimmed, sA->underruns, sA->overruns,
+                  open > 0 ? 100.0 * st.played / open : 0.0);
+    return s;
 }
 
 std::string live_audio_status() {

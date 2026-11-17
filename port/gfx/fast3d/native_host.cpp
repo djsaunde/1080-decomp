@@ -13,6 +13,8 @@
  *   PORT_NATIVE_SCALE=N       window = N x 320x240 (default 3); the window resizes, F11 = fullscreen
  *   PORT_NATIVE_VSYNC=1       swap interval 1 (default 0: the game's 30 Hz step paces the frames)
  *   PORT_NATIVE_MUTE=1, PORT_NATIVE_LATENCY=MS (default 80), PORT_NATIVE_AUDIO_DUMP=FILE
+ *   PORT_NATIVE_AUDIO_STATS=1 the `audio-stats:` summary line at exit (port/tools/audio-check.sh --native)
+ *   PORT_NATIVE_AUDIO_OPEN_DELAY=MS  open PulseAudio this long after the window (default 2500; WSLg, run 867)
  *   PORT_NATIVE_PNG=DIR       DIR/native_sSTEP.png after each frame (PORT_NATIVE_PNG_STEPS=A-B,C,... limits it)
  *   PORT_NATIVE_INJECT=STEP:KEY:d|u,...   synthetic X keys (tests), as presenter --inject
  *   PORT_NATIVE_JS=PATH       the joystick (default /dev/input/js0, else the first evdev gamepad)
@@ -79,7 +81,7 @@ struct Host {
     std::string pngDir;
     std::vector<std::pair<uint32_t, uint32_t>> pngSteps;
     std::vector<Inject> injects;
-    bool fbLog = false, audio = false;
+    bool fbLog = false, audio = false, audioStats = false;
     uint32_t seq = 0, lastStep = 0, frames = 0, empty = 0;
     uint32_t rtt = 0, depthFar = 0, depthNear = 0, colorServed = 0, unresolved = 0;
     std::vector<float> renderMs, stepMs;
@@ -201,8 +203,15 @@ extern "C" unsigned port_native_open(void) {
     if (env("PORT_NATIVE_AUDIO_DUMP")) {
         ao.dumpPath = env("PORT_NATIVE_AUDIO_DUMP");
     }
+    ao.stats = env("PORT_NATIVE_AUDIO_STATS") != nullptr && std::strcmp(env("PORT_NATIVE_AUDIO_STATS"), "0") != 0;
+    if (env("PORT_NATIVE_AUDIO_OPEN_DELAY")) {
+        ao.openDelayMs = (uint32_t)std::max(0, std::atoi(env("PORT_NATIVE_AUDIO_OPEN_DELAY")));
+    }
+    /* the window is open and mapped (above): live_audio's openDelayMs counts from here, so PulseAudio
+     * opens after the map, as WSLg needs (run 867; audio-check.sh --native measures it) */
     live_audio_start(h->block, ao);
     h->audio = true;
+    h->audioStats = ao.stats;
 
     if (env("PORT_NATIVE_PNG")) {
         h->pngDir = env("PORT_NATIVE_PNG");
@@ -341,6 +350,9 @@ extern "C" void port_native_close(void) {
     }
     if (!stopped) {
         std::printf("native: the audio thread did not stop (blocked in PulseAudio): abandoned at exit\n");
+        if (h->audioStats) {
+            std::printf("native: %s\n", live_audio_stats_line().c_str()); /* live_audio_stop did not print it */
+        }
         std::atexit([] {
             std::fflush(nullptr);
             _exit(0);
