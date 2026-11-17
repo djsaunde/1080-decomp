@@ -89,6 +89,16 @@ def expand(s, gvars, depth=0):
     def sub(m):
         name = m.group(1) or m.group(2)
         return expand(gvars.get(name, ""), gvars, depth + 1)
+
+    # `$(foreach v,LIST,TEXT)` (the newer donor groups: REPLACE_FUNC_BODY += $(foreach f,$(X_FUNCS),
+    # $(f)=$(X_DONOR))); without it those splices were invisible and the port compiled the empty
+    # host placeholders (BoardTrail_init_00005FD4: the title demo's board trail never initialised).
+    def foreach(m):
+        var, lst, text = m.group(1), m.group(2), m.group(3)
+        words = expand(lst, gvars, depth + 1).split()
+        return " ".join(expand(text, dict(gvars, **{var: w}), depth + 1) for w in words)
+    s = re.sub(r"\$\(foreach ([A-Za-z_]\w*),((?:[^(),]|\$\([^()]*\))*),((?:[^()]|\$\([^()]*\))*)\)",
+               foreach, s)
     return re.sub(r"\$\(([A-Za-z_][A-Za-z0-9_]*)\)|\$\{([A-Za-z_][A-Za-z0-9_]*)\}", sub, s)
 
 

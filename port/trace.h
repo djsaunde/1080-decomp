@@ -17,7 +17,7 @@
  *
  * File format (text, one record per line, '#' comments):
  *   I <frame> <pad> <replayFrame> <held:hex8> <rawX> <rawY>
- *   F <frame> have=<hex> flow=<state>,<next> race=<state>,<flags:hex>
+ *   F <frame> have=<hex> flow=<state>,<next>,<mode> race=<state>,<flags:hex>
  *     rand=<hex8> rt=<retraceCount> vi=<viRetraces> el=<elapsed>
  *     cam=<6 x hex8> r<i>=<px,py,pz,qx,qy,qz,qw,speed as hex8>/<anim>
  * Floats are written as their IEEE bit patterns (hex8): diffs are exact.
@@ -47,6 +47,7 @@ typedef struct PortTraceFrame {
     u32 have;       /* PORT_TRACE_HAVE_* */
     s32 flowState;
     s32 flowNext;
+    s32 flowMode;   /* GameFlow.flowMode (+0x38): the running flow mode (9 = none) */
     s32 raceState;
     u32 raceFlags;
     s32 numRiders;

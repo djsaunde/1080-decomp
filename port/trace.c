@@ -108,6 +108,7 @@ int port_trace_open(const char *recordPath, const char *replayPath, const char *
             host_log("trace: cannot write %s", statePath);
             return -1;
         }
+        setvbuf(sState, NULL, _IOLBF, 0); /* a crash keeps every frame's line */
         fprintf(sState, "# 1080 port state trace v1 (port/trace.h)\n");
     }
     if (replayPath != NULL && load_replay(replayPath) != 0) {
@@ -199,6 +200,7 @@ __attribute__((weak)) void port_trace_collect(PortTraceFrame *f) {
     if (gInputMgr != NULL) {
         f->flowState = *(s32 *)(gInputMgr + 0x40);
         f->flowNext = *(s32 *)(gInputMgr + 0x34);
+        f->flowMode = *(s32 *)(gInputMgr + 0x38);
         f->have |= PORT_TRACE_HAVE_FLOW;
     }
     if (&gl_ref_00021E04 != NULL) {
@@ -220,8 +222,8 @@ void port_trace_frame_end(u32 frameCount) {
     f.frameCount = frameCount;
     f.viRetraces = port_vi_retrace_count();
     port_trace_collect(&f);
-    fprintf(sState, "F %u have=%02x flow=%d,%d race=%d,%08x rand=%08x rt=%u vi=%u el=%d",
-            (unsigned)f.frameCount, (unsigned)f.have, (int)f.flowState, (int)f.flowNext,
+    fprintf(sState, "F %u have=%02x flow=%d,%d,%d race=%d,%08x rand=%08x rt=%u vi=%u el=%d",
+            (unsigned)f.frameCount, (unsigned)f.have, (int)f.flowState, (int)f.flowNext, (int)f.flowMode,
             (int)f.raceState, (unsigned)f.raceFlags, (unsigned)f.randState,
             (unsigned)f.retraceCount, (unsigned)f.viRetraces, (int)f.elapsed);
     fprintf(sState, " cam=%08x,%08x,%08x,%08x,%08x,%08x", fbits(f.camEye[0]), fbits(f.camEye[1]),

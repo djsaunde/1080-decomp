@@ -108,7 +108,13 @@ def bind_calls(text, binds):
                 if isinstance(tgt, dict):       # per addend: {N: target}
                     def sub(m, tgt=tgt):
                         n = int(m.group(1) or "0")
-                        return tgt[n] + (m.group(1) or "") if n in tgt else m.group(0)
+                        if n in tgt:
+                            return tgt[n] + (m.group(1) or "")
+                        # g++ folds a member offset into the addend (`D+0x128` then `->y`:
+                        # D_00000000+300): the object is the nearest bound addend below
+                        # (within 0x100); every bound target is the blob base where TOK = 0
+                        lower = [k for k in tgt if k <= n and n - k < 0x100]
+                        return tgt[max(lower)] + (m.group(1) or "") if lower else m.group(0)
                     line = re.sub(r"(?<![\w.])%s([+-]\d+)?(?![\w$])" % re.escape(tok), sub, line)
                 else:
                     line = re.sub(r"(?<![\w.])%s(?![\w$])" % re.escape(tok), tgt, line)  # `$tok`: an immediate

@@ -182,6 +182,11 @@ def collect(lib, shipped=None):
                     sig = signature(die)
                 except Exception:  # noqa: BLE001 -- odd DWARF: skip this DIE
                     continue
+                if cpp_unit:
+                    # C++ has no unprototyped functions, and gcc emits no DW_AT_prototyped for
+                    # them: without this an extern "C" definition with a float parameter
+                    # (CollShape_nearestHit's radius) was declared with a promoted double.
+                    sig = sig[:3] + (True,)
                 ext = bool(attr(die, "DW_AT_external"))
                 if attr(die, "DW_AT_declaration"):
                     if not cpp_unit:
@@ -236,7 +241,8 @@ def excluded_defs(names):
 # callees whose C++ callers pass a 4-byte mirror struct by value where the C definition takes an
 # int (same i386 stack slot): declared `(...)`, which passes the struct as is.  Only for callees
 # without float / double / long long parameters (render() checks).
-BYVALUE_CALLERS = {"ColourItemType_ctor"}
+# heli_uso_mp72.cpp's HeliTypeTag key: ItemMgr_findType_0003EA98 / ItemMgr_queryType.
+BYVALUE_CALLERS = {"ColourItemType_ctor", "ItemMgr_findType_0003EA98", "ItemMgr_queryType"}
 
 # callees whose trailing fixed parameters a C++ caller omits: the C definition declares a
 # parameter only as a matching lever and overwrites it before any read, so the missing argument
