@@ -1,6 +1,6 @@
-nonmatching BoardTrail_spawnC_0000718C, 0x75C
+nonmatching BoardTrail_spawnSpec_0000718C, 0x75C
 
-glabel BoardTrail_spawnC_0000718C
+glabel BoardTrail_spawnSpec_0000718C
     /* 910AB2 0000718C 27BDFE90 */  .word 0x27BDFE90
     /* 910AB6 00007190 AFBF005C */  .word 0xAFBF005C
     /* 910ABA 00007194 AFB50058 */  .word 0xAFB50058
@@ -472,4 +472,4 @@ glabel BoardTrail_spawnC_0000718C
     /* 911202 000078DC 8FB50058 */  .word 0x8FB50058
     /* 911206 000078E0 03E00008 */  .word 0x03E00008
     /* 91120A 000078E4 27BD0170 */  .word 0x27BD0170
-endlabel BoardTrail_spawnC_0000718C
+endlabel BoardTrail_spawnSpec_0000718C

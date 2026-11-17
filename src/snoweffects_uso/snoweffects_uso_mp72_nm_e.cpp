@@ -135,7 +135,7 @@ struct SnowEm {
 /* 0x64B8: spawn update of effect A (flag bit 0). EXACT (agent-e run 744). Levers: run 707's POD class set; the
  * scaled() / setIf() first product and the plain op+= (above); math_vec3Normalize returns int, and the call's
  * v0 result makes uopt keep the v318 pointer word out of v0 (target v1). */
-extern "C" void BoardTrail_spawnA_000064B8(SnowEm *t) {
+extern "C" void BoardTrail_spawnPowder_000064B8(SnowEm *t) {
     int i;
     float spd;
     float k;
@@ -261,7 +261,7 @@ struct SnowEmB {
     char pad1D4[0x1D8 - 0x1D4];
     /* 0x1D8 */ float f1D8;
 };
-extern "C" void BoardTrail_spawnB_00006B28(SnowEmB *t) {
+extern "C" void BoardTrail_spawnNormal_00006B28(SnowEmB *t) {
     float s;
     C4 col;
     if (snow_game_6B28.flags & 0x820000) {
@@ -410,7 +410,7 @@ static inline void colB(float q0, float f, float m0, float c0, SPart *p, SnowEmC
     c2 = t->cam->col.c[2];
     p->col.c[2] = (int)(c2 + (t->specTint[2] * 255.0f - c2) * f);
 }
-extern "C" void BoardTrail_spawnC_0000718C(SnowEmC *t) {
+extern "C" void BoardTrail_spawnSpec_0000718C(SnowEmC *t) {
     float a, sp, r;
     int i, go;
     if (t->cam->state != 99 || t->noGround != 0) {

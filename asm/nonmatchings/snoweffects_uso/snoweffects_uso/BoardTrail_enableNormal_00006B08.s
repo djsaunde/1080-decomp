@@ -1,6 +1,6 @@
-nonmatching BoardTrail_enableB_00006B08, 0x20
+nonmatching BoardTrail_enableNormal_00006B08, 0x20
 
-glabel BoardTrail_enableB_00006B08
+glabel BoardTrail_enableNormal_00006B08
     /* 91042E 00006B08 8C8E0054 */  .word 0x8C8E0054
     /* 910432 00006B0C 44802000 */  .word 0x44802000
     /* 910436 00006B10 AC8001C8 */  .word 0xAC8001C8
@@ -9,4 +9,4 @@ glabel BoardTrail_enableB_00006B08
     /* 910442 00006B1C AC8001CC */  .word 0xAC8001CC
     /* 910446 00006B20 03E00008 */  .word 0x03E00008
     /* 91044A 00006B24 E48401D8 */  .word 0xE48401D8
-endlabel BoardTrail_enableB_00006B08
+endlabel BoardTrail_enableNormal_00006B08

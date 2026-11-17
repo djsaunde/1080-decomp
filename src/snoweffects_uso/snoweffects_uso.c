@@ -885,13 +885,13 @@ void BoardTrail_createSpec_00006248(char *this) {
 
 void BoardTrail_spawn_0000634C(BoardTrail *this) {
     if (this->flags & 1) {
-        CALL(BoardTrail_spawnA_000064B8)(this);
+        CALL(BoardTrail_spawnPowder_000064B8)(this);
     }
     if (this->flags & 2) {
-        CALL(BoardTrail_spawnB_00006B28)(this);
+        CALL(BoardTrail_spawnNormal_00006B28)(this);
     }
     if (this->flags & 4) {
-        CALL(BoardTrail_spawnC_0000718C)(this);
+        CALL(BoardTrail_spawnSpec_0000718C)(this);
     }
 }
 
@@ -914,7 +914,7 @@ extern f32 snow_ro_2C, snow_ro_30, snow_ro_34, snow_ro_38, snow_ro_3C, snow_ro_4
 extern f32 snow_ro_44, snow_ro_48, snow_ro_4C;
 
 /* default parameters of the 0x6144 child (flag bit 0 at +0x54), the 0x70C0 sibling */
-void BoardTrail_enableA_00006420(BoardTrail *this) {
+void BoardTrail_enablePowder_00006420(BoardTrail *this) {
     this->flags |= 1;
     this->powderGravity = snow_ro_2C;
     this->powderRiseY = snow_ro_30;
@@ -936,10 +936,10 @@ void BoardTrail_enableA_00006420(BoardTrail *this) {
  * point minus +0x138 (normalized, scaled, plus the camera +0x318 lean) and per-particle pool spawns.
  * EXACT via a MIPSpro 7.2.1 (C++) donor: src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp (agent-e run 744),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void BoardTrail_spawnA_000064B8(void) {
+void BoardTrail_spawnPowder_000064B8(void) {
 }
 
-void BoardTrail_enableB_00006B08(BoardTrail *this) {
+void BoardTrail_enableNormal_00006B08(BoardTrail *this) {
     this->normAirFrames = 0;
     this->flags |= 2;
     this->normBurst = 0;
@@ -950,7 +950,7 @@ void BoardTrail_enableB_00006B08(BoardTrail *this) {
  * counters (+0x1C8 / +0x1CC / +0x1D8 from camera +0x9A0 / +0x9A2 / +0xA20), then a burst spawn along the
  * camera +0x318 / +0x3B0 axes. EXACT via a MIPSpro 7.2.1 (C++) donor: src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp
  * (agent-e run 723), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void BoardTrail_spawnB_00006B28(void *self) {
+void BoardTrail_spawnNormal_00006B28(void *self) {
 }
 
 /* the RoData floats of the 0x70C0 defaults (each load takes its own lui: one pin per constant) */
@@ -958,7 +958,7 @@ extern f32 snow_ro_80, snow_ro_84, snow_ro_88, snow_ro_8C, snow_ro_90, snow_ro_9
 extern f32 snow_ro_98, snow_ro_9C, snow_ro_A0, snow_ro_A4, snow_ro_A8, snow_ro_AC;
 
 /* default parameters of a new snow effect (called from its create, 0x6248) */
-void BoardTrail_enableC_000070C0(BoardTrail *this) {
+void BoardTrail_enableSpec_000070C0(BoardTrail *this) {
     this->flags |= 4;
     this->specGravity = snow_ro_80;
     this->unk1F0 = 0.0f;
@@ -984,7 +984,7 @@ void BoardTrail_enableC_000070C0(BoardTrail *this) {
  * with a lerped position, a velocity from the camera +0x318 / +0x3B0 axes and +0x114, and a lerped colour.
  * EXACT via a MIPSpro 7.2.1 (C++) donor: src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp (agent-e run 736),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void BoardTrail_spawnC_0000718C(void) {
+void BoardTrail_spawnSpec_0000718C(void) {
 }
 
 void HandTrail_init_000078E8(SnowRing *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {

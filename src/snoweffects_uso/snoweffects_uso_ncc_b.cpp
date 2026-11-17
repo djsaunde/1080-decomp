@@ -70,21 +70,21 @@ void SnowEffect::init(Node *gB, Node *gA, int a3, int a4, int a5, float f6, floa
     grpA = gA;
     grpB = gB;
     XCALL(gl_func_00000000_snow_3ee4, SnowRing_init_00003EE4)(this, a3, 4, a4, a5, f6, f7);
-    CALL(BoardTrail_enableB_00006B08)(this);
+    CALL(BoardTrail_enableNormal_00006B08)(this);
     lnk(child0 = new SnowChild0, gA);
     lnk(child0, gB);
     child0->v11(8);
 }
 
 void SnowEffect::createA() {
-    CALL(BoardTrail_enableA_00006420)(this);
+    CALL(BoardTrail_enablePowder_00006420)(this);
     lnk(childA = new SnowChildA, grpA);
     lnk(childA, grpB);
     childA->v11(8);
 }
 
 void SnowEffect::createB() {
-    CALL(BoardTrail_enableC_000070C0)(this);
+    CALL(BoardTrail_enableSpec_000070C0)(this);
     lnk(childB = new SnowChildB, grpA);
     lnk(childB, grpB);
     childB->v11(16);

@@ -196,7 +196,7 @@ SNOW_MP72_E_DONOR := build/src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp.o
 $(SNOW_MP72_E_DONOR): src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h $(TOOLS)/ncc721.sh
 	@mkdir -p $(dir $@)
 	$(TOOLS)/ncc721.sh $< $@ $(OPT_FLAGS)
-SNOW_MP72_E_EX_FUNCS := BoardTrail_spawnA_000064B8 BoardTrail_spawnB_00006B28 BoardTrail_spawnC_0000718C
+SNOW_MP72_E_EX_FUNCS := BoardTrail_spawnPowder_000064B8 BoardTrail_spawnNormal_00006B28 BoardTrail_spawnSpec_0000718C
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_MP72_E_EX_FUNCS),$(f)=$(SNOW_MP72_E_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_MP72_E_DONOR)
 # 0x9328 (the SnowTarget Cfront ctor): EXACT MIPSpro 7.2.1 (EDG 2.29) donor, agent-b run 711 (replaces agent-e's
