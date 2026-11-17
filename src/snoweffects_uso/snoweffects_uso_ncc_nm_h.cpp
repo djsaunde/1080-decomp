@@ -29,6 +29,8 @@ struct GCtx {
     GCtx *me_1(int d0) { d0 = d0; return this; }
     Gfx *nextI_3(int d0, int d1, int d2) { d0 = d0; d1 = d1; d2 = d2; int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
     Gfx *next() { return &dl->buf[dl->count++]; } Gfx *nextN() { int n = dl->count++; return &dl->buf[n]; }
+    /* prologue append: the dl is a named function-scope word, the old count an inline parameter (pooled) */
+    Gfx *atIq(DList *l, int n) { l->count = n + 1; return &dl->buf[n]; }
     Gfx *nextI() { int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
 };
 /* snoweffects_uso_func_00000C90 (NON_MATCHING draft): the particle sprite draw. Calls the texture's
@@ -111,7 +113,13 @@ struct GCtx {
  * pointers are a0 a1 a2 a0 a1 a3), with the 16-term c counter on the last packet (that moves uopt's tail block split
  * so pkt3 / pkt6 span two blocks and take a2 / a3). The frame stays 400 with exact offsets: the FB / B4 / B3 counts
  * go in as inline parameters (atBr / atBcm / atNcm: pooled words instead of named n words), the two loop pad words
- * are gone, and the prologue dummy takes five pooled words (dum5) that the loop then reuses. */
+ * are gone, and the prologue dummy takes five pooled words (dum5) that the loop then reuses.
+ * agent-h run 779 (-> 99.18, 32 -> 22 diffs): the prologue packet goes through putw(c->atIq(l, l->count), ..) with the
+ * dl in a named function-scope l (in the old g's word, so the frame stays 400): the packet pointer is the first pooled
+ * word (a3), the old count a pooled parameter (v1) and the dl its own word (a2), as in the target, and the prologue dl
+ * is no longer a CSE temp shared with the E4 append. The texture call goes through tcall1(0, self->tex), which puts
+ * the texture on the second pooled word: that word is now live where a0 is busy, so the s-middle temp that reuses it
+ * takes a1 as in the target. */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -127,7 +135,7 @@ inline int imax0(int a) { return a > 0 ? a : 0; }
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmpV(g2, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 
-inline void dum5(int a, int b, int c, int d, int e) { a = a; b = b; c = c; d = d; e = e; }
+inline void putw(Gfx *g, unsigned int a, unsigned int b) { g->words.w0 = a; g->words.w1 = b; }
 inline int dm1(int a) { a = a; return 0; }
 inline int dm3(int a, int b, int c) { a = a; b = b; c = c; return 0; }
 /* zero-code uopt use counter (agent-e runs 756 / 760): z is a constant inline parameter, so edg cannot fold
@@ -185,10 +193,13 @@ extern "C" SnowGfxLibS snow_gfx_scale_128, snow_gfx_scale_12C, snow_gfx_scale_13
 struct SnowRoData { float ro0; float depthScale; };
 extern "C" SnowRoData snow_rodata_C90;
 inline SnowV3c scaled(const SnowV3c &a) { return SnowV3c(a.x * snow_gfx_scale_128.sx, a.y * snow_gfx_scale_12C.sy, a.z * snow_gfx_scale_130.sz); }
+/* the texture display-list call: the texture goes in as the second inline parameter (after a constant dummy), so it
+ * sits on the second pooled word, which the s-middle ternary temp reuses (a1 as in the target). */
+inline int tcall1(int d0, SnowDLHolder *t) { d0 = d0; return gl_func_00000000(t->dl, t); }
 
 extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     GCtx *c = SNOW_CAM->dl;
-    Gfx *g;
+    DList *l;
     int d;
     float inv;
     float k;
@@ -202,11 +213,9 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     int i;
     SnowPartC *p;
 
-    d = gl_func_00000000(self->tex->dl, self->tex);
-    g = c->next();
-    dum5(0, 0, 0, 0, 0);
-    g->words.w0 = 0x06000000;
-    g->words.w1 = d;
+    d = tcall1(0, self->tex);
+    l = c->dl;
+    putw(c->atIq(l, l->count), 0x06000000, d);
     gl_func_00000000(SNOW_CAM->view, m);
     halfW = (float)(SNOW_CAM->scrW / 2);
     halfH = (float)(SNOW_CAM->scrH / 2);
