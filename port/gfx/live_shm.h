@@ -21,6 +21,11 @@
  * Input (presenter -> game): pads[] is the N64 controller state the presenter
  * built from the keyboard / gamepad; the game copies it at each step's input
  * poll (host_read_pads). padSeq increments on every write (a debugging aid).
+ * Scripted input (presenter --input SCRIPT, run 865): the presenter sets padScripted before
+ * LIVE_MAGIC. The game then asks for each step's pads (padWant = its pad-read count, from 1) and
+ * waits until the presenter has written that step's states into pads[] (padStep == padWant), so a
+ * script's state reaches the game's read on exactly its step (port/host/input_script.c timing),
+ * through the same pads[] as the keyboard. Without padScripted the game never waits.
  *
  * Audio (game -> presenter, plan 19.12): a byte ring of the game's AI output (32000 Hz
  * stereo s16, host order), described by the LiveAudio block at LIVE_AUDIO_HDR inside the
@@ -79,7 +84,10 @@ typedef struct LiveShmHeader {
     volatile live_u32 padSeq;
     LivePad pads[LIVE_PADS];
     volatile live_u32 gameStep; /* the step of the last published frame */
-    live_u32 reserved[32];
+    volatile live_u32 padScripted; /* presenter: pads[] follow a script, in lockstep (run 865) */
+    volatile live_u32 padWant;     /* game: the pad read it waits for (1 = the first step's) */
+    volatile live_u32 padStep;     /* presenter: pads[] now hold read padStep's states */
+    live_u32 reserved[29];
 } LiveShmHeader;
 
 /* the start of every slot */

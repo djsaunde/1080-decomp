@@ -33,6 +33,8 @@ int open(const char *path, int flags, ...);
 int close(int fd);
 void *mmap(void *addr, size_t len, int prot, int flags, int fd, long off);
 int getpid(void);
+int kill(int pid, int sig);
+int unlink(const char *path);
 #define LIVE_O_RDWR 2
 #define LIVE_PROT_RW 3
 #define LIVE_MAP_SHARED 1
@@ -60,6 +62,10 @@ static LiveAudio *sAudio; /* NULL: the presenter has no audio ring */
 static unsigned char *sAudioData;
 static unsigned long long sAudioHash = 0xcbf29ce484222325ull; /* FNV-1a 64 of every byte written */
 static unsigned long long sAudioBytes;
+static live_u32 sPadReads;     /* scripted input: the pad reads asked for (live_shm.h padWant) */
+static unsigned sQuitPolls;    /* port_live_quit calls, for the presenter liveness check */
+static int sPresenterGone;
+static char sShmPath[256]; /* /dev/shm/<name>: removed here when the presenter died without doing it */
 
 static void live_sleep_ms(int ms) {
     struct timespec ts;
@@ -115,6 +121,9 @@ static void live_open(void) {
     }
     sSlots = (unsigned char *)sShm + LIVE_HEADER_BYTES;
     sShm->gamePid = (live_u32)getpid();
+    snprintf(sShmPath, sizeof(sShmPath), "%s", path);
+    /* a game started again under a presenter that is still open (--stay): this one has not ended */
+    __atomic_store_n(&sShm->gameExited, 0, __ATOMIC_RELEASE);
     sAudio = (LiveAudio *)((unsigned char *)sShm + LIVE_AUDIO_HDR);
     if (sAudio->magic != LIVE_AUDIO_MAGIC || sAudio->bytes == 0 || (sAudio->bytes & (sAudio->bytes - 1)) != 0 ||
         sAudio->dataOffset < LIVE_HEADER_BYTES || (size_t)sAudio->dataOffset + sAudio->bytes > total) {
@@ -122,8 +131,9 @@ static void live_open(void) {
     } else {
         sAudioData = (unsigned char *)sShm + sAudio->dataOffset;
     }
-    live_log("attached to %s: %u slots of %u MB, %s", path, sShm->slotCount, sShm->slotBytes >> 20,
-             sAudio != NULL ? "audio ring" : "no audio");
+    live_log("attached to %s: %u slots of %u MB, %s%s", path, sShm->slotCount, sShm->slotBytes >> 20,
+             sAudio != NULL ? "audio ring" : "no audio",
+             sShm->padScripted ? ", scripted pads (lockstep)" : "");
     /* the reply file: optional (created by the presenter before the magic) */
     snprintf(path, sizeof(path), "/dev/shm/%s-fb", name);
     fd = open(path, LIVE_O_RDWR);
@@ -310,10 +320,44 @@ void port_live_audio_write(const void *samples, size_t bytes) {
     __atomic_store_n(&sAudio->head, head + (live_u32)bytes, __ATOMIC_RELEASE);
 }
 
+/* the presenter process still exists (checked about every 0.2 s by the callers) */
+static int live_presenter_alive(void) {
+    live_u32 pid = sShm->presenterPid;
+    if (sPresenterGone) {
+        return 0;
+    }
+    if (pid != 0 && kill((int)pid, 0) != 0) {
+        char fb[sizeof(sShmPath) + 4];
+        live_log("the presenter (pid %u) is gone: ending the game", pid);
+        sPresenterGone = 1;
+        /* its files (the mappings stay valid until the game exits) */
+        snprintf(fb, sizeof(fb), "%s-fb", sShmPath);
+        unlink(sShmPath);
+        unlink(fb);
+        return 0;
+    }
+    return 1;
+}
+
 int port_live_read_pads(HostPad pads[HOST_MAX_PADS]) {
     int i;
     if (!port_live_active()) {
         return 0;
+    }
+    if (__atomic_load_n(&sShm->padScripted, __ATOMIC_ACQUIRE) && !sPresenterGone) {
+        /* lockstep (live_shm.h): ask for this read's states and wait for them */
+        unsigned n;
+        live_u32 want = ++sPadReads;
+        __atomic_store_n(&sShm->padWant, want, __ATOMIC_RELEASE);
+        for (n = 1; __atomic_load_n(&sShm->padStep, __ATOMIC_ACQUIRE) != want; n++) {
+            if (__atomic_load_n(&sShm->quit, __ATOMIC_ACQUIRE) || (n % 2000 == 0 && !live_presenter_alive())) {
+                break;
+            }
+            {
+                struct timespec ts = { 0, 100000 }; /* 0.1 ms */
+                nanosleep(&ts, NULL);
+            }
+        }
     }
     __atomic_thread_fence(__ATOMIC_ACQUIRE);
     for (i = 0; i < HOST_MAX_PADS && i < LIVE_PADS; i++) {
@@ -328,7 +372,15 @@ int port_live_read_pads(HostPad pads[HOST_MAX_PADS]) {
 }
 
 int port_live_quit(void) {
-    return port_live_active() && __atomic_load_n(&sShm->quit, __ATOMIC_ACQUIRE) != 0;
+    if (!port_live_active()) {
+        return 0;
+    }
+    if (__atomic_load_n(&sShm->quit, __ATOMIC_ACQUIRE) != 0) {
+        return 1;
+    }
+    /* a presenter that died without saying so (killed, crashed, its X display gone): end the game
+     * instead of rendering into a ring nobody reads (called once per host poll, ~30 / s) */
+    return (++sQuitPolls % 6 == 0 || sPresenterGone) && !live_presenter_alive();
 }
 
 void port_live_close(void) {

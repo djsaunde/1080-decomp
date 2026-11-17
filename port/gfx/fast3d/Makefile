@@ -46,12 +46,15 @@ $(OUT)/test_inproc: $(OBJ)/test_inproc.o $(OBJ)/port_fast3d.o $(OBJS)
 
 # the live presenter (plan 19.11): X11 + EGL window, the game's frames over shared memory
 # (+ plan 19.12: the audio thread, libpulse-simple dlopen'd, headers from setup-pulse-dev.sh; an evdev gamepad)
-$(OUT)/presenter: $(OBJ)/presenter.o $(OBJ)/live_audio.o $(OBJ)/live_gamepad.o $(OBJS)
+$(OUT)/presenter: $(OBJ)/presenter.o $(OBJ)/live_audio.o $(OBJ)/live_gamepad.o $(OBJ)/input_script.o $(OBJS)
 	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 $(LIBDIR)/libX11.so.6 -lm -ldl -lpthread
-$(OBJ)/presenter.o: presenter.cpp ../dlump.h ../live_shm.h ../replay/egl_png.h live_audio.h live_gamepad.h $(SHIM_H) | $(OBJ)
+$(OBJ)/presenter.o: presenter.cpp ../dlump.h ../live_shm.h ../../host.h ../replay/egl_png.h live_audio.h live_gamepad.h $(SHIM_H) | $(OBJ)
 	$(XX) -I$(X11_DEV)/usr/include -Wall -Wextra -Wno-unused-parameter -c $< -o $@
 $(OBJ)/live_audio.o: live_audio.cpp live_audio.h ../live_shm.h | $(OBJ)
 	$(CXX) -std=c++20 $(CXXFLAGS) -I$(PULSE_DEV)/usr/include -Wall -Wextra -c $< -o $@
+# --input (run 865): the game's own script reader (port/host/input_script.c); presenter.cpp supplies its host calls
+$(OBJ)/input_script.o: ../../host/input_script.c ../../host.h ../../port_libc.h | $(OBJ)
+	$(CC) -O2 -I../.. -Wall -c $< -o $@
 $(OBJ)/live_gamepad.o: live_gamepad.cpp live_gamepad.h | $(OBJ)
 	$(CXX) -std=c++20 $(CXXFLAGS) -Wall -Wextra -c $< -o $@
 

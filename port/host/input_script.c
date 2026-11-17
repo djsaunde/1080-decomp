@@ -341,6 +341,11 @@ void host_input_script_step(HostPad pads[HOST_MAX_PADS]) {
     sStep++;
 }
 
+/* Any step's pads, without advancing (the live presenter's --input: port/gfx/fast3d/presenter.cpp). */
+void host_input_script_at(host_u32 step, HostPad pads[HOST_MAX_PADS]) {
+    pads_at(step, pads);
+}
+
 /* Step 0's pads, for the boot-time SI reset (connections and rumble paks). */
 void host_input_script_boot(HostPad pads[HOST_MAX_PADS]) {
     pads_at(0, pads);

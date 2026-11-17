@@ -1,9 +1,9 @@
 /* port/gfx/fast3d: presenter, the live window of the 32-bit game on a machine with no 32-bit GL
  * (PC port plan 19.11, option (c) of 19.1). 64-bit, X11 + EGL, libultraship's Fast3D.
  *
- *   presenter [--shm NAME] [--scale N] [--png DIR] [--png-every N] [--png-steps A-B] [--frames N]
+ *   presenter [--shm NAME] [--scale N] [--png DIR] [--png-every N] [--png-steps A-B,C,...] [--frames N]
  *             [--inject STEP:KEY:d|u,...] [--js /dev/input/js0] [--stay]
- *             [--mute] [--audio-latency MS] [--audio-dump FILE]
+ *             [--mute] [--audio-latency MS] [--audio-dump FILE] [--input SCRIPT]
  *
  * It creates /dev/shm/NAME (live_shm.h), opens a window, and then, while the game
  * (tenshoe with PORT_LIVE=NAME, port/gfx/port_live.c) runs:
@@ -37,7 +37,20 @@
  * --fb-log prints the render-to-texture passes and read-back replies of every frame; --no-fb-reply
  * creates no reply file (the game keeps its headless depth-clear model: an A/B switch).
  * --frames N exits after N rendered frames (tells the game to quit). --stay keeps the window
- * open after the game ends.
+ * open after the game ends, and a game started again on the same name (PORT_LIVE) is shown.
+ *
+ * --input SCRIPT (run 865): pad 1..4 follow a port/host/input_script.c script (tenshoe --input's
+ * format and step timing) instead of the keyboard / joystick, written into the shm pads in lockstep
+ * with the game's reads (live_shm.h padScripted): the script reaches the game through the same
+ * presenter -> shm -> host_read_pads path as live input, and a race script plays out exactly as
+ * headless. --inject keys still go through the window (F11, Esc), not into the pads.
+ *
+ * Lifetime: the game ending (or dying: checked every second) closes the presenter (unless --stay);
+ * Esc / the window's close button / SIGINT / SIGTERM / SIGHUP / a lost X display tell the game to
+ * quit (shm quit flag), and a game whose presenter was killed ends by itself (port_live.c checks the
+ * presenter's pid). The window opens before the shm file exists, so a missing display fails before
+ * any game can attach. At exit the frame times are summarised (render ms mean / p50 / p95 / p99 /
+ * max, frames over one 30 Hz step, frames skipped because the presenter was behind).
  *
  * Not yet: the framebuffer model's read-backs (DLUMP_FB_READ / FB_DEPTH) are not answered and
  * CPU writes (FB_WRITE, debug paths only) are not composited; see live_shm.h. */
@@ -53,6 +66,9 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <atomic>
+#include <cstdarg>
+#include <thread>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -91,6 +107,7 @@
 extern "C" {
 #include "../dlump.h"
 #include "../live_shm.h"
+#include "../../host.h" /* HostPad + the script reader (port/host/input_script.c, linked in) */
 }
 #include "../replay/egl_png.h"
 #include "live_audio.h"
@@ -108,6 +125,37 @@ static double now_s() {
 
 /* ---------------- the window: X11 + EGL ---------------- */
 
+/* why XOpenDisplay failed, as far as can be told (WSLg's socket, the X socket of a local display) */
+static void explain_display(const char* disp) {
+    bool wsl = false;
+    if (FILE* f = std::fopen("/proc/version", "r")) {
+        char v[512] = {};
+        size_t n = std::fread(v, 1, sizeof(v) - 1, f);
+        v[n] = '\0';
+        std::fclose(f);
+        wsl = std::strstr(v, "microsoft") != nullptr || std::strstr(v, "Microsoft") != nullptr;
+    }
+    std::string sock;
+    if (disp[0] == ':') {
+        sock = "/tmp/.X11-unix/X" + std::string(disp + 1).substr(0, std::string(disp + 1).find('.'));
+    }
+    struct stat st;
+    if (!sock.empty() && stat(sock.c_str(), &st) != 0) {
+        std::fprintf(stderr, "  the X socket %s does not exist: no X server on that display.\n", sock.c_str());
+        if (wsl) {
+            std::fprintf(stderr, "  WSL2: WSLg is not running or not mounted (/tmp/.X11-unix should link to /mnt/wslg/.X11-unix).\n"
+                                 "  From Windows: `wsl --shutdown`, reopen the distro; check `wsl --version` lists WSLg\n"
+                                 "  and .wslconfig does not set guiApplications=false.\n");
+        }
+    } else if (!sock.empty()) {
+        std::fprintf(stderr, "  %s exists but the server did not accept the connection (not running, or no access:\n"
+                             "  XAUTHORITY / xhost).%s\n", sock.c_str(),
+                     wsl ? " WSL2: a stale WSLg session; `wsl --shutdown` from Windows restarts it." : "");
+    } else {
+        std::fprintf(stderr, "  a remote / TCP display: check that it is reachable and accepts this client.\n");
+    }
+}
+
 struct Win {
     Display* dpy = nullptr;
     Window win = 0;
@@ -120,10 +168,17 @@ struct Win {
     bool open(uint32_t width, uint32_t height, const char* title) {
         w = width;
         h = height;
+        const char* disp = getenv("DISPLAY");
+        if (disp == nullptr || *disp == '\0') {
+            std::fprintf(stderr, "presenter: DISPLAY is not set: the window needs an X server.\n"
+                                 "  WSL2: WSLg provides one at DISPLAY=:0 (export DISPLAY=:0; WSLg must be on: `wsl --version`\n"
+                                 "  on Windows lists it; .wslconfig guiApplications=true). Elsewhere start X or use ssh -X.\n");
+            return false;
+        }
         dpy = XOpenDisplay(nullptr);
         if (dpy == nullptr) {
-            std::fprintf(stderr, "presenter: cannot open the X display (DISPLAY=%s)\n",
-                         getenv("DISPLAY") ? getenv("DISPLAY") : "");
+            std::fprintf(stderr, "presenter: cannot open the X display DISPLAY=%s.\n", disp);
+            explain_display(disp);
             return false;
         }
         int scr = DefaultScreen(dpy);
@@ -147,7 +202,8 @@ struct Win {
         edpy = eglGetDisplay((EGLNativeDisplayType)dpy);
         EGLint maj, min;
         if (edpy == EGL_NO_DISPLAY || !eglInitialize(edpy, &maj, &min)) {
-            std::fprintf(stderr, "presenter: eglInitialize failed on the X display\n");
+            std::fprintf(stderr, "presenter: eglInitialize failed on the X display (0x%x): no usable GL driver for it;\n"
+                                 "  try software GL (play.sh -S, or LIBGL_ALWAYS_SOFTWARE=1)\n", eglGetError());
             return false;
         }
         eglBindAPI(EGL_OPENGL_API);
@@ -156,13 +212,15 @@ struct Win {
         EGLConfig cfg;
         EGLint n = 0;
         if (!eglChooseConfig(edpy, cfgAttr, &cfg, 1, &n) || n == 0) {
-            std::fprintf(stderr, "presenter: no EGL window config\n");
+            std::fprintf(stderr, "presenter: no EGL window config (RGB8 + depth 24, desktop GL); try software GL "
+                                 "(play.sh -S, or LIBGL_ALWAYS_SOFTWARE=1)\n");
             return false;
         }
         ctx = eglCreateContext(edpy, cfg, EGL_NO_CONTEXT, nullptr);
         surf = eglCreateWindowSurface(edpy, cfg, (EGLNativeWindowType)win, nullptr);
         if (ctx == EGL_NO_CONTEXT || surf == EGL_NO_SURFACE || !eglMakeCurrent(edpy, surf, surf, ctx)) {
-            std::fprintf(stderr, "presenter: EGL context / window surface failed (0x%x)\n", eglGetError());
+            std::fprintf(stderr, "presenter: EGL context / window surface failed (0x%x); try software GL (play.sh -S, "
+                                 "or LIBGL_ALWAYS_SOFTWARE=1)\n", eglGetError());
             return false;
         }
         eglSwapInterval(edpy, 0); /* frames are shown as they arrive; the game paces itself */
@@ -859,12 +917,93 @@ static void on_signal(int) {
     sStop = 1;
 }
 
+/* the shm files, for the exits that do not return to main (a lost X display) */
+static LiveShmHeader* sHdr;
+static std::string sShmPath, sFbPath;
+static int on_x_io_error(Display*) {
+    std::fprintf(stderr, "presenter: lost the X display (the window server closed or restarted): telling the game "
+                         "to quit\n");
+    if (sHdr != nullptr) {
+        __atomic_store_n(&sHdr->quit, 1, __ATOMIC_RELEASE);
+    }
+    if (!sShmPath.empty()) {
+        unlink(sShmPath.c_str());
+        unlink(sFbPath.c_str());
+    }
+    _exit(1);
+}
+
+/* the host calls port/host/input_script.c needs (--input) */
+extern "C" void host_log(const char* fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    std::fputs("presenter: ", stderr);
+    std::vfprintf(stderr, fmt, ap);
+    std::fputc('\n', stderr);
+    va_end(ap);
+}
+extern "C" void host_fatal(const char* fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    std::fputs("presenter: ", stderr);
+    std::vfprintf(stderr, fmt, ap);
+    std::fputc('\n', stderr);
+    va_end(ap);
+    std::exit(1);
+}
+extern "C" int host_file_read_all(const char* path, void** data, host_u32* size) {
+    FILE* f = std::fopen(path, "rb");
+    if (f == nullptr) {
+        return -1;
+    }
+    std::string b;
+    char buf[4096];
+    size_t n;
+    while ((n = std::fread(buf, 1, sizeof(buf), f)) > 0) {
+        b.append(buf, n);
+    }
+    std::fclose(f);
+    char* p = (char*)std::malloc(b.size() + 1);
+    std::memcpy(p, b.data(), b.size());
+    p[b.size()] = '\0';
+    *data = p;
+    *size = (host_u32)b.size();
+    return 0;
+}
+extern "C" void host_free(void* p) {
+    std::free(p);
+}
+
+/* --input: answer the game's pad reads from the script, in lockstep (live_shm.h padWant / padStep) */
+static std::atomic<bool> sPadRun;
+static void script_pad_thread(LiveShmHeader* H) {
+    while (sPadRun.load()) {
+        const live_u32 want = __atomic_load_n(&H->padWant, __ATOMIC_ACQUIRE);
+        if (want != 0 && want != H->padStep) {
+            HostPad hp[HOST_MAX_PADS];
+            host_input_script_at(want - 1, hp);
+            for (int i = 0; i < HOST_MAX_PADS && i < LIVE_PADS; i++) {
+                H->pads[i].button = hp[i].button;
+                H->pads[i].stick_x = hp[i].stick_x;
+                H->pads[i].stick_y = hp[i].stick_y;
+                H->pads[i].connected = hp[i].connected;
+                H->pads[i].hasRumble = hp[i].hasRumble;
+            }
+            __atomic_fetch_add(&H->padSeq, 1, __ATOMIC_RELEASE);
+            __atomic_store_n(&H->padStep, want, __ATOMIC_RELEASE);
+        } else {
+            usleep(50);
+        }
+    }
+}
+
 int main(int argc, char** argv) {
-    std::string name = "1080live", pngDir, jsPath = "/dev/input/js0";
-    uint32_t scale = 3, pngEvery = 0, pngFrom = 0, pngTo = 0xffffffffu, maxFrames = 0, slots = LIVE_DEFAULT_SLOTS, slotBytes = LIVE_DEFAULT_SLOT_BYTES;
+    std::string name = "1080live", pngDir, jsPath = "/dev/input/js0", inputScript;
+    uint32_t scale = 3, pngEvery = 0, maxFrames = 0, slots = LIVE_DEFAULT_SLOTS, slotBytes = LIVE_DEFAULT_SLOT_BYTES;
     bool stay = false, fbLog = false, fbReply = true;
     LiveAudioOptions audio;
     std::vector<Inject> injects;
+    std::vector<std::pair<uint32_t, uint32_t>> pngSteps; /* --png-steps ranges (empty: every step) */
     for (int i = 1; i < argc; i++) {
         std::string a = argv[i];
         const char* v = i + 1 < argc ? argv[i + 1] : nullptr;
@@ -888,17 +1027,28 @@ int main(int argc, char** argv) {
         } else if (a == "--png-every") {
             pngEvery = (uint32_t)std::atoi(argv[++i]);
         } else if (a == "--png-steps") {
-            /* FROM-TO: only game steps in that range are written */
+            /* FROM-TO[,FROM-TO...] (or single steps): only game steps in those ranges are written */
             std::string r = argv[++i];
-            size_t d = r.find('-');
-            pngFrom = (uint32_t)std::strtoul(r.c_str(), nullptr, 10);
-            pngTo = d == std::string::npos ? 0xffffffffu : (uint32_t)std::strtoul(r.c_str() + d + 1, nullptr, 10);
+            for (size_t p = 0; p < r.size();) {
+                size_t e = r.find(',', p);
+                std::string item = r.substr(p, e == std::string::npos ? std::string::npos : e - p);
+                size_t d = item.find('-');
+                uint32_t from = (uint32_t)std::strtoul(item.c_str(), nullptr, 10);
+                uint32_t to = d == std::string::npos ? from : (uint32_t)std::strtoul(item.c_str() + d + 1, nullptr, 10);
+                if (d != std::string::npos && d + 1 == item.size()) {
+                    to = 0xffffffffu;
+                }
+                pngSteps.push_back({ from, to });
+                p = e == std::string::npos ? r.size() : e + 1;
+            }
         } else if (a == "--frames") {
             maxFrames = (uint32_t)std::atoi(argv[++i]);
         } else if (a == "--audio-latency") {
             audio.latencyMs = (uint32_t)std::max(20, std::atoi(argv[++i]));
         } else if (a == "--audio-dump") {
             audio.dumpPath = argv[++i];
+        } else if (a == "--input") {
+            inputScript = argv[++i];
         } else if (a == "--js") {
             jsPath = argv[++i];
         } else if (a == "--slot-mb") {
@@ -928,12 +1078,25 @@ int main(int argc, char** argv) {
         } else {
             std::fprintf(stderr, "usage: presenter [--shm NAME] [--scale N] [--png DIR] [--png-every N] [--frames N] "
                                  "[--inject STEP:KEY:d|u,...] [--js DEV] [--slot-mb N] [--stay] "
-                                 "[--fb-log] [--no-fb-reply] [--mute] [--audio-latency MS] [--audio-dump FILE]\n");
+                                 "[--fb-log] [--no-fb-reply] [--mute] [--audio-latency MS] [--audio-dump FILE] [--input SCRIPT]\n");
             return 2;
         }
     }
     signal(SIGINT, on_signal);
     signal(SIGTERM, on_signal);
+    signal(SIGHUP, on_signal);
+    signal(SIGPIPE, SIG_IGN);
+    if (!inputScript.empty() && host_input_script_open(inputScript.c_str()) != 0) {
+        std::fprintf(stderr, "presenter: cannot use the input script %s\n", inputScript.c_str());
+        return 2;
+    }
+
+    /* the window first: without a display no shm file is made, so no game attaches to a dead presenter */
+    const uint32_t w = 320 * scale, h = 240 * scale;
+    if (!sWin.open(w, h, "1080 Snowboarding (live)")) {
+        return 1;
+    }
+    XSetIOErrorHandler(on_x_io_error);
 
     /* the shared memory: created here, the magic written last */
     std::string path = "/dev/shm/" + name;
@@ -978,14 +1141,17 @@ int main(int argc, char** argv) {
     if (reply == nullptr && fbReply) {
         std::fprintf(stderr, "presenter: no %s: the game's read-backs will not be answered\n", fbPath.c_str());
     }
+    sHdr = H;
+    sShmPath = path;
+    sFbPath = fbPath;
+    std::thread padThread;
+    if (!inputScript.empty()) {
+        H->padScripted = 1;
+        sPadRun = true;
+        padThread = std::thread(script_pad_thread, H);
+    }
     __atomic_store_n(&H->magic, LIVE_MAGIC, __ATOMIC_RELEASE);
 
-    const uint32_t w = 320 * scale, h = 240 * scale;
-    if (!sWin.open(w, h, "1080 Snowboarding (live)")) {
-        unlink(path.c_str());
-        unlink(fbPath.c_str());
-        return 1;
-    }
     live_audio_start(shm, audio);
     Renderer R;
     R.init(w, h);
@@ -1004,6 +1170,9 @@ int main(int argc, char** argv) {
     double secStart = now_s(), secRender = 0;
     bool quit = false;
     LivePad lastPad = {};
+    std::vector<float> frameMs; /* every rendered frame's render time (the exit summary) */
+    uint32_t skipped = 0, lastGamePid = 0, games = 0;
+    bool endedNoted = false;
     while (!quit && !sStop) {
         /* events */
         while (XPending(sWin.dpy) > 0) {
@@ -1035,7 +1204,7 @@ int main(int argc, char** argv) {
             quit = true;
         }
         LivePad pad = in.pad();
-        if (std::memcmp(&pad, &lastPad, sizeof(pad)) != 0) {
+        if (inputScript.empty() && std::memcmp(&pad, &lastPad, sizeof(pad)) != 0) {
             H->pads[0] = pad;
             __atomic_fetch_add(&H->padSeq, 1, __ATOMIC_RELEASE);
             lastPad = pad;
@@ -1044,6 +1213,7 @@ int main(int argc, char** argv) {
         uint32_t head = __atomic_load_n(&H->head, __ATOMIC_ACQUIRE), tail = H->tail;
         if (head != tail) {
             /* render the newest; release the older slots first (the game may refill them) */
+            skipped += head - tail - 1;
             __atomic_store_n(&H->tail, head - 1, __ATOMIC_RELEASE);
             const uint8_t* slot = shm + LIVE_HEADER_BYTES + (size_t)((head - 1) % slots) * slotBytes;
             const LiveFrame* lf = (const LiveFrame*)slot;
@@ -1054,8 +1224,11 @@ int main(int argc, char** argv) {
             if (ok) {
                 char png[1024];
                 const char* pp = nullptr;
-                if (!pngDir.empty() && pngEvery != 0 && rendered % pngEvery == 0 && lf->step >= pngFrom &&
-                    lf->step <= pngTo) {
+                bool inSteps = pngSteps.empty();
+                for (const auto& rg : pngSteps) {
+                    inSteps |= lf->step >= rg.first && lf->step <= rg.second;
+                }
+                if (!pngDir.empty() && pngEvery != 0 && rendered % pngEvery == 0 && inSteps) {
                     std::snprintf(png, sizeof(png), "%s/live_%06u_s%06u.png", pngDir.c_str(), rendered, lf->step);
                     pp = png;
                 }
@@ -1085,6 +1258,7 @@ int main(int argc, char** argv) {
                 }
             }
             secRender += now_s() - t0;
+            frameMs.push_back((float)((now_s() - t0) * 1000.0));
             if (st.badTasks != 0 || st.unresolved != 0) {
                 std::printf("presenter: step %u: %u malformed tasks, %u unresolved G_DL\n", lf->step, st.badTasks,
                             st.unresolved);
@@ -1109,8 +1283,16 @@ int main(int argc, char** argv) {
                 quit = true;
             }
         } else {
-            if (__atomic_load_n(&H->gameExited, __ATOMIC_ACQUIRE) && !stay) {
-                break;
+            if (__atomic_load_n(&H->gameExited, __ATOMIC_ACQUIRE)) {
+                if (!stay) {
+                    break;
+                }
+                if (!endedNoted) {
+                    std::printf("presenter: the game ended; --stay: waiting for a new game on PORT_LIVE=%s\n",
+                                name.c_str());
+                    std::fflush(stdout);
+                    endedNoted = true;
+                }
             }
             struct pollfd pf = { ConnectionNumber(sWin.dpy), POLLIN, 0 };
             poll(&pf, 1, 2); /* X events or 2 ms, whichever first */
@@ -1120,11 +1302,22 @@ int main(int argc, char** argv) {
             char title[160];
             std::snprintf(title, sizeof(title), "1080 Snowboarding (live) - step %u - %u fps", lastStep, secFrames);
             XStoreName(sWin.dpy, sWin.win, title);
-            std::printf("presenter: %u frames/s, %.1f MB/frame, render %.1f ms/frame, step %u, dropped %u, pads %04x %d,%d%s\n",
+            const LivePad shown = inputScript.empty() ? lastPad : H->pads[0];
+            std::printf("presenter: %u frames/s, %.1f MB/frame, render %.1f ms/frame, step %u, dropped %u, skipped %u, "
+                        "pads %04x %d,%d%s\n",
                         secFrames, secFrames ? secBytes / 1048576.0 / secFrames : 0.0,
-                        secFrames ? secRender * 1000.0 / secFrames : 0.0, lastStep, H->dropped, lastPad.button,
-                        lastPad.stick_x, lastPad.stick_y, live_audio_status().c_str());
+                        secFrames ? secRender * 1000.0 / secFrames : 0.0, lastStep, H->dropped, skipped, shown.button,
+                        shown.stick_x, shown.stick_y, live_audio_status().c_str());
             std::fflush(stdout);
+            /* a (new) game attached: --stay shows a restarted game */
+            const uint32_t gp = H->gamePid;
+            if (gp != 0 && gp != lastGamePid) {
+                if (games++ != 0) {
+                    std::printf("presenter: game pid %u attached (game %u)\n", gp, games);
+                }
+                lastGamePid = gp;
+                endedNoted = false;
+            }
             /* a game that died without saying so (a crash) */
             if (H->gamePid != 0 && !__atomic_load_n(&H->gameExited, __ATOMIC_ACQUIRE) && kill((pid_t)H->gamePid, 0) != 0) {
                 std::printf("presenter: the game (pid %u) is gone\n", H->gamePid);
@@ -1144,8 +1337,27 @@ int main(int argc, char** argv) {
     for (int i = 0; i < 200 && !__atomic_load_n(&H->gameExited, __ATOMIC_ACQUIRE) && H->gamePid != 0; i++) {
         usleep(10000);
     }
+    const std::string audioEnd = live_audio_status();
     live_audio_stop();
-    std::printf("presenter: %u frames rendered, %u dropped by the game, %u too big\n", rendered, H->dropped, H->tooBig);
+    if (padThread.joinable()) {
+        sPadRun = false;
+        padThread.join();
+    }
+    std::printf("presenter: %u frames rendered, %u skipped (presenter behind), %u dropped by the game, %u too big%s\n",
+                rendered, skipped, H->dropped, H->tooBig, audioEnd.c_str());
+    if (!frameMs.empty()) {
+        std::vector<float> v = frameMs;
+        std::sort(v.begin(), v.end());
+        double sum = 0;
+        uint32_t over = 0;
+        for (float x : v) {
+            sum += x;
+            over += x > 1000.0f / 30.0f;
+        }
+        auto pct = [&](double q) { return v[std::min(v.size() - 1, (size_t)(q * (double)v.size()))]; };
+        std::printf("presenter: render ms: mean %.2f, p50 %.2f, p95 %.2f, p99 %.2f, max %.2f; %u frames over one "
+                    "step (33.3 ms)\n", sum / v.size(), pct(0.5), pct(0.95), pct(0.99), v.back(), over);
+    }
     unlink(path.c_str());
     unlink(fbPath.c_str());
     return 0;

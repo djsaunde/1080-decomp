@@ -13,7 +13,7 @@
 #   -l   audio buffer in ms (default 80; raise it if the sound crackles)
 #   -n   the shared-memory name (default 1080live-<pid>)
 #   -p   more presenter arguments (--png DIR --png-every N, --inject STEP:KEY:d|u,..., --frames N, --stay,
-#        --audio-dump FILE)
+#        --audio-dump FILE, --input SCRIPT: pads from a port/host/*.input script, in lockstep)
 #   --   more tenshoe arguments (--frames N, --input SCRIPT, --record LOG, --trace LOG, --audio-out WAV, ...)
 #
 # The save (1080.sram) is kept in <monorepo>/tools/play/<worktree>/run between sessions.
@@ -43,7 +43,7 @@ done
 shift $((OPTIND - 1))
 [ -f "$ROM" ] || { echo "play: no ROM at $ROM"; exit 2; }
 ROM="$(cd "$(dirname "$ROM")" && pwd)/$(basename "$ROM")"
-[ -n "${DISPLAY:-}" ] || { echo "play: no DISPLAY (an X server is needed; on WSL2, WSLg provides :0)"; exit 2; }
+[ -n "${DISPLAY:-}" ] || { echo "play: DISPLAY is not set: an X server is needed (WSL2: WSLg provides one; export DISPLAY=:0)"; exit 2; }
 RUN32="$MONO/tools/i386-sysroot/run32"
 [ -x "$RUN32" ] || { echo "play: no i386 sysroot: run $MONO/scripts/setup-i386-sysroot.sh"; exit 2; }
 mkdir -p "$WORK/run"
@@ -81,6 +81,13 @@ LD_LIBRARY_PATH="$PLIB:$PLIB/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
     "$WORK/gfx/presenter" --shm "$NAME" --scale "$SCALE" --audio-latency "$LAT" $MUTE $PARGS &
 PRES=$!
 trap 'kill $PRES 2>/dev/null' INT TERM
+# the presenter makes /dev/shm/$NAME only once its window is open: if it dies first (no display,
+# no GL), say so instead of starting a game that waits 10 s for it
+for _ in $(seq 100); do
+    [ -e "/dev/shm/$NAME" ] && break
+    kill -0 $PRES 2>/dev/null || { wait $PRES; echo "play: the presenter could not start (exit $?; its message is above)"; exit 1; }
+    sleep 0.1
+done
 echo "play: presenter pid $PRES; starting the game (PORT_LIVE=$NAME)"
 (cd "$WORK/run" && PORT_LIVE="$NAME" "$RUN32" "$BUILD/tenshoe" --rom "$ROM" --sram "$WORK/run/1080.sram" --realtime "$@")
 rc=$?

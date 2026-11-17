@@ -88,6 +88,7 @@ int host_input_script_open(const char *path); /* 0 on success */
 int host_input_script_active(void);
 void host_input_script_step(HostPad pads[HOST_MAX_PADS]); /* this step's pads; advances one step */
 void host_input_script_boot(HostPad pads[HOST_MAX_PADS]); /* step 0's pads; does not advance */
+void host_input_script_at(host_u32 step, HostPad pads[HOST_MAX_PADS]); /* any step's pads */
 /* headless-only: receive every AI buffer (osAiSetNextBuffer: host-order s16, L R interleaved);
  * NULL = drop them (the default).  port/audio/tools/seqrender writes them to a WAV. */
 void host_headless_set_audio_sink(void (*sink)(const void *samples, host_u32 bytes));
