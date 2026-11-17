@@ -42,6 +42,12 @@
  *    case 2's item / next / mpos / k in blocks, and yaw / hh / g / fwdAx / pf / axZ / axX / axY as if-block
  *    locals (g = roll, pf = pitch). The heading pointer is an expression again (the target spills it to a
  *    uopt temp, 48(sp), not to a home slot). sp-offset diff rows 279 -> 113, 94.44 -> 94.39.
+ *  - run 730: EDG word placement for the slerp temps (pooled inline parameters take the oldest free word of their
+ *    type; a word reused in a statement stays locked to its end; inline named locals are fresh): a code-free
+ *    dum4A() in case 2 leaves two old pointer words, so the dir op-'s v / ctor this reuse them and its three
+ *    float words start at -160 (the slerp's t); dumf(t) holds the third so the sin term takes a fresh word
+ *    (-220); q0 / q1 are the two words between X and ang. Frame map = target's except the 48 / 56 uopt temps
+ *    (94.39 -> 94.44).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -93,10 +99,14 @@ static inline float dot(const Vec3 &a, const Vec3 &b) { return a.x * b.x + a.y *
 /* one slerp component: cos-weighted old heading plus sin-weighted target direction, both over sin(ang) */
 static inline float slc(float sa, float t, float ang, float o, float d, float s) { return gl_func_00000000_heli_ff((1.0f - t) * ang) * o / s + d * sa / s; }
 /* slerp the heading h toward dir by t (run 719) */
+static inline void dum4A(void *a0, void *a1, void *a2, void *a3) { a0 = a0; a1 = a1; a2 = a2; a3 = a3; }
+static inline void dumf(float a0) { a0 = a0; }
 static inline void slerp(Vec3 *h, const Vec3 &dir, float t) {
+    float q0 = 0; float q1 = 0;
     float ang = gl_func_00000000_heli_ff(h->x * dir.x + h->y * dir.y + h->z * dir.z);
     float s = gl_func_00000000_heli_ff(ang);
     Vec3 old = *h;
+    dumf(t);
     if ((s < 0.0f ? -s : s) > (0.001)) {
         h->x = slc(gl_func_00000000_heli_ff(t * ang), t, ang, old.x, dir.x, s);
         h->y = slc(gl_func_00000000_heli_ff(t * ang), t, ang, old.y, dir.y, s);
@@ -209,11 +219,10 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         if (p != 0 && *(int *)(p + 0x2C) != 0) {
             char *q;
             Vec3 mpos;
-            float k;
             q = *(char **)(p + 0x2C);
+            dum4A(q, q, q, q);
             mpos = *(Vec3 *)(q + 0x30);
-            k = (3000.0f);
-            mpos.y += k;
+            mpos.y += (3000.0f);
             HF(0x114) = HF(0x114) + (mpos.x - HF(0x114)) * (0.2);
             HF(0x118) = HF(0x118) + (mpos.y - HF(0x118)) * (0.2);
             HF(0x11C) = HF(0x11C) + (mpos.z - HF(0x11C)) * (0.2);
