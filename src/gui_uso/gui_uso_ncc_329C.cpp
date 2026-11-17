@@ -7,7 +7,7 @@
  * real C++ -- every append is the gfx context's inline Ctx::next() (n read, n + 1 stored, &buf[n]), and the
  * stock 2.0I gbi.h gSPTexture / gSPScisTextureRectangle macros get `CTX->next()` as their pkt argument, so
  * the macro's two gImmp1 re-evaluations of pkt ARE the RDPHALF_1 / RDPHALF_2 appends. No pads, no empty
- * tests. 97.33 standalone. Then: the three loader calls as an inline Ctx::load() (its `this` puts the pool
+ * tests. 97.33 standalone. Then: the three loader calls as an inline Ctx::loadIA8 / loadRGBA32 / loadRGBA16() (its `this` puts the pool
  * variable -- next()'s this, the switch value, the MAX temps -- into the call blocks, so uopt gives it $s0 as
  * in the target), x / y / fw / fh declared before w / h (w / h homes = target) and a named `t = spr->fmt`
  * (the target's sixth home before w; also takes t1 so spr lands in t2): 98.62, length 1144 = target.
@@ -75,7 +75,11 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; ret
     Gfx *nDQ() { DL *dd = dl; int n = dl->n++; return &dl->buf[n]; }
     /* agent-g run 293: the RDPHALF_2 append through a named-result form (3714's nR1, kit CCLV): 99.528 -> 99.580 */
     Gfx *nR1() { Gfx *r = &dl->buf[dl->n++]; return r; }
-    void load(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
+    /* one inline loader per texel format (the switch's three jals are three different TextReloc targets;
+     * identical bodies, same bytes as the former single load()) */
+    void loadIA8(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); }
+    void loadRGBA32(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); }
+    void loadRGBA16(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
 #define CTX (*(Ctx **)&D_00000000)
 template <class T> inline T I2(T v) { if (0) { v = 0; } return v; } /* agent-g run 309: zero-code kept-parameter identity (kit CCCXCV) */
 template <class T> inline T I4(T v) { T r = v; return r; } /* agent-g run 308: zero-code named-local identity (kit CCCXCV) */
@@ -104,13 +108,13 @@ extern "C" void gui_drawSpriteScaled_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1,
     switch (arg0->spr->fmt) { /* agent-g run 309: loader calls through zero-code accessors (200-variant grid): the
                                * load `this` pool entry no longer shares the x MAX temp's slot (a0 preference) */
     case 0x408:
-        me(CTX)->load(spr->tex, w, h);
+        me(CTX)->loadIA8(spr->tex, w, h);
         break;
     case 0x120:
-        I4(CTX)->load(me(spr)->tex, w, h);
+        I4(CTX)->loadRGBA32(me(spr)->tex, w, h);
         break;
     case 0x110:
-        me(CTX)->load(me(spr)->tex, w, h);
+        me(CTX)->loadRGBA16(me(spr)->tex, w, h);
         break;
     }
     x = (f32)x0;

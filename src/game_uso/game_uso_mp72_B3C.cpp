@@ -248,6 +248,7 @@ void cam_updateView_00000B3C(CourseCam *arg0) {
         }
     }
     f1 = 1.0;
+    /* UNNAMED: sentinel callee is game Text+0 = game_uso_func_00000000, the B-spline basis evaluator (a *_00000000 name, kept; TextReloc jal at Text+0xF2C) */
     game_uso_func_00000000(state, (f1 * (f32) s->frame) / (f32) kf->frames);
     /* the eye */
     ncur = seg->eyeMode;

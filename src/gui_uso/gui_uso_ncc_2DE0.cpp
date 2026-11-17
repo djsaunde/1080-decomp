@@ -1,7 +1,7 @@
 /* IDO 7.1 NCC (C++) EXACT donor for gui_drawSpriteScaledF_00002DE0 (303 words = target), spliced over an empty placeholder in
  * both trees (REPLACE_FUNC_BODY). f32-scale sibling of the exact gui_drawSpriteScaled_0000329C donor: the stock 2.0I gbi.h
  * gSPTexture / gSPScisTextureRectangle macros with inline Ctx appends as their pkt arguments, the three loader
- * calls through an inline Ctx::load() (the pool variable in $s0 as the target).
+ * calls through an inline Ctx::loadIA8 / loadRGBA32 / loadRGBA16() (the pool variable in $s0 as the target).
  * History (docs/IDO_CODEGEN.md): agent-g run 165 (kit CV) real C++ rewrite; agent-c runs 190-333 / agent-g runs
  * 220-310 append spellings, frame pads, spr as one variable for the clamp results (kit CCCXCIV), zero-code I / I2 /
  * I4 pool entries, me() accessor depths, nextp() / folded packet uses (kits CCCLXXXV-CDXXV): 99.109 / 1212.
@@ -46,7 +46,11 @@ inline int I2(int v) { if (0) { v = 0; } return v; }
 inline int I4(int v) { int r = v; return r; }
 struct DL { Gfx *buf; int n; };
 struct Ctx { char pad[0xC]; DL *dl; Gfx *nD() { int n = dl->n++; return &dl->buf[n]; }
-    void load(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
+    /* one inline loader per texel format (the switch's three jals are three different TextReloc targets;
+     * identical bodies, same bytes as the former single load()) */
+    void loadIA8(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); }
+    void loadRGBA32(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); }
+    void loadRGBA16(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
 #define CTX (*(Ctx **)&D_00000000)
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
@@ -64,13 +68,13 @@ extern "C" void gui_drawSpriteScaledF_00002DE0(Obj *arg0, s32 x0, s32 y0, f32 sx
     h = spr->h;
     switch (spr->fmt) {
     case 0x408:
-        CTX->load(spr->tex, w, h);
+        CTX->loadIA8(spr->tex, w, h);
         break;
     case 0x120:
-        CTX->load(spr->tex, w, h);
+        CTX->loadRGBA32(spr->tex, w, h);
         break;
     case 0x110:
-        CTX->load(spr->tex, w, h);
+        CTX->loadRGBA16(spr->tex, w, h);
         break;
     }
     x = (f32)x0 + (-((f32)w / 2) * sx);

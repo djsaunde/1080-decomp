@@ -21,8 +21,8 @@ struct Item {
     char pad[0x10];
     Font *font;
     char pad14[4];
-    void reset() { gl_func_00000000(this); }
-    void move(int x, int y, int n) { gl_func_00000000(this, x, y, n); }
+    void reset() { gl_func_00000000(this); } /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jals here are gui_spriteRefresh (per the TextReloc order noted at the first call) */
+    void move(int x, int y, int n) { gl_func_00000000(this, x, y, n); } /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object, its bytes are not the ROM), so this call has no ROM reloc; the ROM jals here are gui_drawSprite (per the TextReloc order noted at the first call) */
 };
 struct Ctx { char pad[0x568]; int f568; char pad56c[0x6A8 - 0x56C]; int *f6A8; char pad6ac[0x6B8 - 0x6AC]; int f6B8; };
 struct Self {
