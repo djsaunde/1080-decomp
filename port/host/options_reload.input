@@ -1,0 +1,14 @@
+# Options persistence, part 2 (run 857, agent-c; port/tools/modes-check.py): a new process on the
+# SRAM file options_save.input wrote.  The saved language pick skips the language menu, so START
+# goes straight to the main menu; Options -> Sound shows BGM 9 and Mono (read back from SRAM); BGM
+# up one more and OK: the saved record must then hold BGM 10 (9 + 1), SE 7, Mono.
+PADS 1
+F 480:3 START          # title -> main menu (no language select: options flags bit 8 clear)
+F 600:3 DU             # Match Race -> Options (wrap)
+F 680:3 A              # Options
+F 800:3 DD             # -> Sound
+F 880:3 A              # Sound (BGM 9, SE 7, Mono: the saved values)
+F 1000:3 DR            # BGM 9 -> 10
+F 1060:3 A             # OK: saved
+F 1180:3 B             # back
+# END 1300

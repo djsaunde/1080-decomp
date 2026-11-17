@@ -30,6 +30,12 @@
 #              new process) give the race's rider positions bit for bit.  The script is tied to the
 #              exact physics: on a legitimate physics change regenerate it (port/tools/steer-search.py,
 #              the failure prints the command)
+#   modes      port/tools/modes-check.py (~5 s, plan 20.5): the mode scripts from fresh dirs: Trick Attack
+#              scores and passes its `# CHECKPOINTS n` checkpoints (countdown extensions), Contest scores
+#              and extends, the Training lesson advances, 2P VS reaches a result and the next round,
+#              Match Race reaches the goal (before the CPU when the script says `# WIN`), and an
+#              options change survives a reload in a new process.  Physics-tied like the race step:
+#              the failure prints the regenerate command for each script
 #   saves      test_backup + 4 short boots: the SRAM file is the N64 image (port/include/port_backup.h,
 #              plan 20): blank-SRAM save = the ROM defaults' big-endian image, reloads unchanged,
 #              a synthetic .sra loads, damaged primaries are restored from the mirrors
@@ -265,6 +271,15 @@ start; if have tenshoe; then
   txt=$(grep -E '^  (goal|replay|ghost) ' "$RC/check.log" | awk '{$1=$1; print}' | paste -sd ';' | cut -c1-230)
   if [ $rc = 0 ]; then line race PASS "$txt"
   else line race FAIL "${txt:-$(tail -1 "$RC/check.log")}"; grep -vE '^  (goal|replay|ghost) ' "$RC/check.log" | sed 's/^/           /'; fi
+fi
+
+# ---- modes (plan 20.5): every game mode's script, its checks in port/tools/modes-check.py
+start; if have tenshoe; then
+  MC="$(mktemp -d "$LOG/modes.XXXXXX")"  # a fresh dir per run (no rm of a variable path)
+  python3 port/tools/modes-check.py -b "$B" -r "$ROM" -o "$MC" >"$MC/check.log" 2>&1; rc=$?
+  txt=$(grep -E '^  [a-z0-9]+ +(ok|FAIL)' "$MC/check.log" | awk '{printf "%s %s; ", $1, $2}' | sed 's/; $//')
+  if [ $rc = 0 ]; then line modes PASS "$txt"
+  else line modes FAIL "${txt:-$(tail -1 "$MC/check.log")}"; grep -E 'FAIL|regenerate' "$MC/check.log" | sed 's/^/           /'; fi
 fi
 
 # ---- saves (plan 20): the SRAM file is the N64 image (port/include/port_backup.h).  test_backup's unit

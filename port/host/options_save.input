@@ -1,0 +1,22 @@
+# Options persistence, part 1 (run 857, agent-c; port/tools/modes-check.py): from a blank SRAM,
+# title -> English -> Options -> Sound: BGM up one (8 -> 9), SE down one (8 -> 7), sound mode Mono,
+# OK, back.  The game writes the options record (SRAM 0x1F8 and its mirror 0x7FC8, include/gdl/backup.h
+# BackupOptions): flags 2 (Mono; the language-menu bit 8 was cleared by the English pick), levels
+# 9, 7, 8.  Part 2 is options_reload.input on the saved file in a new process.
+PADS 1
+F 480:3 START          # title "Press START" -> language select
+F 560:3 A              # English
+F 620:3 DU             # main menu: Match Race -> Options (wrap)
+F 700:3 A              # Options (rows Replay, Sound, Language, Erase Saved Data)
+F 820:3 DD             # -> Sound
+F 900:3 A              # Sound: BGM / SE / VOICE bars, Stereo / Headset / Mono
+F 1000:3 DR            # BGM 8 -> 9
+F 1060:3 DD            # -> SE
+F 1120:3 DL            # SE 8 -> 7
+F 1180:3 DD            # -> VOICE
+F 1240:3 DD            # -> the sound mode
+F 1300:3 DR            # Stereo -> Headset
+F 1360:3 DR            # -> Mono
+F 1420:3 A             # OK: the options are saved
+F 1540:3 B             # back to the main menu
+# END 1700
