@@ -62,6 +62,10 @@ int snoweffects_uso_func_000046BC(...);
  * Run 690 (97.83 -> 99.28 %): the ramp's range `hi - lo` is computed into `w` ahead of the |v| arms. In the
  *   target it is a uopt LR (f16, the sub.s scheduled before the |v| branch), not a ugen ring temp; as a ring temp
  *   it shifted the FP temp FIFO for the whole function (every f4 / f6 / f8 / f10 in the body).
+ * Run 696 (99.30 -> 99.40 %): idv(t->cam->fwd) and idf(fabs_(s)) (identity inlines) each add a pool word, so the
+ *   *|s|, v114 * k and *f184 results land on the target's slots and the cam pointer / ?: index use the target's
+ *   v0 / v1. Still left: fwd / up op* y / z (f14 / f2 vs f2 / f14), up * f180's r 2 words high, the two loop-top
+ *   __Vs swapped, the vel statement's cam pointer (v1 vs v0) and the or a1 / addiu t3 order.
  * Left: pool word 1 colours f2 where the target has f12 (it wins the f2 race against the TV ctor's second
  *   parameter word; a forcing-uopt probe puts it on f12 for 97.9 %), the frame (368 vs 384: one TV pool
  *   word too many at the loop-body top and one word too many above it) and the hoisted sp addresses. ---- */
