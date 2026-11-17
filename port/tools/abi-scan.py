@@ -13,6 +13,10 @@ against the callee's definition (found from the call instruction's target addres
            (float / double / int64 / struct against anything else);
   UNPROTO  an unprototyped C call whose definition takes a float (promoted to double) or
            returns a float / double.
+  VRET     the caller's declaration returns a value, the definition is void, and the caller reads
+           eax after the call (run 842: the ROM's $v0 was the callee's last result, which the
+           matched C drops; fix the callee with PORT_V0_TYPE / PORT_V0_RET, include/uso_call.h).
+           The read is found in the objdump disassembly after the call, following direct jumps.
 Prints one line per distinct finding.  With --baseline, exits 1 when a finding is not in the
 baseline (the accepted ones: run 836 left int / float same-size pairs etc. as harmless);
 --update rewrites the baseline.  Needs pyelftools (tools/build-venv).
@@ -99,12 +103,54 @@ def pops(lo,hi):
     b=tb[lo-tv:hi-tv]
     return b'\xc2\x04\x00' in b
 FP={'float','double','ldouble'}
+# ---- VRET: does the caller read eax after the call?  (objdump -d of the linked .text, once)
+_ins=None
+def _load():
+    global _ins
+    import subprocess
+    out=subprocess.run(['objdump','-d','--no-show-raw-insn','-j','.text',path],capture_output=True,text=True).stdout
+    _ins={}
+    prev=None
+    for ln in out.splitlines():
+        m=re.match(r'\s+([0-9a-f]+):\t(\S+)\s*(.*)$',ln)
+        if not m: continue
+        a=int(m.group(1),16); _ins[a]=[m.group(2),m.group(3),None]
+        if prev is not None: _ins[prev][2]=a
+        prev=a
+EAXR=re.compile(r'%(eax|ax|al|ah)\b')
+WRITE=('mov','lea','pop','set','cvt')
+def reads_eax(a,depth=0,seen=None):
+    """True when eax is read before it is written, from address a (direct jumps followed)."""
+    if _ins is None: _load()
+    seen=set() if seen is None else seen
+    for _ in range(24):
+        if a is None or a not in _ins or a in seen: return False
+        seen.add(a); op,args,nxt=_ins[a]
+        if op.startswith('ret') or op.startswith('call'): return False   # a void callee's leftover / clobbered
+        if op.startswith('j'):
+            t=re.match(r'([0-9a-f]+) <',args)
+            if t is None or depth>4: return False
+            t=int(t.group(1),16)
+            if op=='jmp': a=t; depth+=1; continue
+            return reads_eax(t,depth+1,seen) or reads_eax(nxt,depth+1,seen)
+        if op in ('cltd','cwtl'): return True
+        if EAXR.search(args):
+            ops=re.split(r',(?![^(]*\))',args)
+            if op.startswith('xchg') and ops[0]==ops[-1]: a=nxt; continue          # nop
+            if op.startswith(('xor','sub','sbb')) and len(ops)==2 and ops[0]==ops[1]: return False
+            if any(EAXR.search(o) for o in ops[:-1]) or ('(' in ops[-1] and EAXR.search(ops[-1])): return True
+            if op.startswith(WRITE) or (op.startswith('imul') and len(ops)==3): return False
+            return True
+        a=nxt
+    return False
 found=set()
 for cun,cpp,pn,(dn,dret,dps,dvar,dproto),rp,od in sites:
     t=target(rp)
     if t is None or t not in defs: continue
     (n,ret,ps,var,proto),dcun,dcpp,hi=defs[t]
     issues=[]
+    if ret=='void' and dret not in ('void',) and dret not in FP and reads_eax(rp):
+        issues.append('VRET decl %s def void, eax read after the call'%dret)
     # return
     if (dret in FP) != (ret in FP) and dret!='void' and ret!='void':
         issues.append('RET decl %s def %s'%(dret,ret))

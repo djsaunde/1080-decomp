@@ -335,6 +335,7 @@ def func_header_name(m, boundary, op):
     h = m[boundary:op]
     if '=' in h:
         return None
+    h = re.sub(r'\bPORT_V0_TYPE\s*\(\s*\w+\s*\)', 'int', h)  # include/uso_call.h: a return type, not the name
     mm = re.search(r'([A-Za-z_]\w*)\s*\(', h)
     return mm.group(1) if mm and ')' in h else None
 

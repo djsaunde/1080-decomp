@@ -1,0 +1,36 @@
+# port/tools/return-type-allow.tsv: reviewed -Wreturn-type / -Wreturn-mismatch hits in SHIPPED port bodies
+# (scripts/port-gate.sh, run 842).  A hit that is neither listed here nor in a dropped copy (a definition
+# port/sourcemap.tsv ships from another unit: cc-select renames it __port_dead_*, --gc-sections drops it)
+# fails the gate.  Review = read the ROM asm for $v0 at the fall-off point:
+#   - a meaningful value its callers read  -> fix it (PORT_V0_RET / PORT_V0_TYPE in include/uso_call.h,
+#     or `#ifdef PORT return x; #endif`), do NOT list it;
+#   - otherwise list it with the verdict:
+#     VOIDLEFT  $v0 is a void callee's leftover (the original function was void; no caller can use it)
+#     UNUSED    $v0 is defined, but no caller (direct, tail or dispatch) reads it
+#     DEAD      the warned return is unreachable, or the body is not linked into tenshoe
+#     KR        the implicit-int warning of a K&R definition (its fall-off is reviewed on its own line)
+# file	function	message (prefix)	verdict	evidence
+src/arcproc_uso/arcproc_uso_tail1.c	ArcNameEntry_drawEntryOverlay	return type defaults	KR	-
+src/arcproc_uso/arcproc_uso_tail1.c	ArcNameEntry_drawEntryOverlay	control reaches end	VOIDLEFT	v0 = arc_drawNumber_000016F4 (void); a vtable draw slot, dispatched as void
+src/bootup_uso/bootup_uso.c	func_00000000	return type defaults	KR	-
+src/bootup_uso/bootup_uso.c	func_00000000	control reaches end	DEAD	empty placeholder body, not linked
+src/bootup_uso/bootup_uso_o0_11D78.c	input_getStickX_00011D78	‘return’ with no value	DEAD	the bare return follows `return x;` (the -O0 match's dead epilogue branch)
+src/bootup_uso/bootup_uso_o0_11DBC.c	input_getStickY_00011DBC	‘return’ with no value	DEAD	the bare return follows `return x;` (the -O0 match's dead epilogue branch)
+src/game_libs/game_libs_mid.c	app_launchNameEnt	return type defaults	KR	-
+src/game_libs/game_libs_mid.c	app_launchNameEnt	control reaches end	VOIDLEFT	v0 = app_runProcess (void); tail of arc_procMain / tim_main / trk_main (void proc entries)
+src/game_libs/game_libs_post.c	AudioLoad_SyncInitSeqPlayerInternal	control reaches end	UNUSED	v0 = 16 (the empty i-loop's counter); SyncInitSeqPlayer(SkipTicks) -> AudioThread_ProcessGlobalCmd drops it
+src/game_libs/game_libs_post.c	AudioLoad_SyncLoadInstrument	control reaches end	UNUSED	v0 = SyncLoadSample's leftover (instrument path); AudioThread_ProcessGlobalCmd drops it
+src/game_libs/game_libs_post.c	AudioLoad_SyncLoadSample	control reaches end	VOIDLEFT	v0 = AudioLoad_SyncDma / gl_230d0_syncDma leftover (void); SyncLoadInstrument drops it
+src/game_libs/game_libs_post.c	snd_SetPlayer2ChannelIO_3190C	control reaches end	VOIDLEFT	v0 = AudioThread_QueueCmdS8 (void) or the last gl_ref_00045F04 test; declared void in its context header
+src/game_libs/game_libs_post0b.c	AnimPlayer_reset	return type defaults	KR	-
+src/game_libs/game_libs_post0b.c	AnimPlayer_reset	control reaches end	UNUSED	leaf with no v0 write; AnimPlayer_ctor / CharacterList_createItem / RiderAnim_init drop it
+src/game_libs/game_libs_post0b.c	ColourItemType_buildItems	control reaches end	VOIDLEFT	v0 = the last newItem virtual's result; ItemType::buildItems is void (ItemType_buildItems)
+src/game_libs/game_libs_post0b.c	SNodeItemType_buildItems	control reaches end	VOIDLEFT	v0 = the last newItem virtual's result; ItemType::buildItems is void (ItemType_buildItems)
+src/game_libs/game_libs_post0b.c	dbg_printThreads	control reaches end	DEAD	not linked into tenshoe (no caller after the binds)
+src/game_libs/game_libs_post0b.c	nodelist_displayFlagged_00039EE4	control reaches end	DEAD	not linked; v0 = node = NULL at the fall-off in any case
+src/game_libs/game_libs_post0b.c	nodelist_updateFlagged_00039F7C	control reaches end	DEAD	not linked; v0 = node = NULL at the fall-off in any case
+src/match_imports/Parms_load_00035C6C.c	Parms_load_00035C6C	control reaches end	VOIDLEFT	v0 = the last stream read helper's leftover (path dependent); the readParms virtuals tail-call it as void
+src/mgrproc_uso/mgrproc_uso.c	mgr_pauseContinue_00000AE0	return type defaults	KR	-
+src/mgrproc_uso/mgrproc_uso.c	mgr_pauseContinue_00000AE0	control reaches end	VOIDLEFT	v0 = input_clearActivePad_00012090 (void)
+src/mgrproc_uso/mgrproc_uso_o0_19C.c	mgr_procMain	return type defaults	KR	-
+src/mgrproc_uso/mgrproc_uso_o0_19C.c	mgr_procMain	control reaches end	VOIDLEFT	v0 = app_runProcess / app_launchGenProc / app_launchViewRec (void); a USO proc entry (arc_procMain, trk_main are void)

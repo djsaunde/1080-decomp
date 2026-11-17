@@ -5,12 +5,8 @@ include/gdl/gl_data.h	-	-fpermissive	invalid conversion from ‘char*’ to ‘i
 include/uso_call.h	-	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
 include/uso_call.h	-	-fpermissive	invalid conversion from ‘char*’ to ‘unsigned int’	2
 include/uso_call.h	-	-fpermissive	invalid conversion from ‘const void*’ to ‘void*’	1
-src/arcproc_uso/arcproc_uso_tail1.c	-	-Wreturn-type	return type defaults to ‘int’	1
-src/arcproc_uso/arcproc_uso_tail1.c	ArcNameEntry_drawEntryOverlay	-Wreturn-type	control reaches end of non-void function	1
 src/balloon_uso/balloon_uso_ncc_1A8.cpp	void Balloon_display(Balloon*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
 src/balloon_uso/balloon_uso_ncc_1A8.cpp	void Balloon_display(Balloon*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
-src/bootup_uso/bootup_uso.c	-	-Wreturn-type	return type defaults to ‘int’	1
-src/bootup_uso/bootup_uso.c	func_00000000	-Wreturn-type	control reaches end of non-void function	1
 src/bootup_uso/bootup_uso_ncc_55A0.cpp	void item_registerTemplates(int, int, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	8
 src/bootup_uso/bootup_uso_ncc_55A0.cpp	void item_registerTemplates(int, int, int)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	2
 src/bootup_uso/bootup_uso_ncc_55A0.cpp	void item_registerTemplates(int, int, int)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	2
@@ -39,13 +35,9 @@ src/bootup_uso/bootup_uso_ncc_FC28.cpp	void* QuitProcess_ctor(void*, int, int)	-
 src/bootup_uso/bootup_uso_ncc_FC28.cpp	void* QuitProcess_ctor0(void*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
 src/bootup_uso/bootup_uso_ncc_FC28.cpp	void* QuitProcess_ctor0(void*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
 src/bootup_uso/bootup_uso_ncc_FC28.cpp	void* QuitProcess_ctor0(void*)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	2
-src/bootup_uso/bootup_uso_o0_11D78.c	input_getStickX_00011D78	-Wreturn-type	‘return’ with no value, in function returning non-void	1
-src/bootup_uso/bootup_uso_o0_11DBC.c	input_getStickY_00011DBC	-Wreturn-type	‘return’ with no value, in function returning non-void	1
 src/eddproc_uso/eddproc_uso.c	edd_readFloatParm_0000035C	-Wimplicit-function-declaration	implicit declaration of function ‘eddproc_uso_func_edd_3C’; did you mean ‘eddproc_uso_func_00000000’?	1
 src/eddproc_uso/eddproc_uso.c	edd_readQuadParm_0000038C	-Wimplicit-function-declaration	implicit declaration of function ‘eddproc_uso_func_edd_78’; did you mean ‘eddproc_uso_func_00000000’?	1
 src/eddproc_uso/eddproc_uso.c	edd_readVec3Parm_0000044C	-Wimplicit-function-declaration	implicit declaration of function ‘eddproc_uso_func_edd_D0’; did you mean ‘eddproc_uso_func_00000000’?	1
-src/game_libs/game_libs_mid.c	-	-Wreturn-type	return type defaults to ‘int’	1
-src/game_libs/game_libs_mid.c	app_launchNameEnt	-Wreturn-type	control reaches end of non-void function	1
 src/game_libs/game_libs_ncc_15FC.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
 src/game_libs/game_libs_ncc_15FC.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
 src/game_libs/game_libs_ncc_34890.cpp	void hostio_sendNodeTree(O*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
@@ -183,45 +175,8 @@ src/game_libs/game_libs_ncc_o0_9204.cpp	int app_createGame_00009204(int, int, in
 src/game_libs/game_libs_ncc_o0_9204.cpp	int app_createGame_000092F4(int, int)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	1
 src/game_libs/game_libs_ncc_o0_9204.cpp	int app_createGame_000092F4(int, int)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	1
 src/game_libs/game_libs_ncc_o0_959C.cpp	int* ColourItem_create_0000959C(int*)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	1
-src/game_libs/game_libs_o2_34548.c	dbg_printThreads	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post.c	AudioHeap_AllocPermanent	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post.c	AudioLoad_SyncInitSeqPlayerInternal	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post.c	AudioLoad_SyncLoadInstrument	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post.c	AudioLoad_SyncLoadSample	-Wreturn-type	control reaches end of non-void function	1
 src/game_libs/game_libs_post.c	Audio_SeqLayerDecayRelease	-Wimplicit-function-declaration	implicit declaration of function ‘gl_func_0003D414’; did you mean ‘gl_func_00038604’?	1
-src/game_libs/game_libs_post.c	snd_SetPlayer2ChannelIO_3190C	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	AnimPlayer_reset	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	BasePolyShape_addPoints	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	BasePolyShape_ctor	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	BasePolyShape_subdivide	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	ColourItemType_buildItems	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	ColourItemType_findNearest	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	ColourItemType_findNextByZ	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	ColourItemType_getItemPos	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	ItemType_getItem	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	MNodeItemType_getItemPos	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	MNode_update	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	MNode_updateChildren	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	Mat_clone_0004FBA4	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	Mesh_paint	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	Node_broadcastMsg	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	PolyShape_init	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	PolyShape_makeEdgeVtxs	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	PolyShape_shade_00049DBC	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	SNodeItemType_buildItems	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	SNodeItemType_findNearest	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	SNodeItemType_findNextByZ	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	SNodeItemType_getItemPos	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	SNodeItemType_newItem	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	Sprite_ctor_0004B620	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	dbg_printThreads	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	fs_gdlReadQuad_000515FC	-Wreturn-type	return type defaults to ‘int’	1
-src/game_libs/game_libs_post0b.c	math_bestAlignedIndex_00036A48	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	nodelist_displayFlagged_00039EE4	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post0b.c	nodelist_updateFlagged_00039F7C	-Wreturn-type	control reaches end of non-void function	1
-src/game_libs/game_libs_post1b.c	str_fill	-Wreturn-type	control reaches end of non-void function	1
 src/game_uso/game_uso.c	RiderAnim_checkGroundSpin_0000E91C	-Wimplicit-function-declaration	implicit declaration of function ‘RiderAnim_readStickSpin_0000EAF4’	1
-src/game_uso/game_uso.c	RiderAnim_startQueuedTrick_0000E35C	-Wreturn-type	control reaches end of non-void function	1
 src/game_uso/game_uso_mp72_8CD8.cpp	-	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
 src/game_uso/game_uso_ncc_6A30.cpp	-	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
 src/game_uso/game_uso_ncc_71E0.cpp	-	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
@@ -243,13 +198,7 @@ src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp	void h2h_WinsDisplay_update_00001204(ch
 src/match_imports/CharacterList_createItem.c	CharacterList_createItem	-Wimplicit-function-declaration	implicit declaration of function ‘gen_imp_AnimPlayer_reset’; did you mean ‘gen_imp_AnimPlayer_start’?	1
 src/match_imports/CharacterList_createItem.c	CharacterList_createItem	-Wimplicit-function-declaration	implicit declaration of function ‘gen_imp_SnowBoarder_loadBoardModel_0000B1B4’	1
 src/match_imports/CharacterList_createItem.c	CharacterList_createItem	-Wimplicit-function-declaration	implicit declaration of function ‘import_0010D33C’; did you mean ‘import_0010806C’?	1
-src/match_imports/Parms_load_00035C6C.c	Parms_load_00035C6C	-Wreturn-type	control reaches end of non-void function	1
-src/mgrproc_uso/mgrproc_uso.c	-	-Wreturn-type	return type defaults to ‘int’	1
 src/mgrproc_uso/mgrproc_uso.c	MGRRaceProcess_onRaceOver	-Wimplicit-function-declaration	implicit declaration of function ‘import_000B2888’; did you mean ‘import_000B72F4’?	1
-src/mgrproc_uso/mgrproc_uso.c	mgr_pauseContinue_00000AE0	-Wreturn-type	control reaches end of non-void function	1
-src/mgrproc_uso/mgrproc_uso_o0_19C.c	-	-Wreturn-type	return type defaults to ‘int’	1
-src/mgrproc_uso/mgrproc_uso_o0_19C.c	mgr_procMain	-Wreturn-type	control reaches end of non-void function	1
-src/nameent_uso/nameent_uso.c	NameEnterMessage_ctor	-Wreturn-type	control reaches end of non-void function	1
 src/nameent_uso/nameent_uso_ncc.cpp	NeEntry* NameEnterMessage_ctor(NeEntry*, void*, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
 src/nameent_uso/nameent_uso_ncc.cpp	NeEntry* NameEnterMessage_ctor(NeEntry*, void*, int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
 src/nameent_uso/nameent_uso_ncc.cpp	void NameEnterMessage_display(NeEntry*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
@@ -275,14 +224,9 @@ src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp	void PowderParticles_buildTexDL_0
 src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp	void SnowFall_buildTexDL_00002310(SnowTex*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
 src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp	void SpecParticles_buildTexDL_00001E60(SnowTex*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
 src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp	int tcall1(int, SnowDLHolder*)	-fpermissive	invalid conversion from ‘void*’ to ‘unsigned int’	1
-src/timproc_uso_b1/timproc_uso_b1.c	-	-Wreturn-type	return type defaults to ‘int’	1
-src/timproc_uso_b1/timproc_uso_b1.c	tim_main	-Wreturn-type	control reaches end of non-void function	1
-src/timproc_uso_b3/timproc_uso_b3.c	-	-Wreturn-type	return type defaults to ‘int’	1
-src/timproc_uso_b3/timproc_uso_b3.c	trk_main	-Wreturn-type	control reaches end of non-void function	1
 src/timproc_uso_b5/timproc_uso_b5.c	SelItem_drawStatBarRight_00003C8C	-Wint-to-pointer-cast	cast to pointer from integer of different size	1
 src/timproc_uso_b5/timproc_uso_b5.c	SelItem_drawStatBar_00003A4C	-Wint-to-pointer-cast	cast to pointer from integer of different size	1
 src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_beginTransition_00008688	-Wimplicit-function-declaration	implicit declaration of function ‘SelectWin_prevFocusItem_00008AD4’; did you mean ‘SelectWin_saveFocus_0000866C’?	1
-src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_callPrevStageBit_0000894C	-Wreturn-type	control reaches end of non-void function	1
 src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_display_00006394	-Wimplicit-function-declaration	implicit declaration of function ‘SelectWin_canScrollNext_00006900’	1
 src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_display_00006394	-Wimplicit-function-declaration	implicit declaration of function ‘SelectWin_canScrollPrev_0000687C’	1
 src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_display_00006394	-Wimplicit-function-declaration	implicit declaration of function ‘SelectWin_curItem_00008A38’	1
@@ -294,7 +238,6 @@ src/timproc_uso_b5/timproc_uso_b5_ncc_BDEC.cpp	void CharacterItem_drawArrows_000
 src/titproc_uso/titproc_uso.c	GameDemoProcess_ctor	-Wimplicit-function-declaration	implicit declaration of function ‘import_000AE700’; did you mean ‘import_000A7ECC’?	1
 src/titproc_uso/titproc_uso.c	GameDemoProcess_ctor	-Wimplicit-function-declaration	implicit declaration of function ‘import_000B0DBC’; did you mean ‘import_000A5FBC’?	1
 src/titproc_uso/titproc_uso_mp72_116C.cpp	void TitleDemoProcess_handleInput(char*)	-fpermissive	invalid conversion from ‘Node*’ to ‘int’	1
-src/trnproc_uso/trnproc_uso.c	TrnDataManager_isLessonAvailable	-Wreturn-type	control reaches end of non-void function	1
 src/trnproc_uso/trnproc_uso_ncc.cpp	int TrnDataManager_isLessonAvailable(TrnDataManager*, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
 src/trnproc_uso/trnproc_uso_ncc.cpp	void TrnDataManager_buildLessonInputs(TrnDataManager*, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
 src/trnproc_uso/trnproc_uso_ncc.cpp	void TrnDataManager_drawLesson(TrnDataManager*)	-fpermissive	invalid conversion from ‘RaceSprite*’ to ‘int’	1

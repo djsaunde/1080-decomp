@@ -10,6 +10,9 @@
 #   build      fresh i386 build, -DPORT_LINK=ON: 0 compile errors, 0 undefined symbols, no warning
 #              of the gated classes (implicit declarations, return type, int/pointer casts,
 #              C++ -fpermissive conversions ...) beyond port/tools/port-gate-warnings.tsv
+#              (that baseline never accepts a return-type hit: -Wreturn-type / -Wreturn-mismatch in a
+#              shipped body must be on the reviewed port/tools/return-type-allow.tsv; the dropped copies
+#              port/sourcemap.tsv does not ship are exempt)
 #   gen-lib    port-gen-decls / binds / uso (from the built game library) + port-gen-blob-types.py
 #              -> committed port/gen unchanged
 #   test_ultra, test_fs, gfx (make -C port/gfx test: golden scenes, software GL),
@@ -110,27 +113,59 @@ if [ $brc != 2 ]; then
   nerr=$(grep -E '(error|Error):' "$LOG/build.log" | grep -vcE 'ld returned|ninja: build stopped|^FAILED')
   grep -o "undefined reference to \`[^']*'" "$LOG/build.log" | sort -u > "$LOG/undefined.txt"; nund=$(wc -l < "$LOG/undefined.txt")
   WB=port/tools/port-gate-warnings.tsv
-  wres=$(python3 - "$LOG/build.log" "$WB" "$UPDATE" "$WT/" <<'PY'
+  wres=$(python3 - "$LOG/build.log" "$WB" "$UPDATE" "$WT/" port/tools/return-type-allow.tsv port/sourcemap.tsv <<'PY'
 import collections, re, sys
 log, base, update, root = sys.argv[1], sys.argv[2], sys.argv[3] == '1', sys.argv[4]
+allowf, smapf = sys.argv[5], sys.argv[6]
+# return-type hits (run 842): never baselined.  A function that falls off its end returns MIPS $v0 in
+# the ROM but garbage eax on i386 (and g++ may emit no `ret` at all): each hit in a shipped body is
+# fixed, or reviewed onto return-type-allow.tsv (file, function, message prefix, verdict, evidence).
+RET = ('-Wreturn-type', '-Wreturn-mismatch')
+ships = collections.defaultdict(set)
+for ln in open(smapf):
+    p = ln.rstrip('\n').split('\t')
+    if len(p) > 2 and not ln.startswith('#') and p[0] != 'function': ships[p[0]].add(p[2])
+allow = []
+for ln in open(allowf):
+    if ln.startswith('#') or not ln.strip(): continue
+    p = ln.rstrip('\n').split('\t'); allow.append(p[:3])
+rhits = []; pend = None
 # gated classes: an ABI or a missing-declaration / return-value problem on i386
 CLS = ('-Wreturn-type', '-Wimplicit-function-declaration', '-Wimplicit-int', '-Wint-to-pointer-cast',
        '-Wpointer-to-int-cast', '-Wincompatible-pointer-types', '-Wint-conversion',
        '-Wbuiltin-declaration-mismatch', '-Wreturn-mismatch', '-fpermissive')
 ctx = {}; got = collections.Counter()
 for ln in open(log, errors='replace'):
+    if pend is not None:  # "return type defaults to int" comes before the "In function" line: name it from the source echo
+        m = re.match(r'\s*\d+ \| (?:\w+\s+)*?\**(\w+)\s*\(', ln)
+        pend[1] = m.group(1) if m else '-'; rhits.append(tuple(pend)); pend = None; continue
     m = re.match(r"(\S+?): In (?:member )?function [‘'](.*)[’']:", ln)
     if m: ctx[m.group(1)] = m.group(2); continue
     m = re.match(r'(\S+?):\d+:\d+: warning: (.*) \[(-[\w=-]+)\]$', ln.rstrip())
     if not m or m.group(3) not in CLS: continue
     f = m.group(1).replace(root, ''); f = re.sub(r'^.*?/(src|port|include)/', r'\1/', f)
+    if m.group(3) in RET:
+        if 'defaults to' in m.group(2): pend = [f, None, m.group(2)]
+        else: rhits.append((f, ctx.get(m.group(1), '-'), m.group(2)))
+        continue
     got['\t'.join((f, ctx.get(m.group(1), '-'), m.group(3), m.group(2)))] += 1
+rhits = sorted(set(rhits))
+def allowed(h):
+    return any(h[0] == a[0] and h[1] == a[1] and h[2].startswith(a[2]) for a in allow)
+rdrop = [h for h in rhits if ships.get(h[1]) and h[0] not in ships[h[1]]]
+rnew = [h for h in rhits if h not in rdrop and not allowed(h)]
+rok = len(rhits) - len(rdrop) - len(rnew)
+stale = [a for a in allow if not any(h[0] == a[0] and h[1] == a[1] and h[2].startswith(a[2]) for h in rhits)]
+rtxt = 'return-type: %d hits (%d reviewed, %d dropped copies, %d UNREVIEWED%s)' % (
+    len(rhits), rok, len(rdrop), len(rnew), ', %d stale allow-list lines' % len(stale) if stale else '')
 if update:
     with open(base, 'w') as fh:
         fh.write('# scripts/port-gate.sh --update-baselines: accepted port build warnings of the gated classes\n'
                  '# (file, function, class, message, count).  A new key, or a higher count, fails the gate.\n')
         for k in sorted(got): fh.write('%s\t%d\n' % (k, got[k]))
-    print('0 baseline written (%d keys, %d warnings)' % (len(got), sum(got.values()))); sys.exit()
+    with open(log + '.new-warnings', 'w') as fh:
+        for h in rnew: fh.write('RETURN\t%s\n' % '\t'.join(h))
+    print('%d baseline written (%d keys, %d warnings); %s' % (len(rnew), len(got), sum(got.values()), rtxt)); sys.exit()
 acc = collections.Counter()
 try:
     for ln in open(base):
@@ -139,8 +174,10 @@ try:
 except FileNotFoundError: pass
 new = [(k, c - acc[k]) for k, c in sorted(got.items()) if c > acc[k]]
 with open(log + '.new-warnings', 'w') as fh:
+    for h in rnew: fh.write('RETURN\t%s\n' % '\t'.join(h))
     for k, c in new: fh.write('%d\t%s\n' % (c, k))
-print('%d %d gated warnings, %d new' % (len(new), sum(got.values()), sum(c for _, c in new)))
+    for a in stale: fh.write('STALE-ALLOW\t%s\n' % '\t'.join(a))
+print('%d %d gated warnings, %d new; %s' % (len(new) + len(rnew), sum(got.values()), sum(c for _, c in new), rtxt))
 PY
 )
   nnew=${wres%% *}
