@@ -181,7 +181,9 @@ extern "C" void heli_uso_func_00000B08(char *self) {
             p = (char *)gl_func_00000000(heli_itemMgr_b08, key);
             if (p != 0) {
 #define VT (((Node *)(p))->vptr)
-                *(char **)(self + 0x168) = (char *)((int (*)(...))(((GdlVtEnt *)((char *)(VT) + 8))[12]).fn)((((GdlVtEnt *)((char *)(VT) + 8))[12]).delta + p, &(*(Vec3 *)&ppr), 0);
+                *(char **)(self + 0x168) = (char *)((int (*)(...))(((GdlVtEnt *)((char *)(VT) + 8))[12]).fn)((char *)((((GdlVtEnt *)((char *)(VT) + 8))[12]).delta + (int)p), &(*(Vec3 *)&ppr), 0);
+                /* this-adjust as an int sum, delta first (run 777): target addu a0,t4,v1 (delta, p); the pointer
+                 * sum puts p first */
             }
         }
         p = *(char **)(self + 0x168);
