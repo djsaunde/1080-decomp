@@ -25,8 +25,14 @@ typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
 #include "../../include/game/input.h"  /* NCC donors build without -I include */
 #include "../../include/game/game_uso_data.h"
+#ifdef PORT /* cfront PMF {s16 delta, s16 index, fn}, A without g++ polymorphism (port_cfront.h, plan 18.7) */
+#include "port_cfront.h"
+struct A { char pad[40]; char *vptr; /* cfront vptr */ };
+typedef PortCfPmf PM;
+#else
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
+#endif
 extern "C" {
 extern int *game_uso_D_807FFBC0;
 extern char import_800201D0;

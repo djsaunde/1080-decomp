@@ -33,8 +33,14 @@ void game_uso_func_0000ECE8(void *);
 void game_uso_func_076E78(int, int);
 void game_uso_func_0775F8(void *);
 }
+#ifdef PORT /* cfront PMF {s16 delta, s16 index, fn}, A without g++ polymorphism (port_cfront.h, plan 18.7) */
+#include "port_cfront.h"
+struct A { char pad[40]; char *vptr; /* cfront vptr */ };
+typedef PortCfPmf PM;
+#else
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
+#endif
 struct H : A {}; /* RiderAnim as the class its state PMFs bind to (vptr at +40) */
 #define PMF(pair) (*(PM *)&(pair)) /* a Pair2 field read as the PMF it holds */
 #define F(b,o) (*(float *)((char *)(b) + (o)))

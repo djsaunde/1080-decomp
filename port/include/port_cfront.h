@@ -60,4 +60,45 @@ struct PortCfVtEnt {
  * copy of one unit's B::B could be merged into another unit. */
 #define CF_EXT(R, local, sym, params) extern "C" R local params __asm__(#sym)
 
+/* cfront pointers to member functions (agent-a run 812, plan 18.7). cfront / edg keep a PMF as
+ * 8 bytes {s16 delta, s16 index, fn-or-vptr-offset}; g++ would read the same 8 bytes as its own
+ * {ptr, adj}. Under PORT a donor's PMF type is `typedef PortCfPmf PM;` and the call / compare sites
+ * stay as written: `(obj->*pm)(..)` picks the operator->* below, `pm != null` the operators here.
+ * The decode is the ROM's (the edg dispatch in RiderAnim_update_0000D204, identical to the C
+ * MemberCallback_invoke / _00007BF4):
+ *   index < 0   non-virtual: fn is the function, called with this + delta;
+ *   index >= 0  virtual: vptrOff is the offset of the vptr in the (this + delta) object, where
+ *               vptrOff 0 with delta 0 means the Node vptr at +0x28; the slot is the
+ *               {s16 delta, fn} entry at vptr + 8 * index (index is 1-based: CF_SLOT(vt, index - 1)),
+ *               called with this + delta + the slot's delta.
+ * Equality is the edg 2-word compare. The ROM's PMF records (game Data 0x840, 0xDB0..0xF58) are all
+ * non-virtual {0, -1, fn}; the null PMF is {0, 0, 0}. */
+struct PortCfPmf {
+    short delta;
+    short index;
+    union { int (*fn)(); int vptrOff; } u;
+    CF_INL bool operator==(const PortCfPmf &o) const {
+        return delta == o.delta && index == o.index && u.vptrOff == o.u.vptrOff;
+    }
+    CF_INL bool operator!=(const PortCfPmf &o) const { return !(*this == o); }
+};
+struct PortCfPmfBound {
+    char *self;
+    int (*fn)(char *);
+    CF_INL int operator()() const { return fn(self); }
+};
+template <class T> CF_INL PortCfPmfBound operator->*(T *obj, const PortCfPmf &pm) {
+    PortCfPmfBound b;
+    b.self = (char *)obj + pm.delta;
+    if (pm.index < 0) {
+        b.fn = (int (*)(char *))pm.u.fn;
+    } else {
+        int off = (pm.u.vptrOff == 0 && pm.delta == 0) ? 0x28 : pm.u.vptrOff;
+        PortCfVtEnt *e = (PortCfVtEnt *)(*(char **)(b.self + off) + 8 * pm.index);
+        b.self += e->delta;
+        b.fn = (int (*)(char *))e->fn;
+    }
+    return b;
+}
+
 #endif /* PORT_CFRONT_H */

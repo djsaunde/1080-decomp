@@ -18,8 +18,14 @@ typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f
 typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/rideranim.h" /* NCC has no -I include */
 #include "../../include/game/game_uso_data.h"
+#ifdef PORT /* cfront PMF {s16 delta, s16 index, fn}, A without g++ polymorphism (port_cfront.h, plan 18.7) */
+#include "port_cfront.h"
+struct A { char pad[40]; char *vptr; /* cfront vptr */ };
+typedef PortCfPmf PM;
+#else
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
+#endif
 extern "C" {
 extern char game_uso_D_807FFB78;
 extern char game_uso_D_807FF400;
