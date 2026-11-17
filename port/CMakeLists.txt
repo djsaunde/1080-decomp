@@ -21,6 +21,12 @@ set(CMAKE_C_COMPILER_LAUNCHER   ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR
 set(CMAKE_CXX_COMPILER_LAUNCHER ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tools/cc-select.py)
 
 option(PORT_LINK "link the stub executable (needs a 32-bit libc: gcc-multilib)" OFF)
+# DEBUG ONLY (plan 18.9): link tenshoe with an aborting trap per still-undefined symbol, so the
+# boot can be walked before the link is at 0.  Needs PORT_LINK.  Never on in a normal build.
+option(PORT_TRAP_UNDEFINED "debug only: every undefined symbol becomes an aborting trap" OFF)
+if(PORT_TRAP_UNDEFINED AND NOT PORT_LINK)
+  message(FATAL_ERROR "PORT_TRAP_UNDEFINED needs PORT_LINK=ON")
+endif()
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif()
@@ -117,6 +123,40 @@ if(PORT_LINK)
   # port/gen/aliases.ld: the token aliases (scripts/port-gen-binds.py), an implicit linker script
   target_link_libraries(tenshoe PRIVATE -Wl,--whole-archive game uso ultra audio -Wl,--no-whole-archive
                         ${PORT_GEN}/aliases.ld m)
+
+  # PORT_TRAP_UNDEFINED (DEBUG ONLY, plan 18.9; never on in a normal build): tenshoe links
+  # while symbols are still undefined.  A probe link with --warn-unresolved-symbols lists them;
+  # port/tools/gen-port-traps.py turns each into a trap (port/trap/trap.c): a code symbol
+  # prints "PORT TRAP: <symbol>" + a backtrace and aborts, a data symbol is a PROT_NONE page
+  # whose first touch does the same.  Nothing is stubbed: every trap aborts.
+  if(PORT_TRAP_UNDEFINED)
+    message(WARNING "PORT_TRAP_UNDEFINED=ON: debug build, undefined symbols become aborting traps")
+    add_executable(tenshoe_probe $<TARGET_OBJECTS:porthost>)
+    target_link_options(tenshoe_probe PRIVATE -m32 -no-pie -Wl,--gc-sections -Wl,--export-dynamic
+                        -Wl,--warn-unresolved-symbols)  # the same roots as tenshoe below
+    target_link_libraries(tenshoe_probe PRIVATE -Wl,--whole-archive game uso ultra audio -Wl,--no-whole-archive
+                          ${PORT_GEN}/aliases.ld m)
+    set(_nm "${CMAKE_NM}")
+    if(NOT _nm)
+      set(_nm nm)
+    endif()
+    set(_od "${CMAKE_OBJDUMP}")
+    if(NOT _od)
+      set(_od objdump)
+    endif()
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/port_traps.c
+      COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen-port-traps.py
+              --probe $<TARGET_FILE:tenshoe_probe> --out ${CMAKE_CURRENT_BINARY_DIR}/port_traps.c
+              --nm ${_nm} --objdump ${_od}
+              $<TARGET_FILE:game> $<TARGET_FILE:uso> $<TARGET_FILE:ultra> $<TARGET_FILE:audio>
+      DEPENDS tenshoe_probe ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen-port-traps.py
+      COMMENT "PORT_TRAP_UNDEFINED: generating the undefined-symbol traps"
+      VERBATIM)
+    target_sources(tenshoe PRIVATE trap/trap.c ${CMAKE_CURRENT_BINARY_DIR}/port_traps.c)
+    set_source_files_properties(trap/trap.c ${CMAKE_CURRENT_BINARY_DIR}/port_traps.c
+                                PROPERTIES COMPILE_OPTIONS "-m32;-fno-pie;-g")
+    target_link_options(tenshoe PRIVATE -Wl,--export-dynamic)
+  endif()
 
   # the shim's self-test (plan 17.6): no game code, no ROM
   add_executable(test_ultra ultra/test_ultra.c host_headless.c)
