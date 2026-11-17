@@ -105,7 +105,7 @@ extern "C" void TrnDataManager_buildLessonInputs(TrnDataManager *self, int idx) 
 
     n = 0;
     scratch[0] = 0;
-    mask = CALL(TrickTable_getInputMask_0000C378)(trn_gTrickTable, idx); /* TrickTable_getInputMask_0000C378 */
+    mask = CALL(TrickTable_getInputMask_0000C378)(trn_gTrickTable, idx);
     if (mask & 0x100000) {
         self->inputs[n++] = 35;
         if (mask & 0x5000) self->inputs[n++] = 8;
@@ -124,7 +124,7 @@ extern "C" void TrnDataManager_buildLessonInputs(TrnDataManager *self, int idx) 
         self->inputs[n++] = 255;
     }
     if (mask & 4) self->inputs[n++] = 35;
-    dir = CALL(TrnDataManager_stickDirSprite)(self, mask); /* TrnDataManager_stickDirSprite */
+    dir = CALL(TrnDataManager_stickDirSprite)(self, mask);
     if (dir != 0) self->inputs[n++] = dir - 1;
     if (mask & 0x1000) self->inputs[n++] = 6;
     if (mask & 0x2000) self->inputs[n++] = 2;
@@ -168,21 +168,21 @@ extern "C" void TrnDataManager_update(TrnDataManager *self) {
     if (self->info->player->flags9A8 & 1) {
         self->course = 0;
     }
-    CALL(RaceTracker_passCheckpoints)(self); /* RaceTracker_passCheckpoints */
-    CALL(RaceTracker_update)(self); /* RaceTracker_update */
+    CALL(RaceTracker_passCheckpoints)(self);
+    CALL(RaceTracker_update)(self);
     if (self->info->over != 0) {
-        CALL(TrnRace_forceEnd)(self->race); /* TrnRace_forceEnd */
+        CALL(TrnRace_forceEnd)(self->race);
         return;
     }
     if (self->race->running == 1) {
         if (self->results == 0) {
-            if (self->course >= 0 && CALL(input_checkPressed_00011E00)(&D_00000000, 0x20)) { /* input_checkPressed_00011E00 */
+            if (self->course >= 0 && CALL(input_checkPressed_00011E00)(&D_00000000, 0x20)) {
                 if (self->armed != 0) {
                     self->armed = 0;
-                    CALL(snd_postEvent)(0x802); /* snd_postEvent */
+                    CALL(snd_postEvent)(0x802);
                 } else {
-                    CALL(Process_pause_0000F9E8)(self->race); /* Process_pause_0000F9E8 */
-                    XCALL(gl_func_00000000_void, Process_stop)(self->race->proc48); /* Process_stop */
+                    CALL(Process_pause_0000F9E8)(self->race);
+                    XCALL(gl_func_00000000_void, Process_stop)(self->race->proc48);
                     self->results = 1;
                     self->top = self->lesson;
                     if (self->lesson > self->count - 12) {
@@ -192,10 +192,10 @@ extern "C" void TrnDataManager_update(TrnDataManager *self) {
                 }
             }
         } else {
-            XCALL(gl_func_00000000_void, TrnDataManager_scrollResults)(self); /* TrnDataManager_scrollResults */
+            XCALL(gl_func_00000000_void, TrnDataManager_scrollResults)(self);
             switch (self->results) {
             case 1:
-                if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x100)) { /* input_checkPressed_00011E00 */
+                if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x100)) {
                     self->button = 0x100;
                     self->results = 2;
                 }
@@ -209,19 +209,19 @@ extern "C" void TrnDataManager_update(TrnDataManager *self) {
                 if (CALL(input_checkReleased_00011FA8)(&D_00000000, self->button) && CALL(TrnDataManager_isLessonAvailable)(self, self->cursor)) {
                     self->armed = 1;
                     self->lesson = self->cursor;
-                    CALL(TrnDataManager_buildLessonInputs)(self, self->lesson); /* TrnDataManager_buildLessonInputs */
+                    CALL(TrnDataManager_buildLessonInputs)(self, self->lesson);
                     picked = 1;
                     self->button = 0;
                 }
                 break;
             }
             if (picked || CALL(input_checkPressed_00011E00)(&D_00000000, 0x20)) {
-                CALL(Process_resume_0000FAE8)(self->race); /* Process_resume_0000FAE8 */
+                CALL(Process_resume_0000FAE8)(self->race);
                 self->results = 0;
             }
         }
     }
-    CALL(Node_update)(self); /* Node_update */
+    CALL(Node_update)(self);
 }
 
 /* TrnDataManager_drawLesson: TrnDataManager lesson HUD: the lesson title ("%d: %s" with the
@@ -239,8 +239,8 @@ extern "C" void TrnDataManager_drawLesson(TrnDataManager *self) {
     int nl;
     RaceSprite *spr;
 
-    CALL(gui_setupRenderMode_0000055C)(self->gui); /* gui_setupRenderMode_0000055C */
-    if (CALL(TrnDataManager_isTrickDone)(self, self->lesson)) { /* TrnDataManager_isTrickDone */
+    CALL(gui_setupRenderMode_0000055C)(self->gui);
+    if (CALL(TrnDataManager_isTrickDone)(self, self->lesson)) {
         col[0] = 0.8f;
         col[1] = 0.2f;
         col[2] = 0.2f;
@@ -251,7 +251,7 @@ extern "C" void TrnDataManager_drawLesson(TrnDataManager *self) {
         col[2] = 1.0f;
         col[3] = 1.0f;
     }
-    CALL(gui_setColor_00001A5C)(&trn_gGui, 255, col); /* gui_setColor_00001A5C */
+    CALL(gui_setColor_00001A5C)(&trn_gGui, 255, col);
     /* gl_sprintf "%d: %s" with TrickTable_getEntry_0000C344, then gui_drawString */
     CALL(gl_sprintf)(buf, trn_data + 0x328, self->lesson + 1, CALL(TrickTable_getEntry_0000C344)(trn_gTrickTable, self->lesson));
     CALL(gui_drawString)(self->gui, 32, self->hudY + 8, buf);
@@ -267,9 +267,9 @@ extern "C" void TrnDataManager_drawLesson(TrnDataManager *self) {
             } else {
                 spr = &trn_sprites_F0[self->inputs[i] - 32];
             }
-            XCALL(gl_func_00000000_void, gui_spriteRefresh)(spr); /* gui_spriteRefresh */
-            XCALL(gl_func_00000000_void, gui_setCombine_00001794)(spr); /* gui_setCombine_00001794 */
-            CALL(gui_drawSprite)(spr, x, y, 2); /* gui_drawSprite */
+            XCALL(gl_func_00000000_void, gui_spriteRefresh)(spr);
+            XCALL(gl_func_00000000_void, gui_setCombine_00001794)(spr);
+            CALL(gui_drawSprite)(spr, x, y, 2);
             x += spr->width();
         } else {
             y += 28;
@@ -302,14 +302,14 @@ extern "C" void TrnDataManager_drawResults(TrnDataManager *self) {
     int cy;
 
     self->pulse -= 16;
-    CALL(gui_setColor_00001A5C)(&trn_gGui, 255, &col); /* gui_setColor_00001A5C */
-    CALL(gui_spriteRefresh)(trn_bss + 0x180); /* gui_spriteRefresh */
-    CALL(gui_drawSprite)(trn_bss + 0x180, 160, 30, 3); /* gui_drawSprite */
-    CALL(gui_setupRenderMode_0000055C)(self->gui); /* gui_setupRenderMode_0000055C */
-    CALL(gui_setPrimColorClamped_000008C0)(self->gui); /* gui_setPrimColorClamped_000008C0 */
+    CALL(gui_setColor_00001A5C)(&trn_gGui, 255, &col);
+    CALL(gui_spriteRefresh)(trn_bss + 0x180);
+    CALL(gui_drawSprite)(trn_bss + 0x180, 160, 30, 3);
+    CALL(gui_setupRenderMode_0000055C)(self->gui);
+    CALL(gui_setPrimColorClamped_000008C0)(self->gui);
     for (row = 0, y = 40; row < 12; row++, y += 14) {
         idx = row + self->top;
-        if (CALL(TrnDataManager_isTrickDone)(self, idx)) { /* TrnDataManager_isTrickDone */
+        if (CALL(TrnDataManager_isTrickDone)(self, idx)) {
             col.r = 0.8f;
             col.g = 0.2f;
             col.b = 0.2f;
@@ -336,7 +336,7 @@ extern "C" void TrnDataManager_drawResults(TrnDataManager *self) {
         CALL(gui_drawString)(self->gui, 90, y, buf);
     }
     cy = (self->cursor - self->top) * 14 + 49;
-    CALL(gui_spriteRefresh)(trn_bss + 0x198); /* gui_spriteRefresh */
-    CALL(gui_setColorEnvPrim_000017DC)(trn_bss + 0x198, 255, &hl, 255); /* gui_setColorEnvPrim_000017DC */
-    CALL(gui_drawSprite)(trn_bss + 0x198, 42, cy, 3); /* gui_drawSprite */
+    CALL(gui_spriteRefresh)(trn_bss + 0x198);
+    CALL(gui_setColorEnvPrim_000017DC)(trn_bss + 0x198, 255, &hl, 255);
+    CALL(gui_drawSprite)(trn_bss + 0x198, 42, cy, 3);
 }

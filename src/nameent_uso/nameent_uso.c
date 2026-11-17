@@ -2,6 +2,7 @@
 #include "gdl/node.h"
 #include "game/input.h"
 #include "uso_call.h"
+#include "game/nameent.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -13,7 +14,8 @@ extern void ne_func_00000000_v();
 /* gui.uso Bss (the gui draw state: gui_setColor / gui_setFillColor / gui_fillRect first argument). */
 extern char ne_gGui;
 
-/* nameent_uso_func_00000000: empty function. */
+/* nameent_uso_func_00000000: empty function at Text+0 (unreferenced). */
+/* UNNAMED: sentinel a *_00000000 name: rename-symbol.py refuses it (it doubles as the address-0 placeholder spelling) */
 void nameent_uso_func_00000000(void) {
 }
 
@@ -29,31 +31,31 @@ void ne_nop_00000010(void) {
  * cursor 160 / 85, the entry object (760) at +0x54, pad 0 active, three gui sprites
  * 0x280000..2. */
 void NameEntry_init(char *self, int mode) {
-    *(char **)(self + 0xC) = ne_data + 0x140;
-    *(int *)(self + 0x50) = mode;
-    *(int *)(self + 0x6C) = 0;
-    *(int *)(self + 0x58) = 160;
-    *(int *)(self + 0x5C) = 85;
-    *(int *)(self + 0x70) = 1;
-    *(int *)(self + 0x54) = CALL(NameEnterMessage_ctor)(0, self, mode);
+    NODE(self)->name = ne_data + 0x140; /* "NameEnter Process" */
+    NEPROC(self)->session = (struct BackupSession *)mode;
+    NEPROC(self)->entered = 0;
+    NEPROC(self)->cursorX = 160;
+    NEPROC(self)->cursorY = 85;
+    NEPROC(self)->showBoard = 1;
+    NEPROC(self)->message = (NameEnterMessage *)CALL(NameEnterMessage_ctor)(0, self, mode);
     CALL(input_setActivePad_0001207C)(&D_00000000, 0);
-    CALL(gui_spriteInit)(self + 0x8C, 0x280000);
-    CALL(gui_spriteInit)(self + 0xA4, 0x280001);
-    CALL(gui_spriteInit)(self + 0xBC, 0x280002);
-    *(int *)(self + 0x48) = 0;
-    *(int *)(self + 0x30) = 1;
-    *(int *)(self + 0x2C) = 0;
+    CALL(gui_spriteInit)(NEPROC(self)->frameTop, 0x280000);
+    CALL(gui_spriteInit)(NEPROC(self)->frameLeft, 0x280001);
+    CALL(gui_spriteInit)(NEPROC(self)->frameRight, 0x280002);
+    NEPROC(self)->pauseMenu = 0;
+    NEPROC(self)->paused = 1;
+    NEPROC(self)->fadingOut = 0;
 }
 
 /* NameEntry_startEntry: start: phase 1 (+0x60), bump GameFlow procState, link this under
  * the shared Fader and fade in. */
 void NameEntry_startEntry(char *self) {
     char *head;
-    *(int *)(self + 0x70) = 0;
-    *(int *)(self + 0x60) = 1;
+    NEPROC(self)->showBoard = 0;
+    NEPROC(self)->phase = 1;
     INPUT_MGR(D_00000000).procState++;
     head = INPUT_MGR(D_00000000).fader;
-    CALL(list_append)(self + 0x10, head);
+    CALL(list_append)(&NODE(self)->children, head);
     if (NODE(head)->parent != 0) {
         NODE(head)->unk04 = 1;
     }
@@ -67,8 +69,8 @@ void NameEntry_startEntry(char *self) {
  * target keeps the phase (then the vtable) in v0. */
 void NameEntry_handleInput(char *self) {
     char *pad = (char *)CALL(input_getPad_00011D40)(&D_00000000, 1);
-    XCALL(ne_func_00000000_v, snd_setPlayer3FreqScaleFromStick)(*(signed char *)(pad + 8), *(signed char *)(pad + 9));
-    switch (*(int *)(self + 0x60)) {
+    XCALL(ne_func_00000000_v, snd_setPlayer3FreqScaleFromStick)(((InputPad *)pad)->rawStickX, ((InputPad *)pad)->rawStickY);
+    switch (NEPROC(self)->phase) {
     case 0:
         VT_SLOT(NODE(self)->vptr, 14).fn(VT_SLOT(NODE(self)->vptr, 14).delta + self);
         return;
@@ -84,10 +86,10 @@ void NameEntry_handleInput(char *self) {
 /* NameEntry_drawGui: display by phase (+0x60): phases 0 / 1 draw the sprites (5B4) and
  * the board (2F4) or a cleared screen (458), then the phase's virtual (slots 17 / 18 / 19). */
 void NameEntry_drawGui(char *self) {
-    switch (*(int *)(self + 0x60)) {
+    switch (NEPROC(self)->phase) {
     case 0:
         CALL(NameEntry_drawFrame)(self);
-        if (*(int *)(self + 0x70) != 0) {
+        if (NEPROC(self)->showBoard != 0) {
             CALL(NameEntry_drawBoard)(self);
         } else {
             CALL(NameEntry_clearScreen)(self);
@@ -96,7 +98,7 @@ void NameEntry_drawGui(char *self) {
         break;
     case 1:
         CALL(NameEntry_drawFrame)(self);
-        if (*(int *)(self + 0x70) != 0) {
+        if (NEPROC(self)->showBoard != 0) {
             CALL(NameEntry_drawBoard)(self);
         } else {
             CALL(NameEntry_clearScreen)(self);
@@ -142,23 +144,23 @@ void NameEntry_updateEntry(char *self) {
     char *dst;
     int i;
     char *obj;
-    if (*(int *)(self + 0x6C) != 0) {
-        if (*(int *)(self + 0x50) != 0) {
+    if (NEPROC(self)->entered != 0) {
+        if (NEPROC(self)->session != 0) {
             i = 0;
-            *(int *)((char *)&D_00000000 + 0x15C) = *(int *)(*(char **)(self + 0x54) + 0xB0);
-            dst = (char *)&D_00000000 + 0x158;
+            INPUT_MGR(D_00000000).unk15C = NEPROC(self)->message->len; /* GameFlow name length */
+            dst = INPUT_MGR(D_00000000).initials;
             do {
-                *dst++ = (*(char **)(self + 0x54))[0xB8 + i];
-                name[i] = (*(char **)(self + 0x54))[0xB8 + i];
+                *dst++ = NEPROC(self)->message->letters[i];
+                name[i] = NEPROC(self)->message->letters[i];
                 i++;
             } while (i != 3);
-            CALL(Backup_writeCourseArcadeOptions_0000B3DC)(*(int *)(self + 0x50), name,
-                *((unsigned char *)&D_00000000 + 0x4F), *((unsigned char *)&D_00000000 + 0x57));
-            CALL(Backup_sessionSetNewNames)(*(int *)(self + 0x50));
+            CALL(Backup_writeCourseArcadeOptions_0000B3DC)(NEPROC(self)->session, name,
+                ((u8 *)&INPUT_MGR(D_00000000).playerRider)[3], ((u8 *)&INPUT_MGR(D_00000000).playerBoard)[3]); /* the s32s' low bytes */
+            CALL(Backup_sessionSetNewNames)(NEPROC(self)->session);
         }
         CALL(Process_fadeOut_0000F954)(self, -1, 0);
     } else {
-        obj = *(char **)(self + 0x54);
+        obj = (char *)NEPROC(self)->message;
         VT_SLOT(NODE(obj)->vptr, 3).fn(VT_SLOT(NODE(obj)->vptr, 3).delta + obj);
     }
 }
@@ -176,17 +178,17 @@ void NameEntry_drawFrame(int *self) {
     int i;
 
     CALL(gui_setCombine_00001794)(&ne_gGui);
-    spr = (char *)&self[0xA4 / 4];
+    spr = NEPROC(self)->frameLeft;
     CALL(gui_spriteRefresh)(spr);
     for (i = 8; i < 232; i += 32) {
         CALL(gui_drawSprite)(spr, 0, i, 0);
     }
-    spr = (char *)&self[0xBC / 4];
+    spr = NEPROC(self)->frameRight;
     CALL(gui_spriteRefresh)(spr);
     for (i = 8; i != 232; i += 32) {
         CALL(gui_drawSprite)(spr, 256, i, 0);
     }
-    spr = (char *)&self[0x8C / 4];
+    spr = NEPROC(self)->frameTop;
     CALL(gui_spriteRefresh)(spr);
     for (i = 64; i < 256; i += 64) {
         CALL(gui_drawSprite)(spr, i, 8, 0);
@@ -209,8 +211,8 @@ void NameEntry_drawEntryOverlay(int a0) {
 /* NameEntry_drawExitOverlay: forward to the +0x54 child's virtual slot 2 (as
  * CommonInfo_loadData_00008F98). */
 void NameEntry_drawExitOverlay(char *self) {
-    int *p2 = (int *)NODE(*(char **)(self + 0x54))->vptr;
-    char *p1 = *(char **)(self + 0x54);
+    int *p2 = (int *)NODE(NEPROC(self)->message)->vptr;
+    char *p1 = (char *)NEPROC(self)->message;
     VT_SLOT(p2, 2).fn(VT_SLOT(p2, 2).delta + p1);
 }
 

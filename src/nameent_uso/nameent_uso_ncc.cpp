@@ -72,16 +72,17 @@ extern "C" void NameEntry_drawBoard(NeProc *self) {
     scratch1[0] = 0;
     scratch2[0] = 0;
     col.set(1.0f, 1.0f, 1.0f, 1.0f);
+    /* RAW: data-table the name board's image header, a record in nameent Data (+0x158), copied by value */
     img = *(NeImage *)(ne_data + 0x158);
     img.tex = D_00000000.player->rider->getBoardTexture();
-    CALL(gui_beginFrame_000016A4)(&img); /* gui_beginFrame_000016A4 */
+    CALL(gui_beginFrame_000016A4)(&img);
     x = self->cursorX - img.width / 2;
-    CALL(gui_setColorEnvPrim_00002334)(&img, 128, &col, 255); /* gui_setColorEnvPrim_00002334 */
-    CALL(gui_drawImage_00003B80)(&img, x, 40); /* gui_drawImage_00003B80 */
+    CALL(gui_setColorEnvPrim_00002334)(&img, 128, &col, 255);
+    CALL(gui_drawImage_00003B80)(&img, x, 40);
     black.set(0.0f, 0.0f, 0.0f, 0.0f);
-    CALL(gui_setFillColor_00001CA8)(&ne_gGui, 255, &black); /* gui_setFillColor_00001CA8 */
-    CALL(gui_fillRect)(&ne_gGui, 0, 0, 319, 7, 0x10001); /* gui_fillRect */
-    CALL(gui_fillRect)(&ne_gGui, 0, 232, 319, 239, 0x10001); /* gui_fillRect */
+    CALL(gui_setFillColor_00001CA8)(&ne_gGui, 255, &black);
+    CALL(gui_fillRect)(&ne_gGui, 0, 0, 319, 7, 0x10001);
+    CALL(gui_fillRect)(&ne_gGui, 0, 232, 319, 239, 0x10001);
 }
 
 /* the Node vtable (bootup Data+0xC338), the entry's own vtable (nameent Data+0x18) and the gui
@@ -126,10 +127,11 @@ struct NeEntry {
 extern "C" NeEntry *NameEnterMessage_ctor(NeEntry *self, void *owner, int mode) {
     int i;
     char *o;
-    if (self != 0 || (self = (NeEntry *)CALL(mem_new)(0x11C)) != 0) { /* mem_new */
+    if (self != 0 || (self = (NeEntry *)CALL(mem_new)(0x11C)) != 0) {
         o = (char *)self;
         if (o != 0 || (o = (char *)CALL(mem_new)(0x2C)) != 0) {
-            CALL(Node_ctor)(o, ne_data + 0x170); /* Node_ctor */
+            CALL(Node_ctor)(o, ne_data + 0x170);
+            /* RAW: donor-mirror the inlined Node base ctor stores its vptr through the char * cascade local o (NeEntry.vptr is the derived store below) */
             *(void **)(o + 0x28) = &ne_vt_node;
         }
         self->vptr = &ne_vt_entry;
@@ -137,7 +139,7 @@ extern "C" NeEntry *NameEnterMessage_ctor(NeEntry *self, void *owner, int mode) 
         self->mode = mode;
         self->owner = owner;
         if (mode != 0) {
-            self->newCount = CALL(Backup_sessionCountNew)(self->mode); /* Backup_sessionCountNew */
+            self->newCount = CALL(Backup_sessionCountNew)(self->mode);
         } else {
             self->newCount = 0;
         }
@@ -175,7 +177,7 @@ extern "C" NeEntry *NameEnterMessage_ctor(NeEntry *self, void *owner, int mode) 
         self->c90.clear();
         self->cA0.set255(128, 128, 128, 255);
         self->fD0 = 0.0f;
-        CALL(gui_spriteInit)(self->spr0, (ne_gRowBase + 4) | 0x250000); /* gui_spriteInit */
+        CALL(gui_spriteInit)(self->spr0, (ne_gRowBase + 4) | 0x250000);
         CALL(gui_spriteInit)(self->spr1, 0x250003);
         CALL(gui_spriteInit)(self->spr2, 0x250000);
     }
@@ -251,7 +253,7 @@ extern "C" void NameEnterMessage_display(NeEntry *self) {
     CALL(gui_spriteRefresh)(self->spr2);
     wheel = self->pos;
     x0 = (int)((float)self->w38 - (wheel - (float)(int)wheel) * (float)self->w54);
-    CALL(gui_setScissor)(&ne_gGui, 40, 0, 284, 239); /* gui_setScissor */
+    CALL(gui_setScissor)(&ne_gGui, 40, 0, 284, 239);
     for (j = -self->w50; j <= self->w50; j++) {
         k = (int)self->pos + j;
         if (k < 0) {
@@ -316,12 +318,12 @@ extern "C" void NameEnterMessage_update(NeEntry *self) {
         }
         stick = ne_input_getStickX(&D_00000000);
         if (self->repeat < self->repeatDelay) {
-            if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x10000)) { /* input_checkPressed_00011E00 */
+            if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x10000)) {
                 self->target -= 1.0f;
                 if (self->len == 3 && self->target < 40.0f) {
                     self->target = 40.0f;
                 } else {
-                    XCALL(gl_func_00000000_void, snd_postEvent)(157); /* snd_postEvent */
+                    XCALL(gl_func_00000000_void, snd_postEvent)(157);
                 }
             }
             if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x4000)) {
@@ -401,7 +403,7 @@ extern "C" void NameEnterMessage_update(NeEntry *self) {
     }
     if (self->done == 0 && CALL(input_checkPressed_00011E00)(&D_00000000, 0x40100)) {
         if (sel == 41) {
-            if (CALL(Fader_isDone_00013980)(D_00000000.fader)) { /* Fader_isDone_00013980 */
+            if (CALL(Fader_isDone_00013980)(D_00000000.fader)) {
                 XCALL(gl_func_00000000_void, snd_postEvent)(160);
                 ((NeOwner *)self->owner)->entered = 1;
             }

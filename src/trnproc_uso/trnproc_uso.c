@@ -4,6 +4,9 @@
 #include "gdl/race.h"
 #include "game/input.h"
 #include "game/guimenu.h"
+#include "game/trnproc.h"
+#include "game/snowboarder.h"
+#include "gdl/pad.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -32,7 +35,8 @@ extern RaceSprite trn_sprites[];
 #define TRN_RO(sym, off) (*(float *)((char *)&sym + (off)))
 extern char trn_ro_20, trn_ro_24, trn_ro_28, trn_ro_2C;
 
-/* trnproc_uso_func_00000000 / 00000008: empty functions. */
+/* trnproc_uso_func_00000000 / trn_nop_00000008: empty functions at Text+0 / +8 (unreferenced). */
+/* UNNAMED: sentinel a *_00000000 name: rename-symbol.py refuses it (it doubles as the address-0 placeholder spelling) */
 void trnproc_uso_func_00000000(void) {
 }
 
@@ -40,8 +44,8 @@ void trn_nop_00000008(void) {
 }
 
 /* trn_main: trn_procMain, the mode's process loop (n64_procMain's template):
- * 0 launch the GenProc (next 1, then 4), 1 reset (194, state 2), 2 sound + build the TrnRace
- * (3A8) and run it, 3 resume (state = next), 4 quit. The switch table is RoData+0 (the unit's
+ * 0 launch the GenProc (next 1, then 4), 1 reset (trn_openSession, state 2), 2 sound + build the TrnRace
+ * (TrnRace_ctor) and run it, 3 resume (state = next), 4 quit. The switch table is RoData+0 (the unit's
  * .rodata is pinned NOLOAD at VMA 0 in tenshoe.ld, the arcproc 240 recipe). */
 void trn_openSession(int *out);
 void trn_closeSession(int a0);
@@ -55,44 +59,44 @@ void trn_main(int arg0, int arg1) {
         case 0:
             CALL(app_launchGenProc)(arg0, 1, 3, 1);
             flag = 1;
-            *(int *)((char *)&D_00000000 + 0x44) = 1;
-            *(int *)((char *)&D_00000000 + 0x48) = 4;
+            INPUT_MGR(D_00000000).nextProcState = 1;
+            INPUT_MGR(D_00000000).thenProcState = 4;
             break;
         case 1:
             CALL(trn_openSession)(arg0);
-            *(int *)((char *)&D_00000000 + 0x40) = 2;
+            INPUT_MGR(D_00000000).procState = 2;
             break;
         case 2:
             CALL(snd_playSeq_000120A8)(&D_00000000, 4, 8, 5);
             flag = 1;
-            *(int *)((char *)&D_00000000 + 0x34) = 6;
+            INPUT_MGR(D_00000000).nextFlowMode = 6;
             r = CALL(app_createGame_000092F4)(arg0, 1);
-            *(int *)((char *)&D_00000000 + 0x34) = 7;
+            INPUT_MGR(D_00000000).nextFlowMode = 7;
             r = CALL(TrnRace_ctor)(0, 0x4010000, r);
             CALL(app_runProcess)(arg0, 0, r);
             break;
         case 3:
             CALL(trn_closeSession)(arg0);
-            *(int *)((char *)&D_00000000 + 0x40) = *(int *)((char *)&D_00000000 + 0x44);
+            INPUT_MGR(D_00000000).procState = INPUT_MGR(D_00000000).nextProcState;
             break;
         case 4:
             cur = (int *)CALL(QuitProcess_ctor)(0, 1, 0);
             flag = 1;
-            CALL(list_append)((char *)&D_00000000 + 0x10, cur);
+            CALL(list_append)(&NODE(&D_00000000)->children, cur);
             if ((int)NODE(cur)->parent != 0) {
                 NODE(cur)->unk04 = 1;
             }
             NODE(cur)->parent = (Node *)&D_00000000;
             break;
         }
-        arg1 = *(int *)((char *)&D_00000000 + 0x40);
+        arg1 = INPUT_MGR(D_00000000).procState;
     } while (flag == 0);
 }
 
 /* trn_openSession: clear *out and GameFlow +0x14C. */
 void trn_openSession(int *out) {
     *out = 0;
-    *(int *)((char *)&D_00000000 + 0x14C) = 0;
+    INPUT_MGR(D_00000000).session = 0;
 }
 
 /* trn_closeSession: empty one-argument function (the word after it is .text pad). */
@@ -103,10 +107,10 @@ void trn_closeSession(int a0) {
  * the input_clearActivePad). */
 void TrnRace_pauseContinue(void) {
     CALL(Process_resume_0000FAE8)(gTrnRace);
-    CALL(Node_resumeUpdate_0000E450)(TIMRACE(gTrnRace)->dataManager);
+    CALL(Node_resumeUpdate_0000E450)(TRNRACE(gTrnRace)->dataManager);
 }
 
-/* TrnRace_pauseRestart: pause menu row 1 (restart): resume, then the restart helper 9A0. */
+/* TrnRace_pauseRestart: pause menu row 1 (restart): resume, then the restart helper TrnRace_forceEnd. */
 void TrnRace_pauseRestart(void) {
     CALL(Process_resume_0000FAE8)(gTrnRace);
     CALL(TrnRace_forceEnd)(gTrnRace);
@@ -116,8 +120,8 @@ void TrnRace_pauseRestart(void) {
  * +0x6B0, fade the process out (as TrkRace_pauseQuit_00000818). */
 void TrnRace_pauseQuit(void) {
     INPUT_MGR(D_00000000).procState = 3;
-    *(int *)((char *)&D_00000000 + 0x44) = 4;
-    CALL(settings_set8_00012818)(&D_00000000, gTrnRace + 0x6B0);
+    INPUT_MGR(D_00000000).nextProcState = 4;
+    CALL(settings_set8_00012818)(&D_00000000, TRNRACE(gTrnRace)->trickDone);
     CALL(Process_fadeOut_0000F954)(gTrnRace, -1, 0);
 }
 
@@ -172,7 +176,7 @@ extern void TrnRace_pauseContinue_ref(void), TrnRace_pauseRestart_ref(void), Trn
 /* D_00000000 (bootup Bss+0xF8, the InputMgr) under a second 0-pinned name: the dataMgr store
  * must not share the earlier &D_00000000 lui (as TimRace's D_b1_097C_g). */
 extern char trn_gInputMgr;
-/* void-typed alias of the global A2C call (its dead int return would hold v0; the vtable base
+/* void-typed alias of the global TrnDataManager_init call (its dead int return would hold v0; the vtable base
  * that follows colours v0, as TrkRace_ctor's gl_func_00000000_994v). */
 extern void trn_func_00000A2C_v();
 char *TrnRace_ctor(char *obj, int a1, int a2) {
@@ -197,7 +201,7 @@ char *TrnRace_ctor(char *obj, int a1, int a2) {
     RACEPROC(obj)->spriteSet = 0;
     CALL(RaceProcess_init)(obj, a1, trn_data + 0x300, a2);
     CALL(TrnRace_initLabels)(obj);
-    *(float *)(obj + 0x6AC) = 0.0f;
+    TRNRACE(obj)->unk6AC = 0.0f;
     CALL(memtrack_begin)(trn_data + 0x314, 0);
     CALL(input_setActivePad_0001207C)(&D_00000000, 0);
 
@@ -207,18 +211,18 @@ char *TrnRace_ctor(char *obj, int a1, int a2) {
             CALL(RaceTracker_ctor)(o2);
             NODE(o2)->vptr = (char *)&trn_vt_dm;
         }
-        *(char **)(obj + 0x6A8) = o2;
+        TRNRACE(obj)->dataManager = (TrnDataManager *)o2;
         INPUT_MGR(trn_gInputMgr).dataMgr = (struct RaceTracker *)o2;
-        o1 = *(char **)(obj + 0x6A8);
-        *(int *)(o1 + 0xB4) = 17;
-        XCALL(trn_func_00000A2C_v, TrnDataManager_init)(*(char **)(obj + 0x6A8), obj, RACEPROC(obj)->spriteSet);
+        o1 = (char *)TRNRACE(obj)->dataManager;
+        TRNDM(o1)->base.hudFlags = 17; /* RTF_FLUSH | RTF_LOOKUP */
+        XCALL(trn_func_00000A2C_v, TrnDataManager_init)((char *)TRNRACE(obj)->dataManager, obj, RACEPROC(obj)->spriteSet);
 
-        w = *(char **)(obj + 0x6A8);
+        w = (char *)TRNRACE(obj)->dataManager;
         o1 = (char *)NODE(w)->vptr;
         ((void (*)(int))VT_SLOT(o1, 10).fn)(VT_SLOT(o1, 10).delta + (int)w);
 
-        o1 = *(char **)(obj + 0x6A8);
-        CALL(list_append)(obj + 16, o1);
+        o1 = (char *)TRNRACE(obj)->dataManager;
+        CALL(list_append)(&NODE(obj)->children, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
@@ -235,21 +239,21 @@ char *TrnRace_ctor(char *obj, int a1, int a2) {
             CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&trn_gRowBase + 3) << 16) | 5, -1, TrnRace_pauseQuit_ref);
             CALL(gui_centerRows_0001016C)(RACEPROC(obj)->menu);
             o1 = (char *)RACEPROC(obj)->menu;
-            CALL(list_append)(obj + 16, o1);
+            CALL(list_append)(&NODE(obj)->children, o1);
             if (NODE(o1)->parent != 0) {
                 NODE(o1)->unk04 = 1;
             }
             NODE(o1)->parent = (Node *)obj;
         }
 
-        CALL(settings_get8_000127CC)(&D_00000000, obj + 0x6B0);
-        o1 = *(char **)((char *)&D_00000000 + 0x190);
-        CALL(list_append)(obj + 16, o1);
+        CALL(settings_get8_000127CC)(&D_00000000, TRNRACE(obj)->trickDone);
+        o1 = (char *)INPUT_MGR(D_00000000).fader;
+        CALL(list_append)(&NODE(obj)->children, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
         NODE(o1)->parent = (Node *)obj;
-        CALL(Fader_start)(*(int **)((char *)&D_00000000 + 0x190), 1, 0);
+        CALL(Fader_start)((int *)INPUT_MGR(D_00000000).fader, 1, 0);
         CALL(memtrack_end)();
     }
     }
@@ -287,7 +291,7 @@ void TrnRace_onPauseSelect(int *self) {
     int new_var;
     int v1;
     int stride;
-    if (*(int *)((char *)TIMRACE(self)->dataManager + 0xFC) != 0) {
+    if (TRNRACE(self)->dataManager->results != 0) {
         return;
     }
     if (CALL(Fader_isDone_00013980)(INPUT_MGR(D_00000000).fader, self) == 0) {
@@ -314,16 +318,16 @@ void TrnRace_onPauseSelect(int *self) {
 
 /* TrnRace_onEndTimerDone: clear the exit step (+0x504). */
 void TrnRace_onEndTimerDone(char *self) {
-    *(int *)(self + 0x504) = 0;
+    RACEPROC(self)->unk504 = 0;
 }
 
 /* TrnRace_onRaceOver: TrnRace onTimeout: step 0 fades out (Fader_start(3, 1, self)),
- * step 1 waits for the fader, restarts (9F0) and fades back in. */
+ * step 1 waits for the fader, restarts (TrnRace_restart) and fades back in. */
 void TrnRace_onRaceOver(char *self) {
-    switch (*(int *)(self + 0x504)) {
+    switch (RACEPROC(self)->unk504) {
     case 0:
         CALL(Fader_start)(INPUT_MGR(D_00000000).fader, 3, 1, self);
-        *(int *)(self + 0x504) = 1;
+        RACEPROC(self)->unk504 = 1;
         break;
     case 1:
         if (CALL(Fader_checkDone_00013924)(INPUT_MGR(D_00000000).fader) != 0) {
@@ -338,55 +342,55 @@ void TrnRace_onRaceOver(char *self) {
  * sub-state 3, state flag 1, counter 0. */
 void TrnRace_forceEnd(char *self) {
     CALL(input_setRacePadsActive)(&D_00000000, 0);
-    CALL(Node_pauseUpdate_0000E464)(TIMRACE(self)->dataManager);
-    *(int *)(self + 0x4E0) = 3;
-    *(int *)(self + 0x4DC) = 1;
-    *(int *)(self + 0x4E4) = 0;
+    CALL(Node_pauseUpdate_0000E464)(TRNRACE(self)->dataManager);
+    RACEPROC(self)->phase = RACE_PHASE_END;
+    RACEPROC(self)->raceState = RACE_STATE_RACING;
+    RACEPROC(self)->timer = 0;
 }
 
 /* TrnRace_restart: restart: reset the pad of the GameFlow's current player
  * (+0x134 -> +0xC4 -> +0x800), then the RaceProcess global slot-11 call. */
 void TrnRace_restart(char *self) {
-    char *p = *(char **)(*(char **)((char *)&D_00000000 + 0x134) + 0xC4);
-    char *pad = *(char **)(p + 0x800);
-    CALL(pad_reset_000673FC)(pad, *(int *)(pad + 0x34));
+    char *p = WORLDREG(INPUT_MGR(D_00000000).game)->players[0].rider;
+    char *pad = (char *)SNOWB(p)->input;
+    CALL(pad_reset_000673FC)(pad, PADCTL(pad)->port);
     CALL(RaceProcess_callGlobalSlot11_00008674)(self);
 }
 
 /* TrnDataManager_init: TrnDataManager init (TimDataManager_init's shape): name, owner race
- * (+0xB8), HUD layout words, lesson count (+0x108) from the TrickTable, first lesson (180C from
- * -1) shown through 13C4; with a pause menu, the points-gadget list and white HUD colour; then
+ * (+0xB8), HUD layout words, lesson count (+0x108) from the TrickTable, first lesson (TrnDataManager_nextLesson from
+ * -1) shown through TrnDataManager_buildLessonInputs; with a pause menu, the points-gadget list and white HUD colour; then
  * virtual slot 10. */
 void TrnDataManager_init(char *self, char *race, int spriteSet) {
     int cur;
     NODE(self)->name = (const char *)(trn_data + 0x31C);
-    *(char **)(self + 0xB8) = race;
-    *(int *)(self + 0xAC) = 0;
-    *(int *)(self + 0xD8) = 24;
-    *(int *)(self + 0xDC) = 8;
-    *(int *)(self + 0xE0) = -1;
-    *(int *)(self + 0xE4) = 40;
-    *(int *)(self + 0xE8) = 270;
-    *(int *)(self + 0xEC) = 215;
-    *(int *)(self + 0xD4) = 0;
-    *(int *)(self + 0x108) = CALL(TrickTable_getCount_0000C3E8)(trn_gTrickTable);
-    *(int *)(self + 0x100) = 0;
+    TRNDM(self)->race = (TrnRace *)race;
+    TRNDM(self)->base.blinkTimer = 0;
+    TRNDM(self)->hudX = 24;
+    TRNDM(self)->hudY = 8;
+    TRNDM(self)->hudDX = -1;
+    TRNDM(self)->hudDY = 40;
+    TRNDM(self)->panelX = 270;
+    TRNDM(self)->panelY = 215;
+    TRNDM(self)->frame = 0;
+    TRNDM(self)->count = CALL(TrickTable_getCount_0000C3E8)(trn_gTrickTable);
+    TRNDM(self)->cursor = 0;
     cur = CALL(TrnDataManager_nextLesson)(self, -1);
-    *(int *)(self + 0xF0) = cur;
-    *(int *)(self + 0xF4) = 0;
-    *(int *)(self + 0xFC) = 0;
-    *(int *)(self + 0x10C) = 0;
-    *(int *)(self + 0x110) = 1;
-    *(int *)(self + 0x198) = 0;
+    TRNDM(self)->lesson = cur;
+    TRNDM(self)->armed = 0;
+    TRNDM(self)->results = 0;
+    TRNDM(self)->repeatTimer = 0;
+    TRNDM(self)->firstPress = 1;
+    TRNDM(self)->button = 0;
     CALL(TrnDataManager_buildLessonInputs)(self, cur);
-    if ((RACEPROC(*(char **)(self + 0xB8))->flags << 15) < 0) {
-        *(int *)(self + 0x54) = spriteSet;
-        *(int *)(self + 0xCC) = 0xFF;
-        *(int *)(self + 0xD0) = 0;
-        *(float *)(self + 0xC8) = 1.0f;
-        *(float *)(self + 0xC4) = 1.0f;
-        *(float *)(self + 0xC0) = 1.0f;
-        *(float *)(self + 0xBC) = 1.0f;
+    if ((TRNDM(self)->race->race.flags << 15) < 0) {
+        TRNDM(self)->base.pointsListArg = spriteSet;
+        TRNDM(self)->alpha = 0xFF;
+        TRNDM(self)->pulse = 0;
+        TRNDM(self)->colour[3] = 1.0f;
+        TRNDM(self)->colour[2] = 1.0f;
+        TRNDM(self)->colour[1] = 1.0f;
+        TRNDM(self)->colour[0] = 1.0f;
         CALL(hud_addPointsGadgetList)(self);
     }
     {
@@ -397,11 +401,11 @@ void TrnDataManager_init(char *self, char *race, int spriteSet) {
 
 /* TrnDataManager_reset: TrnDataManager reset: clear the trick state, then RaceTracker_reset. */
 void TrnDataManager_reset(char *self) {
-    *(int *)(self + 0x114) = 0;
-    *(int *)(self + 0xF8) = -1;
-    *(int *)(self + 0xFC) = 0;
-    *(int *)(self + 0xF4) = 0;
-    *(int *)(self + 0x198) = 0;
+    TRNDM(self)->trickDone = 0;
+    TRNDM(self)->course = -1;
+    TRNDM(self)->results = 0;
+    TRNDM(self)->armed = 0;
+    TRNDM(self)->button = 0;
     CALL(RaceTracker_reset)(self);
 }
 
@@ -428,79 +432,80 @@ void TrnDataManager_scrollResults(char *self) {
     int held;
     int old;
 
-    old = *(int *)(self + 0x100);
+    old = TRNDM(self)->cursor;
     held = 0;
     if (CALL(input_checkHeld_00011ED4)(&D_00000000, 0x8008) != 0) {
         held = 1;
-        if (*(int *)(self + 0x10C) == 0 && *(int *)(self + 0x100) < *(int *)(self + 0x108) - 1) {
-            (*(int *)(self + 0x100))++;
-            if (*(int *)(self + 0x100) - *(int *)(self + 0x104) >= 12
-                && *(int *)(self + 0x104) < *(int *)(self + 0x108) - 12) {
-                (*(int *)(self + 0x104))++;
+        if (TRNDM(self)->repeatTimer == 0 && TRNDM(self)->cursor < TRNDM(self)->count - 1) {
+            (TRNDM(self)->cursor)++;
+            if (TRNDM(self)->cursor - TRNDM(self)->top >= 12
+                && TRNDM(self)->top < TRNDM(self)->count - 12) {
+                (TRNDM(self)->top)++;
             }
         }
     }
     if (CALL(input_checkHeld_00011ED4)(&D_00000000, 0x2004) != 0) {
         held = 1;
-        if (*(int *)(self + 0x10C) == 0 && *(int *)(self + 0x100) > 0) {
-            (*(int *)(self + 0x100))--;
-            if (*(int *)(self + 0x100) - *(int *)(self + 0x104) < 0 && *(int *)(self + 0x104) > 0) {
-                (*(int *)(self + 0x104))--;
+        if (TRNDM(self)->repeatTimer == 0 && TRNDM(self)->cursor > 0) {
+            (TRNDM(self)->cursor)--;
+            if (TRNDM(self)->cursor - TRNDM(self)->top < 0 && TRNDM(self)->top > 0) {
+                (TRNDM(self)->top)--;
             }
         }
     }
-    if (old != *(int *)(self + 0x100)) {
+    if (old != TRNDM(self)->cursor) {
         CALL(snd_postEvent)(1);
     }
-    if (*(int *)(self + 0x10C) == 0 && held != 0) {
-        if (*(int *)(self + 0x110) != 0) {
-            *(int *)(self + 0x10C) = 8;
+    if (TRNDM(self)->repeatTimer == 0 && held != 0) {
+        if (TRNDM(self)->firstPress != 0) {
+            TRNDM(self)->repeatTimer = 8;
         } else {
-            *(int *)(self + 0x10C) = 2;
+            TRNDM(self)->repeatTimer = 2;
         }
-        *(int *)(self + 0x110) = 0;
+        TRNDM(self)->firstPress = 0;
     }
     if (held == 0) {
-        *(int *)(self + 0x10C) = 0;
-        *(int *)(self + 0x110) = 1;
+        TRNDM(self)->repeatTimer = 0;
+        TRNDM(self)->firstPress = 1;
     }
-    if (*(int *)(self + 0x10C) != 0) {
-        (*(int *)(self + 0x10C))--;
+    if (TRNDM(self)->repeatTimer != 0) {
+        (TRNDM(self)->repeatTimer)--;
     }
 }
 
 /* TrnDataManager_onCheckpoint: TrnDataManager onCheckpoint: +0xF8 = (gate +0x88 < 21), arm the
- * trick lesson (+0xF4), show lesson +0xF0 (13C4), then RaceTracker_onCheckpoint. */
+ * trick lesson (+0xF4), show lesson +0xF0 (TrnDataManager_buildLessonInputs), then RaceTracker_onCheckpoint. */
 void TrnDataManager_onCheckpoint(char *self, char *gate) {
+    /* RAW: unknown-object gate is RaceTracker_onCheckpoint's checkpoint argument; its +0x88 word (>= 21 = an unrestricted course section) has no named field yet */
     if (*(int *)(gate + 0x88) >= 21) {
-        *(int *)(self + 0xF8) = 0;
+        TRNDM(self)->course = 0;
     } else {
-        *(int *)(self + 0xF8) = 1;
+        TRNDM(self)->course = 1;
     }
-    *(int *)(self + 0xF4) = 1;
-    CALL(TrnDataManager_buildLessonInputs)(self, *(int *)(self + 0xF0));
+    TRNDM(self)->armed = 1;
+    CALL(TrnDataManager_buildLessonInputs)(self, TRNDM(self)->lesson);
     CALL(RaceTracker_onCheckpoint)(self, gate);
 }
 
 /* TrnDataManager_onTrickStart: mark the current lesson's trick done (+0x114) when it is index a1. */
 void TrnDataManager_onTrickStart(char *self, int idx) {
-    if (*(int *)(self + 0xF4) != 0 && idx == *(int *)(self + 0xF0)) {
-        *(int *)(self + 0x114) = 1;
+    if (TRNDM(self)->armed != 0 && idx == TRNDM(self)->lesson) {
+        TRNDM(self)->trickDone = 1;
     }
 }
 
-/* TrnDataManager_onTrickEnd: lesson passed: sound 39, set the trick's done bit (1324), advance
- * to the next lesson (180C) and show it (13C4). */
+/* TrnDataManager_onTrickEnd: lesson passed: sound 39, set the trick's done bit (TrnDataManager_setTrickDone), advance
+ * to the next lesson (TrnDataManager_nextLesson) and show it (TrnDataManager_buildLessonInputs). */
 void TrnDataManager_onTrickEnd(char *self, int ok) {
     int next;
-    if (*(int *)(self + 0xF4) != 0 && *(int *)(self + 0x114) != 0 && ok != 0) {
+    if (TRNDM(self)->armed != 0 && TRNDM(self)->trickDone != 0 && ok != 0) {
         CALL(snd_sendEvent)(39, 0);
-        CALL(TrnDataManager_setTrickDone)(self, *(int *)(self + 0xF0));
-        next = CALL(TrnDataManager_nextLesson)(self, *(int *)(self + 0xF0));
-        *(int *)(self + 0xF0) = next;
+        CALL(TrnDataManager_setTrickDone)(self, TRNDM(self)->lesson);
+        next = CALL(TrnDataManager_nextLesson)(self, TRNDM(self)->lesson);
+        TRNDM(self)->lesson = next;
         CALL(TrnDataManager_buildLessonInputs)(self, next);
     }
-    *(int *)(self + 0x114) = 0;
+    TRNDM(self)->trickDone = 0;
 }
 
 /* TrnDataManager_setTrickDone: set trick idx's done bit in the race's bitset (+0xB8 -> +0x6B0);
@@ -510,14 +515,14 @@ void TrnDataManager_setTrickDone(char *self, int idx) {
         CALL(sys_fatal)(trn_data + 0x338);
     }
     {
-        char *bits = *(char **)(self + 0xB8) + (idx >> 3) + 0x6B0;
+        char *bits = (char *)&TRNDM(self)->race->trickDone[idx >> 3];
         *bits = *bits | (1 << (idx & 7));
     }
 }
 
 /* TrnDataManager_isTrickDone: trick idx's done bit. */
 int TrnDataManager_isTrickDone(char *self, int idx) {
-    return (*(unsigned char **)(self + 0xB8) + 0x6B0)[idx >> 3] & (1 << (idx & 7));
+    return TRNDM(self)->race->trickDone[idx >> 3] & (1 << (idx & 7));
 }
 
 /* TrnDataManager_buildLessonInputs: build lesson idx's input list at +0x118. EXACT via the NCC (C++)
@@ -562,13 +567,13 @@ int TrnDataManager_stickDirSprite(char *self, int input) {
 int TrnDataManager_isLessonAvailable(char *self, int idx) {
 }
 
-/* TrnDataManager_nextLesson: next lesson after cur (wrapping at the count +0x108) that 1778
+/* TrnDataManager_nextLesson: next lesson after cur (wrapping at the count +0x108) that TrnDataManager_isLessonAvailable
  * accepts; cur itself if none. */
 int TrnDataManager_nextLesson(char *self, int cur) {
     int i;
-    for (i = 0; i < *(int *)(self + 0x108); i++) {
+    for (i = 0; i < TRNDM(self)->count; i++) {
         cur++;
-        if (cur == *(int *)(self + 0x108)) {
+        if (cur == TRNDM(self)->count) {
             cur = 0;
         }
         if (CALL(TrnDataManager_isLessonAvailable)(self, cur) != 0) {
@@ -584,21 +589,21 @@ int TrnDataManager_nextLesson(char *self, int cur) {
 void TrnDataManager_update(char *self) {
 }
 
-/* TrnDataManager_display: TrnDataManager display: the results screen (DD4) once the course
+/* TrnDataManager_display: TrnDataManager display: the results screen (TrnDataManager_drawResults) once the course
  * is over (+0xFC); else while the race is not paused (+0x30) and a lesson is set (+0xF8 >= 0),
- * the lesson panel (+0x150) and its header (+0x180) at (+0xE8, +0xEC), and the lesson HUD (B78)
+ * the lesson panel (+0x150) and its header (+0x180) at (+0xE8, +0xEC), and the lesson HUD (TrnDataManager_drawLesson)
  * while armed; then RaceTracker_display. */
 void TrnDataManager_display(char *self) {
-    if (*(int *)(self + 0xFC) != 0) {
+    if (TRNDM(self)->results != 0) {
         CALL(TrnDataManager_drawResults)(self);
-    } else if (*(int *)(*(char **)(self + 0xB8) + 0x30) == 0 && *(int *)(self + 0xF8) >= 0) {
+    } else if (TRNDM(self)->race->race.unk030 == 0 && TRNDM(self)->course >= 0) {
         CALL(gui_spriteRefresh)(trn_bss + 0x150);
         CALL(gui_setCombine_00001794)(trn_bss + 0x150);
-        CALL(gui_drawSprite)(trn_bss + 0x150, *(int *)(self + 0xE8), *(int *)(self + 0xEC), 2);
+        CALL(gui_drawSprite)(trn_bss + 0x150, TRNDM(self)->panelX, TRNDM(self)->panelY, 2);
         CALL(gui_spriteRefresh)(trn_bss + 0x180);
         CALL(gui_setCombine_00001794)(trn_bss + 0x180);
-        CALL(gui_drawSprite)(trn_bss + 0x180, *(int *)(self + 0xE8) - 4, *(int *)(self + 0xEC), 6);
-        if (*(int *)(*(char **)(self + 0xB8) + 0x30) == 0 && *(int *)(self + 0xF4) != 0) {
+        CALL(gui_drawSprite)(trn_bss + 0x180, TRNDM(self)->panelX - 4, TRNDM(self)->panelY, 6);
+        if (TRNDM(self)->race->race.unk030 == 0 && TRNDM(self)->armed != 0) {
             CALL(TrnDataManager_drawLesson)(self);
         }
     }
