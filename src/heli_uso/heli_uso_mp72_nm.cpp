@@ -336,6 +336,9 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         HF(0xF8) = 0.0f;
         HF(0xFC) = 0.0f;
         HF(0x100) = 1.0f;
+        /* code-free use of f: its live range reaches the zero stores' block start, so the zero piece takes
+         * f0 and the angle f2, as in the target (run 755) */
+        dumf(f);
         f = HF(0x144); axZ.y = 0.0f; axZ.x = 0.0f; axZ.z = 1.0f;
         gl_func_00000000_heli_ppf(self + 0xF4, &axZ, f);
         f = HF(0x148); axX.x = 1.0f; axX.y = 0.0f; axX.z = 0.0f;
