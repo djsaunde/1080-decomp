@@ -712,7 +712,14 @@ void SnowRing_setSlotState_00004714(SnowRing *r, int on, int prev, int a3) {
     }
 }
 
+#ifdef NON_MATCHING
+/* trail emitter update: NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp (agent-h run 694),
+ * REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
+void snoweffects_uso_func_000047D4(void) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000047D4);
+#endif
 
 void snoweffects_uso_func_00004E4C(char *a0) {
     *(float *)(a0 + 0x50) = 1.0f;

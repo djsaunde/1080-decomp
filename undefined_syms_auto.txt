@@ -5923,6 +5923,8 @@ snowb_gfxY_559C = 0x00000000;  /* snoweffects 0x559C NM donor: gGfxLib alias for
 snowb_gfxZ_559C = 0x00000000;  /* snoweffects 0x559C NM donor: gGfxLib alias for the world-scale z load */
 snowb_texTbl_588 = 0x00000000;  /* snoweffects Data+0x588 texture table (0x559C; reloc on the object, lo16 0) */
 gl_func_00000000_snowb_lights = 0x00000000;  /* gfx_emitLights_000454C4 typed (float k in a3), snoweffects 0x559C */
+gl_func_00000000_snow_46bc = 0x00000000;  /* snoweffects 0x46BC as an int-returning blank jal (0x47D4 NM donor, agent-h run 694) */
+gl_func_00000000_snow_4714 = 0x00000000;  /* snoweffects 0x4714 typed blank jal, float arg in a3 (0x47D4 NM donor, agent-h run 694) */
 snowe9_SNode_ctor = 0x00000000;  /* SNode_ctor (snoweffects 0x9328 NM donor, blank jal) */
 snowe9_Parms_addParm = 0x00000000;  /* GdlParmBase ctor = Parms_addParm (snoweffects 0x9328 NM donor, blank jal) */
 snowe9_new = 0x00000000;  /* operator new (snoweffects 0x9328 NM donor, blank jal) */

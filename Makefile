@@ -6225,3 +6225,11 @@ build/non_matching/src/viewrec_uso/viewrec_uso.c.o: $(VIEWREC_NM_B_DONOR)
 # (559C went EXACT in run 686 and moved to SNOW_B_FUNCS.)
 SNOW_NM_B_FUNCS := snoweffects_uso_func_00001E60
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_B_FUNCS),$(f)=$(SNOW_B_DONOR))
+# agent-h run 694: NON_MATCHING-only NCC donor for snoweffects 0x47D4 (trail emitter update; FP colouring left).
+SNOW_NM_H_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp.o
+$(SNOW_NM_H_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+SNOW_NM_H_FUNCS := snoweffects_uso_func_000047D4
+build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_H_FUNCS),$(f)=$(SNOW_NM_H_DONOR))
+build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_H_DONOR)
