@@ -41,6 +41,7 @@ typedef struct PortAudioStats {
     unsigned int unknownOps;
     unsigned int unk19;
     unsigned int droppedSpTasks;
+    unsigned int rawPointers; /* command addresses that were host pointers, not K0 - 0x80000000 */
 } PortAudioStats;
 extern PortAudioStats port_audio_stats;
 

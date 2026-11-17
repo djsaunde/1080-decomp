@@ -192,6 +192,18 @@ if(PORT_LINK)
     target_link_options(tenshoe PRIVATE -Wl,--export-dynamic)
   endif()
 
+  # port/audio/tools/seqrender (plan 15.7): the audio driver + CPU mixer without the boot:
+  # renders a sequence to a WAV.  The host sources minus main.c (it has its own main).
+  set(PORT_SEQRENDER_HOST ${PORT_HOST_SOURCES})
+  list(REMOVE_ITEM PORT_SEQRENDER_HOST main.c)
+  add_executable(seqrender audio/tools/seqrender.c ${PORT_SEQRENDER_HOST})
+  target_compile_definitions(seqrender PRIVATE ${PORT_HOST_DEFS})
+  target_include_directories(seqrender PRIVATE ${GAME_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
+  target_compile_options(seqrender PRIVATE ${PORT_HOST_FLAGS})
+  target_link_options(seqrender PRIVATE -m32 -no-pie -Wl,--gc-sections)
+  target_link_libraries(seqrender PRIVATE -Wl,--whole-archive game uso ultra audio -Wl,--no-whole-archive
+                        ${PORT_GEN}/aliases.ld m)
+
   # the shim's self-test (plan 17.6): no game code, no ROM
   add_executable(test_ultra ultra/test_ultra.c host_headless.c)
   target_compile_definitions(test_ultra PRIVATE PORT)

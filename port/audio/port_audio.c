@@ -12,7 +12,8 @@
  * is only read by the next list.
  *
  * Addresses: the builders store OS_K0_TO_PHYSICAL(p) = p - 0x80000000 (u32).
- * On the 32-bit port the host pointer is that + 0x80000000 (mod 2^32).
+ * On the 32-bit port the host pointer is that + 0x80000000 (mod 2^32). A few
+ * builders pass a pointer as it is (translate_k0).
  */
 #include <stdint.h>
 #include "../port_libc.h" /* memcpy */
@@ -31,12 +32,35 @@ extern void *AudioThread_UpdateImpl(void);
 /* bootup.uso Data, writable copy (port/gen/uso_modules.c). */
 extern uint8_t port_bootup_data[];
 
+/* The port binary's image (non-PIE, i386: .text / .data / .bss, where bootup.uso's blobs, the
+ * audio heap and every buffer the driver hands the RSP live) up to the current break (anything
+ * malloc'd). */
+extern char __executable_start[];
+extern void *sbrk(intptr_t increment);
+
+static int host_mapped(uint32_t p) {
+    return p >= (uint32_t)(uintptr_t)__executable_start && p < (uint32_t)(uintptr_t)sbrk(0);
+}
+
+/* Most builders store OS_K0_TO_PHYSICAL(p) = p - 0x80000000, but some pass the pointer as it is
+ * (the FILTER words of AudioSynth_ProcessNote / AudioSynth_FilterReverb, as OoT's aFilter does):
+ * the RSP's DMA keeps only the low 24 bits, so on the N64 both spellings reach the same RDRAM.
+ * Here: a value that is already a host address is used as it is, else + 0x80000000. */
 static void *translate_k0(uint32_t addr, void *user) {
+    uint32_t k0;
     (void)user;
     if (addr == 0) {
         return NULL;
     }
-    return (void *)(uintptr_t)(uint32_t)(addr + 0x80000000u);
+    if (host_mapped(addr)) {
+        port_audio_stats.rawPointers++;
+        return (void *)(uintptr_t)addr;
+    }
+    k0 = addr + 0x80000000u;
+    if (host_mapped(k0)) {
+        return (void *)(uintptr_t)k0;
+    }
+    return NULL; /* counted as badAddr by the mixer */
 }
 
 static void mixer_ready(void) {

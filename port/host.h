@@ -78,5 +78,12 @@ void host_fatal(const char *fmt, ...) __attribute__((format(printf, 1, 2), noret
 /* headless-only: set the pads host_read_pads() returns (tests, scripted input) */
 void host_headless_set_pads(const HostPad pads[HOST_MAX_PADS]);
 host_u32 host_headless_frames_ready(void); /* osViSwapBuffer count */
+/* headless-only: receive every AI buffer (osAiSetNextBuffer: host-order s16, L R interleaved);
+ * NULL = drop them (the default).  port/audio/tools/seqrender writes them to a WAV. */
+void host_headless_set_audio_sink(void (*sink)(const void *samples, host_u32 bytes));
+/* headless-only: what host_audio_buffered_bytes (osAiGetLength) reports; NULL = 0, i.e. every
+ * buffer played at once, so the driver always picks its longest buffer (560 frames, plan 10.2).
+ * seqrender models a DAC draining 32006 / 60 frames per retrace instead. */
+void host_headless_set_audio_clock(host_u32 (*buffered)(void));
 
 #endif /* PORT_HOST_H */

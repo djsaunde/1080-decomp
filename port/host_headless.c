@@ -65,13 +65,26 @@ host_u32 host_audio_set_frequency(host_u32 hz) {
     return hz;
 }
 
+static void (*sAudioSink)(const void *samples, host_u32 bytes);
+
+void host_headless_set_audio_sink(void (*sink)(const void *samples, host_u32 bytes)) {
+    sAudioSink = sink;
+}
+
 void host_audio_queue(const void *samples, host_u32 bytes) {
-    (void)samples;
-    (void)bytes;
+    if (sAudioSink != NULL) {
+        sAudioSink(samples, bytes);
+    }
+}
+
+static host_u32 (*sAudioBuffered)(void);
+
+void host_headless_set_audio_clock(host_u32 (*buffered)(void)) {
+    sAudioBuffered = buffered;
 }
 
 host_u32 host_audio_buffered_bytes(void) {
-    return 0;
+    return sAudioBuffered != NULL ? sAudioBuffered() : 0;
 }
 
 double host_time_seconds(void) {
