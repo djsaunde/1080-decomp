@@ -22,6 +22,9 @@
 #              speed; the camera's NaN / Inf count is printed, not gated: camTarget goes NaN at
 #              frame 1619 on main, run 839).
 #              2000: main crashed at ~2625 at the time of writing (agent-g run 835 is on it).
+#              With >= 2000 frames the attract demo's CPU rider (SnowAI) must reach 60 % of the course
+#              (trace e0 pct; ~75 % at 2000 when it steers, ~35 % against the rock wall when it cannot
+#              find its course markers: plan 18.24, run 854).
 #   race       port/tools/race-check.py (~10 s): port/host/race_crystal_lake.input from a fresh dir
 #              reaches "Goal!" at its `# GOAL` step; View Replay and the saved ghost (reloaded in a
 #              new process) give the race's rider positions bit for bit.  The script is tied to the
@@ -227,20 +230,31 @@ start; if have tenshoe; then
   # NaN / Inf: an f32 bit pattern with an all-ones exponent; r<N>= (pos, quat, speed) gated, cam= counted
   nan=$(python3 - "$S/state.log" <<'PY'
 import re, sys
+import struct
 bad = {'r': [0, ''], 'cam': [0, '']}
+pct = 0.0  # attract demo 1's CPU rider: max e0 pct (DataManager entries[0], course progress)
 for ln in open(sys.argv[1], errors='replace'):
+    m = re.search(r' e0=([0-9a-f]{8}),', ln)
+    if m:
+        v = struct.unpack('>f', bytes.fromhex(m.group(1)))[0]
+        if v == v and v <= 100.0: pct = max(pct, v)
     for m in re.finditer(r' (cam|r\d+)=([0-9a-f,]+)', ln):
         k = 'cam' if m.group(1) == 'cam' else 'r'
         for w in m.group(2).split(','):
             if len(w) == 8 and (int(w, 16) >> 23) & 0xFF == 0xFF:
                 bad[k][0] += 1; bad[k][1] = bad[k][1] or 'from frame ' + ln.split()[1]
-print(bad['r'][0], 'NaN/Inf rider fields %d%s, camera fields %d%s' % (bad['r'][0], bad['r'][1] and ' ' + bad['r'][1],
-      bad['cam'][0], bad['cam'][1] and ' ' + bad['cam'][1]))
+print(bad['r'][0], int(pct), 'NaN/Inf rider fields %d%s, camera fields %d%s, CPU rider course %d%%' % (bad['r'][0],
+      bad['r'][1] and ' ' + bad['r'][1], bad['cam'][0], bad['cam'][1] and ' ' + bad['cam'][1], pct))
 PY
 )
   why=$(grep -m1 -E 'sys_fatal|SIG|DEADLOCK|PORT TRAP' "$S/out.log" | cut -c1-100)
-  txt="$FRAMES frames: rc $rc, state.log $nf frames, ${nan#* }"
-  if [ $rc = 0 ] && [ "$nf" -ge "$FRAMES" ] && [ "${nan%% *}" = 0 ]; then line smoke PASS "$txt"
+  read -r nanr pct rest <<<"$nan"
+  txt="$FRAMES frames: rc $rc, state.log $nf frames, $rest"
+  # The attract demo's rider is CPU-driven (SnowAI): at step 2000 it is ~75 % down Crystal Lake. Without
+  # steering (no course marker found: run 854, the marker-type tags) it rams the rock wall at ~1400 and
+  # stays near 35 %.  Gated only when the run reaches step 2000.
+  pctok=1; if [ "$FRAMES" -ge 2000 ] && [ "${pct:-0}" -lt 60 ]; then pctok=0; fi
+  if [ $rc = 0 ] && [ "$nf" -ge "$FRAMES" ] && [ "${nanr:-1}" = 0 ] && [ $pctok = 1 ]; then line smoke PASS "$txt"
   else line smoke FAIL "$txt${why:+; $why}"; fi
 fi
 
