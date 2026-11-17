@@ -176,6 +176,20 @@ extern void gSkinMgrs_41700_90cc_fz();  /* 0x814/818/81C source base: target lui
 typedef struct { s32 rider; s32 slot; char ddm[0x10]; } RiderDdmRow_90cc;
 extern void bu_90cc_fz2();  /* sp174 list-walk head (same blank address), fn-typed for the same reason */
 
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define gGfxLib_90cc_d148_01 (*(__typeof__(gGfxLib_90cc_d148_01) *)(port_bootup_bss + 0x3C2B0))
+#define gGfxLib_90cc_d148_18 (*(__typeof__(gGfxLib_90cc_d148_18) *)(port_bootup_bss + 0x3C2C8))
+#define gNodeGlobals_90cc_d80_01 (*(__typeof__(gNodeGlobals_90cc_d80_01) *)(port_bootup_bss + 0x3C0D8))
+#define gNodeGlobals_90cc_gtbl (*(__typeof__(gNodeGlobals_90cc_gtbl) *)(port_bootup_bss + 0x3C058))
+#define gPolyFlags_3EEC4_90cc_g8_ld (*(__typeof__(gPolyFlags_3EEC4_90cc_g8_ld) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_90cc_g8_st (*(__typeof__(gPolyFlags_3EEC4_90cc_g8_st) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyGeomMode_3EEC8_90cc_gcfg_b_ld (*(__typeof__(gPolyGeomMode_3EEC8_90cc_gcfg_b_ld) *)(port_bootup_bss + 0x3EEC8))
+#define gPolyGeomMode_3EEC8_90cc_gcfg_b_st (*(__typeof__(gPolyGeomMode_3EEC8_90cc_gcfg_b_st) *)(port_bootup_bss + 0x3EEC8))
+#define gPolyGeomMode_3EEC8_90cc_gcfg_ld (*(__typeof__(gPolyGeomMode_3EEC8_90cc_gcfg_ld) *)(port_bootup_bss + 0x3EEC8))
+#define gPolyGeomMode_3EEC8_90cc_gcfg_st (*(__typeof__(gPolyGeomMode_3EEC8_90cc_gcfg_st) *)(port_bootup_bss + 0x3EEC8))
+#define gPolyGeomMode_3EEC8_90cc_gpair (*(__typeof__(gPolyGeomMode_3EEC8_90cc_gpair) *)(port_bootup_bss + 0x3EEC8))
+#endif
 /* PC port (plan 18.8): the XDATA sites are hand-bound from the ROM TextRelocs (the verify compile
  * of this donor-recipe body differs): Bss+0xF8 (gInputMgr; the addiu bases at +0x12CC / +0x12EC
  * that the +0x34 / +0x4C / +0x58 / +0x17D field reads share), then the three word loads
@@ -1055,3 +1069,16 @@ sw_end:
     }
     return arg0;
 }
+#ifdef PORT
+#undef gGfxLib_90cc_d148_01
+#undef gGfxLib_90cc_d148_18
+#undef gNodeGlobals_90cc_d80_01
+#undef gNodeGlobals_90cc_gtbl
+#undef gPolyFlags_3EEC4_90cc_g8_ld
+#undef gPolyFlags_3EEC4_90cc_g8_st
+#undef gPolyGeomMode_3EEC8_90cc_gcfg_b_ld
+#undef gPolyGeomMode_3EEC8_90cc_gcfg_b_st
+#undef gPolyGeomMode_3EEC8_90cc_gcfg_ld
+#undef gPolyGeomMode_3EEC8_90cc_gcfg_st
+#undef gPolyGeomMode_3EEC8_90cc_gpair
+#endif
