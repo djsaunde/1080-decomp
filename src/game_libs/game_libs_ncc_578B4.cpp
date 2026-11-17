@@ -908,7 +908,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
             temp_v0_4 = (char *)( ctx->gfx.cur->base + (temp_a1 * 8));
             GFXW(temp_v0_4)->w0 = 0xF2000000; GFXW(temp_v0_4)->w1 = (s32) (((mat->tile & 7) << 0x18) | ((((TEXIMG(sp1DC)->width - 1) << 2) & 0xFFF) << 0xC) | (((TEXIMG(sp1DC)->height - 1) << 2) & 0xFFF));
-            if (0) { gl_578b4_c34458((s32 *)&sp34); }
+            if (0) { gl_578b4_c34458((s32 *)&sp34); } /* UNNAMED: no-reloc dead if (0) arm kept for the sp34 home, folded away, no jal */
             temp_a1 = sp34 = mat->format;
         s2_def:                                    /* switch 2 */
             XCALL(gl_578b4_c34458, sys_fatal)((int *)(sFmt_bad_texfmt_num_219C4 + 0x219C4), temp_a1);

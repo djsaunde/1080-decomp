@@ -48,10 +48,10 @@ struct Ctx {
     char pad10[0x3C - 0x10];
     MtxHead *mh;
     Gfx *next() { int n = dl->count++; return &dl->buf[n]; } /* run 173: n-only post-increment (kit CXVII) */
-    void load(Mtx *m) { Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
+    void load(Mtx *m) { Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); } /* UNNAMED: no-reloc uninstantiated inline member (no npc_uc reloc in the verify object, no jal in the build); the G_MTX word pair would take gl_osVirtualToPhysical, as in fG */
     void prim(u32 hi, u32 lo) { Gfx *g = nextQ(); g->w0 = hi; g->w1 = lo; } /* agent-g run 245: w1 first (member permutation sweep, 97.235 -> 97.260); agent-g run 294: slot through next() */
     void setup(Gfx *g, int z) { FCALL(gfx_emitStateAndPrimColour_00042684)(this, g, z); }
-    void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); } void push2(void *src, Mtx *c) { func_00000000(src, c); load(c); } void push5(void *src, Mtx *&c) { func_00000000(src, c); load(c); }
+    void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); } void push2(void *src, Mtx *c) { func_00000000(src, c); load(c); } void push5(void *src, Mtx *&c) { func_00000000(src, c); load(c); } /* UNNAMED: no-reloc uninstantiated inline members push / push2 / push5 (no jal in the build); the (src, mtx) copy would be guMtxF2L, as in cS */
     Mtx *mtx() { return &mh->buf[mh->count++]; } /* agent-g run 424: plain (the run-407 code-free count test dropped) with the arm-1 receiver at depth 4 / else depth 3: arm-1 count on pool slot 5 (v0, with it.a) and mh on slot 6 (v1), B v1; 99.684 -> 99.713 */ /* agent-g run 266: named post-increment count (kit CXVII form): gctx a3 / mh v1 like the target in both arms, 97.29 -> 97.45 (frame 0x160 -> 0x168: n's edg home per expansion) */
     /* agent-g run 293: code-free dead loads of the head pointer first (kit CCCLXIII lever) in the push() matrix
      * allocation and the first loop's dlcall() packet, push() through a depth-2 accessor: 97.532 -> 97.669 */
@@ -72,8 +72,8 @@ struct Ctx {
      * word, so the frame stays 0x160 with the new t word; slot back through nextQ() and `[n]` without its folded use:
      * 99.742 -> 99.829 */
     void p6b(u32 t, Gfx *g) { g->w0 = 0x06000000; g->w1 = t; }
-    void dcQ(Ctx *c, int n) { u32 t = (u32)func_00000000(&c->dl->buf[n]) + 0 * (int)(dl); p6b(t, nextQ()); }
-    void dc3(Ctx *c, int n) { u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); /* agent-g run 417: folded n use here too, 99.466 -> 99.505 */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
+    void dcQ(Ctx *c, int n) { u32 t = (u32)func_00000000(&c->dl->buf[n]) + 0 * (int)(dl); p6b(t, nextQ()); } /* UNNAMED: no-reloc uninstantiated inline member (no jal in the build); the G_DL word would take gl_osVirtualToPhysical, as in dZ1 */
+    void dc3(Ctx *c, int n) { u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); /* agent-g run 417: folded n use here too, 99.466 -> 99.505 */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; } /* UNNAMED: no-reloc uninstantiated inline member (no jal in the build); the G_DL word would take gl_osVirtualToPhysical, as in dY3 */
     Gfx *nextQ() { return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
     /* agent-g run 427: else-arm packet as fG(slot, m) (the slot is a parameter, so the else g is a pool word, not
      * a named word; the dead named dd keeps the frame words), with the kept I2(A) / me(me(gctx))->mtx() else
@@ -85,11 +85,11 @@ struct Ctx {
     /* agent-g run 354: the run-352 frame-0x160 body (h5_17: arm-1 copy through cp() / ld() with a kept parameter, else-arm
      * ld2(), no i / j / k / cmd at function scope) with the committed gains ported, plus loop 1's ctx6C through cur():
      * 98.033 (frame 0x170) -> 98.037 (frame 0x160 = target) */
-    void ld(Mtx *m) { if (0) { m = 0; } Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
-    void ld2(int z0, Mtx *m) { if (*(u32 *)&dl) {} if (1) {} Gfx *g = dl->buf + ((DLHead *)*(u32 *)&dl)->count++; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); } /* agent-g run 407: code-free test of dl (98.329 -> 98.368) */ /* agent-g run 417: the code-free block moved after the dl test: the else dl LR is numbered before g (bitpos 125 vs 133), wins their pri-1.5 tie and takes a1, g a2 = target (99.389 -> 99.466) */
+    void ld(Mtx *m) { if (0) { m = 0; } Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); } /* UNNAMED: no-reloc uninstantiated inline member (no jal in the build); the G_MTX word would take gl_osVirtualToPhysical, as in fG */
+    void ld2(int z0, Mtx *m) { if (*(u32 *)&dl) {} if (1) {} Gfx *g = dl->buf + ((DLHead *)*(u32 *)&dl)->count++; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); } /* agent-g run 407: code-free test of dl (98.329 -> 98.368) */ /* agent-g run 417: the code-free block moved after the dl test: the else dl LR is numbered before g (bitpos 125 vs 133), wins their pri-1.5 tie and takes a1, g a2 = target (99.389 -> 99.466) */ /* UNNAMED: no-reloc uninstantiated inline member (no jal in the build); the G_MTX word would take gl_osVirtualToPhysical, as in fG */
     /* agent-g run 413: the test and the count's head read through a u32 view of dl (kit CDLXXXIX): the else-arm
      * dl is no longer the same uopt expression as arm 1's, so arm 1's dl LR takes v0 like the target (98.455 -> 98.484) */
-    void cp(void *src, Mtx *c) { func_00000000(src, c); ld(c); }
+    void cp(void *src, Mtx *c) { func_00000000(src, c); ld(c); } /* UNNAMED: no-reloc uninstantiated inline member (no jal in the build); the (src, mtx) copy would be guMtxF2L, as in cS */
     /* agent-g run 407: arm 1 as cS() (the copy call) + lE3() (the 0x01 packet). The count is a by-value parameter
      * behind three unused non-constant leading parameters (kit CDXC), so it lands on the else arm's c2 word: one
      * variable that the target keeps in s0 (mt / arm-1 count / else c2), with c spilled to its home like the target */
@@ -99,7 +99,7 @@ struct Ctx {
      * (an `if (0) { m = 0; }` keep adds a block to the D_00000000 base's LR and it loses s1): the return's first
      * holder is draw's named g, and the gctx home spill around cS() stays */
     Gfx *lR6(Mtx *m) { m = me(m); return nq3((int)m, (int)m, (int)m, dl->count); }
-    void lE3(Mtx *m) { Gfx *g = nq3((int)m, (int)m, (int)m, dl->count); g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
+    void lE3(Mtx *m) { Gfx *g = nq3((int)m, (int)m, (int)m, dl->count); g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); } /* UNNAMED: no-reloc uninstantiated inline member (no jal in the build); the G_MTX word would take gl_osVirtualToPhysical, as in fG */
 };
 /* agent-g run 352: kept-parameter wrapper (kit CDXXIX I2 form) on the loops' element reads: the two ctx6C tests and the
  * third loop's draw() receiver, 97.821 -> 97.869 */
