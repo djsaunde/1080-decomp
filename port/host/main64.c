@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <sys/personality.h>
 #include <ucontext.h>
 #include <unistd.h>
 
@@ -89,6 +90,25 @@ int main(int argc, char **argv) {
     int n;
     void *stack;
 
+    /* Run 869 (the 64-bit soak: ~2.5 % of runs died at step 0 reading the ROM): with ASLR the kernel puts
+     * the brk heap of a non-PIE image anywhere in the 1 GB after .bss, so it can start just below
+     * 0x40000000, where the MAP_32BIT game stack (below) and every MAP_32BIT mmap (x32_glue.c) land.  The
+     * heap then cannot grow, glibc malloc falls back to mmap above 4 GB, and the x32 code truncates the
+     * pointer.  Re-exec once without address randomisation: brk then starts right after .bss, ~1 GB of
+     * room below the MAP_32BIT window (and the layout is the same on every run).  PORT64_ASLR=1 keeps
+     * ASLR; the heap's room is checked below either way. */
+    if (getenv("PORT64_ASLR") == NULL) {
+        int pers = personality(0xffffffff);
+        if (pers != -1 && !(pers & ADDR_NO_RANDOMIZE) && personality(pers | ADDR_NO_RANDOMIZE) != -1) {
+            execv("/proc/self/exe", argv);
+            personality(pers); /* the exec failed: carry on as we are */
+        }
+    }
+    if ((uintptr_t)sbrk(0) > 0x40000000ul - (256ul << 20)) {
+        fprintf(stderr, "main64: the brk heap starts at %p, less than 256 MB below the MAP_32BIT window "
+                "(0x40000000): malloc would fall back to high mmap (unset PORT64_ASLR)\n", sbrk(0));
+        return 1;
+    }
     mallopt(M_MMAP_MAX, 0);          /* brk only: every malloc block stays low */
     mallopt(M_ARENA_MAX, 1);
     sArgc = argc;

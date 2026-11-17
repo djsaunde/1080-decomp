@@ -70,7 +70,14 @@ static void read_maps(void) {
                 continue;
             }
             if (n >= 6 && strncmp(line + n - 6, "[heap]", 6) == 0) {
-                sHeapLo = (uint32_t)a;
+                /* the LOWEST [heap] line (run 869): without address randomisation (setarch -R, gdb, the
+                 * 64-bit build's re-exec in host/main64.c) brk starts right at the page-aligned _end and
+                 * the kernel labels the .bss mapping [heap] too, so two [heap] lines follow each other;
+                 * keeping the last one left the whole .bss (the audio context, the sound banks) out:
+                 * every relocation test failed and the driver loaded no samples (silence) */
+                if (sHeapLo == 0 || (uint32_t)a < sHeapLo) {
+                    sHeapLo = (uint32_t)a;
+                }
             } else if (a < hi && b > lo && sNumImage < MAX_IMAGE_RANGES) {
                 sImageLo[sNumImage] = a < lo ? lo : (uint32_t)a;
                 sImageHi[sNumImage] = b > hi ? hi : (uint32_t)b;
