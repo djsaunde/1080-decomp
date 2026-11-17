@@ -40,8 +40,12 @@ include(${PORT_GEN}/sources.cmake)
 add_library(game STATIC ${PORT_GAME_SOURCES})
 target_compile_definitions(game PRIVATE ${PORT_DEFS})
 target_include_directories(game PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${GAME_ROOT}/include ${GAME_ROOT}/src)
+# -fno-inline: a port-bind follows the function label (cc-select renames the token inside
+# FUNC and its .part / .isra / .constprop clones); a body gcc inlined into its caller would
+# keep the unbound placeholder (plan 18.6).  C only: a C++ donor's inline members are
+# not ROM functions (NCC inlined them), so their sites belong to the caller's binds.
 target_compile_options(game PRIVATE ${PORT_ARCH_FLAGS} -include ${CMAKE_CURRENT_SOURCE_DIR}/include/port.h
-    $<$<COMPILE_LANGUAGE:C>:-std=gnu89 -fcommon>
+    $<$<COMPILE_LANGUAGE:C>:-std=gnu89 -fcommon -fno-inline>
     $<$<COMPILE_LANGUAGE:CXX>:-std=gnu++98 -fpermissive -fno-exceptions -fno-rtti>
     -Wno-int-conversion -Wno-incompatible-pointer-types -Wno-builtin-declaration-mismatch)
 

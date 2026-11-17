@@ -74,6 +74,11 @@ def parse_header(path):
                     alias.append((parts[0], parts[1]))
                 else:
                     noinit.add(parts[0])
+    # a bound function compiled under another label (a C++ donor's `port-alias: NEW TARGET`:
+    # the asm has only TARGET, e.g. RcpMgr_service = _ZN3Obj3runEv) binds inside TARGET
+    for new, target in alias:
+        if new in BINDS:
+            BINDS.setdefault(target, {}).update(BINDS[new])
     return drop, alias, noinit, local
 
 

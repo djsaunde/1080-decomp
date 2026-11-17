@@ -687,6 +687,7 @@ def obj_of(path):
 
 ADDR_TOK_RE = re.compile(r'\w*func_(?!00000000)[0-9A-Fa-f]{6,8}\w*|\w+_c34458')  # _c34458: NCC donors' blank-jal tokens (run 618)
 _ZERO = None
+EXTRA_TOKS = set()   # plan --tok: other zero-pinned placeholder tokens (`bu4948_ff`, `glv_2838` ...)
 
 
 def zero_tokens():
@@ -699,7 +700,7 @@ def zero_tokens():
         try:
             for line in open('undefined_syms_auto.txt', errors='replace'):
                 mm = re.match(r'\s*(\w+)\s*=\s*(0|0x0+)\s*;', line)
-                if mm and ADDR_TOK_RE.fullmatch(mm.group(1)):
+                if mm and (ADDR_TOK_RE.fullmatch(mm.group(1)) or mm.group(1) in EXTRA_TOKS):
                     _ZERO.add(mm.group(1))
         except OSError:
             pass
@@ -1412,6 +1413,9 @@ def main():
     p.add_argument('--write', action='store_true'); p.add_argument('-v', '--verbose', action='store_true')
     p.add_argument('--funcs', help='TSV of unit<TAB>function (e.g. port/gen/binds-left.tsv): name only the '
                    'sites inside those C functions (a .cpp unit is named whole)')
+    p.add_argument('--tok', action='append', default=[],
+                   help='also treat this token as a placeholder when it is pinned to 0 in '
+                   'undefined_syms_auto.txt and undefined in the object (repeatable)')
     p = sub.add_parser('check'); p.add_argument('files', nargs='*')
     p.add_argument('--strict', action='store_true')
     sub.add_parser('selftest')
@@ -1421,6 +1425,7 @@ def main():
     ensure_build(a.no_build)
     rom, mv = Rom(), MakeVars()
     if a.cmd == 'plan':
+        EXTRA_TOKS.update(a.tok)
         a.files = sorted(set(a.files) | (set(addr_token_files()) if a.addr_token_files else set()))
         if not a.files:
             ap.error('plan: no files (give FILE.. or --addr-token-files)')
