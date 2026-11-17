@@ -82,6 +82,7 @@ extern float gl_func_00000000_heli_fff(float, float);
 #define HV(off) (*(Vec3 *)(self + (off)))
 
 }
+static inline int zf(float lo, int z) { return z * (int)(lo + lo + lo + lo + lo + lo); }
 static inline float clampf(float v, float lo, float hi) { if (v < lo) return lo; if (hi < v) return hi; return v; }
 /* smoothing store through a reference: keeps the store, the pitch dot / lerp and the clamp compare in one uopt
  * block, so -pi/8 and the lerp value take f18 / f16 and 2.0f / 1.0f are rematerialised per use (run 689) */
@@ -323,7 +324,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
             g *= HF(0x154) / hh;
         }
         if (1) {}
-        HF(0x144) = (g - HF(0x144)) * (0.07f) + HF(0x144);
+        *(float *)(self + 0x144 + zf(-0.3f, 0)) = (g - HF(0x144)) * (0.07f) + HF(0x144);
         yaw = clampf(yaw, -0.3f, 0.3f);
         HF(0x14C) = HF(0x14C) + yaw * (0.06);
         fwdAx.x = HF(0xF4) * HF(0xFC) * 2.0f + HF(0x100) * HF(0xF8) * 2.0f;
