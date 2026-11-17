@@ -3202,7 +3202,7 @@
         "progress_categories": [
           "trnproc_uso"
         ],
-        "complete": false
+        "complete": true
       },
       "scratch": {
         "platform": "n64",
@@ -3219,7 +3219,7 @@
         "progress_categories": [
           "viewrec_uso"
         ],
-        "complete": false
+        "complete": true
       },
       "scratch": {
         "platform": "n64",
@@ -3236,7 +3236,7 @@
         "progress_categories": [
           "nameent_uso"
         ],
-        "complete": false
+        "complete": true
       },
       "scratch": {
         "platform": "n64",
@@ -3253,7 +3253,7 @@
         "progress_categories": [
           "balloon_uso"
         ],
-        "complete": false
+        "complete": true
       },
       "scratch": {
         "platform": "n64",
@@ -3270,7 +3270,7 @@
         "progress_categories": [
           "heli_uso"
         ],
-        "complete": false
+        "complete": true
       },
       "scratch": {
         "platform": "n64",
@@ -3287,7 +3287,7 @@
         "progress_categories": [
           "fire_uso"
         ],
-        "complete": false
+        "complete": true
       },
       "scratch": {
         "platform": "n64",
@@ -3304,7 +3304,7 @@
         "progress_categories": [
           "checkpoint_uso"
         ],
-        "complete": false
+        "complete": true
       },
       "scratch": {
         "platform": "n64",
@@ -3321,7 +3321,7 @@
         "progress_categories": [
           "snoweffects_uso"
         ],
-        "complete": false
+        "complete": true
       },
       "scratch": {
         "platform": "n64",
