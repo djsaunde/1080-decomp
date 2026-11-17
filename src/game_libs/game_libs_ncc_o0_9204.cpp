@@ -8,6 +8,7 @@ extern "C" {
 int gl_func_00000000(...);
 extern char D_00000000;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern int gInputMgr_0000004C, gInputMgr_00000058, gInputMgr_00000064;
 extern char gProcUsoPaths_8FFC_base;
 
@@ -17,19 +18,19 @@ int app_createGame_00009204(int a0, int a1, int a2) {
     register int *o;
     register char *tmp;
 
-    gl_func_00000000(&gInputMgr, (int)((char **)&gProcUsoPaths_8FFC_base)[2]); /* gProcUsoPaths[2] = "rom/gamegfx.uso" */
-    gl_func_00000000(gInputMgr_0000004C, gInputMgr_00000058);
-    obj = gl_func_00000000(&gInputMgr, gInputMgr_00000064, 6, a2);
+    CALL(game_loadUso)(&gInputMgr, (int)((char **)&gProcUsoPaths_8FFC_base)[2]); /* gProcUsoPaths[2] = "rom/gamegfx.uso" */
+    CALL(snd_startPlayer2Seq_0000027C)(gInputMgr_0000004C, gInputMgr_00000058);
+    obj = CALL(game_init)(&gInputMgr, gInputMgr_00000064, 6, a2);
     base = (char *)&gInputMgr;
     o = (int *)obj;
     tmp = base + 0x10;
-    gl_func_00000000(tmp, o);
+    CALL(list_append)(tmp, o);
     if (o[0x14 / 4] != 0) {
         o[0x4 / 4] = 1;
     }
     tmp = base;
     o[0x14 / 4] = (int)tmp;
-    gl_func_00000000(&gInputMgr, 0);
+    CALL(input_setRacePadsActive)(&gInputMgr, 0);
     (void)a0;
     (void)a1;
     return obj;
@@ -41,19 +42,19 @@ int app_createGame_000092F4(int a0, int a1) {
     register int *o;
     register char *tmp;
 
-    gl_func_00000000(&gInputMgr, (int)((char **)&gProcUsoPaths_8FFC_base)[2]); /* gProcUsoPaths[2] = "rom/gamegfx.uso" */
-    gl_func_00000000(gInputMgr_0000004C, gInputMgr_0000004C);
-    obj = gl_func_00000000(&gInputMgr, 8, 2, a1);
+    CALL(game_loadUso)(&gInputMgr, (int)((char **)&gProcUsoPaths_8FFC_base)[2]); /* gProcUsoPaths[2] = "rom/gamegfx.uso" */
+    CALL(snd_startPlayer2Seq_0000027C)(gInputMgr_0000004C, gInputMgr_0000004C);
+    obj = CALL(game_init)(&gInputMgr, 8, 2, a1);
     base = (char *)&gInputMgr;
     o = (int *)obj;
     tmp = base + 0x10;
-    gl_func_00000000(tmp, o);
+    CALL(list_append)(tmp, o);
     if (o[0x14 / 4] != 0) {
         o[0x4 / 4] = 1;
     }
     tmp = base;
     o[0x14 / 4] = (int)tmp;
-    gl_func_00000000(&gInputMgr, 0);
+    CALL(input_setRacePadsActive)(&gInputMgr, 0);
     (void)a0;
     return obj;
 }

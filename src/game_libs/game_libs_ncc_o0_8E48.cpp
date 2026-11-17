@@ -9,6 +9,7 @@ typedef long long s64; typedef unsigned long long u64;
 }
 #include "../../include/gdl/node.h"  /* o is a Node: parented to gInputMgr (also a Node, children at +0x10) */
 #include "../../include/gdl/backup.h" /* *arg0 = the mode's BackupSession (ModeFlowProc.session, +0): its ghost */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 
 
@@ -53,29 +54,29 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
     register char *tmp;    /* s2 */
 
     sp34 = sp38 = (char *)gInputMgr_0000004C;
-    gl_func_00000000(&gInputMgr, (int)((char **)&gProcUsoPaths_8FFC_base)[2]); /* gProcUsoPaths[2] = "rom/gamegfx.uso" */
+    CALL(game_loadUso)(&gInputMgr, (int)((char **)&gProcUsoPaths_8FFC_base)[2]); /* gProcUsoPaths[2] = "rom/gamegfx.uso" */
     if ((*(BackupSession **)arg0)->ghost->data != 0) {
-        gInputMgr_00000181 = gl_func_00000000((*(BackupSession **)arg0)->ghost);
+        gInputMgr_00000181 = CALL(Backup_ghostGetRider)((*(BackupSession **)arg0)->ghost);
         sp34 = (char *)(int)gInputMgr_00000181;
-        gInputMgr_00000182 = gl_func_00000000((*(BackupSession **)arg0)->ghost);
-        gInputMgr_00000183 = gl_func_00000000((*(BackupSession **)arg0)->ghost);
+        gInputMgr_00000182 = CALL(Backup_ghostGetBoardFlag)((*(BackupSession **)arg0)->ghost);
+        gInputMgr_00000183 = CALL(Backup_ghostGetBoard)((*(BackupSession **)arg0)->ghost);
     }
-    gl_func_00000000(sp38, sp34);
+    CALL(snd_startPlayer2Seq_0000027C)(sp38, sp34);
     if ((*(BackupSession **)arg0)->ghost->data != 0) {
-        sp3C = (char *)gl_func_00000000(&gInputMgr, gInputMgr_00000064, 3, arg2);
+        sp3C = (char *)CALL(game_init)(&gInputMgr, gInputMgr_00000064, 3, arg2);
     } else {
-        sp3C = (char *)gl_func_00000000(&gInputMgr, gInputMgr_00000064, 2, arg2);
+        sp3C = (char *)CALL(game_init)(&gInputMgr, gInputMgr_00000064, 2, arg2);
     }
     base = (char *)&gInputMgr;
     o = sp3C;
     tmp = base + 0x10;  /* &gInputMgr's Node.children: list_append(children, o) */
-    gl_func_00000000(tmp, o);
+    CALL(list_append)(tmp, o);
     if (NODE(o)->parent != 0) {
         NODE(o)->unk04 = 1;
     }
     tmp = base;
     NODE(o)->parent = (Node *)tmp;
-    gl_func_00000000(&gInputMgr, 0);
+    CALL(input_setRacePadsActive)(&gInputMgr, 0);
     (void)arg1;
     return sp3C;
 }

@@ -9,6 +9,7 @@ extern "C" {
 int gl_func_00000000(...);
 extern char D_00000000;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern int gInputMgr_0000004C, D_00000050, gInputMgr_00000064; /* UNNAMED: data-base D_00000050 = 0x50 is Bss sym272 +0x50 here (the &= 0x20 in app_createGame_00008FFC) but RoData +0x50 in bootup_uso.c (snd_calcEmitterDistPan_000003F8); one pinned value for two objects, so a pure rename would merge them: it needs a per-site split */
 extern unsigned char gInputMgr_0000017D;
 extern unsigned char gInputMgr_00000179, gInputMgr_0000017A, gInputMgr_0000017B, gInputMgr_00000181, gInputMgr_00000182, gInputMgr_00000183;
@@ -20,20 +21,20 @@ int app_createGame_00008FFC(int a0, int a1, int a2) {
     register int *o;
     register char *tmp;
 
-    gl_func_00000000(&gInputMgr, (int)((char **)&gProcUsoPaths_8FFC_base)[2]); /* gProcUsoPaths[2] = "rom/gamegfx.uso" */
-    gl_func_00000000(gInputMgr_0000004C, gInputMgr_0000017D);
+    CALL(game_loadUso)(&gInputMgr, (int)((char **)&gProcUsoPaths_8FFC_base)[2]); /* gProcUsoPaths[2] = "rom/gamegfx.uso" */
+    CALL(snd_startPlayer2Seq_0000027C)(gInputMgr_0000004C, gInputMgr_0000017D);
     D_00000050 = D_00000050 & 0x20;
-    obj = gl_func_00000000(&gInputMgr, gInputMgr_00000064, 5, a2);
+    obj = CALL(game_init)(&gInputMgr, gInputMgr_00000064, 5, a2);
     base = (char *)&gInputMgr;
     o = (int *)obj;
     tmp = base + 0x10;
-    gl_func_00000000(tmp, o);
+    CALL(list_append)(tmp, o);
     if (o[0x14 / 4] != 0) {
         o[0x4 / 4] = 1;
     }
     tmp = base;
     o[0x14 / 4] = (int)tmp;
-    gl_func_00000000(&gInputMgr, 0);
+    CALL(input_setRacePadsActive)(&gInputMgr, 0);
     (void)a0;
     (void)a1;
     return obj;
@@ -48,18 +49,18 @@ int app_createGame_00009100(int a0, int a1, int a2) {
     gInputMgr_00000181 = gInputMgr_00000179;
     gInputMgr_00000182 = gInputMgr_0000017A;
     gInputMgr_00000183 = gInputMgr_0000017B;
-    gl_func_00000000(gInputMgr_0000004C, gInputMgr_0000004C);
-    obj = gl_func_00000000(&gInputMgr, gInputMgr_00000064, 4, a2);
+    CALL(snd_startPlayer2Seq_0000027C)(gInputMgr_0000004C, gInputMgr_0000004C);
+    obj = CALL(game_init)(&gInputMgr, gInputMgr_00000064, 4, a2);
     base = (char *)&gInputMgr;
     o = (int *)obj;
     tmp = base + 0x10;
-    gl_func_00000000(tmp, o);
+    CALL(list_append)(tmp, o);
     if (o[0x14 / 4] != 0) {
         o[0x4 / 4] = 1;
     }
     tmp = base;
     o[0x14 / 4] = (int)tmp;
-    gl_func_00000000(&gInputMgr, 0);
+    CALL(input_setRacePadsActive)(&gInputMgr, 0);
     (void)a0;
     (void)a1;
     return obj;
