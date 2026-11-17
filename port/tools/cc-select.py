@@ -93,6 +93,8 @@ def bind_calls(text, binds):
     out, cur = [], None
     for line in text.splitlines():
         m = re.match(r"^([\w.$]+):", line)
+        if m and m.group(1).isdigit():
+            m = None    # a numeric local label (`1:\tcall __fentry__`, PORT_TRACE_FN) is inside the body
         if m:
             base = m.group(1).split(".")[0]
             if m.group(1) in binds or (base in binds and not m.group(1).startswith(".")):

@@ -211,6 +211,152 @@ __attribute__((weak)) void port_trace_collect(PortTraceFrame *f) {
      * game glue's collector (their objects are reached through GameFlow). */
 }
 
+void *port_trace_fn_obj;
+unsigned port_trace_fn_objSize;
+
+#ifdef PORT_TRACE_FN
+static FILE *sFn;
+static int sFnOn;
+static unsigned long sFnSp0, sFnObjFn, sFnObjSize;
+static const u32 *sFnObj;
+static long sFnFrame = -2;
+static unsigned long sFnSeq;
+
+#define NOINST __attribute__((no_instrument_function))
+/* FNV-1a over the object's words, skipping host-pointer-looking ones (both builds keep the
+ * heap and the image below 0x10000000; floats there are < 1e-30) */
+static NOINST u32 fn_hash(void) {
+    const u32 *w = sFnObj != NULL ? sFnObj : (const u32 *)port_trace_fn_obj;
+    u32 h = 2166136261u, i, n = (sFnObj != NULL ? sFnObjSize : port_trace_fn_objSize) / 4;
+    if (w == NULL) {
+        return 0;
+    }
+    for (i = 0; i < n; i++) {
+        u32 v = w[i];
+        if (v >= 0x100000u && v < 0x10000000u) {
+            v = 1;
+        }
+        h = (h ^ v) * 16777619u;
+    }
+    return h;
+}
+NOINST __attribute__((used)) void port_fn_enter(unsigned long ret, unsigned long sp, const u32 *regs) {
+    int i;
+    if (sFnObjFn != 0 && ret - 5 == sFnObjFn) {
+        /* PORT_TRACE_FN_OBJ=<function address>:<size>: hash that function's first argument (the
+         * latest one before and during the traced frame) instead of rider 0 */
+#if defined(__x86_64__)
+        sFnObj = (const u32 *)(unsigned long)regs[0];
+#else
+        sFnObj = (const u32 *)(unsigned long)((const u32 *)sp)[0];
+#endif
+    }
+    if (!sFnOn || sFn == NULL) {
+        return;
+    }
+    if (sFnSp0 == 0) {
+        sFnSp0 = sp;
+    }
+    /* the function: the `call __fentry__` (5 bytes) is its first instruction */
+    fprintf(sFn, "E %lx %ld %08x", ret - 5, (long)(sFnSp0 - sp), (unsigned)fn_hash());
+    /* the raw arguments: i386 the first 6 stack words; x86-64 rdi rsi rdx rcx r8 r9 (low halves)
+     * and xmm0-3 (low lanes) */
+#if defined(__x86_64__)
+    fprintf(sFn, " |");
+    for (i = 0; i < 6; i++) {
+        fprintf(sFn, " %x", (unsigned)regs[2 * i]);
+    }
+    fprintf(sFn, " | %x %x %x %x", (unsigned)regs[32], (unsigned)regs[36], (unsigned)regs[40], (unsigned)regs[44]);
+#else
+    (void)regs;
+    fprintf(sFn, " |");
+    for (i = 0; i < 6; i++) {
+        fprintf(sFn, " %x", (unsigned)((const u32 *)sp)[i]);
+    }
+#endif
+    fputc('\n', sFn);
+    sFnSeq++;
+}
+/* __fentry__ (-pg -mfentry): the first instruction of every instrumented function, before its
+ * prologue.  It saves every caller-saved register (the argument registers are live) around the
+ * logger.  There is no exit hook (-finstrument-functions has one, and it breaks the matched void
+ * wrappers whose callers read the result their last call left in eax / rax: item_createHel);
+ * a function's effect shows in the hash at the next entry. */
+#if defined(__x86_64__)
+__asm__(".text\n"
+        ".globl __fentry__\n__fentry__:\n"
+        "  pushq %rax\n  pushq %rbp\n  movq %rsp, %rbp\n  andq $-16, %rsp\n  subq $384, %rsp\n"
+        "  movq %rdi, 0(%rsp)\n  movq %rsi, 8(%rsp)\n  movq %rdx, 16(%rsp)\n  movq %rcx, 24(%rsp)\n"
+        "  movq %r8, 32(%rsp)\n  movq %r9, 40(%rsp)\n  movq %r10, 48(%rsp)\n  movq %r11, 56(%rsp)\n"
+        "  movdqu %xmm0, 128(%rsp)\n  movdqu %xmm1, 144(%rsp)\n  movdqu %xmm2, 160(%rsp)\n  movdqu %xmm3, 176(%rsp)\n  movdqu %xmm4, 192(%rsp)\n  movdqu %xmm5, 208(%rsp)\n  movdqu %xmm6, 224(%rsp)\n  movdqu %xmm7, 240(%rsp)\n  movdqu %xmm8, 256(%rsp)\n  movdqu %xmm9, 272(%rsp)\n  movdqu %xmm10, 288(%rsp)\n  movdqu %xmm11, 304(%rsp)\n  movdqu %xmm12, 320(%rsp)\n  movdqu %xmm13, 336(%rsp)\n  movdqu %xmm14, 352(%rsp)\n  movdqu %xmm15, 368(%rsp)\n"
+        "  movq 16(%rbp), %rdi\n  leaq 24(%rbp), %rsi\n  movq %rsp, %rdx\n  call port_fn_enter\n"
+        "  movdqu 128(%rsp), %xmm0\n  movdqu 144(%rsp), %xmm1\n  movdqu 160(%rsp), %xmm2\n  movdqu 176(%rsp), %xmm3\n  movdqu 192(%rsp), %xmm4\n  movdqu 208(%rsp), %xmm5\n  movdqu 224(%rsp), %xmm6\n  movdqu 240(%rsp), %xmm7\n  movdqu 256(%rsp), %xmm8\n  movdqu 272(%rsp), %xmm9\n  movdqu 288(%rsp), %xmm10\n  movdqu 304(%rsp), %xmm11\n  movdqu 320(%rsp), %xmm12\n  movdqu 336(%rsp), %xmm13\n  movdqu 352(%rsp), %xmm14\n  movdqu 368(%rsp), %xmm15\n"
+        "  movq 0(%rsp), %rdi\n  movq 8(%rsp), %rsi\n  movq 16(%rsp), %rdx\n  movq 24(%rsp), %rcx\n"
+        "  movq 32(%rsp), %r8\n  movq 40(%rsp), %r9\n  movq 48(%rsp), %r10\n  movq 56(%rsp), %r11\n"
+        "  movq %rbp, %rsp\n  popq %rbp\n  popq %rax\n  ret\n");
+#else
+__asm__(".text\n"
+        ".globl __fentry__\n__fentry__:\n"
+        "  pushl %eax\n  pushl %ecx\n  pushl %edx\n  pushl %ebp\n  movl %esp, %ebp\n  andl $-16, %esp\n  subl $160, %esp\n"
+        "  movdqu %xmm0, 32(%esp)\n  movdqu %xmm1, 48(%esp)\n  movdqu %xmm2, 64(%esp)\n"
+        "  movdqu %xmm3, 80(%esp)\n  movdqu %xmm4, 96(%esp)\n  movdqu %xmm5, 112(%esp)\n"
+        "  movdqu %xmm6, 128(%esp)\n  movdqu %xmm7, 144(%esp)\n"
+        "  movl 16(%ebp), %ecx\n  movl %ecx, 0(%esp)\n  leal 24(%ebp), %ecx\n  movl %ecx, 4(%esp)\n"
+        "  call port_fn_enter\n"
+        "  movdqu 32(%esp), %xmm0\n  movdqu 48(%esp), %xmm1\n  movdqu 64(%esp), %xmm2\n"
+        "  movdqu 80(%esp), %xmm3\n  movdqu 96(%esp), %xmm4\n  movdqu 112(%esp), %xmm5\n"
+        "  movdqu 128(%esp), %xmm6\n  movdqu 144(%esp), %xmm7\n"
+        "  movl %ebp, %esp\n  popl %ebp\n  popl %edx\n  popl %ecx\n  popl %eax\n  ret\n");
+#endif
+/* Dump the object's words (env PORT_TRACE_FN_DUMP=<seq>: after event seq, as hex words). */
+static NOINST void fn_frame(u32 frameCount) {
+    if (sFnFrame == -2) {
+        const char *e = getenv("PORT_TRACE_FN");
+        const char *o = getenv("PORT_TRACE_FN_OUT");
+        sFnFrame = e != NULL ? strtol(e, NULL, 10) : -1;
+        e = getenv("PORT_TRACE_FN_OBJ");
+        if (e != NULL) {
+            char *end;
+            sFnObjFn = strtoul(e, &end, 16);
+            sFnObjSize = *end == ':' ? strtoul(end + 1, NULL, 16) : 0x100;
+        }
+        if (sFnFrame >= 0) {
+            sFn = fopen(o != NULL ? o : "fn.log", "w");
+            if (sFn != NULL) {
+                setvbuf(sFn, NULL, _IOLBF, 0);   /* a crash inside the frame keeps the log */
+            }
+        }
+    }
+    if (sFn == NULL) {
+        return;
+    }
+    if (sFnOn) {
+        u32 i, n = (sFnObj != NULL ? sFnObjSize : port_trace_fn_objSize) / 4;
+        const u32 *w = sFnObj != NULL ? sFnObj : (const u32 *)port_trace_fn_obj;
+        fprintf(sFn, "D");
+        for (i = 0; w != NULL && i < n; i++) {
+            fprintf(sFn, " %08x", (unsigned)w[i]);
+        }
+        fprintf(sFn, "\n");
+        fclose(sFn);
+        sFn = NULL;
+        sFnOn = 0;
+        return;
+    }
+    if ((long)frameCount + 1 == sFnFrame) {
+        u32 i, n = (sFnObj != NULL ? sFnObjSize : port_trace_fn_objSize) / 4;
+        const u32 *w = sFnObj != NULL ? sFnObj : (const u32 *)port_trace_fn_obj;
+        fprintf(sFn, "B");
+        for (i = 0; w != NULL && i < n; i++) {
+            fprintf(sFn, " %08x", (unsigned)w[i]);
+        }
+        fprintf(sFn, "\n");
+        sFnSp0 = 0;
+        sFnOn = 1;
+    }
+}
+#endif
+
 void port_trace_frame_end(u32 frameCount) {
     PortTraceFrame f;
     int i;
@@ -222,6 +368,9 @@ void port_trace_frame_end(u32 frameCount) {
     f.frameCount = frameCount;
     f.viRetraces = port_vi_retrace_count();
     port_trace_collect(&f);
+#ifdef PORT_TRACE_FN
+    fn_frame(frameCount);
+#endif
     fprintf(sState, "F %u have=%02x flow=%d,%d,%d race=%d,%08x rand=%08x rt=%u vi=%u el=%d",
             (unsigned)f.frameCount, (unsigned)f.have, (int)f.flowState, (int)f.flowNext, (int)f.flowMode,
             (int)f.raceState, (unsigned)f.raceFlags, (unsigned)f.randState,

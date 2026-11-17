@@ -139,6 +139,14 @@ add_library(porthost OBJECT ${PORT_HOST_SOURCES})
 # port_audio_swap_font (audio data to host order) and port_audio_noise_base (gWaveSamples[8]).
 set(PORT_AUDIO_SOURCES audio/mixer.c audio/abi_decode.c audio/audio_swap.c audio/port_audio.c)
 add_library(audio STATIC ${PORT_AUDIO_SOURCES})
+# PORT_TRACE_FN (plan 21.8): a diagnostic build whose game library logs every function entry of one
+# frame (port/trace.h; port/tools/fn-trace-diff.py compares two builds' logs).  Off by default.
+# -pg -mfentry: one `call __fentry__` before each prologue and no exit hook (port/trace.c).
+option(PORT_TRACE_FN "instrument the game library's functions for the per-function trace" OFF)
+if(PORT_TRACE_FN)
+  target_compile_options(game PRIVATE -pg -mfentry)
+  target_compile_definitions(porthost PRIVATE PORT_TRACE_FN)
+endif()
 foreach(t ultra porthost audio)
   target_compile_definitions(${t} PRIVATE ${PORT_HOST_DEFS})
   target_include_directories(${t} PRIVATE ${GAME_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})

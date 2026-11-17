@@ -124,4 +124,13 @@ void port_trace_frame_end(u32 frameCount);
  * that knows the race, rider and camera objects. */
 void port_trace_collect(PortTraceFrame *f);
 
+/* PORT_TRACE_FN (cmake -DPORT_TRACE_FN=ON, plan 21.8): the game library is compiled with
+ * -finstrument-functions and port/trace.c logs every function entry / exit of one frame
+ * (env PORT_TRACE_FN=<frame>, file PORT_TRACE_FN_OUT, default fn.log) with a hash of the object
+ * the collector names (rider 0's SnowBoarder; pointer-looking words skipped, so the i386 and the
+ * x86-64 logs compare).  port/tools/fn-trace-diff.py maps the addresses to names and reports the
+ * first function after which the two runs' objects differ. */
+extern void *port_trace_fn_obj;
+extern unsigned port_trace_fn_objSize;
+
 #endif /* PORT_TRACE_H */

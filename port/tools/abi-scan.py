@@ -25,6 +25,8 @@ dropped (SRETPOP; Pn / UNPROTO, which the register check replaces) and one class
            double / float, or a by-value struct the two sides size differently.  The definition's
            registers follow the SysV classes (rdi rsi rdx rcx r8 r9 / xmm0-7; a struct > 16 bytes in
            memory); definitions with a 1..16-byte struct parameter, or variadic, are not judged.
+  X64KR    an unprototyped (K&R `CALL(f)`) call to a definition that takes a float: no K&R call can
+           pass one on x86-64 (an int's bits ride in a GP register, a float is promoted to double)
   X64Pn    a prototyped declaration's parameter n is in another class than the definition's (int /
            pointer against float, float against double, a struct against anything else)
   SRET     (kept) only when the struct is <= 16 bytes: a larger one is the hidden pointer in rdi,
@@ -191,6 +193,12 @@ for cun,cpp,pn,(dn,dret,dps,dvar,dproto),rp,od,regs in sites:
             nm={5:'rdi',4:'rsi',1:'rdx',2:'rcx',8:'r8',9:'r9'}
             issues.append('X64REG caller sets %s, def(%s) does not read it'%(','.join(nm.get(r,'xmm%d'%(r-17)) for r in extra),','.join(ps)))
         unp = (not dproto and not cpp) or (dvar and not dps)
+        if unp and not var and any(p in FP for p in ps):
+            # a K&R / `int ()` call to a definition with float parameters: the caller passes each
+            # argument in its own class (the O32 float bits as an int in a GP register, a real float
+            # promoted to double), the callee reads a float from xmm.  DWARF's call_site_parameter
+            # cannot show it (a register loaded from memory has no entry-value description).
+            issues.append('X64KR K&R call, def(%s) takes a float'%','.join(ps))
         if not unp:  # a prototyped declaration: the classes position by position
             kc=lambda t:'G' if t in ('int','ptr','int64','struct4','struct8') else t  # a 4 / 8-byte struct: assumed INTEGER class
             for k in range(min(len(dps),len(ps))):

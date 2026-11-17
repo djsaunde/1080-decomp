@@ -8079,6 +8079,10 @@ void port_trace_collect(PortTraceFrame *f) {
                 if (!PORT_TRACE_PTR(r)) {
                     continue;
                 }
+                if (i == 0) {   /* the PORT_TRACE_FN object (port/trace.h) */
+                    port_trace_fn_obj = r;
+                    port_trace_fn_objSize = sizeof(SnowBoarder);
+                }
                 o->pos[0] = r->dnode.vqs.trans[0];
                 o->pos[1] = r->dnode.vqs.trans[1];
                 o->pos[2] = r->dnode.vqs.trans[2];
