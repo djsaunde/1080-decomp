@@ -7881,7 +7881,8 @@ void *game_ItemType_create_00011A94(int *arg0) {
  *            a host address on the port, a ROM address in an emulator trace: map both to names
  *            before diffing)
  *   cam      the eye (MCamera mnode.world[3]) and target (target->world[3], or eye + lookDir * 10
- *            with no target, as the lookAt does) of the camera in GameFlow.game +0x108's window.
+ *            with no target, as the lookAt does) of the camera in GameFlow.game's windows[0]
+ *            (WorldRegistry, game/course.h).
  * GameFlow.dataMgr and .game are never cleared when a race ends, so the race groups are read only
  * while game.uso is loaded (port/uso registry); between races they would point at freed heap. */
 #include "gdl/race.h"
@@ -7944,7 +7945,7 @@ void port_trace_collect(PortTraceFrame *f) {
     }
     game = flow->game;
     if (game != NULL) {
-        CamWindow *w = *(CamWindow **)(game + 0x108);
+        CamWindow *w = (CamWindow *)WORLDREG(game)->windows[0];   /* the race camera window */
         MCamera *cam = w != NULL ? w->cam : NULL;
         if (cam != NULL) {
             for (i = 0; i < 3; i++) {
