@@ -1,6 +1,6 @@
-/* MIPSpro 7.2.1 (EDG 2.29, tools/ncc721.sh) NON_MATCHING donor for snoweffects.uso 0x6B28 and 0x718C (agent-e run
- * 713), spliced over the empty NON_MATCHING placeholders in snoweffects_uso.c on the non_matching build only (the
- * matching build keeps INCLUDE_ASM). Moved here from the IDO 7.1 NCC donor snoweffects_uso_ncc_nm_e.cpp.
+/* MIPSpro 7.2.1 (EDG 2.29, tools/ncc721.sh) donor for snoweffects.uso 0x6B28 (EXACT since agent-e run 723, spliced
+ * in both build trees) and 0x718C (NON_MATCHING, spliced over its empty placeholder on the non_matching build only;
+ * the matching build keeps INCLUDE_ASM). Agent-e run 713. Moved here from the IDO 7.1 NCC donor snoweffects_uso_ncc_nm_e.cpp.
  * Compiler: 0x718C's chained operator* temporaries (v3B0 * f20C * |a| and v114 * .. * f210) take sp+320 / sp+308 in
  * the target; EDG 2.29 gives that order (first statement temporary = higher word), the 7.1 NCC donor the reverse.
  * 0x6B28 has no chained temporary (both front ends give it the same frame); it sits between 0x64B8 and 0x718C,
@@ -40,7 +40,9 @@ struct SVb {
     static float lerpF(float p, float q, float r) { ; return (q - p) * r + p; }
     void lerpEach(const SVb &a, float r) { x = lerpF(x, a.x, r); y = lerpF(y, a.y, r); z = lerpF(z, a.z, r); }
 };
-inline SVb operator+(const SVb &a, const SVb &b) { SVb r; ct0(&r); r.set(a.x + b.x, a.y + b.y, a.z + b.z); return r; }
+/* run 723: the code-free `if (1) {}` ends uopt's block after set(), so the op+ return copy's &temp (0x6B28 sp+52)
+ * no longer shares a block with the &vF0 / &vFC ranges and colours v0 at the copy, as in the target. */
+inline SVb operator+(const SVb &a, const SVb &b) { SVb r; ct0(&r); r.set(a.x + b.x, a.y + b.y, a.z + b.z); if (1) {} return r; }
 inline SV operator-(const SV &a, const SV &b) { SV r; ct0(&r); r.set(a.x - b.x, a.y - b.y, a.z - b.z); return r; }
 inline SV operator+(const SV &a, const SV &b) { SV r; r.set(a.x + b.x, a.y + b.y, a.z + b.z); return r; }
 inline void xformB(SV &v, const M44 &m) { float x = m.m[0][0] * v.x + m.m[1][0] * v.y + m.m[2][0] * v.z + m.m[3][0]; float y = m.m[0][1] * v.x + m.m[1][1] * v.y + m.m[2][1] * v.z + m.m[3][1]; float z = m.m[0][2] * v.x + m.m[1][2] * v.y + m.m[2][2] * v.z + m.m[3][2]; v.x = x; v.y = y; v.z = z; }
@@ -110,11 +112,9 @@ struct SnowEm {
     /* 0x1AC */ int count;
 };
 /* 0x6B28: spawn update of effect B (flag bit 1), run 668: two RoData default sets picked by the game
- * flags, the course-state counters +0x1C8 / +0x1CC, then a camera-relative burst spawn (93.8 %, 358 words;
- * run 673's SVb gives the &vFC materialisation and |speed| in f2). Left: frame 240 vs 232 and the ugen FP
- * ring in the lerp. Run 692: `fA20 == 0.0f` operand order and the nested spawn block (op+ temporary below x / y / z).
- * Left: one inline word between the two n products (target r2 at vfp-100, ours -96) and the u copy address
- * (target addiu v0 at the copy, ours hoisted into a0). */
+ * flags, the course-state counters +0x1C8 / +0x1CC, then a camera-relative burst spawn. EXACT (run 723).
+ * Levers: run 673's SVb (the &vFC materialisation, |speed| in f2); run 692's `fA20 == 0.0f` operand order and
+ * nested spawn block; run 698's dead `if (0) n *= ..` word; run 723's block-scoped z and the `if (1) {}` in op+. */
 extern "C" float snow_ro_58, snow_ro_5C, snow_ro_60, snow_ro_64, snow_ro_68;
 extern "C" float snow_ro_6C, snow_ro_70, snow_ro_74, snow_ro_78, snow_ro_7C;
 struct SnowGame { char pad[0x8C]; /* 0x8C */ int flags; };
@@ -210,8 +210,10 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
                 p = gl_func_00000000_snow_pool(t->pool);
             }
             if (p != 0) {
-                float x, y, z;
+                float x, y;
                 { /* run 692: the spawn statements in a nested block put the op+ temporary below x / y / z, as in the target */
+                    float z; /* run 723: edg allocates a block's statement temporaries before its named locals, so z
+                              * declared here sits between the op+ temporary (sp+96) and u (sp+80), as in the target */
                     s = t->speed < 0.0f ? -t->speed : t->speed;
                     if (s < 0.5) {
                         s = 0.5f;

@@ -889,14 +889,10 @@ void snoweffects_uso_func_00006B08(char *a0) {
 
 /* 0x6B28: spawn update of effect B (flag bit 1): game-flag RoData defaults (+0x1B0..+0x1C4), course-state
  * counters (+0x1C8 / +0x1CC / +0x1D8 from camera +0x9A0 / +0x9A2 / +0xA20), then a burst spawn along the
- * camera +0x318 / +0x3B0 axes. NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e runs 668 /
- * 673, 93.8 %, 358 words = target), spliced over this placeholder on the non_matching build. */
-#ifdef NON_MATCHING
-void snoweffects_uso_func_00006B28(void) {
+ * camera +0x318 / +0x3B0 axes. EXACT via a MIPSpro 7.2.1 (C++) donor: src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp
+ * (agent-e run 723), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
+void snoweffects_uso_func_00006B28(void *self) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00006B28);
-#endif
 
 /* the RoData floats of the 0x70C0 defaults (each load takes its own lui: one pin per constant) */
 extern f32 snow_ro_80, snow_ro_84, snow_ro_88, snow_ro_8C, snow_ro_90, snow_ro_94;
