@@ -1171,9 +1171,9 @@ void snoweffects_uso_func_00009320(void) {
 }
 
 /* 0x9328: the SnowTarget Cfront ctor (SNode base, Parms at +0x240 with five inline Parm ctors).
- * NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e9.cpp (agent-e run 692, 246 / 247 words), spliced
- * over this placeholder on the non_matching build. Left: frame 192 vs 224 (the Colour argument temps), one
- * forwarded name copy, the +0x234 / +0x238 store order. */
+ * NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e9.cpp (agent-e run 692; 247 / 247 words, 99.6 % since
+ * agent-b run 697), spliced over this placeholder on the non_matching build. Left: frame 192 vs 224 (edg temp
+ * homes bottom-up vs top-down) and the +0x234 / +0x238 store order. */
 #ifdef NON_MATCHING
 void snoweffects_uso_func_00009328(void) {
 }

@@ -14,9 +14,13 @@
  * Levers (run 680): each name is passed as an rvalue PName (one materialised temp per inline Parm ctor);
  * ParmC's Colour member is a POD base (a user ctor adds a this + 16 == 0 -> new(16) check); col[3] .. col[0]
  * are stored in reverse.
- * Left: the frame (the target's Colour argument temps are val 0xC4 / lo 0xB4 / hi 0xA4, ours val lowest),
- * ParmC's name copy to the outgoing word (the target reloads it from 0xA0 after the Colour copies, ours
- * forwards it), and the +0x234 / +0x238 store order. */
+ * Run 697 (agent-b): ParmC takes its name AFTER the three Colours, (o, val, lo, hi, name, fl), so the name temp is
+ * created after the Colour temps as in the target (and is reloaded from its word for the GdlParmBase call);
+ * ParmC stores f20 before v, ParmI f14 before v (objdiff 95.66 -> 99.63 %). Code-shape residual: the +0x234 / +0x238
+ * stores (ours 568 before 564; no statement order changes it). Frame 192 vs 224: our edg temps are homed
+ * bottom-up in creation order (n1 lowest), the target's top-down (n1 at 216, a1 spill 220), and the target's
+ * pool area below is 32 bytes larger.
+ */
 #include "snoweffects_ncc_e.h"
 extern "C" void *mem_new(unsigned int);
 struct PName { char *s; PName(char *p) { s = p; } };
@@ -36,12 +40,12 @@ struct ParmF9 : GdlParmBase9 {
 };
 struct ParmI9 : GdlParmBase9 {
     int v; int f14;
-    ParmI9(Parms9 *o, PName n, int val, int fl) : GdlParmBase9(o, n, fl) { v = val; f14 = 0; }
+    ParmI9(Parms9 *o, PName n, int val, int fl) : GdlParmBase9(o, n, fl) { f14 = 0; v = val; }
     virtual void v1();
 };
 struct ParmC9 : GdlParmBase9 {
     ColourP v; int f20;
-    ParmC9(Parms9 *o, PName n, Colour val, Colour lo, Colour hi, int fl) : GdlParmBase9(o, n, fl) { v = val; f20 = 0; }
+    ParmC9(Parms9 *o, Colour val, Colour lo, Colour hi, PName n, int fl) : GdlParmBase9(o, n, fl) { f20 = 0; v = val; }
     virtual void v1();
 };
 struct ParmsHead9 {
@@ -58,8 +62,8 @@ struct Parms9 : ParmsHead9 {
     ParmI9 p5C;
     ParmI9 p74;
     Parms9() : p08(this, NM9(0xA44), 40.0f, 1), p20(this, NM9(0xA48), 10.0f, 1),
-               p38(this, NM9(0xA4C), Colour(1.0f, 1.0f, 1.0f, 1.0f), Colour(0.0f, 0.0f, 0.0f, 0.0f),
-                   Colour(1.0f, 1.0f, 1.0f, 1.0f), 1),
+               p38(this, Colour(1.0f, 1.0f, 1.0f, 1.0f), Colour(0.0f, 0.0f, 0.0f, 0.0f),
+                   Colour(1.0f, 1.0f, 1.0f, 1.0f), NM9(0xA4C), 1),
                p5C(this, NM9(0xA50), 0, 0), p74(this, NM9(0xA54), 3, 1) {}
     void *operator new(unsigned n) { return mem_new(n); }
 };
