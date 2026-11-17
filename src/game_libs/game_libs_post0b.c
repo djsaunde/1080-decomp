@@ -1765,12 +1765,6 @@ extern int gl_func_00000000();
 void fs_gdlReadInt_00035AA4(int *dst) {
     int pad, scratch;
     CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
-#ifdef PORT /* a Parms record tag ("fin\0", "cof\0" ...): Parms_load compares it with the tag WORD each
-             * parm was registered with (Parms_addParm, read from the blob, where the word is host order).
-             * Unswapped, no tag ever matched and every Parms object kept its ctor defaults (the course
-             * camera's chase gains 0: applyMode divided by cxz = 0, the camera went NaN) */
-    PORT_BE_SWAP32S(&scratch, 4);
-#endif
     *dst = scratch;
 }
 
