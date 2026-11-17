@@ -32,6 +32,10 @@
  *  - run 714: the heading pointer h = self+0x138 as a named local for the normalise call, the three slerp
  *    stores and vel; it is spilled and reloaded per store as in the target (93.27 -> 93.25 objdiff, but 7 fewer
  *    sp+reg-masked diff rows: 93 -> 86).
+ *  - run 719: the slerp is an inline function taking the heading pointer, and each component goes through an
+ *    inline slc() whose first parameter is sin(t * ang). The argument is evaluated before the cos call, and as
+ *    an inline parameter it is coloured (target reloads it into f16 per component), so ugen evaluates the
+ *    old-heading term first as in the target. Frame 0x178 -> 0x170 (93.25 -> 94.44).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -80,6 +84,19 @@ struct Vec3 {
     void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
 };
 static inline float dot(const Vec3 &a, const Vec3 &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
+/* one slerp component: cos-weighted old heading plus sin-weighted target direction, both over sin(ang) */
+static inline float slc(float sa, float t, float ang, float o, float d, float s) { return gl_func_00000000_heli_ff((1.0f - t) * ang) * o / s + d * sa / s; }
+/* slerp the heading h toward dir by t (run 719) */
+static inline void slerp(Vec3 *h, const Vec3 &dir, float t) {
+    float ang = gl_func_00000000_heli_ff(h->x * dir.x + h->y * dir.y + h->z * dir.z);
+    float s = gl_func_00000000_heli_ff(ang);
+    Vec3 old = *h;
+    if ((s < 0.0f ? -s : s) > (0.001)) {
+        h->x = slc(gl_func_00000000_heli_ff(t * ang), t, ang, old.x, dir.x, s);
+        h->y = slc(gl_func_00000000_heli_ff(t * ang), t, ang, old.y, dir.y, s);
+        h->z = slc(gl_func_00000000_heli_ff(t * ang), t, ang, old.z, dir.z, s);
+    }
+}
 #define V3(off) (*(Vec3 *)(self + (off)))
 #define FWD ((Vec3 *)(self + 0x138))
 extern "C" void heli_uso_func_00000B08(char *self) {
@@ -97,12 +114,8 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     Vec3 *tg;
     Vec3 *h;
     Vec3 *ps;
-    float t;
     float f;
     float yaw;
-    float ang;
-    float s;
-    float sa;
     char *p;
     int mode;
     Vec3 fwdAx;
@@ -224,18 +237,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     gl_func_00000000(&dir);
     h = FWD; /* the heading pointer: one LR, spilled across the slerp calls (target sw a0,48(sp)) */
     gl_func_00000000(h);
-    t = HF(0x164);
-    ang = gl_func_00000000_heli_ff(FWD->x * dir.x + FWD->y * dir.y + FWD->z * dir.z);
-    s = gl_func_00000000_heli_ff(ang);
-    Vec3 old = *FWD;
-    if ((s < 0.0f ? -s : s) > (0.001)) {
-        sa = gl_func_00000000_heli_ff(t * ang);
-        h->x = gl_func_00000000_heli_ff((1.0f - t) * ang) * old.x / s + dir.x * sa / s;
-        sa = gl_func_00000000_heli_ff(t * ang);
-        h->y = gl_func_00000000_heli_ff((1.0f - t) * ang) * old.y / s + dir.y * sa / s;
-        sa = gl_func_00000000_heli_ff(t * ang);
-        h->z = gl_func_00000000_heli_ff((1.0f - t) * ang) * old.z / s + dir.z * sa / s;
-    }
+    slerp(FWD, dir, HF(0x164));
     if (dist < HF(0x15C)) {
         HF(0x154) = HF(0x160) * (dist / HF(0x15C));
     } else {
