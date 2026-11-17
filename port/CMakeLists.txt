@@ -94,7 +94,12 @@ if(NOT PORT_LINK)
 endif()
 add_library(ultra STATIC ${PORT_ULTRA_SOURCES})
 add_library(porthost OBJECT ${PORT_HOST_SOURCES})
-foreach(t ultra porthost)
+# port/audio (plan 15.6): the CPU mixer in place of the RSP's aspMain, the driver glue
+# (port_audio_frame) and the hooks the PORT source calls: port_audio_swap_static /
+# port_audio_swap_font (audio data to host order) and port_audio_noise_base (gWaveSamples[8]).
+set(PORT_AUDIO_SOURCES audio/mixer.c audio/abi_decode.c audio/audio_swap.c audio/port_audio.c)
+add_library(audio STATIC ${PORT_AUDIO_SOURCES})
+foreach(t ultra porthost audio)
   target_compile_definitions(${t} PRIVATE ${PORT_HOST_DEFS})
   target_include_directories(${t} PRIVATE ${GAME_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
   target_compile_options(${t} PRIVATE ${PORT_HOST_FLAGS})
@@ -106,7 +111,7 @@ if(PORT_LINK)
   # whole-archive: every shipped body is a root; the shim (port/ultra, port/uso)
   # resolves port/undefined.txt.
   # port/gen/aliases.ld: the token aliases (scripts/port-gen-binds.py), an implicit linker script
-  target_link_libraries(tenshoe PRIVATE -Wl,--whole-archive game uso ultra -Wl,--no-whole-archive
+  target_link_libraries(tenshoe PRIVATE -Wl,--whole-archive game uso ultra audio -Wl,--no-whole-archive
                         ${PORT_GEN}/aliases.ld m)
 
   # the shim's self-test (plan 17.6): no game code, no ROM
@@ -130,9 +135,9 @@ endif()
 # port/undefined.txt: what the library needs from outside (no 32-bit libc needed).
 add_custom_target(undefined
   COMMAND ${Python3_EXECUTABLE} ${GAME_ROOT}/scripts/port-undefined.py $<TARGET_FILE:game>
-          --extra $<TARGET_FILE:uso> --extra $<TARGET_FILE:ultra>
+          --extra $<TARGET_FILE:uso> --extra $<TARGET_FILE:ultra> --extra $<TARGET_FILE:audio>
           --extra-objects "$<TARGET_OBJECTS:porthost>" -o ${CMAKE_CURRENT_SOURCE_DIR}/undefined.txt
-  DEPENDS game uso ultra porthost
+  DEPENDS game uso ultra audio porthost
   COMMAND_EXPAND_LISTS
   WORKING_DIRECTORY ${GAME_ROOT}
   VERBATIM)
