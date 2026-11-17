@@ -73,7 +73,7 @@ extern "C" void snoweffects_uso_func_00000270(SnowTex *t) {
 }
 
 extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at +0x254 */
-/* snoweffects_uso_func_000028E0 (NON_MATCHING, objdiff 90.19 %): the snowfall draw. Moves every
+/* snoweffects_uso_func_000028E0 (NON_MATCHING, objdiff 90.25 %): the snowfall draw. Moves every
  * flake by the camera motion since the last frame (camera +0x70 position * the gGfxLib world scale, minus +0x98,
  * times +0xA4), wraps it inside the camera-space box (x / y +-30, z -100..0) along the box axes
  * (+0x50 / +0x5C / +0x68; a y wrap re-rolls the flake's alpha against +0x4C), then projects the
@@ -85,9 +85,9 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * constructed SnowV3d (its store / copy schedule); `if (cy) {} if (cz) {}` keeps the camera-space
  * coordinates computed before the first wrap test (uopt otherwise sinks cy / cz into the branch blocks; two
  * ifs instead of three keep c's block count low enough for s2); per-site packet appends (nextR / nextN /
- * nextM / next) from an agent-c run 712 climb: 88.9 -> 90.15 %. inv / sx / sy declared in the draw block
- * (frame 536 -> 528) with sy computed before sx (agent-c run 716 grid): 90.19 %.
- * Left: halfW loses its f30 home (split / spilled), the frame size (528 vs 520), the temps'
+ * nextM / next) from an agent-c run 712 climb: 88.9 -> 90.15 %. The draw block reuses the loop's cx / cy for
+ * the screen x / y and w for 1 / w (no new named locals): frame 520 as the target, 90.25 % (agent-c run 721).
+ * Left: halfW loses its f30 home (split / spilled), the temps'
  * frame order (the target: += param, op* param, op- return, op- r, 4 words, op* return, op* r) and float colouring.
  * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
@@ -230,16 +230,15 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
             x = p->pos.x; y = p->pos.y; z = p->pos.z;
             w = m[0][3] * x + m[1][3] * y + m[2][3] * z + m[3][3];
             if (SNOW_CAM2->nearZ < w && w < SNOW_CAM2->farZ) {
-                float inv, sx, sy;
-                inv = 1.0f / w;
-                sz = (int)(p->size * (halfH * 2.0f * inv) + 1.0f);
-                sy = (m[0][1] * x + m[1][1] * y + m[2][1] * z + m[3][1]) * inv * -halfH;
-                sx = (m[0][0] * x + m[1][0] * y + m[2][0] * z + m[3][0]) * inv * halfW;
-                if (-halfW < sx && sx < halfW && -halfH < sy && sy < halfH) {
-                    x0 = (int)(sx + halfW - (float)(sz / 2) + (float)SNOW_CAM2->offX);
-                    y0 = (int)(sy + halfH - (float)(sz / 2) + (float)SNOW_CAM2->offY);
+                w = 1.0f / w;
+                sz = (int)(p->size * (halfH * 2.0f * w) + 1.0f);
+                cy = (m[0][1] * x + m[1][1] * y + m[2][1] * z + m[3][1]) * w * -halfH;
+                cx = (m[0][0] * x + m[1][0] * y + m[2][0] * z + m[3][0]) * w * halfW;
+                if (-halfW < cx && cx < halfW && -halfH < cy && cy < halfH) {
+                    x0 = (int)(cx + halfW - (float)(sz / 2) + (float)SNOW_CAM2->offX);
+                    y0 = (int)(cy + halfH - (float)(sz / 2) + (float)SNOW_CAM2->offY);
                     gDPWord(c->next(), 0xEE000000,
-                            ((int)(((m[0][2] * x + m[1][2] * y + m[2][2] * z + m[3][2]) * inv + 1.0f) * snow_ro_10) & 0x7FFF) << 16);
+                            ((int)(((m[0][2] * x + m[1][2] * y + m[2][2] * z + m[3][2]) * w + 1.0f) * snow_ro_10) & 0x7FFF) << 16);
                     self->drawn++;
                     gDPWord(c->nextM(), 0xE4000000 | ((((x0 + sz) << 2) & 0xFFF) << 12) | (((y0 + sz) << 2) & 0xFFF),
                             (((x0 << 2) & 0xFFF) << 12) | ((y0 << 2) & 0xFFF));
