@@ -6196,12 +6196,12 @@ $(SNOW_A_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_a.cpp src/snoweffects_u
 SNOW_A_FUNCS := snoweffects_uso_func_0000A10C
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_A_FUNCS),$(f)=$(SNOW_A_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_A_DONOR)
-# agent-a run 665: NON_MATCHING-only NCC donor; now holds only the 0x7FE0 draft, not spliced (811 / 800 words).
+# agent-a run 665: NON_MATCHING-only NCC donor for 0x7FE0 (run 681: 800 / 800 words, spliced).
 SNOW_NM_A_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp.o
 $(SNOW_NM_A_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp src/snoweffects_uso/snoweffects_ncc.h
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NM_A_FUNCS :=
+SNOW_NM_A_FUNCS := snoweffects_uso_func_00007FE0
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_A_FUNCS),$(f)=$(SNOW_NM_A_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_A_DONOR)
 # agent-b run 675: NON_MATCHING-only MIPSpro 7.2.1 donor for viewrec 0x3878 (426 of 427 words; the target

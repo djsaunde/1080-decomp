@@ -1,7 +1,7 @@
-/* IDO 7.1 NCC (C++) draft for snoweffects.uso 0x7FE0 (agent-a runs 661 / 665 / 669 / 677), NOT spliced:
- * 799 / 800 words (objdiff 93.1 %; run 669 was 811 words, 85.7 %), and a size change shifts the later functions of the non_matching object (0xA8D0 then drops
- * to 41.7 %), so a donor body has to be exactly the target's length. 0xA10C moved to the exact donor
- * snoweffects_uso_ncc_a.cpp (run 677). Makefile SNOW_NM_A_FUNCS is empty until 0x7FE0 is 800 words.
+/* IDO 7.1 NCC (C++) NON_MATCHING donor for snoweffects.uso 0x7FE0 (agent-a runs 661 / 665 / 669 / 677 / 681),
+ * spliced over the placeholder on the non_matching build only (Makefile SNOW_NM_A_FUNCS): 800 / 800 words,
+ * objdiff 93.5 %. A donor body has to be exactly the target's length (a size change shifts the later
+ * functions of the non_matching object). 0xA10C moved to the exact donor snoweffects_uso_ncc_a.cpp (run 677).
  */
 #include "snoweffects_ncc.h"
 /* the callees, by name (a matching donor would call them through typed 0-pinned aliases) */
@@ -37,9 +37,14 @@ int snoweffects_uso_func_000046BC(...);
  * - &t->v114 / &t->vFC as pointer locals before the loop (the target hoists a0+276 / a0+252).
  * - the vtx t value computed before the s store (writeOfs loaded once for both).
  * - the reversed-index test is `0 < s`.
- * Left: one instruction short. The target copies p.y into f0 (mov.s) in the lerp, where p.x was
- * reloaded from the sp+48 spill; here p.y is used in place. Then the register numbering, the frame
- * (336 vs 384) and the hoisted sp addresses. ---- */
+ * Run 681 (93.1 -> 93.5 %, 799 -> 800 words): the lerp is a nested inline, lerp3(p, b, f) calling
+ *   lerpf(a, b, t) per component. lerpf's `a` (this->x through the reference) is a pool word; it is
+ *   coloured f0 and partly copy-propagated: x uses it twice (the sp+48 reload into f0), y copies p.y into
+ *   it (the target's mov.s f0,f10) and reads p.y in place for the subtraction, z is fully propagated.
+ *   The fraction passed as an expression is pool word 1 (shared with the |x| / op* scalar words).
+ * Left: pool word 1 colours f2 where the target has f12 (it wins the f2 race against the TV ctor's second
+ *   parameter word; a forcing-uopt probe puts it on f12), the register numbering, the frame (352 vs 384)
+ *   and the hoisted sp addresses. ---- */
 extern "C" void SnowRing_setSlotState_00004714(void *, int, int, float);
 
 struct TV {
@@ -127,6 +132,13 @@ struct TTrail {
     /* 0x1EC */ int mode;
 };
 
+inline float lerpf(float a, float b, float t) { return (b - a) * t + a; }
+inline void lerp3(TV &p, const TV &b, float f) {
+    p.x = lerpf(p.x, b.x, f);
+    p.y = lerpf(p.y, b.y, f);
+    p.z = lerpf(p.z, b.z, f);
+}
+
 inline float fabs_(float x) { return x < 0.0f ? -x : x; }
 extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
     float s;
@@ -188,10 +200,7 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
                 p = t->mid;
             } else {
                 p = t->a;
-                float f = (float)i / (float)(t->stride - 1);
-                p.x = (t->b.x - p.x) * f + p.x;
-                p.y = (t->b.y - p.y) * f + p.y;
-                p.z = (t->b.z - p.z) * f + p.z;
+                lerp3(p, t->b, (float)i / (float)(t->stride - 1));
             }
             t->points[t->writeOfs + i].pos = p;
             t->points[t->writeOfs + i].vel = t->cam->fwd * t->f188;
