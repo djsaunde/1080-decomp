@@ -103,9 +103,10 @@ KNOWN = [
     # 0x16D50, Sgi20HFifo 0x17550; 0x12190 / 0x12990 / 0x14D50 / 0x15D50 are the unreferenced
     # siblings) up to the audio tables: read by the RSP only, never by the port (Fast3D): bytes
     ("bootup", "Data", 0x11990, [(0, 0x17D50 - 0x11990, "u8")], 1, 0x17D50 - 0x11990, "known:ucode-data"),
-    # gfx_drawFbSplash_00048184: the 128x128 u16 (RGBA5551) splash it copies into the colour
-    # buffer as u16 (D_48184_img)
-    ("bootup", "Data", 0x22A30, [(0, 2, "u16")], 128 * 128, 2, "known:splash"),
+    # gfx_drawFbSplash_00048184: the 128x128 RGBA5551 splash it copies u16 for u16 into the colour
+    # buffer (D_48184_img). RDP-visible pixels stay in the N64 big-endian image (plan 19.9), so
+    # bytes: the copy then lands the frame-buffer image the read-backs and Fast3D expect
+    ("bootup", "Data", 0x22A30, [(0, 0x8000, "u8")], 1, 0x8000, "known:splash"),
     # math_atanLookup_00067FE4: 1025 u16 at D+0x2AA60, indexed by round(a0 / a1 * 1024)
     ("bootup", "Data", 0x2AA60, [(0, 2, "u16")], 1025, 2, "known:atan"),
     # math_acosf: D_69CC4_tbl, u16 indexed by (int)(|x| * 2048), x in [0, 1]: 2049 entries

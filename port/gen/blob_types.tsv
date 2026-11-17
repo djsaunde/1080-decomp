@@ -7331,7 +7331,7 @@ bootup	Data	0x22604	0x14	str	str
 bootup	Data	0x22618	0x8	zero	zero
 bootup	Data	0x22620	0x400	u8	tex:texels
 bootup	Data	0x22A20	0x10	zero	zero
-bootup	Data	0x22A30	0x8000	u16	known:splash
+bootup	Data	0x22A30	0x8000	u8	known:splash
 bootup	Data	0x2AA30	0x10	zero	zero
 bootup	Data	0x2AA40	0x18	str	str
 bootup	Data	0x2AA58	0x8	zero	zero
