@@ -83,7 +83,11 @@ struct GCtx {
  * registers. The texture's display-list call also passes the texture (self->tex) as a second argument: the
  * target loads it into a1 before the call (lw a1,44(a0)). Then (-> 98.62) the first two tail packets go
  * through gDPWord's own _g pointer (a0 / a1 as in the target) and the rest reuse g; the two _g words fill the
- * two free words below r, so the frame stays 400 (a third _g makes it 408+). */
+ * two free words below r, so the frame stays 400 (a third _g makes it 408+).
+ * agent-h run 762 with agent-e's run 760 lever (-> 98.78): z0(0) * (..) use counters. The yl clamp in the E4 w1 is
+ * written `yl > 0 ? yl + z0(0) * yl : 0`, y1 gets z0(0) * (p + p + y0), and a 16-term z0(0) * (c + ..) sits in the
+ * BB tail packet's w1. These raise y0 / c priorities with no code: y0 takes t3 and the E4 pointer t4 as in the
+ * target. (On this tail form the c term scores best on any packet from BB on: on E7 it gives 98.76.) */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -94,12 +98,15 @@ inline int imax0(int a) { return a > 0 ? a : 0; }
 #define gTR(g0, pkt, g1, pkt2, g2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
 { g0 = (pkt), \
     g0->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(MAX((s16)(xh),0), 12, 12) | _SHIFTL(MAX((s16)(yh),0), 0, 12)), \
-    g0->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MAX(0,(s16)(yl)), 0, 12)); \
+    g0->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(((s16)(yl) > 0 ? (s16)(yl) + z0(0) * (int)(s16)(yl) : 0), 0, 12)); \
     gImmpV(g1, pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmpV(g2, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 
 inline void dum3(int a, int b, int c) { a = a; b = b; c = c; }
+/* zero-code uopt use counter (agent-e runs 756 / 760): z is a constant inline parameter, so edg cannot fold
+ * z0(0) * (..), but uopt counts every variable term as a use before it folds the product to 0 (no code). */
+inline int z0(int z) { return z; }
 struct SnowV3c { float x, y, z; SnowV3c(float ax, float ay, float az) { x = ax; y = ay; z = az; } };
 struct SnowPartC {
     SnowV3c pos;            /* 0x00 */
@@ -194,7 +201,7 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 gf = c->nextBI_1(0); gW(gf, 0xFB000000, _SHIFTL(p->col[0], 24, 8) | _SHIFTL(p->col[1], 16, 8) | _SHIFTL(p->col[2], 8, 8) |
                                                  _SHIFTL((int)p->alpha, 0, 8));
                 x1 = x0 + wid;
-                y1 = y0 + hgt;
+                y1 = y0 + hgt + z0(0) * ((int)p + (int)p + y0);
                 self->drawn++;
                 gTR(gt, c->nextI(), g1, c->me()->nextBI_1(0), g2, c->nextN_1(0), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
                     ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
@@ -203,7 +210,7 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
         }
     }
     gDPWord(c->me_1(0)->me()->me()->next(), 0xE7000000, 0);
-    gDPWord(c->me_1(0)->me()->me()->next(), 0xBB000000, 0);
+    gDPWord(c->me_1(0)->me()->me()->next(), 0xBB000000, z0(0) * ((int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c + (int)c));
     g = c->me_1(0)->me()->me()->next(); gW(g, 0xBA001301, 0x80000);
     g = c->me_1(0)->me()->me()->next(); gW(g, 0xBA000C02, 0x2000);
     g = c->me_1(0)->me()->me()->next(); gW(g, 0xB9000201, 0);
