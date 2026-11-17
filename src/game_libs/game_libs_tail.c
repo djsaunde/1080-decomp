@@ -1683,8 +1683,15 @@ int Backup_checkOptions(int *s0) {
 
 extern int gl_func_00000000();
 void Backup_resetOptions(int a0) {
+#ifdef PORT
+    /* the 24-byte BackupOptions is built at &scratch and runs into pad_arr above it in the IDO
+     * frame; gcc orders the locals its own way (the fresh-SRAM path smashed the return address,
+     * plan 18.11): one buffer of the full size */
+    BackupOptions scratch;
+#else
     int pad_arr[5];
     int scratch;
+#endif
     CALL(Backup_resetOptionsData_0000AFC4)(&scratch);
     CALL(Backup_writeOptions)(a0, &scratch);
 }
@@ -1754,8 +1761,12 @@ int Backup_checkCourse(int *s0) {
 
 extern int gl_func_00000000();
 void Backup_resetCourse(int a0) {
+#ifdef PORT /* the record runs from &scratch into pad_arr in the IDO frame: one full-size buffer (see Backup_resetOptions) */
+    BackupCourse scratch;
+#else
     int pad_arr[95];
     int scratch;
+#endif
     CALL(Backup_resetCourseData_0000A670)(&scratch);
     CALL(Backup_writeCourse)(a0, &scratch);
 }
@@ -1816,8 +1827,12 @@ int Backup_checkArcade(int *s0) {
 
 extern int gl_func_00000000();
 void Backup_resetArcade(int a0) {
+#ifdef PORT /* the record runs from &scratch into pad_arr in the IDO frame: one full-size buffer (see Backup_resetOptions) */
+    BackupArcade scratch;
+#else
     int pad_arr[23];
     int scratch;
+#endif
     CALL(Backup_resetArcadeData_0000AAEC)(&scratch);
     CALL(Backup_writeArcade)(a0, &scratch);
 }
@@ -1911,8 +1926,12 @@ int Backup_checkGhost(void *arg0) {
 
 extern int gl_func_00000000();
 void Backup_resetGhost(int a0) {
+#ifdef PORT /* the record runs from &scratch into pad_arr in the IDO frame: one full-size buffer (see Backup_resetOptions) */
+    BackupGhost scratch;
+#else
     int pad_arr[3];
     int scratch;
+#endif
     CALL(Backup_resetGhostData_0000A990)(&scratch);
     CALL(Backup_writeGhost)(a0, &scratch);
 }
