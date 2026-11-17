@@ -27,17 +27,18 @@
 extern char D_00000000;
 extern int gl_func_00000000();
 
+/* The labels are game_libs_o2_343F4.c's (agent-c run 829: the ROM table, libultra's thread states). */
 int dbg_threadStateName(int a0) {
     switch (a0) {
-    case 2:
-        return (int)(GL_DATA_STR(0x1E3BC, "Stopped "));
-    case 3:
-        return (int)(GL_DATA_STR(0x1E3C8, "Runnable"));
-    case 5:
-        return (int)(GL_DATA_STR(0x1E3D4, "Running "));
     case 1:
-        return (int)(GL_DATA_STR(0x1E3E0, "Waiting "));
+        return (int)(GL_DATA_STR(0x1E3BC, "Stopped "));
+    case 2:
+        return (int)(GL_DATA_STR(0x1E3C8, "Runnable"));
+    case 4:
+        return (int)(GL_DATA_STR(0x1E3D4, "Running "));
     case 8:
+        return (int)(GL_DATA_STR(0x1E3E0, "Waiting "));
+    case 3: case 5: case 6: case 7: /* no state: IDO's table density */
     default:
         return (int)(GL_DATA_STR(0x1E3EC, "Unknown"));
     }

@@ -6324,7 +6324,10 @@ void RiderAnim_setHitKind_0000EDCC(int *a0, int a1) {
  *   p = a0->0xB4;
  *   p->0xA14 -= v0;
  *
- * Trigger jumptable emit: 5 explicit cases (case 4 is empty break, NOT
+ * Labels from the ROM table (port/tools/jumptable-audit.py, run 831): a1 = 0 is the
+ * empty arm, 1..4 pick dm1..dm4 (the callers pass 1 and 2).
+ *
+ * Trigger jumptable emit: 5 explicit cases (case 0 is empty break, NOT
  * default) + `int v0 = 0;` pre-init. IDO -O2 then uses sltiu+jumptable
  * via D_base+0x224. WITHOUT case 4 explicit, IDO falls back to cascading
  * else-if chain (20% match). WITHOUT v0=0 pre-init, IDO emits redundant
@@ -6340,11 +6343,11 @@ void RiderAnim_applyDamage_0000EDD4(int *a0, unsigned int a1, int a2) {
     int *p;
     (void)a2;
     switch (a1) {
-        case 0: v0 = RA(a0)->parms.dm1.value.i; break;
-        case 1: v0 = RA(a0)->parms.dm2.value.i; break;
-        case 2: v0 = RA(a0)->parms.dm3.value.i; break;
-        case 3: v0 = RA(a0)->parms.dm4.value.i; break;
-        case 4: break;
+        case 1: v0 = RA(a0)->parms.dm1.value.i; break;
+        case 2: v0 = RA(a0)->parms.dm2.value.i; break;
+        case 3: v0 = RA(a0)->parms.dm3.value.i; break;
+        case 4: v0 = RA(a0)->parms.dm4.value.i; break;
+        case 0: break;
     }
     p = &RA(a0)->rider->health;
     *p = *p - v0;
@@ -7842,8 +7845,9 @@ void RiderAnim_clearTricks_00011888(int *a0) {
 
 /* RiderAnim_hitFeedback_0001189C: hit kind a1 = 1..5 (a jump table at D+0x260): a pad
  * record on the rider's input (pad_set(rider->input, &D+off_k, 10), off_k =
- * {0x109C, 0x10AC, 0x10A4, 0x10C0, 0x10DC}) and a sound event on the rider's SndHandle
- * (rider + 0x808) with a2. */
+ * {0x109C, 0x10A4, 0x10AC, 0x10C0, 0x10DC}) and a sound event on the rider's SndHandle
+ * (rider + 0x808) with a2. Labels from the ROM table (port/tools/jumptable-audit.py, run 831):
+ * 2 is the 0x10A4 arm, 3 the 0x10AC arm (the kRumble_hit2/3 names predate that). */
 void RiderAnim_hitFeedback_0001189C(int *a0, int a1, int a2) {
     int *s0 = a0;
     int s1 = a2;
@@ -7852,11 +7856,11 @@ void RiderAnim_hitFeedback_0001189C(int *a0, int a1, int a2) {
         FCALL(pad_setRumble)((int)RA(s0)->rider->input, (char *)&D_00000000 + kRumble_hit1_109C, 10);
         FCALL(SndHandle_triggerEvent3_00000940)((int)RA(s0)->rider->sound, s1);
         break;
-    case 2:
+    case 3:
         FCALL(pad_setRumble)((int)RA(s0)->rider->input, (char *)&D_00000000 + kRumble_hit2_10AC, 10);
         FCALL(SndHandle_triggerEvent0_000008F4)((int)RA(s0)->rider->sound, s1);
         break;
-    case 3:
+    case 2:
         FCALL(pad_setRumble)((int)RA(s0)->rider->input, (char *)&D_00000000 + kRumble_hit3_10A4, 10);
         FCALL(SndHandle_triggerEvent0_000008F4)((int)RA(s0)->rider->sound, s1);
         break;

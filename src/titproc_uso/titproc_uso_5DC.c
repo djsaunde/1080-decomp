@@ -41,6 +41,10 @@ void tit_procMain(char *a0, int a1) {
     d = (int)&import_00020098; /* int, not InputMgr *: typed, the whole allocation moves */
     done = 0;
     do {
+        /* Labels from the ROM table (RoData +0x0; port/tools/jumptable-audit.py, run 831; the
+         * arms stay in source order): 4 picks the demo flags, 5 / 6 the two attract demos, 8 -> 10
+         * and 7 -> 9 the two ghost replays, 3 is empty. The old labels (arms numbered in source
+         * order) sent 6 / 8 to an empty state 10 / 9 and matched only because the table is the ROM's. */
         switch (a1) {
         case 0: {
             XCALL(titproc_uso_func_0120A8, snd_playSeq_000120A8)(d, 0, 0, 0);
@@ -67,12 +71,12 @@ void tit_procMain(char *a0, int a1) {
             XCALL(titproc_uso_func_000C0C, tit_closeSession_00000C0C)(a0);
             ((InputMgr *)d)->procState = 0;
             break;
-        case 3: {
+        case 4: {
             ((InputMgr *)d)->procState = ((InputMgr *)d)->nextProcState, ((InputMgr *)d)->nextProcState = 0;
             s5v = 0x800000;
             break;
         }
-        case 4: {
+        case 5: {
             mask = ((s5v | 0x10000) | 0x80000) | 0x898;
             t = XCALL(titproc_uso_func_000418, tit_randomUnlocked_00000418)();
             done = 1;
@@ -89,7 +93,7 @@ void tit_procMain(char *a0, int a1) {
             ((InputMgr *)d)->procState = 0;
             break;
         }
-        case 5: {
+        case 6: {
             mask = ((s5v | 0x1010000) | 0x80000) | 0x898;
             t = XCALL(titproc_uso_func_000418, tit_randomUnlocked_00000418)();
             done = 1;
@@ -106,12 +110,12 @@ void tit_procMain(char *a0, int a1) {
             ((InputMgr *)d)->procState = 0;
             break;
         }
-        case 6:
+        case 8:
             XCALL(titproc_uso_func_000C0C, tit_closeSession_00000C0C)(a0);
             s5v = 0x2100000;
             ((InputMgr *)d)->procState = 10;
             break;
-        case 7: {
+        case 10: {
             t = s5v & 0x2000000;
             mask = (s5v | 0x8020000) | 0x80000;
             XCALL(titproc_uso_func_000B6C, tit_openSession_00000B6C)(a0, 2);
@@ -141,7 +145,7 @@ void tit_procMain(char *a0, int a1) {
             ((InputMgr *)d)->procState = 11;
             break;
         }
-        case 8:
+        case 7:
             XCALL(titproc_uso_func_000C0C, tit_closeSession_00000C0C)(a0);
             s5v = 0x2100000;
             ((InputMgr *)d)->procState = 9;
@@ -174,7 +178,7 @@ void tit_procMain(char *a0, int a1) {
             ((InputMgr *)d)->procState = 11;
             break;
         }
-        case 10:
+        case 3:
             break;
         case 11:
             XCALL(titproc_uso_func_000C0C, tit_closeSession_00000C0C)(a0);
@@ -186,7 +190,7 @@ void tit_procMain(char *a0, int a1) {
     /* t is uninitialised on the case-1 exit path. Allowed only because the target
      * itself relies on an uninitialised local in this same function: its prologue
      * loads s5v from its never-written home (`lw s5,0x5C(sp)`, 0x8FB5005C at
-     * 0x620; s5v is only assigned in cases 3/6/8 and read in 4/5/7/9). This empty
+     * 0x620; s5v is only assigned in cases 4/7/8 and read in 5/6/9/10). This empty
      * test keeps t live around the loop so the address constant outranks it
      * (d = s0, t = s1 as in the target). */
     if (t) {}

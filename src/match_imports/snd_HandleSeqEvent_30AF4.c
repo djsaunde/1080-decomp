@@ -98,12 +98,12 @@ s32 arg2;
     gl_func_00030AF4_460D0v();
     sv = (s32)&XDATA(gl_state_30AF4, port_bootup_data, 0x1C080) + 0 * (int)(flag);
     if (sv) {}
-    switch (mode) {
-    case 0:
+    switch (mode) { /* labels (both switches) from the ROM tables at RoData 0x1874 / 0x18B0 (port/tools/jumptable-audit.py, run 831) */
+    case 1:
         gl_func_00042364(1);
         flag = 1;
         break;
-    case 1:
+    case 0:
         D_30AF4_f = 0;
         gl_func_00042364(0);
         XCALL(gl_func_emit, snd_PlayPlayer1SeqDefault)(2);
@@ -152,7 +152,7 @@ s32 arg2;
         flag = 1;
         D_30AF4_k = 14;
         break;
-    case 5:
+    case 7:
         if (gl_cmd_30AF4 == 13) {
             break;
         }
@@ -174,7 +174,7 @@ s32 arg2;
         }
         XCALL(gl_func_emit, snd_PlayPlayer1SeqDefault)(CMD_B3);
         break;
-    case 6:
+    case 5:
         {
         w = 35;
         if (sv) {}
@@ -221,7 +221,7 @@ s32 arg2;
         XCALL(gl_func_emit, snd_PostEvent)(wv);
         }
         break;
-    case 7:
+    case 6:
         D_30AF4_q = 14;
         break;
     case 8:
@@ -231,7 +231,7 @@ s32 arg2;
             XCALL(gl_func_emit, snd_PlayPlayer1SeqDefault)(CMD_B3);
         }
         break;
-    case 9:
+    case 10:
         gl_func_00030AF4_42364v(3);
         sv = (u32)&XDATA(gl_state_30AF4, port_bootup_data, 0x1C0B0);
         if (sv) {}
@@ -244,7 +244,7 @@ s32 arg2;
         XCALL(gl_func_emit, snd_ScheduleSeqAfter)(CMD_B3, 35);
         flag = 1;
         break;
-    case 10:
+    case 11:
         gl_func_00042364(7);
         gl_cmd_30AF4 = 18;
         XCALL(gl_func_emit, AudioThread_QueueCmdS32)(0x81000F00, 0);
@@ -256,12 +256,12 @@ s32 arg2;
         XCALL(gl_func_emit, snd_PlayPlayer1SeqDefault)(CMD_B3);
         flag = 1;
         break;
-    case 11:
+    case 13:
         gl_cmd_30AF4 = 19;
         XCALL(gl_func_emit, snd_ScheduleSeqAfter)(CMD_B3, 80);
         break;
+    case 9:
     case 12:
-    case 13:
         break;
     }
     if (flag == 1) {
@@ -282,7 +282,7 @@ s32 arg2;
         D_30AF4_v = 4;
     }
     switch (mode) {
-    case 0:
+    case 4:
         if (prev == 0) {
             break;
         }
@@ -323,17 +323,17 @@ s32 arg2;
             XCALL(gl_func_emit, snd_PostEvent)(0xBC);
         }
         break;
-    case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8:
+    case 0: case 2: case 5: case 7: case 8: case 9: case 10: case 11:
         break;
-    case 9:
+    case 1:
         XCALL(gl_func_emit, AudioThread_QueueCmdS32)(0xF8000000, 0);
         XCALL(gl_func_emit, snd_PostEvent)(0xA3);
         break;
-    case 10:
+    case 3:
         XCALL(gl_func_emit, AudioThread_QueueCmdS32)(0xF8000000, 0);
         XCALL(gl_func_emit, snd_UpdateChannel10Emitter)(0, 0x3E99999A, 0);
         break;
-    case 11:
+    case 6:
         switch (sub) {
         case 0:
             XCALL(gl_func_emit, snd_PostEvent)(14);

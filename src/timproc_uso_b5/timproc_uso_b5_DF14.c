@@ -143,74 +143,74 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         /* flag chain on one line (run 216); per-pair aliases (run 217, see top) */
         flag = EE6C_L(df14_ee6c_l1) & 0x80000; EE6C_S(df14_ee6c_s1) = EE6C_L(df14_ee6c_l2) & 0xFFF7FFFF; EE6C_S(df14_ee6c_s2) = EE6C_L(df14_ee6c_s1) & ~1; EE6C_S(df14_ee6c_s2) = EE6C_L(df14_ee6c_s2) | 2; EE6C_S(df14_ee6c_s4) = EE6C_L(df14_ee6c_s2) & 0xFFFDFFFF; EE6C_S(df14_ee6c_s4) = EE6C_L(df14_ee6c_s4) | 0x2000;
         MODEL(child)->unk140 = 1; MODEL(child)->unk13C = 1;
-        switch ((s32) sub) {
-        case 0:
+        switch ((s32) sub) { /* labels from the ROM table at RoData 0x400 (port/tools/jumptable-audit.py, run 831): as CourseList_createItem, 11..13 the mode-3 arms, 0..7 the charmap arms */
+        case 11:
             if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, (&timproc_uso_b5_D_807FEBB4 + 5900), (&import_8077EBB4 + 0), 0));
             }
             MODEL(child)->unk13C = 0;
             break;
-        case 1:
+        case 12:
             if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, (&timproc_uso_b5_D_807FA914 + 5912), (&import_8077A914 + 0), 0));
             }
             MODEL(child)->unk13C = 0;
             break;
-        case 2:
+        case 13:
             if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, (&import_80806674 + 5924), (&import_80776674 + 0), 0));
             }
             MODEL(child)->unk13C = 0;
             break;
-        case 3:
+        case 0:
             if (INPUT_MGR(import_800200CC).nextFlowMode != 2) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFA0[5936], (&XDATA(D_00000000, port_charmap_data, 0x1B4) + 0), 0));
             }
             break;
-        case 4:
+        case 1:
             if (INPUT_MGR(import_800200CC).nextFlowMode != 2) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFAC[5948], (&XDATA(D_00000000, port_charmap_data, 0x33C4) + 0), 0));
             }
             break;
-        case 5:
+        case 2:
             mode = INPUT_MGR(import_800200CC).nextFlowMode;
             if ((mode != 3) && (mode != 5)) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFB8[5960], (&XDATA(D_00000000, port_charmap_data, 0x65D4) + 0), 0));
             }
             break;
-        case 6:
+        case 3:
             mode = INPUT_MGR(import_800200CC).nextFlowMode;
             if ((mode != 3) && (mode != 5)) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFC4[5972], (&XDATA(D_00000000, port_charmap_data, 0x97E4) + 0), 0));
             }
             break;
-        case 7:
+        case 4:
             mode = INPUT_MGR(import_800200CC).nextFlowMode;
             if ((mode != 3) && (mode != 5)) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFD0[5984], (&XDATA(D_00000000, port_charmap_data, 0xC9F4) + 0), 0));
             }
             break;
-        case 8:
+        case 5:
             mode = INPUT_MGR(import_800200CC).nextFlowMode;
             if ((mode != 3) && (mode != 5)) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFDC[5996], (&XDATA(D_00000000, port_charmap_data, 0xFC04) + 0), 0));
             }
             break;
-        case 9:
+        case 6:
             mode = INPUT_MGR(import_800200CC).nextFlowMode;
             if ((mode != 3) && (mode != 5)) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFE8[6008], (&XDATA(D_00000000, port_charmap_data, 0x12E14) + 0), 0));
             }
             break;
-        case 10:
+        case 7:
             mode = INPUT_MGR(import_800200CC).nextFlowMode;
             if ((mode != 3) && (mode != 5)) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFF4[6020], (&XDATA(D_00000000, port_charmap_data, 0x16024) + 0), 0));
             }
             break;
-        case 11:
-        case 12:
-        case 13:
+        case 8:
+        case 9:
+        case 10:
             break;
         }
         /* one line (D884's lui order fix, run 216) */

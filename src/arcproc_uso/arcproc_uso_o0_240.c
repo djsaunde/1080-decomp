@@ -48,7 +48,7 @@ void arc_procMain(int a0, int a1) {
     register int *b1;
     register int *b2;
     do {
-        switch (a1) {
+        switch (a1) { /* labels from the ROM table (port/tools/jumptable-audit.py, run 831): 6 = menu, 7 = name entry, 8 = view record */
         case 0:
             CALL(app_launchGenProc)(a0, 1, 3, 1);
             D_00000000.nextProcState = 3;
@@ -85,16 +85,16 @@ void arc_procMain(int a0, int a1) {
             done = 1;
             break;
         }
-        case 6:
+        case 7:
             CALL(app_launchNameEnt)(a0, *(int *)a0);
             done = 1;
             break;
-        case 7:
+        case 8:
             r = CALL(app_flowModeBit)(D_00000000.course);
             CALL(app_launchViewRec)(a0, (D_00000000.course | 0x8000) | r, 0x8000, ((int *)a0)[0]);
             done = 1;
             break;
-        case 8:
+        case 6:
             CALL(snd_playSeq_000120A8)(&D_00000000, 7, 0, 0);
             r = CALL(ARCMenuProcess_ctor)(0);
             CALL(app_runProcess)(a0, 1, r);

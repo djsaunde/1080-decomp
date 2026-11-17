@@ -85,28 +85,28 @@ void gl___osDevMgrMain(void *args)
                 XCALL(gl_func_00000000_yield, gl_osYieldThread)();
         } else {
             switch (mb->hdr.type) {
-            case 10: /* OS_MESG_TYPE_DMAREAD */
+            case 11: /* OS_MESG_TYPE_DMAREAD */
                 XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->acsQueue, &dummy, 1);
                 ret = dm->dma(0, mb->devAddr, mb->dramAddr, mb->size);
                 break;
-            case 11: /* OS_MESG_TYPE_DMAWRITE */
+            case 12: /* OS_MESG_TYPE_DMAWRITE */
                 XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->acsQueue, &dummy, 1);
                 ret = dm->dma(1, mb->devAddr, mb->dramAddr, mb->size);
                 break;
-            case 12: /* OS_MESG_TYPE_EDMAREAD */
+            case 15: /* OS_MESG_TYPE_EDMAREAD */
                 XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->acsQueue, &dummy, 1);
                 ret = dm->edma(mb->piHandle, 0, mb->devAddr, mb->dramAddr, mb->size);
                 break;
-            case 13: /* OS_MESG_TYPE_EDMAWRITE */
+            case 16: /* OS_MESG_TYPE_EDMAWRITE */
                 XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->acsQueue, &dummy, 1);
                 ret = dm->edma(mb->piHandle, 1, mb->devAddr, mb->dramAddr, mb->size);
                 break;
-            case 14: /* OS_MESG_TYPE_LOOPBACK */
+            case 10: /* OS_MESG_TYPE_LOOPBACK */
                 XCALL(gl_func_00000000_send, gl_osSendMesg)(mb->hdr.retQueue, mb, 0);
                 ret = -1;
                 break;
-            case 15: /* jumptable spans 10..16 (sltiu 7): 15/16 -> default */
-            case 16:
+            case 13: /* OS_MESG_TYPE_VRETRACE / COUNTER (13 / 14): the table spans 10..16 (sltiu 7), these two -> default (libultra 2.0 numbering, as the kernel copy; the ROM table at kernel 0x8000A770) */
+            case 14:
             default:
                 ret = -1;
                 break;

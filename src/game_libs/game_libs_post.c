@@ -14804,11 +14804,11 @@ s32 arg2;
                                                   * mode-selector spill moves 24 -> 28 like the target (98.790 -> 98.797) */
     if (sv) {} /* agent-g run 287: code-free use keeps the base a variable LR: the target's pre-switch `lui; addiu` hoist */
     switch (mode) {                     /* switch 1 @0xC0: sltiu 14, jtbl +0x1874 */
-    case 0:                             /* body A @0xE0 */
+    case 1:                             /* body A @0xE0 */
         gl_func_00042364(1);
         flag = 1;
         break;
-    case 1:                             /* body B @0xF4 */
+    case 0:                             /* body B @0xF4 */
         D_30AF4_f = 0;
         gl_func_00042364(0);
         gl_func_emit(2);
@@ -14862,7 +14862,7 @@ s32 arg2;
         flag = 1;
         D_30AF4_k = 14;
         break;
-    case 5:                             /* body F @0x268 */
+    case 7:                             /* body F @0x268 */
         if (gl_cmd_30AF4 == 13) {
             break;
         }
@@ -14884,7 +14884,7 @@ s32 arg2;
         }
         gl_func_emit(CMD_B3);
         break;
-    case 6:                             /* body G @0x2DC */
+    case 5:                             /* body G @0x2DC */
         {
         w = 35;
         if (sv) {} /* agent-g run 287: two counted code-free uses of the hoist LR lift it over the D_30AF4_m load LR: hoist takes v0, D_m v1 */
@@ -14933,7 +14933,7 @@ s32 arg2;
         gl_func_emit(wv);
         }
         break;
-    case 7:                             /* body H @0x464 */
+    case 6:                             /* body H @0x464 */
         D_30AF4_q = 14;
         break;
     case 8:                             /* body I @0x474 */
@@ -14943,7 +14943,7 @@ s32 arg2;
             gl_func_emit(CMD_B3);
         }
         break;
-    case 9:                             /* body J @0x4AC */
+    case 10:                             /* body J @0x4AC */
         gl_func_00030AF4_42364v(3); /* agent-g run 286: void alias of gl_func_00042364 (result never read): frees v0 for sv */
         /* agent-g run 286: sv re-set to &gl_state and kept a variable by the code-free test (target `lui v0; addiu v0`
          * after the call = this def, coloured v0); the store and the == 1 test go through the global (the test reads
@@ -14962,7 +14962,7 @@ s32 arg2;
         gl_func_emit(CMD_B3, 35);
         flag = 1;
         break;
-    case 10:                            /* body K @0x508 */
+    case 11:                            /* body K @0x508 */
         gl_func_00042364(7);
         gl_cmd_30AF4 = 18;
         gl_func_emit(0x81000F00, 0);
@@ -14974,12 +14974,12 @@ s32 arg2;
         gl_func_emit(CMD_B3);
         flag = 1;
         break;
-    case 11:                            /* body L @0x578 */
+    case 13:                            /* body L @0x578 */
         gl_cmd_30AF4 = 19;
         gl_func_emit(CMD_B3, 80);
         break;
+    case 9:
     case 12:
-    case 13:
         break;
     }
 
@@ -15006,7 +15006,7 @@ s32 arg2;
     }
 
     switch (mode) {                  /* switch 2 @0x634: sltiu 12, jtbl +0x18B0 */
-    case 0:                             /* @0x654 */
+    case 4:                             /* @0x654 */
         if (prev == 0) {
             break;
         }
@@ -15050,17 +15050,17 @@ s32 arg2;
             gl_func_emit(0xBC);
         }
         break;
-    case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8:
+    case 0: case 2: case 5: case 7: case 8: case 9: case 10: case 11:
         break;
-    case 9:                             /* @0x790 */
+    case 1:                             /* @0x790 */
         gl_func_emit(0xF8000000, 0);
         gl_func_emit(0xA3);
         break;
-    case 10:                            /* @0x7AC */
+    case 3:                            /* @0x7AC */
         gl_func_emit(0xF8000000, 0);
         gl_func_emit(0, 0x3E99999A, 0);
         break;
-    case 11:                            /* @0x7D4 */
+    case 6:                            /* @0x7D4 */
         switch (sub) {
         case 0:
             gl_func_emit(14);

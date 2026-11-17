@@ -228,14 +228,14 @@ extern "C" XZ SnowAI_aimWeave(Self *s, Node *a, Node *b, int flag) {
             s->phase++; /* agent-h run 361: the target stores phase twice (phase + 1, then & 3), 91.182 -> 91.288 */
             s->phase &= 3; /* run 425: a statement of its own, then switch on the field: the masked value stays a */
             switch (s->phase) { /* ugen temp (target t8) instead of a uopt LR (v0), and the return copy recolours */
-            case 0:
+            case 0: /* labels from the ROM table (port/tools/jumptable-audit.py, run 831): the weave */
+            case 2: /* cycles 0, +side, 0, -side */
                 side *= 0.0f;
                 break;
-            case 1:
+            case 3:
                 side *= -1.0f;
                 break;
-            case 2:
-            case 3:
+            case 1:
                 break;
             }
             s->p84 += side;
