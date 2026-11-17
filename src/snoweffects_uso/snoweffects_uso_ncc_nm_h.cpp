@@ -7,13 +7,15 @@
  * written to points[writeOfs + i] and vtx[writeOfs + i]. The x lerp goes through a `float &` inline that
  * copies the old value (lerpTo), y / z through one inline sharing a single copy (lerp2): w.y / w.z then share
  * one uopt colour (f0, as the target). The x += dv is plain (the target keeps that w.x in a ugen temp)
- * (89.96 -> 94.58 -> 94.91 %). Left: f outranks the x copy (f in f2, x copy f12; target the reverse), and
- * lim is spilled (target f20, alpha f22). */
+ * (89.96 -> 94.58 -> 94.91 %). SnowBV3 has no constructor: each inline default constructor is an edg basic
+ * block, and uopt's callee-saved first-use cost is 0.25 x the block count, so with it (49 blocks, 12.25) lim was
+ * spilled; without it lim takes f20 and alpha f22 as in the target. The named d (u160 - 5) and k (ab * u168)
+ * are the target's f0 temps (99.25 %). Left: f outranks the x copy (f in f2, x copy f12; target the reverse),
+ * ab / the alpha temp swapped (f2 / f12), and the target's second zero constant (f18) for dv. */
 extern "C" int gl_func_00000000(...);
 extern "C" char D_00000000[];
 struct SnowBV3 {
     float x, y, z;
-    SnowBV3() {}
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     SnowBV3 &operator=(SnowBV3 o) { x = o.x; y = o.y; z = o.z; return *this; }
 };
@@ -107,7 +109,7 @@ extern "C" void snoweffects_uso_func_000047D4(SnowEm *t) {
     t->on = gl_func_00000000_snow_46bc(t);
     cam = t->cam;
     if (cam->speed < t->u160) {
-        a = t->u164 / (t->u160 - 5.0f) * (cam->speed - 5.0f);
+        { float d = t->u160 - 5.0f; a = t->u164 / d * (cam->speed - 5.0f); }
     } else {
         a = t->u164;
     }
@@ -116,7 +118,7 @@ extern "C" void snoweffects_uso_func_000047D4(SnowEm *t) {
     } else {
         ab = t->u4C;
     }
-    alpha = ab * t->u168 * (255.0f - a) + a;
+    { float k = ab * t->u168; alpha = k * (255.0f - a) + a; }
     if (cam->mode == 98) {
         t->slots[t->write].u4 = 1;
     } else {
