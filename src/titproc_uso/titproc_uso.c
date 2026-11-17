@@ -17,12 +17,12 @@ typedef struct { int a, b, c, d; } Quad4;
  * K&R `()` decl + K&R def = no sig conflict. */
 void titproc_uso_func_00000000()
 {
-    CALL(gui_spriteInit)(&D_00000000, 4);
-    CALL(gui_spriteInit)(&D_00000000 + 0x18, 5);
-    CALL(gui_spriteInit)(&D_00000000 + 0x78, 2);
-    CALL(gui_spriteInit)(&D_00000000 + 0x90, 0);
-    CALL(gui_spriteInit)(&D_00000000 + 0x30, ((*(int*)&D_00000000 + 0x31) << 16) | 9);
-    CALL(gui_spriteInit)(&D_00000000 + 0x48, ((*(int*)&D_00000000 + 0x31) << 16) | 0xA);
+    CALL(gui_spriteInit)(&XDATA(D_00000000, port_titproc_bss, 0x0), 4);
+    CALL(gui_spriteInit)(&XDATA(D_00000000, port_titproc_bss, 0x0) + 0x18, 5);
+    CALL(gui_spriteInit)(&XDATA(D_00000000, port_titproc_bss, 0x0) + 0x78, 2);
+    CALL(gui_spriteInit)(&XDATA(D_00000000, port_titproc_bss, 0x0) + 0x90, 0);
+    CALL(gui_spriteInit)(&XDATA(D_00000000, port_titproc_bss, 0x0) + 0x30, ((*(int*)&XDATA(D_00000000, port_bootup_bss, 0x28C) + 0x31) << 16) | 9);
+    CALL(gui_spriteInit)(&XDATA(D_00000000, port_titproc_bss, 0x0) + 0x48, ((*(int*)&XDATA(D_00000000, port_bootup_bss, 0x28C) + 0x31) << 16) | 0xA);
 }
 
 void tit_loadLogoSprite_00000098(void) {

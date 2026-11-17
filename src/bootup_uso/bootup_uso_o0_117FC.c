@@ -30,13 +30,13 @@ void GameFlow_loadProcUso_000117FC(char *a0, void *a1) {
     if (GAMEFLOW(a0)->procUsoPath == 0 ||
         FCALL(str_compare_00067B04)(a1, GAMEFLOW(a0)->procUsoPath) != 0) {
         if (GAMEFLOW(a0)->procUsoPath != 0) {
-            FCALL(app_unloadUso)(&gSysLib, GAMEFLOW(a0)->procUsoPath);
+            FCALL(app_unloadUso)(&XDATA(gSysLib, port_bootup_bss, 0x3C740), GAMEFLOW(a0)->procUsoPath);
             FCALL(app_freeAllOfType)(3);
         }
         h = FCALL(app_setHeapMode)(3);
-        FCALL(app_setCurrentHeap)(&gSnowBoard, 1);
-        FCALL(app_loadUso)(&gSysLib, a1);
-        FCALL(app_setCurrentHeap)(&gSnowBoard, 0);
+        FCALL(app_setCurrentHeap)(&XDATA(gSnowBoard, port_bootup_bss, 0x58), 1);
+        FCALL(app_loadUso)(&XDATA(gSysLib, port_bootup_bss, 0x3C740), a1);
+        FCALL(app_setCurrentHeap)(&XDATA(gSnowBoard, port_bootup_bss, 0x58), 0);
         FCALL(app_setHeapMode)(h);
         GAMEFLOW(a0)->procUsoPath = a1;
     }

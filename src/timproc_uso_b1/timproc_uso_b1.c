@@ -333,7 +333,7 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
         o2 = o1;
         if (o1 != 0 || (o2 = (char *)CALL(mem_new)(0x50)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&D_00000000 + 0x3B8); NODE(o3)->vptr = (char *)&D_b1_097C_v0; }
+            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&XDATA(D_00000000, port_timproc_data, 0x0) + 0x3B8); NODE(o3)->vptr = (char *)&D_b1_097C_v0; }
             NODE(o2)->vptr = (char *)&D_b1_097C_v1;
         }
         NODE(o1)->vptr = (char *)&D_b1_097C_v2;
@@ -341,12 +341,12 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
     }
     NODE(obj)->vptr = (char *)&D_b1_097C_v3;
     RACEPROC(obj)->spriteSet = 0;
-    CALL(RaceProcess_init)(obj, a1, (char *)&D_00000000 + 0x3C0, a2);
+    CALL(RaceProcess_init)(obj, a1, (char *)&XDATA(D_00000000, port_timproc_data, 0x0) + 0x3C0, a2);
     RACEPROC(obj)->session = (BackupSession *)a3;
     CALL(TimRace_initLabels_00000D1C)(obj);
     TIMRACE(obj)->recordFade = 0.0f;
-    CALL(memtrack_begin)((char *)&D_00000000 + 0x3D0, 0);
-    CALL(input_setActivePad_0001207C)(&D_00000000, 0);
+    CALL(memtrack_begin)((char *)&XDATA(D_00000000, port_timproc_data, 0x0) + 0x3D0, 0);
+    CALL(input_setActivePad_0001207C)(&XDATA(D_00000000, port_bootup_bss, 0xF8), 0);
 
     {
         o2 = (char *)CALL(mem_new)(0xE0);
@@ -376,12 +376,12 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
             RACEPROC(obj)->menu = (GuiMenu *)CALL(PauseMenu_create)(0);
             CALL(gui_initRows_000100F0)(RACEPROC(obj)->menu, obj);
             RACEPROC(obj)->menu->unk30 = RACEPROC(obj)->spriteSet;
-            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, (*(int *)&D_b1_097C_r + 3) << 16, -1, &D_00000000);
-            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 1, -1, &D_00000000);
-            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 4, -1, &D_00000000);
-            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 3, -1, &D_00000000);
-            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 2, -1, &D_00000000);
-            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 5, -1, &D_00000000);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, (*(int *)&D_b1_097C_r + 3) << 16, -1, &XDATA(D_00000000, TimRace_pauseContinue_000006B0, 0x0));
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 1, -1, &XDATA(D_00000000, TimRace_pauseRow1_000006F0, 0x0));
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 4, -1, &XDATA(D_00000000, TimRace_pauseChangeCourse, 0x0));
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 3, -1, &XDATA(D_00000000, TimRace_pauseChangeBoard, 0x0));
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 2, -1, &XDATA(D_00000000, TimRace_pauseChangeCharacter, 0x0));
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 5, -1, &XDATA(D_00000000, TimRace_pauseQuit_00000800, 0x0));
             CALL(gui_centerRows_0001016C)(RACEPROC(obj)->menu);
             o1 = (char *)RACEPROC(obj)->menu;
             CALL(list_append)(obj + 16, o1);
@@ -394,13 +394,13 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
             RACEPROC(obj)->menu = 0;
         }
 
-        o1 = *(char **)((char *)&D_00000000 + 0x190);
+        o1 = *(char **)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x190);
         CALL(list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
         NODE(o1)->parent = (Node *)obj;
-        CALL(Fader_start)(*(int **)((char *)&D_00000000 + 0x190), 1, 0);
+        CALL(Fader_start)(*(int **)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x190), 1, 0);
         CALL(memtrack_end)();
     }
     }
@@ -1277,12 +1277,12 @@ char *TimMenu_ctor(char *arg0) {
         if ((arg0 != 0) || (a3 = (char *)CALL(mem_new)(80), (a3 != 0))) {
             a0 = a3;
             if ((a3 != 0) || (a0 = (char *)CALL(mem_new)(44), (a0 != 0))) {
-                CALL(Node_ctor)(a0, (char *)&D_00000000 + 0x4B8); *(char **)&NODE(a0)->vptr = &D_00000000;
+                CALL(Node_ctor)(a0, (char *)&XDATA(D_00000000, port_timproc_data, 0x0) + 0x4B8); *(char **)&NODE(a0)->vptr = &XDATA(D_00000000, port_bootup_data, 0xC338);
             }
-            *(char **)&NODE(a3)->vptr = &D_00000000;
+            *(char **)&NODE(a3)->vptr = &XDATA(D_00000000, port_bootup_data, 0xC3A0);
         }
-        TIMMENU(arg0)->base.node.vptr = (char *)(&D_00000000);
-        TIMMENU(arg0)->base.node.name = (const char *)((char *)&D_00000000 + 0x4C0);
+        TIMMENU(arg0)->base.node.vptr = (char *)(&XDATA(D_00000000, port_timproc_data, 0x438));
+        TIMMENU(arg0)->base.node.name = (const char *)((char *)&XDATA(D_00000000, port_timproc_data, 0x0) + 0x4C0);
         CALL(TimMenu_initLabels_000024F4)(arg0);
         TIMMENU(arg0)->unk60 = 120;
         TIMMENU(arg0)->unk64 = 161;
@@ -1296,7 +1296,7 @@ char *TimMenu_ctor(char *arg0) {
         CALL(gui_addRowSub_00010B6C)(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d6 + 3) << 16) | 3, -1, &D_b1_21D4_d1);
         CALL(gui_addRowSub_00010B6C)(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d7 + 3) << 16) | 2, -1, &D_b1_21D4_d1);
         CALL(gui_addRowSub_00010B6C)(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d8 + 3) << 16) | 5, -1, &D_b1_21D4_d1);
-        GUIMENU(TIMMENU(arg0)->base.menu)->unk30 = CALL(gui_fontCreate)(0, &D_00000000, 72, 221, 3, 13);
+        GUIMENU(TIMMENU(arg0)->base.menu)->unk30 = CALL(gui_fontCreate)(0, &XDATA(D_00000000, port_bootup_data, 0xD698), 72, 221, 3, 13);
         CALL(gui_centerRows_0001016C)(TIMMENU(arg0)->base.menu);
         CALL(gui_centerAt_000102A4)(TIMMENU(arg0)->base.menu, 140);
         if (1) {}
@@ -1488,19 +1488,19 @@ void TimMenu_draw_00002838(char *arg0) {
     int w;
     int x;
 
-    glv_2838(obj);
+    XCALL(glv_2838, TimMenu_drawHeader_00002BE4)(obj);
     TIMMENU(obj)->blink = TIMMENU(obj)->blink - 0x10;
     switch (TIMMENU(obj)->base.state) {
     case 1:
-        glv_2838((char *)&D_00000000);
-        glv_2838((char *)&D_00000000 + 0x1F0);
-        glv_2838((char *)&D_00000000 + 0x1F0, 0xA0, 0x25, 3);
-        glv_2838(obj, 0x25);
-        glv_2838(obj, *(unsigned char *)((char *)&D_00000000 + 0x178), 0x50);
-        glv_2838((char *)&D_00000000 + 0x1C0);
-        glv_2838((char *)&D_00000000 + 0x1C0);
-        glv_2838((char *)&D_00000000 + 0x1C0, 0xA0, 0x69, 3);
-        f = *(int *)&D_00000000;
+        XCALL(glv_2838, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_gui_bss, 0x8));
+        XCALL(glv_2838, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x1F0);
+        XCALL(glv_2838, gui_drawSprite)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x1F0, 0xA0, 0x25, 3);
+        XCALL(glv_2838, TimMenu_drawLabel130_00002E50)(obj, 0x25);
+        XCALL(glv_2838, TimMenu_drawLabel_00002CE0)(obj, *(unsigned char *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x178), 0x50);
+        XCALL(glv_2838, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x1C0);
+        XCALL(glv_2838, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x1C0);
+        XCALL(glv_2838, gui_drawSprite)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x1C0, 0xA0, 0x69, 3);
+        f = *(int *)&XDATA(D_00000000, port_bootup_bss, 0x28C);
         v0 = TIMMENU(obj)->promptY;
         if (f != 0) {
             if (1) { v0 += 0xA; }
@@ -1510,31 +1510,31 @@ void TimMenu_draw_00002838(char *arg0) {
         if (f != 0) {
             a2 = x - 0xE;
         }
-        glv_2838((char *)&D_00000000 + 0x148);
-        glv_2838((char *)&D_00000000 + 0x148);
-        glv_2838((char *)&D_00000000 + 0x148, 0xA0, a2, 3);
-        glv_2838(obj, v0 - 0x14);
+        XCALL(glv_2838, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x148);
+        XCALL(glv_2838, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x148);
+        XCALL(glv_2838, gui_drawSprite)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x148, 0xA0, a2, 3);
+        XCALL(glv_2838, TimMenu_drawPair_00002D48)(obj, v0 - 0x14);
         return;
     case 2:
-        glv_2838((char *)&D_00000000);
-        glv_2838((char *)&D_00000000 + 0x1F0);
-        glv_2838((char *)&D_00000000 + 0x1F0, 0xA0, 0x25, 3);
-        glv_2838(obj, 0x25);
-        glv_2838(obj, *(unsigned char *)((char *)&D_00000000 + 0x178), 0x50);
-        glv_2838((char *)&D_00000000 + 0x1C0);
-        glv_2838((char *)&D_00000000 + 0x1C0);
-        glv_2838((char *)&D_00000000 + 0x1C0, 0xA0, 0x69, 3);
-        glv_2838((char *)&D_00000000 + 0x160);
-        glv_2838((char *)&D_00000000 + 0x160);
-        glv_2838((char *)&D_00000000 + 0x160, 0xA0, 0x8E, 3);
+        XCALL(glv_2838, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_gui_bss, 0x8));
+        XCALL(glv_2838, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x1F0);
+        XCALL(glv_2838, gui_drawSprite)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x1F0, 0xA0, 0x25, 3);
+        XCALL(glv_2838, TimMenu_drawLabel130_00002E50)(obj, 0x25);
+        XCALL(glv_2838, TimMenu_drawLabel_00002CE0)(obj, *(unsigned char *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x178), 0x50);
+        XCALL(glv_2838, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x1C0);
+        XCALL(glv_2838, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x1C0);
+        XCALL(glv_2838, gui_drawSprite)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x1C0, 0xA0, 0x69, 3);
+        XCALL(glv_2838, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x160);
+        XCALL(glv_2838, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x160);
+        XCALL(glv_2838, gui_drawSprite)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x160, 0xA0, 0x8E, 3);
         w = TIMMENU(obj)->promptY;
-        if (*(int *)&D_00000000 != 0) {
+        if (*(int *)&XDATA(D_00000000, port_bootup_bss, 0x28C) != 0) {
             w -= 8;
         }
-        glv_2838((char *)&D_00000000 + 0x178);
-        glv_2838((char *)&D_00000000 + 0x178);
-        glv_2838((char *)&D_00000000 + 0x178, 0xA0, w - 0x13, 3);
-        glv_2838(obj, w);
+        XCALL(glv_2838, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x178);
+        XCALL(glv_2838, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x178);
+        XCALL(glv_2838, gui_drawSprite)((char *)&XDATA(D_00000000, port_timproc_bss, 0x0) + 0x178, 0xA0, w - 0x13, 3);
+        XCALL(glv_2838, TimMenu_drawPair_00002D48)(obj, w);
         break;
     case 0:
         break;
@@ -1638,10 +1638,10 @@ void TimMenu_drawHeader_00002BE4(int *a0) {
     int s3, i;
     (void)a0;
 
-    *(B1Vec5_2BE4 *)vec4 = *(B1Vec5_2BE4 *)((char *)&D_00000000 + 0x4D0);
-    CALL(gui_setCombine_00001794)(&D_00000000);
+    *(B1Vec5_2BE4 *)vec4 = *(B1Vec5_2BE4 *)((char *)&XDATA(D_00000000, port_timproc_data, 0x0) + 0x4D0);
+    CALL(gui_setCombine_00001794)(&XDATA(D_00000000, port_gui_bss, 0x8));
 
-    s4 = (B1S18_2BE4 *)&D_00000000;
+    s4 = (B1S18_2BE4 *)&XDATA(D_00000000, port_timproc_bss, 0x0);
     if (1) { s4 = (B1S18_2BE4 *)((char *)s4 + 0x10); }
     s3 = 0x10;
     do {

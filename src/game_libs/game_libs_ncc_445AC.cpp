@@ -42,7 +42,7 @@ extern "C" void GfxLib_init(Obj *a0) {
     CALL(memtrack_end)();
     a0->x280 = CALL(gfx_newDLContext)(0, S(0x1FDFC), 40, 0, 0, 0, 0);
     a0->x284 = CALL(gfx_newDLContext)(0, S(0x1FE04), 40, 0, 0, 0, 0);
-    *(int *)D_00000000 = CALL(gfx_newDLContext)(0, S(0x1FE0C), 20, 0, 0, 0, 0);
+    *(int *)XDATA(D_00000000, port_bootup_bss, 0x3C7D0) = CALL(gfx_newDLContext)(0, S(0x1FE0C), 20, 0, 0, 0, 0);
     CALL(GfxObj_ctor_0004DF90)(a0);
     CALL(memtrack_begin)(S(0x1FE14), 0);
     a0->x214 = CALL(gfx_newDLContext)(0, S(0x1FE24), D_445AC_ga, D_445AC_gb, D_445AC_gc, D_445AC_gd, D_445AC_ge);

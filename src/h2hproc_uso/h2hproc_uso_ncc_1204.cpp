@@ -56,18 +56,18 @@ void h2h_WinsDisplay_update_00001204(char *a0) {
             }
         }
     }
-    if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x40100) != 0) {
-        if (CALL(Fader_isDone_00013980)(*(int*)(&D_00000000 + 0x190)) != 0) {
+    if (CALL(input_checkPressed_00011E00)(&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x40100) != 0) {
+        if (CALL(Fader_isDone_00013980)(*(int*)(&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x190)) != 0) {
             p1 = (char *)H2HWINS(a0)->menu;
             if (GUIMENU(p1)->rows[GUIMENU(p1)->cursor].arg != 0) {
-                h2h_void_1204(5);
-                *(int*)((char*)&D_00000000 + 0x4) = H2HWINS(a0)->menu;
-                *(int*)((char*)&D_00000000 + 0x0) = H2HWINS(a0)->race;
+                XCALL(h2h_void_1204, snd_postEvent)(5);
+                *(int*)((char*)&XDATA(D_00000000, port_h2hproc_bss, 0x0) + 0x4) = H2HWINS(a0)->menu;
+                *(int*)((char*)&XDATA(D_00000000, port_h2hproc_bss, 0x0) + 0x0) = H2HWINS(a0)->race;
                 p1 = (char *)H2HWINS(a0)->menu;
                 GUIMENU(p1)->rows[GUIMENU(p1)->cursor].arg();
             }
         }
     }
-    h2h_void_1204(a0);
+    XCALL(h2h_void_1204, Node_update)(a0);
 }
 }

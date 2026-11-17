@@ -132,9 +132,9 @@ void *HeliItemType_ctor(char *self, HeliTypeTag name) {
         tag = name;
         base = self;
         if (base != 0 || (base = (char *)CALL(mem_new)(0x48)) != 0) {
-            CALL(ItemType_ctor)(base, tag, 0); NODE(base)->vptr = (char *)&D_00000000; /* bootup ItemType vtable Data+0x1F050 */
+            CALL(ItemType_ctor)(base, tag, 0); NODE(base)->vptr = (char *)&XDATA(D_00000000, port_bootup_data, 0x1F050); /* bootup ItemType vtable Data+0x1F050 */
         }
-        NODE(self)->vptr = (char *)&D_00000000; /* HeliItemType vtable (Data+0xCAF0) */
+        NODE(self)->vptr = (char *)&XDATA(D_00000000, port_heli_data, 0xCAF0); /* HeliItemType vtable (Data+0xCAF0) */
         HELIITEMTYPE(self)->bladeShape = 0;
         HELIITEMTYPE(self)->bodyShape = 0;
     }

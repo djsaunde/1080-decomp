@@ -226,9 +226,9 @@ void h2h_pauseQuit(void) {
 }
 
 void h2h_pauseContinue_0000045C(void) {
-    CALL(Process_resume_0000FAE8)(*(int*)&D_00000000);
-    CALL(Node_resumeUpdate_0000E450)(*(int*)(*(char**)&D_00000000 + 0x6B0));
-    CALL(input_clearActivePad_00012090)(&D_00000000);
+    CALL(Process_resume_0000FAE8)(*(int*)&XDATA(D_00000000, port_h2hproc_bss, 0x0));
+    CALL(Node_resumeUpdate_0000E450)(*(int*)(*(char**)&XDATA(D_00000000, port_h2hproc_bss, 0x0) + 0x6B0));
+    CALL(input_clearActivePad_00012090)(&XDATA(D_00000000, port_bootup_bss, 0xF8));
 }
 
 /* h2h_pauseForfeit_0000049C (0x44, 17 insns): TWENTY-FIFTH mis-split case,
@@ -242,10 +242,10 @@ void h2h_pauseContinue_0000045C(void) {
  * only via a fake `char *a0` parameter. See docs/MATCHING_WORKFLOW.md
  * #hoisted-head-119c-11a4-mgrproc (same mechanism, same fix). */
 void h2h_pauseForfeit_0000049C(void) {
-    H2HRace *a0 = *(H2HRace **)&D_00000000;
+    H2HRace *a0 = *(H2HRace **)&XDATA(D_00000000, port_h2hproc_bss, 0x0);
     CALL(h2h_winByRetire_00000944)(a0, a0->pausePlayer ^ 1);
-    CALL(Process_resume_0000FAE8)(*(int*)&D_00000000);
-    CALL(input_clearActivePad_00012090)(&D_00000000);
+    CALL(Process_resume_0000FAE8)(*(int*)&XDATA(D_00000000, port_h2hproc_bss, 0x0));
+    CALL(input_clearActivePad_00012090)(&XDATA(D_00000000, port_bootup_bss, 0xF8));
 }
 
 void fs_gdlReadInt_h2h_000004E0(int *dst) {
@@ -401,7 +401,7 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
         o2 = o1;
         if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x50)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&D_00000000 + 0x3C0); NODE(o3)->vptr = (char *)&D_h2h_620_d0; }
+            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&XDATA(D_00000000, port_h2hproc_data, 0x0) + 0x3C0); NODE(o3)->vptr = (char *)&D_h2h_620_d0; }
             NODE(o2)->vptr = (char *)&D_h2h_620_d1;
         }
         NODE(o1)->vptr = (char *)&D_h2h_620_d2;
@@ -409,20 +409,20 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
     }
     NODE(obj)->vptr = (char *)&D_h2h_620_d3;
     RACEPROC(obj)->spriteSet = 0;
-    CALL(RaceProcess_init)(obj, a1, (char *)&D_00000000 + 0x3C8, a2);
+    CALL(RaceProcess_init)(obj, a1, (char *)&XDATA(D_00000000, port_h2hproc_data, 0x0) + 0x3C8, a2);
     H2HRACE(obj)->wins = a3;
     RACEPROC(obj)->session = (BackupSession *)0;
     CALL(h2h_loadSprites_000008E4)(obj);
-    CALL(memtrack_begin)((char *)&D_00000000 + 0x3D8, 0);
+    CALL(memtrack_begin)((char *)&XDATA(D_00000000, port_h2hproc_data, 0x0) + 0x3D8, 0);
 
     {
         o2 = (char *)CALL(mem_new)(0xF0);
         if (o2 != 0) {
             CALL(RaceTracker_ctor)(o2);
-            NODE(o2)->vptr = (char *)&D_00000000;
+            NODE(o2)->vptr = (char *)&XDATA(D_00000000, port_h2hproc_data, 0x200);
         }
         H2HRACE(obj)->dataMgr = (H2HDataManager *)o2;
-        INPUT_MGR(D_00000000).dataMgr = (RaceTracker *)o2;
+        INPUT_MGR(XDATA(D_00000000, port_bootup_bss, 0xF8)).dataMgr = (RaceTracker *)o2;
 
         XCALL(gl_func_00000000_620v, h2h_DataManager_init)(H2HRACE(obj)->dataMgr, obj, RACEPROC(obj)->spriteSet);
 
@@ -440,8 +440,8 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
         CALL(RaceProcess_restart)(obj, a1);
         RACEPROC(obj)->menu = (GuiMenu *)CALL(PauseMenu_create)(0);
         CALL(gui_initRows_000100F0)(RACEPROC(obj)->menu, obj);
-        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, (*(int *)&D_h2h_620_r + 3) << 16, -1, &D_00000000);
-        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_h2h_620_r + 3) << 16) | 8, -1, &D_00000000);
+        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, (*(int *)&D_h2h_620_r + 3) << 16, -1, &XDATA(D_00000000, h2h_pauseContinue_0000045C, 0x0));
+        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_h2h_620_r + 3) << 16) | 8, -1, &XDATA(D_00000000, h2h_pauseForfeit_0000049C, 0x0));
         RACEPROC(obj)->menu->unk30 = RACEPROC(obj)->spriteSet;
         CALL(gui_centerRows_0001016C)(RACEPROC(obj)->menu);
         o1 = (char *)RACEPROC(obj)->menu;
@@ -451,13 +451,13 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
         }
         NODE(o1)->parent = (Node *)obj;
 
-        o1 = INPUT_MGR(D_00000000).fader;
+        o1 = INPUT_MGR(XDATA(D_00000000, port_bootup_bss, 0xF8)).fader;
         CALL(list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
         NODE(o1)->parent = (Node *)obj;
-        CALL(Fader_start)(INPUT_MGR(D_00000000).fader, 1, 0);
+        CALL(Fader_start)(INPUT_MGR(XDATA(D_00000000, port_bootup_bss, 0xF8)).fader, 1, 0);
         CALL(memtrack_end)();
     }
     }

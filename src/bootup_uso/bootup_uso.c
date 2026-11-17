@@ -1146,7 +1146,7 @@ void *WorldRegistry_create_00001E08(char *o) {
         if (o == 0) goto end;
     }
     FCALL(Node_ctor)(o, &sStr_Node_6E30);
-    ((WorldRegistry *)o)->vptr = &D_1E08_d;
+    ((WorldRegistry *)o)->vptr = &XDATA(D_1E08_d, port_bootup_data, 0x6DD0);
     sub = (char *)&((WorldRegistry *)o)->head;
     FCALL(WorldCourse_ctorEmpty_00001D8C)(sub);
     NODE(o)->name = (const char *)&sStr_World_Registry_6E38; /* Node name "World Registry" */
@@ -1156,7 +1156,7 @@ void *WorldRegistry_create_00001E08(char *o) {
     FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_One_Make_6E48, &D_1E08_a);
     FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_HalfPipe_6E54, &D_1E08_b);
     FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_Slalom_Course_6E60, &D_1E08_c);
-    FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_Stunt_Course_6E70, &D_1E08_d);
+    FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_Stunt_Course_6E70, &XDATA(D_1E08_d, port_bootup_data, 0x6A10));
     FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_Long_Course_6E80, &D_1E08_e);
     FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_New_Course_6E8C, &D_1E08_f);
     FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_Night_Course_6E98, &D_1E08_g);
@@ -2169,7 +2169,7 @@ void game_setupDemoSolo(char *s1, int a1) {
     if (s0 != 0) {
         FCALL(pad_open)(s0, 0);   /* alloc-fail SKIPS ONLY THIS (target beqz +4, 38C0 recipe) */
     }
-    XCALL(func_00000000_3734_v, input_addRacePad)(&D_00000000, s0);
+    XCALL(func_00000000_3734_v, input_addRacePad)(&XDATA(D_00000000, port_bootup_bss, 0xF8), s0);
     r1 = func_3734_r1(s1, 2, 1, gInputMgr_3734_v,
                       s0, WORLDREG(s1)->fgRoot,
                       WORLD_MAP(s1)->start[0],
@@ -2177,7 +2177,7 @@ void game_setupDemoSolo(char *s1, int a1) {
                       0x58005, 0x1B);
     r2 = (char*)FCALL(cam_create)(s1, 0, WORLDREG(s1)->fgRoot, r1, s0);
     r3 = (char*)FCALL(cam_create)(s1, 1, WORLDREG(s1)->fgRoot, r1, s0);
-    r4 = (char*)FCALL(game_create3DWindow)(s1, (char*)&D_00000000 + a1 * 0x1C, r2);
+    r4 = (char*)FCALL(game_create3DWindow)(s1, (char*)&XDATA(D_00000000, port_bootup_data, 0x7290) + a1 * 0x1C, r2);
     s0 = (char*)FCALL(mem_new)(0x80);   /* merged $s0 web: o -> sub -> r5 */
     if (s0 != 0) {
         FCALL(pad_open)(s0, 1);
@@ -2241,15 +2241,15 @@ void game_setupSolo(char *s1, int a1) {
     if (o != 0) {
         FCALL(pad_open)(o, 1);   /* alloc-fail SKIPS ONLY THIS (target beq +4) */
     }
-    FCALL(input_addRacePad)(&D_00000000, o);          /* reg_a — D_x placeholder */
-    XCALL(func_00000000_38C0_v, replay_beginRecordWithGhost)(&D_00000000, o, 0); /* reg_b — D_y placeholder (void alias) */
+    FCALL(input_addRacePad)(&XDATA(D_00000000, port_bootup_bss, 0xF8), o);          /* reg_a — D_x placeholder */
+    XCALL(func_00000000_38C0_v, replay_beginRecordWithGhost)(&XDATA(D_00000000, port_bootup_bss, 0xF8), o, 0); /* reg_b — D_y placeholder (void alias) */
     r = func_38c0_r(s1, 0, SOLO_MGR->playerRider, SOLO_MGR->playerBoard,
                     o, WORLDREG(s1)->fgRoot,
                     WORLD_MAP(s1)->start[0],
                     WORLD_MAP(s1)->start[2],
                     (SOLO_MGR->playerFlags | 1) | 0x10000 | 0x40000, 0x1B);
     r2 = (char*)FCALL(cam_create)(s1, 2, WORLDREG(s1)->fgRoot, r, o);
-    row = (int*)((char*)&D_00000000 + a1 * 0x1C);  /* D_w placeholder */
+    row = (int*)((char*)&XDATA(D_00000000, port_bootup_data, 0x7290) + a1 * 0x1C);  /* D_w placeholder */
     res = (char*)FCALL(game_create3DWindow)(s1, row, r2);
     SNOWB(r)->camera = res;
 }
@@ -2918,8 +2918,8 @@ int item_createHem(int a0) {
   p = (int *) FCALL(mem_new)(0x58);
   if (p != 0)
   {
-    FCALL(ColourItemType_ctor)(p, *(S50A0*)&saved_a0, *((int *) (&D_00000000)), &buf[1]);
-    NODE(p)->vptr = (char *)&D_00000000;
+    FCALL(ColourItemType_ctor)(p, *(S50A0*)&saved_a0, *((int *) (&XDATA(D_00000000, port_bootup_data, 0x7B48))), &buf[1]);
+    NODE(p)->vptr = (char *)&XDATA(D_00000000, port_heli_data, 0x78);
   }
   return (int) p;
 }
@@ -3455,7 +3455,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
     s = a0;
     if (s != 0 || (s = (char*)FCALL(mem_new)(0xB4)) != 0) {
         FCALL(Node_ctor)(s, &sStr_MNode_7E74);
-        NODE(s)->vptr = (char *)(&MNode_vtbl);
+        NODE(s)->vptr = (char *)(&XDATA(MNode_vtbl, port_bootup_data, 0x1EAA8));
         {
             int *c = (int*)(s + 0x2C);
             if (c != 0 || (c = (int*)FCALL(mem_new)(4)) != 0) {
@@ -3469,7 +3469,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
         z[0] = 0.0f;
         FCALL(math_mtxAddTranslation)(s + 0x30, (z[1] = 0.0f, z[2] = 0.0f, z));
     }
-    NODE(a0)->vptr = (char *)(&MapProp_vtbl);
+    NODE(a0)->vptr = (char *)(&XDATA(MapProp_vtbl, port_bootup_data, 0x7C20));
     NODE(a0)->name = (const char *)&sStr_Course_7E7C;
     ((MapProp *)a0)->shape = a1;
     FCALL(MNode_addChild)(a0, a1);
@@ -3858,9 +3858,9 @@ void FallingSnow_create(char *a0) {
     if (r != 0) {
         sub = r;
         if (sub != 0 || (sub = (char*)FCALL(mem_new)(0x48)) != 0) {
-            FCALL(Node_ctor)(sub, &sStr_Node_7FBC); NODE(sub)->vptr = (char *)(&D_00000000);
+            FCALL(Node_ctor)(sub, &sStr_Node_7FBC); NODE(sub)->vptr = (char *)(&XDATA(D_00000000, port_snoweffects_data, 0x60));
         }
-        NODE(r)->vptr = (char *)(&D_00000000);
+        NODE(r)->vptr = (char *)(&XDATA(D_00000000, port_snoweffects_data, 0xD0));
     }
     ENVSET(a0)->fallingSnow = (FallingSnow *)r;
     head = (char *)WORLDREG(FLOW_74E8_H->game)->egRoot;
@@ -6910,12 +6910,12 @@ void SnowBoard_InitInstance(char *arg0) {
     NODE(arg0)->name = (const char *)&sStr_SnowBoard_8D70;
     FCALL(fs_readRecord_00041F90)(arg0, &sStr_rom_version_bin_8D7C);
     saved = FCALL(app_setHeapMode)(0);
-    *(int *)&D_00000000 = FCALL(AnimDataMgr_ctor)(0, &sStr_rom_anims_bin_8D8C, 0x20, 0xC);
+    *(int *)&XDATA(D_00000000, port_bootup_bss, 0xD8) = FCALL(AnimDataMgr_ctor)(0, &sStr_rom_anims_bin_8D8C, 0x20, 0xC);
     FCALL(app_setHeapMode)(saved);
     /* Distinct zero-address aliases keep IDO from caching the base in $s0. */
     FCALL(Node_ctor)(&D_00000000_a, &sStr_Node_8D9C);
     FCALL(GameFlow_create)(&D_00000000_b, arg0);
-    if (FCALL(sys_getResetType)(&D_00000000) != 0) {
+    if (FCALL(sys_getResetType)(&XDATA(D_00000000, port_bootup_bss, 0x3C740)) != 0) {
         FCALL(GameFlow_startMode)(&D_00000000_a, 1, 0);
     } else {
         FCALL(GameFlow_startMode)(&D_00000000_b, 0, 0);

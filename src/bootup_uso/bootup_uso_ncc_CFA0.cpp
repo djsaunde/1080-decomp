@@ -82,11 +82,11 @@ extern "C" void SnowBoarder_display(SnowBoarder *st) {
         st->board != 9 && st->contactCount != 0) {
         p = (char *)FCALL(gfx_getDdm)(&gGfxLib_cfa0_a, 0xD);
         *(V3 *)st->unk8F4[2] = *(V3 *)p;
-        bu_cfa0_v(0x10);
+        XCALL(bu_cfa0_v, Node_setDisplayMask)(0x10);
         c[0] = 1.0f; c[1] = 1.0f; c[2] = 1.0f;
         c[3] = kRo_SnowBoarder_display_970;
-        bu_cfa0_v(&gGfxLib_cfa0_b, c);
-        bu_cfa0_v(0x10);
+        XCALL(bu_cfa0_v, gfx_setPrimColour)(&gGfxLib_cfa0_b, c);
+        XCALL(bu_cfa0_v, Node_setDisplayMask)(0x10);
         DISPATCH_CFA0(st->bodyNodes[1]);
         p = (char *)FCALL(gfx_getDdm)(&gGfxLib_cfa0_c, 6);
         *(V3 *)st->unk8F4[2] = *(V3 *)p;
@@ -95,17 +95,17 @@ extern "C" void SnowBoarder_display(SnowBoarder *st) {
         flg = st->groundFlags;
         st->unkA44 = 1;
         if ((flg & 2) && (st->flags & 0x1000) && st->onGround) {
-            bu_cfa0_v(st->light, &st->groundNormal);
-            bu_cfa0_v(st);
-            bu_cfa0_v(0x11);
+            XCALL(bu_cfa0_v, light_setMirrorMatrix_00054E78)(st->light, &st->groundNormal);
+            XCALL(bu_cfa0_v, SnowBoarder_setReflectionDdms)(st);
+            XCALL(bu_cfa0_v, Node_setDisplayMask)(0x11);
             t = (char *)st->tint;
-            bu_cfa0_v(&gGfxLib_cfa0_d, t);
-            bu_cfa0_v(st);
-            bu_cfa0_v(st);
+            XCALL(bu_cfa0_v, gfx_setPrimColour)(&gGfxLib_cfa0_d, t);
+            XCALL(bu_cfa0_v, QNode_display)(st);
+            XCALL(bu_cfa0_v, SnowBoarder_setRiderDdms)(st);
             gGfxLib_cfa0_flag = 0;
         } else {
           if ((st->unk8B8 & 0xA) && st->onGround && !(flg & 0x400)) {
-            bu_cfa0_v(st->light, &st->groundNormal, dp);
+            XCALL(bu_cfa0_v, light_setShadowMatrix_00054D04)(st->light, &st->groundNormal, dp);
             if ((double)(dp[0] * st->groundNormal.x + dp[1] * st->groundNormal.y +
                          dp[2] * st->groundNormal.z) < kRo_SnowBoarder_display_978) {
                 float div255 = 255.0f;
@@ -116,14 +116,14 @@ extern "C" void SnowBoarder_display(SnowBoarder *st) {
                 st->shade[1] = (float)(unsigned int)cg / div255;
                 st->shade[2] = (float)(unsigned int)cb / div255;
                 st->shade[3] = 112.0f / div255;
-                bu_cfa0_v(&gGfxLib_cfa0_e, st->shade);
+                XCALL(bu_cfa0_v, gfx_setPrimColour)(&gGfxLib_cfa0_e, st->shade);
                 if (st->unk8B8 & 2) {
-                    bu_cfa0_v(2);
+                    XCALL(bu_cfa0_v, Node_setDisplayMask)(2);
                     DISPATCH_CFA0(st->unk814);
                     DISPATCH_CFA0(st->bodyNodes[0]);
                 }
                 if ((st->unk8B8 & 8) && st->contactCount == 0) {
-                    bu_cfa0_v(8);
+                    XCALL(bu_cfa0_v, Node_setDisplayMask)(8);
                     DISPATCH_CFA0(st->bodyNodes[1]);
                 }
             }
@@ -132,16 +132,16 @@ extern "C" void SnowBoarder_display(SnowBoarder *st) {
           t = (char *)st->tint;
         }
         if (st->unk8B8 & 1) {
-            bu_cfa0_v(0x11);
+            XCALL(bu_cfa0_v, Node_setDisplayMask)(0x11);
         } else {
-            bu_cfa0_v(0x14);
+            XCALL(bu_cfa0_v, Node_setDisplayMask)(0x14);
         }
     } else {
         st->unkA44 = 0;
-        bu_cfa0_v(0x14);
+        XCALL(bu_cfa0_v, Node_setDisplayMask)(0x14);
         t = (char *)st->tint;
     }
-    bu_cfa0_v(&gGfxLib_cfa0_f, t);
-    bu_cfa0_v(st);
-    bu_cfa0_v(CTX_WIN(CTX)->displayMask);
+    XCALL(bu_cfa0_v, gfx_setPrimColour)(&gGfxLib_cfa0_f, t);
+    XCALL(bu_cfa0_v, QNode_display)(st);
+    XCALL(bu_cfa0_v, Node_setDisplayMask)(CTX_WIN(CTX)->displayMask);
 }

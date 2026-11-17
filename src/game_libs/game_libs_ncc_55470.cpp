@@ -68,16 +68,16 @@ extern "C" void nodelist_dispatch(Strm *s) {
     case 1019:
         break;
     case 1004:
-        ((Flags *)D_00000000)->orB(s->next());
+        ((Flags *)XDATA(D_00000000, port_bootup_bss, 0x3EEC8))->orB(s->next());
         break;
     case 1005:
-        ((Flags *)D_00000000)->b &= ~s->next();
+        ((Flags *)XDATA(D_00000000, port_bootup_bss, 0x3EEC8))->b &= ~s->next();
         break;
     case 1006:
-        ((Flags *)D_00000000)->orA(s->next());
+        ((Flags *)XDATA(D_00000000, port_bootup_bss, 0x3EEC4))->orA(s->next());
         break;
     case 1007:
-        ((Flags *)D_00000000)->a &= ~s->next();
+        ((Flags *)XDATA(D_00000000, port_bootup_bss, 0x3EEC4))->a &= ~s->next();
         break;
     case 1017: {
         Strm t = *s;
@@ -105,7 +105,7 @@ extern "C" void nodelist_dispatch(Strm *s) {
         break;
     }
     case 1018:
-        CALL(dbg_printf)(D_00000000 + 0x211B0, s->next());
+        CALL(dbg_printf)(XDATA(D_00000000, port_bootup_data, 0x0) + 0x211B0, s->next());
         break;
     }
 }

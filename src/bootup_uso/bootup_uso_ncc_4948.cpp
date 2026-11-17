@@ -66,7 +66,7 @@ extern "C" void RiderCam_update_00004948(RiderCam *obj) {
         int idx;
         ((Ob *)obj->cam.target)->node.get(C); ((Ob *)obj)->node.get(E);
         d = C - E;
-        dist = bu4948_ff(d.x * d.x + d.y * d.y + d.z * d.z);
+        dist = XCALL(bu4948_ff, math_vec3Length_0005BBCC)(d.x * d.x + d.y * d.y + d.z * d.z);
         idx = 0;
         switch (st) {
         case 0x13: case 0x18: idx = 0; break;
@@ -87,7 +87,7 @@ extern "C" void RiderCam_update_00004948(RiderCam *obj) {
         float ang, r, t;
         ((Ob *)obj->cam.target)->node.get(C); ((Ob *)obj)->node.get(E);
         d = C - E;
-        dist = bu4948_ff(d.x * d.x + d.y * d.y + d.z * d.z);
+        dist = XCALL(bu4948_ff, math_vec3Length_0005BBCC)(d.x * d.x + d.y * d.y + d.z * d.z);
         idx = 0;
         switch (st) {
         case 0x1D: case 0x22: idx = 0; break;
@@ -99,9 +99,9 @@ extern "C" void RiderCam_update_00004948(RiderCam *obj) {
 #undef e
 #define e (&bu_4948_t8[idx])
         ang = e->b / 2 * RO_PI_554 / 180.0f; /* half-angle, degrees -> radians */
-        r = bu4948_ff(ang) * e->a / bu4948_ff(ang);
-        t = bu4948_ff(dist * dist + r * r);
-        t = bu4948_ff(dist / t) * 2 / RO_PI_558 * 180.0f; /* radians -> degrees */
+        r = XCALL(bu4948_ff, fsin)(ang) * e->a / XCALL(bu4948_ff, fcos)(ang);
+        t = XCALL(bu4948_ff, sqrtf)(dist * dist + r * r);
+        t = XCALL(bu4948_ff, math_acosf)(dist / t) * 2 / RO_PI_558 * 180.0f; /* radians -> degrees */
         if (t < bu_4948_klo) obj->cam.fov = bu_4948_klo; else if (bu_4948_khi < t) obj->cam.fov = bu_4948_khi; else obj->cam.fov = t;
         if (st >= 0x22 && st < 0x27) SNAP(FCALL(math_mtxAddTranslation));
     } else {

@@ -3915,47 +3915,47 @@ void SelectWin_moveCursorPrev_00006E08(char *arg0, s32 arg1) {
     s32 cur;
     s32 old2;
 
-    if (((int)timproc_uso_b5_alias(&import_80020098, 0x10001) != 0) && ((int)timproc_uso_b5_alias(arg0) != 0)) {
+    if (((int)XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x10001) != 0) && ((int)XCALL(timproc_uso_b5_alias, SelectWin_canScrollPrev_0000687C)(arg0) != 0)) {
         old1 = SLOT(SELWIN(arg0)->stage); if (1) {}
-        (int)timproc_uso_b5_alias(arg0);
+        (int)XCALL(timproc_uso_b5_alias, SelectWin_saveFocus_0000866C)(arg0);
         i = 0;
-        if ((int)timproc_uso_b5_alias(arg0) > 0) {
+        if ((int)XCALL(timproc_uso_b5_alias, SelectWin_itemCount_00008C1C)(arg0) > 0) {
 loop_4:
             { s32 *p = (s32 *)(arg0 + 0x3D0); p += SELWIN(arg0)->stage; *p -= 1; }
             if (SLOT(SELWIN(arg0)->stage) < 0) {
-                SLOT(SELWIN(arg0)->stage) = (s32) ((int)timproc_uso_b5_alias(arg0) - 1);
+                SLOT(SELWIN(arg0)->stage) = (s32) ((int)XCALL(timproc_uso_b5_alias, SelectWin_itemCount_00008C1C)(arg0) - 1);
             }
-            if ((*(f32 *)((char *)timproc_uso_b5_alias(arg0) + (i += 1, 0x2A4)) == 0.0f) && (i < (int)timproc_uso_b5_alias(arg0))) {
+            if ((*(f32 *)((char *)XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0) + (i += 1, 0x2A4)) == 0.0f) && (i < (int)XCALL(timproc_uso_b5_alias, SelectWin_itemCount_00008C1C)(arg0))) {
                 goto loop_4;
             }
         }
         cur = SLOT(SELWIN(arg0)->stage);
         if (old1 != cur) {
-            (int)timproc_uso_b5_alias((&timproc_uso_b5_D_807FE738)[SELWIN(arg0)->stage], *(int *)&SELWIN(arg0)->eventFlags | cur);
-            (int)timproc_uso_b5_alias(arg0, arg1);
+            (int)XCALL(timproc_uso_b5_alias, snd_sendEvent)((&timproc_uso_b5_D_807FE738)[SELWIN(arg0)->stage], *(int *)&SELWIN(arg0)->eventFlags | cur);
+            (int)XCALL(timproc_uso_b5_alias, SelectWin_beginTransition_00008688)(arg0, arg1);
         }
     }
-    if (((int)timproc_uso_b5_alias(&import_80020098, 0x4002) != 0) && ((int)timproc_uso_b5_alias(arg0) != 0)) {
+    if (((int)XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x4002) != 0) && ((int)XCALL(timproc_uso_b5_alias, SelectWin_canScrollNext_00006900)(arg0) != 0)) {
         {
         s32 j;
         old2 = SLOT(SELWIN(arg0)->stage);
-        (int)timproc_uso_b5_alias(arg0);
+        (int)XCALL(timproc_uso_b5_alias, SelectWin_saveFocus_0000866C)(arg0);
         j = 0;
-        if ((int)timproc_uso_b5_alias(arg0) > 0) {
+        if ((int)XCALL(timproc_uso_b5_alias, SelectWin_itemCount_00008C1C)(arg0) > 0) {
 loop_13:
             { s32 *p = (s32 *)(arg0 + 0x3D0); p += SELWIN(arg0)->stage; *p += 1; }
-            if (SLOT(SELWIN(arg0)->stage) >= (int)timproc_uso_b5_alias(arg0)) {
+            if (SLOT(SELWIN(arg0)->stage) >= (int)XCALL(timproc_uso_b5_alias, SelectWin_itemCount_00008C1C)(arg0)) {
                 SLOT(SELWIN(arg0)->stage) = 0;
             }
-            if ((*(f32 *)((char *)timproc_uso_b5_alias(arg0) + (j += 1, 0x2A4)) == 0.0f) && (j < (int)timproc_uso_b5_alias(arg0))) {
+            if ((*(f32 *)((char *)XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0) + (j += 1, 0x2A4)) == 0.0f) && (j < (int)XCALL(timproc_uso_b5_alias, SelectWin_itemCount_00008C1C)(arg0))) {
                 goto loop_13;
             }
         }
         }
         cur = SLOT(SELWIN(arg0)->stage);
         if (old2 != cur) {
-            (int)timproc_uso_b5_alias((&timproc_uso_b5_D_807FE738)[SELWIN(arg0)->stage], *(int *)&SELWIN(arg0)->eventFlags | cur);
-            (int)timproc_uso_b5_alias(arg0, arg1);
+            (int)XCALL(timproc_uso_b5_alias, snd_sendEvent)((&timproc_uso_b5_D_807FE738)[SELWIN(arg0)->stage], *(int *)&SELWIN(arg0)->eventFlags | cur);
+            (int)XCALL(timproc_uso_b5_alias, SelectWin_beginTransition_00008688)(arg0, arg1);
         }
     }
 }
@@ -4035,41 +4035,41 @@ void SelectWin_state0_00007078(char *arg0) {
         f32 *p1;
         f32 *p2;
         /* timproc_uso_b5_alias(&GameFlow, 1) here = input_getPad_00011D40 (uso-imports.py: 0x70A4 / 0x70DC): pad 1's InputPad */
-        *p1 = ((InputPad *)timproc_uso_b5_alias(&import_80020098, 1))->stickY * two + *(p1 = &SELWIN(arg0)->scene->camera->pitch);
-        *p2 = ((InputPad *)timproc_uso_b5_alias(&import_80020098, 1))->stickX * two + *(p2 = &SELWIN(arg0)->scene->camera->yaw);
+        *p1 = ((InputPad *)XCALL(timproc_uso_b5_alias, input_getPad_00011D40)(&import_80020098, 1))->stickY * two + *(p1 = &SELWIN(arg0)->scene->camera->pitch);
+        *p2 = ((InputPad *)XCALL(timproc_uso_b5_alias, input_getPad_00011D40)(&import_80020098, 1))->stickX * two + *(p2 = &SELWIN(arg0)->scene->camera->yaw);
     } else {
         SELWIN(arg0)->idleTimer = SELWIN(arg0)->idleTimer - 1;
         if (SELWIN(arg0)->idleTimer < 0) {
-            timproc_uso_b5_alias((&timproc_uso_b5_D_807FE768)[SELWIN(arg0)->stage], (SELITEM(timproc_uso_b5_alias(arg0))->id + 1) | *(int *)&SELWIN(arg0)->eventFlags);
+            XCALL(timproc_uso_b5_alias, snd_sendEvent)((&timproc_uso_b5_D_807FE768)[SELWIN(arg0)->stage], (SELITEM(XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0))->id + 1) | *(int *)&SELWIN(arg0)->eventFlags);
             SELWIN(arg0)->state = 1;
             SELWIN(arg0)->fadeTarget = 1.0f;
-            temp_v0 = timproc_uso_b5_alias(arg0);
+            temp_v0 = XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0);
             temp_v1_3 = (int)SELITEM(temp_v0)->vptr;
             ((GP_00007078)SELVT(temp_v1_3)->playAcceptAnim.fn)(SELVT(temp_v1_3)->playAcceptAnim.delta + (char *)temp_v0);
         }
-        timproc_uso_b5_alias(arg0, 2);
+        XCALL(timproc_uso_b5_alias, SelectWin_moveCursorPrev_00006E08)(arg0, 2);
     }
-    if (timproc_uso_b5_alias(&import_80020098, 0x100) != 0) {
-        timproc_uso_b5_alias((&timproc_uso_b5_D_807FE768)[SELWIN(arg0)->stage], (SELITEM(timproc_uso_b5_alias(arg0))->id + 1) | *(int *)&SELWIN(arg0)->eventFlags);
+    if (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x100) != 0) {
+        XCALL(timproc_uso_b5_alias, snd_sendEvent)((&timproc_uso_b5_D_807FE768)[SELWIN(arg0)->stage], (SELITEM(XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0))->id + 1) | *(int *)&SELWIN(arg0)->eventFlags);
         SELWIN(arg0)->state = 1;
         SELWIN(arg0)->zoomTimer = 0;
         SELWIN(arg0)->fadeTarget = 1.0f;
-        temp_v0_2 = timproc_uso_b5_alias(arg0);
+        temp_v0_2 = XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0);
         temp_v1_4 = (int)SELITEM(temp_v0_2)->vptr;
         ((GP_00007078)SELVT(temp_v1_4)->playAcceptAnim.fn)(SELVT(temp_v1_4)->playAcceptAnim.delta + (char *)temp_v0_2);
     }
-    if (timproc_uso_b5_alias(&import_80020098, 0x200) != 0) {
+    if (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x200) != 0) {
         SELWIN(arg0)->state = 0;
-        timproc_uso_b5_alias((char *)0x802);
-        if (timproc_uso_b5_alias(arg0) == 0) {
-            timproc_uso_b5_alias(arg0);
+        XCALL(timproc_uso_b5_alias, snd_postEvent)((char *)0x802);
+        if (XCALL(timproc_uso_b5_alias, SelectWin_prevStageBit_000088A0)(arg0) == 0) {
+            XCALL(timproc_uso_b5_alias, SelectWin_commitSelection_00006C00)(arg0);
         } else {
-            timproc_uso_b5_alias(arg0);
-            temp_v0_3 = timproc_uso_b5_alias(arg0);
+            XCALL(timproc_uso_b5_alias, SelectWin_saveFocus_0000866C)(arg0);
+            temp_v0_3 = XCALL(timproc_uso_b5_alias, SelectWin_callPrevStageBit_0000894C)(arg0);
             SELWIN(arg0)->stageBit = temp_v0_3;
-            SELWIN(arg0)->stage = timproc_uso_b5_alias(arg0, (s32) temp_v0_3);
+            SELWIN(arg0)->stage = XCALL(timproc_uso_b5_alias, gen_stageBitToIndex_000087A0)(arg0, (s32) temp_v0_3);
             SELWIN(arg0)->state = 2;
-            timproc_uso_b5_alias(arg0, 0);
+            XCALL(timproc_uso_b5_alias, SelectWin_beginTransition_00008688)(arg0, 0);
             SELWIN(arg0)->fadeTarget = 1.0f;
         }
     }
@@ -4212,13 +4212,13 @@ void SelectWin_state3_00007430(char *scr) {
         step = FCALL(SelectWin_charCheatIndex_00008C44)() - 1;
         if (step >= 0) {
             if ((SELWIN(scr)->cheatTimer & 0xF) == 0) {
-                FCALL(dbg_printf)((char *)&D_00000000 + 0x00001320,
-                              ((int *)((char *)&D_00000000 + 0x00000F34))[step]);
+                FCALL(dbg_printf)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x00001320,
+                              ((int *)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x00000F34))[step]);
             }
 
-            seq_table = ((int **)((char *)&D_00000000 + 0x00000F60))[step];
+            seq_table = ((int **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x00000F60))[step];
             if (FCALL(input_checkPressed_00011E00)(&D_00000000_a, seq_table[SELWIN(scr)->cheatStep])) {
-                SELWIN(scr)->cheatTimer = *(int *)((char *)&D_00000000 + 0x00000F18);
+                SELWIN(scr)->cheatTimer = *(int *)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x00000F18);
                 if (seq_table[SELWIN(scr)->cheatStep] != 0x100) {
                     SELWIN(scr)->cheatStep += 1;
                 } else {
@@ -4227,7 +4227,7 @@ void SelectWin_state3_00007430(char *scr) {
                     FCALL(snd_sendEvent)(0x27, 0x3E8);
                 }
             } else {
-                if (FCALL(input_checkPressed_00011E00)(&D_00000000, ~seq_table[SELWIN(scr)->cheatStep])) {
+                if (FCALL(input_checkPressed_00011E00)(&XDATA(D_00000000, port_bootup_bss, 0xF8), ~seq_table[SELWIN(scr)->cheatStep])) {
                     SELWIN(scr)->cheatTimer = 0;
                 }
                 SELWIN(scr)->cheatTimer -= 1;
@@ -4240,9 +4240,9 @@ void SelectWin_state3_00007430(char *scr) {
         }
     }
 
-    if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x100) || SELWIN(scr)->forceAccept != 0) {
+    if (FCALL(input_checkPressed_00011E00)(&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x100) || SELWIN(scr)->forceAccept != 0) {
         SELWIN(scr)->forceAccept = 0;
-        if (*(int *)((char *)&D_00000000 + 0x34) == 2) {
+        if (*(int *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x34) == 2) {
             FCALL(snd_postEvent)(5);
             SELWIN(scr)->state = 4;
             SELWIN(scr)->acceptAlpha = 1.0f;
@@ -4260,7 +4260,7 @@ void SelectWin_state3_00007430(char *scr) {
         ((void (*)(int, int))SELVT(node)->setChosen.fn)(SELVT(node)->setChosen.delta + (int)obj, 0);
 
         obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
-        FCALL(snd_sendEvent)(((int **)&D_00000000)[SELWIN(scr)->stage],
+        FCALL(snd_sendEvent)(((int **)&XDATA(D_00000000, port_genproc_data, 0xF08))[SELWIN(scr)->stage],
                       (SELITEM(obj)->id + 1) | *(int *)&SELWIN(scr)->eventFlags);
 
         SELWIN(scr)->state = 5;
@@ -4278,10 +4278,10 @@ void SelectWin_state3_00007430(char *scr) {
         SELWIN(scr)->fovFrom = ((MCamera *)cam_root->view->camera)->fov;
         SELWIN(scr)->busy = 2;
         SELWIN(scr)->transition = 0.0f;
-    } else if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x14203)) {
-        if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x200)) {
+    } else if (FCALL(input_checkPressed_00011E00)(&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x14203)) {
+        if (FCALL(input_checkPressed_00011E00)(&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x200)) {
             obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
-            FCALL(snd_sendEvent)(((int **)&D_00000000)[SELWIN(scr)->stage],
+            FCALL(snd_sendEvent)(((int **)&XDATA(D_00000000, port_genproc_data, 0xED8))[SELWIN(scr)->stage],
                           (SELITEM(obj)->id + 1) | *(int *)&SELWIN(scr)->eventFlags);
         }
 
@@ -4291,14 +4291,14 @@ void SelectWin_state3_00007430(char *scr) {
 
         FCALL(SelectWin_moveCursorPrev_00006E08)(scr, 1);
 
-        if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x200)) {
+        if (FCALL(input_checkPressed_00011E00)(&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x200)) {
             SELWIN(scr)->state = 0xA;
             SELWIN(scr)->fadeTarget = 0.0f;
             return;
         }
 
         obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
-        FCALL(snd_sendEvent)(((int **)&D_00000000)[SELWIN(scr)->stage],
+        FCALL(snd_sendEvent)(((int **)&XDATA(D_00000000, port_genproc_data, 0xEF8))[SELWIN(scr)->stage],
                       (SELITEM(obj)->id + 1) | *(int *)&SELWIN(scr)->eventFlags);
 
         obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
@@ -4354,9 +4354,9 @@ void SelectWin_state4_000077D8(char *scr) {
     GenCamera *cam_root;
     char *d;
 
-    if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x100)) {
+    if (FCALL(input_checkPressed_00011E00)(&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x100)) {
         obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
-        FCALL(snd_sendEvent)(((int **)&D_00000000)[SELWIN(scr)->stage],
+        FCALL(snd_sendEvent)(((int **)&XDATA(D_00000000, port_genproc_data, 0xF08))[SELWIN(scr)->stage],
                       (SELITEM(obj)->id + 1) | *(int *)&SELWIN(scr)->eventFlags);
 
         SELWIN(scr)->state = 5;
@@ -4374,11 +4374,11 @@ void SelectWin_state4_000077D8(char *scr) {
         SELWIN(scr)->fovFrom = ((MCamera *)cam_root->view->camera)->fov;
         SELWIN(scr)->busy = 2;
         SELWIN(scr)->transition = 0.0f;
-    } else if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x200)) {
+    } else if (FCALL(input_checkPressed_00011E00)(&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x200)) {
         FCALL(snd_postEvent)(0x802);
         SELWIN(scr)->state = 3;
     } else {
-        if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x4002)) {
+        if (FCALL(input_checkPressed_00011E00)(&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x4002)) {
             obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
             if ((SELITEM(obj)->flags << 14) < 0) {
                 FCALL(snd_sendEvent)(0x101, 0);
@@ -4387,7 +4387,7 @@ void SelectWin_state4_000077D8(char *scr) {
                 ((void (*)(int))SELVT(d)->toggleVariant.fn)(SELVT(d)->toggleVariant.delta + (int)obj);
             }
         }
-        if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x10001)) {
+        if (FCALL(input_checkPressed_00011E00)(&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x10001)) {
             obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
             if ((SELITEM(obj)->flags << 14) >= 0) {
                 FCALL(snd_sendEvent)(0x101, 0);
@@ -4566,66 +4566,66 @@ void SelectWin_state6_00007B2C(char *arg0) {
     char *tv0_5;
 
     if (SELWIN(arg0)->stage == 1) {
-        temp_v0 = timproc_uso_b5_alias();
+        temp_v0 = XCALL(timproc_uso_b5_alias, SelectWin_boardCheatIndex_00008D38)();
         if (temp_v0 != 0) {
             temp_v1 = *(s32 **)((char *)&D_00000000 + 0xF60 + (temp_v0 * 4));
-            if (timproc_uso_b5_alias(&import_80020098, temp_v1[SELWIN(arg0)->cheatStep]) != 0) {
+            if (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, temp_v1[SELWIN(arg0)->cheatStep]) != 0) {
                 SELWIN(arg0)->cheatTimer = (s32) *(s32 *)((char *)&D_00000000 + 0xF18);
                 if (temp_v1[SELWIN(arg0)->cheatStep] != 0x100) {
                     SELWIN(arg0)->cheatStep = (s32) (SELWIN(arg0)->cheatStep + 1);
                 } else {
-                    timproc_uso_b5_alias(arg0, 1);
+                    XCALL(timproc_uso_b5_alias, SelectWin_resetCheat_00008D90)(arg0, 1);
                     SELWIN(arg0)->cheatBoard = (s32) (temp_v0 + 1);
-                    timproc_uso_b5_alias((char *)0x27, 0x3E8);
+                    XCALL(timproc_uso_b5_alias, snd_sendEvent)((char *)0x27, 0x3E8);
                 }
             } else {
-                if (timproc_uso_b5_alias(&import_80020098, ~temp_v1[SELWIN(arg0)->cheatStep]) != 0) {
+                if (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, ~temp_v1[SELWIN(arg0)->cheatStep]) != 0) {
                     SELWIN(arg0)->cheatTimer = 0;
                 }
                 SELWIN(arg0)->cheatTimer = SELWIN(arg0)->cheatTimer - 1;
                 if (SELWIN(arg0)->cheatTimer < 0) {
-                    timproc_uso_b5_alias(arg0, 1);
+                    XCALL(timproc_uso_b5_alias, SelectWin_resetCheat_00008D90)(arg0, 1);
                 }
             }
         }
     }
-    if (timproc_uso_b5_alias(&import_80020098, 0x100) != 0) {
-        tv0_1 = timproc_uso_b5_alias(arg0);
+    if (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x100) != 0) {
+        tv0_1 = XCALL(timproc_uso_b5_alias, SelectWin_chosenItem_00008A90)(arg0);
         ((GP_00007B2C)SELITEM(tv0_1)->vptr->clearChosen.fn)(SELITEM(tv0_1)->vptr->clearChosen.delta + tv0_1, 0);
-        timproc_uso_b5_alias(arg0);
-        tv0_2 = timproc_uso_b5_alias(arg0);
+        XCALL(timproc_uso_b5_alias, SelectWin_chooseCurrent_00008ABC)(arg0);
+        tv0_2 = XCALL(timproc_uso_b5_alias, SelectWin_chosenItem_00008A90)(arg0);
         ((GP_00007B2C)SELITEM(tv0_2)->vptr->setChosen.fn)(SELITEM(tv0_2)->vptr->setChosen.delta + tv0_2, 0);
         if (1) {
-            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (SELWIN(arg0)->stage * 4)), SELWIN(arg0)->curItem[SELWIN(arg0)->stage] | *(int *)&SELWIN(arg0)->eventFlags);
+            XCALL(timproc_uso_b5_alias, snd_sendEvent)(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (SELWIN(arg0)->stage * 4)), SELWIN(arg0)->curItem[SELWIN(arg0)->stage] | *(int *)&SELWIN(arg0)->eventFlags);
         }
-        timproc_uso_b5_alias(arg0);
+        XCALL(timproc_uso_b5_alias, SelectWin_saveFocus_0000866C)(arg0);
         SELWIN(arg0)->state = 7;
-        timproc_uso_b5_alias((&timproc_uso_b5_D_807FE768)[SELWIN(arg0)->stage], (SELITEM(timproc_uso_b5_alias(arg0))->id + 1) | *(int *)&SELWIN(arg0)->eventFlags);
+        XCALL(timproc_uso_b5_alias, snd_sendEvent)((&timproc_uso_b5_D_807FE768)[SELWIN(arg0)->stage], (SELITEM(XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0))->id + 1) | *(int *)&SELWIN(arg0)->eventFlags);
         SELWIN(arg0)->fadeTarget = 1.0f;
-        tv0_3 = timproc_uso_b5_alias(arg0);
+        tv0_3 = XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0);
         ((GP_00007B2C)SELITEM(tv0_3)->vptr->onStageLeave.fn)(SELITEM(tv0_3)->vptr->onStageLeave.delta + tv0_3);
         return;
     }
-    if (timproc_uso_b5_alias(&import_80020098, 0x200) != 0) {
-        if (timproc_uso_b5_alias(arg0) == 0) {
-            timproc_uso_b5_alias(arg0);
+    if (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x200) != 0) {
+        if (XCALL(timproc_uso_b5_alias, SelectWin_prevStageBit_000088A0)(arg0) == 0) {
+            XCALL(timproc_uso_b5_alias, SelectWin_commitSelection_00006C00)(arg0);
         } else {
-            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (SELWIN(arg0)->stage * 4)), SELWIN(arg0)->curItem[SELWIN(arg0)->stage] | *(int *)&SELWIN(arg0)->eventFlags);
-            tv0_4 = timproc_uso_b5_alias(arg0);
+            XCALL(timproc_uso_b5_alias, snd_sendEvent)(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (SELWIN(arg0)->stage * 4)), SELWIN(arg0)->curItem[SELWIN(arg0)->stage] | *(int *)&SELWIN(arg0)->eventFlags);
+            tv0_4 = XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0);
             ((GP_00007B2C)SELITEM(tv0_4)->vptr->confirm.fn)(SELITEM(tv0_4)->vptr->confirm.delta + tv0_4);
             SELWIN(arg0)->state = 0xA;
-            timproc_uso_b5_alias(arg0, 0);
+            XCALL(timproc_uso_b5_alias, SelectWin_resetCheat_00008D90)(arg0, 0);
             SELWIN(arg0)->fadeTarget = 0.0f;
-            timproc_uso_b5_alias(arg0);
-            tv0_5 = timproc_uso_b5_alias(arg0);
+            XCALL(timproc_uso_b5_alias, SelectWin_saveFocus_0000866C)(arg0);
+            tv0_5 = XCALL(timproc_uso_b5_alias, SelectWin_callPrevStageBit_0000894C)(arg0);
             SELWIN(arg0)->stageBit = (s32) tv0_5;
-            SELWIN(arg0)->stage = timproc_uso_b5_alias(arg0, tv0_5);
-            timproc_uso_b5_alias(arg0);
-            timproc_uso_b5_alias(arg0, 1);
+            SELWIN(arg0)->stage = XCALL(timproc_uso_b5_alias, gen_stageBitToIndex_000087A0)(arg0, tv0_5);
+            XCALL(timproc_uso_b5_alias, SelectWin_skipDisabled_00006D30)(arg0);
+            XCALL(timproc_uso_b5_alias, SelectWin_beginTransition_00008688)(arg0, 1);
         }
     }
-    if (timproc_uso_b5_alias(&import_80020098, 0x14003) != 0) {
-        timproc_uso_b5_alias(arg0, 1);
+    if (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x14003) != 0) {
+        XCALL(timproc_uso_b5_alias, SelectWin_moveCursorPrev_00006E08)(arg0, 1);
     }
 }
 
@@ -4721,63 +4721,63 @@ void SelectWin_state7_00007E34(char *arg0) {
     char *temp_v1_6;
 
     if (SELWIN(arg0)->numPlayers == 2) {
-        var_v1 = SELWIN(arg0)->busy | SELWIN(timproc_uso_b5_alias(SELWIN(arg0)->owner, SELWIN(arg0)->player))->stageLock;
+        var_v1 = SELWIN(arg0)->busy | SELWIN(XCALL(timproc_uso_b5_alias, SelectionMgr_otherWin_00001CF0)(SELWIN(arg0)->owner, SELWIN(arg0)->player))->stageLock;
     } else {
         var_v1 = SELWIN(arg0)->busy;
     }
-    if ((var_v1 == 0) && (timproc_uso_b5_alias(&import_80020098, 0x100) != 0)) {
-        temp_v0 = timproc_uso_b5_alias(arg0);
+    if ((var_v1 == 0) && (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x100) != 0)) {
+        temp_v0 = XCALL(timproc_uso_b5_alias, SelectWin_chosenItem_00008A90)(arg0);
         temp_v1 = (int)SELITEM(temp_v0)->vptr;
         ((GP_00007E34)SELVT(temp_v1)->clearChosen.fn)(SELVT(temp_v1)->clearChosen.delta + temp_v0, 0);
-        timproc_uso_b5_alias(arg0);
-        temp_v0_2 = timproc_uso_b5_alias(arg0);
+        XCALL(timproc_uso_b5_alias, SelectWin_chooseCurrent_00008ABC)(arg0);
+        temp_v0_2 = XCALL(timproc_uso_b5_alias, SelectWin_chosenItem_00008A90)(arg0);
         temp_v1_2 = (int)SELITEM(temp_v0_2)->vptr;
         ((GP_00007E34)SELVT(temp_v1_2)->setChosen.fn)(SELVT(temp_v1_2)->setChosen.delta + temp_v0_2, 0);
         if (1) {
             temp_v0_3 = SELWIN(arg0)->stage * 4;
-            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + temp_v0_3), *(int *)((char *)SELWIN(arg0)->curItem + temp_v0_3) | *(int *)&SELWIN(arg0)->eventFlags);
+            XCALL(timproc_uso_b5_alias, snd_sendEvent)(*(int *)((char *)&timproc_uso_b5_D_807FE778 + temp_v0_3), *(int *)((char *)SELWIN(arg0)->curItem + temp_v0_3) | *(int *)&SELWIN(arg0)->eventFlags);
         }
-        if (timproc_uso_b5_alias(arg0) == 0) {
-            timproc_uso_b5_alias((int)SELWIN(arg0)->owner);
+        if (XCALL(timproc_uso_b5_alias, SelectWin_nextStageBit_000087F4)(arg0) == 0) {
+            XCALL(timproc_uso_b5_alias, SelectionMgr_finish_00001C08)((int)SELWIN(arg0)->owner);
             return;
         }
-        timproc_uso_b5_alias(arg0);
-        temp_v0_4 = timproc_uso_b5_alias(arg0);
+        XCALL(timproc_uso_b5_alias, SelectWin_saveFocus_0000866C)(arg0);
+        temp_v0_4 = XCALL(timproc_uso_b5_alias, SelectWin_nextStageBit_000087F4)(arg0);
         SELWIN(arg0)->stageBit = temp_v0_4;
-        SELWIN(arg0)->stage = timproc_uso_b5_alias(arg0, (s32) temp_v0_4);
+        SELWIN(arg0)->stage = XCALL(timproc_uso_b5_alias, gen_stageBitToIndex_000087A0)(arg0, (s32) temp_v0_4);
         SELWIN(arg0)->state = 8;
-        timproc_uso_b5_alias(arg0);
+        XCALL(timproc_uso_b5_alias, SelectWin_skipDisabled_00006D30)(arg0);
         SELWIN(arg0)->fadeTarget = 1.0f;
-        timproc_uso_b5_alias(arg0, 0);
+        XCALL(timproc_uso_b5_alias, SelectWin_beginTransition_00008688)(arg0, 0);
         SELWIN(arg0)->stageLock = 1;
         return;
     }
-    if (timproc_uso_b5_alias(&import_80020098, 0x200) != 0) {
-        if (timproc_uso_b5_alias(arg0) == 0) {
-            timproc_uso_b5_alias(arg0);
+    if (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x200) != 0) {
+        if (XCALL(timproc_uso_b5_alias, SelectWin_prevStageBit_000088A0)(arg0) == 0) {
+            XCALL(timproc_uso_b5_alias, SelectWin_commitSelection_00006C00)(arg0);
         } else {
             temp_v0_5 = SELWIN(arg0)->stage * 4;
-            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE758 + temp_v0_5), *(int *)((char *)SELWIN(arg0)->curItem + temp_v0_5) | *(int *)&SELWIN(arg0)->eventFlags);
+            XCALL(timproc_uso_b5_alias, snd_sendEvent)(*(int *)((char *)&timproc_uso_b5_D_807FE758 + temp_v0_5), *(int *)((char *)SELWIN(arg0)->curItem + temp_v0_5) | *(int *)&SELWIN(arg0)->eventFlags);
 
-            temp_v0_6 = timproc_uso_b5_alias(arg0);
+            temp_v0_6 = XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0);
             temp_v1_3 = (int)SELITEM(temp_v0_6)->vptr;
             ((GP_00007E34)SELVT(temp_v1_3)->confirm.fn)(SELVT(temp_v1_3)->confirm.delta + temp_v0_6);
             SELWIN(arg0)->state = 6;
-            temp_v0_7 = timproc_uso_b5_alias(arg0);
+            temp_v0_7 = XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0);
             temp_v1_4 = (int)SELITEM(temp_v0_7)->vptr;
             ((GP_00007E34)SELVT(temp_v1_4)->onStageReturn.fn)(SELVT(temp_v1_4)->onStageReturn.delta + temp_v0_7);
             SELWIN(arg0)->fadeTarget = 1.0f;
         }
     }
-    if ((timproc_uso_b5_alias(&import_80020098, 0x4002) != 0) && (SELITEM(timproc_uso_b5_alias(arg0))->flags & 0x20)) {
-        timproc_uso_b5_alias((char *)0x101, 0);
-        temp_v0_8 = timproc_uso_b5_alias(arg0);
+    if ((XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x4002) != 0) && (SELITEM(XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0))->flags & 0x20)) {
+        XCALL(timproc_uso_b5_alias, snd_sendEvent)((char *)0x101, 0);
+        temp_v0_8 = XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0);
         temp_v1_5 = (int)SELITEM(temp_v0_8)->vptr;
         ((GP_00007E34)SELVT(temp_v1_5)->toggleVariant.fn)(SELVT(temp_v1_5)->toggleVariant.delta + temp_v0_8);
     }
-    if ((timproc_uso_b5_alias(&import_80020098, 0x10001) != 0) && !(SELITEM(timproc_uso_b5_alias(arg0))->flags & 0x20)) {
-        timproc_uso_b5_alias((char *)0x101, 0);
-        temp_v0_9 = timproc_uso_b5_alias(arg0);
+    if ((XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x10001) != 0) && !(SELITEM(XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0))->flags & 0x20)) {
+        XCALL(timproc_uso_b5_alias, snd_sendEvent)((char *)0x101, 0);
+        temp_v0_9 = XCALL(timproc_uso_b5_alias, SelectWin_curItem_00008A38)(arg0);
         temp_v1_6 = (int)SELITEM(temp_v0_9)->vptr;
         ((GP_00007E34)SELVT(temp_v1_6)->toggleVariant.fn)(SELVT(temp_v1_6)->toggleVariant.delta + temp_v0_9);
     }
@@ -5005,36 +5005,36 @@ void SelectWin_state9_00008468(char *arg0) {
     s32 temp_v0_2;
     s32 temp_v0_5;
 
-    if (timproc_uso_b5_alias(&import_80020098, 0x100) != 0) {
-        temp_v0 = timproc_uso_b5_alias(arg0);
+    if (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x100) != 0) {
+        temp_v0 = XCALL(timproc_uso_b5_alias, SelectWin_chosenItem_00008A90)(arg0);
         temp_v1 = (int)SELITEM(temp_v0)->vptr;
         ((GPv_8468)SELVT(temp_v1)->clearChosen.fn)(SELVT(temp_v1)->clearChosen.delta + temp_v0, 0);
-        timproc_uso_b5_alias(arg0);
-        temp_v0 = timproc_uso_b5_alias(arg0);
+        XCALL(timproc_uso_b5_alias, SelectWin_chooseCurrent_00008ABC)(arg0);
+        temp_v0 = XCALL(timproc_uso_b5_alias, SelectWin_chosenItem_00008A90)(arg0);
         temp_v1 = (int)SELITEM(temp_v0)->vptr;
         ((GPv_8468)SELVT(temp_v1)->setChosen.fn)(SELVT(temp_v1)->setChosen.delta + temp_v0, 0);
-        timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (SELWIN(arg0)->stage * 4)),
+        XCALL(timproc_uso_b5_alias, snd_sendEvent)(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (SELWIN(arg0)->stage * 4)),
                              SELWIN(arg0)->curItem[SELWIN(arg0)->stage] | *(int *)&SELWIN(arg0)->eventFlags);
-        if (timproc_uso_b5_alias(arg0) == 0) {
-            timproc_uso_b5_alias((int)SELWIN(arg0)->owner);
+        if (XCALL(timproc_uso_b5_alias, SelectWin_nextStageBit_000087F4)(arg0) == 0) {
+            XCALL(timproc_uso_b5_alias, SelectionMgr_finish_00001C08)((int)SELWIN(arg0)->owner);
             return;
         }
-        timproc_uso_b5_alias(arg0);
-        temp_v0_2 = timproc_uso_b5_alias(arg0);
+        XCALL(timproc_uso_b5_alias, SelectWin_saveFocus_0000866C)(arg0);
+        temp_v0_2 = XCALL(timproc_uso_b5_alias, SelectWin_nextStageBit_000087F4)(arg0);
         SELWIN(arg0)->stageBit = temp_v0_2;
-        SELWIN(arg0)->stage = timproc_uso_b5_alias(arg0, temp_v0_2);
+        SELWIN(arg0)->stage = XCALL(timproc_uso_b5_alias, gen_stageBitToIndex_000087A0)(arg0, temp_v0_2);
         SELWIN(arg0)->state = 0xA;
-        timproc_uso_b5_alias(arg0);
+        XCALL(timproc_uso_b5_alias, SelectWin_skipDisabled_00006D30)(arg0);
         SELWIN(arg0)->fadeTarget = 0.0f;
-        timproc_uso_b5_alias(arg0, 0);
+        XCALL(timproc_uso_b5_alias, SelectWin_beginTransition_00008688)(arg0, 0);
         return;
     }
-    if (timproc_uso_b5_alias(&import_80020098, 0x200) != 0) {
-        timproc_uso_b5_alias(arg0);
+    if (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x200) != 0) {
+        XCALL(timproc_uso_b5_alias, SelectWin_commitSelection_00006C00)(arg0);
     }
     if (SELWIN(arg0)->busy == 0) {
-        if (timproc_uso_b5_alias(&import_80020098, 0x14003) != 0) {
-            timproc_uso_b5_alias(arg0, 1);
+        if (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, 0x14003) != 0) {
+            XCALL(timproc_uso_b5_alias, SelectWin_moveCursorPrev_00006E08)(arg0, 1);
             if (SELWIN(arg0)->state == 9) {
                 SELWIN(arg0)->busy = 0;
             }

@@ -158,7 +158,7 @@ void mgr_openSession_00000504(int *a0) {
     a0[0] = v3;
     gInputMgr_session_14C = v3;
     CALL(app_setHeapMode)(v1);
-    v3 = (int)&D_00000000;
+    v3 = (int)&XDATA(D_00000000, port_bootup_bss, 0x3C740);
     if (D_00000000 == 0x17D7) {
         ((BackupSession *)a0[0])->modes = 1;
     } else {

@@ -55,7 +55,7 @@ void pad_update(PadCtl *p) {
         if (rumble != 0) {
             pos = p->rumblePos;
             p->rumblePos = (s16) (pos + 1);
-            CALL(pad_setSlotValueGlobal)(&gSysLib, port - 1, ((u8 *)rumble)[pos], p);
+            CALL(pad_setSlotValueGlobal)(&XDATA(gSysLib, port_bootup_bss, 0x3C740), port - 1, ((u8 *)rumble)[pos], p);
             if (p->rumble[p->rumblePos] == 0xFF) {
                 p->rumble = 0;
                 p->rumblePrio = 0;
@@ -66,7 +66,7 @@ void pad_update(PadCtl *p) {
     p->held = 0;
     if (p->paused == 0) {
         if (p->port != 0) {
-            CALL(pad_decodeButtonMap_00034CC8)(&gSysLib, p);
+            CALL(pad_decodeButtonMap_00034CC8)(&XDATA(gSysLib, port_bootup_bss, 0x3C740), p);
 #ifdef PORT
             /* trace input hook (plan 9.6.4): log, or inject on replay, the decoded held word
              * and the raw stick bytes, before mirroring and the game's own replay block */
@@ -171,5 +171,5 @@ void pad_update(PadCtl *p) {
             p->tapTimer = 0xA;
         }
     }
-    p->dirIndex = (s16) *(u8*)((char*)&D_00000000 + ((u32)(p->held & 0x1E000) >> 0xD));
+    p->dirIndex = (s16) *(u8*)((char*)&XDATA(D_00000000, port_bootup_data, 0x225C8) + ((u32)(p->held & 0x1E000) >> 0xD));
 }

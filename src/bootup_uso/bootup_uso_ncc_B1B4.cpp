@@ -100,10 +100,10 @@ extern "C" void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned i
     FCALL(memtrack_begin)(stream_readF32_00008A40 + 0x8, 0);
     FCALL(memtrack_begin)(stream_readF32_00008A40 + 0x14, 0);
     if (idx != 0) {
-        if (FCALL(game_isUsoLoaded)(gBoardModelUsoPaths_b1b4_tblA[idx]) == 0) FCALL(game_loadUso)(&D_00000000, gBoardModelUsoPaths_b1b4_tblA[idx]);
+        if (FCALL(game_isUsoLoaded)(gBoardModelUsoPaths_b1b4_tblA[idx]) == 0) FCALL(game_loadUso)(&XDATA(D_00000000, port_bootup_bss, 0xF8), gBoardModelUsoPaths_b1b4_tblA[idx]);
     }
-    if (FCALL(game_isUsoLoaded)(gBoarderUsoPaths_b1b4_tblB[cat]) == 0) FCALL(game_loadUso)(&D_00000000, gBoarderUsoPaths_b1b4_tblB[cat]);
+    if (FCALL(game_isUsoLoaded)(gBoarderUsoPaths_b1b4_tblB[cat]) == 0) FCALL(game_loadUso)(&XDATA(D_00000000, port_bootup_bss, 0xF8), gBoarderUsoPaths_b1b4_tblB[cat]);
     FCALL(memtrack_end)();
-    FCALL(ProcNodeList)(&D_00000000, a4, a3, &o);
+    FCALL(ProcNodeList)(&XDATA(D_00000000, port_bootup_data, 0xABBC), a4, a3, &o);
     FCALL(memtrack_end)();
 }

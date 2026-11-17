@@ -1125,7 +1125,7 @@ c1:
     }
     goto end;
 c0:
-    r = CALL(hostio_openFile)(&D_00000000, a1);
+    r = CALL(hostio_openFile)(&XDATA(D_00000000, port_bootup_bss, 0x3C768), a1);
     o->handle = r;
     if (r == 0) {
         CALL(dbg_printf)(GL_DATA_STR(0x1E590, "Remote OpenFile fail '%s'\n"), a1);
@@ -1182,7 +1182,7 @@ L1:
     r = SYSAPI->fileRead(o->handle, a1, a2);
     goto end;
 L0:
-    r = CALL(hostio_readFile)(&D_00000000, a1, a2);
+    r = CALL(hostio_readFile)(&XDATA(D_00000000, port_bootup_bss, 0x3C768), a1, a2);
     goto end;
 L2: {
         Msg35440 s;
@@ -1347,7 +1347,7 @@ c1:
 #endif
     goto end;
 c0:
-    r = CALL(hostio_seekFile)(&D_00000000);
+    r = CALL(hostio_seekFile)(&XDATA(D_00000000, port_bootup_bss, 0x3C768));
     goto end;
 c2:
     if (a1 == 0) {
@@ -1559,7 +1559,7 @@ L1:
     SYSAPI->fileClose(a0->handle, a0);
     return;
 L0:
-    CALL(hostio_closeFile)(&D_00000000, a0);
+    CALL(hostio_closeFile)(&XDATA(D_00000000, port_bootup_bss, 0x3C768), a0);
 }
 
 // fs_gdlFileError — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
@@ -3527,26 +3527,26 @@ extern char D_38108_d;
  * called on a successful open) and 0 (+0x8 / 0xC, after the HostIO dialog load). */
 void Node_Load(char *o, int a1, char *a2) {
     char *r;
-    CALL(sys_setWord4_00061D80)(&D_00000000);
+    CALL(sys_setWord4_00061D80)(&XDATA(D_00000000, port_bootup_bss, 0x3C740));
     if (a1 == 0) {
-        if (CALL(hostio_fileDialog)(&D_00000000, GL_DATA_STR(0x1EBF8, "Load"),
-                             (char *)&D_00000000 + 0x0001EC00, &D_38108_d, 0) == 0) {
+        if (CALL(hostio_fileDialog)(&XDATA(D_00000000, port_bootup_bss, 0x3C768), GL_DATA_STR(0x1EBF8, "Load"),
+                             (char *)&XDATA(D_00000000, port_bootup_data, 0x0) + 0x0001EC00, &D_38108_d, 0) == 0) {
             return;
         }
-        a2 = (char *)&D_00000000;
+        a2 = (char *)&XDATA(D_00000000, port_bootup_bss, 0x3C100);
     }
     CALL(dbg_printf)(GL_DATA_STR(0x1EC08, "Node::Load(\"%s\")\n"), a2);
-    if (CALL(fs_gdlOpenFile)(&D_00000000, a2, GL_DATA(0x1EC1C))) {
+    if (CALL(fs_gdlOpenFile)(&XDATA(D_00000000, port_bootup_bss, 0x3C740), a2, GL_DATA(0x1EC1C))) {
         if (1) { r = NODE(o)->vptr; }
         VT_SLOT(r, 8).fn(VT_SLOT(r, 8).delta + o);
-        CALL(fs_gdlCloseFile)(&D_00000000);
+        CALL(fs_gdlCloseFile)(&XDATA(D_00000000, port_bootup_bss, 0x3C740));
     }
     if (1) { }
     if (1) { }
     if (1) { }
     if (1) { }
     if (a1 == 0) {
-        CALL(hostio_msg27_0003FB0C)(&D_00000000);
+        CALL(hostio_msg27_0003FB0C)(&XDATA(D_00000000, port_bootup_bss, 0x3C768));
         if (1) { r = NODE(o)->vptr; }
         VT_SLOT(r, 0).fn(VT_SLOT(r, 0).delta + o);
     }
@@ -10410,13 +10410,13 @@ void dbg_hostioHexDump(void) {
     int h;
     int v;
     CALL(str_copyEnd)(&scr[0], GL_DATA(0x1F718));
-    if (CALL(hostio_askString)(&D_00000000, GL_DATA_STR(0x1F71C, "From"), &scr[0]) == 0) return;
+    if (CALL(hostio_askString)(&XDATA(D_00000000, port_bootup_bss, 0x3C768), GL_DATA_STR(0x1F71C, "From"), &scr[0]) == 0) return;
     h = CALL(str_toInt)(&scr[0]);
     CALL(str_copyEnd)(&scr[0], GL_DATA(0x1F724));
-    if (CALL(hostio_askString)(&D_00000000, GL_DATA_STR(0x1F728, "Len"), &scr[0]) == 0) return;
+    if (CALL(hostio_askString)(&XDATA(D_00000000, port_bootup_bss, 0x3C768), GL_DATA_STR(0x1F728, "Len"), &scr[0]) == 0) return;
     v = CALL(str_toInt)(&scr[0]);
     if (h != 0) {
-        CALL(sys_hexDump)(&D_00000000, h, v);
+        CALL(sys_hexDump)(&XDATA(D_00000000, port_bootup_bss, 0x3C740), h, v);
     }
 }
 
@@ -14808,7 +14808,7 @@ extern int D_00000000;
 int MorphPoly_shade(char *self, int a1, int a2, int aux, int a4) {
     int r;
     int t;
-    short *lit = (short *)&D_00000000;
+    short *lit = (short *)&XDATA(D_00000000, port_bootup_bss, 0x3C8E4);
     r = CALL(PolyShape_shade_00049DBC)(self, a1, a2, aux, a4);
     if (a1 == 0) {
         if (((BasePolyShape *)self)->shapeFlags & 0x8000) {
@@ -14819,7 +14819,7 @@ int MorphPoly_shade(char *self, int a1, int a2, int aux, int a4) {
             t = CALL(PolyShape_getFaceVertex)(self, aux, 2);
             CALL(MorphPoly_checkVtx)(self, t, lit[2]);
         } else {
-            if (*(int *)&D_00000000 != 0) {
+            if (*(int *)&XDATA(D_00000000, port_bootup_bss, 0x3C8EC) != 0) {
                 t = CALL(PolyShape_getFaceVertex)(self, aux, 0);
                 CALL(MorphPoly_checkVtx)(self, t, lit[0]);
             } else {
@@ -16030,7 +16030,7 @@ void Window_hostioParms(int a0) {
     int *r;
     int *p;
     int *q;
-    CALL(hostio_beginGroup)(&D_00000000, GL_DATA_STR(0x20198, "Window"), 0);
+    CALL(hostio_beginGroup)(&XDATA(D_00000000, port_bootup_bss, 0x3C768), GL_DATA_STR(0x20198, "Window"), 0);
     o1 = (int *)CALL(mem_new)(0xC);
     if (o1 != 0) {
         v1 = o1;
@@ -16039,13 +16039,13 @@ void Window_hostioParms(int a0) {
             if (v1 != 0 || (q = (int *)CALL(mem_new)(4), r = q, q != 0)) {
                 *r = (int)(GL_DATA(0x1F730));
             }
-            v1[0] = (int)(GL_DATA(0x1FC24)); v1[1] = (int)&D_00000000;
+            v1[0] = (int)(GL_DATA(0x1FC24)); v1[1] = (int)&XDATA(D_00000000, gfx_printWindowDLUsage_00043558, 0x0);
         }
         o1[0] = (int)(GL_DATA(0x1FC3C));
         o1[2] = a0;
     }
-    CALL(hostio_addButton)(&D_00000000, GL_DATA_STR(0x201A0, "Show DL Usage"), o1, 1);
-    CALL(hostio_endGroup)(&D_00000000);
+    CALL(hostio_addButton)(&XDATA(D_00000000, port_bootup_bss, 0x3C768), GL_DATA_STR(0x201A0, "Show DL Usage"), o1, 1);
+    CALL(hostio_endGroup)(&XDATA(D_00000000, port_bootup_bss, 0x3C768));
     CALL(Node_hostioParms)(a0);
 }
 

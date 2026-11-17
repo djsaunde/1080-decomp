@@ -84,7 +84,7 @@ void GameFlow_create(int *arg0, int arg1) {
     GAMEFLOW(arg0)->unk70 = 0;
     GAMEFLOW(arg0)->seq = 0;
     sp84 = FCALL(app_setHeapMode)(0);
-    FCALL(app_loadUso)(&gSysLib, &sStr_rom_gui_uso_C5E4);
+    FCALL(app_loadUso)(&XDATA(gSysLib, port_bootup_bss, 0x3C740), &sStr_rom_gui_uso_C5E4);
     p = 0;
     if (p != 0 || (p = (char *)FCALL(mem_new)(0x80)) != 0) {
         FCALL(pad_open)(p, 1);
@@ -107,7 +107,7 @@ void GameFlow_create(int *arg0, int arg1) {
     FCALL(snd_setPlayer0VolumeLevel_0000023C)(SETTINGS(GAMEFLOW(arg0)->options)->levels[1]);
     FCALL(snd_setPlayer2VolumeLevel)(SETTINGS(GAMEFLOW(arg0)->options)->levels[2]);
     FCALL(snd_setSoundOutputMode_000001FC)(SETTINGS(GAMEFLOW(arg0)->options)->flags & 3);
-    D_00000000 = (SETTINGS(GAMEFLOW(arg0)->options)->flags & 4) == 4;
+    XDATA(D_00000000, port_bootup_bss, 0x28C) = (SETTINGS(GAMEFLOW(arg0)->options)->flags & 4) == 4;
     GAMEFLOW(arg0)->recordCap = *(int *)GAMEFLOW(arg0)->backup;
     GAMEFLOW(arg0)->recordBuf = FCALL(mem_new)(GAMEFLOW(arg0)->recordCap << 2);
     GAMEFLOW(arg0)->flowImgs = (void *)FCALL(ImageFileMgr_ctor)(0, &sStr_rom_flowimgs_bin_C5F0);
@@ -156,7 +156,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
     *(int *)p = 0;
 
     p = GAMEFLOW(arg0)->game;
-    q = (char *)&D_00000000;
+    q = (char *)&XDATA(D_00000000, port_bootup_bss, 0x58);
     r = q + 0x10;
     FCALL(list_append)(r, p);
     if (NODE(p)->parent != 0) {
@@ -166,7 +166,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
     NODE(p)->parent = (Node *)r;
 
     p = arg0;
-    q = (char *)&D_00000000;
+    q = (char *)&XDATA(D_00000000, port_bootup_bss, 0x58);
     r = q + 0x10;
     FCALL(list_append)(r, p);
     if (NODE(p)->parent != 0) {
@@ -189,9 +189,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
     GAMEFLOW(arg0)->unk74 = 0;
     GAMEFLOW(arg0)->unk78 = 0;
 
-    p = (char *)D_00000000;
-    D_00000000 = (int)p + 1;
-    FCALL(TextWin_printf)(stream_readQuad_000000F0, &sFmt_num_C604, p, (&D_00000000)[arg1]);
+    p = (char *)XDATA(D_00000000, port_bootup_data, 0xC478);
+    XDATA(D_00000000, port_bootup_data, 0xC478) = (int)p + 1;
+    FCALL(TextWin_printf)(stream_readQuad_000000F0, &sFmt_num_C604, p, (&XDATA(D_00000000, port_bootup_data, 0xC450))[arg1]);
     sp3C = FCALL(app_printHeapOfType)(stream_readQuad_000000F0);
     if (sp3C != 1) {
         FCALL(sys_fatal)(&sStr_FLOW_free_blocks_1_C60C);
@@ -200,9 +200,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
     if (GAMEFLOW(arg0)->flowMode != (0, arg1)) {
         GAMEFLOW(arg0)->nextFlowMode = arg1;
         FCALL(replay_clearRecord_00012BF8)(arg0);
-        FCALL(GameFlow_loadProcUso_000117FC)(arg0, gModeUsoPaths_C4EC[(&D_00000000)[arg1]]);
+        FCALL(GameFlow_loadProcUso_000117FC)(arg0, gModeUsoPaths_C4EC[(&XDATA(D_00000000, port_bootup_data, 0xC52C))[arg1]]);
         sp28 = FCALL(app_setHeapMode)(3);
-        FCALL(app_setCurrentHeap)(&D_00000000, 1);
+        FCALL(app_setCurrentHeap)(&XDATA(D_00000000, port_bootup_bss, 0x58), 1);
         switch (arg1) {
         case 0:
             q = 0;
@@ -211,7 +211,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     FLOWPROC(r)->vptr = &ModeFlowProc_vtbl_C550; /* base vtable */
                 }
-                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
+                FLOWPROC(q)->vptr = &XDATA(D_00000000, port_n64proc_data, 0x98); /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -223,7 +223,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     FLOWPROC(r)->vptr = &ModeFlowProc_vtbl_C550; /* base vtable */
                 }
-                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
+                FLOWPROC(q)->vptr = &XDATA(D_00000000, port_titproc_data, 0x490); /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -235,7 +235,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     FLOWPROC(r)->vptr = &ModeFlowProc_vtbl_C550; /* base vtable */
                 }
-                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
+                FLOWPROC(q)->vptr = &XDATA(D_00000000, port_mgrproc_data, 0x18); /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -247,7 +247,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     FLOWPROC(r)->vptr = &ModeFlowProc_vtbl_C550; /* base vtable */
                 }
-                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
+                FLOWPROC(q)->vptr = &XDATA(D_00000000, port_h2hproc_data, 0x18); /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -259,7 +259,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     FLOWPROC(r)->vptr = &ModeFlowProc_vtbl_C550; /* base vtable */
                 }
-                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
+                FLOWPROC(q)->vptr = &XDATA(D_00000000, port_timproc_data, 0x18); /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -271,7 +271,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     FLOWPROC(r)->vptr = &ModeFlowProc_vtbl_C550; /* base vtable */
                 }
-                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
+                FLOWPROC(q)->vptr = &XDATA(D_00000000, port_arcproc_data, 0x18); /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -283,7 +283,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     FLOWPROC(r)->vptr = &ModeFlowProc_vtbl_C550; /* base vtable */
                 }
-                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
+                FLOWPROC(q)->vptr = &XDATA(D_00000000, port_trkproc_data, 0x18); /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -295,7 +295,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     FLOWPROC(r)->vptr = &ModeFlowProc_vtbl_C550; /* base vtable */
                 }
-                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
+                FLOWPROC(q)->vptr = &XDATA(D_00000000, port_trnproc_data, 0x18); /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
@@ -307,13 +307,13 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
                 if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     FLOWPROC(r)->vptr = &ModeFlowProc_vtbl_C550; /* base vtable */
                 }
-                FLOWPROC(q)->vptr = &D_00000000; /* the mode vtable */
+                FLOWPROC(q)->vptr = &XDATA(D_00000000, port_eddproc_data, 0x208); /* the mode vtable */
             }
             p = q;
             GAMEFLOW(arg0)->flowProc = p;
             break;
         }
-        FCALL(app_setCurrentHeap)(&D_00000000, 0);
+        FCALL(app_setCurrentHeap)(&XDATA(D_00000000, port_bootup_bss, 0x58), 0);
         FCALL(app_setHeapMode)(sp28);
     }
 
@@ -324,7 +324,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
         arg2);
     GAMEFLOW(arg0)->flowMode = arg1;
     FCALL(heap_printStats)();
-    p = (char *)D_00000000;
+    p = (char *)XDATA(D_00000000, port_bootup_bss, 0x3EF04);
     /* GameFlow.game is the WorldRegistry (game/course.h); windows[3] (+0x114) is the "ProcessWindow"
      * game_createProcessWindow stores there */
     FCALL(node_linkBack_0004E888)(WORLDREG(GAMEFLOW(arg0)->game)->windows[3], p);

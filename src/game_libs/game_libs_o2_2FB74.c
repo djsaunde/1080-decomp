@@ -112,7 +112,7 @@ void snd_dispatchEvent(s32 sel, s32 v) {
     switch (sel) {
     case 19:
         if (v == 5 && D_2FB74_st.w8 == 0) {
-            gl2FB74_snd(3);
+            XCALL(gl2FB74_snd, snd_RequestCue2Prio)(3);
             D_2FB74_st.w8 = 300;
         }
         if (v < 4) {
@@ -122,18 +122,18 @@ void snd_dispatchEvent(s32 sel, s32 v) {
         break;
     case 23:
         if (v < 2) {
-            gl2FB74_snd(2);
+            XCALL(gl2FB74_snd, snd_RequestCue2Prio)(2);
         } else {
-            gl2FB74_snd(1);
+            XCALL(gl2FB74_snd, snd_RequestCue2Prio)(1);
         }
         D_2FB74_st.w10 = 40;
         cmd = D_2FB74_cmdsrc;
         break;
     case 7:
         if (D_2FB74_gA == 1 || D_2FB74_gA == 2 || D_2FB74_gA == 4) {
-            gl2FB74_snd(0x6020301, (s8) (v + 42));
+            XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020301, (s8) (v + 42));
         } else {
-            gl2FB74_snd(0x6020301, 50);
+            XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020301, 50);
         }
         cmd = D_2FB74_cmdsrc;
         break;
@@ -155,7 +155,7 @@ void snd_dispatchEvent(s32 sel, s32 v) {
             }
             D_2FB74_bank.arr[b] = t;
         }
-        gl2FB74_snd(0x6000003, (s8) b);
+        XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6000003, (s8) b);
         switch (sel) {
         case 8:
             c = 16;
@@ -168,8 +168,8 @@ void snd_dispatchEvent(s32 sel, s32 v) {
             c = 28;
             break;
         }
-        gl2FB74_snd(0x6020304, 50);
-        gl2FB74_snd(0x6020302, (s8) (t + c));
+        XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020304, 50);
+        XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020302, (s8) (t + c));
         cmd = D_2FB74_cmdsrc;
         break;
     case 36:
@@ -179,7 +179,7 @@ void snd_dispatchEvent(s32 sel, s32 v) {
             return;
         }
         if (D_2FB74_mode == 1 || D_2FB74_mode == 0 || D_2FB74_mode == 8 || D_2FB74_gK == 2) {
-            gl2FB74_snd(v + 16);
+            XCALL(gl2FB74_snd, snd_RequestCue2Prio)(v + 16);
             b = D_2FB74_gL;
         }
         if (b != 4) {
@@ -209,9 +209,9 @@ void snd_dispatchEvent(s32 sel, s32 v) {
         D_2FB74_gO = b3 * 16 + 32;
         D_2FB74_st.w14 += 32;
         if (cmd == 0) {
-            gl2FB74_snd(8, 360, 11);
+            XCALL(gl2FB74_snd, snd_TriggerChannel8Cue)(8, 360, 11);
         } else {
-            gl2FB74_snd(8, 48, b3 + 3);
+            XCALL(gl2FB74_snd, snd_TriggerChannel8Cue)(8, 48, b3 + 3);
         }
         D_2FB74_cnt = 0;
         if (D_2FB74_gP != 4) {
@@ -233,9 +233,9 @@ void snd_dispatchEvent(s32 sel, s32 v) {
         break;
     case 34:
         if (D_2FB74_mode == 0) {
-            gl2FB74_snd(8, 120, 10);
+            XCALL(gl2FB74_snd, snd_TriggerChannel8Cue)(8, 120, 10);
         } else {
-            gl2FB74_snd(8, 8, 1);
+            XCALL(gl2FB74_snd, snd_TriggerChannel8Cue)(8, 8, 1);
         }
         D_2FB74_cnt2 = 0;
         D_2FB74_gH = 0;
@@ -249,30 +249,30 @@ void snd_dispatchEvent(s32 sel, s32 v) {
         if (v != 1) {
             sel += 1;
         }
-        gl2FB74_snd(40, 30, 0);
+        XCALL(gl2FB74_snd, snd_TriggerChannel8Cue)(40, 30, 0);
         cmd = D_2FB74_cmdsrc;
         break;
     case 12:
         D_2FB74_gB = v;
-        gl2FB74_snd(0x6020301, (s8) (v + 9));
+        XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020301, (s8) (v + 9));
         cmd = D_2FB74_cmdsrc;
         break;
     case 9:
-        gl2FB74_snd(0x6020301, 15);
+        XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020301, 15);
         cmd = D_2FB74_cmdsrc;
         break;
     case 17:
         if (D_2FB74_gC == 4) {
             if (D_2FB74_gD == 0) {
                 p = &D_2FB74_chan;
-                gl2FB74_snd(p->b[3], 22);
+                XCALL(gl2FB74_snd, snd_ScheduleSeqAfter)(p->b[3], 22);
                 D_2FB74_gF = 1;
             }
         }
         if (D_2FB74_mode == 0) {
-            gl2FB74_snd(240, 220, 9);
+            XCALL(gl2FB74_snd, snd_TriggerChannel8Cue)(240, 220, 9);
         }
-        gl2FB74_snd(0x6020300, 8);
+        XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020300, 8);
         D_2FB74_cnt4 = 0;
         cmd = D_2FB74_cmdsrc;
         break;
@@ -295,7 +295,7 @@ void snd_dispatchEvent(s32 sel, s32 v) {
         if (D_2FB74_g9 >= 5) {
             goto L_lad6;
         }
-        gl2FB74_snd(D_2FB74_g9 + 9);
+        XCALL(gl2FB74_snd, snd_RequestCue2Prio)(D_2FB74_g9 + 9);
         cmd = D_2FB74_cmdsrc;
         break;
     case 13:
@@ -313,29 +313,29 @@ L_lad5:
     case 15:
         c += 1;
     case 1190:
-        gl2FB74_snd(0x6020300, (s8) c);
+        XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020300, (s8) c);
         D_2FB74_st.w10 = 60;
         cmd = D_2FB74_cmdsrc;
         break;
     case 256:
-        gl2FB74_snd(0x6020300, 9);
+        XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020300, 9);
         D_2FB74_st.w10 = 60;
         cmd = D_2FB74_cmdsrc;
         break;
     case 523:
-        gl2FB74_snd(0x6020300, 10);
+        XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020300, 10);
         D_2FB74_st.w10 = 60;
         cmd = D_2FB74_cmdsrc;
         break;
     case 405:
-        gl2FB74_snd(0x6020300, 11);
+        XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020300, 11);
         cmd = D_2FB74_cmdsrc;
         break;
     case 934:
         if (D_2FB74_gV == 8 && D_2FB74_gW == 10 && D_2FB74_gX == 2) {
-            gl2FB74_snd(0x6020301, 57);
+            XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020301, 57);
         } else {
-            gl2FB74_snd(0x6020301, 51);
+            XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020301, 51);
         }
         cmd = D_2FB74_cmdsrc;
         break;
@@ -346,11 +346,11 @@ L_lad5:
         } else {
             b = 0;
         }
-        gl2FB74_snd(0x6020301, (s8) (b + 61));
+        XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020301, (s8) (b + 61));
         p = &D_2FB74_chan;
         p->w = 15;
         gl_ref_000423A4(p->b[3]);
-        gl2FB74_snd(0x83010000, 3200);
+        XCALL(gl2FB74_snd, AudioThread_QueueCmdS32)(0x83010000, 3200);
         cmd = D_2FB74_cmdsrc;
         break;
     case 50:
@@ -359,7 +359,7 @@ L_lad5:
         break;
     case 49:
         if (D_2FB74_gQ < 5) {
-            gl2FB74_snd(0x6020301, (s8) (D_2FB74_gQ + 34));
+            XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020301, (s8) (D_2FB74_gQ + 34));
         }
         return;
     case 309:
@@ -376,7 +376,7 @@ L_lad5:
     case 160:
         p = &D_2FB74_chan;
         if (p->w == 15) {
-            gl2FB74_snd(0x8030900, 1);
+            XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x8030900, 1);
         }
         cmd = D_2FB74_cmdsrc;
         break;

@@ -3505,20 +3505,20 @@ void Node_hideDisplay_0000E490(char *a0) {
 
 void hud_initSprites_0000E4A8(Hud *a0) {
     int r;
-    r = CALL(gui_fontCreate)(0, &D_00000000, 16, 320, 1, 10);
+    r = CALL(gui_fontCreate)(0, &XDATA(D_00000000, port_gamegfx_data, 0x850), 16, 320, 1, 10);
     a0->digitsTall = r;
     CALL(gui_fontAdjustAdvance)(r, -1);
-    r = CALL(gui_fontCreate)(0, &D_00000000, 160, 16, 10, 1);
+    r = CALL(gui_fontCreate)(0, &XDATA(D_00000000, port_gamegfx_data, 0x3E18), 160, 16, 10, 1);
     a0->digitsWide = r;
     CALL(gui_fontAdjustAdvance)(r, -1);
 }
 
 void hud_initSprites_0000E53C(Hud *a0) {
     int r;
-    r = CALL(gui_fontCreate)(0, &D_00000000, 352, 17, 11, 1);
+    r = CALL(gui_fontCreate)(0, &XDATA(D_00000000, port_gamegfx_data, 0x1C58), 352, 17, 11, 1);
     a0->sprites64 = r;
     CALL(gui_fontAdjustAdvance)(r, -5);
-    r = CALL(gui_fontCreate)(0, &D_00000000, 240, 11, 10, 1);
+    r = CALL(gui_fontCreate)(0, &XDATA(D_00000000, port_gamegfx_data, 0x33C0), 240, 11, 10, 1);
     a0->sprites68 = r;
     CALL(gui_fontAdjustAdvance)(r, -4);
 }

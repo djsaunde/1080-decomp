@@ -9,6 +9,7 @@
  * five source fixes. */
 #include "common.h"
 #include "game/select.h"
+#include "uso_call.h"
 extern char *timproc_uso_b5_alias();
 
 extern int gl_func_00000000();
@@ -168,102 +169,102 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
     volatile int pad3[5];
     char *sp28;
 
-    if ((arg0 != NULL) || (temp_v0 = timproc_uso_b5_alias((char *)0x4F0), arg0 = temp_v0, (temp_v0 != NULL))) {
+    if ((arg0 != NULL) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x4F0), arg0 = temp_v0, (temp_v0 != NULL))) {
         var_s0 = arg0;
-        if ((var_s0 != NULL) || (temp_v0_2 = timproc_uso_b5_alias((char *)0x2C), var_s0 = temp_v0_2, (temp_v0_2 != NULL))) {
-            timproc_uso_b5_alias(var_s0, ((char *)&D_00000000 + 0x1260));
-            NODE(var_s0)->vptr = (char *)&D_00000000;
+        if ((var_s0 != NULL) || (temp_v0_2 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x2C), var_s0 = temp_v0_2, (temp_v0_2 != NULL))) {
+            XCALL(timproc_uso_b5_alias, Node_ctor)(var_s0, ((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x1260));
+            NODE(var_s0)->vptr = (char *)&XDATA(D_00000000, port_bootup_data, 0xC338);
         }
-        SELWIN(arg0)->vptr = (void *)&D_00000000;
+        SELWIN(arg0)->vptr = (void *)&XDATA(D_00000000, port_genproc_data, 0xDEC);
         var_s0 = (char *)&SELWIN(arg0)->parms;
-        if ((arg0 != (char *)-0x2C) || (temp_v0_3 = timproc_uso_b5_alias((char *)0x38C), var_s0 = temp_v0_3, (temp_v0_3 != NULL))) {
+        if ((arg0 != (char *)-0x2C) || (temp_v0_3 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x38C), var_s0 = temp_v0_3, (temp_v0_3 != NULL))) {
             var_v1 = var_s0;
-            if ((var_s0 != NULL) || (temp_v0_4 = timproc_uso_b5_alias((char *)8), var_v1 = temp_v0_4, (temp_v0_4 != NULL))) {
-                WPARMS(var_v1)->vptr = ((char *)&D_00000000 + 0x1268);
+            if ((var_s0 != NULL) || (temp_v0_4 = XCALL(timproc_uso_b5_alias, mem_new)((char *)8), var_v1 = temp_v0_4, (temp_v0_4 != NULL))) {
+                WPARMS(var_v1)->vptr = ((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x1268);
                 WPARMS(var_v1)->unk004 = 0;
             }
-            sp3A0.p = *(char **)((char *)&D_00000000 + 0x127C);
+            sp3A0.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x127C);
             spA8 = (char *)&WPARMS(var_s0)->cwt;
             marsh = sp3A0;
-            if ((var_s0 != (char *)-8) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-8) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PF(spA8)->vptr = ((char *)&D_b5_4118_s01 + 0x158);
                 PF(spA8)->unk14 = 0;
                 PF(spA8)->value = 0.45f;
             }
-            sp39C.p = *(char **)((char *)&D_00000000 + 0x1280);
+            sp39C.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x1280);
             spA8 = (char *)&WPARMS(var_s0)->voy;
             marsh = sp39C;
-            if ((var_s0 != (char *)-0x20) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x20) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PF(spA8)->vptr = ((char *)&D_b5_4118_s02 + 0x158);
                 PF(spA8)->unk14 = 0;
                 PF(spA8)->value = 0.0f;
             }
-            sp398.p = *(char **)((char *)&D_00000000 + 0x1284);
+            sp398.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x1284);
             spA8 = (char *)&WPARMS(var_s0)->ysp;
             marsh = sp398;
-            if ((var_s0 != (char *)-0x38) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x38) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s03 + 0x1A0); PI(spA8)->value = 0x18;
                 PI(spA8)->unk14 = 0;
             }
-            sp394.p = *(char **)((char *)&D_00000000 + 0x1288);
+            sp394.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x1288);
             spA8 = (char *)&WPARMS(var_s0)->hxp;
             marsh = sp394;
-            if ((var_s0 != (char *)-0x50) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x50) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s04 + 0x1A0); PI(spA8)->value = 0x78;
                 PI(spA8)->unk14 = 0;
             }
-            sp390.p = *(char **)((char *)&D_00000000 + 0x128C);
+            sp390.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x128C);
             spA8 = (char *)&WPARMS(var_s0)->hyp;
             marsh = sp390;
-            if ((var_s0 != (char *)-0x68) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x68) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s05 + 0x1A0); PI(spA8)->value = 0x78;
                 PI(spA8)->unk14 = 0;
             }
-            sp38C.p = *(char **)((char *)&D_00000000 + 0x1290);
+            sp38C.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x1290);
             spA8 = (char *)&WPARMS(var_s0)->msp;
             marsh = sp38C;
-            if ((var_s0 != (char *)-0x80) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x80) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PF(spA8)->vptr = ((char *)&D_b5_4118_s06 + 0x158);
                 PF(spA8)->unk14 = 0;
                 PF(spA8)->value = 0.036f;
             }
-            sp388.p = *(char **)((char *)&D_00000000 + 0x1294);
+            sp388.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x1294);
             spA8 = (char *)&WPARMS(var_s0)->zsp;
             marsh = sp388;
-            if ((var_s0 != (char *)-0x98) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x98) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PF(spA8)->vptr = ((char *)&D_b5_4118_s07 + 0x158);
                 PF(spA8)->unk14 = 0;
                 PF(spA8)->value = 0.036f;
             }
-            sp384.p = *(char **)((char *)&D_00000000 + 0x1298);
+            sp384.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x1298);
             spA8 = (char *)&WPARMS(var_s0)->lsp;
             marsh = sp384;
-            if ((var_s0 != (char *)-0xB0) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0xB0) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PF(spA8)->vptr = ((char *)&D_b5_4118_s08 + 0x158);
                 PF(spA8)->unk14 = 0;
                 PF(spA8)->value = 0.036f;
             }
-            sp380.p = *(char **)((char *)&D_00000000 + 0x129C);
+            sp380.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x129C);
             spA8 = (char *)&WPARMS(var_s0)->lfw;
             marsh = sp380;
-            if ((var_s0 != (char *)-0xC8) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0xC8) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s09 + 0x1A0); PI(spA8)->value = 0x99;
                 PI(spA8)->unk14 = 0;
             }
-            sp37C.p = *(char **)((char *)&D_00000000 + 0x12A0);
+            sp37C.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12A0);
             spA8 = (char *)&WPARMS(var_s0)->sfw;
             marsh = sp37C;
-            if ((var_s0 != (char *)-0xE0) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0xE0) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s10 + 0x1A0); PI(spA8)->value = 0x99;
                 PI(spA8)->unk14 = 0;
             }
@@ -280,14 +281,14 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp34C.unk4 = 1.0f;
             sp34C.unk8 = 1.0f;
             sp34C.unkC = 1.0f;
-            sp348.p = *(char **)((char *)&D_00000000 + 0x12A4);
+            sp348.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12A4);
             sp60 = sp36C;
             sp74 = (char *)&WPARMS(var_s0)->cc[0];
             sp50 = sp35C;
             sp40 = sp34C;
             marsh = sp348;
-            if ((var_s0 != (char *)-0xF8) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp74 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp74, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0xF8) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp74 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp74, var_s0, marsh, 1);
                 PC(sp74)->vptr = ((char *)&D_b5_4118_s11 + 0x188);
                 PC(sp74)->unk20 = 0;
                 *(Q *)PC(sp74)->rgba = sp60;
@@ -304,14 +305,14 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp338.unk0 = 0.5f;
             sp338.unk4 = 0.5f;
             sp338.unk8 = 0.5f;
-            sp314.p = *(char **)((char *)&D_00000000 + 0x12A8);
+            sp314.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12A8);
             sp60 = sp338;
             sp28 = (char *)&WPARMS(var_s0)->cc[1];
             sp50 = sp328;
             sp40 = sp318;
             marsh = sp314;
-            if ((var_s0 != (char *)-0x11C) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x11C) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp28, var_s0, marsh, 1);
                 PC(sp28)->vptr = ((char *)&D_b5_4118_s12 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
@@ -328,14 +329,14 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp304.unk0 = 0.5f;
             sp304.unk4 = 0.5f;
             sp304.unk8 = 0.5f;
-            sp2E0.p = *(char **)((char *)&D_00000000 + 0x12AC);
+            sp2E0.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12AC);
             sp60 = sp304;
             sp28 = (char *)&WPARMS(var_s0)->cc[2];
             sp50 = sp2F4;
             sp40 = sp2E4;
             marsh = sp2E0;
-            if ((var_s0 != (char *)-0x140) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x140) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp28, var_s0, marsh, 1);
                 PC(sp28)->vptr = ((char *)&D_b5_4118_s13 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
@@ -352,14 +353,14 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp2D0.unk0 = 0.5f;
             sp2D0.unk4 = 0.5f;
             sp2D0.unk8 = 0.5f;
-            sp2AC.p = *(char **)((char *)&D_00000000 + 0x12B0);
+            sp2AC.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12B0);
             sp60 = sp2D0;
             sp28 = (char *)&WPARMS(var_s0)->cc[3];
             sp50 = sp2C0;
             sp40 = sp2B0;
             marsh = sp2AC;
-            if ((var_s0 != (char *)-0x164) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x164) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp28, var_s0, marsh, 1);
                 PC(sp28)->vptr = ((char *)&D_b5_4118_s14 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
@@ -376,14 +377,14 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp29C.unk0 = 0.5f;
             sp29C.unk4 = 0.5f;
             sp29C.unk8 = 0.5f;
-            sp278.p = *(char **)((char *)&D_00000000 + 0x12B4);
+            sp278.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12B4);
             sp60 = sp29C;
             sp28 = (char *)&WPARMS(var_s0)->cc[4];
             sp50 = sp28C;
             sp40 = sp27C;
             marsh = sp278;
-            if ((var_s0 != (char *)-0x188) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x188) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp28, var_s0, marsh, 1);
                 PC(sp28)->vptr = ((char *)&D_b5_4118_s15 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
@@ -400,14 +401,14 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp268.unk0 = 0.5f;
             sp268.unk4 = 0.5f;
             sp268.unk8 = 0.5f;
-            sp244.p = *(char **)((char *)&D_00000000 + 0x12B8);
+            sp244.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12B8);
             sp60 = sp268;
             sp28 = (char *)&WPARMS(var_s0)->cc[5];
             sp50 = sp258;
             sp40 = sp248;
             marsh = sp244;
-            if ((var_s0 != (char *)-0x1AC) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x1AC) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp28, var_s0, marsh, 1);
                 PC(sp28)->vptr = ((char *)&D_b5_4118_s16 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
@@ -424,14 +425,14 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp234.unk0 = 0.5f;
             sp234.unk4 = 0.5f;
             sp234.unk8 = 0.5f;
-            sp210.p = *(char **)((char *)&D_00000000 + 0x12BC);
+            sp210.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12BC);
             sp60 = sp234;
             sp28 = (char *)&WPARMS(var_s0)->cc[6];
             sp50 = sp224;
             sp40 = sp214;
             marsh = sp210;
-            if ((var_s0 != (char *)-0x1D0) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x1D0) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp28, var_s0, marsh, 1);
                 PC(sp28)->vptr = ((char *)&D_b5_4118_s17 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
@@ -445,7 +446,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp1E0.unk4 = 1.0f;
             sp1E0.unk8 = 1.0f;
             sp1E0.unkC = 1.0f;
-            sp1DC.p = *(char **)((char *)&D_00000000 + 0x12C0);
+            sp1DC.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12C0);
             sp200.unk0 = 0.5f;
             sp200.unk4 = 0.5f;
             sp200.unk8 = 0.5f;
@@ -454,8 +455,8 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp50 = sp1F0;
             sp40 = sp1E0;
             marsh = sp1DC;
-            if ((var_s0 != (char *)-0x1F4) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x1F4) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp28, var_s0, marsh, 1);
                 PC(sp28)->vptr = ((char *)&D_b5_4118_s18 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
@@ -469,7 +470,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp1AC.unk4 = 1.0f;
             sp1AC.unk8 = 1.0f;
             sp1AC.unkC = 1.0f;
-            sp1A8.p = *(char **)((char *)&D_00000000 + 0x12C4);
+            sp1A8.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12C4);
             sp1CC.unk0 = 0.5f;
             sp1CC.unk4 = 0.5f;
             sp1CC.unk8 = 0.5f;
@@ -478,8 +479,8 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp50 = sp1BC;
             sp40 = sp1AC;
             marsh = sp1A8;
-            if ((var_s0 != (char *)-0x218) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x218) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp28, var_s0, marsh, 1);
                 PC(sp28)->vptr = ((char *)&D_b5_4118_s19 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
@@ -496,14 +497,14 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp198.unk0 = 0.1f;
             sp198.unk4 = 0.1f;
             sp198.unk8 = 0.1f;
-            sp174.p = *(char **)((char *)&D_00000000 + 0x12C8);
+            sp174.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12C8);
             sp60 = sp198;
             sp28 = (char *)&WPARMS(var_s0)->c12;
             sp50 = sp188;
             sp40 = sp178;
             marsh = sp174;
-            if ((var_s0 != (char *)-0x23C) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x23C) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp28, var_s0, marsh, 1);
                 PC(sp28)->vptr = ((char *)&D_b5_4118_s20 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
@@ -517,7 +518,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp144.unk4 = 1.0f;
             sp144.unk8 = 1.0f;
             sp144.unkC = 1.0f;
-            sp140.p = *(char **)((char *)&D_00000000 + 0x12CC);
+            sp140.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12CC);
             sp164.unk0 = 0.5f;
             sp164.unk4 = 0.5f;
             sp164.unk8 = 0.5f;
@@ -526,8 +527,8 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp50 = sp154;
             sp40 = sp144;
             marsh = sp140;
-            if ((var_s0 != (char *)-0x260) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x260) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp28, var_s0, marsh, 1);
                 PC(sp28)->vptr = ((char *)&D_b5_4118_s21 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
@@ -544,14 +545,14 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp110.unk4 = 1.0f;
             sp110.unk8 = 1.0f;
             sp110.unkC = 1.0f;
-            sp10C.p = *(char **)((char *)&D_00000000 + 0x12D0);
+            sp10C.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12D0);
             sp60 = sp130;
             sp28 = (char *)&WPARMS(var_s0)->c11;
             sp50 = sp120;
             sp40 = sp110;
             marsh = sp10C;
-            if ((var_s0 != (char *)-0x284) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x284) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp28, var_s0, marsh, 1);
                 PC(sp28)->vptr = ((char *)&D_b5_4118_s22 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
@@ -565,7 +566,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             spDC.unk4 = 1.0f;
             spDC.unk8 = 1.0f;
             spDC.unkC = 1.0f;
-            spD8.p = *(char **)((char *)&D_00000000 + 0x12D4);
+            spD8.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12D4);
             spFC.unk0 = 0.5f;
             spFC.unk4 = 0.5f;
             spFC.unk8 = 0.5f;
@@ -574,78 +575,78 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             sp50 = spEC;
             sp40 = spDC;
             marsh = spD8;
-            if ((var_s0 != (char *)-0x2A8) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x2A8) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(sp28, var_s0, marsh, 1);
                 PC(sp28)->vptr = ((char *)&D_b5_4118_s23 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
-            spD4.p = *(char **)((char *)&D_00000000 + 0x12D8);
+            spD4.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12D8);
             spA8 = (char *)&WPARMS(var_s0)->clx;
             marsh = spD4;
-            if ((var_s0 != (char *)-0x2CC) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x2CC) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s24 + 0x1A0); PI(spA8)->value = -4;
                 PI(spA8)->unk14 = 0;
             }
-            spD0.p = *(char **)((char *)&D_00000000 + 0x12DC);
+            spD0.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12DC);
             spA8 = (char *)&WPARMS(var_s0)->cly;
             marsh = spD0;
-            if ((var_s0 != (char *)-0x2E4) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x2E4) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s25 + 0x1A0); PI(spA8)->value = 0xD;
                 PI(spA8)->unk14 = 0;
             }
-            spCC.p = *(char **)((char *)&D_00000000 + 0x12E0);
+            spCC.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12E0);
             spA8 = (char *)&WPARMS(var_s0)->cox;
             marsh = spCC;
-            if ((var_s0 != (char *)-0x2FC) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x2FC) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s26 + 0x1A0); PI(spA8)->value = -0x10;
                 PI(spA8)->unk14 = 0;
             }
-            spC8.p = *(char **)((char *)&D_00000000 + 0x12E4);
+            spC8.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12E4);
             spA8 = (char *)&WPARMS(var_s0)->coy;
             marsh = spC8;
-            if ((var_s0 != (char *)-0x314) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x314) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s27 + 0x1A0); PI(spA8)->value = -0x15;
                 PI(spA8)->unk14 = 0;
             }
-            spC4.p = *(char **)((char *)&D_00000000 + 0x12E8);
+            spC4.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12E8);
             spA8 = (char *)&WPARMS(var_s0)->cff;
             marsh = spC4;
-            if ((var_s0 != (char *)-0x32C) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x32C) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s28 + 0x1A0); PI(spA8)->value = 0x73;
                 PI(spA8)->unk14 = 0;
             }
-            spC0.p = *(char **)((char *)&D_00000000 + 0x12EC);
+            spC0.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12EC);
             spA8 = (char *)&WPARMS(var_s0)->cdf;
             marsh = spC0;
-            if ((var_s0 != (char *)-0x344) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x344) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s29 + 0x1A0); PI(spA8)->value = 0x62;
                 PI(spA8)->unk14 = 0;
             }
-            spBC.p = *(char **)((char *)&D_00000000 + 0x12F0);
+            spBC.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12F0);
             spA8 = (char *)&WPARMS(var_s0)->ctf;
             marsh = spBC;
-            if ((var_s0 != (char *)-0x35C) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x35C) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s30 + 0x1A0); PI(spA8)->value = 0x62;
                 PI(spA8)->unk14 = 0;
             }
-            spB8.p = *(char **)((char *)&D_00000000 + 0x12F4);
+            spB8.p = *(char **)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12F4);
             spA8 = (char *)&WPARMS(var_s0)->tpy;
             marsh = spB8;
-            if ((var_s0 != (char *)-0x374) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
-                timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
+            if ((var_s0 != (char *)-0x374) || (temp_v0 = XCALL(timproc_uso_b5_alias, mem_new)((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
+                XCALL(timproc_uso_b5_alias, Parms_addParm)(spA8, var_s0, marsh, 1);
                 PI(spA8)->vptr = ((char *)&D_b5_4118_s31 + 0x1A0); PI(spA8)->value = 0xD;
                 PI(spA8)->unk14 = 0;
             }
         }
-        NODE(arg0)->name = (char *)&D_00000000 + 0x12F8;
+        NODE(arg0)->name = (char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x12F8;
         SELWIN(arg0)->eventFlags = arg11;
         SELWIN(arg0)->fadeProc = (char *)arg2;
         SELWIN(arg0)->itemsMgr = (SelItemsMgr *)arg7;
@@ -654,7 +655,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         SELWIN(arg0)->owner = (SelectionMgr *)arg1;
         SELWIN(arg0)->player = arg4;
         SELWIN(arg0)->stageBit = arg6;
-        temp_v0_36 = timproc_uso_b5_alias(arg0, arg6);
+        temp_v0_36 = XCALL(timproc_uso_b5_alias, gen_stageBitToIndex_000087A0)(arg0, arg6);
         SELWIN(arg0)->stage = temp_v0_36;
         SELWIN(arg0)->prevStage = temp_v0_36;
         SELWIN(arg0)->prevItem = 0;
@@ -671,7 +672,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             SELWIN(arg0)->state = 0;
             SELWIN(arg0)->fade = 0.0f;
             SELWIN(arg0)->fadeTarget = 0.0f;
-            ((int *)((char *)&D_00000000 + 0xB8))[SELWIN(arg0)->player] = 1; break; /* one line: as1 hoists the a2 reload above the store */
+            ((int *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0xB8))[SELWIN(arg0)->player] = 1; break; /* one line: as1 hoists the a2 reload above the store */
         case 1:
             SelectWin_resetCheat_00008D90((int *)arg0, 1);
             SELWIN(arg0)->state = 6;
@@ -704,10 +705,10 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         SELWIN(arg0)->fovBase = temp_f0;
         timproc_uso_b5_alias_pf3((int)SELWIN(arg0)->itemsMgr->tesuri[0]->model->head.inner, 0.5f);
         timproc_uso_b5_alias_pf1((int)SELWIN(arg0)->itemsMgr->tesuri[1]->model->head.inner, 0.5f);
-        if (*(s32 *)((char *)&D_00000000 + 0x34) != 2) {
+        if (*(s32 *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x34) != 2) {
             timproc_uso_b5_alias_pf2((int)SELWIN(arg0)->itemsMgr->tesuri[2]->model->head.inner, 0.5f);
         }
-        timproc_uso_b5_alias(arg0, (char *)1, arg10);
+        XCALL(timproc_uso_b5_alias, Node_Load)(arg0, (char *)1, arg10);
     }
     return arg0;
 }

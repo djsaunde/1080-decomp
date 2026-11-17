@@ -92,7 +92,7 @@ void TitleDemoProcess_handleInput(char *s0) {
     case 0: {
         TITLEDEMO(s0)->timer = TITLEDEMO(s0)->timer - 1;
         if (TITLEDEMO(s0)->timer >= 0) {
-            if (CALL(input_checkPressed_00011E00)((char *)&D_00000000, 0x40300) == 0) {
+            if (CALL(input_checkPressed_00011E00)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x40300) == 0) {
                 return;
             }
         }
@@ -121,7 +121,7 @@ void TitleDemoProcess_handleInput(char *s0) {
         if (TITLEDEMO(s0)->timer == 0) goto fire;
         if (DATAMGR(TITLEDEMO(s0)->dataMgr)->entries->finished != 0) {
 fire:
-            *(int *)((char *)&D_00000000 + 0x34) = 1;
+            *(int *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x34) = 1;
             v = CALL(tit_nextDemo_000000C0)(NEXTDEMO_ARG);
             XCALL(gl_func_00000000_116c_v, Process_fadeOut_0000F954)(s0, v, 0);
             return;
@@ -129,12 +129,12 @@ fire:
         if (TITLEDEMO(s0)->keyDelay != 0) {
             return;
         }
-        if (CALL(input_checkPressed_00011E00)((char *)&D_00000000, 0x40300) == 0) {
+        if (CALL(input_checkPressed_00011E00)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x40300) == 0) {
             return;
         }
         XCALL(gl_func_00000000_116c_v, Process_stop)(TITLEDEMO(s0)->mainLogo);
         XCALL(gl_func_00000000_116c_v, Process_stop)(TITLEDEMO(s0)->keyMessage);
-        if (*(unsigned short *)(*(char **)((char *)&D_00000000 + 0x154) + 4) & 8) {
+        if (*(unsigned short *)(*(char **)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x154) + 4) & 8) {
             vt3 = (char *)NODE(TITLEDEMO(s0)->langMenu)->vptr;
             v1 = (char *)TITLEDEMO(s0)->langMenu;
             ((void (*)(int))VT_SLOT(vt3, 10).fn)((VT_SLOT(vt3, 10).delta + (int)v1));
@@ -152,13 +152,13 @@ fire:
     }
     case 2: {
         XCALL(gl_func_00000000_116c_v, tit_langMenuInput_00001BB8)(TITLEDEMO(s0)->langMenu);
-        if (CALL(input_checkPressed_00011E00)((char *)&D_00000000, 0x40100) != 0) {
+        if (CALL(input_checkPressed_00011E00)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x40100) != 0) {
             XCALL(gl_func_00000000_116c_v, snd_postEvent)(5);
             if (1) {
-                char *z = *(char **)((char *)&D_00000000 + 0x154) + 4;
+                char *z = *(char **)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x154) + 4;
                 *(short *)z = (short)(*(unsigned short *)z & 0xFFF7);
             }
-            XCALL(gl_func_00000000_116c_v, settings_save_00012150)((char *)&D_00000000);
+            XCALL(gl_func_00000000_116c_v, settings_save_00012150)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8));
             XCALL(gl_func_00000000_116c_v, Process_stop)(TITLEDEMO(s0)->langMenu);
             vt5 = (char *)NODE(TITLEDEMO(s0)->menu)->vptr;
             v1 = (char *)TITLEDEMO(s0)->menu;
@@ -171,7 +171,7 @@ fire:
     case 3: {
         int *c;
         if (TITLEDEMO(s0)->timer == 0) {
-            *(int *)((char *)&D_00000000 + 0x34) = 1;
+            *(int *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x34) = 1;
             v = CALL(tit_nextDemo_000000C0)(NEXTDEMO_ARG);
             XCALL(gl_func_00000000_116c_v, Process_fadeOut_0000F954)(s0, v, 0);
         }
@@ -186,7 +186,7 @@ fire:
                     WFADER(v1)->alpha = 720;
                 }
             } else {
-                v1 = (char *)&D_00000000;
+                v1 = (char *)&XDATA(D_00000000, port_bootup_bss, 0x58);
                 vt6 = (char *)NODE(v1)->vptr;
                 ((void (*)(int))VT_SLOT(vt6, 11).fn)((VT_SLOT(vt6, 11).delta + (int)v1));
             }
@@ -215,7 +215,7 @@ fire:
                 }
             }
             if (av == 0) {
-                if (CALL(input_checkPressed_00011E00)((char *)&D_00000000, 512) != 0) {
+                if (CALL(input_checkPressed_00011E00)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8), 512) != 0) {
                     vt7 = (char *)NODE(TITLEDEMO(s0)->mainLogo)->vptr;
                     v1 = (char *)TITLEDEMO(s0)->mainLogo;
                     ((void (*)(int))VT_SLOT(vt7, 10).fn)((VT_SLOT(vt7, 10).delta + (int)v1));
@@ -229,7 +229,7 @@ fire:
                     XCALL(gl_func_00000000_116c_v, snd_postEvent)(2050);
                 }
             }
-            if (CALL(input_checkPressed_00011E00)((char *)&D_00000000, 0x40100) != 0) {
+            if (CALL(input_checkPressed_00011E00)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8), 0x40100) != 0) {
                 XCALL(gl_func_00000000_116c_v, Node_clearFlag8_0000F564)(TITLEDEMO(s0)->menu);
                 XCALL(gl_func_00000000_116c_v, snd_postEvent)(5);
                 v1 = (char *)TITLEDEMO(s0)->menu;

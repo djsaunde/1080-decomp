@@ -100,10 +100,10 @@ void arc_closeSession_00000748(int *a0) {
 }
 
 void arc_pauseContinue_000007B4(void) {
-    CALL(Process_resume_0000FAE8)(*(int*)&D_00000000);
-    CALL(Node_resumeUpdate_0000E450)(*(int*)((char*)*(int**)&D_00000000 + 0x6AC));
-    CALL(arc_resumePlayers_00001228)(*(int*)&D_00000000);
-    CALL(input_clearActivePad_00012090)(&D_00000000);
+    CALL(Process_resume_0000FAE8)(*(int*)&XDATA(D_00000000, port_arcproc_bss, 0x0));
+    CALL(Node_resumeUpdate_0000E450)(*(int*)((char*)*(int**)&XDATA(D_00000000, port_arcproc_bss, 0x0) + 0x6AC));
+    CALL(arc_resumePlayers_00001228)(*(int*)&XDATA(D_00000000, port_arcproc_bss, 0x0));
+    CALL(input_clearActivePad_00012090)(&XDATA(D_00000000, port_bootup_bss, 0xF8));
 }
 
 extern char *D_arc800_a;       /* gl_func 1st-arg AND chain-2 (0x6A8) base */
@@ -267,7 +267,7 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
         o2 = o1;
         if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x50)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&D_00000000 + 0x3B8); NODE(o3)->vptr = (char *)&D_arc_A3C_v0; }
+            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&XDATA(D_00000000, port_arcproc_data, 0x0) + 0x3B8); NODE(o3)->vptr = (char *)&D_arc_A3C_v0; }
             NODE(o2)->vptr = (char *)&D_arc_A3C_v1;
         }
         NODE(o1)->vptr = (char *)&D_arc_A3C_v2;
@@ -275,14 +275,14 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
     }
     NODE(obj)->vptr = (char *)&D_arc_A3C_v3;
     RACEPROC(obj)->spriteSet = 0;
-    CALL(RaceProcess_init)(obj, a1, (char *)&D_00000000 + 0x3C0, a2);
+    CALL(RaceProcess_init)(obj, a1, (char *)&XDATA(D_00000000, port_arcproc_data, 0x0) + 0x3C0, a2);
     RACEPROC(obj)->session = (BackupSession *)a4;
     ARCRACE(obj)->courseList = (ArcCourseList *)a3;
     ARCRACE(obj)->retry = 0;
     CALL(arc_loadSprites_00000D70)(obj);
     ARCRACE(obj)->resultFade = 0.0f;
-    CALL(memtrack_begin)((char *)&D_00000000 + 0x3D0, 0);
-    CALL(input_setActivePad_0001207C)(&D_00000000, 0);
+    CALL(memtrack_begin)((char *)&XDATA(D_00000000, port_arcproc_data, 0x0) + 0x3D0, 0);
+    CALL(input_setActivePad_0001207C)(&XDATA(D_00000000, port_bootup_bss, 0xF8), 0);
 
     {
         o2 = (char *)CALL(mem_new)(0xD8);
@@ -291,7 +291,7 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
             NODE(o2)->vptr = (char *)&D_arc_A3C_v4;
         }
         ARCRACE(obj)->dataMgr = (ArcDataManager *)o2;
-        INPUT_MGR(D_00000000).dataMgr = (RaceTracker *)o2;
+        INPUT_MGR(XDATA(D_00000000, port_bootup_bss, 0xF8)).dataMgr = (RaceTracker *)o2;
         o1 = (char *)ARCRACE(obj)->dataMgr;
         DATAMGR(o1)->hudFlags = 7;
 
@@ -314,9 +314,9 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
         CALL(RaceProcess_restart)(obj, a1);
         RACEPROC(obj)->menu = (GuiMenu *)CALL(PauseMenu_create)(0);
         CALL(gui_initRows_000100F0)(RACEPROC(obj)->menu, obj);
-        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, (*(int *)&D_arc_A3C_r + 3) << 16, -1, &D_00000000);
-        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_arc_A3C_r + 3) << 16) | 9, -1, &D_00000000);
-        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_arc_A3C_r + 3) << 16) | 5, -1, &D_00000000);
+        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, (*(int *)&D_arc_A3C_r + 3) << 16, -1, &XDATA(D_00000000, arc_pauseContinue_000007B4, 0x0));
+        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_arc_A3C_r + 3) << 16) | 9, -1, &XDATA(D_00000000, arc_pauseRetry_00000800, 0x0));
+        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_arc_A3C_r + 3) << 16) | 5, -1, &XDATA(D_00000000, arc_pauseQuit_00000880, 0x0));
         RACEPROC(obj)->menu->unk30 = RACEPROC(obj)->spriteSet;
         CALL(gui_centerRows_0001016C)(RACEPROC(obj)->menu);
         o1 = (char *)RACEPROC(obj)->menu;
@@ -326,15 +326,15 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
         }
         NODE(o1)->parent = (Node *)obj;
 
-        o1 = INPUT_MGR(D_00000000).fader;
+        o1 = INPUT_MGR(XDATA(D_00000000, port_bootup_bss, 0xF8)).fader;
         CALL(list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
         NODE(o1)->parent = (Node *)obj;
-        CALL(Fader_start)(INPUT_MGR(D_00000000).fader, 1, 0);
+        CALL(Fader_start)(INPUT_MGR(XDATA(D_00000000, port_bootup_bss, 0xF8)).fader, 1, 0);
         CALL(memtrack_end)();
-        *(int *)((char *)&D_00000000 + 0x40) = 5;
+        *(int *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x40) = 5;
     }
     }
     return obj;
@@ -1651,10 +1651,10 @@ char *ARCMenuProcess_ctor(char *arg0) {
         CALL(gui_spriteInit)(D_arc251C_reg + 88, 0x280003);
         MENUPROC(arg0)->menu = CALL(PauseMenu_create)(0);
         CALL(gui_initRows_000100F0)(MENUPROC(arg0)->menu, arg0);
-        CALL(gui_addRowSub_00010B6C)(MENUPROC(arg0)->menu, ((D_arc251C_id + 3) << 16) | 1, -1, D_arc251C_f);
-        CALL(gui_addRowSub_00010B6C)(MENUPROC(arg0)->menu, ((D_arc251C_id + 3) << 16) | 3, -1, D_arc251C_f);
-        CALL(gui_addRowSub_00010B6C)(MENUPROC(arg0)->menu, ((D_arc251C_id + 3) << 16) | 2, -1, D_arc251C_f);
-        CALL(gui_addRowSub_00010B6C)(MENUPROC(arg0)->menu, ((D_arc251C_id + 3) << 16) | 5, -1, D_arc251C_f);
+        CALL(gui_addRowSub_00010B6C)(MENUPROC(arg0)->menu, ((D_arc251C_id + 3) << 16) | 1, -1, XDATA(D_arc251C_f, ARCMenuProcess_rowRetry_000023F4, 0x0));
+        CALL(gui_addRowSub_00010B6C)(MENUPROC(arg0)->menu, ((D_arc251C_id + 3) << 16) | 3, -1, XDATA(D_arc251C_f, ARCMenuProcess_rowChangeBoard, 0x0));
+        CALL(gui_addRowSub_00010B6C)(MENUPROC(arg0)->menu, ((D_arc251C_id + 3) << 16) | 2, -1, XDATA(D_arc251C_f, ARCMenuProcess_rowChangeCharacter, 0x0));
+        CALL(gui_addRowSub_00010B6C)(MENUPROC(arg0)->menu, ((D_arc251C_id + 3) << 16) | 5, -1, XDATA(D_arc251C_f, ARCMenuProcess_rowQuit_000024C0, 0x0));
         GUIMENU(MENUPROC(arg0)->menu)->unk30 = CALL(gui_fontCreate)(0, D_arc251C_g, 72, 221, 3, 13);
         CALL(gui_centerRows_0001016C)(MENUPROC(arg0)->menu);
         CALL(gui_centerAt_000102A4)(MENUPROC(arg0)->menu, 120);
@@ -1811,9 +1811,9 @@ void arc_drawMenuBackground_00002884(int *a0) {
     int s3, i;
     (void)a0;
 
-    *(Arc2884Buf *)vec4 = *(Arc2884Buf *)((char *)&D_00000000 + 0x4A0);
+    *(Arc2884Buf *)vec4 = *(Arc2884Buf *)((char *)&XDATA(D_00000000, port_arcproc_data, 0x0) + 0x4A0);
 
-    s4 = (ArcS18_2884 *)&D_00000000;
+    s4 = (ArcS18_2884 *)&XDATA(D_00000000, port_arcproc_bss, 0x0);
     if (1) { s4 = (ArcS18_2884 *)((char *)s4 + 0x10); }
     s3 = 0x10;
     do {

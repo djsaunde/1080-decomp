@@ -1,5 +1,6 @@
 #include "common.h"
 #include "audio.h"
+#include "uso_call.h"
 
 /* IDO 7.1 -O2 donor for AudioLoad_PreloadSamplesForFont (0x460 / 280 words) = OoT's
  * AudioLoad_PreloadSamplesForFont (load.c) in its older form: no sound-effect loop,
@@ -92,20 +93,20 @@ void AudioLoad_PreloadSamplesForFont(s32 fontId, s32 async, SampleBankRelocInfo 
         switch (async) {
             case 0:
                 if (sample->medium == sampleBankReloc->medium1) {
-                    addr = gl_25C54_AllocSampleCache(sample->size, sampleBankReloc->sampleBankId1, sample->sampleAddr,
+                    addr = XCALL(gl_25C54_AllocSampleCache, aud_AllocSampleCachePersistent)(sample->size, sampleBankReloc->sampleBankId1, sample->sampleAddr,
                                                      sample->medium);
                 } else if (sample->medium == sampleBankReloc->medium2) {
-                    addr = gl_25C54_AllocSampleCache(sample->size, sampleBankReloc->sampleBankId2, sample->sampleAddr,
+                    addr = XCALL(gl_25C54_AllocSampleCache, aud_AllocSampleCachePersistent)(sample->size, sampleBankReloc->sampleBankId2, sample->sampleAddr,
                                                      sample->medium);
                 }
                 break;
 
             case 1:
                 if (sample->medium == sampleBankReloc->medium1) {
-                    addr = gl_25C54_AllocSampleCache(sample->size, sampleBankReloc->sampleBankId1, sample->sampleAddr,
+                    addr = XCALL(gl_25C54_AllocSampleCache, aud_AllocSampleCacheTemporary)(sample->size, sampleBankReloc->sampleBankId1, sample->sampleAddr,
                                                      sample->medium);
                 } else if (sample->medium == sampleBankReloc->medium2) {
-                    addr = gl_25C54_AllocSampleCache(sample->size, sampleBankReloc->sampleBankId2, sample->sampleAddr,
+                    addr = XCALL(gl_25C54_AllocSampleCache, aud_AllocSampleCacheTemporary)(sample->size, sampleBankReloc->sampleBankId2, sample->sampleAddr,
                                                      sample->medium);
                 }
                 break;

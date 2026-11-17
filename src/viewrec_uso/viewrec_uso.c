@@ -276,8 +276,8 @@ void vr_drawBackground(void *arg0) {
     int x, y, i, j;
     RaceSprite *spr;
 
-    row = *(VrRow5 *)((char *)&D_00000000 + 0x3D4);
-    CALL(gui_setCombine_00001794)(&D_00000000);
+    row = *(VrRow5 *)((char *)&XDATA(D_00000000, port_viewrec_data, 0x0) + 0x3D4);
+    CALL(gui_setCombine_00001794)(&XDATA(D_00000000, port_gui_bss, 0x8));
     for (y = 16; y != 240; y += 32) {
         for (i = 0; i < 5; i++) {
             spr = &sVrLabels_318[row.v[i]];
@@ -885,9 +885,9 @@ void RecordOptions_drawCourseTimes(RecordOptions *self) {
     col[3] = 1.0f;
     course = self->cursor;
     y = 123;
-    CALL(gui_setCombine_00001794)(&D_00000000);
+    CALL(gui_setCombine_00001794)(&XDATA(D_00000000, port_gui_bss, 0x8));
     CALL(vr_drawCenteredLabel)(self->proc, self->cursor, 83);
-    *(VrTime *)prev = *(VrTime *)((char *)&D_00000000 + 1088);
+    *(VrTime *)prev = *(VrTime *)((char *)&XDATA(D_00000000, port_viewrec_data, 0x0) + 1088);
     for (i = 0; i < 3; y += 34, i++) {
         rec = (u8 *)CALL(Backup_courseRecordGetTime)(*self->proc->session + course * 48, i);
         show = 1;

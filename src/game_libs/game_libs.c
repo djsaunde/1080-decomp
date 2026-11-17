@@ -93,10 +93,10 @@ char *BestTimeGadget_ctor(char *arg0, s32 arg1) {
             sub2 = sub;
             if ((sub != 0) || (sub2 = (char *)CALL(mem_new)(0x10C), (sub2 != 0))) {
                 CALL(Node_ctor)(sub2, GL_DATA_STR(0xCB18, "<Node>"));
-                ((Node *)sub2)->vptr = (char *)&TimeGadget_vtbl;
+                ((Node *)sub2)->vptr = (char *)&XDATA(TimeGadget_vtbl, port_bootup_data, 0xC77C);
                 CALL(TimeGadget_ctor_00013D40)(sub2 + 0x2C);
             }
-            ((Node *)sub)->vptr = (char *)&BestGadget_vtbl;
+            ((Node *)sub)->vptr = (char *)&XDATA(BestGadget_vtbl, port_bootup_data, 0xC8B4);
         }
         ((Gadget *)arg0)->node.name = (const char *)(sBestTimeGadgetName);
         CALL(gui_spriteInit)(((Gadget *)arg0)->sprite0, 0x5001B);
@@ -146,10 +146,10 @@ char *BestScoreGadget_ctor(char *arg0, s32 arg1) {
             sub2 = sub;
             if ((sub != 0) || (sub2 = (char *)CALL(mem_new)(0x10C), (sub2 != 0))) {
                 CALL(Node_ctor)(sub2, GL_DATA_STR(0xCB40, "<Node>"));
-                ((Node *)sub2)->vptr = (char *)&TimeGadget_vtbl;
+                ((Node *)sub2)->vptr = (char *)&XDATA(TimeGadget_vtbl, port_bootup_data, 0xC77C);
                 CALL(TimeGadget_ctor_00013D40)(sub2 + 0x2C);
             }
-            ((Node *)sub)->vptr = (char *)&BestGadget_vtbl;
+            ((Node *)sub)->vptr = (char *)&XDATA(BestGadget_vtbl, port_bootup_data, 0xC8B4);
         }
         ((Gadget *)arg0)->node.name = (const char *)(sBestScoreGadgetName);
         CALL(gui_spriteInit)(((Gadget *)arg0)->sprite0, 0x5001E);
@@ -3464,8 +3464,8 @@ void RaceProcess_drawGui(RaceProcess *arg0) {
         sp58[1] = 0.0f;
         sp58[2] = 0.0f;
         sp58[3] = 0.0f;
-        CALL(gui_setFillColor_00001CA8)(&D_00000000, 0xFF, sp58);
-        CALL(gui_fillRect)(&D_00000000, 0, 0x77, 0x13F, 0x78, 0x10001);
+        CALL(gui_setFillColor_00001CA8)(&XDATA(D_00000000, port_gui_bss, 0x8), 0xFF, sp58);
+        CALL(gui_fillRect)(&XDATA(D_00000000, port_gui_bss, 0x8), 0, 0x77, 0x13F, 0x78, 0x10001);
     }
     if (arg0->unk030 == 0) {
         if (arg0->flags & RACEF_SPRITES) {
@@ -3497,7 +3497,7 @@ void RaceProcess_drawGui(RaceProcess *arg0) {
                         temp_a3 = (int *)arg0->colours.pair[RACECOL_GO][1].value;
                         CALL(gui_setEnvPrimColor_00001EF4)(sp8C, arg0->countAlpha, temp_a2, temp_a3);
                         CALL(gui_drawSprite)(sp8C, (s32)arg0->msgX, (s32)arg0->msgY, 3);
-                        if (GAMEFLOW(&gInputMgr)->nextFlowMode == 2) {
+                        if (GAMEFLOW(&XDATA(gInputMgr, port_bootup_bss, 0xF8))->nextFlowMode == 2) {
                             CALL(gui_setEnvPrimColor_00001EF4)(sp8C, arg0->countAlpha, temp_a2, temp_a3);
                             CALL(gui_drawSprite)(sp8C, (s32)arg0->msgX, (s32)(arg0->msgY + 120.0f), 3);
                         }

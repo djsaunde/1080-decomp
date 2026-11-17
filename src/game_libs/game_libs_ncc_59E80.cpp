@@ -35,9 +35,9 @@ extern "C" void gfx_initRDPState(Ctx *c, Obj *o) {
     Gfx *gs;
     Gfx *gv;
     PKT(c, 0xBC000006, 0);
-    r1 = XCALL(gl_func_00034458_59E80, gl_osVirtualToPhysical)(D_00000000);
+    r1 = XCALL(gl_func_00034458_59E80, gl_osVirtualToPhysical)(XDATA(D_00000000, port_bootup_data, 0x224F0));
     dlist(c, r1);
-    r2 = XCALL(gl_func_00034458_59E80, gl_osVirtualToPhysical)(D_00000000);
+    r2 = XCALL(gl_func_00034458_59E80, gl_osVirtualToPhysical)(XDATA(D_00000000, port_bootup_data, 0x224D0));
     dlist(c, r2);
     PKT(c, 0xBA001001, 0);
     PKT(c, 0xBA000402, 0);

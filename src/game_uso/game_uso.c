@@ -5608,7 +5608,7 @@ void RiderAnim_checkJump_0000D8EC(int *a0) {
     int a1;
 
     if (RA(a0)->rider->contactCount == 0) goto L_BC;
-    if (*(int**)&D_00000000 != 0) {
+    if (*(int**)&XDATA(D_00000000, port_game_data, 0x1094) != 0) {
         a1 = 0;
         if (RA(a0)->jumpRepress != 0) {
             v0 = (int *)RA(a0)->rider->input;
@@ -5618,7 +5618,7 @@ void RiderAnim_checkJump_0000D8EC(int *a0) {
             if ((((RiderInput *)v0)->held & 0x100) != 0) a1 = 1;
         }
         if (a1 != 0) {
-            CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_statePreJump));
+            CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&XDATA(D_00000000, port_game_data, 0x0) + kPmf_RiderAnim_statePreJump));
             RA(a0)->jumpCharge = 0;
             RA(a0)->jumpRepress = 0;
         }
@@ -7693,9 +7693,9 @@ void RiderAnim_stateStartIntroEnd(int *a0) {
 extern int gl_func_00000000();
 void RiderAnim_stateStartWait(int *a0) {
     int val = 100;
-    if (*(int*)((char*)&D_00000000 + 0x78) == 0) {
+    if (*(int*)((char*)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x78) == 0) {
         RA(a0)->rider->slowdown = 0;
-        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + kPmf_RiderAnim_stateRide));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&XDATA(D_00000000, port_game_data, 0x0) + kPmf_RiderAnim_stateRide));
     } else {
         RA(a0)->rider->slowdown = val;
         CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->animSet | RANIM_UP_DOWN, 0, 1, 6, 1);

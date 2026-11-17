@@ -85,11 +85,11 @@ void *QuitProcess_ctor0(void *a0) {
             s1 = s0;
             if (s1 != 0 || (s1 = (void*)FCALL(mem_new)(0x2C)) != 0) {
                 FCALL(Node_ctor)(s1, &sStr_Node_C58C);
-                NODE(s1)->vptr = (char *)&Process_vtbl;
+                NODE(s1)->vptr = (char *)&XDATA(Process_vtbl, port_bootup_data, 0xC338);
             }
-            NODE(s0)->vptr = (char *)&Process_vtbl_C3A0;
+            NODE(s0)->vptr = (char *)&XDATA(Process_vtbl_C3A0, port_bootup_data, 0xC3A0);
         }
-        NODE(a0)->vptr = (char *)&QuitProcess_vtbl;
+        NODE(a0)->vptr = (char *)&XDATA(QuitProcess_vtbl, port_bootup_data, 0xC2B8);
         s0 = a0;
         s1 = (void*)&sStr_Quit_Process_C594;
         NODE(s0)->name = (const char *)s1;
@@ -140,11 +140,11 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
             s1 = s0;
             if (s1 != 0 || (s1 = (void*)FCALL(mem_new)(0x2C)) != 0) {
                 FCALL(Node_ctor)(s1, &sStr_Node_C5A4);
-                NODE(s1)->vptr = (char *)&Process_vtbl;
+                NODE(s1)->vptr = (char *)&XDATA(Process_vtbl, port_bootup_data, 0xC338);
             }
-            NODE(s0)->vptr = (char *)&Process_vtbl_C3A0;
+            NODE(s0)->vptr = (char *)&XDATA(Process_vtbl_C3A0, port_bootup_data, 0xC3A0);
         }
-        NODE(a0)->vptr = (char *)&QuitProcess_vtbl;
+        NODE(a0)->vptr = (char *)&XDATA(QuitProcess_vtbl, port_bootup_data, 0xC2B8);
         s0 = a0;
         s1 = (void*)&sStr_Quit_Process_C5AC;
         NODE(s0)->name = (const char *)s1;
@@ -221,9 +221,9 @@ void *PauseMenu_create(char *a0) {
     if (a0 != 0 || (a0 = (char *)FCALL(mem_new)(0x304)) != 0) {
         if ((s = a0) != 0 || (s = (char *)FCALL(mem_new)(0x2C)) != 0) {
             FCALL(Node_ctor)(s, &sStr_Node_C5BC);
-            NODE(s)->vptr = (char *)&Process_vtbl;
+            NODE(s)->vptr = (char *)&XDATA(Process_vtbl, port_bootup_data, 0xC338);
         }
-        NODE(a0)->vptr = (char *)&PauseMenu_vtbl;
+        NODE(a0)->vptr = (char *)&XDATA(PauseMenu_vtbl, port_bootup_data, 0xC47C);
         s = a0;
         d = &sStr_PauseMenu_C5C4;
         NODE(s)->name = (const char *)d;
