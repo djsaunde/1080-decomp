@@ -167,11 +167,27 @@ def text_data(ex, off):
 
 def load_pins():
     """token -> its matching-link value (undefined_syms_auto.txt; absolute symbols of the link)"""
-    pins = {}
+    pins, alias = {}, {}
     for line in open("undefined_syms_auto.txt", errors="replace"):
         m = re.match(r"\s*(\w+)\s*=\s*(0x[0-9A-Fa-f]+|\d+)\s*;", line)
         if m:
             pins[m.group(1)] = int(m.group(2), 0)
+            continue
+        m = re.match(r"\s*(\w+)\s*=\s*([A-Za-z_]\w*)\s*;", line)
+        if m:
+            alias[m.group(1)] = m.group(2)
+    # `tok = sym;` (a symbol alias, e.g. bu_63b4_c57c = snd_soundObjCreate_0000057C): the token's
+    # value is sym's in the matching link (plan 18.21: read as 0 before, MapProp_display's
+    # degrees-per-radian constant came from RoData+0x34 instead of +0x5B0)
+    if alias:
+        with open("build/tenshoe.elf", "rb") as f:
+            st = npc.ELFFile(f).get_section_by_name(".symtab")
+            val = {s.name: s["st_value"] for s in st.iter_symbols() if s.name in alias}
+        for tok, sym in alias.items():
+            if tok in val:
+                pins[tok] = val[tok]
+            elif sym in pins:
+                pins[tok] = pins[sym]
     return pins
 
 
