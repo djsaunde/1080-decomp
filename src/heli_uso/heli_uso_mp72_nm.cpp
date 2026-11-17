@@ -206,10 +206,10 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         HF(0x150) = 1.0f;
         break;
     case 3:
-        if (HF(0xE4) < (*(Vec3 *)&ppr).z + 4000.0f) {
-            HI(0x16C) = 1;
-        }
-        if (1) {} /* keeps L4 a block of its own after the if's join (which takes case 3's tg def) */
+        /* `if (1) {}` keeps L4 a block of its own after the if's join (which takes case 3's tg def). The test, its
+         * arm and the cut share one source line (run 777): as1's tie-break on the line then issues the tg addiu,
+         * the add.s and the li 1 in the target's order */
+        if (HF(0xE4) < (*(Vec3 *)&ppr).z + 4000.0f) { HI(0x16C) = 1; } if (1) {}
     L4:
         break;
     case 4:
