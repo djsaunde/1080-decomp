@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_000001D4, 0xA0
+nonmatching HeliItemType_ctor, 0xA0
 
-glabel heli_uso_func_000001D4
+glabel HeliItemType_ctor
     /* 7F0C56 000001D4 27BDFFD8 */  .word 0x27BDFFD8
     /* 7F0C5A 000001D8 AFBF0014 */  .word 0xAFBF0014
     /* 7F0C5E 000001DC AFA5002C */  .word 0xAFA5002C
@@ -41,4 +41,4 @@ glabel heli_uso_func_000001D4
     /* 7F0CEA 00000268 00E01025 */  .word 0x00E01025
     /* 7F0CEE 0000026C 03E00008 */  .word 0x03E00008
     /* 7F0CF2 00000270 00000000 */  .word 0x00000000
-endlabel heli_uso_func_000001D4
+endlabel HeliItemType_ctor

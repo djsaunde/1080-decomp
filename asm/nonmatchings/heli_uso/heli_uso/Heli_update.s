@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_00000B08, 0xEBC
+nonmatching Heli_update, 0xEBC
 
-glabel heli_uso_func_00000B08
+glabel Heli_update
     /* 7F158A 00000B08 3C020000 */  .word 0x3C020000
     /* 7F158E 00000B0C 8C420138 */  .word 0x8C420138
     /* 7F1592 00000B10 27BDFE90 */  .word 0x27BDFE90
@@ -944,4 +944,4 @@ glabel heli_uso_func_00000B08
     /* 7F243A 000019B8 27BD0170 */  .word 0x27BD0170
     /* 7F243E 000019BC 03E00008 */  .word 0x03E00008
     /* 7F2442 000019C0 00000000 */  .word 0x00000000
-endlabel heli_uso_func_00000B08
+endlabel Heli_update

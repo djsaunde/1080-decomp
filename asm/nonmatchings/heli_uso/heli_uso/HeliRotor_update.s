@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_000003F4, 0x64
+nonmatching HeliRotor_update, 0x64
 
-glabel heli_uso_func_000003F4
+glabel HeliRotor_update
     /* 7F0E76 000003F4 27BDFFB0 */  .word 0x27BDFFB0
     /* 7F0E7A 000003F8 AFBF0014 */  .word 0xAFBF0014
     /* 7F0E7E 000003FC 3C010000 */  .word 0x3C010000
@@ -26,4 +26,4 @@ glabel heli_uso_func_000003F4
     /* 7F0ECE 0000044C 27BD0050 */  .word 0x27BD0050
     /* 7F0ED2 00000450 03E00008 */  .word 0x03E00008
     /* 7F0ED6 00000454 00000000 */  .word 0x00000000
-endlabel heli_uso_func_000003F4
+endlabel HeliRotor_update

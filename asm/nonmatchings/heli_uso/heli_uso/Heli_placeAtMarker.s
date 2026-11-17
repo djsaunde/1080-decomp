@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_00000980, 0xF0
+nonmatching Heli_placeAtMarker, 0xF0
 
-glabel heli_uso_func_00000980
+glabel Heli_placeAtMarker
     /* 7F1402 00000980 3C0E0001 */  .word 0x3C0E0001
     /* 7F1406 00000984 8DC5CBA8 */  .word 0x8DC5CBA8
     /* 7F140A 00000988 27BDFFA8 */  .word 0x27BDFFA8
@@ -61,4 +61,4 @@ glabel heli_uso_func_00000980
     /* 7F14E6 00000A64 27BD0058 */  .word 0x27BD0058
     /* 7F14EA 00000A68 03E00008 */  .word 0x03E00008
     /* 7F14EE 00000A6C 00000000 */  .word 0x00000000
-endlabel heli_uso_func_00000980
+endlabel Heli_placeAtMarker

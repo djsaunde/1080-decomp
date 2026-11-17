@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_00001ACC, 0x94
+nonmatching HeliColourItemType_create, 0x94
 
-glabel heli_uso_func_00001ACC
+glabel HeliColourItemType_create
     /* 7F254E 00001ACC 27BDFFD8 */  .word 0x27BDFFD8
     /* 7F2552 00001AD0 AFBF0014 */  .word 0xAFBF0014
     /* 7F2556 00001AD4 AFA40028 */  .word 0xAFA40028
@@ -38,4 +38,4 @@ glabel heli_uso_func_00001ACC
     /* 7F25D6 00001B54 03E00008 */  .word 0x03E00008
     /* 7F25DA 00001B58 00000000 */  .word 0x00000000
     /* 7F25DE 00001B5C 00000000 */  .word 0x00000000
-endlabel heli_uso_func_00001ACC
+endlabel HeliColourItemType_create

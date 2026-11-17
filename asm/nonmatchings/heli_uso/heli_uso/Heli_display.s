@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_00000A70, 0x98
+nonmatching Heli_display, 0x98
 
-glabel heli_uso_func_00000A70
+glabel Heli_display
     /* 7F14F2 00000A70 27BDFFB0 */  .word 0x27BDFFB0
     /* 7F14F6 00000A74 AFB00028 */  .word 0xAFB00028
     /* 7F14FA 00000A78 00808025 */  .word 0x00808025
@@ -39,4 +39,4 @@ glabel heli_uso_func_00000A70
     /* 7F157E 00000AFC 27BD0050 */  .word 0x27BD0050
     /* 7F1582 00000B00 03E00008 */  .word 0x03E00008
     /* 7F1586 00000B04 00000000 */  .word 0x00000000
-endlabel heli_uso_func_00000A70
+endlabel Heli_display

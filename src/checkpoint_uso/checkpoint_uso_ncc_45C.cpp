@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for checkpoint_uso_func_0000045C (0x130), spliced into
+/* IDO 7.1 NCC (C++) donor for CheckpointCyl_isBetweenPosts (0x130), spliced into
  * checkpoint_uso.c.o via REPLACE_FUNC_BODY (agent-b run 640). EXACT.
  *
  * Cylinder checkpoint "between the posts" test: u = pos - postA, w = pos - postB, both
@@ -33,7 +33,7 @@ struct V3 {
  * +0xA4 / +0xE4 (CheckpointCyl_handleMsg). */
 struct CheckpointCyl { char pad[0xA4]; V3 postA; char padb[0xE4 - 0xB0]; V3 postB; };
 
-extern "C" int checkpoint_uso_func_0000045C(CheckpointCyl *self, V3 *p) {
+extern "C" int CheckpointCyl_isBetweenPosts(CheckpointCyl *self, V3 *p) {
     V3 u, w;
     const V3 &pos = *p;
     V3 *a = &self->postA;

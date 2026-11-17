@@ -30,12 +30,12 @@ struct Heli {
     int mode2;                  /* 0x170 */
 };
 
-/* heli_uso_func_000008A8: Heli flight-state reset. The +0x120 zero is its own constant web
+/* Heli_resetFlight: Heli flight-state reset. The +0x120 zero is its own constant web
  * (mtc1 zero f8, stored last): an int local converted at the store; edg folds `(float)0` into
  * the shared 0.0f. The block-scope int and the dead two-word scratch at the end are nested
  * blocks, so their homes sit below the look-copy temp (sp+12, frame 0x28). The off block stays on
  * one source line: split over four lines, the 2000 load schedules after the zero (as1 line tie). */
-extern "C" void heli_uso_func_000008A8(Heli *h) {
+extern "C" void Heli_resetFlight(Heli *h) {
     h->head.z = 1.0f;
     h->roll = h->pitch = h->yaw = 0.0f;
     h->head.x = 0.0f;

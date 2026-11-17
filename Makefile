@@ -102,8 +102,8 @@ SNOW_SUFFIX := ParmVec3_read_snow_00003D34=0x00000000,0x00000000,0x00000000 snow
 build/src/snoweffects_uso/snoweffects_uso.c.o: SUFFIX_BYTES_FORCE := $(SNOW_SUFFIX)
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := $(SNOW_SUFFIX)
 # heli.uso: the 16-byte .text pad after the last function (0x1B5C) is an all-zero SUFFIX on it.
-build/src/heli_uso/heli_uso.c.o: SUFFIX_BYTES_FORCE := heli_uso_func_00001ACC=0x00000000
-build/non_matching/src/heli_uso/heli_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := heli_uso_func_00001ACC=0x00000000
+build/src/heli_uso/heli_uso.c.o: SUFFIX_BYTES_FORCE := HeliColourItemType_create=0x00000000
+build/non_matching/src/heli_uso/heli_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := HeliColourItemType_create=0x00000000
 build/src/heli_uso/heli_uso.c.o: TRUNCATE_TEXT := 0x1B60
 build/non_matching/src/heli_uso/heli_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x1B60
 # heli.uso is C++: functions only edg reproduces come from one NCC donor (agent-g run 658).
@@ -111,7 +111,7 @@ HELI_NCC_DONOR := build/src/heli_uso/heli_uso_ncc.cpp.o
 $(HELI_NCC_DONOR): src/heli_uso/heli_uso_ncc.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-HELI_NCC_FUNCS := heli_uso_func_000008A8
+HELI_NCC_FUNCS := Heli_resetFlight
 build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(HELI_NCC_FUNCS),$(f)=$(HELI_NCC_DONOR))
 build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: $(HELI_NCC_DONOR)
 # agent-g run 672: MIPSpro 7.2.1 donor for 0xB08 (the Heli update; the target's inline jump table needs
@@ -120,7 +120,7 @@ HELI_NM_DONOR := build/src/heli_uso/heli_uso_mp72_nm.cpp.o
 $(HELI_NM_DONOR): src/heli_uso/heli_uso_mp72_nm.cpp $(TOOLS)/ncc721.sh
 	@mkdir -p $(dir $@)
 	$(TOOLS)/ncc721.sh $< $@ $(OPT_FLAGS)
-HELI_NM_FUNCS := heli_uso_func_00000B08
+HELI_NM_FUNCS := Heli_update
 build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(HELI_NM_FUNCS),$(f)=$(HELI_NM_DONOR))
 build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: $(HELI_NM_DONOR)
 # inject-suffix-bytes appends at the section end as well: clip .text back to the Text size
@@ -2504,7 +2504,7 @@ build/src/balloon_uso/balloon_uso.c.o build/non_matching/src/balloon_uso/balloon
 build/src/balloon_uso/balloon_uso.c.o build/non_matching/src/balloon_uso/balloon_uso.c.o: $(BALLOON_1A8_DONOR)
 # checkpoint 45C = cylinder "between the posts" XZ dot test; V3 value class (by-value operator= returning V3 &, kept post pointers, const V3 & position); NCC donor (agent-b run 640).
 CHECKPOINT_45C_DONOR := build/src/checkpoint_uso/checkpoint_uso_ncc_45C.cpp.o
-build/src/checkpoint_uso/checkpoint_uso.c.o build/non_matching/src/checkpoint_uso/checkpoint_uso.c.o: private REPLACE_FUNC_BODY += checkpoint_uso_func_0000045C=$(CHECKPOINT_45C_DONOR)
+build/src/checkpoint_uso/checkpoint_uso.c.o build/non_matching/src/checkpoint_uso/checkpoint_uso.c.o: private REPLACE_FUNC_BODY += CheckpointCyl_isBetweenPosts=$(CHECKPOINT_45C_DONOR)
 build/src/checkpoint_uso/checkpoint_uso.c.o build/non_matching/src/checkpoint_uso/checkpoint_uso.c.o: $(CHECKPOINT_45C_DONOR)
 # 49DBC = three textured-vertex builds (two-arg arg1 call, distinct base-0 a2/a3 symbols, no named scalar locals); NCC donor (agent-c run 153).
 GAMELIBS_49DBC_DONOR := build/src/game_libs/game_libs_ncc_49DBC.cpp.o

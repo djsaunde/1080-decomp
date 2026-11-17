@@ -1,6 +1,6 @@
-nonmatching checkpoint_uso_func_0000045C, 0x130
+nonmatching CheckpointCyl_isBetweenPosts, 0x130
 
-glabel checkpoint_uso_func_0000045C
+glabel CheckpointCyl_isBetweenPosts
     /* 7FB0D6 0000045C 248200A4 */  .word 0x248200A4
     /* 7FB0DA 00000460 C4460000 */  .word 0xC4460000
     /* 7FB0DE 00000464 C4A40000 */  .word 0xC4A40000
@@ -77,4 +77,4 @@ glabel checkpoint_uso_func_0000045C
     /* 7FB1FA 00000580 24020001 */  .word 0x24020001
     /* 7FB1FE 00000584 03E00008 */  .word 0x03E00008
     /* 7FB202 00000588 27BD0090 */  .word 0x27BD0090
-endlabel checkpoint_uso_func_0000045C
+endlabel CheckpointCyl_isBetweenPosts

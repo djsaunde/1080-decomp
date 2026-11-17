@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_00000388, 0x6C
+nonmatching HeliRotor_ctor, 0x6C
 
-glabel heli_uso_func_00000388
+glabel HeliRotor_ctor
     /* 7F0E0A 00000388 27BDFFE0 */  .word 0x27BDFFE0
     /* 7F0E0E 0000038C 14800005 */  .word 0x14800005
     /* 7F0E12 00000390 AFBF001C */  .word 0xAFBF001C
@@ -28,4 +28,4 @@ glabel heli_uso_func_00000388
     /* 7F0E6A 000003E8 00801025 */  .word 0x00801025
     /* 7F0E6E 000003EC 03E00008 */  .word 0x03E00008
     /* 7F0E72 000003F0 00000000 */  .word 0x00000000
-endlabel heli_uso_func_00000388
+endlabel HeliRotor_ctor

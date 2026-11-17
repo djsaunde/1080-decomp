@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_000019E0, 0x2C
+nonmatching HeliMarkerItem_load, 0x2C
 
-glabel heli_uso_func_000019E0
+glabel HeliMarkerItem_load
     /* 7F2462 000019E0 27BDFFE8 */  .word 0x27BDFFE8
     /* 7F2466 000019E4 AFBF0014 */  .word 0xAFBF0014
     /* 7F246A 000019E8 AFA40018 */  .word 0xAFA40018
@@ -12,4 +12,4 @@ glabel heli_uso_func_000019E0
     /* 7F2482 00001A00 27BD0018 */  .word 0x27BD0018
     /* 7F2486 00001A04 03E00008 */  .word 0x03E00008
     /* 7F248A 00001A08 00000000 */  .word 0x00000000
-endlabel heli_uso_func_000019E0
+endlabel HeliMarkerItem_load

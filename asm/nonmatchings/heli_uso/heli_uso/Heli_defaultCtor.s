@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_00000460, 0x60
+nonmatching Heli_defaultCtor, 0x60
 
-glabel heli_uso_func_00000460
+glabel Heli_defaultCtor
     /* 7F0EE2 00000460 27BDFFE0 */  .word 0x27BDFFE0
     /* 7F0EE6 00000464 14800005 */  .word 0x14800005
     /* 7F0EEA 00000468 AFBF001C */  .word 0xAFBF001C
@@ -25,4 +25,4 @@ glabel heli_uso_func_00000460
     /* 7F0F36 000004B4 00801025 */  .word 0x00801025
     /* 7F0F3A 000004B8 03E00008 */  .word 0x03E00008
     /* 7F0F3E 000004BC 00000000 */  .word 0x00000000
-endlabel heli_uso_func_00000460
+endlabel Heli_defaultCtor

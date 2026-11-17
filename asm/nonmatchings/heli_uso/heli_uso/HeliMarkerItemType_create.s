@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_00000140, 0x94
+nonmatching HeliMarkerItemType_create, 0x94
 
-glabel heli_uso_func_00000140
+glabel HeliMarkerItemType_create
     /* 7F0BC2 00000140 27BDFFE0 */  .word 0x27BDFFE0
     /* 7F0BC6 00000144 AFBF0014 */  .word 0xAFBF0014
     /* 7F0BCA 00000148 AFA40020 */  .word 0xAFA40020
@@ -38,4 +38,4 @@ glabel heli_uso_func_00000140
     /* 7F0C4A 000001C8 00601025 */  .word 0x00601025
     /* 7F0C4E 000001CC 03E00008 */  .word 0x03E00008
     /* 7F0C52 000001D0 00000000 */  .word 0x00000000
-endlabel heli_uso_func_00000140
+endlabel HeliMarkerItemType_create

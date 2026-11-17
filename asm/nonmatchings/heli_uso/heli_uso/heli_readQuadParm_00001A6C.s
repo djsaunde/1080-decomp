@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_00001A6C, 0x30
+nonmatching heli_readQuadParm_00001A6C, 0x30
 
-glabel heli_uso_func_00001A6C
+glabel heli_readQuadParm_00001A6C
     /* 7F24EE 00001A6C 27BDFFE0 */  .word 0x27BDFFE0
     /* 7F24F2 00001A70 AFBF0014 */  .word 0xAFBF0014
     /* 7F24F6 00001A74 AFA40020 */  .word 0xAFA40020
@@ -13,4 +13,4 @@ glabel heli_uso_func_00001A6C
     /* 7F2512 00001A90 27BD0020 */  .word 0x27BD0020
     /* 7F2516 00001A94 03E00008 */  .word 0x03E00008
     /* 7F251A 00001A98 00000000 */  .word 0x00000000
-endlabel heli_uso_func_00001A6C
+endlabel heli_readQuadParm_00001A6C

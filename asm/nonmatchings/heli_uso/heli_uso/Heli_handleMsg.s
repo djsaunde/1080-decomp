@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_000007B4, 0xF4
+nonmatching Heli_handleMsg, 0xF4
 
-glabel heli_uso_func_000007B4
+glabel Heli_handleMsg
     /* 7F1236 000007B4 27BDFFB0 */  .word 0x27BDFFB0
     /* 7F123A 000007B8 AFBF0014 */  .word 0xAFBF0014
     /* 7F123E 000007BC AFA50054 */  .word 0xAFA50054
@@ -62,4 +62,4 @@ glabel heli_uso_func_000007B4
     /* 7F131E 0000089C 27BD0050 */  .word 0x27BD0050
     /* 7F1322 000008A0 03E00008 */  .word 0x03E00008
     /* 7F1326 000008A4 00000000 */  .word 0x00000000
-endlabel heli_uso_func_000007B4
+endlabel Heli_handleMsg

@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_0000069C, 0x118
+nonmatching Heli_loadData, 0x118
 
-glabel heli_uso_func_0000069C
+glabel Heli_loadData
     /* 7F111E 0000069C 27BDFFA8 */  .word 0x27BDFFA8
     /* 7F1122 000006A0 00802825 */  .word 0x00802825
     /* 7F1126 000006A4 AFBF0014 */  .word 0xAFBF0014
@@ -71,4 +71,4 @@ glabel heli_uso_func_0000069C
     /* 7F122A 000007A8 27BD0058 */  .word 0x27BD0058
     /* 7F122E 000007AC 03E00008 */  .word 0x03E00008
     /* 7F1232 000007B0 00000000 */  .word 0x00000000
-endlabel heli_uso_func_0000069C
+endlabel Heli_loadData

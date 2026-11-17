@@ -1,6 +1,6 @@
-nonmatching heli_uso_func_000008A8, 0xD8
+nonmatching Heli_resetFlight, 0xD8
 
-glabel heli_uso_func_000008A8
+glabel Heli_resetFlight
     /* 7F132A 000008A8 3C013F80 */  .word 0x3C013F80
     /* 7F132E 000008AC 44812000 */  .word 0x44812000
     /* 7F1332 000008B0 44800000 */  .word 0x44800000
@@ -55,4 +55,4 @@ glabel heli_uso_func_000008A8
     /* 7F13F6 00000974 E4880120 */  .word 0xE4880120
     /* 7F13FA 00000978 03E00008 */  .word 0x03E00008
     /* 7F13FE 0000097C E4860134 */  .word 0xE4860134
-endlabel heli_uso_func_000008A8
+endlabel Heli_resetFlight
