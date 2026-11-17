@@ -92,8 +92,16 @@ void gl_func_00000000_62a2c_lerp(void *, void *, float, int);   /* math_quatSler
  * blendLeft != 0: blend dst from cur toward the keyed pose by blendWeight (docs/1080_GRAPHICS.md 11) */
 extern "C" void anim_blendPose(Animator *o, int key0, int key1, float frac, int blendLeft, float blendWeight) {
     AnimPose x;
+#ifdef PORT /* plan 18.21: anim_unpackKey writes key1's whole 0x28-byte AnimPose at &p.v -- trans and scale
+             * into p, the quaternion into q: IDO lays q right after p, a host compiler need not (the
+             * board's quaternion slerped toward stack garbage: inf / 1e31 board_a matrices) */
+    struct { Pair p; float q[4]; } pq;
+#define p (pq.p)
+#define q (pq.q)
+#else
     float q[4];
     Pair p;
+#endif
 
     o->unk50 = 22;
     o->unk4C = 7;
@@ -114,3 +122,7 @@ extern "C" void anim_blendPose(Animator *o, int key0, int key1, float frac, int 
     o->dst.scale.x = 1.0f;
     o->target->notify(o);
 }
+#ifdef PORT
+#undef p
+#undef q
+#endif
