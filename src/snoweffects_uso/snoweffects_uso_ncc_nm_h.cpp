@@ -8,6 +8,8 @@ extern "C" int gl_func_00000000(...);
 /* ---- snoweffects_uso_func_00000C90 (moved from agent-c's snoweffects_uso_ncc_c.cpp, agent-h run 699) ---- */
 #include "../game_libs/ncc_drafts/gbi_subset.h"
 struct GCtx;
+/* zero-code use counter for the append inlines (defined before GCtx; z0 below is the same thing) */
+inline int zc(int z) { return z; }
 #define gW(g, a, b) { (g)->words.w0 = (a); (g)->words.w1 = (unsigned int)(b); }
 #define gDPWord(pkt, a, b) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = (a); _g->words.w1 = (unsigned int)(b); }
 typedef struct { Gfx *buf; int count; } DList;
@@ -18,6 +20,8 @@ struct GCtx {
     GCtx *me() { return this; }
     Gfx *nextN_1(int d0) { d0 = d0; int n = dl->count++; return &dl->buf[n]; }
     Gfx *nextBI_1(int d0) { d0 = d0; int n = dl->count++; if (1) {} return &dl->buf[n]; }
+    Gfx *nextBIc_1(int d0) { d0 = d0; int n = dl->count++; if (1) {} return &dl->buf[n + zc(0) * n + zc(0) * (n + n)]; }
+    Gfx *nextNc_1(int d0) { d0 = d0; int n = dl->count++; return &dl->buf[n + zc(0) * n + zc(0) * (n + n)]; }
     GCtx *me_1(int d0) { d0 = d0; return this; }
     Gfx *nextI_3(int d0, int d1, int d2) { d0 = d0; d1 = d1; d2 = d2; int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
     Gfx *next() { return &dl->buf[dl->count++]; } Gfx *nextN() { int n = dl->count++; return &dl->buf[n]; }
@@ -93,7 +97,12 @@ struct GCtx {
  * uopt live range. The xh clamp gets two extra z0 uses (`xh > 0 ? xh + z0(0) * (xh + xh) : 0`) so the xh CSE
  * outranks that range: xh takes a2 and the depth / clamp range a3, as in the target, and the scheduler then hoists
  * xh above the depth as in the target. pad0 / pad1 are frame fillers for the two loop words the old z / ge used
- * (frame 400, v / __V / r at the target offsets). */
+ * (frame 400, v / __V / r at the target offsets).
+ * agent-h run 772 (-> 98.99): the texrect's E4 assignment, w0 and w1 are separate statements (the stock
+ * gSPScisTextureRectangle shape) and primDepth takes the depth first, so the depth and the xh / xl clamp results share
+ * one pooled word. A constant dummy before the yh clamp (dm1) moves it onto the count word, and dm3 before the yl clamp
+ * moves it onto a loop-only pool word (a1 as in the target). The B4 / B3 appends add two code-free folds of their count
+ * (nextBIc_1 / nextNc_1), so the count word outranks the dl-temp word: counts v0, dl temps v1, as in the target. */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -102,20 +111,22 @@ inline int imax0(int a) { return a > 0 ? a : 0; }
 
 #define gImmpV(g, pkt, c, p0) { g = (pkt); (g)->words.w0 = _SHIFTL((c), 24, 8); (g)->words.w1 = (unsigned int)(p0); }
 #define gTR(g0, pkt, g1, pkt2, g2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
-{ g0 = (pkt), \
-    g0->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(((s16)(xh) > 0 ? (s16)(xh) + z0(0) * ((int)(s16)(xh) + (int)(s16)(xh)) : 0), 12, 12) | _SHIFTL(MAX((s16)(yh),0), 0, 12)), \
-    g0->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(((s16)(yl) > 0 ? (s16)(yl) + z0(0) * (int)(s16)(yl) : 0), 0, 12)); \
+{ g0 = (pkt); \
+    g0->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(((s16)(xh) > 0 ? (s16)(xh) + z0(0) * ((int)(s16)(xh) + (int)(s16)(xh)) : 0), 12, 12) | (dm1(0), _SHIFTL(MAX((s16)(yh),0), 0, 12))); \
+    g0->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | (dm3(0, 0, 0), _SHIFTL(((s16)(yl) > 0 ? (s16)(yl) + z0(0) * (int)(s16)(yl) : 0), 0, 12))); \
     gImmpV(g1, pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmpV(g2, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 
 inline void dum3(int a, int b, int c) { a = a; b = b; c = c; }
+inline int dm1(int a) { a = a; return 0; }
+inline int dm3(int a, int b, int c) { a = a; b = b; c = c; return 0; }
 /* zero-code uopt use counter (agent-e runs 756 / 760): z is a constant inline parameter, so edg cannot fold
  * z0(0) * (..), but uopt counts every variable term as a use before it folds the product to 0 (no code). */
 inline int z0(int z) { return z; }
 /* the EE prim-depth packet as an inline: its depth parameter takes the pooled edg word that the texrect's MAX temps
  * reuse, so the depth and the xh / xl clamp results form one uopt live range (a3 in the target). */
-inline void primDepth(GCtx *c, int z) { Gfx *g = c->next(); gW(g, 0xEE000000, _SHIFTL(z & 0x7FFF, 16, 16) | _SHIFTL(0, 0, 16)); }
+inline void primDepth(int z, GCtx *c) { Gfx *g = c->next(); gW(g, 0xEE000000, _SHIFTL(z & 0x7FFF, 16, 16) | _SHIFTL(0, 0, 16)); }
 struct SnowV3c { float x, y, z; SnowV3c(float ax, float ay, float az) { x = ax; y = ay; z = az; } };
 struct SnowPartC {
     SnowV3c pos;            /* 0x00 */
@@ -206,7 +217,7 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 wid = (int)(k * (halfH * 2.0f * (1.0f / w)) + 1.0f);
                 x0 = (int)(sx + halfW - (float)(wid / 2) + (float)SNOW_CAM->offX);
                 y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
-                primDepth(c, (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_rodata_C90.depthScale));
+                primDepth((int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_rodata_C90.depthScale), c);
                 if (c) {}
                 if (c) {}
                 if (y0) {}
@@ -215,7 +226,7 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 x1 = x0 + wid;
                 y1 = y0 + hgt + z0(0) * ((int)p + (int)p + y0);
                 self->drawn++;
-                gTR(gt, c->nextI(), g1, c->me()->nextBI_1(0), g2, c->nextN_1(0), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
+                gTR(gt, c->nextI(), g1, c->me()->nextBIc_1(0), g2, c->nextNc_1(0), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
                     ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
                 if (p) {}
             }
