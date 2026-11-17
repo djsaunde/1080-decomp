@@ -24,7 +24,15 @@ so the map covers modules with no src/ yet:
            G_VTX targets: Vtx (s16 x 6 + u8 x 4).  G_MTX targets: Mtx (u32 x 16).
            G_SETTIMG targets and G_MOVEMEM lights stay bytes (libultraship's Fast3D reads
            texels, TLUTs and lights byte by byte, big-endian).
-  str      NUL-terminated printable runs (>= 4 chars), at an aligned or referenced start.
+  shape    shape command streams (op 27 verts / 28 tris / 4 uv s16 x 2 / 25 palette bytes / 29
+           materials -> textures; op 35 collision grid) at every symbol, pointer target and
+           address the code takes.
+  tex:hdr  image symbols: a {0, 1} word pair at a Sym directly followed by the texel Sym (u32 x 2,
+           then bytes); covers textures only code reaches (a built G_SETTIMG).
+  vtbl     cfront vtable slots {s16 delta, s16 index, fn}: the head word of a relocated pointer
+           to Text in an 8-byte-stride table (u16 x 2; every slot on this ROM is 0 today).
+  str      NUL-terminated printable runs (>= 4 chars) at an aligned or referenced start, and
+           1-3 chars at a referenced start (parm tags "he1", formats "%s").
   zero     all-zero bytes outside every typed run (any swap is a no-op).
   audio    bootup Data ranges port/audio swaps at run time (plan 15.6): excluded here, a second
            swap would undo them.
@@ -76,6 +84,16 @@ KNOWN = [
     # (Fast3D reads texels and TLUTs big-endian), then the record genproc loads:
     # {0x110, 0x100, image ptr, TLUT ptr} (the pointers are DataReloc words, typed ptr already).
     ("charsel", "Data", 0, [(0, 0x10210, "u8"), (0x10210, 8, "u32")], 6, 0x10220, "known"),
+    # snoweffects LocalLight flicker sequences (snoweffects_uso.c SnowFlicker {s32 count; u8 *vals},
+    # snow_flickerTbl_958 = {0x93C, 0x930, 0x950}): the brightness bytes, then the records' counts
+    ("snoweffects", "Data", 0x910, [(0, 0x20, "u8")], 1, 0x20, "known"),
+    ("snoweffects", "Data", 0x938, [(0, 4, "u8")], 1, 4, "known"),
+    ("snoweffects", "Data", 0x944, [(0, 0xC, "u8")], 1, 0xC, "known"),
+    ("snoweffects", "Data", 0x930, [(0, 4, "u32")], 1, 4, "known"),
+    ("snoweffects", "Data", 0x93C, [(0, 4, "u32")], 1, 4, "known"),
+    ("snoweffects", "Data", 0x950, [(0, 4, "u32")], 1, 4, "known"),
+    # viewrec vr_sndTbl_4990 (Data 0x318, SoundOptions_update): s32 sound id per row, 4 rows
+    ("viewrec", "Data", 0x318, [(0, 4, "u32")], 4, 4, "known"),
 ]
 # gamegfx (Data only, no relocs): five images, each an 8-byte header {0, 1} at an exported
 # symbol followed by texel bytes up to the next header.  The header reader is not located
@@ -179,6 +197,7 @@ def analyse_text(md, rt, maps, stats):
             stats["direct access"] += 1
         elif op == 0x09:      # addiu: address taken
             stats["address taken"] += 1
+            m.addr_taken.add(addr)
             follow(md, text, off + 4, rtg, addr, m, stats)
 
 
@@ -361,7 +380,10 @@ def walk_assets(maps, ptrs, stats):
             if o % 4 or m.t[o] not in (None, "zero"):
                 continue
             cmds = parse_shape(m, o)
-            if not cmds or not any(op in (26, 27, 28) for op, _ in cmds):
+            # a mesh (26 / 27 / 28), or a material list alone whose pointer is relocated
+            # (fire 0x227C: {op 29: 8 mats at 0x2058, op 2}, the flame frames)
+            if not cmds or not any(op in (26, 27, 28) or op == 29 and tgt(key, c + 8)
+                                   for op, c in cmds):
                 continue
             stats["shape streams"] += 1
             end = cmds[-1][1] + 4
@@ -382,11 +404,13 @@ def walk_assets(maps, ptrs, stats):
                 elif op == 26 and tgt(key, a[1]):
                     typed_run(*tgt(key, a[1]), "u16", 3 * nt, "shape:triList")
                 elif op == 25 and tgt(key, a[0]):
-                    # charsel 0x60CE4: 4 verts x (s, t) s16 (the "palette" field holds UVs on
-                    # textured shapes); RGB888 palettes would be bytes: typed only when 4 * nv fits
-                    pass
+                    # palette (+0x5C, polyshape.h): 3 bytes per vertex (RGB888, or s8 x 3 normals:
+                    # charsel 0x60CD8 = (0, -127, 0) x 4, balloon 0x420)
+                    typed_run(*tgt(key, a[0]), "u8", 3 * nv, "shape:palette")
                 elif op == 4 and tgt(key, a[0]):
-                    typed_run(*tgt(key, a[0]), "u8", 3 * nv, "shape:op4 s8x3")
+                    # uv (+0x64, BasePolyShape_addPoints): s16 (s, t) per vertex (charsel 0x60CE4,
+                    # balloon 0x5DC {0x160, 0x3DE} ...).  Run 624 typed this u8 x 3 (unswapped)
+                    typed_run(*tgt(key, a[0]), "u16", 2 * nv, "shape:uv")
                 elif op in (7, 8) and tgt(key, a[0]):
                     typed_run(*tgt(key, a[0]), "u8", nt if op == 7 else nv, "shape:bytes")
                 elif op == 9 and tgt(key, a[0]):
@@ -401,6 +425,60 @@ def walk_assets(maps, ptrs, stats):
                     walk_mats(maps, ptrs, *tgt(key, a[1]), stats)
                 elif op == 35 and tgt(key, a[0]):
                     collgrid(*tgt(key, a[0]))
+
+
+def tex_headers(m, bounds, stats):
+    """image symbols: an 8-byte {0, 1} record at a Sym immediately followed by a second Sym, the
+    texels (every module that has them: gamegfx, the boarder banks, charfir / charsps, heli,
+    balloon, checkpoint, fire, snoweffects).  The header is two words (reader not located, as for
+    gamegfx); the texels are bytes up to the next symbol / pointer target / typed non-byte data.
+    Texels a material or a static display list reaches are typed the same way already; this also
+    covers the ones code loads with a built G_SETTIMG (snoweffects *_buildTexDL)."""
+    d = m.data
+    for v in sorted(m.starts):
+        if v % 4 or v + 8 not in m.starts or v + 8 > m.n or struct.unpack_from(">II", d, v) != (0, 1):
+            continue
+        if any(c not in (None, "u32") for c in m.t[v:v + 8]):
+            continue
+        m.put(v, "u32", "tex:hdr", 2)
+        e = v + 8
+        while e < m.n and (e == v + 8 or e not in bounds) and m.t[e] in (None, "u8"):
+            e += 1
+        # the last image of a module runs on to the next symbol: drop a zero tail of 16+ bytes
+        # (it is typed zero below), so that the run does not swallow a following zero table
+        z = e
+        while z > v + 8 and d[z - 1] == 0:
+            z -= 1
+        if e - z >= 16:
+            e = z
+        for b in range(v + 8, e):
+            if m.t[b] is None:
+                m.t[b], m.src[b], m.st[b] = "u8", "tex:hdr-texels", b
+        stats["texture headers"] += 1
+
+
+def vtables(m, bounds, stats):
+    """cfront vtable slots {s16 delta, s16 index, fn} (include/gdl/node.h GdlVtEnt, read by
+    VT_SLOT and port/include/port_cfront.h CF_Vk as s16): the word before a relocated pointer to
+    Text, when the slot is part of a table (another such slot 8 bytes away, or the table's
+    8-byte header {0, 0} after a symbol / pointer target) and its index half is 0 (cfront
+    vtables: every slot on this ROM has index 0, and nearly every delta is 0 too).  Typed as
+    two u16 so a nonzero delta survives the swap."""
+    d = m.data
+    for p in sorted(m.text_ptrs):
+        h = p - 4
+        if h < 0 or any(c is not None for c in m.t[h:p]):
+            continue
+        w = struct.unpack_from(">I", d, h)[0]
+        if w & 0xFFFF or 0x1000 <= w >> 16 < 0xF000:      # index 0, a small delta
+            continue
+        # a neighbour slot 8 bytes away (not a jump table: its head word is no pointer), or the
+        # table's {0, 0} header after a symbol / pointer target
+        if not any(q in m.text_ptrs and q - 4 not in m.text_ptrs and m.t[q - 4] != "ptr"
+                   for q in (p - 8, p + 8)) and (h - 8) not in bounds:
+            continue
+        m.put(h, "u16", "vtbl", 2)
+        stats["vtable slots"] += 1
 
 
 def walk_mats(maps, ptrs, key, o, stats):
@@ -495,6 +573,8 @@ def main():
     for short, sec in keep:
         m = Map(rom.by_short[short].secs[sec])
         m.idx_hints = []
+        m.text_ptrs = set()
+        m.addr_taken = set()
         maps[(short, sec)] = m
     stats = collections.Counter()
     # 1. relocated words + audio ranges first: they win
@@ -508,6 +588,8 @@ def main():
                 offs.add(off)
                 m.put(off, "ptr", "reloc", force=True)
                 t = rt.raw(md, f1 >> 4)
+                if t and t[1] == "Text":
+                    m.text_ptrs.add(off)
                 if t and t[1] in SECS:
                     k = struct.unpack_from(">I", m.data, off)[0]
                     targets[(t[0].short, t[1])].add((t[2] + k) & 0xFFFFFFFF)
@@ -550,11 +632,15 @@ def main():
             if t and t[1] in SECS:
                 pm[off] = ((t[0].short, t[1]), (t[2] + struct.unpack_from(">I", m.data, off)[0]) & 0xFFFFFFFF)
         ptrs[(short, sec)] = pm
-        m.starts = set(targets[(short, sec)])
+        m.starts = set(targets[(short, sec)]) | m.addr_taken
         for info, v, w3 in md.syms:
             if (info >> 16) & 7 == 2 and UI.SEC_OF_TAG.get((info >> 20) & 0xF) == sec:
                 m.starts.add(v)
     walk_assets(maps, ptrs, stats)
+    for (short, sec), m in maps.items():
+        bounds = m.starts | set(targets[(short, sec)])
+        tex_headers(m, bounds, stats)
+        vtables(m, bounds, stats)
     # 4. strings, index extension, zeros
     for (short, sec), m in maps.items():
         md = rom.by_short[short]
@@ -570,7 +656,9 @@ def main():
                 j = i
                 while j < m.n and (0x20 <= d[j] < 0x7F or d[j] in (9, 10, 13, 0x1B)) and m.t[j] in (None, "u8"):
                     j += 1
-                if j < m.n and d[j] == 0 and j - i >= 4:
+                # 4+ characters anywhere; 1-3 at an address the code takes or a pointer holds
+                # (parm tags "d00" / "he1" / "Env", formats "%s" / "%d_", viewrec "fff")
+                if j < m.n and d[j] == 0 and (j - i >= 4 or j > i and i in m.addr_taken | bounds):
                     for b in range(i, j + 1):
                         if m.t[b] in (None, "u8"):
                             m.t[b], m.src[b] = "str", "str"
