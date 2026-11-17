@@ -312,6 +312,8 @@ struct SnowEmC {
 extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
     float a, sp, r;
     int i, n, go;
+    { int sc[1]; sc[0] = 0; } /* run 732: one dead frame word above the loop block's temporaries puts a1 / a2 / u / w
+                               * at the target's sp+260..328 */
     if (t->cam->state != 99 || t->i80 != 0) {
         return;
     }
