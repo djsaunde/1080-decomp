@@ -50,7 +50,7 @@ REPRO = os.path.join(HOST, 'repro')
 GATE_SEEDS = list(range(1, 13))
 GATE_STEPS = 5000
 GATE64_SEEDS = (2, 3)  # --gate --build64: these gate seeds also run x86-64 and must match (run 869)
-STUCK_SCREEN, STUCK_PRESSES = 900, 8  # stuck-screen: 30 s of an identical display list through 8 presses
+STUCK_SCREEN, STUCK_PRESSES = 900, 8  # stuck-screen: 30 s of an identical display list through 8 presses, B among them
 SOFT = ('frozen', 'nan-camera', 'x64-screen', 'x64-audio')
 
 # ---------------------------------------------------------------- input generation
@@ -257,12 +257,13 @@ def run(a, d, script_text, steps, sram_src=None, keep_trace=True, build=None):
 
 
 def presses(script_text):
-    """the steps where a script line starts holding a button (STICK-only lines are not presses)"""
+    """[(step, buttons)] where a script line starts holding a button (STICK-only lines are not presses)"""
     out = []
     for m in re.finditer(r'^F (\d+)(?:[-:]\S*)? (?:P\d+ )?(.*)$', script_text, re.M):
         toks = re.sub(r'#.*', '', m.group(2)).split()
-        if any(t != 'STICK' and not re.match(r'-?\d+,-?\d+$', t) for t in toks):
-            out.append(int(m.group(1)))
+        btn = [t for t in toks if t != 'STICK' and not re.match(r'-?\d+,-?\d+$', t)]
+        if btn:
+            out.append((int(m.group(1)), tuple(btn)))
     return sorted(out)
 
 
@@ -292,7 +293,6 @@ def analyse(a, d, rc, steps, build=None, press_steps=()):
     last, rt_prev, rt_since = -1, None, 0
     froz_key, froz_since = None, 0
     modes, racing, starts, was_racing = set(), 0, set(), False
-    import bisect
     scr_prev, scr_since = None, 0  # the screen detector: scr= (PORT_TRACE_SCREEN) unchanged since step
     try:
         fh = open(os.path.join(d, 'state.log'), errors='replace')
@@ -326,10 +326,12 @@ def analyse(a, d, rc, steps, build=None, press_steps=()):
             if mm.group(1) != scr_prev:
                 scr_prev, scr_since = mm.group(1), step
             elif step - scr_since >= STUCK_SCREEN and 'stuck-screen' not in classes:
-                n = bisect.bisect_left(press_steps, step) - bisect.bisect_left(press_steps, scr_since + 30)
-                if n >= STUCK_PRESSES:  # pressed on, and nothing drawn changed
+                win = [b for st_, bs in press_steps if scr_since + 30 <= st_ < step for b in bs]
+                # pressed on, B (back, on every 1080 menu) among them, and nothing drawn changed; a screen
+                # that only takes some buttons (Options > Records: D-pad up / down and B) is not stuck
+                if len(win) >= STUCK_PRESSES and 'B' in win and len(set(win)) >= 3:
                     classes['stuck-screen'] = (step, 'the display list unchanged since step %d through %d presses'
-                                               % (scr_since, n))
+                                               ' (%s)' % (scr_since, len(win), ' '.join(sorted(set(win)))))
         mm = re.search(r' rt=(\d+)', ln)
         if mm:
             rt = int(mm.group(1))
