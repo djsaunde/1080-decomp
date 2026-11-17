@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Tue, 17 Nov 2026 10:17:22 -0500
+Subject: [PATCH 6/8] fast: F3DEX 1.x LookAt order and refresh for texture
+ generation
+
+G_TEXTURE_GEN takes S from the LookAt X light and T from the Y light. The
+F3D G_MOVEMEM handler stored G_MV_LOOKATY (0x82) in lookat[0] and
+G_MV_LOOKATX (0x84) in lookat[1], the reverse of the F3DEX2 handler and of
+the vertex code, which computes S from lookat[0]. A GBI 1 game's
+environment maps came out transposed (S following the normal's y).
+
+A new LookAt also only reached the texgen coefficients after the next
+G_MW_NUMLIGHT; the RSP uses it at once. Mark the lights changed so the
+coefficients are recomputed at the next vertex.
+
+Found by the 1080 port's golden tests (texgen scene).
+---
+ src/fast/interpreter.cpp | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index f67f0ab..26fcee0 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -2488,7 +2488,10 @@ void Interpreter::GfxSpMovememF3d(uint8_t index, uint8_t offset, const void* dat
+             break;
+         case F3DEX_G_MV_LOOKATY:
+         case F3DEX_G_MV_LOOKATX:
+-            memcpy(mRsp->lookat + (index - F3DEX_G_MV_LOOKATY) / 2, data, sizeof(F3DLight_t));
++            // lookat[0] drives S and lookat[1] T (as F3DEX2's G_MVO_LOOKATX / Y fill them); the coefficients are
++            // recomputed at the next vertex, as the RSP uses a new LookAt without a G_MW_NUMLIGHT
++            memcpy(mRsp->lookat + (index == F3DEX_G_MV_LOOKATX ? 0 : 1), data, sizeof(F3DLight_t));
++            mRsp->lights_changed = true;
+             break;
+         case F3DEX_G_MV_L0:
+         case F3DEX_G_MV_L1:

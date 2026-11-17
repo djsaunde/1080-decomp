@@ -13,25 +13,25 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REF="$HERE/../golden/golden.sha1"
 DIR="$OUT/golden-out"
 mkdir -p "$DIR"
-rm -f "$DIR"/*.dlmp "$DIR"/*.png
+rm -f "$DIR"/*.dlmp "$DIR"/*.png "$DIR"/*.rb
 "$OUT/gold" "$DIR"
 export LIBGL_ALWAYS_SOFTWARE=1
 renderer=""
 for d in $("$OUT/gold" --list); do
-    log="$("$OUT/f3dreplay" "$DIR/$d.dlmp" "$DIR/$d.png" 2>&1)" || { echo "$log"; echo "golden: $d: f3dreplay failed"; exit 1; }
+    log="$("$OUT/f3dreplay" "$DIR/$d.dlmp" "$DIR/$d.png" --readback "$DIR/$d.rb" 2>&1)" || { echo "$log"; echo "golden: $d: f3dreplay failed"; exit 1; }
     renderer="$(echo "$log" | sed -n 's/^replay: GL //p')"
 done
 python3 "$HERE/../tools/dlump.py" --check "$DIR"/*.dlmp > /dev/null
-(cd "$DIR" && sha1sum $("$OUT/gold" --list | sed 's/$/.png/')) > "$DIR/actual.sha1"
+(cd "$DIR" && sha1sum $("$OUT/gold" --list | sed 's/$/.png/') $("$OUT/gold" --list | sed 's/$/.rb/')) > "$DIR/actual.sha1"
 if [[ "$MODE" == "--update" ]]; then
-    { echo "# port/gfx golden images: sha1 of f3dreplay's PNG per gold.c scene (fast3d/golden.sh)"
+    { echo "# port/gfx golden images: sha1 of f3dreplay's PNG and read-back (.rb) per gold.c scene (fast3d/golden.sh)"
       echo "# renderer: $renderer"
       cat "$DIR/actual.sha1"; } > "$REF"
-    echo "golden: wrote $REF ($(wc -l < "$DIR/actual.sha1") scenes, $renderer)"
+    echo "golden: wrote $REF ($("$OUT/gold" --list | wc -l) scenes, $renderer)"
     exit 0
 fi
 if diff <(grep -v '^#' "$REF") "$DIR/actual.sha1" > "$DIR/diff.txt"; then
-    echo "golden: $(wc -l < "$DIR/actual.sha1") scenes match ($renderer)"
+    echo "golden: $("$OUT/gold" --list | wc -l) scenes match, PNG + read-back ($renderer)"
 else
     cat "$DIR/diff.txt"
     echo "golden: MISMATCH (renders in $DIR; reference renderer: $(sed -n 's/^# renderer: //p' "$REF"))"

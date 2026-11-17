@@ -1,4 +1,4 @@
-# port/gfx golden images: sha1 of f3dreplay's PNG per gold.c scene (fast3d/golden.sh)
+# port/gfx golden images: sha1 of f3dreplay's PNG and read-back (.rb) per gold.c scene (fast3d/golden.sh)
 # renderer: llvmpipe (LLVM 15.0.7, 256 bits)
 73508aec42874d2825a616b183e1b7da136c80b8  fill.png
 54675cc87ac13006f131dae5178a8fc5b41ed1a8  shade.png
@@ -11,3 +11,28 @@ eff881629486e230442ca78843af02fee1621cdc  tex_ci.png
 3d5d953b0d8677e96879ce588b53772915f3ea45  texrect.png
 3cd81b0294cb99d3412dea5ca1bed6922b8e8c60  xlu.png
 6b01785b4e24be27ab0a36288dbc1c5cd2ccba84  line3d.png
+6775236297110202c79e2829025c39cefbec7e50  light.png
+739729ed13619d117cc253501fe9a001cfc63557  texgen.png
+da1b03b03215a5d7ff6fd2601829ddb78a260eef  loadtile.png
+d22145ec48ae209bcef53dc865a7092cc14db214  sprite.png
+a8819323c41e76e2c8f0bd9bdcc293054dc8ee1d  cull.png
+52d5242fc74e353c57d5ac588ccd87f7838d94f1  splitz.png
+c10eb042a0049ebffc873b088418a836ef3e8558  fader.png
+f117d4136d2b5d2ae5649a00312210a3f2812f6b  fill.rb
+9d440f2c32d67191a3ab40c1ee6ec93fcd029978  shade.rb
+c7633931b80f410f2029c6949a4e3fb99cbc151f  tex_rgba16.rb
+a6e6c2f98f23c24938f595b434550dbeab6fcc12  tex_ci.rb
+634e5e884ddb3070a643abddb3c12f05abea4f54  tex_ia_i.rb
+b3698c2e72d3f3d2727f6b6907423b4e5ab67b38  combine.rb
+87723b739a0d4952c72457b4af7519b435c29855  multitex.rb
+29557e7263ba24146078d9c66562a0ad88ad0263  fog.rb
+aeb71b4ae04414afbe3de2c8411bfbb02d0c1eab  texrect.rb
+6c2ea279ed4c8102b907f7c4895dbf3839ede3db  xlu.rb
+176988576b364e1766c85feb180347e7f4f30e64  line3d.rb
+733ebb4ba2b79a308bb5c626a1d90d515ab3d72b  light.rb
+3dc4cf0566e416f51df4324bbbdf4a30a4156368  texgen.rb
+03e43d4d1a51bb166124643aa3b4e949448ac86e  loadtile.rb
+d2375c87024f18d6d743c70963024936284f7cf8  sprite.rb
+b6a15f03818c9c488affcf485e5e94fd05bb5473  cull.rb
+a07280130a915f8600aa238155ad16f93ae7815c  splitz.rb
+bb1cad918c556fbc2f3b8ab0b2e9b902f510debc  fader.rb

@@ -1,0 +1,36 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Tue, 17 Nov 2026 10:17:22 -0500
+Subject: [PATCH 7/8] fast: flush the batch when G_SETPRIMDEPTH changes the
+ depth
+
+The prim depth reaches the shader as a per-draw uniform, set in Flush(),
+but G_SETPRIMDEPTH did not flush. Consecutive G_ZS_PRIM rectangles with the
+same render state were batched into one draw and all took the last depth
+set: a billboard sprite behind geometry was drawn over it whenever a
+nearer sprite followed. Flush before a changed depth is stored.
+
+Found by the 1080 port's golden tests (sprite scene: Sprite_display draws
+each billboard as a TEXRECT after its own G_SETPRIMDEPTH).
+---
+ src/fast/interpreter.cpp | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index 26fcee0..a410c20 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -3932,7 +3932,12 @@ bool gfx_end_dl_handler_common(F3DGfx** cmd0) {
+ bool gfx_set_prim_depth_handler_rdp(F3DGfx** cmd) {
+     Interpreter* gfx = mInstance.lock().get();
+     uint32_t w1 = (*cmd)->words.w1;
+-    gfx->mRdp->prim_depth = (uint16_t)((w1 >> 16) & 0x7FFF); // Mask to 15 bits
++    uint16_t z = (uint16_t)((w1 >> 16) & 0x7FFF); // Mask to 15 bits
++    if (z != gfx->mRdp->prim_depth) {
++        // the prim depth is a per-draw uniform, set at Flush(): draw what was batched at the old depth first
++        gfx->Flush();
++        gfx->mRdp->prim_depth = z;
++    }
+     return false;
+ }
+ 

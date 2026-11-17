@@ -26,7 +26,7 @@ $(OUT)/test_port_gfx: test_port_gfx.c port_gfx.c dlump.c synth.c dlump.h synth.h
 	$(CC) $(CFLAGS) -malign-double -DPORT -isystem $(REPO_GAME)/include -o $@ test_port_gfx.c port_gfx.c dlump.c synth.c
 
 $(OUT)/gold: gold.c dlump.c dlump.h
-	$(CC) $(CFLAGS) -o $@ gold.c dlump.c
+	$(CC) $(CFLAGS) -o $@ gold.c dlump.c -lm
 
 HAVE_GOLDEN := $(and $(wildcard $(REPO)/tools/lus/.complete),$(wildcard $(REPO)/tools/gl-dev/.complete))
 

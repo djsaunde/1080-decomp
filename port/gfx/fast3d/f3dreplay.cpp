@@ -2,7 +2,7 @@
  * Fast3D interpreter (pinned + the plan-14 patch series) and write a PNG.
  * PC port plan section 19.6. 64-bit host, EGL offscreen, no SDL / ImGui.
  *
- *   f3dreplay in.dlmp out.png [--scale N] [--ucode f3dex|line3d]
+ *   f3dreplay in.dlmp out.png [--scale N] [--ucode f3dex|line3d] [--readback out.rb]
  *   LIBGL_ALWAYS_SOFTWARE=1 f3dreplay ...   llvmpipe, for the golden tests
  *
  * The dump's memory image is rebuilt AT ITS ORIGINAL ADDRESSES: every chunk is
@@ -17,7 +17,14 @@
  * bytes); Fast3D's F3DGfx is two uintptr_t (16 bytes here). Each DL chunk is
  * widened into its own F3DGfx array, and every G_DL operand (call or branch) is
  * rewritten to the widened copy of its target. A target outside every DL chunk
- * stays as it was and is reported; the dumper records such a gap as an ERROR. */
+ * stays as it was and is reported; the dumper records such a gap as an ERROR.
+ *
+ * --readback exercises the patch-3 read-back API the way the game's CPU readers will use
+ * it (plan 11.2): the whole 320x240 frame as big-endian RGBA5551 and the depth at a 16 x 12
+ * grid of points are requested before Run() and serviced at its end. The answers go to
+ * out.rb ("1080RB01", u32 width, height, point count, the pixels, then {u16 x, y, z} per
+ * point; host order except the big-endian pixels), and the pixels are checked against the
+ * PNG: each RGBA5551 channel must equal the 8-bit one >> 3 (row 0 = the top). */
 
 #include <sys/mman.h>
 
@@ -237,11 +244,71 @@ class EglWindow final : public Fast::GfxWindowBackend {
 
 /* ---------------- main ---------------- */
 
+/* the read-back request (before Run) and its check / file (after) */
+struct Readback {
+    static constexpr uint32_t W = 320, H = 240, STEP = 20;
+    std::vector<uint16_t> px;
+    std::vector<std::pair<uint32_t, uint32_t>> pts;
+
+    void request(Fast::Interpreter& gfx) {
+        px.assign((size_t)W * H, 0);
+        gfx.ReadbackRequestRgba5551(0, 0, W, H, px.data(), true);
+        for (uint32_t y = STEP / 2; y < H; y += STEP) {
+            for (uint32_t x = STEP / 2; x < W; x += STEP) {
+                pts.push_back({ x, y });
+                gfx.ReadbackRequestDepth(x, y);
+            }
+        }
+    }
+    /* frame = glReadPixels of the window at scale 1 (bottom row first) */
+    bool finish(Fast::Interpreter& gfx, const char* path, const uint8_t* frame) {
+        uint32_t bad = 0, far = 0, near = 0, missing = 0;
+        for (uint32_t y = 0; y < H; y++) {
+            for (uint32_t x = 0; x < W; x++) {
+                const uint8_t* b = (const uint8_t*)&px[(size_t)y * W + x];
+                uint32_t v = ((uint32_t)b[0] << 8) | b[1]; /* big-endian in memory */
+                const uint8_t* f = frame + ((size_t)(H - 1 - y) * W + x) * 4;
+                if (((v >> 11) & 31) != (uint32_t)(f[0] >> 3) || ((v >> 6) & 31) != (uint32_t)(f[1] >> 3) ||
+                    ((v >> 1) & 31) != (uint32_t)(f[2] >> 3)) {
+                    bad++;
+                }
+            }
+        }
+        std::vector<uint16_t> z;
+        for (auto& p : pts) {
+            uint16_t d = 0;
+            if (!gfx.ReadbackGetDepth(p.first, p.second, &d)) {
+                missing++;
+            }
+            (d == 0xFFFC ? far : near)++;
+            z.push_back(d);
+        }
+        FILE* f = std::fopen(path, "wb");
+        if (f == nullptr) {
+            std::fprintf(stderr, "f3dreplay: cannot write %s\n", path);
+            return false;
+        }
+        uint32_t hdr[3] = { W, H, (uint32_t)pts.size() };
+        std::fwrite("1080RB01", 1, 8, f);
+        std::fwrite(hdr, 4, 3, f);
+        std::fwrite(px.data(), 2, px.size(), f);
+        for (size_t i = 0; i < pts.size(); i++) {
+            uint16_t rec[3] = { (uint16_t)pts[i].first, (uint16_t)pts[i].second, z[i] };
+            std::fwrite(rec, 2, 3, f);
+        }
+        std::fclose(f);
+        std::printf("readback: %u / %u pixels differ from the frame; depth: %u far (0xFFFC), %u nearer, %u missing\n",
+                    bad, W * H, far, near, missing);
+        return bad == 0 && missing == 0;
+    }
+};
+
 int main(int argc, char** argv) {
     int scale = 1;
+    const char* readbackPath = nullptr;
     UcodeHandlers ucode = ucode_f3dex_line3d;
     if (argc < 3) {
-        std::fprintf(stderr, "usage: f3dreplay in.dlmp out.png [--scale N] [--ucode f3dex|line3d]\n");
+        std::fprintf(stderr, "usage: f3dreplay in.dlmp out.png [--scale N] [--ucode f3dex|line3d] [--readback out.rb]\n");
         return 2;
     }
     for (int i = 3; i + 1 < argc; i++) {
@@ -249,6 +316,8 @@ int main(int argc, char** argv) {
             scale = std::max(1, std::atoi(argv[++i]));
         } else if (std::strcmp(argv[i], "--ucode") == 0) {
             ucode = std::strcmp(argv[++i], "f3dex") == 0 ? ucode_f3dex : ucode_f3dex_line3d;
+        } else if (std::strcmp(argv[i], "--readback") == 0) {
+            readbackPath = argv[++i];
         }
     }
     if (!load(argv[1]) || !map_arena()) {
@@ -285,6 +354,14 @@ int main(int argc, char** argv) {
     gfx->mGameWindowViewport.width = w;
     gfx->mGameWindowViewport.height = h;
 
+    Readback rb;
+    if (readbackPath != nullptr) {
+        if (scale != 1) {
+            std::fprintf(stderr, "f3dreplay: --readback needs --scale 1\n");
+            return 2;
+        }
+        rb.request(*gfx);
+    }
     std::unordered_map<Mtx*, MtxF> noReplacements;
     gfx->StartFrame();
     gfx->Run((Gfx*)root, noReplacements);
@@ -297,6 +374,10 @@ int main(int argc, char** argv) {
     if (!write_png(argv[2], px.data(), (int)w, (int)h)) {
         std::fprintf(stderr, "f3dreplay: cannot write %s\n", argv[2]);
         return 1;
+    }
+    if (readbackPath != nullptr && !rb.finish(*gfx, readbackPath, px.data())) {
+        std::fprintf(stderr, "f3dreplay: read-back check failed\n");
+        return 4;
     }
     std::printf("f3dreplay: %s -> %s: %zu lists widened, %d unresolved G_DL\n", argv[1], argv[2], sDls.size(),
                 sUnresolved);

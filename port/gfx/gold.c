@@ -13,7 +13,14 @@
  * scene starts from the same prologue: segment 0, colour and depth image, a
  * full-screen scissor, a FILL-mode colour clear and Z clear, the viewport, and an
  * orthographic projection mapping object x / y straight to native pixels around
- * the centre (x right, y up, z towards the eye, depth = -z / 1000). */
+ * the centre (x right, y up, z towards the eye, depth = -z / 1000).
+ *
+ * Run 828 (plan 19.7) adds seven scenes copied from named emitters: light
+ * (gfx_emitLights / gfx_emitOneLight), texgen (Mat_draw's LookAt +
+ * gfx_setupMatTextures), loadtile (gfx_loadTexture's TexImage LoadTile and
+ * LoadBlock dxt arms), sprite (Sprite_ctor / Sprite_display: G_ZS_PRIM +
+ * G_SETPRIMDEPTH TEXRECTs), cull (CULL_FRONT, U64BGWall's G_CULLDL), splitz
+ * (gfx_clearScreen per window) and fader (Fader_display's list verbatim). */
 
 #include "dlump.h"
 
@@ -55,6 +62,26 @@ static void dl_begin(size_t cap) {
     sN = 0;
     sCap = cap;
 }
+/* a sub-list for G_DL: sub_begin switches the builder to a new list, sub_end closes it
+ * (G_ENDDL) and returns to the caller's list; one level deep is enough here */
+static G *sSavedDl, *sSub;
+static size_t sSavedN, sSavedCap;
+static void cmd(unsigned int w0, unsigned int w1);
+static void sub_begin(size_t cap) {
+    sSavedDl = sDl;
+    sSavedN = sN;
+    sSavedCap = sCap;
+    dl_begin(cap);
+    sSub = sDl;
+}
+static G *sub_end(void) {
+    G *sub = sSub;
+    cmd(0xB8000000u, 0);
+    sDl = sSavedDl;
+    sN = sSavedN;
+    sCap = sSavedCap;
+    return sub;
+}
 static void cmd(unsigned int w0, unsigned int w1) {
     if (sN == sCap) {
         fprintf(stderr, "gold: list full\n");
@@ -69,8 +96,12 @@ static void cmd(unsigned int w0, unsigned int w1) {
 #define G_ZBUFFER 0x1u
 #define G_SHADE 0x4u
 #define G_SHADING_SMOOTH 0x200u
+#define G_CULL_FRONT 0x1000u
 #define G_CULL_BACK 0x2000u
 #define G_FOG 0x10000u
+#define G_LIGHTING 0x20000u
+#define G_TEXTURE_GEN 0x40000u
+#define G_TEXTURE_GEN_LINEAR 0x80000u
 
 static void sp_vtx(const void *v, int v0, int n) {
     cmd(0x04000000u | ((unsigned)v0 * 2u << 16) | ((unsigned)n << 10) | ((unsigned)n * 16u - 1u), ga(v));
@@ -178,7 +209,7 @@ static void load_block(const void *tex, int fmt, int siz, int w, int h, int tmem
     }
     dxt = (2048 + words - 1) / words;
     lrs = siz == SIZ_32 ? w * h - 1 : w * h * bits / 16 - 1; /* in 16-bit (or 32-bit) texels */
-    line = (w * bits / 8 + 7) / 8;
+    line = siz == SIZ_32 ? (w * 2 + 7) / 8 : (w * bits / 8 + 7) / 8; /* 32b: the split RG / BA halves */
     dp_settimg(fmt, siz == SIZ_32 ? SIZ_32 : SIZ_16, 1, tex);
     {
         int m = sMask;
@@ -591,6 +622,478 @@ static void scene_line3d(void) { /* G_LINE3D (patch 1): widths 0 (= 1) and 4 */
     sp_line(2, 3, 4);
 }
 
+/* ---------------- run 828: the 19.6 item 6 features, in 1080's own command forms ---------------- */
+
+static void vsetn(Vtx1 *v, int x, int y, int z, int s, int t, int nx, int ny, int nz) { /* Vtx_tn: cn = s8 normal */
+    vset(v, x, y, z, s, t, 0xFFu);
+    v->cn[0] = (unsigned char)(signed char)nx;
+    v->cn[1] = (unsigned char)(signed char)ny;
+    v->cn[2] = (unsigned char)(signed char)nz;
+}
+
+/* a 5x5 vertex dome over [x0, x1] x [y0, y1]: flat in position, normals bulging like a
+ * hemisphere (n = normalize(u, v, 1.2), u, v in [-1, 1]), 32 front-facing triangles */
+static void draw_dome(int x0, int y0, int x1, int y1) {
+    Vtx1 *v = vbuf(25);
+    int i, j;
+    for (j = 0; j < 5; j++) {
+        for (i = 0; i < 5; i++) {
+            float u = (float)(i - 2) / 2.0f, w = (float)(2 - j) / 2.0f, l;
+            l = 1.0f / __builtin_sqrtf(u * u + w * w + 1.44f);
+            vsetn(&v[j * 5 + i], x0 + (x1 - x0) * i / 4, y1 - (y1 - y0) * j / 4, 0, 0, 0, (int)(u * l * 127.0f),
+                  (int)(w * l * 127.0f), (int)(1.2f * l * 127.0f));
+        }
+    }
+    sp_vtx(v, 0, 25);
+    for (j = 0; j < 4; j++) {
+        for (i = 0; i < 4; i++) {
+            int a = j * 5 + i, b = a + 1, c = a + 5, d = c + 1; /* TL, TR, BL, BR */
+            sp_tri(a, c, b);
+            sp_tri(b, c, d);
+        }
+    }
+}
+
+/* the Lights record of gfx_emitLights_000454C4 (game_libs_ncc_454C4.cpp): Ambient (8 bytes) then Light[4]
+ * (16 bytes each), dir bytes = dir * 120 */
+static unsigned char *lights_rec(void) {
+    unsigned char *r = alloc(0x48);
+    memset(r, 0, 0x48);
+    return r;
+}
+static void light_set(unsigned char *l, int r, int g, int b, int dx, int dy, int dz) {
+    l[0] = l[4] = (unsigned char)r;
+    l[1] = l[5] = (unsigned char)g;
+    l[2] = l[6] = (unsigned char)b;
+    l[8] = (unsigned char)(signed char)dx;
+    l[9] = (unsigned char)(signed char)dy;
+    l[10] = (unsigned char)(signed char)dz;
+}
+/* gfx_emitLights_000454C4, n lights lit: gSPLight(l[i], i + 1) each, then gSPLight(ambient, n + 1) and
+ * gSPNumLights(n) (G_MOVEWORD NUMLIGHT, F3D form (n + 1) * 32 + 0x80000000) */
+static void emit_lights(unsigned char *rec, int n) {
+    int i;
+    for (i = 0; i < n; i++) {
+        cmd(0x03000010u | ((0x86u + (unsigned)i * 2u) << 16), ga(rec + 8 + 16 * i));
+    }
+    cmd(0x03000010u | ((0x86u + (unsigned)n * 2u) << 16), ga(rec));
+    cmd(0xBC000002u, (unsigned)(n + 1) * 32u + 0x80000000u);
+}
+/* the n = 0 default path of gfx_emitLights_000454C4: l[0] = the ambient colour, gSPLight(l[0], 1),
+ * gSPLight(ambient, 2), gSPNumLights(1) */
+static void emit_lights_default(unsigned char *rec) {
+    memcpy(rec + 8, rec, 3);
+    memcpy(rec + 12, rec + 4, 3);
+    cmd(0x03860010u, ga(rec + 8));
+    cmd(0x03880010u, ga(rec));
+    cmd(0xBC000002u, 0x80000040u);
+}
+
+static void scene_light(void) { /* G_LIGHTING: gfx_emitLights (2 lights + ambient) and gfx_emitOneLight */
+    unsigned char *rec = lights_rec(), *one = lights_rec();
+    frame_begin(FILL2(rgba5551(0, 0, 0, 1)));
+    dp_rendermode(RM_ZB_OPA);
+    CC1(C_SHADE, A_ONE);
+    sp_geom(G_ZBUFFER | G_SHADE | G_SHADING_SMOOTH | G_CULL_BACK | G_LIGHTING);
+    light_set(rec, 24, 24, 40, 0, 0, 0);               /* ambient */
+    light_set(rec + 8, 255, 64, 0, -85, 0, 85);        /* l[0]: orange from the left */
+    light_set(rec + 24, 0, 96, 255, 0, 85, 85);        /* l[1]: blue from above */
+    emit_lights(rec, 2);
+    draw_dome(-150, -70, -10, 70);
+    /* gfx_emitOneLight_00045CB0 as Mat_draw calls it (colour {1, 1, 0} * 255): one 0x48 record whose bytes
+     * 0..2, 4..6, 8..10 and 12..14 all hold the colour; NUMLIGHT 1, then L1 (0x88) = record + 8 (the ambient)
+     * and L0 (0x86) = the record (so light 0's direction bytes are the colour again) */
+    one[0] = one[4] = one[8] = one[12] = 255;
+    one[1] = one[5] = one[9] = one[13] = 255;
+    one[2] = one[6] = one[10] = one[14] = 0;
+    cmd(0xBC000002u, 0x80000040u);
+    cmd(0x03880010u, ga(one + 8));
+    cmd(0x03860010u, ga(one));
+    draw_dome(10, -70, 150, 70);
+    /* back to an unlit quad after lighting (the shade colours are used again) */
+    sp_geom(G_ZBUFFER | G_SHADE | G_SHADING_SMOOTH | G_CULL_BACK);
+    draw_quad(quad(-150, -110, 150, -85, 0, 0, 0, kRgbw));
+}
+
+/* 32 x 32 (or 64 x 32) RGBA16 for texgen: red = s, green = t, blue grid lines every 8 texels */
+static void *tex_st(int w) {
+    unsigned char *t = alloc((size_t)w * 32 * 2);
+    int x, y;
+    for (y = 0; y < 32; y++) {
+        for (x = 0; x < w; x++) {
+            unsigned int c = rgba5551(x * 256 / w, y * 8, ((x & 7) == 0 || (y & 7) == 0) ? 255 : 0, 1);
+            be16(t + (y * w + x) * 2, c);
+        }
+    }
+    return t;
+}
+
+static void scene_texgen(void) { /* G_TEXTURE_GEN (+ LINEAR) with Mat_draw's LookAt and gfx_setupMatTextures */
+    unsigned char *rec = lights_rec(), *la = alloc(32);
+    void *t32 = tex_st(32), *t64 = tex_st(64);
+    frame_begin(FILL2(rgba5551(0, 0, 0, 1)));
+    dp_rendermode(RM_ZB_OPA);
+    /* gfx_makeLookAt (guLookAtReflect layout): l[0] = the x axis (s), colour 0; l[1] = the y axis (t), colour
+     * 0x80 green; dir * 120 */
+    memset(la, 0, 32);
+    la[8] = 120;
+    la[16 + 1] = la[16 + 5] = 0x80;
+    la[16 + 9] = 120;
+    /* Mat_draw: LOOKATX = the LookAt, LOOKATY = the LookAt + 0x10 */
+    cmd(0x03840010u, ga(la));
+    cmd(0x03820010u, ga(la) + 0x10u);
+    light_set(rec, 255, 255, 255, 0, 0, 0);
+    emit_lights_default(rec);
+    sp_geom(G_ZBUFFER | G_SHADE | G_SHADING_SMOOTH | G_CULL_BACK | G_LIGHTING);
+    /* gfx_setupMatTextures_00045E20: geomFlags bit 20 -> B7 TEXTURE_GEN (bit 24 adds _LINEAR), and
+     * G_TEXTURE BB040801 with scale 1984 / 1984, or 3968 / 1984 for a 64-wide texture */
+    cmd(0xB7000000u, 0x00040000u);
+    cmd(0xBB040801u, (1984u << 16) | 1984u);
+    CC1(C_T0, A_ONE);
+    load_block(t32, FMT_RGBA, SIZ_16, 32, 32, 0, 0, 0);
+    draw_dome(-150, -70, -10, 70);
+    dp_pipesync();
+    /* a new LookAt without a new NUMLIGHT (Mat_draw rebuilds only the texgen list): the x axis mirrored, so S
+     * now falls from left to right */
+    la = alloc(32);
+    memset(la, 0, 32);
+    la[8] = (unsigned char)(signed char)-120;
+    la[16 + 1] = la[16 + 5] = 0x80;
+    la[16 + 9] = 120;
+    cmd(0x03840010u, ga(la));
+    cmd(0x03820010u, ga(la) + 0x10u);
+    cmd(0xB7000000u, 0x000C0000u);
+    cmd(0xBB040801u, (3968u << 16) | 1984u);
+    load_block(t64, FMT_RGBA, SIZ_16, 64, 32, 0, 0, 0);
+    draw_dome(10, -70, 150, 70);
+    sp_geom(G_ZBUFFER | G_SHADE | G_SHADING_SMOOTH | G_CULL_BACK);
+    cmd(0xBB000000u, 0xFFFFFFFFu);                     /* G_TEXTURE off */
+    CC1(C_SHADE, A_ONE);
+    draw_quad(quad(-150, -110, 150, -85, 0, 0, 0, kRgbw));
+}
+
+/* a 64 x 32 RGBA16 atlas (red = x, green = y, white 16 x 16 cell borders, a blue cell index dot) and
+ * a 64 x 32 I4 atlas (intensity = x / 4) */
+static void *atlas_rgba16(void) {
+    unsigned char *t = alloc(64 * 32 * 2);
+    int x, y;
+    for (y = 0; y < 32; y++) {
+        for (x = 0; x < 64; x++) {
+            unsigned int c = rgba5551(x * 4, y * 8, 0, 1);
+            if ((x & 15) == 0 || (y & 15) == 0) {
+                c = rgba5551(255, 255, 255, 1);
+            } else if ((x & 15) == 1 + (x >> 4) * 3 && (y & 15) == 4) {
+                c = rgba5551(0, 0, 255, 1);
+            }
+            be16(t + (y * 64 + x) * 2, c);
+        }
+    }
+    return t;
+}
+static void *atlas_i4(void) {
+    unsigned char *t = alloc(64 * 32 / 2);
+    int x, y;
+    for (y = 0; y < 32; y++) {
+        for (x = 0; x < 64; x += 2) {
+            int a = ((x >> 2) ^ (y >> 3)) & 15, b = (((x + 1) >> 2) ^ (y >> 3)) & 15;
+            t[(y * 64 + x) / 2] = (unsigned char)((a << 4) | b);
+        }
+    }
+    return t;
+}
+/* 16 x 16 RGBA32: an RGB gradient with a dark diagonal */
+static void *tex_rgba32(void) {
+    unsigned char *t = alloc(16 * 16 * 4);
+    int x, y;
+    for (y = 0; y < 16; y++) {
+        for (x = 0; x < 16; x++) {
+            unsigned char *p = t + (y * 16 + x) * 4;
+            p[0] = (unsigned char)(x * 16);
+            p[1] = (unsigned char)(y * 16);
+            p[2] = (unsigned char)(255 - x * 8);
+            p[3] = 255;
+            if (x == 15 - y) {
+                p[0] = p[1] = p[2] = 0;
+            }
+        }
+    }
+    return t;
+}
+/* 24 x 8 RGBA16 (a width whose dxt is not exact: 6 words per row, dxt 342) */
+static void *tex_24x8(void) {
+    unsigned char *t = alloc(24 * 8 * 2);
+    int x, y;
+    for (y = 0; y < 8; y++) {
+        for (x = 0; x < 24; x++) {
+            be16(t + (y * 24 + x) * 2, (x / 3 + y) & 1 ? rgba5551(255, 255, 255, 1) : rgba5551(x * 10, 0, 128, 1));
+        }
+    }
+    return t;
+}
+
+/* gfx_loadTexture_000578B4, texFlags 0x10 (texels -> a TexImage record): LoadTile of the (s, t) w x h
+ * sub-rectangle of an image `width` texels wide. RGBA16 (switch 1, s1_110) */
+static void loadtile_rgba16(const void *img, int width, int s, int t, int w, int h) {
+    int line = ((w * 2) + 7) >> 3;
+    cmd(0xFD100000u | (unsigned)((width - 1) & 0xFFF), ga(img));
+    cmd(0xF5100000u | ((unsigned)line << 9), 0x07000000u);
+    cmd(0xE6000000u, 0);
+    cmd(0xF4000000u | ((unsigned)(s * 4 & 0xFFF) << 12) | (unsigned)(t * 4 & 0xFFF),
+        0x07000000u | ((unsigned)(((s + w - 1) << 2) & 0xFFF) << 12) | (unsigned)(((t + h - 1) << 2) & 0xFFF));
+    cmd(0xE7000000u, 0);
+    cmd(0xF5100000u | ((unsigned)line << 9), 0);
+    cmd(0xF2000000u, ((unsigned)((w - 1) << 2) << 12) | (unsigned)((h - 1) << 2));
+}
+/* the I4 arm (s1_304): the image is loaded as I8 at half width, the render tile is I4 */
+static void loadtile_i4(const void *img, int width, int s, int t, int w, int h) {
+    int line = ((w >> 1) + 7) >> 3;
+    cmd(0xFD880000u | (unsigned)(((width >> 1) - 1) & 0xFFF), ga(img));
+    cmd(0xF5880000u | ((unsigned)line << 9), 0x07000000u);
+    cmd(0xE6000000u, 0);
+    cmd(0xF4000000u | ((unsigned)(s * 2 & 0xFFF) << 12) | (unsigned)(t * 4 & 0xFFF),
+        0x07000000u | ((unsigned)(((s + w - 1) << 1) & 0xFFF) << 12) | (unsigned)(((t + h - 1) << 2) & 0xFFF));
+    cmd(0xE7000000u, 0);
+    cmd(0xF5800000u | ((unsigned)line << 9), 0);
+    cmd(0xF2000000u, ((unsigned)((w - 1) << 2) << 12) | (unsigned)((h - 1) << 2));
+}
+/* the plain-texels arm (switch 2): LoadBlock with dxt = (words + 0x7FF) / words, words = the 64-bit TMEM
+ * words per row; RGBA32 (s2_120) loads as 32b, RGBA16 as 16b */
+static void loadblock_1080(const void *tex, int siz, int w, int h) {
+    int words = siz == SIZ_32 ? w * 4 / 8 : w * 2 / 8, lrs = w * h - 1, line;
+    if (words <= 0) {
+        words = 1;
+    }
+    if (lrs > 0x7FF) {
+        lrs = 0x7FF;
+    }
+    line = siz == SIZ_32 ? (w * 2 + 7) >> 3 : (w * 2 + 7) >> 3;
+    cmd(0xFD000000u | ((unsigned)siz << 19), ga(tex));
+    cmd(0xF5000000u | ((unsigned)siz << 19), 0x07000000u);
+    cmd(0xE6000000u, 0);
+    cmd(0xF3000000u, ((unsigned)lrs << 12) | 0x07000000u | (unsigned)((words + 0x7FF) / words));
+    cmd(0xE7000000u, 0);
+    cmd(0xF5000000u | ((unsigned)siz << 19) | ((unsigned)line << 9), 0);
+    cmd(0xF2000000u, ((unsigned)((w - 1) << 2) << 12) | (unsigned)((h - 1) << 2));
+}
+
+static void scene_loadtile(void) { /* LoadTile sub-rectangles (uls / ult != 0) and LoadBlock dxt */
+    void *atlas = atlas_rgba16(), *ai4 = atlas_i4(), *t32 = tex_rgba32(), *t24 = tex_24x8();
+    tex_begin(FILL2(rgba5551(0, 0, 64, 1)));
+    loadtile_rgba16(atlas, 64, 24, 8, 16, 16);         /* straddles four atlas cells */
+    textured_quad(-150, 10, -10, 110, 16, 16);
+    dp_pipesync();
+    loadtile_rgba16(atlas, 64, 48, 16, 16, 16);        /* the bottom-right cell */
+    textured_quad(10, 10, 150, 110, 16, 16);
+    dp_pipesync();
+    loadtile_i4(ai4, 64, 32, 16, 16, 16);
+    textured_quad(-150, -100, -60, -10, 16, 16);
+    dp_pipesync();
+    loadblock_1080(t32, SIZ_32, 16, 16);
+    textured_quad(-50, -100, 40, -10, 16, 16);
+    dp_pipesync();
+    loadblock_1080(t24, SIZ_16, 24, 8);
+    textured_quad(50, -100, 150, -10, 24, 8);
+}
+
+/* 16 x 16 RGBA16 sprite: a disc (alpha 1) with a ring of colours, transparent outside */
+static void *tex_sprite(void) {
+    unsigned char *t = alloc(16 * 16 * 2);
+    int x, y;
+    for (y = 0; y < 16; y++) {
+        for (x = 0; x < 16; x++) {
+            int dx = 2 * x - 15, dy = 2 * y - 15, r2 = dx * dx + dy * dy;
+            unsigned int c = r2 > 225 ? rgba5551(0, 0, 0, 0) : r2 > 100 ? rgba5551(255, 255, 255, 1) : rgba5551(255, 128, 0, 1);
+            be16(t + (y * 16 + x) * 2, c);
+        }
+    }
+    return t;
+}
+/* Sprite_display: a 1-cycle TEXRECT at G_SETPRIMDEPTH, x, y, size in pixels, dsdx = 1024 / scale */
+static void sprite_rect(int x, int y, int size, unsigned int z) {
+    unsigned int d = (unsigned)(1024 * 16 / size);
+    cmd(0xEE000000u, (z & 0x7FFFu) << 16);
+    cmd(0xE4000000u | ((unsigned)((x + size) << 2) << 12) | (unsigned)((y + size - 1) << 2),
+        ((unsigned)(x << 2) << 12) | (unsigned)(y << 2));
+    cmd(0xB4000000u, 0);
+    cmd(0xB3000000u, (d << 16) | d);
+}
+
+static void scene_sprite(void) { /* billboard sprites: TEXRECT + G_ZS_PRIM + G_SETPRIMDEPTH against a Z quad */
+    void *t = tex_sprite();
+    frame_begin(FILL2(rgba5551(0, 32, 64, 1)));
+    sp_geom(G_ZBUFFER | G_SHADE | G_SHADING_SMOOTH);
+    dp_rendermode(RM_ZB_OPA);
+    CC1(C_SHADE, A_ONE);
+    draw_quad(quad(-60, -80, 60, 80, 0, 0, 0, kRgbw));  /* depth 0.5: prim depth ~0x3FFF */
+    /* Sprite_ctor's "SS StartDL" (game_libs_ncc_4B620.cpp) */
+    dp_pipesync();
+    cmd(0xBA001402u, 0);                               /* 1-cycle */
+    cmd(0xB9000201u, 4);                               /* Z source: G_ZS_PRIM */
+    cmd(0xBA000C02u, 0x2000);                          /* bilerp */
+    cmd(0xBA001301u, 0);                               /* perspective off */
+    cmd(0xBB000001u, 0x80008000u);                     /* G_TEXTURE on */
+    /* the sprite material: combiner T0 colour / T0 alpha, AA_ZB_TEX_EDGE (cycle 1 only) */
+    CC1(C_T0, C_T0);
+    dp_rendermode(0x443078u);
+    load_block(t, FMT_RGBA, SIZ_16, 16, 16, 0, 0, 0);
+    sprite_rect(70, 20, 64, 0x2000);                   /* near: over the quad's top-left corner */
+    sprite_rect(130, 90, 64, 0x6000);                  /* far: hidden where the quad is */
+    sprite_rect(210, 150, 48, 0x6000);                 /* far, off the quad: visible */
+    sprite_rect(200, 30, 32, 0x2000);                  /* near, 2x magnified */
+    /* "SS EndDL" */
+    cmd(0xBA001301u, 0x80000u);
+    cmd(0xB9000201u, 0);
+    cmd(0xBB000000u, 0x80008000u);
+}
+
+static void scene_cull(void) { /* CULL_FRONT (the mirror pass) and G_CULLDL sub-lists (U64BGWall_ctor) */
+    Vtx1 *v = vbuf(6), *off = vbuf(4), *on;
+    G *a, *b;
+    frame_begin(FILL2(rgba5551(0, 0, 0, 1)));
+    dp_rendermode(RM_OPA);
+    CC1(C_SHADE, A_ONE);
+    vset(&v[0], -150, -40, 0, 0, 0, 0xFF0000FFu);       /* counter-clockwise on screen (front) */
+    vset(&v[1], -10, -40, 0, 0, 0, 0xFF0000FFu);
+    vset(&v[2], -80, 100, 0, 0, 0, 0xFF8000FFu);
+    vset(&v[3], 10, -40, 0, 0, 0, 0x00FF00FFu);         /* clockwise on screen (back) */
+    vset(&v[4], 80, 100, 0, 0, 0, 0x00FF80FFu);
+    vset(&v[5], 150, -40, 0, 0, 0, 0x00FF00FFu);
+    sp_geom(G_SHADE | G_SHADING_SMOOTH | G_CULL_FRONT); /* only the green (clockwise) one survives */
+    sp_vtx(v, 0, 6);
+    sp_tri(0, 1, 2);
+    sp_tri(3, 4, 5);
+    /* U64BGWall_ctor's per-tile form: G_VTX then G_CULLDL(0, 3) (F3DEX: w0 = vs * 2, w1 = ve * 2) in a list
+     * called with G_DL; one tile on screen, one entirely off screen (the RSP ends that list) */
+    sp_geom(G_SHADE | G_SHADING_SMOOTH | G_CULL_BACK);
+    on = quad(-150, -110, 150, -60, 0, 0, 0, kRgbw);
+    vset(&off[0], 400, 300, 0, 0, 0, 0xFFFFFFFFu);
+    vset(&off[1], 500, 300, 0, 0, 0, 0xFFFFFFFFu);
+    vset(&off[2], 400, 200, 0, 0, 0, 0xFFFFFFFFu);
+    vset(&off[3], 500, 200, 0, 0, 0, 0xFFFFFFFFu);
+    sub_begin(16);
+    sp_vtx(on, 0, 4);
+    cmd(0xBE000000u, 6);
+    sp_tri(0, 2, 1);
+    sp_tri(1, 2, 3);
+    a = sub_end();
+    sub_begin(16);
+    sp_vtx(off, 0, 4);
+    cmd(0xBE000000u, 6);
+    sp_tri(0, 2, 1);
+    sp_tri(1, 2, 3);
+    b = sub_end();
+    cmd(0x06000000u, ga(a));
+    cmd(0x06000000u, ga(b));
+}
+
+/* gfx_clearScreen per window: scissor, Z clear (CIMG = the Z buffer, 0xFFFC) and colour clear of the window's
+ * rectangle only, then the window's viewport (ScreenWindow_display: vscale = (w * 2, h * 2, 0x1FF), vtrans =
+ * (x * 4 + w * 2, y * 4 + h * 2, 0x1FF)) */
+static void window_begin(int x, int y, int w, int h, unsigned int clear) {
+    short *vp = alloc(16);
+    vp[0] = (short)(w * 2); vp[1] = (short)(h * 2); vp[2] = 0x1FF; vp[3] = 0;
+    vp[4] = (short)(x * 4 + w * 2); vp[5] = (short)(y * 4 + h * 2); vp[6] = 0x1FF; vp[7] = 0;
+    dp_pipesync();
+    dp_scissor(x, y, x + w, y + h);
+    dp_cycle(CYC_FILL);
+    dp_rendermode(0);
+    cmd(0xFF100000u | 319, ga(sZimg));
+    dp_fillcolor(0xFFFCFFFCu);
+    dp_fillrect(x, y, x + w - 1, y + h - 1);
+    dp_pipesync();
+    cmd(0xFF100000u | 319, ga(sCimg));
+    dp_fillcolor(clear);
+    dp_fillrect(x, y, x + w - 1, y + h - 1);
+    dp_pipesync();
+    cmd(0x03800010u, ga(vp));
+    dp_cycle(CYC_1);
+    dp_rendermode(RM_ZB_OPA);
+    CC1(C_SHADE, A_ONE);
+    sp_geom(G_ZBUFFER | G_SHADE | G_SHADING_SMOOTH);
+}
+
+static void scene_splitz(void) { /* split screen: per-window partial Z clears */
+    static const unsigned int red[4] = { 0xFF0000FFu, 0xFF0000FFu, 0xC00000FFu, 0xC00000FFu };
+    static const unsigned int yel[4] = { 0xFFFF00FFu, 0xFFFF00FFu, 0xC0C000FFu, 0xC0C000FFu };
+    static const unsigned int blu[4] = { 0x4080FFFFu, 0x4080FFFFu, 0x4080FFFFu, 0x4080FFFFu };
+    short *vpFull = alloc(16);
+    frame_begin(FILL2(rgba5551(0, 0, 0, 1)));
+    /* top window: a near red quad; bottom window: a near yellow quad. The proj maps the window to +-160 x +-120 */
+    window_begin(0, 0, 320, 120, FILL2(rgba5551(40, 40, 40, 1)));
+    draw_quad(quad(-100, -80, 0, 80, 500, 0, 0, red));
+    window_begin(0, 120, 320, 120, FILL2(rgba5551(0, 40, 0, 1)));
+    draw_quad(quad(0, -80, 100, 80, 500, 0, 0, yel));
+    /* then the whole screen at a farther depth: hidden by both near quads only if the bottom window's Z clear left
+     * the top window's Z alone */
+    vpFull[0] = 640; vpFull[1] = 480; vpFull[2] = 511; vpFull[3] = 0;
+    vpFull[4] = 640; vpFull[5] = 480; vpFull[6] = 511; vpFull[7] = 0;
+    dp_pipesync();
+    dp_scissor(0, 0, 320, 240);
+    cmd(0x03800010u, ga(vpFull));
+    draw_quad(quad(-120, -100, 120, 100, 0, 0, 0, blu));
+}
+
+/* Fader_display's list (bootup_uso_ncc_1304C.cpp), verbatim: 2-cycle, perspective off, XLU in both cycles,
+ * T0 colour with T1 (I8 mask) alpha, bilerp, RGB dither off, TEXTLOD tile, a full-screen TEXRECT that magnifies
+ * the 32 x 32 texture ~10x. Drawn over a shaded frame so the blend shows. */
+static void *tex_fade0(void) { /* 32 x 32 RGBA16: soft stripes */
+    unsigned char *t = alloc(32 * 32 * 2);
+    int x, y;
+    for (y = 0; y < 32; y++) {
+        for (x = 0; x < 32; x++) {
+            be16(t + (y * 32 + x) * 2, ((x + y) & 8) ? rgba5551(255, 255, 255, 1) : rgba5551(255, 40, 0, 1));
+        }
+    }
+    return t;
+}
+static void *tex_fade1(void) { /* 32 x 32 I8 mask: a radial ramp, opaque at the rim */
+    unsigned char *t = alloc(32 * 32);
+    int x, y;
+    for (y = 0; y < 32; y++) {
+        for (x = 0; x < 32; x++) {
+            int dx = 2 * x - 31, dy = 2 * y - 31, r2 = dx * dx + dy * dy;
+            t[y * 32 + x] = (unsigned char)(r2 >= 961 ? 255 : r2 * 255 / 961);
+        }
+    }
+    return t;
+}
+static void scene_fader(void) {
+    void *t0 = tex_fade0(), *t1 = tex_fade1();
+    frame_begin(FILL2(rgba5551(0, 0, 0, 1)));
+    dp_rendermode(RM_OPA);
+    sp_geom(G_SHADE | G_SHADING_SMOOTH);
+    CC1(C_SHADE, A_ONE);
+    draw_quad(quad(-160, -120, 160, 120, 0, 0, 0, kRgbw));
+    cmd(0xE7000000u, 0);
+    cmd(0xBA001402u, 0x100000u);
+    cmd(0xBA001301u, 0);
+    cmd(0xB900031Du, 0x504240u);
+    cmd(0xFCFFFFFFu, 0xFFFCF438u);
+    cmd(0xBA000C02u, 0x2000u);
+    cmd(0xBA000602u, 0xC0u);
+    cmd(0xF8000000u, 0xFFFFFFFFu);
+    cmd(0xFD100000u, ga(t0));
+    cmd(0xF5100000u, 0x07014050u);
+    cmd(0xE6000000u, 0);
+    cmd(0xF3000000u, 0x073FF100u);
+    cmd(0xE7000000u, 0);
+    cmd(0xF5101000u, 0x00014050u);
+    cmd(0xF2000000u, 0x0007C07Cu);
+    cmd(0xFD900000u, ga(t1));
+    cmd(0xF5900100u, 0x07014050u);
+    cmd(0xE6000000u, 0);
+    cmd(0xF3000000u, 0x071FF200u);
+    cmd(0xE7000000u, 0);
+    cmd(0xF5880900u, 0x01014050u);
+    cmd(0xF2000000u, 0x0107C07Cu);
+    cmd(0xBA001001u, 0);
+    cmd(0xE45003C0u, 0);
+    cmd(0xB4000000u, 0);
+    cmd(0xB3000000u, 0x00630084u);
+    cmd(0xE7000000u, 0);
+    cmd(0xBA001301u, 0x80000u);
+}
+
 typedef struct {
     const char *name;
     void (*build)(void);
@@ -601,6 +1104,10 @@ static const Scene kScenes[] = {
     { "tex_ci", scene_tex_ci },     { "tex_ia_i", scene_tex_ia_i }, { "combine", scene_combine },
     { "multitex", scene_multitex }, { "fog", scene_fog },         { "texrect", scene_texrect },
     { "xlu", scene_xlu },           { "line3d", scene_line3d },
+    /* run 828 */
+    { "light", scene_light },       { "texgen", scene_texgen },   { "loadtile", scene_loadtile },
+    { "sprite", scene_sprite },     { "cull", scene_cull },       { "splitz", scene_splitz },
+    { "fader", scene_fader },
 };
 
 int main(int argc, char **argv) {
