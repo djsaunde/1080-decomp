@@ -369,14 +369,11 @@ void heli_uso_func_00000A70(char *self) {
     }
 }
 
-#ifdef NON_MATCHING
-/* heli_uso_func_00000B08: Heli update (C++; NM ~84 %): MIPSpro 7.2.1 donor src/heli_uso/heli_uso_mp72_nm.cpp
- * (agent-g run 672), REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
+/* heli_uso_func_00000B08: Heli update (C++). EXACT via the MIPSpro 7.2.1 donor
+ * src/heli_uso/heli_uso_mp72_nm.cpp (agent-g run 672 .. 781, agent-e run 780), REPLACE_FUNC_BODY-spliced over
+ * this placeholder on both builds. */
 void heli_uso_func_00000B08(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000B08);
-#endif
 
 /* heli_uso_func_000019C4: empty virtual. */
 void heli_uso_func_000019C4(int a0) {

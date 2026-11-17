@@ -114,15 +114,15 @@ $(HELI_NCC_DONOR): src/heli_uso/heli_uso_ncc.cpp
 HELI_NCC_FUNCS := heli_uso_func_000008A8
 build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(HELI_NCC_FUNCS),$(f)=$(HELI_NCC_DONOR))
 build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: $(HELI_NCC_DONOR)
-# agent-g run 672: NON_MATCHING-only MIPSpro 7.2.1 donor for 0xB08 (the Heli update, ~84 %; the target's
-# inline jump table needs EDG 2.29, tools/ncc721.sh); the matching build keeps INCLUDE_ASM.
+# agent-g run 672: MIPSpro 7.2.1 donor for 0xB08 (the Heli update; the target's inline jump table needs
+# EDG 2.29, tools/ncc721.sh). Byte-exact since run 781 (agent-g / agent-e), so both builds splice it.
 HELI_NM_DONOR := build/src/heli_uso/heli_uso_mp72_nm.cpp.o
 $(HELI_NM_DONOR): src/heli_uso/heli_uso_mp72_nm.cpp $(TOOLS)/ncc721.sh
 	@mkdir -p $(dir $@)
 	$(TOOLS)/ncc721.sh $< $@ $(OPT_FLAGS)
 HELI_NM_FUNCS := heli_uso_func_00000B08
-build/non_matching/src/heli_uso/heli_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(HELI_NM_FUNCS),$(f)=$(HELI_NM_DONOR))
-build/non_matching/src/heli_uso/heli_uso.c.o: $(HELI_NM_DONOR)
+build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(HELI_NM_FUNCS),$(f)=$(HELI_NM_DONOR))
+build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: $(HELI_NM_DONOR)
 # inject-suffix-bytes appends at the section end as well: clip .text back to the Text size
 build/src/snoweffects_uso/snoweffects_uso.c.o: TRUNCATE_TEXT := 0xA900
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0xA900

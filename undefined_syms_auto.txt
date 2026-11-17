@@ -5761,6 +5761,7 @@ viewrec_uso_func_00004990_rodata = 0x00000038;  /* viewrec 4990 MIPSpro 7.2.1 do
 viewrec_uso_func_00003878_rodata = 0x00000000;  /* viewrec 3878 MIPSpro 7.2.1 donor: renamed donor .rodata reloc; its literals and table are viewrec RoData +0x0 / +0x10 (in-place %lo) */
 heli_data_00000000 = 0x00000000;  /* heli.uso Data section base (module-local zero symbol: vtables, names) */
 heli_rodata_00000000 = 0x00000000;  /* heli.uso RoData section base (float constants) */
+heli_uso_func_00000B08_rodata = 0x00000078;
 heli_polyFlags_ld = 0x00000000;  /* heli 0x274: gPolyFlags_3EEC4 (bootup Bss+0x3EEC4) per-site load alias */
 heli_polyFlags_st = 0x00000000;  /* heli 0x274: gPolyFlags_3EEC4 store alias */
 heli_polyGeomMode = 0x00000000;  /* heli 0x274: gPolyGeomMode_3EEC8 (bootup Bss+0x3EEC8) */

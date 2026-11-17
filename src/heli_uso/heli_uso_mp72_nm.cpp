@@ -153,6 +153,9 @@ extern "C" void heli_uso_func_00000B08(char *self);
  * default is no longer an exclusive block and xbb fills the bound check's delay slot with the dispatch sll as in
  * the target (95.76 -> 96.39) */
 extern "C" void *heli_updateSlot_b08 = (void *)heli_uso_func_00000B08;
+/* the heli RoData word before the update's jump table (RoData+0x7C, 8-byte doubles after it): keeps the donor's
+ * .rodata offsets on the target layout, so one <fn>_rodata pin covers every literal (run 781) */
+extern "C" const int heli_roPad_b08 = 0;
 extern "C" void heli_uso_func_00000B08(char *self) {
     struct { float x, y, z; } ppr;
     char *player;
