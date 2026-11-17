@@ -18,7 +18,10 @@ twice, and checks:
 silent case "silent".  Silent today: seq 0 / 1 (the sound-effect sequences: their channels wait for
 IO from snd_SetPlayer0Channel0IO) and the events that are controls, not sounds, on their own
 (0x0E / 0x0F / 0x14 / 0x15 / 0x16: player-2 IO cue changes; 0x10 / 0x11: race-start state, 0x11
-schedules the course music only after event 4; 0x18 / 0x1C: not traced yet).
+schedules the course music only after event 4).  0x18 / 0x1C are sounds that are silent in the ROM's
+data (plan 15.9): seq 0 starts channel 14 on a drum of font 2; 0x1C's drum 0x2C is an empty entry, and
+0x18's relative jump (+0x44, its siblings +0x3C..+0x24 land on 0xB40 / 0xB42) skips the store of its
+note, so the layer plays the script's default 0x2A, also an empty drum.
 Exit status 0 when every case passes.
 """
 import argparse
@@ -50,6 +53,8 @@ def cases():
         yield "seq%02d" % n, SEQ_ARGS.get(n, ["--seq", str(n)]) + ["--seconds", str(SEQ_SECONDS)]
     for c in COURSES:
         yield "course%d" % c, ["--course", str(c), "--gametype", "0", "--seconds", str(COURSE_SECONDS)]
+    # the boot's music (seqrender --title: n64proc's mode 1, titproc's mode 0 at 7.4 s -> seq 2), plan 15.9
+    yield "title", ["--title", "--seconds", str(COURSE_SECONDS)]
     for k in SFX:
         yield "sfx%02X" % k, ["--sfx", str(k), "--sfx-at", "0.2", "--seconds", str(SFX_SECONDS)]
 

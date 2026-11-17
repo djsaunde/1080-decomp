@@ -9,13 +9,23 @@
  *   2. SnowBoard_ctor's audio part: fs_gdlFileInfo of rom/audio_seq.uso / audio_wave.uso /
  *      audio_bank.uso, then snd_Init(seq, bank, wave) -> AudioLoad_Init (heap init sizes,
  *      port_audio_swap_static, the tables, the spec);
- *   3. app_runInit's snd_PlayPlayer0Seq0 (sequence 0, the sound-effect player);
+ *   3. GameFlow_create's options (Backup_readOptions, defaults from Backup_resetOptionsData):
+ *      snd_SetPlayer1VolumeLevel(8) / snd_SetPlayer0VolumeLevel(8) / snd_SetPlayer2VolumeLevel(8)
+ *      (AUDIOCMD 0x41 fadeVolumeScale = the Data 0x1C128 table [8] = 0.8 for players 1 / 0 / 2;
+ *      channel volume is squared, so the music plays at 0.64 of a bare --seq) and
+ *      snd_SetSoundOutputMode(flags & 3 = 0, stereo); --levels M,S,V picks other menu levels
+ *      (0..10), --raw skips the step; then app_runInit's snd_PlayPlayer0Seq0 (sequence 0, the
+ *      sound-effect player);
  *   4. the request:
  *        --seq N             snd_PlayPlayer1SeqDefault(N) (player 1, the music player);
  *        --event M[:S][@SEC] snd_seqEventDbg_00000148(M, S, 0) at SEC (snd_playSeq ->
  *                            snd_HandleSeqEvent: the game's music state machine);
  *        --post K[:V][@SEC]  snd_dispatchEvent(K, V) at SEC (snd_postEvent / snd_sendEvent);
  *        --sfx K [--sfx-at SEC]  snd_PostEvent(K);
+ *        --title [--title-at SEC]  the boot's music: n64proc's snd_playSeq(1) at 0 (spec 1, the
+ *                            N64 logo sound 0xA3) and titproc's snd_playSeq(0) at SEC (spec 0 and
+ *                            sequence 2 on player 1: the title music; default 7.4 s, the
+ *                            tenshoe boot's time from mode 1 to mode 0);
  *        --spec N            snd_StopAudioCmds(N) (an audio-spec change) and 30 steps before --seq: the boot
  *                            spec's temporary sequence cache is 0x2E00 bytes, seqs 7 / 9 / 19 are bigger
  *                            (their load would run into gAudioCtx; the game plays them in race spec 3);
@@ -40,7 +50,9 @@
  *
  * Usage: seqrender --rom baserom.z64 (--seq N | --event ... | --post ... | --sfx K | --course N)
  *                  [--seconds T] [--out f.wav] [--no-sfx-player] [--tatums N] [--quiet] [--summary]
- * Debug: SEQRENDER_DEBUG=1 (command ring), SEQRENDER_TRACE=1 (player 1 per step, channels / layers /
+ * Debug: SEQRENDER_GAPTEST=1 (a LOADBUFF from the unmapped page after the image: badAddr, not a fault),
+ *        SEQRENDER_TRACE0=1 (player 0's channels per step, first 3 s), SEQRENDER_SFXTAB=font (that font's
+ *        drums, at the end), SEQRENDER_DEBUG=1 (command ring), SEQRENDER_TRACE=1 (player 1 per step, channels / layers /
  *        notes once a second), SEQRENDER_DUMP=file (player 1's first 0x2000 sequence bytes).
  */
 #define _GNU_SOURCE /* REG_EIP */
@@ -63,6 +75,13 @@ extern void snd_seqEventDbg_00000148(int mode, int sub, int arg);
 extern int snd_PostEvent(int ev);
 extern void snd_dispatchEvent(int sel, int v);
 extern void snd_StopAudioCmds(int spec); /* AudioThread_ResetAudioHeap(spec) + 0xF8000000 (K&R) */
+extern void snd_SetPlayer1VolumeLevel(int level);
+extern void snd_SetPlayer0VolumeLevel(int level);
+extern void snd_SetPlayer2VolumeLevel(int level);
+extern void snd_SetSoundOutputMode(int mode);
+extern void snd_ApplyPlayer1VolumeLevel(void);
+extern void snd_ApplyPlayer0VolumeLevel(void);
+extern void snd_ApplyPlayer2VolumeLevel(void);
 extern void port_uso_init(void);
 
 /* gAudioCtx = bootup Bss 0x345C0 (port/gen/binds.tsv: AudioLoad_Init's D_00000000). Offsets:
@@ -80,6 +99,7 @@ extern void port_uso_init(void);
 #define SP_TEMPOACC 0x0A
 #define SP_DELAY 0x10
 #define SP_SEQDATA 0x18
+#define SP_FADESCALE 0x2C        /* fadeVolumeScale (AUDIOCMD 0x41) */
 #define SP_CHANNELS 0x38
 #define SP_PC 0x78                /* scriptState.pc */
 #define SP_SCRIPTCOUNTER 0xE0     /* +1 per ProcessSequence (one per driver tick) */
@@ -291,9 +311,9 @@ typedef struct {
 
 static void usage(void) {
     fprintf(stderr, "usage: seqrender [--rom PATH] (--seq N | --event M[:S][@SEC] | --post K[:V][@SEC] | --sfx K | "
-                    "--course N [--gametype G])... [--spec N]\n"
+                    "--course N [--gametype G] | --title [--title-at SEC])... [--spec N]\n"
                     "                 [--seconds T] [--out FILE.wav] [--sfx-at SEC] [--no-sfx-player] [--tatums N]\n"
-                    "                 [--quiet] [--summary]\n");
+                    "                 [--levels M,S,V | --raw] [--quiet] [--summary]\n");
 }
 
 static void parse_req(Req *r, int kind, const char *v) {
@@ -304,18 +324,31 @@ static void parse_req(Req *r, int kind, const char *v) {
     r->step = (u32)((t != NULL ? strtod(t + 1, NULL) : 0.0) * 30.0 + 0.5);
 }
 
+static void dump_sfxtab(void) { /* SEQRENDER_SFXTAB=font: that font's drums (layer instrument 0x7F) */
+    int f = atoi(getenv("SEQRENDER_SFXTAB")), k;
+    u8 *font = *(u8 **)(ACTX + 0x2030) + 0x14 * f;
+    u8 **drums = *(u8 ***)(font + 0xC);
+    host_log("sfxtab: font %d numDrums %u numSfx %u (fontLoadStatus %u)", f, font[1], RD16(font + 4), ACTX[0x2C40 + f]);
+    for (k = 0; drums != NULL && k < font[1]; k++) {
+        u8 *dr = drums[k], *sm = dr != NULL ? *(u8 **)(dr + 4) : NULL;
+        host_log("sfxtab: drum %3d (0x%02X): %p sample %p tuning %.4f size %u", k, k, (void *)dr, (void *)sm,
+                 dr != NULL ? *(f32 *)(dr + 8) : 0.0f, sm != NULL ? RD32(sm) & 0xFFFFFF : 0);
+    }
+}
+
 int main(int argc, char **argv) {
     const char *romPath = "baserom.z64", *outPath = "seqrender.wav";
     Req req[MAX_REQ];
     int nReq = 0;
     int list = 0, spec = -1, seq = -1, sfx = -1, sfxPlayer = 1, quiet = 0, tatums = 0, course = -1, gametype = -1, summary = 0;
-    double seconds = 30.0, sfxAt = 1.0;
+    int raw = 0, title = 0, levels[3] = { 8, 8, 8 }; /* Backup_resetOptionsData's levels[0..2] */
+    double seconds = 30.0, sfxAt = 1.0, titleAt = 7.4;
     PortUltraConfig uc;
     HostConfig hc;
     void *rom;
     u32 romSize, steps, step, i;
     int seqRom, bankRom, waveRom;
-    int trace = getenv("SEQRENDER_TRACE") != NULL;
+    int trace = getenv("SEQRENDER_TRACE") != NULL, trace0 = getenv("SEQRENDER_TRACE0") != NULL;
     /* player 1 bookkeeping */
     u32 prevOn = 0, prevId = 0xFFFF, starts = 0, lastId = 0xFFFF;
     double startAt = -1.0, stopAt = -1.0;
@@ -329,6 +362,8 @@ int main(int argc, char **argv) {
         if (strcmp(a, "--quiet") == 0) { quiet = 1; continue; }
         if (strcmp(a, "--summary") == 0) { summary = 1; continue; }
         if (strcmp(a, "--list") == 0) { list = 1; continue; }
+        if (strcmp(a, "--raw") == 0) { raw = 1; continue; }
+        if (strcmp(a, "--title") == 0) { title = 1; continue; }
         if (v == NULL) { usage(); return 2; }
         i++;
         if (strcmp(a, "--rom") == 0) romPath = v;
@@ -343,6 +378,8 @@ int main(int argc, char **argv) {
         else if (strcmp(a, "--sfx") == 0) sfx = (int)strtol(v, NULL, 0);
         else if (strcmp(a, "--sfx-at") == 0) sfxAt = strtod(v, NULL);
         else if (strcmp(a, "--tatums") == 0) tatums = (int)strtol(v, NULL, 0);
+        else if (strcmp(a, "--title-at") == 0) titleAt = strtod(v, NULL);
+        else if (strcmp(a, "--levels") == 0) sscanf(v, "%d,%d,%d", &levels[0], &levels[1], &levels[2]);
         else { usage(); return 2; }
     }
     if (sfx >= 0 && nReq < MAX_REQ) {
@@ -350,6 +387,12 @@ int main(int argc, char **argv) {
         req[nReq].a = sfx;
         req[nReq].b = 0;
         req[nReq].step = (u32)(sfxAt * 30.0 + 0.5);
+        nReq++;
+    }
+    if (title && nReq + 2 <= MAX_REQ) { /* n64proc, then titproc (see the header) */
+        req[nReq].kind = 0; req[nReq].a = 1; req[nReq].b = 0; req[nReq].step = 0;
+        nReq++;
+        req[nReq].kind = 0; req[nReq].a = 0; req[nReq].b = 0; req[nReq].step = (u32)(titleAt * 30.0 + 0.5);
         nReq++;
     }
     if (course >= 0) { /* the race start (see the header) */
@@ -455,6 +498,12 @@ int main(int argc, char **argv) {
         audio_retrace();
         audio_retrace();
     }
+    if (!raw) { /* GameFlow_create: the options' volume levels and sound mode */
+        snd_SetPlayer1VolumeLevel(levels[0]);
+        snd_SetPlayer0VolumeLevel(levels[1]);
+        snd_SetPlayer2VolumeLevel(levels[2]);
+        snd_SetSoundOutputMode(0);
+    }
     if (sfxPlayer) {
         snd_PlayPlayer0Seq0(); /* app_runInit */
     }
@@ -467,6 +516,12 @@ int main(int argc, char **argv) {
         }
         if (sfxPlayer) {
             snd_PlayPlayer0Seq0();
+        }
+        if (!raw) { /* the spec change re-initialises the players (fadeVolumeScale 1.0): the game's
+                     * snd_HandleSeqEvent applies the levels again after it (its flag == 1 tail) */
+            snd_ApplyPlayer1VolumeLevel();
+            snd_ApplyPlayer0VolumeLevel();
+            snd_ApplyPlayer2VolumeLevel();
         }
     }
     if (seq >= 0) {
@@ -481,6 +536,18 @@ int main(int argc, char **argv) {
                      "overruns the heap into gAudioCtx (as it would on the N64); use --spec 3", seq, sz, tmp);
         }
         snd_PlayPlayer1SeqDefault(seq);
+    }
+    if (getenv("SEQRENDER_GAPTEST") != NULL) { /* port_audio's valid-address test: the page after the image's
+                                                  * end (_end, before the brk heap) must count, not fault */
+        extern char _end[];
+        u32 gap = (((u32)_end + 0xFFF) & ~0xFFFu) + 0x1000, cmds[4], before = port_audio_stats.badAddr;
+        cmds[0] = (20u << 24) | (0x100u << 12) | 0x400; /* LOADBUFF 0x100 bytes to DMEM 0x400 from the gap (K0 form) */
+        cmds[1] = gap - 0x80000000u;
+        cmds[2] = (20u << 24) | (0x100u << 12) | 0x400; /* the same address raw */
+        cmds[3] = gap;
+        port_audio_run_list(cmds, sizeof(cmds));
+        host_log("seqrender: gap test: _end %p, address 0x%08X: badAddr +%u (expect 2; 0 only if the brk heap "
+                 "starts right after the image)", (void *)_end, gap, port_audio_stats.badAddr - before);
     }
     if (getenv("SEQRENDER_DEBUG") != NULL) {
         u8 *c = ACTX;
@@ -525,6 +592,18 @@ int main(int argc, char **argv) {
         snd_FrameUpdate();
         audio_retrace();
         audio_retrace();
+
+        if (trace0 && step < 90) { /* SEQRENDER_TRACE0: player 0 (sound effects) channels, per step */
+            u8 *p0 = SP(0), *sd = *(u8 **)(p0 + SP_SEQDATA);
+            for (k = 0; k < 16; k++) {
+                u8 *ch = *(u8 **)(p0 + SP_CHANNELS + 4 * k);
+                if (ch == NULL || SP_ON(ch) == 0) continue;
+                host_log("trace0 %u ch%d: pc +0x%X delay %u value %d depth %u font %u io %d %d %d %d %d %d %d %d "
+                         "filter %p layers %p %p", step, k, sd ? RD32(ch + 0x70) - (u32)sd : 0, RD16(ch + 0x1E), (s8)ch[0x89],
+                         ch[0x88], ch[7], (s8)ch[0xD4], (s8)ch[0xD5], (s8)ch[0xD6], (s8)ch[0xD7], (s8)ch[0xD8],
+                         (s8)ch[0xD9], (s8)ch[0xDA], (s8)ch[0xDB], *(void **)(ch + 0xDC), *(void **)(ch + 0x50), *(void **)(ch + 0x54));
+            }
+        }
 
         { /* player 1's starts / stops */
             u32 on = SP_ON(p1), id = p1[SP_SEQID];
@@ -626,8 +705,22 @@ int main(int argc, char **argv) {
                  sBuffers, sFrames, (double)sFrames / OUT_RATE, OUT_RATE, peak, rms, clip,
                  n ? 100.0 * clip / n : 0.0, firstLoud == 0xFFFFFFFF ? -1.0 : (double)firstLoud / OUT_RATE,
                  (double)lastLoud / OUT_RATE, hash);
-        host_log("seqrender: players: 0 word %08X seq %u, 1 word %08X seq %u; AI underruns %u",
-                 RD32(SP(0)), SP(0)[SP_SEQID], RD32(SP(1)), SP(1)[SP_SEQID], sUnderruns);
+        host_log("seqrender: players: 0 word %08X seq %u, 1 word %08X seq %u; fadeVolumeScale %.3f / %.3f / %.3f; "
+                 "AI underruns %u",
+                 RD32(SP(0)), SP(0)[SP_SEQID], RD32(SP(1)), SP(1)[SP_SEQID], *(f32 *)(SP(0) + SP_FADESCALE),
+                 *(f32 *)(SP(1) + SP_FADESCALE), *(f32 *)(SP(2) + SP_FADESCALE), sUnderruns);
+        if (getenv("SEQRENDER_SFXTAB") != NULL) {
+            dump_sfxtab();
+        }
+        { /* the synthesis reverbs (gAudioCtx +0x18, 0x158 each; include/audio.h SynthesisReverb) */
+            int k, nr = (s8)ACTX[1];
+            for (k = 0; k < nr && k < 3; k++) {
+                u8 *r = ACTX + 0x18 + 0x158 * k;
+                host_log("seqrender: reverb %d: use %u downsample %u window %u volume %d decay %u leak %u / %u "
+                         "resampleFlags %u unk_05 %d", k, r[1], r[4], RD16(r + 6), (s16)RD16(r + 0xA), RD16(r + 0xC),
+                         RD16(r + 0x10), RD16(r + 0x12), r[0], (s8)r[5]);
+            }
+        }
         host_log("seqrender: mixer: %u updates, %u tasks, %u cmds, badAddr %u, unknownOps %u, unk19 %u, "
                  "raw-pointer addresses %u",
                  port_audio_stats.updates, port_audio_stats.tasks, port_audio_stats.cmds,

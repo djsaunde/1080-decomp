@@ -32,7 +32,7 @@
  *
  * Usage: 1080 [--rom baserom.z64] [--sram save.sram] [--frames N]
  *             [--record in.log] [--replay in.log] [--trace state.log]
- *             [--authentic] [--realtime]
+ *             [--audio-out out.wav] [--authentic] [--realtime]
  */
 
 #include "port_libc.h"
@@ -49,6 +49,9 @@ extern u32 port_game_frame_count(void) __attribute__((weak));
 /* ---- host hooks the game side reaches (weak no-ops until M2 / M4 provide them) ---- */
 __attribute__((weak)) void port_audio_frame(void) {
 }
+
+extern int port_audio_capture_open(const char *path) __attribute__((weak));
+extern void port_audio_capture_close(void) __attribute__((weak));
 
 __attribute__((weak)) void port_gfx_task(OSTask_t *task) {
     (void)task;
@@ -104,6 +107,7 @@ typedef struct Options {
     const char *recordPath;
     const char *replayPath;
     const char *statePath;
+    const char *audioPath; /* --audio-out: the game's audio to a WAV (port/audio, agent-c) */
     u32 frames;      /* 0 = run until quit (or the replay ends) */
     int authentic;   /* 29.97 Hz step instead of 30 */
     int realtime;    /* pace to the wall clock even when headless */
@@ -249,7 +253,7 @@ static void run(const Options *o, int headless) {
 
 static void usage(void) {
     host_log("usage: 1080 [--rom PATH] [--sram PATH] [--frames N] [--record LOG] [--replay LOG]"
-             " [--trace LOG] [--authentic] [--realtime]");
+             " [--trace LOG] [--audio-out WAV] [--authentic] [--realtime]");
 }
 
 static int parse(int argc, char **argv, Options *o) {
@@ -280,6 +284,8 @@ static int parse(int argc, char **argv, Options *o) {
             o->replayPath = v, i++;
         } else if (strcmp(a, "--trace") == 0) {
             o->statePath = v, i++;
+        } else if (strcmp(a, "--audio-out") == 0) {
+            o->audioPath = v, i++;
         } else {
             usage();
             return -1;
@@ -331,10 +337,16 @@ int main(int argc, char **argv) {
         o.frames = 300; /* the stand-in frame would otherwise run forever */
     }
 
+    if (o.audioPath != NULL && (port_audio_capture_open == NULL || port_audio_capture_open(o.audioPath) != 0)) {
+        host_fatal("main: cannot write the audio to %s", o.audioPath);
+    }
     if (port_game_boot != NULL) {
         port_game_boot();
     }
     run(&o, headless);
+    if (o.audioPath != NULL) {
+        port_audio_capture_close();
+    }
 
     st = port_ultra_stats();
     host_log("main: %u steps, %u retraces (%u idle), %u pumps, %u deadlocks, %u parked threads, "

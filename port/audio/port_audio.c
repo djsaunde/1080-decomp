@@ -21,6 +21,7 @@
 #include "audio_swap.h"
 #include "port_audio.h"
 #include "../ultra/ultra_int.h" /* port_ultra_cfg.rom (the in-memory ROM image) */
+#include "../host.h"            /* host_headless_set_audio_sink / _clock (the --audio-out capture) */
 
 PortAudioStats port_audio_stats;
 
@@ -36,10 +37,75 @@ extern uint8_t port_bootup_data[];
  * audio heap and every buffer the driver hands the RSP live) up to the current break (anything
  * malloc'd). */
 extern char __executable_start[];
+extern char _end[];
 extern void *sbrk(intptr_t increment);
 
+/* The mapped ranges, not the span __executable_start .. sbrk(0): between the image's end (_end) and
+ * the start of the brk heap there is an unmapped gap (randomised, up to 32 MB on i386), and a
+ * garbage command-list address that lands there must be counted as badAddr, not dereferenced.
+ * Read once from /proc/self/maps: every mapping inside [__executable_start, _end) (text, rodata,
+ * data, bss; a hole between segments stays out) and the [heap] start; the heap's top is sbrk(0)
+ * at the time of the test.  Without /proc: [__executable_start, _end) and [_end, sbrk(0)), the
+ * old span. */
+#define MAX_IMAGE_RANGES 16
+static uint32_t sImageLo[MAX_IMAGE_RANGES], sImageHi[MAX_IMAGE_RANGES];
+static int sNumImage = -1; /* -1: not read yet */
+static uint32_t sHeapLo;
+
+static void read_maps(void) {
+    uint32_t lo = (uint32_t)(uintptr_t)__executable_start, hi = (uint32_t)(uintptr_t)_end;
+    FILE *f = fopen("/proc/self/maps", "r");
+    char line[256];
+    sNumImage = 0;
+    sHeapLo = 0;
+    if (f != NULL) {
+        while (fgets(line, sizeof(line), f) != NULL) {
+            char *e;
+            unsigned long a = strtoul(line, &e, 16), b = *e == '-' ? strtoul(e + 1, NULL, 16) : 0;
+            size_t n = strlen(line);
+            while (n > 0 && (line[n - 1] == '\n' || line[n - 1] == ' ')) {
+                n--;
+            }
+            if (b <= a) {
+                continue;
+            }
+            if (n >= 6 && strncmp(line + n - 6, "[heap]", 6) == 0) {
+                sHeapLo = (uint32_t)a;
+            } else if (a < hi && b > lo && sNumImage < MAX_IMAGE_RANGES) {
+                sImageLo[sNumImage] = a < lo ? lo : (uint32_t)a;
+                sImageHi[sNumImage] = b > hi ? hi : (uint32_t)b;
+                sNumImage++;
+            }
+        }
+        fclose(f);
+    }
+    if (sNumImage == 0) { /* no /proc: the whole image */
+        sImageLo[0] = lo;
+        sImageHi[0] = hi;
+        sNumImage = 1;
+    }
+    if (sHeapLo == 0) {
+        sHeapLo = hi;
+    }
+}
+
 static int host_mapped(uint32_t p) {
-    return p >= (uint32_t)(uintptr_t)__executable_start && p < (uint32_t)(uintptr_t)sbrk(0);
+    int i;
+    if (sNumImage < 0) {
+        read_maps();
+    }
+    for (i = 0; i < sNumImage; i++) {
+        if (p >= sImageLo[i] && p < sImageHi[i]) {
+            return 1;
+        }
+    }
+    if (sHeapLo == (uint32_t)(uintptr_t)_end) { /* no [heap] line yet (nothing malloc'd when read): look again */
+        uint32_t top = (uint32_t)(uintptr_t)sbrk(0);
+        if (top > sHeapLo && p >= sHeapLo && p < top) {
+            read_maps();
+        }
+    }
+    return p >= sHeapLo && p < (uint32_t)(uintptr_t)sbrk(0);
 }
 
 /* Most builders store OS_K0_TO_PHYSICAL(p) = p - 0x80000000, but some pass the pointer as it is
@@ -91,9 +157,12 @@ void port_audio_run_list(const void *cmds, unsigned int bytes) {
 void (*port_audio_premix_hook)(const void *cmds, unsigned int bytes); /* debug (seqrender): after the driver's
                                                                          * update, before the mixer */
 
+static void capture_retrace(void);
+
 void port_audio_frame(void) {
     OSTask_t *task;
 
+    capture_retrace();
     port_audio_stats.updates++;
     task = (OSTask_t *)AudioThread_UpdateImpl(); /* AudioTask: OSTask_t first */
     if (port_audio_premix_hook != NULL) {
@@ -160,4 +229,110 @@ void port_audio_swap_static(void) {
 
 void port_audio_swap_font(void *font, int numInstruments, int numDrums, int numSfx) {
     audio_swap_font((uint8_t *)font, numInstruments, numDrums, numSfx);
+}
+
+/* ---- --audio-out: the game's AI output to a WAV (tenshoe, plan 15.9) ---- */
+
+/* Every AI buffer the driver queues (osAiSetNextBuffer -> host_audio_queue -> the headless sink)
+ * is appended to a 16-bit stereo 32000 Hz WAV; the header's sizes are written at close.  With
+ * PORT_AUDIO_DAC=1 it also models the DAC (seqrender's model, plan 15.7): it drains 32006 / 60
+ * frames per retrace and reports the rest through osAiGetLength, so the driver picks its
+ * 528..544-frame buffers as on hardware; by default osAiGetLength stays the headless 0, every
+ * buffer is 560 frames and the WAV runs 5 % long against the game time.  The music
+ * state (snd_HandleSeqEvent's mode word, bootup Data 0x1C0A8, and the command word 0x1C0AC) is
+ * logged when it changes, with the retrace time. */
+static FILE *sCapFile;
+static uint32_t sCapFrames, sCapRetraces, sCapClipped, sCapPeak;
+static double sCapLevel, sCapSumSq;
+static int32_t sCapMode = 0x7FFFFFFF, sCapCmd = 0x7FFFFFFF;
+
+static void cap_put32(uint8_t *p, uint32_t v) {
+    p[0] = (uint8_t)v; p[1] = (uint8_t)(v >> 8); p[2] = (uint8_t)(v >> 16); p[3] = (uint8_t)(v >> 24);
+}
+
+static void capture_header(uint32_t frames) {
+    uint8_t h[44];
+    uint32_t bytes = frames * 4;
+    memcpy(h, "RIFF", 4); cap_put32(h + 4, 36 + bytes); memcpy(h + 8, "WAVEfmt ", 8);
+    cap_put32(h + 16, 16); cap_put32(h + 20, 1 | (2u << 16)); cap_put32(h + 24, 32000);
+    cap_put32(h + 28, 32000 * 4); cap_put32(h + 32, 4 | (16u << 16));
+    memcpy(h + 36, "data", 4); cap_put32(h + 40, bytes);
+    fseek(sCapFile, 0, SEEK_SET);
+    fwrite(h, 1, 44, sCapFile);
+    fseek(sCapFile, 0, SEEK_END);
+}
+
+static void capture_sink(const void *samples, host_u32 bytes) {
+    const int16_t *s = (const int16_t *)samples;
+    uint32_t i, n = bytes / 4;
+    for (i = 0; i < n * 2; i++) {
+        int32_t v = s[i];
+        uint8_t b[2];
+        uint32_t a = (uint32_t)(v < 0 ? -v : v);
+        b[0] = (uint8_t)v;
+        b[1] = (uint8_t)((uint32_t)v >> 8);
+        fwrite(b, 1, 2, sCapFile);
+        sCapSumSq += (double)v * v;
+        if (a > sCapPeak) sCapPeak = a;
+        if (v >= 32767 || v <= -32768) sCapClipped++;
+    }
+    sCapFrames += n;
+    sCapLevel += n;
+}
+
+static host_u32 capture_clock(void) {
+    return (host_u32)sCapLevel * 4;
+}
+
+static void capture_retrace(void) {
+    int32_t mode, cmd;
+    if (sCapFile == NULL) {
+        return;
+    }
+    sCapRetraces++;
+    sCapLevel -= 32006.0 / 60.0;
+    if (sCapLevel < 0) {
+        sCapLevel = 0;
+    }
+    memcpy(&mode, port_bootup_data + 0x1C0A8, 4);
+    memcpy(&cmd, port_bootup_data + 0x1C0AC, 4);
+    if (mode != sCapMode || cmd != sCapCmd) {
+        host_log("audio-out: %.2f s (retrace %u, WAV %.2f s): music mode %d, command word %d", sCapRetraces / 60.0,
+                 sCapRetraces, sCapFrames / 32000.0, mode, cmd);
+        sCapMode = mode;
+        sCapCmd = cmd;
+    }
+}
+
+int port_audio_capture_open(const char *path) {
+    sCapFile = fopen(path, "wb");
+    if (sCapFile == NULL) {
+        return -1;
+    }
+    capture_header(0);
+    host_headless_set_audio_sink(capture_sink);
+    if (getenv("PORT_AUDIO_DAC") != NULL && getenv("PORT_AUDIO_DAC")[0] == '1') {
+        /* opt-in: with the DAC model tenshoe faults in AudioSeq_SequenceChannelProcessScript (address
+         * 0x1) a moment after the title sequence starts (seqrender, same model, does not): open */
+        host_headless_set_audio_clock(capture_clock);
+    }
+    return 0;
+}
+
+void port_audio_capture_close(void) {
+    double n;
+    if (sCapFile == NULL) {
+        return;
+    }
+    capture_header(sCapFrames);
+    fclose(sCapFile);
+    sCapFile = NULL;
+    host_headless_set_audio_sink(NULL);
+    host_headless_set_audio_clock(NULL);
+    n = (double)sCapFrames * 2;
+    host_log("audio-out: %u frames = %.2f s over %u retraces (%.2f s); peak %u, RMS %.1f, clipped %u (%.4f%%); "
+             "mixer %u tasks, badAddr %u, unknownOps %u, unk19 %u",
+             sCapFrames, sCapFrames / 32000.0, sCapRetraces, sCapRetraces / 60.0, sCapPeak,
+             n > 0 ? __builtin_sqrt(sCapSumSq / n) : 0.0, sCapClipped, n > 0 ? 100.0 * sCapClipped / n : 0.0,
+             port_audio_stats.tasks, port_audio_stats.badAddr, port_audio_stats.unknownOps, port_audio_stats.unk19);
 }

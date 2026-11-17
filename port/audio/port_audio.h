@@ -38,6 +38,11 @@ unsigned char *port_audio_noise_base(void);
 void port_audio_swap_static(void);
 void port_audio_swap_font(void *font, int numInstruments, int numDrums, int numSfx);
 
+/* --audio-out (tenshoe): every AI buffer to a 16-bit stereo 32000 Hz WAV, with a DAC model for
+ * osAiGetLength; the music mode changes are logged.  open returns -1 if the file cannot be made. */
+int port_audio_capture_open(const char *path);
+void port_audio_capture_close(void);
+
 /* Diagnostics. */
 typedef struct PortAudioStats {
     unsigned int updates;   /* port_audio_frame calls */
