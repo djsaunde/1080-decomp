@@ -9,15 +9,18 @@
  * one uopt colour (f0, as the target). The x += dv is plain (the target keeps that w.x in a ugen temp)
  * (89.96 -> 94.58 -> 94.91 %). SnowBV3 has no constructor: each inline default constructor is an edg basic
  * block, and uopt's callee-saved first-use cost is 0.25 x the block count, so with it (49 blocks, 12.25) lim was
- * spilled; without it lim takes f20 and alpha f22 as in the target. The named d (u160 - 5) and k (ab * u168)
- * are the target's f0 temps (99.25 %). Left: f outranks the x copy (f in f2, x copy f12; target the reverse),
- * ab / the alpha temp swapped (f2 / f12), and the target's second zero constant (f18) for dv. */
+ * spilled; without it lim takes f20 and alpha f22 as in the target (99.25 %). Run 709 (99.85 %): the u160 - 5,
+ * ab * u168 and u154 temps reuse ab / ab / f instead of block locals (frame 192 -> the target's 184, and the
+ * loop's f / x-copy colours match); the p / q / dv zero stores go through the int i (`i = 0; x = i;`), which
+ * gives the target's second zero constant (f18, apart from the f16 compare zero); operator= returns void (the
+ * vel pointer takes v0). Locals are declared in the target's frame order (P 160, Q 148, dv 132). Left: ab /
+ * the u4C load colours (ours f0 / f2, target f12 / f0) and w at sp+88 (target sp+72: 4 more words above it). */
 extern "C" int gl_func_00000000(...);
 extern "C" char D_00000000[];
 struct SnowBV3 {
     float x, y, z;
     void set(float a, float b, float c) { x = a; y = b; z = c; }
-    SnowBV3 &operator=(SnowBV3 o) { x = o.x; y = o.y; z = o.z; return *this; }
+    void operator=(SnowBV3 o) { x = o.x; y = o.y; z = o.z; }
 };
 struct SnowVEnt { short d; short pad; void (*fn)(void *); };
 struct SnowECam {
@@ -82,18 +85,19 @@ static inline void addTo(float &a, float b) { float c = a; a = c + b; }
 static inline void subTo(float &a, float b) { float c = a; a = c - b; }
 extern "C" void snoweffects_uso_func_000047D4(SnowEm *t) {
     SnowECam *cam;
-    float a, alpha, f, ab, drop;
-    float lim;
+    float alpha, lim;
+    SnowBV3 P, Q;
     int i;
-    SnowBV3 P, Q, dv, v;
+    SnowBV3 dv;
+    float a, f, ab;
     cam = t->cam;
     if (cam->flags & 0x80) {
         t->u4C = -cam->f970;
     } else {
         t->u4C = cam->f970;
     }
-    t->p.x = 0.0f; t->p.y = 0.0f; t->p.z = 0.0f;
-    t->q.x = 0.0f; t->q.y = 0.0f; t->q.z = 0.0f;
+    i = 0; t->p.x = i; t->p.y = i; t->p.z = i;
+    t->q.x = i; t->q.y = i; t->q.z = i;
     t->len = t->u34;
     t->u40 = t->u38;
     gl_func_00000000(t);  /* 0x4374 */
@@ -109,7 +113,7 @@ extern "C" void snoweffects_uso_func_000047D4(SnowEm *t) {
     t->on = gl_func_00000000_snow_46bc(t);
     cam = t->cam;
     if (cam->speed < t->u160) {
-        { float d = t->u160 - 5.0f; a = t->u164 / d * (cam->speed - 5.0f); }
+        ab = t->u160 - 5.0f; a = t->u164 / ab * (cam->speed - 5.0f);
     } else {
         a = t->u164;
     }
@@ -118,7 +122,7 @@ extern "C" void snoweffects_uso_func_000047D4(SnowEm *t) {
     } else {
         ab = t->u4C;
     }
-    { float k = ab * t->u168; alpha = k * (255.0f - a) + a; }
+    ab = ab * t->u168; alpha = ab * (255.0f - a) + a;
     if (cam->mode == 98) {
         t->slots[t->write].u4 = 1;
     } else {
@@ -134,10 +138,10 @@ extern "C" void snoweffects_uso_func_000047D4(SnowEm *t) {
         lim = t->u158;
         dv = cam->v318;
         gl_func_00000000(&dv);  /* math_vec3Normalize */
-        { float s = t->u154; dv.x *= s; dv.y *= s; dv.z *= s; }
+        f = t->u154; dv.x *= f; dv.y *= f; dv.z *= f;
     } else {
         lim = 0.0f;
-        dv.x = 0.0f; dv.y = 0.0f; dv.z = 0.0f;
+        i = 0; dv.x = i; dv.y = i; dv.z = i;
     }
     if (t->on != 0) {
         for (i = 0; i < t->stride; i++) {
