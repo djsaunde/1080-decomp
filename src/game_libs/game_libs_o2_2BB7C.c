@@ -463,7 +463,12 @@ void AudioSeq_SequenceChannelProcessScript(gl_2BB7C_Channel *channel) {
 
                 case 0xB2:
                     cmdArgU16 = (u16)cmdArgs[0];
+#ifdef PORT /* sequence data stays big-endian on the host (ScriptReadS16 builds its words from bytes) */
+                    data = seqPlayer->seqData + (u32)(cmdArgU16 + scriptState->value * 2);
+                    channel->unk_22 = (data[0] << 8) | data[1];
+#else
                     channel->unk_22 = *(u16 *)(seqPlayer->seqData + (u32)(cmdArgU16 + scriptState->value * 2));
+#endif
                     break;
 
                 case 0xB4:
@@ -471,7 +476,14 @@ void AudioSeq_SequenceChannelProcessScript(gl_2BB7C_Channel *channel) {
                     break;
 
                 case 0xB5:
+#ifdef PORT /* dynTable points into the big-endian sequence data: a native u16 read swaps the offset
+             * (seq 1's 0x029A became 0x9A02, which stptrtoseq + startchan then ran as a channel script:
+             * the AudioSeq_SequenceChannelProcessScript fault at address 0x1, plan 15.10) */
+                    data = (u8 *)channel->dynTable + scriptState->value * 2;
+                    channel->unk_22 = (data[0] << 8) | data[1];
+#else
                     channel->unk_22 = ((u16 *)(channel->dynTable))[scriptState->value];
+#endif
                     break;
 
                 case 0xB6:
