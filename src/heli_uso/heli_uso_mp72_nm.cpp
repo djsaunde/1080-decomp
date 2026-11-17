@@ -358,11 +358,11 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         HF(0xF8) = hh;
         HF(0xFC) = hh;
         HF(0x100) = 1.0f;
-        f = HF(0x144); axZ.y = hh; axZ.x = hh; axZ.z = 1.0f;
+        f = HF(0x144); axZ.x = hh; axZ.y = hh; axZ.z = 1.0f;
         gl_func_00000000_heli_ppf(self + 0xF4, &axZ, f);
         f = HF(0x148); axX.x = 1.0f; axX.y = 0.0f; axX.z = 0.0f;
         gl_func_00000000_heli_ppf(self + 0xF4, &axX, f);
-        f = -HF(0x14C); axY.y = 1.0f; axY.x = 0.0f; axY.z = 0.0f;
+        f = -HF(0x14C); axY.x = 0.0f; axY.y = 1.0f; axY.z = 0.0f;
         gl_func_00000000_heli_ppf(self + 0xF4, &axY, f);
     }
     gl_func_00000000(self);
