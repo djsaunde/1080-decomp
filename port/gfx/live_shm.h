@@ -103,10 +103,14 @@ typedef struct LiveFrame {
  * Seqlock: the presenter makes seq odd, writes, makes it even (release); the game copies the
  * fields it uses and keeps them only if seq was even and unchanged across the copy. */
 #define LIVE_FB_MAGIC 0x5242464Cu /* "LFBR" */
-#define LIVE_FB_VERSION 1u
+#define LIVE_FB_VERSION 2u
 #define LIVE_FB_W 320
 #define LIVE_FB_H 240
-#define LIVE_FB_DEPTH 64 /* = PORT_FB_MAX_DEPTH */
+/* depth answers: each requested pixel's +-LIVE_FB_DEPTH_R window (run 861). The reply is one to two
+ * steps old when the game takes it, and a moving sun asks about other pixels by then: answering only
+ * the asked pixels left most new requests on the clear model (far), so the flare showed through cliffs. */
+#define LIVE_FB_DEPTH 1024
+#define LIVE_FB_DEPTH_R 6
 #define LIVE_FB_COLOR 4  /* = PORT_FB_MAX_COLOR */
 
 typedef struct LiveFbDepth {

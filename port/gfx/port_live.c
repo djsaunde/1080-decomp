@@ -259,10 +259,13 @@ void port_live_fb_apply(const PortFbRequests *rq) {
         return;
     }
     live_fb_take(rq);
+    /* every answered pixel (the asked ones and their window, live_shm.h LIVE_FB_DEPTH_R), not only
+     * the ones asked again: the reply is a step or two old, and the clear model has just reset the
+     * whole image, so the pixels the game reads next (a moving sun) must hold the answers too */
     for (i = 0; i < sFbNDepth; i++) {
         const LiveFbDepth *d = &sFbDepth[i];
         for (k = 0; k < rq->nDepth; k++) {
-            if ((live_u32)(size_t)rq->depthImg[k] == d->img && (live_u32)rq->depthIdx[k] == d->idx) {
+            if ((live_u32)(size_t)rq->depthImg[k] == d->img) {
                 unsigned char *px = (unsigned char *)rq->depthImg[k] + (size_t)d->idx * 2;
                 px[0] = (unsigned char)(d->z >> 8); /* big-endian, as the RDP writes it */
                 px[1] = (unsigned char)d->z;

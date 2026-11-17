@@ -1,7 +1,7 @@
 /* port/gfx/fast3d: presenter, the live window of the 32-bit game on a machine with no 32-bit GL
  * (PC port plan 19.11, option (c) of 19.1). 64-bit, X11 + EGL, libultraship's Fast3D.
  *
- *   presenter [--shm NAME] [--scale N] [--png DIR] [--png-every N] [--frames N]
+ *   presenter [--shm NAME] [--scale N] [--png DIR] [--png-every N] [--png-steps A-B] [--frames N]
  *             [--inject STEP:KEY:d|u,...] [--js /dev/input/js0] [--stay]
  *             [--mute] [--audio-latency MS] [--audio-dump FILE]
  *
@@ -457,6 +457,7 @@ struct Renderer {
     std::vector<TexRange> texRanges;
     std::vector<uint32_t> fbReads;                         /* colour images (FB_READ addr) */
     std::vector<std::pair<uint32_t, uint32_t>> fbDepths;   /* (Z image, pixel index) */
+    std::set<std::pair<uint32_t, uint32_t>> fbDepthSet, fbAsked; /* all answered / the ones the game asked */
     std::vector<std::vector<uint16_t>> rttPixels, readPixels;
     LiveFbReply* reply = nullptr;                          /* /dev/shm/NAME-fb */
 
@@ -537,10 +538,20 @@ struct Renderer {
                 for (uint32_t i = 0; i + 4 <= c.size; i += 4) {
                     uint32_t idx;
                     std::memcpy(&idx, c.data + i, 4);
-                    auto key = std::make_pair(c.addr, idx);
-                    if (idx < LIVE_FB_W * LIVE_FB_H && fbDepths.size() < LIVE_FB_DEPTH &&
-                        std::find(fbDepths.begin(), fbDepths.end(), key) == fbDepths.end()) {
-                        fbDepths.push_back(key);
+                    if (idx >= LIVE_FB_W * LIVE_FB_H) {
+                        continue;
+                    }
+                    /* the pixel and its window: the game takes the answer a step or two later, when a
+                     * moving sun samples neighbouring pixels (live_shm.h LIVE_FB_DEPTH_R) */
+                    fbAsked.emplace(c.addr, idx);
+                    const int px = (int)(idx % LIVE_FB_W), py = (int)(idx / LIVE_FB_W), R = LIVE_FB_DEPTH_R;
+                    for (int y = std::max(0, py - R); y <= std::min(LIVE_FB_H - 1, py + R); y++) {
+                        for (int x = std::max(0, px - R); x <= std::min(LIVE_FB_W - 1, px + R); x++) {
+                            auto key = std::make_pair(c.addr, (uint32_t)(y * LIVE_FB_W + x));
+                            if (fbDepths.size() < LIVE_FB_DEPTH && fbDepthSet.insert(key).second) {
+                                fbDepths.push_back(key);
+                            }
+                        }
                     }
                 }
             }
@@ -646,6 +657,8 @@ struct Renderer {
         texRanges.clear();
         fbReads.clear();
         fbDepths.clear();
+        fbDepthSet.clear();
+        fbAsked.clear();
         size_t off = sizeof(LiveFrame);
         st.bytes = lf->bytes;
         for (uint32_t i = 0; i < lf->nTasks; i++) {
@@ -744,10 +757,12 @@ struct Renderer {
         for (const auto& d : fbDepths) {
             uint16_t z = 0;
             if ((d.first & 0xFFFFFF) != zimg || !gfx->ReadbackGetDepth(d.second % LIVE_FB_W, d.second / LIVE_FB_W, &z)) {
-                st.depthOther++;
+                st.depthOther += fbAsked.count(d) != 0;
                 continue;
             }
-            (z == 0xFFFC ? st.depthFar : st.depthNear)++;
+            if (fbAsked.count(d) != 0) {
+                (z == 0xFFFC ? st.depthFar : st.depthNear)++;
+            }
             r->depth[n].img = d.first;
             r->depth[n].idx = d.second;
             r->depth[n].z = z;
@@ -797,7 +812,7 @@ static void on_signal(int) {
 
 int main(int argc, char** argv) {
     std::string name = "1080live", pngDir, jsPath = "/dev/input/js0";
-    uint32_t scale = 3, pngEvery = 0, maxFrames = 0, slots = LIVE_DEFAULT_SLOTS, slotBytes = LIVE_DEFAULT_SLOT_BYTES;
+    uint32_t scale = 3, pngEvery = 0, pngFrom = 0, pngTo = 0xffffffffu, maxFrames = 0, slots = LIVE_DEFAULT_SLOTS, slotBytes = LIVE_DEFAULT_SLOT_BYTES;
     bool stay = false, fbLog = false, fbReply = true;
     LiveAudioOptions audio;
     std::vector<Inject> injects;
@@ -823,6 +838,12 @@ int main(int argc, char** argv) {
             pngDir = argv[++i];
         } else if (a == "--png-every") {
             pngEvery = (uint32_t)std::atoi(argv[++i]);
+        } else if (a == "--png-steps") {
+            /* FROM-TO: only game steps in that range are written */
+            std::string r = argv[++i];
+            size_t d = r.find('-');
+            pngFrom = (uint32_t)std::strtoul(r.c_str(), nullptr, 10);
+            pngTo = d == std::string::npos ? 0xffffffffu : (uint32_t)std::strtoul(r.c_str() + d + 1, nullptr, 10);
         } else if (a == "--frames") {
             maxFrames = (uint32_t)std::atoi(argv[++i]);
         } else if (a == "--audio-latency") {
@@ -978,7 +999,8 @@ int main(int argc, char** argv) {
             if (ok) {
                 char png[1024];
                 const char* pp = nullptr;
-                if (!pngDir.empty() && pngEvery != 0 && rendered % pngEvery == 0) {
+                if (!pngDir.empty() && pngEvery != 0 && rendered % pngEvery == 0 && lf->step >= pngFrom &&
+                    lf->step <= pngTo) {
                     std::snprintf(png, sizeof(png), "%s/live_%06u_s%06u.png", pngDir.c_str(), rendered, lf->step);
                     pp = png;
                 }
@@ -998,6 +1020,9 @@ int main(int argc, char** argv) {
                     if (R.reply != nullptr && R.reply->nDepth != 0) {
                         std::printf("presenter:   z");
                         for (uint32_t k = 0; k < R.reply->nDepth; k++) {
+                            if (R.fbAsked.count({ R.reply->depth[k].img, R.reply->depth[k].idx }) == 0) {
+                                continue; /* the window around them */
+                            }
                             std::printf(" %u:%04x", R.reply->depth[k].idx, R.reply->depth[k].z);
                         }
                         std::printf("\n");
