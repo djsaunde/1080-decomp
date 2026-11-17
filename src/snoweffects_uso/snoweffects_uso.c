@@ -673,7 +673,10 @@ void SnowRing_init_00003EE4(SnowRing *this, int a1, int stride, int count, int a
 void SnowRing_draw_000040B4(void *self) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00004188);
+/* display-list setup: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder. */
+void snoweffects_uso_func_00004188(void) {
+}
 
 /* emitter basis rebuild: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder. */

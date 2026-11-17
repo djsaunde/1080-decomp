@@ -20,8 +20,11 @@ struct DLCtx {
     char pad[0xC];
     DLHead *dl;
     Gfx *next() { int n = dl->count++; Gfx *g = &dl->buf[n]; return g; }
+    /* the same append as one expression (0x4188; edg makes `dl` / old-count temps instead) */
+    Gfx *append() { return &dl->buf[dl->count++]; }
 };
 #define PKT(c, a, b) { Gfx *_g = (c)->next(); _g->w0 = (a); _g->w1 = (b); }
+#define APKT(c, a, b) { Gfx *_g = (c)->append(); _g->w0 = (a); _g->w1 = (b); }
 
 /* the trail emitter (C-side struct SnowRing in snoweffects_uso.c; only what the donors touch) */
 struct SnowRing {

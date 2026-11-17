@@ -13,6 +13,32 @@ extern "C" void SnowRing_draw_000040B4(SnowRing *t) {
     PKT(t->dl, 0xB8000000, 0);
 }
 
+/* 0x4188 (0x1EC): the emitter's display-list setup. PipeSync, SetOtherMode_H(0x1402: cycle type 0),
+ * SetOtherMode_L(0x31D, 0x404240), SetCombine(0xFC409881, 0xFF33FFFF), an identity matrix (guMtxIdentF /
+ * guMtxF2L into the module matrix) loaded through 0x01020040, then texture-filter / texture-LUT modes and
+ * Texture(0x8000, 0x8000).
+ * The ctx is used through a reference-bound copy (`ctx` / `dc`), not the parameter: uopt counts every
+ * load of a variable whose value it cannot forward (a parameter, or a temp holding a memory read) toward
+ * the ~20-load live unit, and a load of a copy it can forward is free. Each packet through the parameter
+ * costs 2 more counted loads; with the copy, packet 3's buffer pointer lands in the first live unit and
+ * takes a3 as in the target (agent-h run 687, instrumented uopt readnxtinst). The two locals also give
+ * the 144-byte frame and the sp+44 spill slot. */
+extern "C" void snoweffects_uso_func_00004188(SnowRing *t, DLCtx *c) {
+    float m[4][4];
+    DLCtx &ctx = *c;
+    DLCtx *dc = &ctx;
+    APKT(dc, 0xE7000000, 0);
+    APKT(dc, 0xBA001402, 0);
+    APKT(dc, 0xB900031D, 0x00404240);
+    APKT(dc, 0xFC409881, 0xFF33FFFF);
+    CALL(guMtxIdentF)(m);
+    CALL(guMtxF2L)(m, D_00000000);
+    APKT(dc, 0x01020040, CALL(gl_osVirtualToPhysical)(D_00000000));
+    APKT(dc, 0xBA001001, 0);
+    APKT(dc, 0xBA001301, 0x00080000);
+    APKT(dc, 0xBB000001, 0x80008000);
+}
+
 /* 0x27A8 (0x138): SnowFall flake motion. Gravity down to a terminal speed, a sideways sway that
  * accelerates against the current x / z velocity, then integrate. The 0.0015f literal is the RoData+0xC
  * word (loop-hoisted lwc1, pinned as SnowFall_moveFlakes_000027A8_rodata); `pos += vel` must be the
