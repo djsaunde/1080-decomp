@@ -1270,21 +1270,18 @@ void snoweffects_uso_func_00009C48(SnowGlow *this, char *src) {
     }
 }
 
-#ifdef NON_MATCHING
 /* item-type create: 0x9328 ctor(0), +0x70 = 1.0f, attach the type's +0x40 node.
- * NM 26/30 (agent-e run 645): item / head colour as the target once the test reads the head
- * local; left: the target loads head into a2 and copies it to a1 in the beqz delay slot (spilling
- * a2), where this form loads a1 directly (beqzl). Two-variable / chained-assignment forms are
- * copy-propagated (11 diffs). Run 659: passing head twice, `(item + 0x10, head, head)`, gives the
- * target's beqz + delay-slot copy shape with the registers reversed (head a1, copy a2; 26/30). */
+ * The test re-reads type->head instead of the head local (the target's beqz + delay-slot copy), and the
+ * re-read value goes to list_append as an extra third argument: it is what keeps it in a2, with the head
+ * copy in a1 (the "invisible extra arg" lever, IDO_CODEGEN kit II; agent-b run 697). */
 void *snoweffects_uso_func_00009E10(char *type) {
     int *item;
     int *head;
     item = (int *)gl_func_00000000(0) /* 0x9328 ctor */;
     *(float *)((char *)item + 0x70) = 1.0f;
     head = *(int **)(type + 0x40);
-    if (head != 0) {
-        gl_func_00000000( /* list_append */ (char *)item + 0x10, head);
+    if (*(int **)(type + 0x40) != 0) {
+        gl_func_00000000( /* list_append */ (char *)item + 0x10, head, *(int **)(type + 0x40));
         if ((int)NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
@@ -1292,9 +1289,6 @@ void *snoweffects_uso_func_00009E10(char *type) {
     }
     return item;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009E10);
-#endif
 
 /* SnowLink ctor (the Cfront this == 0 protocol as `this != 0 || (this = new) != 0`): Node_ctor(Data+0xA64), vtable Data+0x9C4, name Data+0xA6C,
  * then a new 0x9328 target attached as its child */

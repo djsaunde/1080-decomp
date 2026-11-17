@@ -1,0 +1,33 @@
+{
+  "function_name": "snoweffects_uso_func_00009E10",
+  "project": "1080-agent-b",
+  "model": "claude-manual",
+  "start_time": "2026-11-17T00:57:14.597735+00:00",
+  "end_time": "2026-11-17T00:57:14.597749+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-17T00:57:14.597745+00:00",
+      "assistant_text": "Item-type create. The null test re-reads type->head instead of the head local, giving the beqz + delay-slot copy; passing the re-read value as an extra third list_append argument colours it a2 with the head copy in a1, as in the target.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 30,
+  "initial_m2c_source": null,
+  "final_source": "/* item-type create: 0x9328 ctor(0), +0x70 = 1.0f, attach the type's +0x40 node.\n * The test re-reads type->head instead of the head local (the target's beqz + delay-slot copy), and the\n * re-read value goes to list_append as an extra third argument: it is what keeps it in a2, with the head\n * copy in a1 (the \"invisible extra arg\" lever, IDO_CODEGEN kit II; agent-b run 697). */\nvoid *snoweffects_uso_func_00009E10(char *type) {\n    int *item;\n    int *head;\n    item = (int *)gl_func_00000000(0) /* 0x9328 ctor */;\n    *(float *)((char *)item + 0x70) = 1.0f;\n    head = *(int **)(type + 0x40);\n    if (*(int **)(type + 0x40) != 0) {\n        gl_func_00000000( /* list_append */ (char *)item + 0x10, head, *(int **)(type + 0x40));\n        if ((int)NODE(head)->parent != 0) {\n            NODE(head)->unk04 = 1;\n        }\n        NODE(head)->parent = (Node *)item;\n    }\n    return item;\n}\n",
+  "metadata": {
+    "source_path": "src/snoweffects_uso/snoweffects_uso.c",
+    "asm_path": "asm/nonmatchings/snoweffects_uso/snoweffects_uso/snoweffects_uso_func_00009E10.s",
+    "segment": "snoweffects_uso",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -G 0 -non_shared -mips2 -32",
+    "verification": "gate PASS, ROM OK, 30/30 words byte-identical"
+  }
+}
