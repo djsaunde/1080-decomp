@@ -55,3 +55,6 @@ D::D(int a1_, int a2_, int a3) : B(&sStr_Node_66A8) {
     bu_ca0_box[3].y = nh;
     bu_ca0_box[3].z = h;
 }
+#ifdef PORT /* the cfront ctor protocol: the ROM calls it with this == 0 (port_cfront.h, plan 18.11) */
+extern "C" D *port_ctor_BGBox_ctor(D *self, int a1, int a2, int a3) { return CF_CTOR_NEW(self, D, (a1, a2, a3)); }
+#endif

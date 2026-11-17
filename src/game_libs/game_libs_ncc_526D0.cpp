@@ -77,3 +77,6 @@ Obj::Obj(void *a1, void *a2, Obj *src) : Base(a1) {
         XCALL(gl_func_00000000_526d0_fin, BasePolyShape_parse)(this, a2);
     }
 }
+#ifdef PORT /* the cfront ctor protocol: the ROM calls it with this == 0 (port_cfront.h, plan 18.11) */
+extern "C" Obj *port_ctor_BasePolyShape_ctor(Obj *self, void *a1, void *a2, Obj *src) { return CF_CTOR_NEW(self, Obj, (a1, a2, src)); }
+#endif

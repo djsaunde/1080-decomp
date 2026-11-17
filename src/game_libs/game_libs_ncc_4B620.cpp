@@ -147,3 +147,6 @@ Obj::Obj(void *a1) : Base(a1) {
     endDL->add(0xBB000000, 0x80008000);    /* G_TEXTURE off */
     CALL(gfx_endDL)(endDL);
 }
+#ifdef PORT /* the cfront ctor protocol: the ROM calls it with this == 0 (port_cfront.h, plan 18.11) */
+extern "C" Obj *port_ctor_Sprite_ctor_0004B620(Obj *self, void *a1) { return CF_CTOR_NEW(self, Obj, (a1)); }
+#endif

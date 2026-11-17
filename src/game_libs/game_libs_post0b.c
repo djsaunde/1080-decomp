@@ -12901,8 +12901,13 @@ void gfx_submitFrameTask_000469A8(GfxLib *arg0, s32 arg1) {
 }
 
 extern int gl_func_00000000();
+#ifdef PORT
+int gfx_thunk_00046B44(GfxLib *a0) {
+    return CALL(gfx_vcall_0004E150)(a0); /* a0 rides through (K&R) */
+#else
 int gfx_thunk_00046B44() {
     return CALL(gfx_vcall_0004E150)();
+#endif
 }
 
 /* gfx_swapBuffer: 24-insn toggle-bit + vtable-dispatch + 2-call.
@@ -17010,8 +17015,8 @@ void gfx_queuePush_0004E1BC(GfxLib *a0, int a1) {
  * (gl_func_0004E234 = setter at +0x190, gl_func_0004E23C = getter at +0x190).
  * Expected treats them as part of this symbol; SUFFIX_BYTES appends the
  * 4 literal trailing words to byte-match. */
-void gfx_listAppend_0004E214(GfxLib *a0) {
-    CALL(list_append)(&a0->lights);
+void gfx_listAppend_0004E214(GfxLib *a0 KR_PARAM(void *a1)) {
+    CALL(list_append)(&a0->lights KR_ARG(a1)); /* PORT: the light rides in a1 (K&R) */
 }
 
 void gfx_setShadowLight(GfxLib *a0, int a1) {
@@ -24814,7 +24819,7 @@ void math_orthoF(f32 mf[4][4], f32 l, f32 r, f32 b, f32 t, f32 n, f32 f, f32 sca
 {
     int i, j;
 
-    XCALL(gl_func_00000000_5f3e0, math_mtx4Identity)(KR_ARG0(mf));
+    XCALL(gl_func_00000000_5f3e0, math_mtx4Identity)(KR_ARG0(mf)); /* PORT: mf rides in a0 (K&R) */
 
     mf[0][0] = 2/(r-l);
     mf[1][1] = 2/(t-b);
@@ -26697,7 +26702,7 @@ int AnimData_readFrames(char *self, int a1, unsigned int a2, unsigned int a3) {
 extern int gl_func_00000000();
 void AnimData_waitFrames(int a0, int a1) {
     if (a1 != -1) {
-        CALL(fs_gdlWaitFile)(&gSysLib KR_ARG(a1));
+        CALL(fs_gdlWaitFile)(&gSysLib KR_ARG(a1)); /* PORT: a1 rides through (K&R) */
     }
 }
 
@@ -27035,7 +27040,7 @@ void AnimDataMgr_loadFile(char *self) {
     ((AnimDataMgr *)self)->groups = (AnimGroup *)CALL(mem_new)(((AnimDataMgr *)self)->numGroups * 12);
     for (i = 0; i < ((AnimDataMgr *)self)->numGroups; i++) {
         CALL(AnimGroup_init)((char *)((AnimDataMgr *)self)->groups + i * 12, self); /* AnimGroup_init */
-        CALL(AnimGroup_load)((char *)((AnimDataMgr *)self)->groups + i * 12);       /* AnimGroup_load */
+        CALL(AnimGroup_load)((char *)((AnimDataMgr *)self)->groups + i * 12 KR_ARG(self)); /* AnimGroup_load; PORT: a1 = self rides through (K&R; AnimGroup_init leaves a1) */
     }
 }
 

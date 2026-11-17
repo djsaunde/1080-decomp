@@ -74,3 +74,6 @@ G::G(int arg1) : B(sStr_Node_CC58) {
     CALL(CoolGadget_setLabels)(((CoolGadget *)this), ((CoolGadget *)this)->label1Sprite, ((CoolGadget *)this)->label2Sprite);
     CALL(CoolGadget_setLabelPos)(self, -0x49, -2, -0x32, -1);
 }
+#ifdef PORT /* the cfront ctor protocol: the ROM calls it with this == 0 (port_cfront.h, plan 18.11) */
+extern "C" G *port_ctor_CoolGadget_ctor(G *self, int arg1) { return CF_CTOR_NEW(self, G, (arg1)); }
+#endif

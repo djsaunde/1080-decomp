@@ -30,6 +30,23 @@ extern int D_00000000;
 extern char sFmt_Global_out_of_range_1EC6C[], sFmt_Global_out_of_range_1EC84[], sFmt_unknown_Node_cmd_for_1EC9C[];
 
 #define CMD(c) ((NodeMsg *)(c))
+#ifdef PORT
+/* The ROM's jump table (bootup RoData 0x1A1C, the one the matching build uses) sends 0x64 to the
+ * name arm, 0x65 to the attach arm, 0x66 to the default, 0x67 to the set-global arm and 0x6C to
+ * the handle arm; the labels below match .text only (the donor's own table is discarded), so the
+ * port, which compiles its own table, takes the ROM's (plan 18.11; boardN skinmgr streams carry
+ * 0x6C <handle>). */
+#define NDC_HANDLE 0x6C
+#define NDC_NAME 0x64
+#define NDC_ATTACH 0x65
+#define NDC_SETGLOBAL 0x67
+#else
+#define NDC_HANDLE 0x64
+#define NDC_NAME 0x65
+#define NDC_ATTACH 0x66
+#define NDC_SETGLOBAL 0x67
+#define NDC_NOP 0x6C
+#endif
 
 void Node_doCommand(char *o, char *c) {
     unsigned int key;
@@ -38,19 +55,19 @@ void Node_doCommand(char *o, char *c) {
     char *r;
     int *p;
     switch (code = *(int *)c) {
-        case 0x64:
+        case NDC_HANDLE:
             /* c is the NodeMsg (node.h): tag = opcode, arg.cursor = the stream read cursor */
             key = (unsigned int)CMD(c)->arg.cursor;
             CMD(c)->arg.cursor = (s32 *)(key + 4);
             NODE(o)->handle = *(int *)key;
             return;
-        case 0x65:
+        case NDC_NAME:
             p = (int *)CMD(c)->arg.cursor;
             CMD(c)->arg.cursor = (s32 *)(p + 1);
             key = *p;
             NODE(o)->name = (const char *)key;
             return;
-        case 0x66:
+        case NDC_ATTACH:
             p = (int *)CMD(c)->arg.cursor;
             CMD(c)->arg.cursor = (s32 *)(p + 1);
             key = *p;
@@ -64,7 +81,7 @@ void Node_doCommand(char *o, char *c) {
             }
             NODE(o)->parent = NODE(r);
             return;
-        case 0x67:
+        case NDC_SETGLOBAL:
             p = (int *)CMD(c)->arg.cursor;
             CMD(c)->arg.cursor = (s32 *)(p + 1);
             key = *p;
@@ -73,8 +90,10 @@ void Node_doCommand(char *o, char *c) {
             }
             *(char **)((char *)&gNodeGlobals + key * 4) = o;
             return;
-        case 0x6C:
+#ifndef PORT /* 0x66 takes the default on the ROM */
+        case NDC_NOP:
             return;
+#endif
     }
     key = code; code = 0;
     p = (int *)NODE(o)->name; CALL(sys_fatal)(sFmt_unknown_Node_cmd_for_1EC9C, key, p);

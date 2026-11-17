@@ -95,3 +95,6 @@ Obj::Obj(Src *s) : Base(D_00000000 + 0x200EC) {
     { int p1 = 0, p2 = 0; }
     XCALL(gl_4b0a8_c34458, gfx_endDL)(f40);
 }
+#ifdef PORT /* the cfront ctor protocol: the ROM calls it with this == 0 (port_cfront.h, plan 18.11) */
+extern "C" Obj *port_ctor_Shadow_ctor_0004B0A8(Obj *self, Src *s) { return CF_CTOR_NEW(self, Obj, (s)); }
+#endif

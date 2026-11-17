@@ -87,3 +87,6 @@ Obj::Obj(void *a1, float x, float y, float zz) : Base(a1) {
     f4.set(rq);
     CALL(math_quatScaleToMtx4)(&dc, (char *)this + 0x70); { volatile int q1, q2, q3, q4; }
 }
+#ifdef PORT /* the cfront ctor protocol: the ROM calls it with this == 0 (port_cfront.h, plan 18.11) */
+extern "C" Obj *port_ctor_QNode_ctor(Obj *self, void *a1, float x, float y, float zz) { return CF_CTOR_NEW(self, Obj, (a1, x, y, zz)); }
+#endif

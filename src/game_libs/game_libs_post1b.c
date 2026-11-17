@@ -298,7 +298,7 @@ void AnimPlayer_setKey(AnimPlayer *a0, int a1, int a2, int a3, float f) {
  *   }
  *   return v0->[0x10][a2*8/4]; */
 int AnimPlayer_getKeyFrame(AnimPlayer *a0, int a1, int a2) {
-    AnimData *v0 = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr KR_ARG(a1)); /* AnimDataMgr_lookup(mgr, a1) */
+    AnimData *v0 = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr KR_ARG(a1)); /* AnimDataMgr_lookup(mgr, a1); PORT: a1 rides through (K&R) */
     if (a2 >= v0->numKeys) {
         int v = FCALL(anim_formatId)(a1);                      /* anim_formatId */
         FCALL(sys_fatal)(GL_DATA_STR(0x22180, "BadKeyFrame %d - %s"), a2, v); /* sys_fatal("BadKeyFrame %d - %s") */
@@ -310,7 +310,7 @@ int AnimPlayer_getKeyFrame(AnimPlayer *a0, int a1, int a2) {
  *   Same bounds-check + array-deref pattern, but returns float from
  *   offset +4 in the 8-byte entry. */
 float AnimPlayer_getKeyTime(AnimPlayer *a0, int a1, int a2) {
-    AnimData *v0 = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr KR_ARG(a1)); /* AnimDataMgr_lookup(mgr, a1) */
+    AnimData *v0 = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr KR_ARG(a1)); /* AnimDataMgr_lookup(mgr, a1); PORT: a1 rides through (K&R) */
     if (a2 >= v0->numKeys) {
         int v = FCALL(anim_formatId)(a1);                      /* anim_formatId */
         FCALL(sys_fatal)(GL_DATA_STR(0x22194, "BadKeyTime %d - %s"), a2, v); /* sys_fatal("BadKeyTime %d - %s") */
