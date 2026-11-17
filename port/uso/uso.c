@@ -77,6 +77,13 @@ int port_uso_isLoaded(int id)
     return id >= 0 && id < PORT_USO_MAX_ID && sLoaded[id];
 }
 
+void *port_uso_importData(const char *file, void *addr)
+{
+    const PortUsoModule *m = port_uso_find(file);
+
+    return m != 0 && port_uso_isLoaded(m->id) ? addr : 0;
+}
+
 int port_uso_load(const char *path)
 {
     const PortUsoModule *m = port_uso_find(path);

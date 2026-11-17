@@ -47,6 +47,11 @@ void port_uso_init(void);                       /* load bootup.uso (always resid
 int port_uso_load(const char *path);            /* "device/file.uso" -> module id, or < 0 */
 int port_uso_unload(const char *path);
 int port_uso_isLoaded(int id);
+/* An import of `addr` from module `file` (e.g. "charmap.uso") as the N64 sees it: addr while that
+ * module is loaded, else NULL. uso_bindImports leaves a site whose exporter is not loaded unresolved,
+ * so its HI16 / LO16 pair keeps the in-place addend (0 at the sites that use this). The static link
+ * would hand out the unloaded blob instead (run 846: Match Race's course list). */
+void *port_uso_importData(const char *file, void *addr);
 const PortUsoModule *port_uso_find(const char *path);
 
 #endif

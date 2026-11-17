@@ -1,7 +1,7 @@
 # tenshoe --input script: boot -> title -> main menu -> Trick Attack -> rider / board / course.
-# Steps are SysLib.frameCount (state.log F). Run 846 (agent-a): the course list's ctor dies in
-# sys_fatal "Invalid Shape cmd 64853" (CourseList_createItem item 0, MODE 3: the PolyShape of
-# charmap Data +0x1B4), so this script ends in a crash at step ~838 until that is fixed.
+# Steps are SysLib.frameCount (state.log F). Run 846 (agent-a): NOT yet verified to reach Trick
+# Attack: with these DD steps the run entered flow 0,3,1 (mode 3, the Match Race select, see
+# match_race.input); tune the DD spacing against state.log before relying on it.
 PADS 1
 F 480:3 START          # title
 F 560:3 A              # English

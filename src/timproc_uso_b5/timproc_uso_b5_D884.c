@@ -69,6 +69,15 @@ extern char d884_db64_gc;
 #define EE6C_L(s) (*(s32 *)((char *)&s + 4))
 #define EE6C_S(s) (*(u32 *)((char *)&s + 4))
 #define MODE (*(s32 *)((char *)&import_800200CC + 0x34))
+/* charmap.uso Data (cases 0..7). App_launchGenProc does not load charmap in modes 3 / 5, where the
+ * N64 leaves these imports unresolved: the lui / addiu pair keeps its 0 addend, PolyShape_ctor gets
+ * NULL and skips the parse (cases 0 / 1 still take this arm in mode 3, Match Race). */
+#ifdef PORT
+extern void *port_uso_importData(const char *file, void *addr);
+#define CMAP(x) (*(char *)port_uso_importData("charmap.uso", &(x)))
+#else
+#define CMAP(x) x
+#endif
 
 #ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
 extern char port_bootup_bss[];
@@ -163,42 +172,42 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
             break;
         case 0:
             if (MODE != 2) {
-                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEEE8 + 0x1678, &XDATA(import_00000000, port_charmap_data, 0x1B4) + 0, 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEEE8 + 0x1678, &CMAP(XDATA(import_00000000, port_charmap_data, 0x1B4)) + 0, 0));
             }
             break;
         case 1:
             if (MODE != 2) {
-                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEEF4 + 0x1684, &XDATA(import_00000000, port_charmap_data, 0x33C4) + 0, 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEEF4 + 0x1684, &CMAP(XDATA(import_00000000, port_charmap_data, 0x33C4)) + 0, 0));
             }
             break;
         case 2:
             if (MODE != 3 && MODE != 5) {
-                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEF00 + 0x1690, &XDATA(import_00000000, port_charmap_data, 0x65D4) + 0, 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEF00 + 0x1690, &CMAP(XDATA(import_00000000, port_charmap_data, 0x65D4)) + 0, 0));
             }
             break;
         case 3:
             if (MODE != 3 && MODE != 5) {
-                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEF0C + 0x169C, &XDATA(import_00000000, port_charmap_data, 0x97E4) + 0, 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEF0C + 0x169C, &CMAP(XDATA(import_00000000, port_charmap_data, 0x97E4)) + 0, 0));
             }
             break;
         case 4:
             if (MODE != 3 && MODE != 5) {
-                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEF18 + 0x16A8, &XDATA(import_00000000, port_charmap_data, 0xC9F4) + 0, 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEF18 + 0x16A8, &CMAP(XDATA(import_00000000, port_charmap_data, 0xC9F4)) + 0, 0));
             }
             break;
         case 5:
             if (MODE != 3 && MODE != 5) {
-                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEF24 + 0x16B4, &XDATA(import_00000000, port_charmap_data, 0xFC04) + 0, 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEF24 + 0x16B4, &CMAP(XDATA(import_00000000, port_charmap_data, 0xFC04)) + 0, 0));
             }
             break;
         case 6:
             if (MODE != 3 && MODE != 5) {
-                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEF30 + 0x16C0, &XDATA(import_00000000, port_charmap_data, 0x12E14) + 0, 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEF30 + 0x16C0, &CMAP(XDATA(import_00000000, port_charmap_data, 0x12E14)) + 0, 0));
             }
             break;
         case 7:
             if (MODE != 3 && MODE != 5) {
-                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEF3C + 0x16CC, &XDATA(import_00000000, port_charmap_data, 0x16024) + 0, 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEF3C + 0x16CC, &CMAP(XDATA(import_00000000, port_charmap_data, 0x16024)) + 0, 0));
             }
             break;
         }

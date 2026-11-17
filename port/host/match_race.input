@@ -1,0 +1,12 @@
+# tenshoe --input script: boot -> title -> main menu -> Match Race (mode 3) -> rider / board / course.
+# Steps are SysLib.frameCount (state.log F). Start from a fresh directory (no 1080.sram: a saved
+# language choice skips the language menu and shifts every step). Run 846 (agent-a).
+PADS 1
+F 480:3 START          # title
+F 560:3 A              # English
+F 640:3 A              # Match Race (flow 0,3,1; agent-c run 845's charmap shape crash)
+F 950:3 A              # rider
+F 1050:3 A             # confirm
+F 1150:3 A             # board
+F 1300:3 A             # course / level
+F 1450-1900 STICK 0,60
