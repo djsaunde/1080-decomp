@@ -66,6 +66,19 @@ when pyelftools / crunch64 are missing):
                                --strict re-derives every site with the verify compile and
                                requires the exact name. Default FILE.. = every src file
                                that uses the macros. Exit 1 on a mismatch.
+  check --order [FILE..]       THE GATE MODE (run 826): every name proven PER SITE, not as a
+                               multiset (two names swapped inside one function pass the fast
+                               check: NameEntry_updateEntry's Backup calls, run 823). A
+                               (function, token) group whose ROM jals all go to one callee is
+                               proven by the containment check; a group with 2+ callees is
+                               proven site by site through the verify compile's npc_uc_N
+                               relocs (the compiler's emitted order, so branches / loop tests /
+                               nested calls are placed by the compiler, and an inlined site
+                               must resolve to one callee in every function it lands in), the
+                               donor-flag compile or the donor mirror for REPLACE_FUNC_BODY
+                               hosts, and CALLs inside #define bodies as npc_ucm_K sites (all
+                               of a macro site's expansions must call its name). A site that
+                               cannot be proven fails like a wrong name. ~60 s tree-wide.
 
 Names come from the BUILD (build/tenshoe.elf + map, and the Yay0 block .lnk.o files for the
 compressed modules). Run it after the readability gate's clean build: an incremental make can
@@ -365,9 +378,17 @@ def scan(src, m=None, extra=()):
 _DECLS = {}
 
 
-def decl_for(src, m, tok, pos, name):
+def decl_for(src, m, tok, pos, name, hdr=''):
     """`extern <type> name(<params>); ` copied from tok's nearest preceding declaration
-    (default `extern int name();`, the K&R form most files use)."""
+    (default `extern int name();`, the K&R form most files use). hdr: the masked text of the
+    file's same-directory quoted #includes, searched when the file itself has no declaration
+    (run 826: snoweffects_ncc.h's `float gl_func_00000000_snow_randf(void)` -- the K&R default
+    (...) turned the C++ verify copy's float calls into int calls, so its bytes differed)."""
+    if hdr:
+        got = decl_for(src, m, tok, pos, name)
+        if got != f'extern int {name}(); ':
+            return got
+        return decl_for(hdr, hdr, tok, len(hdr), name)
     key = (m, tok)      # not id(m): plan threads free and reuse ids across files (run 510)
     if key not in _DECLS:
         lst = []
@@ -425,15 +446,64 @@ def insert_point(m, boundary):
     return i
 
 
-def verify_text(src, m, sites, cpp=False):
+def local_headers(path, src, seen=None):
+    """masked text of path's quoted #includes that exist in its own directory (followed
+    recursively within that directory)"""
+    seen = set() if seen is None else seen
+    out = []
+    d = os.path.dirname(path)
+    for mt in re.finditer(r'^\s*#\s*include\s*"([^"/]+)"', src, re.M):
+        h = os.path.join(d, mt.group(1))
+        if os.path.exists(h) and h not in seen:
+            seen.add(h)
+            t = open(h, errors='replace').read()
+            out.append(local_headers(h, t, seen))
+            out.append(mask(t))
+    return '\n;\n'.join(x for x in out if x)
+
+
+_CMT_RE = re.compile(r'/\*.*?\*/|//[^\n]*', re.S)
+
+
+def macro_sites(src):
+    """CALL / XCALL spellings inside #define bodies (run 826): [(start, end, tok, name, line start
+    of the #define)] in source order. Each is one site of the verify compile (npc_ucm_K): every
+    jal its expansions emit must call the written name."""
+    out = []
+    for mt in MACRO_ANY_RE.finditer(src):
+        body0 = mt.start(3)
+        body = _CMT_RE.sub(lambda x: re.sub(r'[^\n]', ' ', x.group(0)), mt.group(3))
+        for mm in MAC_RE.finditer(body):
+            tok = TOK_OF[mm.group(1)] if mm.group(1) else mm.group(3)
+            nm = mm.group(2) or mm.group(4)
+            out.append((body0 + mm.start(), body0 + mm.end(), tok, current_name(nm) or nm,
+                        src.rfind('\n', 0, mt.start()) + 1))
+    return out
+
+
+def verify_text(src, m, sites, cpp=False, path=None):
+    hdr = local_headers(path, src) if path else ''
     edits = []      # (pos, end, text)
+    mblocks = top_blocks(m)
+    for k, (a, b, tok, _, line0) in enumerate(macro_sites(src)):
+        edits.append((a, b, f'npc_ucm_{k}'))
+        d = decl_for(src, m, tok, line0, f'npc_ucm_{k}', hdr)
+        if cpp:
+            d = 'extern "C" { ' + d.replace('(); ', '(...); ') + '} '
+        # a #define inside a function body: declare before the function (C89 decl order)
+        blk = next((x for x in mblocks if x[1] < line0 < x[2]), None)
+        if blk is not None:
+            ip = insert_point(m, blk[3])
+            edits.append((ip, ip, d))
+        else:
+            edits.append((line0, line0, d + '\n'))
     by_block = collections.defaultdict(list)
     for s in sites:
         edits.append((s.pos, s.end, f'npc_uc_{s.i}'))
         by_block[s.block].append(s)
     for blk, ss in by_block.items():
         ip = insert_point(m, blk[3])
-        decls = ''.join(decl_for(src, m, s.tok, s.pos, f'npc_uc_{s.i}') for s in ss)
+        decls = ''.join(decl_for(src, m, s.tok, s.pos, f'npc_uc_{s.i}', hdr) for s in ss)
         if cpp:     # unmangled names; C++ `f()` means (void), so the K&R default becomes (...)
             decls = 'extern "C" { ' + re.sub(r'\(\); $', '(...); ', decls.replace('(); ', '(...); ')) + '} '
         edits.append((ip, ip, decls))
@@ -482,8 +552,10 @@ class MakeVars:
                       for t in tgts)
             if hit:
                 loc[k] = (loc.get(k, self.glob.get(k, '')) + ' ' + v) if op == '+=' else v
+        # every target-specific variable too (run 826: `$(GAMELIBS_28A68_DONOR): NCC_CFLAGS += -I
+        # include` never reached the C++ verify recipe, whose ncc then failed on os_message.h)
         return {k: self.expand(loc.get(k, self.glob.get(k, '')), loc)
-                for k in ('CC', 'CFLAGS', 'OPT_FLAGS', 'CC_ONLY_FLAGS', 'MIPSISET', 'CPPFLAGS')}
+                for k in ('CC', 'CFLAGS', 'OPT_FLAGS', 'CC_ONLY_FLAGS', 'MIPSISET', 'CPPFLAGS', *loc)}
 
     def splices(self):
         """REPLACE_FUNC_BODY specs (run 594): {host_obj: {func: donor_obj}} for the matching-build
@@ -598,7 +670,13 @@ def same_code(vb, vv, vtypes, rb, rv, rtypes):
     real object; comparing raw bytes rejected every caller of a static helper (game_uso.c
     camPath_read_00000724 / TrickTable_load_0000C3F8 call the static stream readers)."""
     if len(vb) != len(rb):
-        return False
+        # run 826: a SUFFIX_BYTES / pad recipe gives one symbol trailing all-zero words (alignment
+        # nops) the other lacks: compare the common length when the longer tail is zeros only
+        n = min(len(vb), len(rb))
+        tail = vb[n:] if len(vb) > n else rb[n:]
+        if any(tail) or n == 0:
+            return False
+        vb, rb = vb[:n], rb[:n]
     vr = {o - vv: t for o, t in vtypes.items() if vv <= o < vv + len(vb)}
     rr = {o - rv: t for o, t in rtypes.items() if rv <= o < rv + len(rb)}
     if vr.keys() != rr.keys():
@@ -692,7 +770,9 @@ def asm_pad():
     `gl_osSetIntMask+0x8` is the function itself (port-gen-binds.py asm_pad, plan 16.6)"""
     global _PAD
     if _PAD is None:
-        _PAD = {}
+        # filled in a local and published whole: plan_file runs in a thread pool, and a shared dict
+        # seen half-filled by another thread left `gl___osDisableInt+0x4` unresolved (run 826)
+        pad = {}
         try:
             rows = [l.rstrip('\n').split('\t') for l in open('port/sourcemap.tsv') if not l.startswith('#')]
         except OSError:
@@ -709,7 +789,8 @@ def asm_pad():
                             break
                         n += 1
                 if n:
-                    _PAD[r[0]] = 4 * n
+                    pad[r[0]] = 4 * n
+        _PAD = pad
     return _PAD
 
 
@@ -858,7 +939,7 @@ def plan_file(path, rom, mv, verbose=False):
     sites, m = scan(src, extra=extra)
     out['sites'] = sites
     out['hidden'] = hidden = macro_hidden(src, m, extra)
-    if not sites:
+    if not sites and not macro_sites(src):
         return out
     md = rom.module_for(path) or donor_module(path, rom, mv)
     if md is None:
@@ -871,7 +952,7 @@ def plan_file(path, rom, mv, verbose=False):
         out['error'] = 'no built object ' + obj_of(path)
         return out
     try:
-        vfuncs, vrel = compile_verify(path, verify_text(src, m, sites, path.endswith('.cpp')), mv)
+        vfuncs, vrel = compile_verify(path, verify_text(src, m, sites, path.endswith('.cpp'), path), mv)
     except RuntimeError as ex:
         out['error'] = str(ex)
         return out
@@ -881,17 +962,20 @@ def plan_file(path, rom, mv, verbose=False):
     vtypes = reloc_types(os.path.join(SCRATCH, path) + '.v.o')
     # npc offsets per site, per function
     site_offs = collections.defaultdict(list)       # i -> [(func, reloff)]
+    msite_offs = collections.defaultdict(list)      # macro site k -> [(func, reloff)] (run 826)
     for off, sym in vrel.items():
-        mm = re.fullmatch(r'npc_uc_(\d+)', sym)
+        mm = re.fullmatch(r'npc_uc(m?)_(\d+)', sym)
         if not mm:
             continue
         fn = next((f for f, (v, sz, _) in vfuncs.items() if v <= off < v + sz), None)
-        site_offs[int(mm.group(1))].append((fn, off - vfuncs[fn][0] if fn else None))
+        (msite_offs if mm.group(1) else site_offs)[int(mm.group(2))].append(
+            (fn, off - vfuncs[fn][0] if fn else None))
     bad_funcs = {}
     mirrored = {}       # site i -> name, from the donor source's checked CALL names (run 594)
     for fn, (v, sz, b) in vfuncs.items():
         mine = [i for i, l in site_offs.items() if any(f == fn for f, _ in l)]
-        if not mine:
+        mmine = [k for k, l in msite_offs.items() if any(f == fn for f, _ in l)]
+        if not mine and not mmine:
             continue
         if fn not in rfuncs:
             bad_funcs[fn] = 'not in the real object'
@@ -916,7 +1000,8 @@ def plan_file(path, rom, mv, verbose=False):
                 bad_funcs[fn] = 'verify bytes differ from the real object (donor splice / other recipe)' + \
                     (f' -- donor {donor}: {alt}; mirror: {mir}' if donor else '')
                 continue
-        covered = {o for i in mine for f, o in site_offs[i] if f == fn}
+        covered = {o for i in mine for f, o in site_offs[i] if f == fn} | \
+            {o for k in mmine for f, o in msite_offs[k] if f == fn}
         real_ph = {off - rv for off, s in rrel.items() if rv <= off < rv + rsz and
                    (PH_RE.fullmatch(s) or s in extra or s.startswith('sect:'))}
         # C++: operator new / constructors / vec_new are jals with no source call (often to a
@@ -931,42 +1016,54 @@ def plan_file(path, rom, mv, verbose=False):
             bad_funcs[fn] = f'not (uniquely) in the {md.short} name table'
         elif not rom_bytes_match(md, rom.func_off(md, fn), rb, rv, rall):
             bad_funcs[fn] = f'real object bytes are not the {md.short} Text at {fn} (unspliced donor?)'
+    def derive(tok, offs):
+        return _derive(md, rom, rfuncs, rrel, bad_funcs, tok, offs)
     for s in sites:
         if s.i in mirrored:
             out['derived'][s.i] = mirrored[s.i]
             continue
-        offs = site_offs.get(s.i)
-        if not offs:
-            out['left'][s.i] = 'no jal in the build (not a call, or not compiled)'
-            continue
-        fns = {f for f, _ in offs}
-        if len(fns) != 1 or None in fns:
-            out['left'][s.i] = 'jal outside a function symbol'
-            continue
-        fn = fns.pop()
-        if fn in bad_funcs:
-            out['left'][s.i] = f'{fn}: {bad_funcs[fn]}'
-            continue
-        base = rom.func_off(md, fn)
-        rv = rfuncs[fn][0]
-        names = set()
-        for _, o in offs:
-            if not is_placeholder(rrel.get(rv + o, ''), s.tok):
-                names.add(None)
-                continue
-            names.add(rom.jal_target(md, base + o))
-        if len(names) != 1 or None in names:
-            out['left'][s.i] = f'{fn}: callee unresolved or ambiguous {sorted(map(str, names))}'
-            continue
-        nm = names.pop()
-        if not IDENT.fullmatch(nm):
-            out['left'][s.i] = f'{fn}: callee {nm} is not a symbol name'
-            continue
-        if nm == s.tok:
-            out['left'][s.i] = f'{fn}: callee is the function named {nm} itself'
-            continue
-        out['derived'][s.i] = nm
+        nm, why = derive(s.tok, site_offs.get(s.i))
+        if nm is None:
+            out['left'][s.i] = why
+        else:
+            out['derived'][s.i] = nm
+    # macro sites (run 826): a CALL inside a #define body, proven over every expansion's jal
+    out['macro'] = {}
+    for k, (_, _, tok, name, _) in enumerate(macro_sites(src)):
+        offs = msite_offs.get(k)
+        nm, why = derive(tok, offs) if offs else (None, 'no jal in the build (macro unused?)')
+        out['macro'][k] = (tok, name, nm, why, {f for f, _ in offs or ()})
     return out
+
+
+def _derive(md, rom, rfuncs, rrel, bad_funcs, tok, offs):
+    """-> (callee, None) for a site whose jal(s) (offs: [(function, offset)]) all call one named
+    callee, else (None, reason)."""
+    if not offs:
+        return None, 'no jal in the build (not a call, or not compiled)'
+    fns = {f for f, _ in offs}
+    if None in fns:
+        return None, 'jal outside a function symbol'
+    # an inlined helper's site (a C++ inline member such as operator new) has jals in every
+    # function it is inlined into: each must be proven and all must call one callee (run 826)
+    fn = next((f for f in sorted(fns) if f in bad_funcs), None)
+    if fn is not None:
+        return None, f'{fn}: {bad_funcs[fn]}'
+    fn = '+'.join(sorted(fns))
+    names = set()
+    for f, o in offs:
+        if not is_placeholder(rrel.get(rfuncs[f][0] + o, ''), tok):
+            names.add(None)
+            continue
+        names.add(rom.jal_target(md, rom.func_off(md, f) + o))
+    if len(names) != 1 or None in names:
+        return None, f'{fn}: callee unresolved or ambiguous {sorted(map(str, names))}'
+    nm = names.pop()
+    if not IDENT.fullmatch(nm):
+        return None, f'{fn}: callee {nm} is not a symbol name'
+    if nm == tok:
+        return None, f'{fn}: callee is the function named {nm} itself'
+    return nm, None
 
 
 _DONOR_VERIFY = {}
@@ -1013,7 +1110,15 @@ def skeleton(m, blk, sites):
             out.append(x)
         elif x in '&|' and i + 1 < len(toks) and toks[i + 1] == x:
             pass
-    return out
+    # statements without a call or control token (declarations, plain stores) do not order the
+    # calls: collapse each run of `;` into one and drop a `;` right after `{` (run 826:
+    # arc_closeSession_00000748's donor adds `register int z;` and `z = 0;`)
+    col = []
+    for x in out:
+        if x == ';' and col and col[-1] in (';', '{'):
+            continue
+        col.append(x)
+    return col
 
 
 def body_tokens(m, blk, sites, argc=False):
@@ -1065,7 +1170,9 @@ def mirror_names(src, m, sites, fn, donor):
     hs = [s for s in sites if s.block == hblk]
     if len(ds) != len(hs) or any(h.tok != d.tok for h, d in zip(hs, ds)):
         return 'site tokens differ from the donor\'s'
-    got = {h.i: d.name for h, d in zip(hs, ds) if h.name is None and d.name}
+    # every host site, named or not (run 826: check --order proves a named host site by the donor's
+    # name at the same position; plan only writes the unnamed ones)
+    got = {h.i: d.name for h, d in zip(hs, ds) if d.name}
     return got if got else 'the donor\'s matching sites are unnamed too'
 
 
@@ -1095,7 +1202,7 @@ def donor_offsets(path, src, m, sites, mv, fn, donor, rb, rv, rall):
             # the donor's opt level asm-processor's minimum .text block size can differ (-O0
             # needs more than -O2), and the host's short _pad.s blocks then fail the compile
             # ("too short .text block", timproc b1 / b3, run 800)
-            vt = re.sub(r'^[ \t]*#[ \t]*pragma[ \t]+GLOBAL_ASM\(.*\)[ \t]*$', '', verify_text(src, m, sites), flags=re.M)
+            vt = re.sub(r'^[ \t]*#[ \t]*pragma[ \t]+GLOBAL_ASM\(.*\)[ \t]*$', '', verify_text(src, m, sites, path=path), flags=re.M)
             _DONOR_VERIFY[key] = compile_verify(path, vt, mv, flags_of=donor, tag=tag)
         except RuntimeError as ex:
             _DONOR_VERIFY[key] = str(ex)
@@ -1304,8 +1411,9 @@ def macro_named(text):
     return out
 
 
-def check_fast(path, src, rom, quiet=False):
-    """-> (named calls, mismatches) for one file's text."""
+def check_fast(path, src, rom, quiet=False, groups=None):
+    """-> (named calls, mismatches) for one file's text. groups: a dict that receives
+    {(function or None for .cpp, token): (Counter(source names), Counter(ROM jal targets))}."""
     sites, _ = scan(src)
     mac = [s for s in sites if s.name is not None]
     macn = macro_named(src)      # CALL / XCALL names inside #define bodies, per use (run 618)
@@ -1326,10 +1434,15 @@ def check_fast(path, src, rom, quiet=False):
         want[(None if cpp else s.func, s.tok)][s.name] += 1
     for (fnm, tok), c in macn.items():
         want[(None if cpp else fnm, tok)] += c
+    live_syms = {sym for off, sym in rrel.items()
+                 if any(rfuncs[f][0] <= off < rfuncs[f][0] + rfuncs[f][1] for f in live)} if cpp else set()
     n = bad = 0
     for (fn, tok), cnt in want.items():
         n += sum(cnt.values())
         have = collections.Counter()
+        # C++ (run 826): a per-callee alias token (gl_func_00000000_snow_randf) that survives as a
+        # reloc symbol in the object is matched exactly, not pooled with every other placeholder
+        exact_tok = cpp and tok in live_syms
         # a static function whose object symbol a POST_COMPILE add-elf-func-symbol.py injected under a
         # segment-prefixed name (viMgrMain -> gl_viMgrMain, game_libs_ido53_74EF4.c; agent-a run 598)
         fo = fn if fn in rfuncs else ('gl_' + fn) if fn and ('gl_' + fn) in rfuncs else None
@@ -1341,9 +1454,11 @@ def check_fast(path, src, rom, quiet=False):
             for off, sym in rrel.items():
                 # C++: any placeholder (a recipe's objcopy may rename func_00000000 -> gl_func_00000000,
                 # or a decl may be mangled tok__F...)
-                if rv <= off < rv + rsz and (sym == tok or sym.startswith('sect:') or
-                                             (cpp and PH_RE.fullmatch(sym))):
+                if rv <= off < rv + rsz and (sym == tok or (not exact_tok and (
+                        sym.startswith('sect:') or (cpp and PH_RE.fullmatch(sym))))):
                     have[rom.jal_target(md, base + off - rv)] += 1
+        if groups is not None:
+            groups[(fn, tok)] = (cnt, have)
         over = cnt - have
         if over:
             bad += sum(over.values())
@@ -1409,6 +1524,38 @@ def cmd_selftest(a, rom, mv):
     finally:
         open(path, 'w').write(real)
     got = [(s.name, res['derived'].get(s.i)) for s in res['sites'] if s.func == 'cam_reset_000008FC' and s.name]
+    # check --order (the gate mode, run 826) fails on the swap that the fast check passes ...
+    try:
+        open(path, 'w').write(sw)
+        assert check_order([path], rom, mv, quiet=True) == 1
+    finally:
+        open(path, 'w').write(real)
+    # ... and on run 823's real bug: NameEntry_updateEntry's two Backup calls swapped
+    ne = 'src/nameent_uso/nameent_uso.c'
+    nreal = open(ne).read()
+    ns = [x for x in scan(nreal)[0] if x.func == 'NameEntry_updateEntry' and x.name and x.name.startswith('Backup_')]
+    assert len(ns) == 2 and ns[0].name != ns[1].name, [(x.name) for x in ns]
+    x, y = ns
+    nsw = nreal[:x.pos] + spelled(y.tok, y.name) + nreal[x.end:y.pos] + spelled(x.tok, x.name) + nreal[y.end:]
+    assert check_fast(ne, nsw, rom, quiet=True)[1] == 0
+    try:
+        open(ne, 'w').write(nsw)
+        assert check_order([ne], rom, mv, quiet=True) == 1
+        open(ne, 'w').write(nreal)
+        assert check_order([ne], rom, mv, quiet=True) == 0
+    finally:
+        open(ne, 'w').write(nreal)
+    # a name inside a #define body is a site too (npc_ucm_K): a wrong one is caught per site
+    ms = macro_sites(src)
+    assert ms, 'game_uso.c has CALLs inside #define bodies (SnowAI_ctor INIT_ITER)'
+    a0, b0, tok0, nm0, _ = ms[0]
+    other = 'mem_new' if nm0 != 'mem_new' else 'Node_ctor'
+    try:
+        open(path, 'w').write(real[:a0] + spelled(tok0, other) + real[b0:])
+        res2 = plan_file(path, rom, mv)
+        assert res2['macro'][0][2] == nm0 and res2['macro'][0][1] == other, res2['macro'][0]
+    finally:
+        open(path, 'w').write(real)
     assert got[0][0] != got[0][1] and got[1][0] != got[1][1], got   # strict re-derivation catches it
     # and the per-site compile re-derives every XCALL(game_uso_func_055750, mem_new)
     xs = [(s.name, res['derived'].get(s.i)) for s in res['sites'] if s.tok == 'game_uso_func_055750' and s.name]
@@ -1431,6 +1578,8 @@ def cmd_check(a, rom, mv):
                     bad += 1
                     print(f'{res["path"]}: {s.func}: {spelled(s.tok, s.name)} -- '
                           f'{"ROM callee " + got if got else res["error"] or res["left"].get(s.i)}')
+    elif a.order:
+        return check_order(files, rom, mv)
     else:
         for path in files:
             nn, bb = check_fast(path, open(path, errors='replace').read(), rom)
@@ -1438,6 +1587,98 @@ def cmd_check(a, rom, mv):
             bad += bb
     print(f'check: {n} named calls, {bad} mismatches')
     return 1 if bad else 0
+
+
+def check_order(files, rom, mv, quiet=False):
+    """check --order (run 826): every named call's name is proven PER SITE, not as a set.
+
+    The fast check only proves that a function's names are contained in the multiset of its ROM
+    jal targets, so two names swapped between two sites (NameEntry_updateEntry's Backup calls,
+    run 823) pass: on the ROM both spell the same placeholder token, under PORT each calls the
+    wrong function. Per (function, token) group (per file for .cpp):
+      * the fast containment check must pass;
+      * a group whose ROM jal targets are all ONE callee is proven per site by that check (every
+        site of the group is a jal of the token, and every such jal goes to that callee);
+      * a group with two or more distinct ROM callees is proven per site by the compiler's
+        emitted order: plan_file's verify compile spells site N as npc_uc_N, so each site lands on
+        its own jal(s) whatever the source / code order (branches, loop tests, nested calls,
+        inlined helpers whose site jals must all resolve to one callee); REPLACE_FUNC_BODY hosts
+        through the donor-flag compile or the donor-source mirror. The derived callee must equal
+        the written name.
+    A site in an ambiguous group that cannot be derived (or a name inside a #define body, which
+    has no source site) is UNPROVEN and fails the check like a wrong name. -> exit status."""
+    groups_of = {}
+    n = bad = 0
+    for path in files:
+        g = {}
+        nn, bb = check_fast(path, open(path, errors='replace').read(), rom, quiet=quiet, groups=g)
+        n += nn
+        bad += bb
+        amb = {k: v for k, v in g.items() if len(v[1]) > 1}
+        if amb:
+            groups_of[path] = amb
+    single = n - sum(sum(c.values()) for amb in groups_of.values() for c, _ in amb.values())
+    wrong = unproven = proven = 0
+    for res in run_plans(sorted(groups_of), rom, mv, False):
+        path, amb = res['path'], groups_of[res['path']]
+        cpp = path.endswith('.cpp')
+        seen = collections.Counter()
+        for st in res['sites']:
+            key = (None if cpp else st.func, st.tok)
+            if st.name is None or key not in amb:
+                continue
+            seen[key] += 1
+            got = res['derived'].get(st.i)
+            if got == st.name:
+                proven += 1
+                continue
+            if got:
+                wrong += 1
+                why = f'WRONG NAME: this site\'s jal calls {got}'
+            else:
+                unproven += 1
+                why = 'UNPROVEN: ' + (res['error'] or res['left'].get(st.i) or '?')
+            if not quiet:
+                line = src_line(path, st.pos)
+                print(f'{path}:{line}: {st.func}: {spelled(st.tok, st.name)} -- {why}')
+        for key, (cnt, have) in amb.items():
+            hid = sum(cnt.values()) - seen[key]
+            if hid <= 0:
+                continue
+            # names inside #define bodies: each macro site expanded in this function must be
+            # proven over all its jals (plan_file's npc_ucm_K sites)
+            ms = [v for v in res.get('macro', {}).values() if v[0] == key[1] and (cpp or key[0] in v[4])]
+            nbad = [v for v in ms if v[2] != v[1]]
+            if ms and not nbad:
+                proven += hid
+                continue
+            for tok, name, got, why, _ in nbad:
+                if got:
+                    wrong += 1
+                    msg = f'WRONG NAME: its jals call {got}'
+                else:
+                    unproven += 1
+                    msg = 'UNPROVEN: ' + (res['error'] or why)
+                if not quiet:
+                    print(f'{path}: {key[0]}: {spelled(tok, name)} inside a #define body -- {msg}')
+            if not ms:
+                unproven += hid
+                if not quiet:
+                    print(f'{path}: {key[0]}: {hid} name(s) of {key[1]} inside #define bodies -- UNPROVEN '
+                          f'(no macro site\'s jal found in the function{": " + res["error"] if res["error"] else ""})')
+    if not quiet:
+        print(f'check --order: {n} named calls ({single} in single-callee groups, {proven} proven per site by '
+              f'the verify compile), {bad} not among the ROM callees, {wrong} wrong per site, {unproven} unproven')
+    return 1 if bad or wrong or unproven else 0
+
+
+_LINES = {}
+
+
+def src_line(path, pos):
+    if path not in _LINES:
+        _LINES[path] = open(path, errors='replace').read()
+    return _LINES[path].count('\n', 0, pos) + 1
 
 
 def main():
@@ -1455,6 +1696,8 @@ def main():
                    'its blank-jal tokens unpinned) (repeatable)')
     p = sub.add_parser('check'); p.add_argument('files', nargs='*')
     p.add_argument('--strict', action='store_true')
+    p.add_argument('--order', action='store_true',
+                   help='prove every name per site (the gate mode): see check_order')
     sub.add_parser('selftest')
     ap.add_argument('--no-build', action='store_true',
                     help='do not make the Yay0 block targets (only check they exist)')

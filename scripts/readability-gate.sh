@@ -18,8 +18,8 @@
 #      may gain a 100% function over bytes no REF function covered (eddproc drawGui). Every other count must stay identical,
 #      and a function at 100% in REF must stay at 100%.
 #   then writes the regenerated report.json into the tree (commit it with the batch).
-#   5. source checks: name-placeholder-calls.py check (every CALL(X) names a ROM
-#      callee of its function) and uso-data-sites.py check (alias / GL_* claims,
+#   5. source checks: name-placeholder-calls.py check --order (every CALL(X) names the ROM
+#      callee of ITS OWN jal, proven per site, not as a set per function: run 826) and uso-data-sites.py check (alias / GL_* claims,
 #      plus the plain-base-site ratchet that catches a merge dropping a GL_DATA_STR),
 #      and gameflow-import-sites.py check (every INPUT_MGR(tok) token's relocs target
 #      GameFlow, bootup Bss 0xF8, in the ROM), and name-data-sites.py check (every
@@ -155,8 +155,9 @@ if [[ $WRITE == 1 ]]; then
     echo "    report.json refreshed"
 fi
 echo ">>> [5/6] source checks: named placeholder calls, data-site aliases, GameFlow imports"
-# both re-exec under the repo .venv (pyelftools, crunch64); ~5 s on the fresh build
-python3 scripts/name-placeholder-calls.py check > "$TMP/calls.log" 2>&1 || { grep -v '^check:' "$TMP/calls.log" | head -20; fail "name-placeholder-calls.py check (see $TMP/calls.log)"; }
+# both re-exec under the repo .venv (pyelftools, crunch64). --order (run 826) proves every name per
+# site (verify compile for functions that call 2+ callees through one token): ~60 s on the fresh build
+python3 scripts/name-placeholder-calls.py check --order > "$TMP/calls.log" 2>&1 || { grep -v '^check' "$TMP/calls.log" | head -20; fail "name-placeholder-calls.py check --order (see $TMP/calls.log)"; }
 tail -1 "$TMP/calls.log" | sed 's/^/    /'
 python3 scripts/uso-data-sites.py --no-build check > "$TMP/datasites.log" 2>&1 || { grep -E 'MISMATCH|Error|error' "$TMP/datasites.log" | head -20; fail "uso-data-sites.py check (see $TMP/datasites.log)"; }
 echo "    uso-data-sites check: 0 mismatches ($(grep -c '' "$TMP/datasites.log") lines)"
