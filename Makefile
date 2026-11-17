@@ -6209,14 +6209,14 @@ $(SNOW_A_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_a.cpp src/snoweffects_u
 SNOW_A_FUNCS := snoweffects_uso_func_0000A10C
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_A_FUNCS),$(f)=$(SNOW_A_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_A_DONOR)
-# agent-a run 665: NON_MATCHING-only NCC donor for 0x7FE0 (run 681: 800 / 800 words, spliced).
-SNOW_NM_A_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp.o
-$(SNOW_NM_A_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp src/snoweffects_uso/snoweffects_ncc.h
+# agent-a runs 665-748: EXACT NCC donor for snoweffects 0x7FE0 (trail emitter update), both build paths.
+SNOW_7FE0_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_7fe0.cpp.o
+$(SNOW_7FE0_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_7fe0.cpp src/snoweffects_uso/snoweffects_ncc.h
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NM_A_FUNCS := snoweffects_uso_func_00007FE0
-build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_A_FUNCS),$(f)=$(SNOW_NM_A_DONOR))
-build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_A_DONOR)
+SNOW_7FE0_FUNCS := snoweffects_uso_func_00007FE0
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_7FE0_FUNCS),$(f)=$(SNOW_7FE0_DONOR))
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_7FE0_DONOR)
 # viewrec 0x3878 (erase screen draw): EXACT MIPSpro 7.2.1 donor on both build paths (agent-b run 675 body,
 # agent-a run 743 exact). Built by the viewrec_uso_mp72_% rule above. Donor .rodata = four 0.1f literals and
 # the 5-entry table (+0x0 / +0x10); viewrec_uso_func_00003878_rodata pinned to 0.

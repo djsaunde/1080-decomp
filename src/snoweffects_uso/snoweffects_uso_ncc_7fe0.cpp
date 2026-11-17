@@ -1,13 +1,19 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for snoweffects.uso 0x7FE0 (agent-a runs 661 / 665 / 669 / 677 / 681 / 688 / 690),
- * spliced over the placeholder on the non_matching build only (Makefile SNOW_NM_A_FUNCS): 800 / 800 words,
- * objdiff 97.8 %. A donor body has to be exactly the target's length (a size change shifts the later
- * functions of the non_matching object). 0xA10C moved to the exact donor snoweffects_uso_ncc_a.cpp (run 677).
+/* IDO 7.1 NCC (C++) EXACT donor for snoweffects.uso 0x7FE0 (trail emitter update; agent-a runs 661-748),
+ * REPLACE_FUNC_BODY-spliced over the placeholder in snoweffects_uso.c on both build paths (Makefile
+ * SNOW_7FE0_FUNCS). Run 748 (5 words -> exact): the d ctor's |s| (the fabs_ ?: temp, pool word M-292) is
+ * coloured f12 because it shares its pool word with the rgba[2] colour value: mixq's c is the 10th R request of
+ * that statement (8 constant dummies + f lock the older words), so the merged live range also lives in the
+ * rgba block next to the rgb[0] / rgb[1] values (f0 / f2). Two code-free blocks in the d ctor (den 2 -> 3,
+ * priority 40 -> 26.7) colour it after those two; st0 / spd1 / st5 rebalance the loop-wide 0.0f / fade order.
+ * Dummy arguments must be constants: `s` dummies grow the rgba block past uopt's block size and split it.
  */
 #include "snoweffects_ncc.h"
-/* the callees, by name (a matching donor would call them through typed 0-pinned aliases) */
+/* the callees through typed 0-pinned aliases (the USO jals are blank): 0x4374 (void), 0x46BC (int),
+ * SnowRing_setSlotState_00004714 (float in a3) */
 extern "C" {
-void snoweffects_uso_func_00004374(...);
-int snoweffects_uso_func_000046BC(...);
+void gl_func_00000000_snowa_v(...);
+int gl_func_00000000_snow_46bc(...);
+void gl_func_00000000_snow_4714(void *, int, int, float);
 }
 
 /* ---- 0x7FE0 trail emitter update (decoded whole, first NCC draft: 789 / 800 instructions,
@@ -86,10 +92,8 @@ int snoweffects_uso_func_000046BC(...);
  *   (den 2 -> 4, priority 17.5). Those loop blocks also lower the loop-wide FP LRs, so st() / spd() (code-free
  *   blocks around the state / speed reads) add blocks before the loop to put the 255.0f / fade / 0.0f order back
  *   (f20 / f22 / f24). Left: the d ctor's |s| (f0 vs f12).
- * Left: pool word 1 colours f2 where the target has f12 (it wins the f2 race against the TV ctor's second
- *   parameter word; a forcing-uopt probe puts it on f12 for 97.9 %), the frame (368 vs 384: one TV pool
- *   word too many at the loop-body top and one word too many above it) and the hoisted sp addresses. ---- */
-extern "C" void SnowRing_setSlotState_00004714(void *, int, int, float);
+ * Run 748: the |s| colour (exact; see the header).
+ * ---- */
 
 inline float fabs_(float x) { return x < 0.0f ? -x : x; }
 /* run 701: the cam's up vector type. TQ has no user operator=, so `(TQ &)ua = up * f180` is a word copy from the
@@ -107,7 +111,8 @@ struct TV {
     TV() {}
     TV(float a, float b, float c) { x = a; y = b; z = c; }
     /* run 708: |s| goes back into the parameter (no named local: the (0, k) pool word takes its frame word) */
-    TV(TV v, float a) { a = fabs_(a); x = v.x * a; y = v.y * a; z = v.z * a; }
+    /* run 748: two code-free blocks lengthen the |s| live range (priority below the rgb[0] / rgb[1] values) */
+    TV(TV v, float a) { a = fabs_(a); if (1) {} if (1) {} x = v.x * a; y = v.y * a; z = v.z * a; }
     /* run 708: the leading `if (1) {}` (a unit split ahead of the products) moves the s / y / z words onto the
      * target's colours in every op* (s f12, y f2, z f14) and the pre-loop |v| words with them */
     TV operator*(float s) const { if (1) {} TV r(x * s, y * s, z * s); return r; }
@@ -197,8 +202,10 @@ inline float idf(float a) { return a; }
 inline const TV &idv(const TV &v) { const TV *q = &v; return *q; }
 /* run 720: code-free blocks around the cam state / speed reads (pre-loop), so fade / 0.0f keep their
  * f22 / f24 colours under the six extra loop blocks of TQ::operator* */
-inline short st(const TCam *c) { if (1) {} if (1) {} return c->state; }
-inline float spd(const TCam *c) { if (1) {} if (1) {} return c->speed; }
+/* run 748: code-free blocks before the loop (fade / 0.0f colour order), per call site */
+inline short st0(const TCam *c) { return c->state; }
+inline float spd1(const TCam *c) { if (1) {} return c->speed; }
+inline short st5(const TCam *c) { if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} return c->state; }
 inline float lerpf(float a, float b, float t) { return (b - a) * t + a; }
 /* run 701: two dead int locals = the target's two frame words just ahead of up * f180's result (sp+168);
  * float locals copy f into pool words and recolour the a statement */
@@ -210,6 +217,9 @@ inline void lerp3(TV &p, const TV &b, float f) {
     p.z = lerpf(p.z, b.z, f);
 }
 
+
+/* run 748: fade blend of a colour byte; the 8 dummies make c the 10th float pool word (shared with |s|) */
+inline float mixq(float d0, float d1, float d2, float d3, float d4, float d5, float d6, float d7, float f, float c) { d0 = d0; d1 = d1; d2 = d2; d3 = d3; d4 = d4; d5 = d5; d6 = d6; d7 = d7; return c + (255.0f - c) * f; }
 extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
     int i;
     float s;
@@ -223,7 +233,7 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
     t->a.x = i = 0; t->a.y = i; t->a.z = i; t->b.x = i; t->b.y = i; t->b.z = i;
     t->f3C = t->f34;
     t->f40 = t->f38;
-    snoweffects_uso_func_00004374(t);
+    gl_func_00000000_snowa_v(t); /* 0x4374 */
     v = t->speed;
     if (t->cam->speed < 60.0f || fabs_(v) < t->lo) {
         s = 0.0f;
@@ -249,24 +259,24 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
         t->hits = 0;
     }
     t->s = s;
-    if (st(t->cam) != 97 || spd(t->cam) < 60.0f || fabs_(s) == 0.0f) {
+    if (st0(t->cam) != 97 || spd1(t->cam) < 60.0f || fabs_(s) == 0.0f) {
         t->hits = 0;
     }
-    t->on = snoweffects_uso_func_000046BC(t);
+    t->on = gl_func_00000000_snow_46bc(t); /* 0x46BC */
     t->slots[t->write].unk04[0] = t->mode;
     w = t->f164;
-    SnowRing_setSlotState_00004714(t, t->on, t->prevOn, w);
+    gl_func_00000000_snow_4714(t, t->on, t->prevOn, w); /* SnowRing_setSlotState_00004714 */
     if (t->slots[t->write].state == 2) {
         s *= 0.25f;
     }
     if (t->on != 0) {
         float fade = t->fade;
-        if (st(t->cam) == 98) {
+        if (st0(t->cam) == 98) {
             fade = 0.0f;
         }
         /* run 715: two dead int words here (the old &v114 / &vFC pointer locals' frame slots). With the pointer
          * locals gone, uopt emits the i*44 IV init ahead of the a0+276 / a0+252 hoists, as in the target. */
-        int g = (st(t->cam), 0), h = 0;
+        int g = (st5(t->cam), 0), h = 0;
         TQ0 ua; /* run 701: up * f180 lives here (sp+336, the first word below vFC), not in a loop-body __V */
         for (i = 0; i < t->stride; i++) {
             TV p;
@@ -314,7 +324,7 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
             if (i == 1 || i == 2) {
                 t->vtx[t->writeOfs + i].rgba[0] = t->cam->rgb[0] + (255.0f - t->cam->rgb[0]) * fade;
                 t->vtx[t->writeOfs + i].rgba[1] = t->cam->rgb[1] + (255.0f - t->cam->rgb[1]) * fade;
-                t->vtx[t->writeOfs + i].rgba[2] = t->cam->rgb[2] + (255.0f - t->cam->rgb[2]) * fade;
+                t->vtx[t->writeOfs + i].rgba[2] = mixq(0, 0, 0, 0, 0, 0, 0, 0, fade, (float)t->cam->rgb[2]);
             } else {
                 t->vtx[t->writeOfs + i].rgba[0] = t->cam->rgb[0];
                 t->vtx[t->writeOfs + i].rgba[1] = t->cam->rgb[1];

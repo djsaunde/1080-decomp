@@ -1028,14 +1028,10 @@ void snoweffects_uso_func_00007F60(char *this, int a1, int a2, int a3, int a4, i
     *(float *)(this + 0x198) = 100.0f;
 }
 
-#ifdef NON_MATCHING
-/* trail emitter update (800 / 800 words, objdiff 97.7 %): NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp
- * (agent-a runs 661-681), REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_7fe0.cpp (trail emitter update,
+ * agent-a runs 661-748), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
 void snoweffects_uso_func_00007FE0(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007FE0);
-#endif
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 639),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
