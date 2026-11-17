@@ -1341,46 +1341,46 @@ void EraseOptions_selectInput(ViewRecScreen *self) {
  * through the void alias: with no dead int $v0 def at the call, the switch value takes v0 and the
  * reloaded proc v1. */
 void EraseOptions_confirmInput(ViewRecScreen *self) {
-    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x10001) && *(s32 *)((char *)self + 0x70) != 0) {
-        gl_func_00000000(/* snd_postEvent */ 1);
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x10001) && *(s32 *)((char *)self + 0x70) != 0) {
+        CALL(snd_postEvent)(1);
         *(s32 *)((char *)self + 0x70) = 0;
     }
-    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x4002) && *(s32 *)((char *)self + 0x70) == 0) {
-        gl_func_00000000(/* snd_postEvent */ 1);
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x4002) && *(s32 *)((char *)self + 0x70) == 0) {
+        CALL(snd_postEvent)(1);
         *(s32 *)((char *)self + 0x70) = 1;
     }
-    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x40100)) {
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x40100)) {
         if (*(s32 *)((char *)self + 0x70) == 0) {
             XCALL(gl_func_00000000_vrv, snd_postEvent)(5);
             switch (*(s32 *)((char *)self->proc + 0x70)) {
                 case 0x100000:
-                    gl_func_00000000(/* Backup_sessionResetCourseTimes */ self->proc->session, *(s32 *)((char *)self + 0xA8));
+                    CALL(Backup_sessionResetCourseTimes)(self->proc->session, *(s32 *)((char *)self + 0xA8));
                     break;
                 case 0x200000:
-                    gl_func_00000000(/* Backup_sessionResetCourseScores */ self->proc->session, *(s32 *)((char *)self + 0xA8));
+                    CALL(Backup_sessionResetCourseScores)(self->proc->session, *(s32 *)((char *)self + 0xA8));
                     break;
                 case 0x400000:
-                    gl_func_00000000(/* Backup_sessionResetArcade */ self->proc->session);
+                    CALL(Backup_sessionResetArcade)(self->proc->session);
                     break;
                 case 0x800000:
-                    gl_func_00000000(/* Backup_sessionResetGhost */ self->proc->session);
+                    CALL(Backup_sessionResetGhost)(self->proc->session);
                     break;
                 case 0x1000000:
                     gInputMgr_vr.procState = gInputMgr_vr.nextProcState;
                     gInputMgr_vr.unk84 = 0;
                     gInputMgr_vr.unk88 = 1;
-                    gl_func_00000000(/* Backup_resetAll_0000B710 */ self->proc->session);
-                    gl_func_00000000(/* Process_fadeOut_0000F954 */ self->proc, -1, 0);
+                    CALL(Backup_resetAll_0000B710)(self->proc->session);
+                    CALL(Process_fadeOut_0000F954)(self->proc, -1, 0);
                     return;
             }
             self->proc->mode = 0x80000;
         } else {
-            gl_func_00000000(/* snd_postEvent */ 0x802);
+            CALL(snd_postEvent)(0x802);
             self->proc->mode = 0x80000;
         }
     }
-    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x200)) {
-        gl_func_00000000(/* snd_postEvent */ 0x802);
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
+        CALL(snd_postEvent)(0x802);
         self->proc->mode = 0x80000;
     }
 }
