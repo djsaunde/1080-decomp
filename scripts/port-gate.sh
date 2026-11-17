@@ -36,6 +36,9 @@
 #              Match Race reaches the goal (before the CPU when the script says `# WIN`), and an
 #              options change survives a reload in a new process.  Physics-tied like the race step:
 #              the failure prints the regenerate command for each script
+#   soak       port/tools/soak.py --gate (~8 s, plan 20.7): 12 fixed fuzz seeds x 5000 steps and every
+#              port/host/repro/*.input (soak-found crash repros) run clean: no signal / sys_fatal / trap /
+#              hang / NaN rider fields / stuck retrace / audio badAddr; a failure prints its class and step
 #   build64    (plan 21.7 / 21.8, M6) the x86-64 build: configure + build, test_*, then the smoke, the race and
 #              the modes scripts 64-bit: every state.log equal to the i386 run's, the 64-bit race / modes
 #              checks pass; abi-scan --x64 count printed (PORT_GATE_BUILD64=0 skips it)
@@ -283,6 +286,18 @@ start; if have tenshoe; then
   txt=$(grep -E '^  [a-z0-9]+ +(ok|FAIL)' "$MC/check.log" | awk '{printf "%s %s; ", $1, $2}' | sed 's/; $//')
   if [ $rc = 0 ]; then line modes PASS "$txt"
   else line modes FAIL "${txt:-$(tail -1 "$MC/check.log")}"; grep -E 'FAIL|regenerate' "$MC/check.log" | sed 's/^/           /'; fi
+fi
+
+# ---- soak (plan 20.7, run 864): port/tools/soak.py --gate: fixed fuzz seeds (random menus, rides, pauses,
+# 2 / 4 pads; blank, saved and all-unlocked SRAM) and every port/host/repro/*.input (minimised crash
+# repros) must run clean: no signal, sys_fatal, trap, hang, NaN / Inf rider fields, stuck retrace or
+# audio badAddr / unknown op.  ~8 s
+start; if have tenshoe; then
+  SK="$(mktemp -d "$LOG/soak.XXXXXX")"  # a fresh dir per run (no rm of a variable path)
+  python3 port/tools/soak.py -b "$B" -r "$ROM" -o "$SK" -j "$JOBS" --gate >"$SK/soak.log" 2>&1; rc=$?
+  txt="$(head -1 "$SK/soak.log" | sed 's/^soak: //')"
+  if [ $rc = 0 ]; then line soak PASS "$txt"
+  else line soak FAIL "${txt:-$(tail -1 "$SK/soak.log")}"; grep -E '^  (FAIL|min)|first:' "$SK/soak.log" | cut -c1-200 | sed 's/^/           /'; fi
 fi
 
 # ---- build64 (plan 21.7 / 21.8, M6): the x86-64 build (-DPORT_64=ON, the game in the x32 data model) from a
