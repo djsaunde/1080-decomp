@@ -27,17 +27,17 @@ void ne_nop_00000008(void) {
 void ne_nop_00000010(void) {
 }
 
-/* NameEntry_init: NameEnter process init: name (Data+0x140), mode a1 at +0x50,
- * cursor 160 / 85, the entry object (760) at +0x54, pad 0 active, three gui sprites
- * 0x280000..2. */
-void NameEntry_init(char *self, int mode) {
+/* NameEntry_init: NameEnter process init: name (Data+0x140), the record session (a1) at
+ * +0x50, cursor 160 / 85, the NameEnterMessage letter wheel at +0x54, pad 0 active, three gui
+ * sprites 0x280000..2. Called by app_launchNameEnt and every mode's onRaceOver. */
+void NameEntry_init(char *self, int session) {
     NODE(self)->name = ne_data + 0x140; /* "NameEnter Process" */
-    NEPROC(self)->session = (struct BackupSession *)mode;
+    NEPROC(self)->session = (struct BackupSession *)session;
     NEPROC(self)->entered = 0;
     NEPROC(self)->cursorX = 160;
     NEPROC(self)->cursorY = 85;
     NEPROC(self)->showBoard = 1;
-    NEPROC(self)->message = (NameEnterMessage *)CALL(NameEnterMessage_ctor)(0, self, mode);
+    NEPROC(self)->message = (NameEnterMessage *)CALL(NameEnterMessage_ctor)(0, self, session);
     CALL(input_setActivePad_0001207C)(&D_00000000, 0);
     CALL(gui_spriteInit)(NEPROC(self)->frameTop, 0x280000);
     CALL(gui_spriteInit)(NEPROC(self)->frameLeft, 0x280001);

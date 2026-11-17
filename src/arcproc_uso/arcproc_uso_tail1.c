@@ -610,7 +610,7 @@ void ARCRaceProcess_onRaceOver(ArcRace *a0) {
         CALL(snd_seqEventDbg_00000148)(7, 0, 0);
         CALL(RaceProcess_restartWithTimeout)(s1, INPUT_MGR(D_00000000).replayLen[0] + 0x26000F);
         s1->race.nameEntry = CALL(ArcNameEntry_ctor_0000199C)(0, s1, 0);
-        XCALL(gl_func_00000000_FA8v, NameEntry_init)(s1->race.nameEntry, s1->race.session); /* UNNAMED: unknown-role jal -> nameent.uso Text+0x18 (TextReloc import); nameent.uso is not split, so the callee has no symbol: called on the new mode NameEntry with (nameEntry, session) right after its ctor */
+        XCALL(gl_func_00000000_FA8v, NameEntry_init)(s1->race.nameEntry, s1->race.session); /* nameent:NameEntry_init (Text+0x18): bind the record session (+0x50) and build the letter wheel */
         node = (char *)s1->race.nameEntry;
         buf = (char *)s1->race.handler;
         XCALL(gl_func_00000000_FA8v, list_append)(buf + 16, node);
@@ -1200,7 +1200,7 @@ void ArcNameEntry_drawExitOverlay(int *self) {
         val = ARCRACE(MODENAMEENT(self)->race)->resultFade;
     }
     if (val <= 0.0f) {
-        CALL(NameEntry_drawExitOverlay)(self); /* UNNAMED: unknown-role jal -> nameent.uso Text+0x718 (TextReloc import); nameent.uso is not split, so the callee has no symbol: called with the NameEntry once its exit-overlay fade reaches 0 */
+        CALL(NameEntry_drawExitOverlay)(self); /* nameent:NameEntry_drawExitOverlay (Text+0x718), the base slot 18, once the record fade reaches 0 */
     }
 }
 

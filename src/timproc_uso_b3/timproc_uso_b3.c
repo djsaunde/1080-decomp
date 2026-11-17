@@ -540,7 +540,7 @@ state1:
         CALL(RaceProcess_createReplayCam)(saved);
         CALL(RaceProcess_restartWithTimeout)(saved, base[0x170 / 4] + 0x00220000);
         RACEPROC(saved)->nameEntry = CALL(TrkNameEntry_ctor_00001660)(0, saved, 0);
-        CALL(NameEntry_init)(RACEPROC(saved)->nameEntry, (int)RACEPROC(saved)->session); /* UNNAMED: unknown-role jal -> nameent.uso Text+0x18 (TextReloc import); nameent.uso is not split, so the callee has no symbol: called on the new mode NameEntry with (nameEntry, session) right after its ctor */
+        CALL(NameEntry_init)(RACEPROC(saved)->nameEntry, (int)RACEPROC(saved)->session); /* nameent:NameEntry_init (Text+0x18): bind the record session (+0x50) and build the letter wheel */
         created = (int *)RACEPROC(saved)->nameEntry;
         link = (char *)RACEPROC(saved)->handler;
         CALL(list_append)(link + 0x10, created);
@@ -937,7 +937,7 @@ void TrkNameEntry_drawExitOverlay(int *self) {
         val = TIMRACE(MODENAMEENT(self)->race)->recordFade;
     }
     if (val <= 0.0f) {
-        CALL(NameEntry_drawExitOverlay)(self); /* UNNAMED: unknown-role jal -> nameent.uso Text+0x718 (TextReloc import); nameent.uso is not split, so the callee has no symbol: called with the NameEntry once its exit-overlay fade reaches 0 */
+        CALL(NameEntry_drawExitOverlay)(self); /* nameent:NameEntry_drawExitOverlay (Text+0x718), the base slot 18, once the record fade reaches 0 */
     }
 }
 
