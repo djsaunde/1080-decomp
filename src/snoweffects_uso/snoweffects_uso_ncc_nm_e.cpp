@@ -8,7 +8,10 @@
  * named r, and life / decay and alpha / alphaVel are stored through inline two-parameter setters (their uopt-coloured
  * parameters give the target's early f0 loads). Run 673 levers: the +0x1A0 / +0x1FC timers as `t->timer--; if (t->timer < 0)` (the
  * pre-decrement form colours the counter v0 / v1, the target uses t-registers), and the set()-built operator*
- * of SVb (below). */
+ * of SVb (below). Run 685: 0x64B8 99.8 %, 0x6B28 98.4 %, 0x718C 96.9 % (objdiff). The spawn lerps are SVb members
+ * (lerpTo / lerpEach): reading the components as inline parameters through `this` keeps uopt from copy-propagating
+ * them, so they load up front into pool-word colours as in the target; the lerped point is then copied into the
+ * x / y / z locals for pos.set(). */
 #include "snoweffects_ncc_e.h"
 extern "C" float snow_ro_50, snow_ro_54;  /* RoData+0x50 / +0x54: the 0x64B8 burst speed scale / bias */
 
@@ -34,6 +37,14 @@ struct SVb {
     SVb operator*(float s) const { SVb r; r.set(x * s, y * s, z * s); return r; }
     SVb &operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
     SVb &operator+=(const SVb &v) { x += v.x; y += v.y; z += v.z; return *this; }
+    /* lerp toward a by r (0x64B8 / 0x6B28): the components pass as parameters, so they load up front into the
+     * pool-word colours of the following set() (f2 / f12 / f14); lerpComp's body is the per-component formula. */
+    void lerpTo(const SVb &a, float r) { lerpComp(r, x, y, z, a); }
+    void lerpComp(float r, float px, float py, float pz, const SVb &a) { x = (a.x - px) * r + px; y = (a.y - py) * r + py; z = (a.z - pz) * r + pz; }
+    /* per-component lerp (0x718C): one materialised parameter p per statement, so each component loads into the
+     * same pool word (f2) right before its use. */
+    static float lerpF(float p, float q, float r) { ; return (q - p) * r + p; }
+    void lerpEach(const SVb &a, float r) { x = lerpF(x, a.x, r); y = lerpF(y, a.y, r); z = lerpF(z, a.z, r); }
 };
 inline SVb operator+(const SVb &a, const SVb &b) { SVb r; r.set(a.x + b.x, a.y + b.y, a.z + b.z); return r; }
 inline SV operator-(const SV &a, const SV &b) { SV r; r.set(a.x - b.x, a.y - b.y, a.z - b.z); return r; }
@@ -155,11 +166,9 @@ extern "C" void snoweffects_uso_func_000064B8(SnowEm *t) {
                     if (p != 0) {
                         SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f);
                         k = gl_func_00000000_snow_randf();
-                        { x = u.x; y = u.y; z = u.z;
-                        u.x = (t->vF0.x - x) * k + x;
-                        u.y = (t->vF0.y - y) * k + y;
-                        u.z = (t->vF0.z - z) * k + z; }
-                        p->pos.set(u.x, u.y + t->f178, u.z);
+                        u.lerpTo(t->vF0, k);
+                        x = u.x; y = u.y; z = u.z;
+                        p->pos.set(x, y + t->f178, z);
                         p->vel.set(n.x, n.y, n.z);
                         p->size = 1.0f;
                         p->unk3C = 0.5f;
@@ -286,11 +295,9 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
                 }
                 SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f * s);
                 s = gl_func_00000000_snow_randf();
-                { x = u.x; y = u.y; z = u.z;
-                u.x = (t->vF0.x - x) * s + x;
-                u.y = (t->vF0.y - y) * s + y;
-                u.z = (t->vF0.z - z) * s + z; }
-                p->pos.set(u.x, u.y, u.z);
+                u.lerpTo(t->vF0, s);
+                x = u.x; y = u.y; z = u.z;
+                p->pos.set(x, y, z);
                 p->vel.set(n.x, n.y, n.z);
                 p->fadeAt = 256.0f;
                 p->size = 1.0f;
@@ -409,9 +416,7 @@ extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
             SVb w;
             SVb u = t->pos;
             r = gl_func_00000000_snow_randf();
-            u.x = (t->vF0.x - u.x) * r + u.x;
-            u.y = (t->vF0.y - u.y) * r + u.y;
-            u.z = (t->vF0.z - u.z) * r + u.z;
+            u.lerpEach(t->vF0, r);
             { int sc[2]; sc[0] = 0; }
             w = t->cam->v318 * t->f208;
             SVb a1 = t->cam->v3B0 * t->f20C * (a < 0.0f ? -a : a);
