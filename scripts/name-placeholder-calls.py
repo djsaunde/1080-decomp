@@ -982,7 +982,12 @@ def donor_offsets(path, src, m, sites, mv, fn, donor, rb, rv, rall):
     if key not in _DONOR_VERIFY:
         tag = 'd%d' % len([k for k in _DONOR_VERIFY if k[0] == path])
         try:
-            _DONOR_VERIFY[key] = compile_verify(path, verify_text(src, m, sites), mv, flags_of=donor, tag=tag)
+            # only fn's bytes are compared, so the file's GLOBAL_ASM blocks are dropped: under
+            # the donor's opt level asm-processor's minimum .text block size can differ (-O0
+            # needs more than -O2), and the host's short _pad.s blocks then fail the compile
+            # ("too short .text block", timproc b1 / b3, run 800)
+            vt = re.sub(r'^[ \t]*#[ \t]*pragma[ \t]+GLOBAL_ASM\(.*\)[ \t]*$', '', verify_text(src, m, sites), flags=re.M)
+            _DONOR_VERIFY[key] = compile_verify(path, vt, mv, flags_of=donor, tag=tag)
         except RuntimeError as ex:
             _DONOR_VERIFY[key] = str(ex)
     got = _DONOR_VERIFY[key]
