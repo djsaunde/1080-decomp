@@ -73,7 +73,7 @@ extern "C" void snoweffects_uso_func_00000270(SnowTex *t) {
 }
 
 extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at +0x254 */
-/* snoweffects_uso_func_000028E0 (NON_MATCHING, objdiff 95.0 %): the snowfall draw. Moves every
+/* snoweffects_uso_func_000028E0 (NON_MATCHING, objdiff 95.3 %): the snowfall draw. Moves every
  * flake by the camera motion since the last frame (camera +0x70 position * the gGfxLib world scale, minus +0x98,
  * times +0xA4), wraps it inside the camera-space box (x / y +-30, z -100..0) along the box axes
  * (+0x50 / +0x5C / +0x68; a y wrap re-rolls the flake's alpha against +0x4C), then projects the
@@ -109,9 +109,14 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * function scope (halfH -188, i -208 in M space, as the target spills them); operator* returns
  * `(r.set(..), r)` (single-return body, a takes a pooled word); the 0x06, EE and E4 packets go through the
  * snowW() inline (pooled parameter words instead of the macro's named _g, -2 words).
+ * agent-c run 752 (95.04 -> 95.34 %): the SnowV3d ctor body is `set(a, b, c)`, the EE packet goes through
+ * snowW() and the E4 packet back through gDPWord (794 -> 793 words), and a code-free `if (1) {}` after
+ * `self->drawn++` ends that uopt block: the op* / op- return-copy address LRs now take ra (sp+188, hoisted)
+ * and t5 (sp+228, loop only; the post-loop copy recomputes it) as in the target, with no s4. op* r is at
+ * -344 (the target's).
  * Left: wx f22 / z f24 swapped (z's pri 8.75 < wx's 10), so the draw-block z needs a copy; the EE packet order;
- * the two `+=` caller temps are swapped (target: op* result -268, op- result -280); op* r at -348 (target -344:
- * s also needs a pooled word); the t4 spill at 108 (target 116:
+ * the two `+=` caller temps are swapped (target: op* result -268, op- result -280); i / last in t4 / t3
+ * (target t3 / t4); the last spill at 112 (target 116:
  * the target's M is 400 with one more 8-byte unit under it).
  * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
@@ -120,7 +125,7 @@ struct SnowV3d {
     float x, y, z;
     SnowV3d() {}
     void set(float a, float b, float c) { x = a; y = b; z = c; }
-    SnowV3d(float a, float b, float c) { x = a; y = b; z = c; }
+    SnowV3d(float a, float b, float c) { set(a, b, c); }
     SnowV3d &operator+=(const SnowV3d &v) { x += v.x; y += v.y; z += v.z; return *this; }
 
     SnowV3d &operator=(SnowV3d o) { x = o.x; y = o.y; z = o.z; return *this; }
@@ -279,7 +284,8 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
                     snowW(c->next(), 0xEE000000,
                             ((int)(((m[0][2] * x + m[1][2] * y + m[2][2] * z + m[3][2]) * w + (float)snowOne()) * snow_ro_10) & 0x7FFF) << 16);
                     self->drawn++;
-                    snowW(c->nextM(), 0xE4000000 | ((((x0 + sw) << 2) & 0xFFF) << 12) | (((y0 + sz) << 2) & 0xFFF),
+                    if (1) {}
+                    gDPWord(c->nextM(), 0xE4000000 | ((((x0 + sw) << 2) & 0xFFF) << 12) | (((y0 + sz) << 2) & 0xFFF),
                             (((x0 << 2) & 0xFFF) << 12) | ((y0 << 2) & 0xFFF));
                     gDPWord(c->next(), 0xB4000000, 0);
                     gDPWord(c->next(), 0xB3000000,
