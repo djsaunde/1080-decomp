@@ -73,7 +73,7 @@ extern "C" void snoweffects_uso_func_00000270(SnowTex *t) {
 }
 
 extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at +0x254 */
-/* snoweffects_uso_func_000028E0 (NON_MATCHING, objdiff 94.8 %): the snowfall draw. Moves every
+/* snoweffects_uso_func_000028E0 (NON_MATCHING, objdiff 94.9 %): the snowfall draw. Moves every
  * flake by the camera motion since the last frame (camera +0x70 position * the gGfxLib world scale, minus +0x98,
  * times +0xA4), wraps it inside the camera-space box (x / y +-30, z -100..0) along the box axes
  * (+0x50 / +0x5C / +0x68; a y wrap re-rolls the flake's alpha against +0x4C), then projects the
@@ -98,10 +98,10 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * agent-c run 734: wz / wy / wx declared in that order (92.53). Putting 1 / w and both size sites in the snowOne
  * group gives the target's draw-block f26 1.0 (alpha / depth rematerialised), but the freed callee-saved register
  * then goes to another constant (-30, 60 or the alpha / depth 1.0): the target keeps wx in a callee-saved register.
- * agent-c run 741 (92.53 -> 94.8 %, 793 words): operator* computes the three products into named floats before
+ * agent-c run 741 (92.53 -> 94.9 %, 793 words): operator* computes the three products into named floats before
  * storing them (const-ref param), so they are register LRs as in the target (f2 / f12 / f14); wz / wy / wx are
- * assigned after the += (their LRs are created after the op- / op* temps and lose the priority tie, so the temps
- * take f0 / f2 / f12 and wy / wx land in f16 and a callee-saved register, as the target); nested
+ * assigned after the += and the x / y / z loads (their LRs are created after the op- / op* temps and lose the
+ * priority tie, so the temps take f0 / f2 / f12 and wx lands in a callee-saved register); nested
  * `if (cy) if (cz) {}` (cz finishes after the first compare, no nop); 1.0f literal for 1 / w and the sizes with
  * snowOne on the depth (1.0 in f26 for the draw block only, halfW back in f30); no volatile halfH; a z variable
  * in the depth term only.
@@ -203,8 +203,8 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
         int sz, sw; int x0, y0;
         float wz, wy, wx;
         p->pos += (cam - last) * self->follow;
-        wz = 0.0f; wy = 0.0f; wx = 0.0f;
         x = p->pos.x; y = p->pos.y; z = p->pos.z;
+        wz = 0.0f; wy = 0.0f; wx = 0.0f;
         cx = rot[0][0] * x + rot[1][0] * y + rot[2][0] * z + rot[3][0];
         cy = rot[0][1] * x + rot[1][1] * y + rot[2][1] * z + rot[3][1];
         cz = rot[0][2] * x + rot[1][2] * y + rot[2][2] * z + rot[3][2];
