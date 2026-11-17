@@ -19,7 +19,25 @@ test: test_mixer test_audio_swap
 	./test_mixer $(ASSETS)
 	./test_audio_swap $(ASSETS)
 
+# M4 regression sweep (plan 15.8): every sequence, every course start and a set of sound effects
+# through the real driver (port/audio/tools/seqrender, CMake target seqrender with PORT_LINK=ON),
+# checked against port/audio/tools/regress-golden.tsv.
+#   make -C port/audio regress SEQRENDER=<build>/seqrender [RUN32=<monorepo>/tools/i386-sysroot/run32]
+#   make -C port/audio regress-update SEQRENDER=...   (rewrite the golden hashes after an intended change)
+SEQRENDER ?=
+RUN32 ?= $(abspath ../../../../tools/i386-sysroot/run32)
+ROM ?= $(abspath ../../baserom.z64)
+REGRESS = python3 tools/regress.py --seqrender $(SEQRENDER) --run32 $(RUN32) --rom $(ROM)
+
+regress:
+	@test -n "$(SEQRENDER)" || { echo "set SEQRENDER=<cmake build>/seqrender"; exit 2; }
+	$(REGRESS)
+
+regress-update:
+	@test -n "$(SEQRENDER)" || { echo "set SEQRENDER=<cmake build>/seqrender"; exit 2; }
+	$(REGRESS) --update
+
 clean:
 	rm -f test_mixer test_audio_swap
 
-.PHONY: test clean
+.PHONY: test clean regress regress-update

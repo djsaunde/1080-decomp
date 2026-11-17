@@ -1,0 +1,55 @@
+# port/audio/tools/regress.py golden PCM hashes (FNV-1a 32 of the WAV data; seqrender --summary).
+# case<TAB>hash<TAB>flags (silent = expected silent).  Regenerate with regress.py --update.
+seq00	DD5886C5	silent
+seq01	DD5886C5	silent
+seq02	74141061	
+seq03	EE1C04AA	
+seq04	1E14604B	
+seq05	C23ADA1E	
+seq06	86380738	
+seq07	74D2BA95	
+seq08	DB0FE1AC	
+seq09	93DCAB56	
+seq10	13763913	
+seq11	DB0FE1AC	
+seq12	431AD178	
+seq13	93B9514D	
+seq14	02A6370B	
+seq15	D46412A2	
+seq16	E96F3177	
+seq17	D07165D0	
+seq18	E34AB8AC	
+seq19	E5C4F515	
+seq20	D098ACDC	
+seq21	8397F982	
+seq22	9F6CA258	
+seq23	7BBBF417	
+seq24	8397F982	
+seq25	9F6CA258	
+course0	EF99C528	
+course1	991FD7AE	
+course2	D29A8738	
+course3	BA960BAE	
+course4	2FAE5963	
+course5	D32B3A1C	
+course6	37FC5BD4	
+course7	2FAE5963	
+sfx0E	D27E43C5	silent
+sfx0F	D27E43C5	silent
+sfx10	D27E43C5	silent
+sfx11	D27E43C5	silent
+sfx12	4DAEC616	
+sfx14	D27E43C5	silent
+sfx15	D27E43C5	silent
+sfx16	D27E43C5	silent
+sfx18	D27E43C5	silent
+sfx19	44BD4337	
+sfx1A	626A6F1B	
+sfx1B	D26C9349	
+sfx1C	D27E43C5	silent
+sfx1D	2FF10BD3	
+sfx1E	DA36F590	
+sfx1F	6B798AE5	
+sfx33	5E6DE7E0	
+sfxA3	E6574F93	
+sfxBC	E71CCAA4	
