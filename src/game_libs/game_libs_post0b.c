@@ -17644,7 +17644,15 @@ void Window_setupView(Window *o) {
          * steers the post-call *(o+0x70) reload into a1 like the target (a new named local would
          * add an 8-byte dead home). The camera fov word, aspect and near go as raw words. */
         src = (float *)*(int *)&((MCamera *)o->camera)->fov;
+#ifdef PORT64
+        /* x86-64 (plan 21.9): math_perspectiveF takes four floats in xmm0-3; the raw words above would
+         * arrive in integer registers (abi-scan --x64 X64P1-3: the 64-bit frame drew upside down) */
+        (void)src;
+        PORT64_CALLP(void(float *, float, float, float, float), math_perspectiveF)(
+            (float *)m30, ((MCamera *)o->camera)->fov, o->aspect, o->near, o->far);
+#else
         aEE44_a(m30, (int)src, *(int *)&o->aspect, *(int *)&o->near, o->far);
+#endif
         src = &((MCamera *)o->camera)->view[0][0];
         for (r = 0; r < 4; r++) {
             for (c = 0; c < 4; c++) {
@@ -20659,7 +20667,13 @@ void LightTarget_display(LightTarget *self) {
     p->x = v.x;
     p->y = v.y;
     p->z = v.z;
+#ifdef PORT64
+    /* x86-64 (plan 21.9): the scale is a float parameter (xmm0); a K&R call would pass its bits in rcx */
+    PORT64_CALLP(void(char *, char *, s32, f32, s32), gfx_selectLights_000478FC)(
+        (char *)&gGfxLib, (char *)p, self->mask, self->scale, self->unk128[0]);
+#else
     FCALL(gfx_selectLights_000478FC)(&gGfxLib, p, self->mask, *(s32 *)&self->scale, self->unk128[0]);
+#endif
     v = *p;
     self->unk108[0] = v.x;
     self->unk108[1] = v.y;

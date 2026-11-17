@@ -407,7 +407,9 @@ int input_checkReleased_00011FA8(void *, int, ...);
 #endif
 int input_getPad_00011D40(void *, int, ...);
 int /*void*/ input_setRacePadsActive(void *, int, ...);
+#ifndef PORT_NODECL_light_setF124_000550A0
 int /*void*/ light_setF124_000550A0(void *, float, ...);
+#endif
 int /*void*/ light_setMirrorMatrix_00054E78(void *, void *, ...);
 int /*void*/ light_setShadowMatrix_00054D04(void *, void *, void *, ...);
 int /*void*/ list_append(void *, int, ...);

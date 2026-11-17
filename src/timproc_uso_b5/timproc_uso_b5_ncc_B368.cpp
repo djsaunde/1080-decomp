@@ -25,6 +25,10 @@ void gen_imp_math_mtx4Transpose(void *src, void *dst);
 void import_0010806C(void *src, void *dst);
 void gen_imp_math_quatSlerp(void *quat, void *vec, f32 scale, s32 flag);
 void gen_imp_light_setF124_000550A0(void *obj, s32 val);
+#ifdef PORT64
+/* x86-64 (plan 21.9): light_setF124 with its float parameter (abi-scan --x64 X64P1) */
+void port64_light_setF124(void *obj, f32 val) __asm__("light_setF124_000550A0");
+#endif
 void gen_imp_QNode_display(void *obj);
 extern f32 timb5_B368_gscale;
 }
@@ -64,7 +68,12 @@ extern "C" void SelCourseMap_display_0000B368(Obj *o) {
         o->sE8 = o->f118; o->sEC = o->f118; o->sF0 = o->f118;
         s224 = (s240 = pool(&sXY[0], timb5_B368_gscale)) * o->f128;
         o->pos += s224;
+#ifdef PORT64
+        /* x86-64 (plan 21.9): the word at 0x124 is the float's bits; light_setF124 takes the float (xmm0) */
+        port64_light_setF124(o->m108, *(f32 *)&o->i124);
+#else
         gen_imp_light_setF124_000550A0(o->m108, o->i124);
+#endif
         gen_imp_QNode_display(o);
         o->i12C = 1;
     }

@@ -6,6 +6,10 @@
 
 /* arg0 is a Mat (material.h); gGfxLib is spelled through the &D_00000000 blank (GFXLIB below).
  * arg1 (+0x9C / +0xA4 / +0xA8) is left raw: its type is not proven. */
+#ifdef PORT64
+/* x86-64 (plan 21.9): Obj::setLights (game_libs_ncc_454C4.cpp, exported as gfx_emitLights_000454C4) with its float k (abi-scan --x64 X64P3) */
+extern int port64_setLights(void *, int, char *, float) __asm__("gfx_emitLights_000454C4");
+#endif
 #define M ((Mat *)arg0)
 #define GFX GFXLIB(&D_00000000)
 void Mat_draw(char *arg0, char *arg1) {
@@ -77,7 +81,12 @@ block_5:
                     M->unk84 = 1;
                 } else if ((GFX->unk244 != 0) || (M->unk84 != 0)) {
                     gl_437C0_reset_56814(temp_a0_2);
+#ifdef PORT64
+                    /* x86-64 (plan 21.9): Obj::setLights takes k as a float (xmm0), not the word's bits */
+                    port64_setLights((s32 *)&D_00000000, *(int *)&M->lightDL, arg0, *(f32 *)((char *)(arg1) + (0x9C)));
+#else
                     gl_437C0_update_454C4((s32 *)&D_00000000, *(int *)&M->lightDL, arg0, (*(int *)((char *)(arg1) + (0x9C))));
+#endif
                     gl_437C0_finish_57700(*(int *)&M->lightDL);
                     gl_437C0_enable_430D8(*(int *)&M->lightDL, ((*(int *)((char *)(arg1) + (0xA8))) != 0));
                     M->unk84 = 0;

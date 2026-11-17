@@ -28,6 +28,10 @@ void gen_imp_QNode_display(void *obj);
 int gen_imp_QNode_update(...);
 int gen_imp_AnimPlayer_start(...);
 void timproc_uso_b5_func_06970C_i(...);
+#ifdef PORT64
+/* x86-64 (plan 21.9): light_setF124 with its float parameter (abi-scan --x64 X64KR) */
+void port64_light_setF124(void *obj, f32 val) __asm__("light_setF124_000550A0");
+#endif
 }
 static float sXY[2]; static float sZ;
 struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } };
@@ -64,7 +68,12 @@ extern "C" void SelCharacter_display_0000B624(Obj *o) {
         { f32 ang = o->view[0]; V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); }
         ang3 = o->view[2];
         { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang3); }
+#ifdef PORT64
+        /* x86-64 (plan 21.9): light_setF124 takes the float in xmm0; a variadic call passes the bits in rsi */
+        port64_light_setF124(o->inner, o->highlight);
+#else
         timproc_uso_b5_func_06970C_i(o->inner, *(s32 *)&o->highlight);
+#endif
         if (o->animTimer != 0 || o->focused != 0) {
             gen_imp_QNode_update(o);
             timproc_uso_b5_D_807FFBBC += 1;

@@ -41,8 +41,9 @@
 #              hang / NaN rider fields / stuck retrace / stuck screen (scr=, run 869) / audio badAddr; a failure prints its class and step
 #   build64    (plan 21.7 / 21.8, M6) the x86-64 build: configure + build, test_*, then the smoke, the race and
 #              the modes scripts 64-bit: every state.log equal to the i386 run's, the 64-bit race / modes
-#              checks pass; soak.py --gate64: two soak seeds on both builds, state.log + SRAM equal (run 869);
-#              abi-scan --x64 count printed (PORT_GATE_BUILD64=0 skips it)
+#              checks pass; the smoke's gfx at PORT_GATE_GFX_STEPS (default 300,1000,1500,1900) equal to the
+#              i386 dump, address operands masked (port/tools/dlump-cmp.py, plan 21.9); abi-scan --x64
+#              count printed (PORT_GATE_BUILD64=0 skips it)
 #   saves      test_backup + 4 short boots: the SRAM file is the N64 image (port/include/port_backup.h,
 #              plan 20): blank-SRAM save = the ROM defaults' big-endian image, reloads unchanged,
 #              a synthetic .sra loads, damaged primaries are restored from the mirrors
@@ -59,6 +60,7 @@ SELF_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WT="$(cd "${LAND_WT:-$SELF_DIR/..}" && pwd)" || exit 99
 LOG="${PORT_GATE_TMP:-${TMPDIR:-/tmp}/port-gate-$(basename "$WT")}"
 FRAMES="${PORT_GATE_FRAMES:-2000}"; JOBS="${PORT_GATE_JOBS:-8}"
+GFX_STEPS="${PORT_GATE_GFX_STEPS:-300,1000,1500,1900}" # the smoke steps whose gfx build64 compares (plan 21.9)
 REGEN=0; UPDATE=0
 for a in "$@"; do case "$a" in
   --regen) REGEN=1 ;; --update-baselines) UPDATE=1 ;;
@@ -237,8 +239,9 @@ fi
 # ---- smoke: the game itself, headless, from a clean directory
 start; if have tenshoe; then
   S="$LOG/smoke"; rm -rf "$S"; mkdir -p "$S"
-  ( cd "$S" && timeout 300 "$RUN32" "$B/tenshoe" --rom "$ROM" --sram "$S/1080.sram" --frames "$FRAMES" \
-      --trace "$S/state.log" >"$S/out.log" 2>&1 ); rc=$?
+  # the gfx dump of a few steps: build64 compares it with the 64-bit build's (plan 21.9)
+  ( cd "$S" && PORT_GFX_DUMP="$S/gfx" PORT_GFX_DUMP_STEPS="$GFX_STEPS" timeout 300 "$RUN32" "$B/tenshoe" --rom "$ROM" \
+      --sram "$S/1080.sram" --frames "$FRAMES" --trace "$S/state.log" >"$S/out.log" 2>&1 ); rc=$?
   nf=$(grep -c '^F ' "$S/state.log" 2>/dev/null); nf=${nf:-0}
   # NaN / Inf: an f32 bit pattern with an all-ones exponent; r<N>= (pos, quat, speed) gated, cam= counted
   nan=$(python3 - "$S/state.log" <<'PY'
@@ -316,8 +319,11 @@ if [ "${PORT_GATE_BUILD64:-1}" = 1 ]; then
     t=""; for u in test_ultra test_fs test_backup; do
       case $u in test_ultra) a="$S64/test.sram";; test_fs) a="$ROM";; *) a="";; esac
       "$B64/$u" $a >"$S64/$u.log" 2>&1 && t="$t $u ok" || { t="$t $u FAIL"; ok=0; }; done
-    ( cd "$S64" && timeout 300 "$B64/tenshoe" --rom "$ROM" --sram "$S64/1080.sram" --frames "$FRAMES" \
-        --trace "$S64/state.log" >"$S64/out.log" 2>&1 ); rc=$?
+    ( cd "$S64" && PORT_GFX_DUMP="$S64/gfx" PORT_GFX_DUMP_STEPS="$GFX_STEPS" timeout 300 "$B64/tenshoe" --rom "$ROM" \
+        --sram "$S64/1080.sram" --frames "$FRAMES" --trace "$S64/state.log" >"$S64/out.log" 2>&1 ); rc=$?
+    # the gfx tasks of those steps, i386 against x86-64, address operands masked (port/tools/dlump-cmp.py): a
+    # float passed the wrong way to a render call changes a matrix / light / vertex, not state.log
+    gfx=$(python3 port/tools/dlump-cmp.py "$LOG/smoke/gfx" "$S64/gfx" 2>&1) || ok=0; gfx=$(printf '%s' "$gfx" | tail -1 | cut -c1-160)
     nf=$(grep -c '^F ' "$S64/state.log" 2>/dev/null); nf=${nf:-0}
     stop=$(grep -a -m1 -E 'sys_fatal|PORT: signal' "$S64/out.log" | cut -c1-70)
     { [ $rc = 0 ] && [ "$nf" -ge "$FRAMES" ]; } || ok=0
@@ -360,7 +366,7 @@ PY
     abi=$(python3 port/tools/abi-scan.py --x64 "$B64/tenshoe" 2>/dev/null | cut -f1 | sed 's/X64P[0-9]*/X64P/' | sort | uniq -c | awk '{printf "%s %s ", $2, $1}')
     rr=$( [ -n "$R64" ] && { grep -qE ' FAIL ' "$R64/check.log" && echo "race64 FAIL" || echo "race64 ok"; } )
     mm=$( [ -n "$M64" ] && { grep -qE ' FAIL ' "$M64/check.log" && echo "modes64 FAIL" || echo "modes64 ok"; } )
-    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; $rr; $mm; $cmpr; $sk64; abi-scan --x64 (INFO): ${abi:-0}"
+    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; $rr; $mm; $cmpr; gfx: $gfx; abi-scan --x64 (INFO): ${abi:-0}"
   else ok=0; fi
   [ $ok = 1 ] && line build64 PASS "$why" || line build64 FAIL "$why"
 fi
