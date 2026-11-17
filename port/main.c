@@ -32,7 +32,20 @@
  *
  * Usage: 1080 [--rom baserom.z64] [--sram save.sram] [--frames N]
  *             [--input script.txt] [--record in.log] [--replay in.log] [--trace state.log]
- *             [--audio-out out.wav] [--authentic] [--realtime]
+ *             [--audio-out out.wav] [--authentic] [--realtime] [--fork-at STEP --fork-dir DIR]
+ *
+ * --fork-at / --fork-dir (run 871, port/tools/steer-search.py's beam search): run to STEP, then
+ * serve fork requests instead of replaying every candidate from boot.  DIR holds two FIFOs the
+ * client made, cmd and ack; the server opens cmd for reading, then ack for writing, and answers
+ * each command line with one line:
+ *   run SCRIPT UNTIL OUTDIR     fork a child: chdir OUTDIR (its 1080.sram goes there), swap in
+ *                               SCRIPT (same step count), state trace OUTDIR/state.log from here,
+ *                               run to step UNTIL and exit.  Reply "pid N".
+ *   spawn SCRIPT UNTIL NEWDIR   fork a child that runs SCRIPT to step UNTIL and then serves NEWDIR
+ *                               (its FIFOs made by the client).  Reply "pid N".
+ *   wait                        wait for every run child.  Reply "done N" (N children).
+ *   quit                        exit at once.
+ * The port is deterministic, so a child continues exactly as a run from boot with SCRIPT would.
  */
 
 #include "port_libc.h"
@@ -135,6 +148,9 @@ typedef struct Options {
 } Options;
 
 static u32 sSteps; /* steps run so far */
+static u32 sForkAt;          /* --fork-at: serve fork requests at this step (0 = never) */
+static const char *sForkDir; /* --fork-dir */
+static u32 sFrameLimit;      /* a fork child's UNTIL (overrides --frames) */
 
 /* SSE scalar maths with flush-to-zero and denormals-are-zero, round to
  * nearest: the VR4300's FCSR as osInitialize sets it (FS = 1, RM = 0; plan
@@ -227,7 +243,7 @@ static void step(void) {
 }
 
 static int done(const Options *o) {
-    if (o->frames != 0 && sSteps >= o->frames) {
+    if (sFrameLimit != 0 ? sSteps >= sFrameLimit : (o->frames != 0 && sSteps >= o->frames)) {
         return 1;
     }
     if (port_trace_replaying()) {
@@ -239,6 +255,97 @@ static int done(const Options *o) {
     return 0;
 }
 
+#if !defined(PORT_LIBC_DECLS_ONLY)
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+/* The fork server (see the header comment).  Returns in a child that should go on running. */
+static void fork_serve(void) {
+    char path[1024], line[2048], cmd[16], a1[1024], a3[1024];
+    int pids[512], npids = 0, cfd, afd, n, len = 0;
+    unsigned long until;
+
+    snprintf(path, sizeof(path), "%s/cmd", sForkDir);
+    cfd = open(path, O_RDONLY);
+    snprintf(path, sizeof(path), "%s/ack", sForkDir);
+    afd = open(path, O_WRONLY);
+    if (cfd < 0 || afd < 0) {
+        host_fatal("main: fork server: cannot open the FIFOs in %s", sForkDir);
+    }
+    for (;;) {
+        char *nl;
+        while ((nl = memchr(line, '\n', len)) == NULL) {
+            n = (int)read(cfd, line + len, sizeof(line) - 1 - len);
+            if (n <= 0) {
+                _exit(0); /* the client went away */
+            }
+            len += n;
+        }
+        *nl = '\0';
+        a1[0] = a3[0] = '\0';
+        until = 0;
+        if (sscanf(line, "%15s %1023s %lu %1023s", cmd, a1, &until, a3) < 1) {
+            cmd[0] = '\0';
+        }
+        memmove(line, nl + 1, len - (nl + 1 - line));
+        len -= (int)(nl + 1 - line);
+        if (strcmp(cmd, "quit") == 0) {
+            _exit(0);
+        } else if (strcmp(cmd, "wait") == 0) {
+            int i, k = npids;
+            for (i = 0; i < npids; i++) {
+                waitpid(pids[i], NULL, 0);
+            }
+            npids = 0;
+            while (waitpid(-1, NULL, WNOHANG) > 0) { /* spawned servers that quit */
+            }
+            n = snprintf(path, sizeof(path), "done %d\n", k);
+            if (write(afd, path, n) != n) {
+                _exit(0);
+            }
+        } else if ((strcmp(cmd, "run") == 0 || strcmp(cmd, "spawn") == 0) && until > sSteps && a3[0]) {
+            int pid = fork();
+            if (pid == 0) {
+                close(cfd);
+                close(afd);
+                if (host_input_script_reload(a1) != 0) {
+                    _exit(3);
+                }
+                if (cmd[0] == 'r') {
+                    snprintf(path, sizeof(path), "%s/state.log", a3);
+                    if (chdir(a3) != 0 || port_trace_reopen_state(path) != 0) {
+                        _exit(4);
+                    }
+                    sFrameLimit = (u32)until;
+                    sForkAt = 0;
+                } else {
+                    sForkAt = (u32)until;
+                    sForkDir = strdup(a3);
+                }
+                return;
+            }
+            if (cmd[0] == 'r' && pid > 0 && npids < 512) {
+                pids[npids++] = pid;
+            }
+            n = snprintf(path, sizeof(path), "pid %d\n", pid);
+            if (write(afd, path, n) != n) {
+                _exit(0);
+            }
+        } else {
+            n = snprintf(path, sizeof(path), "error %s\n", cmd);
+            if (write(afd, path, n) != n) {
+                _exit(0);
+            }
+        }
+    }
+}
+#else
+static void fork_serve(void) {
+    host_fatal("main: --fork-at needs the host libc");
+}
+#endif
+
 static void run(const Options *o, int headless) {
     const double stepSec = o->authentic ? 1001.0 / 30000.0 : 1.0 / 30.0;
     double last = host_time_seconds();
@@ -249,6 +356,9 @@ static void run(const Options *o, int headless) {
             break;
         }
         if (headless && !o->realtime) {
+            while (sForkAt != 0 && sSteps == sForkAt) {
+                fork_serve(); /* returns in a child */
+            }
             step();
             continue;
         }
@@ -308,6 +418,10 @@ static int parse(int argc, char **argv, Options *o) {
             o->replayPath = v, i++;
         } else if (strcmp(a, "--trace") == 0) {
             o->statePath = v, i++;
+        } else if (strcmp(a, "--fork-at") == 0) {
+            sForkAt = (u32)strtoul(v, NULL, 10), i++;
+        } else if (strcmp(a, "--fork-dir") == 0) {
+            sForkDir = v, i++;
         } else if (strcmp(a, "--audio-out") == 0) {
             o->audioPath = v, i++;
         } else {

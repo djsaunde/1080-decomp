@@ -51,6 +51,7 @@
 #define PORT_TRACE_HAVE_ENTRY 0x80   /* DataManager entries[0]: pct, speed, finished, health */
 #define PORT_TRACE_HAVE_TRICK 0x100  /* rider 0's RiderAnim trick input / trick (tk=) */
 #define PORT_TRACE_HAVE_LESSON 0x400 /* Training: TrnDataManager.lesson (trn=) */
+#define PORT_TRACE_HAVE_MGR 0x800    /* Match Race: MgrCourseList retries / idx / count / course / rider (ml=) */
 #define PORT_TRACE_HAVE_GATES 0x200  /* DataManager score / countdown and entries[0]'s next gate (cd=) */
 
 #define PORT_TRACE_MAX_RIDERS 4
@@ -60,6 +61,11 @@ typedef struct PortTraceRider {
     f32 quat[4];
     f32 speed;
     s32 animState;
+    u32 flags;      /* SnowBoarder.flags (SNOWB_FLAG_*: 0x20000 = the CATCHUP handicap) */
+    f32 maxSpeed;   /* SnowBoarder.maxSpeed (limitSpeed eases it toward max +- the handicap) */
+    f32 stickX;     /* the rider's RiderInput (pad, replay or SnowAI) stickX / stickY / held */
+    f32 stickY;
+    s32 held;
 } PortTraceRider;
 
 typedef struct PortTraceFrame {
@@ -78,6 +84,7 @@ typedef struct PortTraceFrame {
     u32 randState;
     u32 retraceCount;
     u32 viRetraces; /* the shim's virtual VI count, always filled */
+    s32 mgrRetries, mgrIdx, mgrCount, mgrCourse, mgrRider; /* PORT_TRACE_HAVE_MGR */
     f32 entryPct;   /* entries[0].pct (0..100) */
     f32 entrySpeed; /* entries[0].speed: the HUD km/h value */
     s32 entryFinished;
@@ -113,6 +120,7 @@ typedef struct PortTraceFrame {
  * replay: input log read and injected; state: per-frame state dump. */
 int port_trace_open(const char *recordPath, const char *replayPath, const char *statePath);
 void port_trace_close(void);
+int port_trace_reopen_state(const char *statePath); /* the fork server's children (port/main.c) */
 int port_trace_replaying(void);
 /* replay: the last frame that has recorded input (main.c stops after it) */
 u32 port_trace_replay_last_frame(void);

@@ -18,6 +18,7 @@ typedef struct ReplayInput {
 
 static FILE *sRecord;
 static FILE *sState;
+static int sRiderX; /* PORT_TRACE_RIDERX: the i<n>= rider input / handicap fields */
 static ReplayInput *sReplay;
 static u32 sReplayCount;
 static u32 sReplayPos;
@@ -109,11 +110,27 @@ int port_trace_open(const char *recordPath, const char *replayPath, const char *
             return -1;
         }
         setvbuf(sState, NULL, _IOLBF, 0); /* a crash keeps every frame's line */
+        sRiderX = getenv("PORT_TRACE_RIDERX") != NULL && getenv("PORT_TRACE_RIDERX")[0] == '1';
         fprintf(sState, "# 1080 port state trace v1 (port/trace.h)\n");
     }
     if (replayPath != NULL && load_replay(replayPath) != 0) {
         return -1;
     }
+    return 0;
+}
+
+/* The fork server (port/main.c, run 871): a forked child writes its own state trace from its fork
+ * step on.  The parent's FILE is line buffered, so nothing of it is pending here. */
+int port_trace_reopen_state(const char *statePath) {
+    if (sState != NULL) {
+        fclose(sState);
+    }
+    sState = fopen(statePath, "w");
+    if (sState == NULL) {
+        return -1;
+    }
+    setvbuf(sState, NULL, _IOLBF, 0);
+    fprintf(sState, "# 1080 port state trace v1 (port/trace.h)\n");
     return 0;
 }
 
@@ -390,6 +407,13 @@ void port_trace_frame_end(u32 frameCount) {
                 fbits(r->pos[1]), fbits(r->pos[2]), fbits(r->quat[0]), fbits(r->quat[1]),
                 fbits(r->quat[2]), fbits(r->quat[3]), fbits(r->speed), (int)r->animState);
     }
+    if (sRiderX) {   /* PORT_TRACE_RIDERX=1 (run 871): i<n>=flags,maxSpeed,stickX,stickY,held */
+        for (i = 0; i < f.numRiders && i < PORT_TRACE_MAX_RIDERS; i++) {
+            const PortTraceRider *r = &f.riders[i];
+            fprintf(sState, " i%d=%x,%08x,%08x,%08x,%x", i, (unsigned)r->flags, fbits(r->maxSpeed),
+                    fbits(r->stickX), fbits(r->stickY), (unsigned)r->held);
+        }
+    }
     if (f.have & PORT_TRACE_HAVE_ENTRY) {
         fprintf(sState, " e0=%08x,%08x,%d,%d,%d,%d", fbits(f.entryPct), fbits(f.entrySpeed),
                 (int)f.entryFinished, (int)f.entryHealth, (int)f.entryScore, (int)f.entryPending);
@@ -405,6 +429,10 @@ void port_trace_frame_end(u32 frameCount) {
     if (f.have & PORT_TRACE_HAVE_GATES) {
         fprintf(sState, " cd=%d,%d,%08x,%08x,%08x,%08x,%d", (int)f.dmScore, (int)f.gatesLeft,
                 fbits(f.gateX), fbits(f.gateZ), fbits(f.forkX), fbits(f.forkZ), (int)f.forkFlags);
+    }
+    if (f.have & PORT_TRACE_HAVE_MGR) {
+        fprintf(sState, " ml=%d,%d,%d,%d,%d", (int)f.mgrRetries, (int)f.mgrIdx, (int)f.mgrCount, (int)f.mgrCourse,
+                (int)f.mgrRider);
     }
     if (f.have & PORT_TRACE_HAVE_LESSON) {
         fprintf(sState, " trn=%d", (int)f.lesson);

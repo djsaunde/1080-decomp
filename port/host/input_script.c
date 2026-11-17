@@ -329,6 +329,23 @@ int host_input_script_open(const char *path) {
     return 0;
 }
 
+/* The fork server (port/main.c --fork-at, run 871): a forked child swaps in a new script and keeps
+ * its step count and pad count (osContInit read those at boot). */
+int host_input_script_reload(const char *path) {
+    host_u32 step = sStep;
+    int pads = sNumPads;
+    sCount = 0;
+    sLastStep = 0;
+    if (host_input_script_open(path) != 0) {
+        return -1;
+    }
+    sStep = step;
+    if (sNumPads < pads) {
+        sNumPads = pads;
+    }
+    return 0;
+}
+
 int host_input_script_active(void) {
     return sLoaded;
 }

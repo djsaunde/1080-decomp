@@ -7981,6 +7981,7 @@ void *game_ItemType_create_00011A94(int *arg0) {
  * while game.uso is loaded (port/uso registry); between races they would point at freed heap. */
 #include "gdl/race.h"
 #include "game/trnproc.h"
+#include "game/modeproc.h"
 #include "port_game.h"
 #include "../../port/trace.h"
 #include "../../port/uso/port_uso.h"
@@ -8020,6 +8021,18 @@ void port_trace_collect(PortTraceFrame *f) {
         if (flow->flowMode == 7) {
             f->lesson = ((TrnDataManager *)dm)->lesson;
             f->have |= PORT_TRACE_HAVE_LESSON;
+        }
+        if (flow->flowMode == 3 && PORT_TRACE_PTR(flow->flowProc)) {
+            /* Match Race: the ModeFlowProc's MgrCourseList (game/modeproc.h; run 871) */
+            MgrCourseList *cl = ((ModeFlowProc *)flow->flowProc)->courseList;
+            if (PORT_TRACE_PTR(cl)) {
+                f->mgrRetries = cl->retries;
+                f->mgrIdx = cl->idx;
+                f->mgrCount = cl->count;
+                f->mgrCourse = cl->idx >= 0 && cl->idx < 6 ? cl->courses[cl->idx] : -1;
+                f->mgrRider = cl->idx >= 0 && cl->idx < 6 ? cl->riders[cl->idx] : -1;
+                f->have |= PORT_TRACE_HAVE_MGR;
+            }
         }
         {
             /* the owning RaceProcess: RaceTracker.owner (tim / trk init store it there); the
@@ -8092,6 +8105,13 @@ void port_trace_collect(PortTraceFrame *f) {
                 o->quat[3] = r->dnode.vqs.quat[3];
                 o->speed = r->dnode.speed;
                 o->animState = PORT_TRACE_PTR(r->anim) ? r->anim->state.b : -1;
+                o->flags = r->flags;
+                o->maxSpeed = r->maxSpeed;
+                if (PORT_TRACE_PTR(r->input)) {
+                    o->stickX = r->input->stickX;
+                    o->stickY = r->input->stickY;
+                    o->held = r->input->held;
+                }
                 if (i == 0 && PORT_TRACE_PTR(r->anim)) {
                     RiderAnim *ra = r->anim;
                     char *tbl = (char *)game_uso_D_807FFBC0;

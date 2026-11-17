@@ -86,6 +86,7 @@ host_u32 host_headless_frames_ready(void); /* osViSwapBuffer count */
  * Once opened, host_read_pads() returns the script's pads for each step instead of the set pads. */
 int host_input_script_open(const char *path); /* 0 on success */
 int host_input_script_active(void);
+int host_input_script_reload(const char *path); /* a new script, same step (the fork server) */
 void host_input_script_step(HostPad pads[HOST_MAX_PADS]); /* this step's pads; advances one step */
 void host_input_script_boot(HostPad pads[HOST_MAX_PADS]); /* step 0's pads; does not advance */
 void host_input_script_at(host_u32 step, HostPad pads[HOST_MAX_PADS]); /* any step's pads */
