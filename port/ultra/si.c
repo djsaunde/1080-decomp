@@ -1,7 +1,8 @@
 /* port/ultra: SI (controllers), controller pak and rumble pak.
  *
  * The pads come from port_si_set_pads(), which main.c's input_poll() calls
- * once per step from the host layer (HostPad). osContStartReadData snapshots
+ * once per step from the host layer (HostPad; headless: an --input script,
+ * port/host/input_script.c). The boot-time connections come from host_boot_pads(). osContStartReadData snapshots
  * them and posts the SI event, as the SI interrupt would after the PIF read;
  * osContGetReadData returns the snapshot. Game-level record / replay hooks in
  * pad_update (port/trace.h) sit above this, so replays do not depend on it.
@@ -124,12 +125,21 @@ s32 osMotorStop(OSPfs *pfs) {
     return 0;
 }
 
+/* port_ultra_init: what is plugged in at boot comes from the host (an --input script's
+ * PADS / RUMBLE lines; otherwise controller 1 alone), so osContInit's bit pattern and
+ * pad_probePaks see all of it before the first step's input_poll. */
 void port_si_reset(void) {
+    HostPad hp[HOST_MAX_PADS];
+    int i;
+
     memset(sLive, 0, sizeof(sLive));
     memset(sSnap, 0, sizeof(sSnap));
-    memset(sConnected, 0, sizeof(sConnected));
-    memset(sRumble, 0, sizeof(sRumble));
-    sConnected[0] = 1;
+    memset(hp, 0, sizeof(hp));
+    host_boot_pads(hp);
+    for (i = 0; i < MAXCONTROLLERS; i++) {
+        sConnected[i] = hp[i].connected;
+        sRumble[i] = hp[i].hasRumble;
+    }
 }
 
 PORT_ALIAS(osContInit, gl_osContInit);

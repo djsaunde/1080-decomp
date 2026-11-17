@@ -9,6 +9,10 @@
  *   PORT_GFX_DUMP_FIRST=<n>    skip the first n tasks (default 0)
  *   PORT_GFX_DUMP_EVERY=<n>    then dump every n-th task (default 1)
  *   PORT_GFX_DUMP_COUNT=<n>    at most n files (default unlimited)
+ *   PORT_GFX_DUMP_STEPS=<list> dump only the tasks of these steps (SysLib.frameCount, = main.c's
+ *                              step and state.log's F number): "700,750-760,900" (replaces
+ *                              FIRST / EVERY; COUNT still applies). Every dump, with or without
+ *                              it, adds a "task step" line to <dir>/steps.txt.
  *   PORT_FB_LOG=1              log the framebuffer-model request counters every 100 tasks
  *
  * The format is in dlump.h; port/gfx/tools/dlump.py reads and checks it, and
@@ -44,6 +48,35 @@ typedef struct DumpCfg {
 } DumpCfg;
 
 static DumpCfg sDump;
+static const char *sDumpSteps; /* PORT_GFX_DUMP_STEPS, or NULL */
+extern u32 port_game_frame_count(void) __attribute__((weak));
+
+static u32 cur_step(void) {
+    return port_game_frame_count != NULL ? port_game_frame_count() : 0;
+}
+
+/* step in the PORT_GFX_DUMP_STEPS list ("a,b-c,...") */
+static int step_listed(u32 step) {
+    const char *p = sDumpSteps;
+    while (*p != '\0') {
+        char *e;
+        unsigned long a = strtoul(p, &e, 10), b = a;
+        if (e == p) {
+            return 0;
+        }
+        if (*e == '-') {
+            b = strtoul(e + 1, &e, 10);
+        }
+        if (step >= a && step <= b) {
+            return 1;
+        }
+        p = *e == ',' ? e + 1 : e;
+        if (*e != ',' && *e != '\0') {
+            return 0;
+        }
+    }
+    return 0;
+}
 static u32 sGfxTasks;
 static int sFbLog; /* PORT_FB_LOG=1: the framebuffer-model request counters every 100 tasks */
 
@@ -238,6 +271,10 @@ void port_gfx_task(OSTask_t *task) {
         sDump.first = env_ul("PORT_GFX_DUMP_FIRST", 0);
         sDump.every = env_ul("PORT_GFX_DUMP_EVERY", 1);
         sDump.count = env_ul("PORT_GFX_DUMP_COUNT", (unsigned long)-1);
+        sDumpSteps = getenv("PORT_GFX_DUMP_STEPS");
+        if (sDumpSteps != NULL && *sDumpSteps == '\0') {
+            sDumpSteps = NULL;
+        }
         sFbLog = (int)env_ul("PORT_FB_LOG", 0);
         if (sDump.every == 0) {
             sDump.every = 1;
@@ -246,9 +283,17 @@ void port_gfx_task(OSTask_t *task) {
             make_dirs(sDump.dir);
         }
     }
-    if (sDump.dir != NULL && seq >= sDump.first && (seq - sDump.first) % sDump.every == 0 &&
-        sDump.written < sDump.count) {
+    if (sDump.dir != NULL && sDump.written < sDump.count &&
+        (sDumpSteps != NULL ? step_listed(cur_step())
+                            : seq >= sDump.first && (seq - sDump.first) % sDump.every == 0)) {
+        char path[512];
+        FILE *f;
         dump_task(task, seq);
+        snprintf(path, sizeof(path), "%s/steps.txt", sDump.dir);
+        if ((f = fopen(path, "a")) != NULL) {
+            fprintf(f, "%06u %u\n", (unsigned)seq, (unsigned)cur_step());
+            fclose(f);
+        }
     }
 #ifdef PORT_GFX_FAST3D
     /* option (a): render in process (the dump above, if any, saw the same lists), then serve the

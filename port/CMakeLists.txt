@@ -90,7 +90,7 @@ target_compile_options(uso PRIVATE ${PORT_ARCH_FLAGS})
 # target can check the whole link.
 set(PORT_ULTRA_SOURCES ultra/thread.c ultra/message.c ultra/vi.c ultra/pi.c ultra/si.c
     ultra/ai_sp.c ultra/misc.c)
-set(PORT_HOST_SOURCES main.c host_headless.c trace.c)
+set(PORT_HOST_SOURCES main.c host_headless.c host/input_script.c trace.c)
 # port/gfx (plan section 19, M2): port_gfx_task (the M_GFXTASK hook) and the PORT_GFX_DUMP writer
 list(APPEND PORT_HOST_SOURCES gfx/port_gfx.c gfx/dlump.c gfx/port_fb.c)
 # plan 19.7: option (a), Fast3D in process (gfx/fast3d/port_fast3d.cpp + libultraship's src/fast, pinned + the

@@ -5,30 +5,39 @@
 #
 #   port/tools/capture.sh -b <port build dir> [-o OUT] [-n FRAMES] [-e EVERY] [-f FIRST]
 #                         [-r ROM] [-c COLS] [-s SHRINK] [-S RENDER_SCALE] [-x F3DREPLAY]
+#                         [-i INPUT] [-F STEPS] [-a "EXTRA TENSHOE ARGS"]
 #
 #   -b   a configured + built PORT_LINK=ON build (holds tenshoe; plan 13.5)
-#   -o   output directory (default ./capture); emptied of old dumps / PNGs first
+#   -o   output directory (default ./capture-<date>-<time>); must be new or hold no earlier
+#        capture (the script never deletes anything)
 #   -n   --frames for tenshoe (default 300)
 #   -e   PORT_GFX_DUMP_EVERY (default 1); -f PORT_GFX_DUMP_FIRST (default 0)
 #   -r   the ROM (default <game repo>/baserom.z64)
 #   -c   contact sheet columns (default 10); -s tile shrink (default 2: 160x120 tiles)
 #   -S   f3dreplay --scale (default 1, native 320x240; >1 shows upscaling artifacts)
 #   -x   an f3dreplay binary (default: built into OUT/gfx from port/gfx/fast3d)
+#   -i   an input script for tenshoe --input (scripted pads; format in port/host/input_script.c)
+#   -F   dump only the frames of these steps (PORT_GFX_DUMP_STEPS, e.g. "700,750-752"; replaces
+#        -e / -f); tiles are then labelled with the step, not the task number
+#   -a   more tenshoe arguments (e.g. "--record in.log"); tenshoe always writes OUT/state.log
 #
 # Output in OUT: run.log (tenshoe's stdout / stderr and exit code; a crash is reported, the
-# frames before it are still processed), dump/gfx_NNNNNN.dlmp, png/tNNNNNN.png (NNNNNN = the
-# gfx task number since boot, one per frame so far), sheet.png, histogram.txt, replay.log.
+# frames before it are still processed), state.log (--trace), dump/gfx_NNNNNN.dlmp + dump/steps.txt
+# (task step), png/tNNNNNN_sSTEP.png (NNNNNN = the gfx task number since boot, STEP = the
+# step / SysLib.frameCount it ran in), sheet.png, histogram.txt, replay.log.
 # tenshoe runs in OUT, so its 1080.sram starts fresh each capture.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 GAME="$(cd "$HERE/../.." && pwd)"
 MONO="$(cd "$GAME/../.." && pwd)"
-BUILD= OUT=./capture FRAMES=300 EVERY=1 FIRST=0 ROM="$GAME/baserom.z64" COLS=10 SCALE=2 RSCALE=1 F3D=
-while getopts "b:o:n:e:f:r:c:s:S:x:h" o; do
+BUILD= OUT=./capture-$(date +%Y%m%d-%H%M%S) FRAMES=300 EVERY=1 FIRST=0 ROM="$GAME/baserom.z64" COLS=10 SCALE=2 RSCALE=1 F3D=
+INPUT= STEPS= EXTRA=
+while getopts "b:o:n:e:f:r:c:s:S:x:i:F:a:h" o; do
     case $o in
     b) BUILD=$OPTARG ;; o) OUT=$OPTARG ;; n) FRAMES=$OPTARG ;; e) EVERY=$OPTARG ;;
     f) FIRST=$OPTARG ;; r) ROM=$OPTARG ;; c) COLS=$OPTARG ;; s) SCALE=$OPTARG ;; S) RSCALE=$OPTARG ;; x) F3D=$OPTARG ;;
-    *) sed -n '2,22p' "$0"; exit 2 ;;
+    i) INPUT=$OPTARG ;; F) STEPS=$OPTARG ;; a) EXTRA=$OPTARG ;;
+    *) sed -n '2,28p' "$0"; exit 2 ;;
     esac
 done
 [ -n "$BUILD" ] && [ -x "$BUILD/tenshoe" ] || { echo "capture: -b <build dir with tenshoe> is required"; exit 2; }
@@ -36,7 +45,15 @@ BUILD="$(cd "$BUILD" && pwd)"
 ROM="$(cd "$(dirname "$ROM")" && pwd)/$(basename "$ROM")"
 [ -f "$ROM" ] || { echo "capture: no ROM at $ROM"; exit 2; }
 mkdir -p "$OUT" && OUT="$(cd "$OUT" && pwd)"
-rm -rf "$OUT/dump" "$OUT/png" "$OUT/1080.sram"
+INARGS=()
+if [ -n "$INPUT" ]; then
+    [ -f "$INPUT" ] || { echo "capture: no input script $INPUT"; exit 2; }
+    INARGS=(--input "$(cd "$(dirname "$INPUT")" && pwd)/$(basename "$INPUT")")
+fi
+# nothing is deleted (agents' rm rule, coord run 843): OUT must not hold an earlier capture
+for f in dump png 1080.sram state.log; do
+    [ -e "$OUT/$f" ] && { echo "capture: $OUT already holds a capture ($f): pass a fresh -o directory"; exit 2; }
+done
 mkdir -p "$OUT/png"
 
 if [ -z "$F3D" ]; then
@@ -45,9 +62,11 @@ if [ -z "$F3D" ]; then
     F3D="$OUT/gfx/f3dreplay"
 fi
 
-echo "capture: tenshoe --frames $FRAMES, dumping every $EVERY from $FIRST -> $OUT/dump"
+echo "capture: tenshoe --frames $FRAMES ${INARGS[*]} $EXTRA, dumping ${STEPS:+steps $STEPS}${STEPS:-every $EVERY from $FIRST} -> $OUT/dump"
+# shellcheck disable=SC2086  # EXTRA is split on purpose
 (cd "$OUT" && PORT_GFX_DUMP="$OUT/dump" PORT_GFX_DUMP_EVERY="$EVERY" PORT_GFX_DUMP_FIRST="$FIRST" \
-    "$MONO/tools/i386-sysroot/run32" "$BUILD/tenshoe" --rom "$ROM" --frames "$FRAMES" >run.log 2>&1)
+    PORT_GFX_DUMP_STEPS="$STEPS" "$MONO/tools/i386-sysroot/run32" "$BUILD/tenshoe" --rom "$ROM" \
+    --frames "$FRAMES" --trace "$OUT/state.log" "${INARGS[@]}" $EXTRA >run.log 2>&1)
 rc=$?
 echo "exit $rc" >>"$OUT/run.log"
 [ $rc -eq 0 ] || echo "capture: tenshoe exited $rc (see run.log; $(tail -2 "$OUT/run.log" | head -1))"
@@ -59,8 +78,11 @@ export LIBGL_ALWAYS_SOFTWARE=1
 : >"$OUT/replay.log"
 bad=0
 for d in "${dumps[@]}"; do
-    n="$(basename "$d" .dlmp)"
-    "$F3D" "$d" "$OUT/png/t${n#gfx_}.png" --scale "$RSCALE" >>"$OUT/replay.log" 2>&1 || { bad=$((bad + 1)); echo "FAILED $d" >>"$OUT/replay.log"; }
+    n="$(basename "$d" .dlmp)"; n=${n#gfx_}
+    png="$OUT/png/t$n.png"
+    st=$(awk -v t="$n" '$1 == t { print $2; exit }' "$OUT/dump/steps.txt" 2>/dev/null)
+    [ -n "$STEPS" ] && [ -n "$st" ] && png="$OUT/png/t${n}_s$st.png"  # the sheet labels the last number
+    "$F3D" "$d" "$png" --scale "$RSCALE" >>"$OUT/replay.log" 2>&1 || { bad=$((bad + 1)); echo "FAILED $d" >>"$OUT/replay.log"; }
 done
 echo "capture: ${#dumps[@]} dumps rendered ($bad failed; replay.log)"
 grep -v " 0 unresolved G_DL" "$OUT/replay.log" | grep -v "^replay: GL" | head -5

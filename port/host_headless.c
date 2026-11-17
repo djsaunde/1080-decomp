@@ -1,8 +1,9 @@
 /* Headless host implementation (port/host.h): no window, no audio device.
  *
  * - Video: remembers the mode and counts frames; host_present() is a no-op.
- * - Input: returns whatever host_headless_set_pads() last stored (default:
- *   controller 1 connected, nothing pressed, no rumble pak). The trace
+ * - Input: the --input script's pads for the step (port/host/input_script.c), or
+ *   whatever host_headless_set_pads() last stored (default: controller 1
+ *   connected, nothing pressed, no rumble pak). The trace
  *   injector in main.c overrides input one level higher, in pad_update.
  * - Audio: accepts every buffer and reports it as played at once
  *   (host_audio_buffered_bytes() == 0), which keeps the audio driver's
@@ -31,7 +32,24 @@ int host_poll_events(void) {
     return 1;
 }
 
+/* weak: test_ultra links this file without the script reader */
+extern int host_input_script_active(void) __attribute__((weak));
+extern void host_input_script_step(HostPad pads[HOST_MAX_PADS]) __attribute__((weak));
+extern void host_input_script_boot(HostPad pads[HOST_MAX_PADS]) __attribute__((weak));
+
+void host_boot_pads(HostPad pads[HOST_MAX_PADS]) {
+    if (host_input_script_active != NULL && host_input_script_active()) {
+        host_input_script_boot(pads);
+        return;
+    }
+    memcpy(pads, sPads, sizeof(sPads));
+}
+
 void host_read_pads(HostPad pads[HOST_MAX_PADS]) {
+    if (host_input_script_active != NULL && host_input_script_active()) {
+        host_input_script_step(pads);
+        return;
+    }
     memcpy(pads, sPads, sizeof(sPads));
 }
 

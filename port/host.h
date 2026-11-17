@@ -7,7 +7,8 @@
  * interface, so the rest of the port (main.c, ultra/, later gfx/ and audio/)
  * has no SDL or OS dependency. Implementations:
  *   - port/host_headless.c: no window, no audio device, no real input; pads
- *     come from the trace injector (main.c --replay) or stay idle. Used for
+ *     come from an input script (main.c --input, port/host/input_script.c),
+ *     the trace injector (main.c --replay) or stay idle. Used for
  *     the trace / differential tests and on machines without SDL.
  *   - port/host_sdl.c (M2, not written yet): SDL2 window + GL context,
  *     SDL_GameController / keyboard, SDL audio stream.
@@ -49,6 +50,9 @@ int host_poll_events(void);            /* pump OS events; 0 = quit requested */
 /* input: called once per simulation step by main.c's input_poll() */
 void host_read_pads(HostPad pads[HOST_MAX_PADS]);
 void host_set_rumble(int channel, int on);
+/* which controllers (and rumble paks) are plugged in at boot: port_ultra_init's SI reset,
+ * before the first step, so osContInit sees them */
+void host_boot_pads(HostPad pads[HOST_MAX_PADS]);
 
 /* video: osViSetMode / osViBlack / osViSwapBuffer land here */
 void host_video_mode(host_u32 width, host_u32 height, int interlaced);
@@ -78,6 +82,12 @@ void host_fatal(const char *fmt, ...) __attribute__((format(printf, 1, 2), noret
 /* headless-only: set the pads host_read_pads() returns (tests, scripted input) */
 void host_headless_set_pads(const HostPad pads[HOST_MAX_PADS]);
 host_u32 host_headless_frames_ready(void); /* osViSwapBuffer count */
+/* headless-only: scripted controller input (--input FILE; port/host/input_script.c has the format).
+ * Once opened, host_read_pads() returns the script's pads for each step instead of the set pads. */
+int host_input_script_open(const char *path); /* 0 on success */
+int host_input_script_active(void);
+void host_input_script_step(HostPad pads[HOST_MAX_PADS]); /* this step's pads; advances one step */
+void host_input_script_boot(HostPad pads[HOST_MAX_PADS]); /* step 0's pads; does not advance */
 /* headless-only: receive every AI buffer (osAiSetNextBuffer: host-order s16, L R interleaved);
  * NULL = drop them (the default).  port/audio/tools/seqrender writes them to a WAV. */
 void host_headless_set_audio_sink(void (*sink)(const void *samples, host_u32 bytes));

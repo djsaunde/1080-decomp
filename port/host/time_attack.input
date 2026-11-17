@@ -1,0 +1,14 @@
+# tenshoe --input script (format: port/host/input_script.c): boot -> title -> Time Attack -> race.
+# Steps are SysLib.frameCount (state.log's F number). Verified run 843 (agent-a); the race start
+# needs the audio fix for the NULL dynTable (seq command 0x98) handed to agent-c, run 843.
+PADS 1
+F 480:3 START          # title "Press START" -> language select
+F 560:3 A              # English
+F 620:3 DD             # main menu: Match Race -> Time Attack
+F 680:3 A              # Time Attack -> Select Rider (flow 0,4,1 -> 0,4,4)
+F 950:3 A              # rider (Akari Hayami)
+F 1050:3 A             # rider confirm -> Select Board
+F 1150:3 A             # board -> Select Course
+F 1300:3 DR            # second course (the first is the default)
+F 1360:3 A             # course -> race load (flow 4,4,4; 5,4,4 at 1379), Ready, race state 1 at 1441
+F 1500-2000 STICK 40,60   # ride: lean forward, carve right

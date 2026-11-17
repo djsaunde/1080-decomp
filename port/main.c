@@ -31,7 +31,7 @@
  *                       runs the audio task through the SP path at all
  *
  * Usage: 1080 [--rom baserom.z64] [--sram save.sram] [--frames N]
- *             [--record in.log] [--replay in.log] [--trace state.log]
+ *             [--input script.txt] [--record in.log] [--replay in.log] [--trace state.log]
  *             [--audio-out out.wav] [--authentic] [--realtime]
  */
 
@@ -107,6 +107,7 @@ typedef struct Options {
     const char *recordPath;
     const char *replayPath;
     const char *statePath;
+    const char *inputPath; /* --input: scripted pads (port/host/input_script.c) */
     const char *audioPath; /* --audio-out: the game's audio to a WAV (port/audio, agent-c) */
     u32 frames;      /* 0 = run until quit (or the replay ends) */
     int authentic;   /* 29.97 Hz step instead of 30 */
@@ -252,7 +253,7 @@ static void run(const Options *o, int headless) {
 }
 
 static void usage(void) {
-    host_log("usage: 1080 [--rom PATH] [--sram PATH] [--frames N] [--record LOG] [--replay LOG]"
+    host_log("usage: 1080 [--rom PATH] [--sram PATH] [--frames N] [--input SCRIPT] [--record LOG] [--replay LOG]"
              " [--trace LOG] [--audio-out WAV] [--authentic] [--realtime]");
 }
 
@@ -278,6 +279,8 @@ static int parse(int argc, char **argv, Options *o) {
             o->sramPath = v, i++;
         } else if (strcmp(a, "--frames") == 0) {
             o->frames = (u32)strtoul(v, NULL, 10), i++;
+        } else if (strcmp(a, "--input") == 0) {
+            o->inputPath = v, i++;
         } else if (strcmp(a, "--record") == 0) {
             o->recordPath = v, i++;
         } else if (strcmp(a, "--replay") == 0) {
@@ -312,6 +315,9 @@ int main(int argc, char **argv) {
     hc.headless = headless;
     if (host_init(&hc) != 0) {
         host_fatal("main: host_init failed");
+    }
+    if (o.inputPath != NULL && host_input_script_open(o.inputPath) != 0) {
+        host_fatal("main: bad input script %s", o.inputPath);
     }
     if (host_file_read_all(o.romPath, &rom, &romSize) != 0) {
         host_fatal("main: cannot read the ROM %s", o.romPath);
