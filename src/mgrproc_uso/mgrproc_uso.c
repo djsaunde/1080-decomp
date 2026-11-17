@@ -1529,7 +1529,7 @@ void MgrNameEntry_drawExitOverlay(int *a0) {
     }
     v = MGRNAMEENT(a0)->alpha;
     if (v <= 0.0f) {
-        gl_func_00000000(); /* UNNAMED: unknown-role jal -> nameent.uso Text+0x718 (TextReloc import); nameent.uso is not split, so the callee has no symbol: called with the NameEntry once its exit-overlay fade reaches 0 */
+        CALL(NameEntry_drawExitOverlay)(); /* UNNAMED: unknown-role jal -> nameent.uso Text+0x718 (TextReloc import); nameent.uso is not split, so the callee has no symbol: called with the NameEntry once its exit-overlay fade reaches 0 */
     }
 }
 
