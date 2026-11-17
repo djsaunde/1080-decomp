@@ -129,6 +129,11 @@ KNOWN = [
     # case 0x72) tile 0xA0F8..0xA3A0 in 0x14 strides; the stream reaches 20 of the 34, the
     # symbols at 0xA134 / 0xA1AC / 0xA210 / 0xA238 / 0xA29C / 0xA300 / 0xA328 are on the grid
     ("bootup", "Data", 0xA0F8, [(0, 0x14, "u16")], 34, 0x14, "known:nodecmd:xform"),
+    # gTriEdgeNext (D+0x1ED90, run 848): the s16 {1, 2, 0} "next vertex" table the CollShape
+    # queries (game_libs_ncc_3B2EC / 3B6A0 / 3B9C0 / 3BE1C) walk with a pointer (nx++), so the
+    # access scan typed only element 0; element 1 left as 0x0200 made the second edge test read
+    # f->vi[512] (garbage) and the ground query miss at random (the rider fell through the course)
+    ("bootup", "Data", 0x1ED90, [(0, 2, "u16")], 3, 2, "known:tri-edge-next"),
     # --- bootup Data, run 815 (readers in the comments) ---
     # game_initDdm_00002C94 (addiu + lw Data 0x7198): {s32 id, u32 packed} word pairs up to the
     # {0, 0} terminator at 0x7278
