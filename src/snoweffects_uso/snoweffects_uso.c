@@ -5,6 +5,7 @@
 #include "gdl/gfxlib.h"
 #include "gdl/window.h"
 #include "gdl/polyshape.h"
+#include "gdl/gl_data.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -13,8 +14,8 @@ typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { float x, y, z; } Vec3;
 
-/* the 0x40-byte course item the ItemType create methods allocate (0x7D8C / 0x91BC, the
- * edd_ItemType_create_000003BC twin): a ColourItem plus one word the create clears */
+/* what SnowColourItemType creates (0x7D8C / 0x91BC): the libgdl 0x40-byte colour item (ColourItem_ctor, then
+ * vptr bootup ColourItem_vtbl_75A0, the vtable every module's ItemType create stores; game.uso ColourSubItem) */
 typedef struct SnowColourItem {
     /* 0x00 */ ColourItem base;
     /* 0x3C */ s32 unk3C;
@@ -993,6 +994,9 @@ void ParmVec3_read_snow_00007D5C(char *a0) {
     fs_gdlReadVec3_snow_00003E40((Vec3 *)(a0 + 0x10));
 }
 
+/* ItemType slot 10 (both SnowColourItemType vtables, Data+0x3C8 / 0x6E8: ColourItemType's slots plus this create;
+ * no reloc in the module stores either vptr, so they are the per-TU template copies): new 0x40-byte colour item,
+ * appended under the type's +0x40 node. Same as game_libs ColourItem_create_0000C5B0. */
 void *SnowColourItemType_create_00007D8C(int *arg0) {
     int *p2;
     int *head;
@@ -1000,7 +1004,7 @@ void *SnowColourItemType_create_00007D8C(int *arg0) {
     p1 = (int*)CALL(mem_new)(0x40);
     if (p1 != 0) {
         CALL(ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (char *)&D_00000000;
+        NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
         ((SnowColourItem *)p1)->unk3C = 0;
     }
     p2 = p1;
@@ -1133,6 +1137,7 @@ void ParmVec3_read_snow_0000918C(char *a0) {
     fs_gdlReadVec3_snow_00007EF0((Vec3 *)(a0 + 0x10));
 }
 
+/* the lights TU's copy of 0x7D8C (no vtable or call references it) */
 void *SnowColourItemType_create_000091BC(int *arg0) {
     int *p2;
     int *head;
@@ -1140,7 +1145,7 @@ void *SnowColourItemType_create_000091BC(int *arg0) {
     p1 = (int*)CALL(mem_new)(0x40);
     if (p1 != 0) {
         CALL(ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (char *)&D_00000000;
+        NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
         ((SnowColourItem *)p1)->unk3C = 0;
     }
     p2 = p1;
