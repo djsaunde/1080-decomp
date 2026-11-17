@@ -61,7 +61,9 @@ struct GCtx {
  * edg words instead of the pooled count word); EE / FB append through nextBI() / nextN(); one `if (y0) {}`
  * left; four tail packets reuse g. Loop-layout diffs 87 -> 16, sp-offset mismatches 0.
  * agent-h run 746 (-> 96.83): `if (p) {}` after the texrect (no code) adds a use of p late in the loop
- * body: p's uopt priority rises above y0 / the E4 pointer and p takes t1 as in the target. */
+ * body: p's uopt priority rises above y0 / the E4 pointer and p takes t1 as in the target.
+ * agent-h run 750 (-> 97.09): two code-free `if (c) {}` lines after the EE packet raise c's uopt priority
+ * (6.76 -> 7.5) above y0, so c takes t2 as in the target; B4 appends through nextBI(). */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -166,13 +168,15 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
                 z = (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4);
                 ge = c->nextBI(); gW(ge, 0xEE000000, (z & 0x7FFF) << 16);
+                if (c) {}
+                if (c) {}
                 if (y0) {}
                 gf = c->nextN(); gW(gf, 0xFB000000, _SHIFTL(p->col[0], 24, 8) | _SHIFTL(p->col[1], 16, 8) | _SHIFTL(p->col[2], 8, 8) |
                                                  _SHIFTL((int)p->alpha, 0, 8));
                 x1 = x0 + wid;
                 y1 = y0 + hgt;
                 self->drawn++;
-                gTR(gt, c->nextI(), g1, c->nextN(), g2, c->nextN(), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
+                gTR(gt, c->nextI(), g1, c->nextBI(), g2, c->nextN(), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
                     ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
                 if (p) {}
             }
