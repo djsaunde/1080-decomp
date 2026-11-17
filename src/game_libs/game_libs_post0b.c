@@ -2607,13 +2607,27 @@ void CamFollow_update(CamFollow *o) {
     CALL(math_mtxAddTranslation)((*pc)->pos, r);
 
     t = *pc;
+#ifdef PORT64 /* plan 21.7: the angle is a float parameter (xmm0 on x86-64), not the int bits */
+    {
+        extern void port64_absrot(void *, int, float, int) __asm__("absrot_matrix4");
+        port64_absrot(t->pos, 1, q[1], 0);
+    }
+#else
     CALL(absrot_matrix4)(t->pos, 1, *(int *)&q[1], 0);
+#endif
 
     u[0] = ((CamWindow *)o->owner->window)->cam->view[0][0];
     u[1] = ((CamWindow *)o->owner->window)->cam->view[1][0];
     u[2] = ((CamWindow *)o->owner->window)->cam->view[2][0];
     t = *pc;
+#ifdef PORT64
+    {
+        extern void port64_rotateAxis(void *, void *, float) __asm__("math_mtxRotateAxis");
+        port64_rotateAxis(t->pos, u, q[0]);
+    }
+#else
     CALL(math_mtxRotateAxis)(t->pos, u, *(int *)&q[0]);
+#endif
 
     r[0] = r[0] * -1.0f;
     r[1] = r[1] * -1.0f;
@@ -15528,6 +15542,9 @@ void Sprite_display_0004BAF4(char *self) {
  * MISDIAGNOSIS: the +8 is just the variadic frame reservation. */
 int *ScreenWindow_ctor(int *a0, int a1, ...) {
     int aligned;
+#ifdef PORT64
+    unsigned int packed[64]; /* the IDO-layout command list (plan 21.5), alive through the walk */
+#endif
     if (a0 == 0) {
         a0 = (int *)CALL(mem_new)(0x1CC);
         if (a0 == 0) {
@@ -15536,7 +15553,19 @@ int *ScreenWindow_ctor(int *a0, int a1, ...) {
     }
     CALL(Window_ctor)(a0);
     NODE(a0)->vptr = (char *)&ScreenWindow_vtbl;
+#ifdef PORT64
+    {   /* plan 21.5: the command list is in registers on x86-64; pack it in the IDO layout,
+         * each tag's word count from port/ultra/va_pack.c's doCommand table */
+        extern int port_va_pack_cmds(int tag, __builtin_va_list ap, unsigned int *buf, int max);
+        __builtin_va_list ap;
+        __builtin_va_start(ap, a1);
+        port_va_pack_cmds(a1, ap, packed, 64);
+        __builtin_va_end(ap);
+        aligned = (int)packed;
+    }
+#else
     aligned = (((int)((char *)&a1 + 4)) + 3) & ~3;
+#endif
     CALL(Node_runCommandArgs_00038C70)(a0, a1, aligned);
     CALL(ScreenWindow_allocBuffers)(a0);
 end:
@@ -20975,7 +21004,11 @@ NodeListState *a3;
     if (v0 != 0) {
         CALL(sys_fatal)((char*)&gl_data_00000000 + 0x211C8);
     }
+#ifdef PORT64 /* plan 21.7: a3 through the home slot reads a0's neighbour, a spill slot on x86-64 */
+    if (a3 != 0) s = *a3;
+#else
     if (((NodeListState **)&a0)[3] != 0) s = *((NodeListState **)&a0)[3];
+#endif
     s.cursor = (int **)&a0;
     s.obj = 0;
     s.skinMgr = 0;
@@ -23266,11 +23299,13 @@ float math_mtx4Determinant(void *arg0) {
  * gl_func_00000000_c43c) so the f12/f14 float args pass single-precision (not
  * K&R double-promote); call 2 passes a4/a5's raw bits in the int regs
  * (reinterpret, not convert); _pad reserves the 0x28 frame slot. */
-extern float gl_func_00000000_c43c(float, float, int, int);
-float math_det3x3(float a0, float a1, float a2, float a3, float a4, float a5, float a6, int a7, int a8) {
+/* PORT64_FT (include/uso_call.h, plan 21.7): a7 / a8 and det2x2's c / d are O32 float args in integer
+ * registers; x86-64 passes every float in a vector register */
+extern float gl_func_00000000_c43c(float, float, PORT64_FT, PORT64_FT);
+float math_det3x3(float a0, float a1, float a2, float a3, float a4, float a5, float a6, PORT64_FT a7, PORT64_FT a8) {
     int _pad;
     float r1 = XCALL(gl_func_00000000_c43c, math_det2x2)(a1, a2, a7, a8);
-    float r2 = XCALL(gl_func_00000000_c43c, math_det2x2)(a1, a2, *(int*)&a4, *(int*)&a5);
+    float r2 = XCALL(gl_func_00000000_c43c, math_det2x2)(a1, a2, PORT64_F(*(int*)&a4), PORT64_F(*(int*)&a5));
     float r3 = XCALL(gl_func_00000000_c43c, math_det2x2)(a4, a5, a7, a8);
     (void)_pad;
     return r3 * a0 - a3 * r1 + a6 * r2;
@@ -25608,7 +25643,18 @@ extern int D_60A88_owner;
 extern int gl_func_00000000();
 void TextWin_printf(int a0, int a1, ...) {
     if (TEXTWIN(a0)->muted == 0) {
+#ifdef PORT64
+        /* plan 21.5: the variadic arguments are in registers on x86-64; pack them in the IDO layout */
+        extern int port_va_pack_printf(const char *fmt, __builtin_va_list ap, unsigned int *buf);
+        unsigned int packed[64] __attribute__((aligned(8)));
+        __builtin_va_list va;
+        __builtin_va_start(va, a1);
+        port_va_pack_printf((const char *)a1, va, packed);
+        __builtin_va_end(va);
+        char *ap = (char *)packed;
+#else
         char *ap = (char *)(((int)&a1 + 4 + 3) & ~3);
+#endif
         D_60A88_owner = a0;
         CALL(_Printf)(&D_00000000, 0, a1, ap);
     }
@@ -26442,11 +26488,24 @@ void sys_sprintf_00061B30(char *fmt, ...) {
     char *ap;
     int h0;
     int h1;
+#ifdef PORT64
+    extern int port_va_pack_printf(const char *fmt, __builtin_va_list ap, unsigned int *buf);
+    unsigned int packed[64] __attribute__((aligned(8)));
+    __builtin_va_list va;
+#endif
     CALL(gfx_setCpuDraw)(gGfxLib_61B30_base, 1);
     GFXLIB(gGfxLib_61B30_base)->charW = 8;
     GFXLIB(gGfxLib_61B30_base)->charH = 8;
     h0 = D_61B30_h0; h1 = D_61B30_h1;
+#ifdef PORT64
+    /* plan 21.5: the variadic arguments are in registers on x86-64; pack them in the IDO layout */
+    __builtin_va_start(va, fmt);
+    port_va_pack_printf((const char *)fmt, va, packed);
+    __builtin_va_end(va);
+    ap = (char *)packed;
+#else
     ap = (char *)(((int)&fmt + sizeof(fmt) + 3) & ~3);
+#endif
     GFXLIB(gGfxLib_61B30_base)->textY = h1;
     GFXLIB(gGfxLib_61B30_base)->textX = h0;
     CALL(_Printf)(&D_61B30_out, 0, fmt, ap);

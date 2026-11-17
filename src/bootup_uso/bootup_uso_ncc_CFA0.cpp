@@ -29,7 +29,7 @@ typedef float f32; typedef double f64;
 #include "../../include/gdl/window.h" /* Window: drawDistFov / displayMask on the current window */
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
-char *bu_cfa0_probe(char *, int, int, int, float, float *, float);
+char *bu_cfa0_probe(char *, int, PORT64_FT, PORT64_FT, float, float *, float);
 extern char gGfxLib_cfa0_a, gGfxLib_cfa0_b, gGfxLib_cfa0_c, gGfxLib_cfa0_d, gGfxLib_cfa0_e, gGfxLib_cfa0_f;
 extern char *gGfxLib_cfa0_ctx;
 extern int gGfxLib_cfa0_flag;
@@ -72,7 +72,7 @@ extern "C" void SnowBoarder_display(SnowBoarder *st) {
 
     dst = 0; o = 0; vt = 0;
     if ((st->flags & 0x2000) && st->camera == CTX) return;
-    r = bu_cfa0_probe(ctx = CTX, 2, *(int *)&st->dnode.vqs.trans[0], *(int *)&st->dnode.vqs.trans[1],
+    r = bu_cfa0_probe(ctx = CTX, 2, PORT64_F(*(int *)&st->dnode.vqs.trans[0]), PORT64_F(*(int *)&st->dnode.vqs.trans[1]),
                   st->dnode.vqs.trans[2], &out, 0.0f);
     st->unkA40 = r;
     if (r == 0) return;

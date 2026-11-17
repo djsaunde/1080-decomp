@@ -11,7 +11,7 @@
  *   - _Printf turns an IDO-layout cursor into an x86-64 va_list (port_va_from_ido): every argument
  *     in an 8-byte overflow slot, the register areas marked used.
  * For a printf-family format the argument types come from the format. */
-#include <stdarg.h>
+#include "../port_libc.h"
 
 #define PACK_MAX 64 /* IDO words */
 
@@ -70,8 +70,11 @@ static const char *next_conv(const char *s, char *kinds, int *nk)
     return s + 1;
 }
 
-/* fmt's arguments from ap into buf (IDO layout, PACK_MAX words); returns the words used */
-int port_va_pack_printf(const char *fmt, va_list ap, unsigned int *buf)
+/* fmt's arguments into buf (IDO layout, PACK_MAX words); returns the words used.  The first nNamed
+ * int-class arguments are named parameters of the caller (gl_sprintf's a2: `(buf, fmt, a2, ...)`),
+ * passed in `named`; the rest come from ap. */
+int port_va_pack_printf_after(const char *fmt, int nNamed, const unsigned int *named, va_list ap,
+                              unsigned int *buf)
 {
     unsigned int n = 0;
     const char *s = fmt;
@@ -81,8 +84,14 @@ int port_va_pack_printf(const char *fmt, va_list ap, unsigned int *buf)
     while (s != 0 && (s = next_conv(s, kinds, &nk)) != 0) {
         for (k = 0; k < nk && n < PACK_MAX - 3; k++) {
             if (kinds[k] == 'i') {
-                buf[n++] = va_arg(ap, unsigned int); /* int, char, pointer (x32: 4 bytes) */
+                buf[n++] = nNamed > 0 ? (nNamed--, *named++) : va_arg(ap, unsigned int); /* x32: 4 bytes */
                 continue;
+            }
+            if (nNamed > 0) { /* a double / long long in a named int's place: an unprototyped call put
+                               * it in a vector / the next GP register, which ap reads (va_start
+                               * left xmm0 unread); the named word is dropped */
+                nNamed--;
+                named++;
             }
             n = (n + 1) & ~1u; /* 8 bytes, 8-aligned */
             if (kinds[k] == 'd') {
@@ -96,6 +105,52 @@ int port_va_pack_printf(const char *fmt, va_list ap, unsigned int *buf)
         }
     }
     return (int)n;
+}
+
+int port_va_pack_printf(const char *fmt, va_list ap, unsigned int *buf)
+{
+    return port_va_pack_printf_after(fmt, 0, 0, ap, buf);
+}
+
+/* ---- Node command lists (ScreenWindow_ctor's `(self, tag, args..., tag, args..., 0)`) ----
+ * Node_runCommands_00038C04 hands each tag to the object's doCommand with the cursor; the handler
+ * reads its argument words and the walk reads the next tag (4-byte slots, 0 ends the list).  The
+ * word counts, from the handlers (every argument is an int-class word: the int-to-float arms read
+ * an int and convert it):
+ *   Node_doCommand (game_libs_o2_38A28.c, the ROM's table): 0x64 name, 0x65 attach, 0x67 set-global,
+ *     0x6C handle: 1 each; 0x66 and anything else: sys_fatal "unknown Node cmd";
+ *   Window_doCommand (game_libs_o2_4E96C.c), the ScreenWindow / Window vtable slot 6: 0x6D clear
+ *     flags, 0x70 flags, 0x71 projection, 0x73 near, 0x74 far, 0x75 display mask: 1; 0x6E origin,
+ *     0x6F size: 2; 0x72 falls to Node_doCommand.
+ * A tag outside the table is reported, and packed as one word (the handler's fatal then names it). */
+static const struct { unsigned char tag, words; } sCmdWords[] = {
+    { 0x64, 1 }, { 0x65, 1 }, { 0x67, 1 }, { 0x6C, 1 },                             /* Node */
+    { 0x6D, 1 }, { 0x6E, 2 }, { 0x6F, 2 }, { 0x70, 1 }, { 0x71, 1 }, { 0x73, 1 }, { 0x74, 1 },
+    { 0x75, 1 },                                                                    /* Window */
+};
+
+/* the words after the named first tag: its arguments, then tag / arguments ... through the 0 */
+int port_va_pack_cmds(int tag, va_list ap, unsigned int *buf, int max)
+{
+    int n = 0;
+    while (tag != 0 && n < max - 4) {
+        unsigned int i, words = 1;
+        for (i = 0; i < sizeof(sCmdWords) / sizeof(sCmdWords[0]); i++) {
+            if (sCmdWords[i].tag == (tag & 0xFFFF)) {
+                break;
+            }
+        }
+        if (i < sizeof(sCmdWords) / sizeof(sCmdWords[0])) {
+            words = sCmdWords[i].words;
+        } else {
+            fprintf(stderr, "PORT: va_pack: Node command 0x%x not in the table (packed as 1 word)\n", tag);
+        }
+        while (words-- > 0) {
+            buf[n++] = va_arg(ap, unsigned int);
+        }
+        buf[n++] = (unsigned int)(tag = va_arg(ap, int));
+    }
+    return n;
 }
 
 #ifdef PORT64

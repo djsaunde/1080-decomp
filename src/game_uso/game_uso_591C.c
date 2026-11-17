@@ -34,6 +34,9 @@ int SnowAI_aimAlongSegment();
 extern Vec3 port_591c_aimAlongSegment(void *, void *, void *, void *, void *) __asm__("SnowAI_aimAlongSegment");
 #endif
 void *SnowAI_aimWeave();
+#ifdef PORT64 /* plan 21.7: the definition (game_uso_mp72_8CD8.cpp) returns its 12-byte XZ by value: in xmm0:xmm1 */
+extern Vec3 port_591c_aimWeave(void *, void *, void *, int) __asm__("SnowAI_aimWeave");
+#endif
 void SnowAI_restoreRiderParms(SnowAI *);
 void SnowAI_scaleRiderMax(SnowAI *);
 void SnowAI_scaleRiderParms(SnowAI *);
@@ -188,7 +191,12 @@ void SnowAI_steer(int *a0) {
         x = res_c.x; scale = res_c.y; z = res_c.z; transform_out.x = x; transform_out.y = scale; transform_out.z = z;
         break;
     case 1:
+#ifdef PORT64
+        stage = port_591c_aimWeave(self, helper_ptr, hit_parent, t0);
+        v0 = (int)&stage;
+#else
         v0 = (int)SnowAI_aimWeave(&stage, self, helper_ptr, hit_parent, t0);
+#endif
         *(Tri3i *)&res_b = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_b;
         if (1) {}

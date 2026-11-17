@@ -233,7 +233,7 @@ void AnimPlayer_advance(char *arg0) {
  * that keeps the reloaded next in ring t7 instead of the v1 candidate.
  * docs/IDO_CODEGEN.md#address-taken-iterator-locals-forwarded-ring-6337c */
 extern int gl_func_00000000();
-extern int gl_func_00062F64f(int a0, int a1, int a2, int a3, int a4, float a5);
+extern int gl_func_00062F64f(int a0, int a1, int a2, PORT64_FT a3, int a4, float a5); /* PORT64_FT: include/uso_call.h */
 void AnimPlayer_applyPose(int *self) {
     int val;
     int *next;
@@ -265,7 +265,7 @@ void AnimPlayer_applyPose(int *self) {
         int *obj = (int *) cur[0];
         int off = ((Animator *)obj)->nodeIndex * 14;
         XCALL(gl_func_00062F64f, anim_blendPose)((int) obj, AP(self)->pose0 + off, AP(self)->pose1 + off,
-                          *(int *)&AP(self)->frac, AP(self)->blendLeft,
+                          PORT64_F(*(int *)&AP(self)->frac), AP(self)->blendLeft,
                           AP(self)->blendWeight);
         cur = next;
         val = cur ? (next = (int *) next[1], cur[0]) : 0;
@@ -422,10 +422,17 @@ void AnimPlayer_startIfChanged(int a0, int a1, int a2, int a3, int a4, int a5) {
  * rather than a uopt candidate ($v0), which lines up the whole
  * t7/t8/t9/t0/t1/t2 temp chain and the bnezl a4-reload pair. Reloc-free
  * leaf. */
-void AnimPlayer_setBlend(AnimPlayer *a0, int a1, int a2, float a3, int a4, int a5) {
+#ifdef PORT64 /* plan 21.7: every caller passes the weight's f32 bits as an int (O32: arg 3 in $a3) */
+#define SETBLEND_W int
+#define SETBLEND_WV(x) PORT_FBITS(x)
+#else
+#define SETBLEND_W float
+#define SETBLEND_WV(x) x
+#endif
+void AnimPlayer_setBlend(AnimPlayer *a0, int a1, int a2, SETBLEND_W a3, int a4, int a5) {
     a0->weightAnimNeg = a1;
     a0->weightAnimPos = a2;
-    a0->weight = a3;
+    a0->weight = SETBLEND_WV(a3);
     a0->blendFrames = a5;
     if (!(a0->flags & ANIM_BLENDIN) || !(a4 & ANIM_BLENDIN)) {
         a0->blendCount = 0;

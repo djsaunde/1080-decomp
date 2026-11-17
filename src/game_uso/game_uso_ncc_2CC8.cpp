@@ -55,12 +55,18 @@ struct Body { char pad[0x70]; M4 world; };
 struct Src;
 struct Self { char pad[0x14]; Out *body; char pad18[0x38 - 0x18]; Body *anchor; Src *cam; int mode; char pad44[0x5C - 0x44]; float ch0; };
 struct Src { char pad[0x38]; Body *target; };
+#ifdef PORT64 /* plan 21.7: x86-64 returns a 12-byte struct in xmm0:xmm1; the C callee writes through the
+               * MIPS sret out-pointer (its first parameter) and returns it */
+extern "C" P3 *cam_toTargetLocal_000023D4_out(P3 *out, Src *a1) __asm__("cam_toTargetLocal_000023D4");
+static inline P3 cam_toTargetLocal_000023D4(Src *a1) { P3 r; cam_toTargetLocal_000023D4_out(&r, a1); return r; }
+#else
 extern "C" {
 #ifdef PORT /* the C callee takes the MIPS sret out-pointer and does not pop it (include/uso_call.h PORT_SRET_NOPOP) */
 __attribute__((callee_pop_aggregate_return(0)))
 #endif
 P3 cam_toTargetLocal_000023D4(Src *a1);
 }
+#endif
 struct Ctx {
     Body *tgt; Out *out;
     Ctx(Self *s) { out = s->body; tgt = s->cam->target; }

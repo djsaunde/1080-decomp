@@ -136,4 +136,24 @@
 #define PORT_V0_TYPE(t) void
 #endif
 
+/*
+ * O32 float bits in integer registers (PC port, x86-64: plan 21.7).  On MIPS a float argument after an
+ * int one rides in an integer register, so the matched C often declares it `int` and passes the bits
+ * (`*(int *)&v.x`); i386 cdecl puts both in the same stack slot, so that works there.  x86-64 passes a
+ * float in a vector register whatever its position: one side's `int` must become a float.
+ *   PORT64_FT       the parameter type: "float" under PORT64, "int" otherwise
+ *   PORT64_F(x)     an int holding f32 bits, passed to a PORT64_FT parameter: the float with those bits
+ *   PORT64_I(x)     a PORT64_FT parameter used as the bits (an int): the inverse
+ * port/tools/abi-scan.py --x64 lists the remaining int / float class mismatches.
+ */
+#ifdef PORT64
+#define PORT64_FT float
+#define PORT64_F(x) PORT_FBITS(x)
+#define PORT64_I(x) (__extension__({ union { int i_; float f_; } u_; u_.f_ = (x); u_.i_; }))
+#else
+#define PORT64_FT int
+#define PORT64_F(x) x
+#define PORT64_I(x) x
+#endif
+
 #endif

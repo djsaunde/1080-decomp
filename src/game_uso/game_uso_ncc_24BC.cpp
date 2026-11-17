@@ -45,8 +45,15 @@ struct Self { char pad[0x14]; Out *body; char pad18[0x38 - 0x18]; Body *target; 
               char pad44[0x94 - 0x44]; float txz; char pad98[0xAC - 0x98]; float cxz;
               char padb0[0xDC - 0xB0]; float toy; char pade0[0xF4 - 0xE0]; float ty2;
               char padf8[0x10C - 0xF8]; float chy; };
+#ifdef PORT64 /* plan 21.7: x86-64 returns a 12-byte struct in xmm0:xmm1; the C callee writes through the
+               * MIPS sret out-pointer (its first parameter) and returns it */
+extern "C" V3 *cam_toTargetLocal_000023D4_out(V3 *out, Self *a1) __asm__("cam_toTargetLocal_000023D4");
+static inline V3 cam_toTargetLocal_000023D4(Self *a1) { V3 r; cam_toTargetLocal_000023D4_out(&r, a1); return r; }
+#endif
 extern "C" {
+#ifndef PORT64
 PORT_SRET_NOPOP V3 cam_toTargetLocal_000023D4(Self *a1);
+#endif
 void game_uso_func_071028(V3 *);
 }
 struct Ctx { Out *out; Ctx(Self *s) { out = s->body; }

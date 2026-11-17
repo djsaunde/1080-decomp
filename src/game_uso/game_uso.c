@@ -391,10 +391,12 @@ void camList_read_000007EC(int *arg0) {
  * slots in target order. */
 extern char game_uso_D_807FE770;
 extern int game_uso_func_055750();
-extern void game_uso_func_047484(int *dst, int a, int b, int c, float f);
+/* PORT64_FT (include/uso_call.h, plan 21.7): arg3 / arg4 are O32 float args in integer registers
+ * (cam_create passes x, y, z as floats; MCamera_ctor takes floats) */
+extern void game_uso_func_047484(int *dst, int a, PORT64_FT b, PORT64_FT c, float f);
 extern void game_uso_func_04C774(int *dst, int flag, int arg7);
 
-int *cam_ctor_00000858(int *a0, int arg1, int arg2, int arg3, int arg4, float arg5, int arg6, int arg7) {
+int *cam_ctor_00000858(int *a0, int arg1, int arg2, PORT64_FT arg3, PORT64_FT arg4, float arg5, int arg6, int arg7) {
     if (a0 == 0) {
         a0 = (int *)XCALL(game_uso_func_055750, mem_new)(0x27C);
         if (a0 == 0) goto out;
@@ -6430,7 +6432,14 @@ extern int gl_func_00000000();
 void RiderAnim_stateSwitchStanceEnd(int *a0) {
     int *s0 = a0;
     CALL(RiderAnim_flipStance_0000D6E4)(a0);
+#ifdef PORT64 /* plan 21.7: the callee takes a float, which x86-64 passes in xmm0, not with the int args */
+    {
+        extern void port64_yawPiOver(void *, float) __asm__("SnowBoarder_yawPiOver_0000E270");
+        port64_yawPiOver(RA(s0)->rider, 1.0f);
+    }
+#else
     CALL(SnowBoarder_yawPiOver_0000E270)(RA(s0)->rider, 0x3F800000);   /* a1 = 1.0f bits */
+#endif
     CALL(RiderAnim_clearRiderEdge_00011868)(s0);
     if (RA(s0)->rider->contactCount == 0) {
         CALL(RiderAnim_stateRide)(s0);

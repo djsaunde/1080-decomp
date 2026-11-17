@@ -4452,7 +4452,7 @@ typedef struct { int a, b, c, d, e, f; } S24_7EC8;
 extern char gGfxLib_7ec8_g[], bu_7ec8_h[], gGfxLib_7ec8_src[];
 extern int gInputMgr_7ec8_m;
 extern void func_00000000_7ec8_c(char *, char *, float);
-extern int func_00000000_7ec8_t(int, int, int, int, float, int, float);
+extern int func_00000000_7ec8_t(int, int, PORT64_FT, PORT64_FT, float, int, float);
 void Fog_display(char *s0) {
     float scale, limit, p, end, frac;
     int hit;
@@ -4478,8 +4478,8 @@ void Fog_display(char *s0) {
             XCALL(func_00000000_7ec8_c, FogParms_lerp_0004406C)(gGfxLib_7ec8_src, FOGITEM(s0)->fog, frac);
         }
     } else {
-        if (XCALL(func_00000000_7ec8_t, cam_isSphereInView)(*(int *)&GFXLIB(gGfxLib_7ec8_g)->curWindow, 3, *(int *)&FOGITEM(s0)->pos[0],
-                          *(int *)&FOGITEM(s0)->pos[1], FOGITEM(s0)->pos[2], 0, 0.0f) != 0) {
+        if (XCALL(func_00000000_7ec8_t, cam_isSphereInView)(*(int *)&GFXLIB(gGfxLib_7ec8_g)->curWindow, 3, PORT64_F(*(int *)&FOGITEM(s0)->pos[0]),
+                          PORT64_F(*(int *)&FOGITEM(s0)->pos[1]), FOGITEM(s0)->pos[2], 0, 0.0f) != 0) {
             FCALL(ColourItem_display)(s0);
         }
     }
@@ -4641,7 +4641,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", FogTmpl_create);
  * WIRING REQUIRED to land: add `func_00000000_082F8_v = 0x00000000;` to
  * undefined_syms_auto.txt (next to func_00000000_082F8, line ~1038).
  */
-extern int func_00000000_082F8(int, int, int, int, float, int, float);
+extern int func_00000000_082F8(int, int, PORT64_FT, PORT64_FT, float, int, float);
 extern void func_00000000_082F8_v(int, int);
 extern char D_00000000_a;
 extern char D_func_00000008_data;
@@ -4661,8 +4661,8 @@ void Snower_display(int *a0) {
         if (XCALL(func_00000000_082F8, cam_isSphereInView)(
             *(int *)&gGfx->curWindow,
             3,
-            *(int *)&SNOWITEM(a0)->pos[0],
-            *(int *)&SNOWITEM(a0)->pos[1],
+            PORT64_F(*(int *)&SNOWITEM(a0)->pos[0]),
+            PORT64_F(*(int *)&SNOWITEM(a0)->pos[1]),
             SNOWITEM(a0)->pos[2],
             0,
             0.0f) != 0) {
@@ -5048,8 +5048,10 @@ void stream_readQuad_00008AEC(Quad4 *dst) {
  *  - the short store (0x174) must be emitted BEFORE the float stores in C so
  *    as1 schedules the 1.0f/10.0f lui/mtc1/swc1 materialization to match.
  * typed-float proto func_8b44_init keeps the 5th arg a single swc1. */
-extern void func_8b44_init(char *, int, int, int, float);
-char* SnowBCollider_ctor(char *a0, int a1, int a2, int a3, int a4, float f_arg) {
+/* PORT64_FT (include/uso_call.h): a3 / a4 are O32 float args in integer registers (the caller,
+ * SnowBoarder_createColliders, passes floats; Friction_ctor takes floats) */
+extern void func_8b44_init(char *, int, PORT64_FT, PORT64_FT, float);
+char* SnowBCollider_ctor(char *a0, int a1, int a2, PORT64_FT a3, PORT64_FT a4, float f_arg) {
     if (a0 == 0) {
         a0 = (char*)FCALL(mem_new)(0x178);
         if (a0 == 0) goto end;

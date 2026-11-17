@@ -14,6 +14,13 @@ struct St558A0 {
     int w;
     int x;
     int y;
+#ifdef PORT64
+    /* plan 21.7: the callers pass the whole NodeListState (0x4C bytes, gdl/nodelist.h) and the handlers
+     * read past these four words through &s.  On MIPS / i386 every byte of it is in memory after the
+     * homes; x86-64 passes a 16-byte struct in two registers and a 0x4C-byte one in memory, so the
+     * callee must declare the full size to read the caller's copy. */
+    int rest[(0x4C - 16) / 4];
+#endif
     int next() { return *(*pp)++; }
 };
 extern "C" void nodelist_dispatchList_000558A0(St558A0 s) {

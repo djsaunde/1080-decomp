@@ -529,7 +529,25 @@ int gl_proutSprintf(int a0, int a1, int a2) {
 extern int func_00000000();
 extern int D_00000000;
 int gl_sprintf(char *a0, int a1, int a2, ...) {
+#ifdef PORT64
+    /* plan 21.5: (buf, fmt, a2, ...) -- a2 is the format's first argument word (a named int), the
+     * rest are in registers on x86-64; pack them all in the IDO layout */
+    extern int port_va_pack_printf_after(const char *fmt, int nNamed, const unsigned int *named,
+                                         __builtin_va_list ap, unsigned int *buf);
+    unsigned int packed[64] __attribute__((aligned(8)));
+    unsigned int first = (unsigned int)a2;
+    __builtin_va_list va;
+    int rv;
+    __builtin_va_start(va, a2);
+    port_va_pack_printf_after((const char *)a1, 1, &first, va, packed);
+    __builtin_va_end(va);
+    {
+        extern int port64_Printf(void *, char *, int, unsigned int *) __asm__("_Printf");
+        rv = port64_Printf((char*)&D_00000000 + 0x83550, a0, a1, packed);
+    }
+#else
     int rv = FCALL(_Printf)((char*)&D_00000000 + 0x83550, a0, ((int *)&a2)[-1], &a2);
+#endif
     if (rv >= 0) {
         a0[rv] = 0;
     }
