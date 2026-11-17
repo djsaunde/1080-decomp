@@ -9,6 +9,7 @@
  * ct3 / ct0 stand in for the constructors' `if (this != 0)` blocks. Callees go through typed blank (0-pinned)
  * aliases; RoData constants through 0-pinned snow_ro_* symbols. */
 #include "snoweffects_ncc_e.h"
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 
 struct M44 { float m[4][4]; };
 extern "C" void *snow_nw(unsigned);
@@ -159,7 +160,7 @@ extern "C" void BoardTrail_spawnA_000064B8(SnowEm *t) {
         k = t->f198;
         if (t->burst != 0) {
             t->burst--;
-            spd = gl_func_00000000_snow_randf() * snow_ro_50 + snow_ro_54;
+            spd = XCALL(gl_func_00000000_snow_randf, sys_randf)() * snow_ro_50 + snow_ro_54;
             k = t->f194;
         }
         if (t->cam->state == 98 && (t->burst != 0 || 20.0f < t->cam->f348) && i && t->f190 < spd) {
@@ -169,22 +170,22 @@ extern "C" void BoardTrail_spawnA_000064B8(SnowEm *t) {
             v.z = t->f40;
             xformB(v, *t->mtx);
             SV n = v - t->pos;
-            gl_func_00000000_snow_norm(&n);
+            XCALL(gl_func_00000000_snow_norm, math_vec3Normalize)(&n);
             n *= t->f180 * t->speed;
             n += t->cam->v318.scaled(k) * (t->f184 + spd);
             if (n.y > 0.0f) {
                 n.y = 0.0f;
             }
-            if (gl_func_00000000_snow_randf() < spd) {
+            if (XCALL(gl_func_00000000_snow_randf, sys_randf)() < spd) {
                 for (i = 0; i < t->count; i++) {
                     float x, y, z, r;
-                    SPart *p = gl_func_00000000_snow_pool(t->pool);
+                    SPart *p = XCALL(gl_func_00000000_snow_pool, SnowPool_alloc_000006D0)(t->pool);
                     if (p == 0) {
-                        p = gl_func_00000000_snow_pool(t->pool);
+                        p = XCALL(gl_func_00000000_snow_pool, SnowPool_oldest_00000680)(t->pool);
                     }
                     if (p != 0) {
                         SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f);
-                        r = gl_func_00000000_snow_randf();
+                        r = XCALL(gl_func_00000000_snow_randf, sys_randf)();
                         u.lerpTo(t->vF0, r);
                         x = u.x; y = u.y; z = u.z;
                         p->pos.set(x, y + t->f178, z);
@@ -298,14 +299,14 @@ extern "C" void BoardTrail_spawnB_00006B28(SnowEmB *t) {
             t->c1CC--;
         }
         col = t->cam->col;
-        gl_func_00000000_snow_randf();
+        XCALL(gl_func_00000000_snow_randf, sys_randf)();
         if (t->c1CC != 0 && t->c1CC < 3) {
             SVb n = t->cam->v318 * t->f1C4;
             if (0) n *= t->f1B8; /* run 698: an edg float temporary between the two products (r2 at the target's sp+132) */
             n += t->cam->v3B0 * t->f1B8;
-            SPart *p = gl_func_00000000_snow_pool(t->pool);
+            SPart *p = XCALL(gl_func_00000000_snow_pool, SnowPool_alloc_000006D0)(t->pool);
             if (p == 0) {
-                p = gl_func_00000000_snow_pool(t->pool);
+                p = XCALL(gl_func_00000000_snow_pool, SnowPool_oldest_00000680)(t->pool);
             }
             if (p != 0) {
                 float x, y;
@@ -317,7 +318,7 @@ extern "C" void BoardTrail_spawnB_00006B28(SnowEmB *t) {
                         s = 0.5f;
                     }
                     SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f * s);
-                    s = gl_func_00000000_snow_randf();
+                    s = XCALL(gl_func_00000000_snow_randf, sys_randf)();
                     u.lerpTo(t->vF0, s);
                     x = u.x; y = u.y; z = u.z;
                     p->pos.set(x, y, z);
@@ -445,19 +446,19 @@ extern "C" void BoardTrail_spawnC_0000718C(SnowEmC *t) {
     go = a != 0.0f; /* run 736: go reused (a separate n cost one frame word) */
     if ((go < 0 ? -go : go) == 0) return;
     for (i = 0; i < 1; i++) {
-        SPart *p = gl_func_00000000_snow_pool(t->pool);
+        SPart *p = XCALL(gl_func_00000000_snow_pool, SnowPool_alloc_000006D0)(t->pool);
         if (p == 0) {
-            p = gl_func_00000000_snow_pool(t->pool);
+            p = XCALL(gl_func_00000000_snow_pool, SnowPool_oldest_00000680)(t->pool);
         }
         if (p != 0) {
             SVb w;
             SVb u = t->pos;
-            r = gl_func_00000000_snow_randf();
+            r = XCALL(gl_func_00000000_snow_randf, sys_randf)();
             u.lerpEach(t->vF0, r);
             w.asg(t, t, t->cam->v318 * t->f208, t, t);
             if (0) w *= t->f20C; /* run 698: one more edg float temporary (objdiff 96.99 -> 97.07) */
             SVb a1 = t->cam->v3B0 * t->f20C * (a < 0.0f ? -a : a);
-            SVb a2 = t->v114.mulS(1.0f + gl_func_00000000_snow_randf() * snow_ro_B0) * t->f210;
+            SVb a2 = t->v114.mulS(1.0f + XCALL(gl_func_00000000_snow_randf, sys_randf)() * snow_ro_B0) * t->f210;
             a2 *= (a < 0.0f ? -a : a);
             if (0.0f < a) {
                 a2 *= -1.0f;
@@ -470,7 +471,7 @@ extern "C" void BoardTrail_spawnC_0000718C(SnowEmC *t) {
             p->sizeVel = t->f1DC;
             p->gravity = t->f1E0;
             p->setLife(256.0f, t->f1E8);
-            r = gl_func_00000000_snow_randf();
+            r = XCALL(gl_func_00000000_snow_randf, sys_randf)();
             p->setAlpha3(128.0f + r * 127.0f, t->f1EC, t->f1EC);
             colB(r, t->f220, r, t->cam->col.c[0], p, t);
         }

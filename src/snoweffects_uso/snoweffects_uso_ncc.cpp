@@ -1,6 +1,7 @@
 /* IDO 7.1 NCC (C++) EXACT donors for snoweffects.uso (agent-h run 628), REPLACE_FUNC_BODY-spliced over the
  * INCLUDE_ASM placeholders in snoweffects_uso.c on both build paths. Classes: snoweffects_ncc.h. */
 #include "snoweffects_ncc.h"
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 
 /* 0x40B4 (0xD4): the emitter draw. Reset its display list, let 0x4188 fill it, then append
  * ClearGeometryMode(0x33000), SetGeometryMode(0x2204) and EndDL through the c->next() packets
@@ -117,9 +118,9 @@ extern "C" void SnowFall_fill_000039C4(SnowFall *t) {
     for (i = 0; i < t->unk40; i++) {
         p = (SnowParticle *)CALL(SnowPool_alloc_000006D0)(t);
         if (p != 0) {
-            d = gl_func_00000000_snow_randf() * 100.0f;
-            a = (gl_func_00000000_snow_randf() - 0.5f) * 60.0f;
-            b = (gl_func_00000000_snow_randf() - 0.5f) * 60.0f;
+            d = XCALL(gl_func_00000000_snow_randf, sys_randf)() * 100.0f;
+            a = (XCALL(gl_func_00000000_snow_randf, sys_randf)() - 0.5f) * 60.0f;
+            b = (XCALL(gl_func_00000000_snow_randf, sys_randf)() - 0.5f) * 60.0f;
             if (1) {}
             p->pos.x = t->unk98[0] - t->camRotT[2][0] * d;
             p->pos.y = t->unk98[1] - t->camRotT[2][1] * d;
@@ -136,13 +137,13 @@ extern "C" void SnowFall_fill_000039C4(SnowFall *t) {
             p->fadeAt = 0.0f;
             p->unk3C = 1.0f;
             p->minVelY = -1.0f;
-            p->unk2C = gl_func_00000000_snow_randf() * 360.0f;
-            p->vel.x = (gl_func_00000000_snow_randf() - 0.5f) * 0.0f;
-            p->vel.y = -(gl_func_00000000_snow_randf() * 2.5f) - 1.0f;
-            p->vel.z = (gl_func_00000000_snow_randf() - 0.5f) * 0.0f;
-            p->accel.x = (gl_func_00000000_snow_randf() - 0.5f) * 0.15f;
+            p->unk2C = XCALL(gl_func_00000000_snow_randf, sys_randf)() * 360.0f;
+            p->vel.x = (XCALL(gl_func_00000000_snow_randf, sys_randf)() - 0.5f) * 0.0f;
+            p->vel.y = -(XCALL(gl_func_00000000_snow_randf, sys_randf)() * 2.5f) - 1.0f;
+            p->vel.z = (XCALL(gl_func_00000000_snow_randf, sys_randf)() - 0.5f) * 0.0f;
+            p->accel.x = (XCALL(gl_func_00000000_snow_randf, sys_randf)() - 0.5f) * 0.15f;
             p->accel.y = 0.0f;
-            p->accel.z = (gl_func_00000000_snow_randf() - 0.5f) * 0.15f;
+            p->accel.z = (XCALL(gl_func_00000000_snow_randf, sys_randf)() - 0.5f) * 0.15f;
             p->decay = 0.0f;
             p->alpha = 0.0f;
             p->alphaVel = 0.0f;
