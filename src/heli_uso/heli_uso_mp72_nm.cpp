@@ -48,6 +48,10 @@
  *    float words start at -160 (the slerp's t); dumf(t) holds the third so the sin term takes a fresh word
  *    (-220); q0 / q1 are the two words between X and ang. Frame map = target's except the 48 / 56 uopt temps
  *    (94.39 -> 94.44).
+ *  - run 730: operator*(const float &s) opens with `if (1) {}`: the loads of the heading come after a block
+ *    cut from the `this` store, so they are not folded into 312(s0); they use the self+0x138 item, whose live range
+ *    then reaches vel and overlaps the speed loads, so its uopt temp is 48 and t * ang's is 56 as in the target
+ *    (spill slots 48 / 56 fixed; 94.44 -> 94.91).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -91,7 +95,7 @@ struct Vec3 {
     Vec3() {}
     Vec3(float a, float b, float c) { x = a; y = b; z = c; }
     Vec3 operator-(const Vec3 &v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
-    Vec3 operator*(float s) const { V3b r; set3(r, x * s, y * s, z * s); return *(Vec3 *)&r; }
+    Vec3 operator*(const float &s) const { if (1) {} V3b r; set3(r, x * s, y * s, z * s); return *(Vec3 *)&r; }
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
     void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
 };
