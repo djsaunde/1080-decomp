@@ -131,6 +131,12 @@ static inline void slerp(Vec3 *h, const Vec3 &dir, float t) {
 #define V3(off) (*(Vec3 *)(self + (off)))
 #define FWD ((Vec3 *)(self + 0x138))
 #define COURSE (*(char **)(&heli_flow_b08 + 0x138))
+extern "C" void heli_uso_func_00000B08(char *self);
+/* the Heli vtable's update slot, emitted before the body (run 742, agent-a's viewrec 3878 lever): as1 treats every
+ * text address named by a data word before the function's .end as a target of each jump-table jr, so the case-6
+ * default is no longer an exclusive block and xbb fills the bound check's delay slot with the dispatch sll as in
+ * the target (95.76 -> 96.39) */
+extern "C" void *heli_updateSlot_b08 = (void *)heli_uso_func_00000B08;
 extern "C" void heli_uso_func_00000B08(char *self) {
     struct { float x, y, z; } ppr;
     char *player;
