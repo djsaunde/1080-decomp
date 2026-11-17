@@ -62,6 +62,9 @@ extern char port_heli_rodata[], port_heli_rodata_init[];
 extern char port_fire_data[], port_fire_data_init[];
 extern char port_checkpoint_data[], port_checkpoint_data_init[];
 extern char port_checkpoint_rodata[], port_checkpoint_rodata_init[];
+extern char port_snoweffects_data[], port_snoweffects_data_init[];
+extern char port_snoweffects_rodata[], port_snoweffects_rodata_init[];
+extern char port_snoweffects_bss[];
 
 extern char ARCMenuProcess_drawGui[];
 extern char ARCMenuProcess_handleInput[];
@@ -99,6 +102,12 @@ extern char ArcNameEntry_update_00001B04[];
 extern char BGBox_display[];
 extern char BallRotator_hostioParms[];
 extern char BallRotator_update_0003604C[];
+extern char BalloonTmpl_create[];
+extern char Balloon_display[];
+extern char Balloon_handleMsg[];
+extern char Balloon_hostioParms[];
+extern char Balloon_loadData[];
+extern char Balloon_saveData[];
 extern char BaseLight_doCommand[];
 extern char BaseLight_hostioParms[];
 extern char BaseLight_loadData[];
@@ -134,6 +143,14 @@ extern char BoardItem_unfocus_0000C150[];
 extern char BoardItem_updateHighlight_0000C044[];
 extern char BoardItem_update_0000C1B4[];
 extern char BoardList_createItem[];
+extern char BoardSpray_draw_00008C60[];
+extern char BoardSpray_emit_00007FE0[];
+extern char BoardSpray_init_00007F60[];
+extern char BoardSpray_placeEnds_00008D70[];
+extern char BoardSpray_vslot16_000090F0[];
+extern char BoardTrail_calcWidth_000063B4[];
+extern char BoardTrail_init_00005FD4[];
+extern char BoardTrail_spawn_0000634C[];
 extern char BoardsGadget_display[];
 extern char CMod_callbackInvoke_000551E0[];
 extern char CMod_display[];
@@ -161,6 +178,16 @@ extern char CharacterItem_unfocus_0000BAE8[];
 extern char CharacterItem_updateHighlight_0000B850[];
 extern char CharacterItem_update_0000BB88[];
 extern char CharacterList_createItem[];
+extern char CheckpointBoxTmpl_create[];
+extern char CheckpointBox_handleMsg[];
+extern char CheckpointBox_loadData[];
+extern char CheckpointBox_saveData[];
+extern char CheckpointColourItemType_create[];
+extern char CheckpointCylTmpl_create[];
+extern char CheckpointCyl_handleMsg[];
+extern char CheckpointCyl_hostioParms[];
+extern char CheckpointCyl_loadData[];
+extern char CheckpointCyl_saveData[];
 extern char CollObjMgr_update[];
 extern char CollObj_sendBump[];
 extern char CollObj_sphereHitTest[];
@@ -209,7 +236,14 @@ extern char DispItems_update_0000E5AC[];
 extern char DisplayMgr_display[];
 extern char EnvSettings_display[];
 extern char EnvSettings_load[];
+extern char EraseOptions_drawGui[];
+extern char EraseOptions_update[];
 extern char Fader_display[];
+extern char FireTmpl_create[];
+extern char FireTmpl_declColourParms[];
+extern char FireTmpl_display[];
+extern char Fire_display[];
+extern char Fire_hostioParms[];
 extern char FogTmpl_create[];
 extern char Fog_display[];
 extern char Fog_hostioParms[];
@@ -219,6 +253,9 @@ extern char Friction_applyContact[];
 extern char Friction_handleMsg_000640E4[];
 extern char Friction_hostioParms_00063E84[];
 extern char Functor_call_00069C94[];
+extern char GENNewRecordsProcess_drawGui[];
+extern char GENNewRecordsProcess_handleMsg[];
+extern char GENNewRecordsProcess_update[];
 extern char GameDemoProcess_handleInput[];
 extern char GameDemoProcess_handleMsg[];
 extern char GameDemoProcess_onQuitButton[];
@@ -235,6 +272,17 @@ extern char H2HRaceProcess_onPause[];
 extern char H2HRaceProcess_onPauseSelect[];
 extern char H2HRaceProcess_onRaceOver[];
 extern char H2HRaceProcess_onTimeout[];
+extern char HandTrail_init_000078E8[];
+extern char HandTrail_placeEnds_00007960[];
+extern char HeliColourItemType_create[];
+extern char HeliItemType_create[];
+extern char HeliMarkerItemType_create[];
+extern char HeliMarkerItem_load[];
+extern char HeliRotor_update[];
+extern char Heli_display[];
+extern char Heli_handleMsg[];
+extern char Heli_loadData[];
+extern char Heli_update[];
 extern char ImageFileMgr_newFile_000688F8[];
 extern char ImageFile_acquire[];
 extern char ImageFile_free_00068BAC[];
@@ -257,6 +305,8 @@ extern char ItemType_saveData[];
 extern char KeyMessage_display[];
 extern char KeyMessage_update[];
 extern char LangMenu_display[];
+extern char LanguageOptions_drawGui[];
+extern char LanguageOptions_update[];
 extern char LensFlare_display[];
 extern char LensFlare_readParms[];
 extern char LevelItem_clearChosen_0000CE5C[];
@@ -277,6 +327,9 @@ extern char LevelList_createItem[];
 extern char LightTarget_display[];
 extern char LightTarget_doCommand[];
 extern char LightTarget_hostioParms[];
+extern char LocalLightType_create_00009E10[];
+extern char LocalLight_display_00009704[];
+extern char LocalLight_loadData_0000973C[];
 extern char MCamera_command[];
 extern char MCamera_doCommand[];
 extern char MCamera_hostioParms[];
@@ -309,6 +362,12 @@ extern char MNode_setAnimPose[];
 extern char MNode_update[];
 extern char MNode_updateChildren[];
 extern char MainLogo_display[];
+extern char MainOptions_drawGui[];
+extern char MainOptions_handleMsg[];
+extern char MainOptions_update[];
+extern char MapLighter_cullLights_0000A760[];
+extern char MapLighter_update_0000A10C[];
+extern char MapLighter_vslot11_00009320[];
 extern char MapProp_display[];
 extern char MapProp_hostioParms[];
 extern char Mat_draw[];
@@ -330,6 +389,18 @@ extern char Mountain_display[];
 extern char Mountain_hostioParms[];
 extern char N64DemoProcess_drawGui[];
 extern char N64DemoProcess_handleInput[];
+extern char NameEnterMessage_display[];
+extern char NameEnterMessage_update[];
+extern char NameEntry_drawEntryOverlay[];
+extern char NameEntry_drawExitOverlay[];
+extern char NameEntry_drawGui[];
+extern char NameEntry_drawPhase2[];
+extern char NameEntry_handleInput[];
+extern char NameEntry_nopSlot20[];
+extern char NameEntry_nopSlot21[];
+extern char NameEntry_updateEntry[];
+extern char NameEntry_updatePhase2[];
+extern char NameEntry_updateResult[];
 extern char Node_Load[];
 extern char Node_Save[];
 extern char Node_broadcastMsg[];
@@ -342,18 +413,27 @@ extern char Node_saveData[];
 extern char Node_setAnimPose[];
 extern char Node_update[];
 extern char Node_updateChildren[];
+extern char NormalParticles_buildTexDL_00001A18[];
+extern char ParmFloat_read_00001BB4[];
 extern char ParmFloat_read_00001E74[];
 extern char ParmFloat_read_0000208C[];
 extern char ParmFloat_read_0000AA8C[];
+extern char ParmFloat_read_snow_00003CA4[];
+extern char ParmInt_read_00001B84[];
 extern char ParmInt_read_00001E44[];
 extern char ParmInt_read_0000205C[];
 extern char ParmInt_read_0000AA5C[];
+extern char ParmInt_read_snow_00003D04[];
+extern char ParmQuad_read_00001BE4[];
 extern char ParmQuad_read_00001EA4[];
 extern char ParmQuad_read_000020BC[];
 extern char ParmQuad_read_0000AABC[];
+extern char ParmQuad_read_snow_00003CD4[];
+extern char ParmVec3_read_00001CA4[];
 extern char ParmVec3_read_00001F64[];
 extern char ParmVec3_read_0000217C[];
 extern char ParmVec3_read_0000AAF4[];
+extern char ParmVec3_read_snow_00003D34[];
 extern char Parms_stub_00035C50[];
 extern char PauseMenu_display[];
 extern char PauseMenu_exit[];
@@ -369,6 +449,7 @@ extern char PolyShape_emitTriBatch_000483BC[];
 extern char PolyShape_hostioParms[];
 extern char PolyShape_makeEdgeVtxs[];
 extern char PolyShape_shade_00049DBC[];
+extern char PowderParticles_buildTexDL_000015D0[];
 extern char Process_display[];
 extern char Process_exit[];
 extern char Process_onQuit[];
@@ -418,6 +499,10 @@ extern char RaceTracker_onTrickEnd[];
 extern char RaceTracker_onTrickStart[];
 extern char RaceTracker_reset[];
 extern char RaceTracker_update[];
+extern char RecordOptions_drawGui[];
+extern char RecordOptions_update[];
+extern char ReplayOptions_drawGui[];
+extern char ReplayOptions_update[];
 extern char RiderAnim_display_0000D634[];
 extern char RiderAnim_onKey_0000D438[];
 extern char RiderAnim_readParms_0000D418[];
@@ -547,11 +632,30 @@ extern char SnowChaseActorLook_loadParms[];
 extern char SnowChaseActorLook_update[];
 extern char SnowChaseActor_loadParms[];
 extern char SnowChaseActor_update[];
+extern char SnowColourItemType_create_00007D8C[];
+extern char SnowFall_buildTexDL_00002310[];
+extern char SnowFall_display_000028E0[];
+extern char SnowFall_moveFlakes_000027A8[];
+extern char SnowPool_buildTexDL_00000270[];
+extern char SnowPool_display_00000C90[];
+extern char SnowPool_init_0000020C[];
+extern char SnowPool_update_00000B44[];
+extern char SnowRing_calcWidth_00004E4C[];
+extern char SnowRing_display_0000559C[];
+extern char SnowRing_draw_000040B4[];
+extern char SnowRing_emit_000047D4[];
+extern char SnowRing_placeEnds_00004E5C[];
+extern char SnowRing_spawn_000052CC[];
+extern char SnowRing_update_0000544C[];
+extern char SnowRing_vslot16_00005440[];
 extern char SnowTmpl_create[];
 extern char Snower_display[];
 extern char Snower_hostioParms[];
 extern char Snower_readParms[];
 extern char Snower_saveData[];
+extern char SoundOptions_drawGui[];
+extern char SoundOptions_update[];
+extern char SpecParticles_buildTexDL_00001E60[];
 extern char Spinner_hostioParms[];
 extern char Spinner_update[];
 extern char Sprite_display_0004BAF4[];
@@ -622,6 +726,16 @@ extern char TrkRace_onQuitButton[];
 extern char TrkRace_onRaceOver[];
 extern char TrkRace_onTimeout[];
 extern char TrkRace_onTimeoutExit[];
+extern char TrnDataManager_display[];
+extern char TrnDataManager_onCheckpoint[];
+extern char TrnDataManager_onTrickEnd[];
+extern char TrnDataManager_onTrickStart[];
+extern char TrnDataManager_reset[];
+extern char TrnDataManager_update[];
+extern char TrnItemType_create[];
+extern char TrnRace_onEndTimerDone[];
+extern char TrnRace_onPauseSelect[];
+extern char TrnRace_onRaceOver[];
 extern char Tv1Tmpl_create[];
 extern char Tv1Tmpl_display[];
 extern char Tv1Tmpl_stepPicture_00007D04[];
@@ -663,6 +777,7 @@ extern char cam_readParms_00001644[];
 extern char cam_update_00000B14[];
 extern char coll_nop_00035FCC[];
 extern char edd_DataManager_update[];
+extern char edd_EditorsProcess_drawGui[];
 extern char edd_EditorsProcess_handleInput[];
 extern char edd_ItemType_create_000003BC[];
 extern char edd_procMain[];
@@ -690,6 +805,13 @@ extern char h2h_readFloatParm_00001A0C[];
 extern char h2h_readIntParm_000019DC[];
 extern char h2h_readQuadParm_00001A3C[];
 extern char h2h_readVec3Parm_00001AFC[];
+extern char heli_emptyVirtual_00000458[];
+extern char heli_emptyVirtual_000019C4[];
+extern char heli_getItemPosStub_000019CC[];
+extern char heli_readFloatParm_00001A0C[];
+extern char heli_readIntParm_00001A9C[];
+extern char heli_readQuadParm_00001A6C[];
+extern char heli_readVec3Parm_00001A3C[];
 extern char hostio_devRead_000359A4[];
 extern char hostio_devSlot2_000359B8[];
 extern char hostio_devWrite_00035990[];
@@ -727,8 +849,10 @@ extern char tit_readIntParm_000028C0[];
 extern char tit_readQuadParm_00002920[];
 extern char tit_readVec3Parm_00002950[];
 extern char trk_main[];
+extern char trn_main[];
 extern char vFP1_call[];
 extern char vFP1_invokeFn_0004D084[];
+extern char vr_resetColours[];
 
 static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0x120, port_bootup_rodata + 0x0},
@@ -4215,7 +4339,7 @@ static const PortUsoReloc port_eddproc_data_rel[50] = {
     {0x1E4, (void *)Process_start},
     {0x1EC, (void *)Process_exit},
     {0x1F4, (void *)edd_EditorsProcess_handleInput},
-    {0x1FC, 0}, /* Text target eddproc:Text+0x478 */
+    {0x1FC, (void *)edd_EditorsProcess_drawGui},
     {0x214, (void *)edd_procMain},
 };
 static const PortUsoReloc port_mgrproc_data_rel[239] = {
@@ -4254,16 +4378,16 @@ static const PortUsoReloc port_mgrproc_data_rel[239] = {
     {0x18C, (void *)Node_setAnimPose},
     {0x194, (void *)Process_start},
     {0x19C, (void *)Process_exit},
-    {0x1A4, 0}, /* Text target nameent:Text+0x150 */
-    {0x1AC, 0}, /* Text target nameent:Text+0x204 */
-    {0x1B4, 0}, /* Text target nameent:Text+0x4C8 */
-    {0x1BC, 0}, /* Text target nameent:Text+0x4D0 */
-    {0x1C4, 0}, /* Text target nameent:Text+0x5AC */
-    {0x1CC, 0}, /* Text target nameent:Text+0x710 */
+    {0x1A4, (void *)NameEntry_handleInput},
+    {0x1AC, (void *)NameEntry_drawGui},
+    {0x1B4, (void *)NameEntry_updateResult},
+    {0x1BC, (void *)NameEntry_updateEntry},
+    {0x1C4, (void *)NameEntry_updatePhase2},
+    {0x1CC, (void *)NameEntry_drawEntryOverlay},
     {0x1D4, (void *)MgrNameEntry_drawExitOverlay},
     {0x1DC, (void *)MgrNameEntry_drawCongrats_00002B7C},
-    {0x1E4, 0}, /* Text target nameent:Text+0x750 */
-    {0x1EC, 0}, /* Text target nameent:Text+0x758 */
+    {0x1E4, (void *)NameEntry_nopSlot20},
+    {0x1EC, (void *)NameEntry_nopSlot21},
     {0x1F8, port_mgrproc_rodata + 0x30},
     {0x1FC, port_mgrproc_rodata + 0x34},
     {0x200, port_mgrproc_rodata + 0x38},
@@ -4511,16 +4635,16 @@ static const PortUsoReloc port_arcproc_data_rel[112] = {
     {0x18C, (void *)Node_setAnimPose},
     {0x194, (void *)Process_start},
     {0x19C, (void *)Process_exit},
-    {0x1A4, 0}, /* Text target nameent:Text+0x150 */
-    {0x1AC, 0}, /* Text target nameent:Text+0x204 */
+    {0x1A4, (void *)NameEntry_handleInput},
+    {0x1AC, (void *)NameEntry_drawGui},
     {0x1B4, (void *)ArcNameEntry_update_00001B04},
-    {0x1BC, 0}, /* Text target nameent:Text+0x4D0 */
-    {0x1C4, 0}, /* Text target nameent:Text+0x5AC */
+    {0x1BC, (void *)NameEntry_updateEntry},
+    {0x1C4, (void *)NameEntry_updatePhase2},
     {0x1CC, (void *)ArcNameEntry_drawEntryOverlay},
     {0x1D4, (void *)ArcNameEntry_drawExitOverlay},
-    {0x1DC, 0}, /* Text target nameent:Text+0x748 */
-    {0x1E4, 0}, /* Text target nameent:Text+0x750 */
-    {0x1EC, 0}, /* Text target nameent:Text+0x758 */
+    {0x1DC, (void *)NameEntry_drawPhase2},
+    {0x1E4, (void *)NameEntry_nopSlot20},
+    {0x1EC, (void *)NameEntry_nopSlot21},
     {0x204, (void *)Node_hostioParms},
     {0x20C, (void *)Node_updateChildren},
     {0x214, (void *)RaceTracker_display},
@@ -4745,16 +4869,16 @@ static const PortUsoReloc port_timproc_data_rel[112] = {
     {0x18C, (void *)Node_setAnimPose},
     {0x194, (void *)Process_start},
     {0x19C, (void *)Process_exit},
-    {0x1A4, 0}, /* Text target nameent:Text+0x150 */
-    {0x1AC, 0}, /* Text target nameent:Text+0x204 */
+    {0x1A4, (void *)NameEntry_handleInput},
+    {0x1AC, (void *)NameEntry_drawGui},
     {0x1B4, (void *)TimNameEntry_update_00001860},
-    {0x1BC, 0}, /* Text target nameent:Text+0x4D0 */
-    {0x1C4, 0}, /* Text target nameent:Text+0x5AC */
+    {0x1BC, (void *)NameEntry_updateEntry},
+    {0x1C4, (void *)NameEntry_updatePhase2},
     {0x1CC, (void *)TimNameEntry_drawEntryOverlay},
     {0x1D4, (void *)TimNameEntry_drawExitOverlay},
-    {0x1DC, 0}, /* Text target nameent:Text+0x748 */
-    {0x1E4, 0}, /* Text target nameent:Text+0x750 */
-    {0x1EC, 0}, /* Text target nameent:Text+0x758 */
+    {0x1DC, (void *)NameEntry_drawPhase2},
+    {0x1E4, (void *)NameEntry_nopSlot20},
+    {0x1EC, (void *)NameEntry_nopSlot21},
     {0x204, (void *)Node_hostioParms},
     {0x20C, (void *)Node_updateChildren},
     {0x214, (void *)RaceTracker_display},
@@ -4875,16 +4999,16 @@ static const PortUsoReloc port_trkproc_data_rel[112] = {
     {0x18C, (void *)Node_setAnimPose},
     {0x194, (void *)Process_start},
     {0x19C, (void *)Process_exit},
-    {0x1A4, 0}, /* Text target nameent:Text+0x150 */
-    {0x1AC, 0}, /* Text target nameent:Text+0x204 */
+    {0x1A4, (void *)NameEntry_handleInput},
+    {0x1AC, (void *)NameEntry_drawGui},
     {0x1B4, (void *)TrkNameEntry_update_000017C8},
-    {0x1BC, 0}, /* Text target nameent:Text+0x4D0 */
-    {0x1C4, 0}, /* Text target nameent:Text+0x5AC */
+    {0x1BC, (void *)NameEntry_updateEntry},
+    {0x1C4, (void *)NameEntry_updatePhase2},
     {0x1CC, (void *)TrkNameEntry_drawEntryOverlay},
     {0x1D4, (void *)TrkNameEntry_drawExitOverlay},
-    {0x1DC, 0}, /* Text target nameent:Text+0x748 */
-    {0x1E4, 0}, /* Text target nameent:Text+0x750 */
-    {0x1EC, 0}, /* Text target nameent:Text+0x758 */
+    {0x1DC, (void *)NameEntry_drawPhase2},
+    {0x1E4, (void *)NameEntry_nopSlot20},
+    {0x1EC, (void *)NameEntry_nopSlot21},
     {0x204, (void *)Node_hostioParms},
     {0x20C, (void *)Node_updateChildren},
     {0x214, (void *)RaceTracker_display},
@@ -4971,7 +5095,7 @@ static const PortUsoReloc port_trkproc_rodata_rel[14] = {
 };
 static const PortUsoReloc port_trnproc_data_rel[75] = {
     {0xC, (void *)__pure_virtual_called},
-    {0x24, 0}, /* Text target trnproc:Text+0x10 */
+    {0x24, (void *)trn_main},
     {0x3C, (void *)__pure_virtual_called},
     {0x54, (void *)ItemType_hostioParms},
     {0x5C, (void *)Node_updateChildren},
@@ -4983,30 +5107,30 @@ static const PortUsoReloc port_trnproc_data_rel[75] = {
     {0x8C, (void *)ItemType_saveData},
     {0x94, (void *)ItemType_load},
     {0x9C, (void *)Node_setAnimPose},
-    {0xA4, 0}, /* Text target trnproc:Text+0x1C14 */
+    {0xA4, (void *)TrnItemType_create},
     {0xAC, (void *)ColourItemType_buildItems},
     {0xB4, (void *)ColourItemType_findNearest},
     {0xBC, (void *)ColourItemType_getItemPos},
     {0xC4, (void *)ColourItemType_getItem},
     {0xCC, (void *)ColourItemType_findNextByZ},
-    {0xE4, 0}, /* Text target trnproc:Text+0x1BB4 */
-    {0xFC, 0}, /* Text target trnproc:Text+0x1CA4 */
-    {0x114, 0}, /* Text target trnproc:Text+0x1BE4 */
-    {0x12C, 0}, /* Text target trnproc:Text+0x1B84 */
+    {0xE4, (void *)ParmFloat_read_00001BB4},
+    {0xFC, (void *)ParmVec3_read_00001CA4},
+    {0x114, (void *)ParmQuad_read_00001BE4},
+    {0x12C, (void *)ParmInt_read_00001B84},
     {0x144, (void *)Node_hostioParms},
     {0x14C, (void *)Node_updateChildren},
-    {0x154, 0}, /* Text target trnproc:Text+0x1A98 */
-    {0x15C, 0}, /* Text target trnproc:Text+0x188C */
+    {0x154, (void *)TrnDataManager_display},
+    {0x15C, (void *)TrnDataManager_update},
     {0x164, (void *)RaceTracker_handleMsg},
     {0x16C, (void *)Node_broadcastMsg},
     {0x174, (void *)Node_doCommand},
     {0x17C, (void *)Node_saveData},
     {0x184, (void *)Node_loadData},
     {0x18C, (void *)Node_setAnimPose},
-    {0x194, 0}, /* Text target trnproc:Text+0xB44 */
-    {0x19C, 0}, /* Text target trnproc:Text+0x1228 */
-    {0x1A4, 0}, /* Text target trnproc:Text+0x1284 */
-    {0x1AC, 0}, /* Text target trnproc:Text+0x12AC */
+    {0x194, (void *)TrnDataManager_reset},
+    {0x19C, (void *)TrnDataManager_onCheckpoint},
+    {0x1A4, (void *)TrnDataManager_onTrickStart},
+    {0x1AC, (void *)TrnDataManager_onTrickEnd},
     {0x1C4, (void *)Node_hostioParms},
     {0x1CC, (void *)Node_updateChildren},
     {0x1D4, (void *)Process_display},
@@ -5027,12 +5151,12 @@ static const PortUsoReloc port_trnproc_data_rel[75] = {
     {0x24C, (void *)RaceProcess_onCountdownStart},
     {0x254, (void *)RaceProcess_endTimerEnabled},
     {0x25C, (void *)RaceProcess_altEndTimerEnabled},
-    {0x264, 0}, /* Text target trnproc:Text+0x910 */
-    {0x26C, 0}, /* Text target trnproc:Text+0x908 */
+    {0x264, (void *)TrnRace_onRaceOver},
+    {0x26C, (void *)TrnRace_onEndTimerDone},
     {0x274, (void *)RaceProcess_onTimeoutExit},
     {0x27C, (void *)RaceProcess_onTimeout},
     {0x284, (void *)RaceProcess_onAltEndTimerDone},
-    {0x28C, 0}, /* Text target trnproc:Text+0x858 */
+    {0x28C, (void *)TrnRace_onPauseSelect},
     {0x294, (void *)RaceProcess_onQuitButton},
     {0x29C, (void *)RaceProcess_onLeave},
     {0x2A4, (void *)RaceProcess_drawHud},
@@ -5047,11 +5171,11 @@ static const PortUsoReloc port_trnproc_data_rel[75] = {
     {0x2EC, (void *)RaceProcess_onMessageBounce},
 };
 static const PortUsoReloc port_trnproc_rodata_rel[5] = {
-    {0x0, 0}, /* Text target trnproc:Text+0x84 */
-    {0x4, 0}, /* Text target trnproc:Text+0xA8 */
-    {0x8, 0}, /* Text target trnproc:Text+0xBC */
-    {0xC, 0}, /* Text target trnproc:Text+0x110 */
-    {0x10, 0}, /* Text target trnproc:Text+0x124 */
+    {0x0, 0}, /* jump table trn_main+0x74 */
+    {0x4, 0}, /* jump table trn_main+0x98 */
+    {0x8, 0}, /* jump table trn_main+0xAC */
+    {0xC, 0}, /* jump table trn_main+0x100 */
+    {0x10, 0}, /* jump table trn_main+0x114 */
 };
 static const PortUsoReloc port_genproc_data_rel[414] = {
     {0xC, (void *)__pure_virtual_called},
@@ -5614,8 +5738,8 @@ static const PortUsoReloc port_viewrec_data_rel[100] = {
     {0x24, (void *)Node_hostioParms},
     {0x2C, (void *)Node_updateChildren},
     {0x34, (void *)Process_display},
-    {0x3C, 0}, /* Text target viewrec:Text+0x1664 */
-    {0x44, 0}, /* Text target viewrec:Text+0x16E8 */
+    {0x3C, (void *)GENNewRecordsProcess_update},
+    {0x44, (void *)GENNewRecordsProcess_handleMsg},
     {0x4C, (void *)Node_broadcastMsg},
     {0x54, (void *)Node_doCommand},
     {0x5C, (void *)Node_saveData},
@@ -5624,12 +5748,12 @@ static const PortUsoReloc port_viewrec_data_rel[100] = {
     {0x74, (void *)Process_start},
     {0x7C, (void *)Process_exit},
     {0x84, (void *)Process_onQuit},
-    {0x8C, 0}, /* Text target viewrec:Text+0x55A4 */
+    {0x8C, (void *)GENNewRecordsProcess_drawGui},
     {0xA4, (void *)Node_hostioParms},
     {0xAC, (void *)Node_updateChildren},
     {0xB4, (void *)Process_display},
-    {0xBC, 0}, /* Text target viewrec:Text+0x18D4 */
-    {0xC4, 0}, /* Text target viewrec:Text+0x19C8 */
+    {0xBC, (void *)MainOptions_update},
+    {0xC4, (void *)MainOptions_handleMsg},
     {0xCC, (void *)Node_broadcastMsg},
     {0xD4, (void *)Node_doCommand},
     {0xDC, (void *)Node_saveData},
@@ -5638,11 +5762,11 @@ static const PortUsoReloc port_viewrec_data_rel[100] = {
     {0xF4, (void *)Process_start},
     {0xFC, (void *)Process_exit},
     {0x104, (void *)Process_onQuit},
-    {0x10C, 0}, /* Text target viewrec:Text+0x1954 */
+    {0x10C, (void *)MainOptions_drawGui},
     {0x124, (void *)Node_hostioParms},
     {0x12C, (void *)Node_updateChildren},
     {0x134, (void *)Process_display},
-    {0x13C, 0}, /* Text target viewrec:Text+0x1CCC */
+    {0x13C, (void *)RecordOptions_update},
     {0x144, (void *)Node_handleMsg},
     {0x14C, (void *)Node_broadcastMsg},
     {0x154, (void *)Node_doCommand},
@@ -5652,11 +5776,11 @@ static const PortUsoReloc port_viewrec_data_rel[100] = {
     {0x174, (void *)Process_start},
     {0x17C, (void *)Process_exit},
     {0x184, (void *)Process_onQuit},
-    {0x18C, 0}, /* Text target viewrec:Text+0x1D64 */
+    {0x18C, (void *)RecordOptions_drawGui},
     {0x1A4, (void *)Node_hostioParms},
     {0x1AC, (void *)Node_updateChildren},
     {0x1B4, (void *)Process_display},
-    {0x1BC, 0}, /* Text target viewrec:Text+0x3818 */
+    {0x1BC, (void *)EraseOptions_update},
     {0x1C4, (void *)Node_handleMsg},
     {0x1CC, (void *)Node_broadcastMsg},
     {0x1D4, (void *)Node_doCommand},
@@ -5666,11 +5790,11 @@ static const PortUsoReloc port_viewrec_data_rel[100] = {
     {0x1F4, (void *)Process_start},
     {0x1FC, (void *)Process_exit},
     {0x204, (void *)Process_onQuit},
-    {0x20C, 0}, /* Text target viewrec:Text+0x3878 */
+    {0x20C, (void *)EraseOptions_drawGui},
     {0x224, (void *)Node_hostioParms},
     {0x22C, (void *)Node_updateChildren},
     {0x234, (void *)Process_display},
-    {0x23C, 0}, /* Text target viewrec:Text+0x4670 */
+    {0x23C, (void *)ReplayOptions_update},
     {0x244, (void *)Node_handleMsg},
     {0x24C, (void *)Node_broadcastMsg},
     {0x254, (void *)Node_doCommand},
@@ -5680,11 +5804,11 @@ static const PortUsoReloc port_viewrec_data_rel[100] = {
     {0x274, (void *)Process_start},
     {0x27C, (void *)Process_exit},
     {0x284, (void *)Process_onQuit},
-    {0x28C, 0}, /* Text target viewrec:Text+0x4698 */
+    {0x28C, (void *)ReplayOptions_drawGui},
     {0x2A4, (void *)Node_hostioParms},
     {0x2AC, (void *)Node_updateChildren},
     {0x2B4, (void *)Process_display},
-    {0x2BC, 0}, /* Text target viewrec:Text+0x4990 */
+    {0x2BC, (void *)SoundOptions_update},
     {0x2C4, (void *)Node_handleMsg},
     {0x2CC, (void *)Node_broadcastMsg},
     {0x2D4, (void *)Node_doCommand},
@@ -5694,11 +5818,11 @@ static const PortUsoReloc port_viewrec_data_rel[100] = {
     {0x2F4, (void *)Process_start},
     {0x2FC, (void *)Process_exit},
     {0x304, (void *)Process_onQuit},
-    {0x30C, 0}, /* Text target viewrec:Text+0x4DEC */
+    {0x30C, (void *)SoundOptions_drawGui},
     {0x334, (void *)Node_hostioParms},
     {0x33C, (void *)Node_updateChildren},
     {0x344, (void *)Process_display},
-    {0x34C, 0}, /* Text target viewrec:Text+0x5318 */
+    {0x34C, (void *)LanguageOptions_update},
     {0x354, (void *)Node_handleMsg},
     {0x35C, (void *)Node_broadcastMsg},
     {0x364, (void *)Node_doCommand},
@@ -5708,35 +5832,35 @@ static const PortUsoReloc port_viewrec_data_rel[100] = {
     {0x384, (void *)Process_start},
     {0x38C, (void *)Process_exit},
     {0x394, (void *)Process_onQuit},
-    {0x39C, 0}, /* Text target viewrec:Text+0x5440 */
-    {0x3AC, 0}, /* Text target viewrec:Text+0x290 */
+    {0x39C, (void *)LanguageOptions_drawGui},
+    {0x3AC, (void *)vr_resetColours},
 };
 static const PortUsoReloc port_viewrec_rodata_rel[18] = {
-    {0x10, 0}, /* Text target viewrec:Text+0x3D30 */
-    {0x14, 0}, /* Text target viewrec:Text+0x3D30 */
-    {0x18, 0}, /* Text target viewrec:Text+0x3D48 */
-    {0x1C, 0}, /* Text target viewrec:Text+0x3D64 */
-    {0x20, 0}, /* Text target viewrec:Text+0x3D94 */
-    {0x24, 0}, /* Text target viewrec:Text+0x4018 */
-    {0x28, 0}, /* Text target viewrec:Text+0x4054 */
-    {0x2C, 0}, /* Text target viewrec:Text+0x4078 */
-    {0x30, 0}, /* Text target viewrec:Text+0x40A4 */
-    {0x34, 0}, /* Text target viewrec:Text+0x413C */
-    {0x38, 0}, /* Text target viewrec:Text+0x4A88 */
-    {0x3C, 0}, /* Text target viewrec:Text+0x4AE8 */
-    {0x40, 0}, /* Text target viewrec:Text+0x4B48 */
-    {0x44, 0}, /* Text target viewrec:Text+0x4BA8 */
-    {0x48, 0}, /* Text target viewrec:Text+0x4C28 */
-    {0x4C, 0}, /* Text target viewrec:Text+0x4C8C */
-    {0x50, 0}, /* Text target viewrec:Text+0x4CF0 */
-    {0x54, 0}, /* Text target viewrec:Text+0x4D54 */
+    {0x10, 0}, /* jump table EraseOptions_drawGui+0x4B8 */
+    {0x14, 0}, /* jump table EraseOptions_drawGui+0x4B8 */
+    {0x18, 0}, /* jump table EraseOptions_drawGui+0x4D0 */
+    {0x1C, 0}, /* jump table EraseOptions_drawGui+0x4EC */
+    {0x20, 0}, /* jump table EraseOptions_drawGui+0x51C */
+    {0x24, 0}, /* jump table EraseOptions_selectInput+0xF4 */
+    {0x28, 0}, /* jump table EraseOptions_selectInput+0x130 */
+    {0x2C, 0}, /* jump table EraseOptions_selectInput+0x154 */
+    {0x30, 0}, /* jump table EraseOptions_selectInput+0x180 */
+    {0x34, 0}, /* jump table EraseOptions_selectInput+0x218 */
+    {0x38, 0}, /* jump table SoundOptions_update+0xF8 */
+    {0x3C, 0}, /* jump table SoundOptions_update+0x158 */
+    {0x40, 0}, /* jump table SoundOptions_update+0x1B8 */
+    {0x44, 0}, /* jump table SoundOptions_update+0x218 */
+    {0x48, 0}, /* jump table SoundOptions_update+0x298 */
+    {0x4C, 0}, /* jump table SoundOptions_update+0x2FC */
+    {0x50, 0}, /* jump table SoundOptions_update+0x360 */
+    {0x54, 0}, /* jump table SoundOptions_update+0x3C4 */
 };
 static const PortUsoReloc port_nameent_data_rel[34] = {
     {0xC, (void *)__pure_virtual_called},
     {0x24, (void *)Node_hostioParms},
     {0x2C, (void *)Node_updateChildren},
-    {0x34, 0}, /* Text target nameent:Text+0x9BC */
-    {0x3C, 0}, /* Text target nameent:Text+0xE44 */
+    {0x34, (void *)NameEnterMessage_display},
+    {0x3C, (void *)NameEnterMessage_update},
     {0x44, (void *)Node_handleMsg},
     {0x4C, (void *)Node_broadcastMsg},
     {0x54, (void *)Node_doCommand},
@@ -5756,16 +5880,16 @@ static const PortUsoReloc port_nameent_data_rel[34] = {
     {0xD4, (void *)Node_setAnimPose},
     {0xDC, (void *)Process_start},
     {0xE4, (void *)Process_exit},
-    {0xEC, 0}, /* Text target nameent:Text+0x150 */
-    {0xF4, 0}, /* Text target nameent:Text+0x204 */
-    {0xFC, 0}, /* Text target nameent:Text+0x4C8 */
-    {0x104, 0}, /* Text target nameent:Text+0x4D0 */
-    {0x10C, 0}, /* Text target nameent:Text+0x5AC */
-    {0x114, 0}, /* Text target nameent:Text+0x710 */
-    {0x11C, 0}, /* Text target nameent:Text+0x718 */
-    {0x124, 0}, /* Text target nameent:Text+0x748 */
-    {0x12C, 0}, /* Text target nameent:Text+0x750 */
-    {0x134, 0}, /* Text target nameent:Text+0x758 */
+    {0xEC, (void *)NameEntry_handleInput},
+    {0xF4, (void *)NameEntry_drawGui},
+    {0xFC, (void *)NameEntry_updateResult},
+    {0x104, (void *)NameEntry_updateEntry},
+    {0x10C, (void *)NameEntry_updatePhase2},
+    {0x114, (void *)NameEntry_drawEntryOverlay},
+    {0x11C, (void *)NameEntry_drawExitOverlay},
+    {0x124, (void *)NameEntry_drawPhase2},
+    {0x12C, (void *)NameEntry_nopSlot20},
+    {0x134, (void *)NameEntry_nopSlot21},
 };
 static const PortUsoReloc port_charfir_data_rel[72] = {
     {0x90, port_charfir_rodata + 0x0},
@@ -6009,19 +6133,19 @@ static const PortUsoReloc port_game_data_rel[295] = {
     {0x86C, (void *)game_readFloatParm_00003968},
     {0x884, (void *)game_readIntParm_0000C08C},
     {0x89C, (void *)game_readQuadParm_000039C8},
-    {0x8B4, 0}, /* unresolved sym 162 */
-    {0x8F8, 0}, /* unresolved sym 163 */
-    {0x93C, 0}, /* unresolved sym 164 */
-    {0x984, 0}, /* unresolved sym 165 */
-    {0x9C8, 0}, /* unresolved sym 166 */
-    {0xA0C, 0}, /* unresolved sym 167 */
-    {0xA50, 0}, /* unresolved sym 168 */
-    {0xA94, 0}, /* unresolved sym 169 */
-    {0xAD8, 0}, /* unresolved sym 170 */
-    {0xB1C, 0}, /* unresolved sym 171 */
-    {0xB60, 0}, /* unresolved sym 162 */
-    {0xBA4, 0}, /* unresolved sym 163 */
-    {0xBE8, 0}, /* unresolved sym 164 */
+    {0x8B4, 0}, /* effects Data module not kept */
+    {0x8F8, 0}, /* effects Data module not kept */
+    {0x93C, 0}, /* effects Data module not kept */
+    {0x984, 0}, /* effects Data module not kept */
+    {0x9C8, 0}, /* effects Data module not kept */
+    {0xA0C, 0}, /* effects Data module not kept */
+    {0xA50, 0}, /* effects Data module not kept */
+    {0xA94, 0}, /* effects Data module not kept */
+    {0xAD8, 0}, /* effects Data module not kept */
+    {0xB1C, 0}, /* effects Data module not kept */
+    {0xB60, 0}, /* effects Data module not kept */
+    {0xBA4, 0}, /* effects Data module not kept */
+    {0xBE8, 0}, /* effects Data module not kept */
     {0xC2C, port_game_data + 0x978},
     {0xC3C, port_game_data + 0x8A8},
     {0xC50, (void *)MemberCallback_invoke_0000BFDC},
@@ -6210,7 +6334,7 @@ static const PortUsoReloc port_balloon_data_rel[51] = {
     {0x5C, (void *)ItemType_saveData},
     {0x64, (void *)ItemType_load},
     {0x6C, (void *)Node_setAnimPose},
-    {0x74, 0}, /* Text target balloon:Text+0x47C */
+    {0x74, (void *)BalloonTmpl_create},
     {0x7C, (void *)SNodeItemType_buildItems},
     {0x84, (void *)SNodeItemType_findNearest},
     {0x8C, (void *)SNodeItemType_getItemPos},
@@ -6240,15 +6364,15 @@ static const PortUsoReloc port_balloon_data_rel[51] = {
     {0x38FC, port_balloon_data + 0x334C},
     {0x3908, port_balloon_data + 0x359C},
     {0x3914, port_balloon_data + 0x37FC},
-    {0x4134, 0}, /* Text target balloon:Text+0x32C */
+    {0x4134, (void *)Balloon_hostioParms},
     {0x413C, (void *)Node_updateChildren},
-    {0x4144, 0}, /* Text target balloon:Text+0x1A8 */
+    {0x4144, (void *)Balloon_display},
     {0x414C, (void *)Node_update},
-    {0x4154, 0}, /* Text target balloon:Text+0x42C */
+    {0x4154, (void *)Balloon_handleMsg},
     {0x415C, (void *)Node_broadcastMsg},
     {0x4164, (void *)Node_doCommand},
-    {0x416C, 0}, /* Text target balloon:Text+0x2BC */
-    {0x4174, 0}, /* Text target balloon:Text+0x2F4 */
+    {0x416C, (void *)Balloon_saveData},
+    {0x4174, (void *)Balloon_loadData},
     {0x417C, (void *)Node_setAnimPose},
 };
 static const PortUsoReloc port_heli_data_rel[136] = {
@@ -6261,7 +6385,7 @@ static const PortUsoReloc port_heli_data_rel[136] = {
     {0x4C, (void *)Node_broadcastMsg},
     {0x54, (void *)Node_doCommand},
     {0x5C, (void *)Node_saveData},
-    {0x64, 0}, /* Text target heli:Text+0x19E0 */
+    {0x64, (void *)HeliMarkerItem_load},
     {0x6C, (void *)Node_setAnimPose},
     {0x84, (void *)ItemType_hostioParms},
     {0x8C, (void *)Node_updateChildren},
@@ -6273,16 +6397,16 @@ static const PortUsoReloc port_heli_data_rel[136] = {
     {0xBC, (void *)ItemType_saveData},
     {0xC4, (void *)ItemType_load},
     {0xCC, (void *)Node_setAnimPose},
-    {0xD4, 0}, /* Text target heli:Text+0x140 */
+    {0xD4, (void *)HeliMarkerItemType_create},
     {0xDC, (void *)ColourItemType_buildItems},
     {0xE4, (void *)ColourItemType_findNearest},
     {0xEC, (void *)ColourItemType_getItemPos},
     {0xF4, (void *)ColourItemType_getItem},
     {0xFC, (void *)ColourItemType_findNextByZ},
-    {0x114, 0}, /* Text target heli:Text+0x1A0C */
-    {0x12C, 0}, /* Text target heli:Text+0x1A3C */
-    {0x144, 0}, /* Text target heli:Text+0x1A6C */
-    {0x15C, 0}, /* Text target heli:Text+0x1A9C */
+    {0x114, (void *)heli_readFloatParm_00001A0C},
+    {0x12C, (void *)heli_readVec3Parm_00001A3C},
+    {0x144, (void *)heli_readQuadParm_00001A6C},
+    {0x15C, (void *)heli_readIntParm_00001A9C},
     {0x174, (void *)ItemType_hostioParms},
     {0x17C, (void *)Node_updateChildren},
     {0x184, (void *)ColourItemType_display},
@@ -6293,7 +6417,7 @@ static const PortUsoReloc port_heli_data_rel[136] = {
     {0x1AC, (void *)ItemType_saveData},
     {0x1B4, (void *)ItemType_load},
     {0x1BC, (void *)Node_setAnimPose},
-    {0x1C4, 0}, /* Text target heli:Text+0x1ACC */
+    {0x1C4, (void *)HeliColourItemType_create},
     {0x1CC, (void *)ColourItemType_buildItems},
     {0x1D4, (void *)ColourItemType_findNearest},
     {0x1DC, (void *)ColourItemType_getItemPos},
@@ -6349,12 +6473,12 @@ static const PortUsoReloc port_heli_data_rel[136] = {
     {0xB99C, port_heli_data + 0xB914},
     {0xB9A8, port_heli_data + 0xB924},
     {0xB9B4, port_heli_data + 0xB934},
-    {0xC9D4, 0}, /* unresolved sym 95 */
+    {0xC9D4, 0}, /* effects Data module not kept */
     {0xCA18, port_heli_data + 0xC9C8},
-    {0xCA2C, 0}, /* Text target heli:Text+0x458 */
+    {0xCA2C, (void *)heli_emptyVirtual_00000458},
     {0xCA34, (void *)QNode_updateChildren},
     {0xCA3C, (void *)QNode_display},
-    {0xCA44, 0}, /* Text target heli:Text+0x3F4 */
+    {0xCA44, (void *)HeliRotor_update},
     {0xCA4C, (void *)QNode_handleMsg},
     {0xCA54, (void *)Node_broadcastMsg},
     {0xCA5C, (void *)QNode_doCommand},
@@ -6364,13 +6488,13 @@ static const PortUsoReloc port_heli_data_rel[136] = {
     {0xCA7C, (void *)MNode_getCMtx},
     {0xCA94, (void *)QNode_hostioParms},
     {0xCA9C, (void *)QNode_updateChildren},
-    {0xCAA4, 0}, /* Text target heli:Text+0xA70 */
-    {0xCAAC, 0}, /* Text target heli:Text+0xB08 */
-    {0xCAB4, 0}, /* Text target heli:Text+0x7B4 */
+    {0xCAA4, (void *)Heli_display},
+    {0xCAAC, (void *)Heli_update},
+    {0xCAB4, (void *)Heli_handleMsg},
     {0xCABC, (void *)Node_broadcastMsg},
     {0xCAC4, (void *)QNode_doCommand},
     {0xCACC, (void *)Node_saveData},
-    {0xCAD4, 0}, /* Text target heli:Text+0x69C */
+    {0xCAD4, (void *)Heli_loadData},
     {0xCADC, (void *)QNode_setAnimPose},
     {0xCAE4, (void *)MNode_getCMtx},
     {0xCAFC, (void *)ItemType_hostioParms},
@@ -6383,21 +6507,21 @@ static const PortUsoReloc port_heli_data_rel[136] = {
     {0xCB34, (void *)ItemType_saveData},
     {0xCB3C, (void *)ItemType_load},
     {0xCB44, (void *)Node_setAnimPose},
-    {0xCB4C, 0}, /* Text target heli:Text+0x274 */
-    {0xCB54, 0}, /* Text target heli:Text+0x19C4 */
-    {0xCB5C, 0}, /* Text target heli:Text+0x19CC */
+    {0xCB4C, (void *)HeliItemType_create},
+    {0xCB54, (void *)heli_emptyVirtual_000019C4},
+    {0xCB5C, (void *)heli_getItemPosStub_000019CC},
     {0xCB64, (void *)MNodeItemType_getItemPos},
     {0xCB6C, (void *)ItemType_getItem},
 };
 static const PortUsoReloc port_heli_rodata_rel[8] = {
-    {0x7C, 0}, /* Text target heli:Text+0xE04 */
-    {0x80, 0}, /* Text target heli:Text+0xFA4 */
-    {0x84, 0}, /* Text target heli:Text+0xC74 */
-    {0x88, 0}, /* Text target heli:Text+0xCAC */
-    {0x8C, 0}, /* Text target heli:Text+0xED0 */
-    {0x90, 0}, /* Text target heli:Text+0x1130 */
-    {0x94, 0}, /* Text target heli:Text+0xD68 */
-    {0x98, 0}, /* Text target heli:Text+0xC5C */
+    {0x7C, 0}, /* jump table Heli_update+0x2FC */
+    {0x80, 0}, /* jump table Heli_update+0x49C */
+    {0x84, 0}, /* jump table Heli_update+0x16C */
+    {0x88, 0}, /* jump table Heli_update+0x1A4 */
+    {0x8C, 0}, /* jump table Heli_update+0x3C8 */
+    {0x90, 0}, /* jump table Heli_update+0x628 */
+    {0x94, 0}, /* jump table Heli_update+0x260 */
+    {0x98, 0}, /* jump table Heli_update+0x154 */
 };
 static const PortUsoReloc port_fire_data_rel[36] = {
     {0xC, (void *)__pure_virtual_called},
@@ -6410,9 +6534,9 @@ static const PortUsoReloc port_fire_data_rel[36] = {
     {0x21FC, port_fire_data + 0x1850},
     {0x2240, port_fire_data + 0x1C58},
     {0x2284, port_fire_data + 0x2058},
-    {0x2298, 0}, /* Text target fire:Text+0x1E4 */
+    {0x2298, (void *)FireTmpl_declColourParms},
     {0x22A0, (void *)Node_updateChildren},
-    {0x22A8, 0}, /* Text target fire:Text+0x224 */
+    {0x22A8, (void *)FireTmpl_display},
     {0x22B0, (void *)Node_update},
     {0x22B8, (void *)Node_handleMsg},
     {0x22C0, (void *)Node_broadcastMsg},
@@ -6420,15 +6544,15 @@ static const PortUsoReloc port_fire_data_rel[36] = {
     {0x22D0, (void *)ItemType_saveData},
     {0x22D8, (void *)ItemType_load},
     {0x22E0, (void *)Node_setAnimPose},
-    {0x22E8, 0}, /* Text target fire:Text+0x148 */
+    {0x22E8, (void *)FireTmpl_create},
     {0x22F0, (void *)SNodeItemType_buildItems},
     {0x22F8, (void *)SNodeItemType_findNearest},
     {0x2300, (void *)SNodeItemType_getItemPos},
     {0x2308, (void *)SNodeItemType_getItem},
     {0x2310, (void *)SNodeItemType_findNextByZ},
-    {0x2328, 0}, /* Text target fire:Text+0x338 */
+    {0x2328, (void *)Fire_hostioParms},
     {0x2330, (void *)Node_updateChildren},
-    {0x2338, 0}, /* Text target fire:Text+0x2E8 */
+    {0x2338, (void *)Fire_display},
     {0x2340, (void *)Node_update},
     {0x2348, (void *)SNode_handleMsg},
     {0x2350, (void *)Node_broadcastMsg},
@@ -6449,7 +6573,7 @@ static const PortUsoReloc port_checkpoint_data_rel[92] = {
     {0x5C, (void *)ItemType_saveData},
     {0x64, (void *)ItemType_load},
     {0x6C, (void *)Node_setAnimPose},
-    {0x74, 0}, /* Text target checkpoint:Text+0x8E8 */
+    {0x74, (void *)CheckpointColourItemType_create},
     {0x7C, (void *)ColourItemType_buildItems},
     {0x84, (void *)ColourItemType_findNearest},
     {0x8C, (void *)ColourItemType_getItemPos},
@@ -6465,7 +6589,7 @@ static const PortUsoReloc port_checkpoint_data_rel[92] = {
     {0xEC, (void *)ItemType_saveData},
     {0xF4, (void *)ItemType_load},
     {0xFC, (void *)Node_setAnimPose},
-    {0x104, 0}, /* Text target checkpoint:Text+0x6F0 */
+    {0x104, (void *)CheckpointCylTmpl_create},
     {0x10C, (void *)SNodeItemType_buildItems},
     {0x114, (void *)SNodeItemType_findNearest},
     {0x11C, (void *)SNodeItemType_getItemPos},
@@ -6481,7 +6605,7 @@ static const PortUsoReloc port_checkpoint_data_rel[92] = {
     {0x17C, (void *)ItemType_saveData},
     {0x184, (void *)ItemType_load},
     {0x18C, (void *)Node_setAnimPose},
-    {0x194, 0}, /* Text target checkpoint:Text+0x7F4 */
+    {0x194, (void *)CheckpointBoxTmpl_create},
     {0x19C, (void *)SNodeItemType_buildItems},
     {0x1A4, (void *)SNodeItemType_findNearest},
     {0x1AC, (void *)SNodeItemType_getItemPos},
@@ -6510,26 +6634,255 @@ static const PortUsoReloc port_checkpoint_data_rel[92] = {
     {0x2DF4, port_checkpoint_data + 0x2D78},
     {0x2E00, port_checkpoint_data + 0x2D84},
     {0x2E0C, port_checkpoint_data + 0x2D8C},
-    {0x3E2C, 0}, /* Text target checkpoint:Text+0x23C */
+    {0x3E2C, (void *)CheckpointCyl_hostioParms},
     {0x3E34, (void *)Node_updateChildren},
     {0x3E3C, (void *)SNode_display},
     {0x3E44, (void *)Node_update},
-    {0x3E4C, 0}, /* Text target checkpoint:Text+0x2AC */
+    {0x3E4C, (void *)CheckpointCyl_handleMsg},
     {0x3E54, (void *)Node_broadcastMsg},
     {0x3E5C, (void *)Node_doCommand},
-    {0x3E64, 0}, /* Text target checkpoint:Text+0x210 */
-    {0x3E6C, 0}, /* Text target checkpoint:Text+0x1E4 */
+    {0x3E64, (void *)CheckpointCyl_saveData},
+    {0x3E6C, (void *)CheckpointCyl_loadData},
     {0x3E74, (void *)Node_setAnimPose},
     {0x3E8C, (void *)SNode_hostioParms},
     {0x3E94, (void *)Node_updateChildren},
     {0x3E9C, (void *)SNode_display},
     {0x3EA4, (void *)Node_update},
-    {0x3EAC, 0}, /* Text target checkpoint:Text+0x694 */
+    {0x3EAC, (void *)CheckpointBox_handleMsg},
     {0x3EB4, (void *)Node_broadcastMsg},
     {0x3EBC, (void *)Node_doCommand},
-    {0x3EC4, 0}, /* Text target checkpoint:Text+0x668 */
-    {0x3ECC, 0}, /* Text target checkpoint:Text+0x63C */
+    {0x3EC4, (void *)CheckpointBox_saveData},
+    {0x3ECC, (void *)CheckpointBox_loadData},
     {0x3ED4, (void *)Node_setAnimPose},
+};
+static const PortUsoReloc port_snoweffects_data_rel[227] = {
+    {0xC, (void *)__pure_virtual_called},
+    {0x24, (void *)ParmFloat_read_snow_00003CA4},
+    {0x3C, (void *)ParmQuad_read_snow_00003CD4},
+    {0x54, (void *)ParmInt_read_snow_00003D04},
+    {0x6C, (void *)Node_hostioParms},
+    {0x74, (void *)Node_updateChildren},
+    {0x7C, (void *)SnowPool_display_00000C90},
+    {0x84, (void *)SnowPool_update_00000B44},
+    {0x8C, (void *)Node_handleMsg},
+    {0x94, (void *)Node_broadcastMsg},
+    {0x9C, (void *)Node_doCommand},
+    {0xA4, (void *)Node_saveData},
+    {0xAC, (void *)Node_loadData},
+    {0xB4, (void *)Node_setAnimPose},
+    {0xBC, (void *)SnowPool_init_0000020C},
+    {0xC4, (void *)SnowPool_buildTexDL_00000270},
+    {0xDC, (void *)Node_hostioParms},
+    {0xE4, (void *)Node_updateChildren},
+    {0xEC, (void *)SnowFall_display_000028E0},
+    {0xF4, (void *)SnowFall_moveFlakes_000027A8},
+    {0xFC, (void *)Node_handleMsg},
+    {0x104, (void *)Node_broadcastMsg},
+    {0x10C, (void *)Node_doCommand},
+    {0x114, (void *)Node_saveData},
+    {0x11C, (void *)Node_loadData},
+    {0x124, (void *)Node_setAnimPose},
+    {0x12C, (void *)SnowPool_init_0000020C},
+    {0x134, (void *)SnowFall_buildTexDL_00002310},
+    {0x14C, (void *)ParmVec3_read_snow_00003D34},
+    {0x164, (void *)Node_hostioParms},
+    {0x16C, (void *)Node_updateChildren},
+    {0x174, (void *)SnowPool_display_00000C90},
+    {0x17C, (void *)SnowPool_update_00000B44},
+    {0x184, (void *)Node_handleMsg},
+    {0x18C, (void *)Node_broadcastMsg},
+    {0x194, (void *)Node_doCommand},
+    {0x19C, (void *)Node_saveData},
+    {0x1A4, (void *)Node_loadData},
+    {0x1AC, (void *)Node_setAnimPose},
+    {0x1B4, (void *)SnowPool_init_0000020C},
+    {0x1BC, (void *)PowderParticles_buildTexDL_000015D0},
+    {0x1D4, (void *)Node_hostioParms},
+    {0x1DC, (void *)Node_updateChildren},
+    {0x1E4, (void *)SnowPool_display_00000C90},
+    {0x1EC, (void *)SnowPool_update_00000B44},
+    {0x1F4, (void *)Node_handleMsg},
+    {0x1FC, (void *)Node_broadcastMsg},
+    {0x204, (void *)Node_doCommand},
+    {0x20C, (void *)Node_saveData},
+    {0x214, (void *)Node_loadData},
+    {0x21C, (void *)Node_setAnimPose},
+    {0x224, (void *)SnowPool_init_0000020C},
+    {0x22C, (void *)NormalParticles_buildTexDL_00001A18},
+    {0x244, (void *)Node_hostioParms},
+    {0x24C, (void *)Node_updateChildren},
+    {0x254, (void *)SnowPool_display_00000C90},
+    {0x25C, (void *)SnowPool_update_00000B44},
+    {0x264, (void *)Node_handleMsg},
+    {0x26C, (void *)Node_broadcastMsg},
+    {0x274, (void *)Node_doCommand},
+    {0x27C, (void *)Node_saveData},
+    {0x284, (void *)Node_loadData},
+    {0x28C, (void *)Node_setAnimPose},
+    {0x294, (void *)SnowPool_init_0000020C},
+    {0x29C, (void *)SpecParticles_buildTexDL_00001E60},
+    {0x35C, (void *)__pure_virtual_called},
+    {0x374, (void *)ParmFloat_read_snow_00003CA4},
+    {0x38C, (void *)ParmQuad_read_snow_00003CD4},
+    {0x3A4, (void *)ParmInt_read_snow_00003D04},
+    {0x3BC, (void *)ParmVec3_read_snow_00003D34},
+    {0x3D4, (void *)ItemType_hostioParms},
+    {0x3DC, (void *)Node_updateChildren},
+    {0x3E4, (void *)ColourItemType_display},
+    {0x3EC, (void *)Node_update},
+    {0x3F4, (void *)Node_handleMsg},
+    {0x3FC, (void *)Node_broadcastMsg},
+    {0x404, (void *)Node_doCommand},
+    {0x40C, (void *)ItemType_saveData},
+    {0x414, (void *)ItemType_load},
+    {0x41C, (void *)Node_setAnimPose},
+    {0x424, (void *)SnowColourItemType_create_00007D8C},
+    {0x42C, (void *)ColourItemType_buildItems},
+    {0x434, (void *)ColourItemType_findNearest},
+    {0x43C, (void *)ColourItemType_getItemPos},
+    {0x444, (void *)ColourItemType_getItem},
+    {0x44C, (void *)ColourItemType_findNextByZ},
+    {0x464, (void *)Node_hostioParms},
+    {0x46C, (void *)Node_updateChildren},
+    {0x474, (void *)SnowRing_display_0000559C},
+    {0x47C, (void *)SnowRing_update_0000544C},
+    {0x484, (void *)Node_handleMsg},
+    {0x48C, (void *)Node_broadcastMsg},
+    {0x494, (void *)Node_doCommand},
+    {0x49C, (void *)Node_saveData},
+    {0x4A4, (void *)Node_loadData},
+    {0x4AC, (void *)Node_setAnimPose},
+    {0x4B4, (void *)BoardTrail_init_00005FD4},
+    {0x4BC, (void *)SnowRing_draw_000040B4},
+    {0x4C4, (void *)SnowRing_emit_000047D4},
+    {0x4CC, (void *)BoardTrail_calcWidth_000063B4},
+    {0x4D4, (void *)SnowRing_placeEnds_00004E5C},
+    {0x4DC, (void *)BoardTrail_spawn_0000634C},
+    {0x4E4, (void *)SnowRing_vslot16_00005440},
+    {0x4FC, (void *)Node_hostioParms},
+    {0x504, (void *)Node_updateChildren},
+    {0x50C, (void *)SnowRing_display_0000559C},
+    {0x514, (void *)SnowRing_update_0000544C},
+    {0x51C, (void *)Node_handleMsg},
+    {0x524, (void *)Node_broadcastMsg},
+    {0x52C, (void *)Node_doCommand},
+    {0x534, (void *)Node_saveData},
+    {0x53C, (void *)Node_loadData},
+    {0x544, (void *)Node_setAnimPose},
+    {0x54C, (void *)__pure_virtual_called},
+    {0x554, (void *)SnowRing_draw_000040B4},
+    {0x55C, (void *)SnowRing_emit_000047D4},
+    {0x564, (void *)SnowRing_calcWidth_00004E4C},
+    {0x56C, (void *)SnowRing_placeEnds_00004E5C},
+    {0x574, (void *)SnowRing_spawn_000052CC},
+    {0x57C, (void *)SnowRing_vslot16_00005440},
+    {0x588, port_snoweffects_data + 0xA98},
+    {0x58C, port_snoweffects_data + 0x1AA0},
+    {0x590, port_snoweffects_data + 0x2AA8},
+    {0x594, port_snoweffects_data + 0x3AB0},
+    {0x598, port_snoweffects_data + 0x4AB8},
+    {0x5A8, (void *)Node_hostioParms},
+    {0x5B0, (void *)Node_updateChildren},
+    {0x5B8, (void *)SnowRing_display_0000559C},
+    {0x5C0, (void *)SnowRing_update_0000544C},
+    {0x5C8, (void *)Node_handleMsg},
+    {0x5D0, (void *)Node_broadcastMsg},
+    {0x5D8, (void *)Node_doCommand},
+    {0x5E0, (void *)Node_saveData},
+    {0x5E8, (void *)Node_loadData},
+    {0x5F0, (void *)Node_setAnimPose},
+    {0x5F8, (void *)HandTrail_init_000078E8},
+    {0x600, (void *)SnowRing_draw_000040B4},
+    {0x608, (void *)SnowRing_emit_000047D4},
+    {0x610, (void *)SnowRing_calcWidth_00004E4C},
+    {0x618, (void *)HandTrail_placeEnds_00007960},
+    {0x620, (void *)SnowRing_spawn_000052CC},
+    {0x628, (void *)SnowRing_vslot16_00005440},
+    {0x67C, (void *)__pure_virtual_called},
+    {0x694, (void *)ParmFloat_read_snow_00003CA4},
+    {0x6AC, (void *)ParmQuad_read_snow_00003CD4},
+    {0x6C4, (void *)ParmInt_read_snow_00003D04},
+    {0x6DC, (void *)ParmVec3_read_snow_00003D34},
+    {0x6F4, (void *)ItemType_hostioParms},
+    {0x6FC, (void *)Node_updateChildren},
+    {0x704, (void *)ColourItemType_display},
+    {0x70C, (void *)Node_update},
+    {0x714, (void *)Node_handleMsg},
+    {0x71C, (void *)Node_broadcastMsg},
+    {0x724, (void *)Node_doCommand},
+    {0x72C, (void *)ItemType_saveData},
+    {0x734, (void *)ItemType_load},
+    {0x73C, (void *)Node_setAnimPose},
+    {0x744, (void *)SnowColourItemType_create_00007D8C},
+    {0x74C, (void *)ColourItemType_buildItems},
+    {0x754, (void *)ColourItemType_findNearest},
+    {0x75C, (void *)ColourItemType_getItemPos},
+    {0x764, (void *)ColourItemType_getItem},
+    {0x76C, (void *)ColourItemType_findNextByZ},
+    {0x784, (void *)Node_hostioParms},
+    {0x78C, (void *)Node_updateChildren},
+    {0x794, (void *)SnowRing_display_0000559C},
+    {0x79C, (void *)SnowRing_update_0000544C},
+    {0x7A4, (void *)Node_handleMsg},
+    {0x7AC, (void *)Node_broadcastMsg},
+    {0x7B4, (void *)Node_doCommand},
+    {0x7BC, (void *)Node_saveData},
+    {0x7C4, (void *)Node_loadData},
+    {0x7CC, (void *)Node_setAnimPose},
+    {0x7D4, (void *)BoardSpray_init_00007F60},
+    {0x7DC, (void *)BoardSpray_draw_00008C60},
+    {0x7E4, (void *)BoardSpray_emit_00007FE0},
+    {0x7EC, (void *)SnowRing_calcWidth_00004E4C},
+    {0x7F4, (void *)BoardSpray_placeEnds_00008D70},
+    {0x7FC, (void *)SnowRing_spawn_000052CC},
+    {0x804, (void *)BoardSpray_vslot16_000090F0},
+    {0x82C, (void *)__pure_virtual_called},
+    {0x844, (void *)ParmFloat_read_snow_00003CA4},
+    {0x85C, (void *)ParmQuad_read_snow_00003CD4},
+    {0x874, (void *)ParmInt_read_snow_00003D04},
+    {0x88C, (void *)ItemType_hostioParms},
+    {0x894, (void *)Node_updateChildren},
+    {0x89C, (void *)Node_display},
+    {0x8A4, (void *)Node_update},
+    {0x8AC, (void *)Node_handleMsg},
+    {0x8B4, (void *)Node_broadcastMsg},
+    {0x8BC, (void *)Node_doCommand},
+    {0x8C4, (void *)ItemType_saveData},
+    {0x8CC, (void *)ItemType_load},
+    {0x8D4, (void *)Node_setAnimPose},
+    {0x8DC, (void *)LocalLightType_create_00009E10},
+    {0x8E4, (void *)SNodeItemType_buildItems},
+    {0x8EC, (void *)SNodeItemType_findNearest},
+    {0x8F4, (void *)SNodeItemType_getItemPos},
+    {0x8FC, (void *)SNodeItemType_getItem},
+    {0x904, (void *)SNodeItemType_findNextByZ},
+    {0x934, port_snoweffects_data + 0x910},
+    {0x940, port_snoweffects_data + 0x938},
+    {0x954, port_snoweffects_data + 0x944},
+    {0x958, port_snoweffects_data + 0x93C},
+    {0x95C, port_snoweffects_data + 0x930},
+    {0x960, port_snoweffects_data + 0x950},
+    {0x970, (void *)SNode_hostioParms},
+    {0x978, (void *)Node_updateChildren},
+    {0x980, (void *)LocalLight_display_00009704},
+    {0x988, (void *)Node_update},
+    {0x990, (void *)SNode_handleMsg},
+    {0x998, (void *)Node_broadcastMsg},
+    {0x9A0, (void *)Node_doCommand},
+    {0x9A8, (void *)SNode_saveData},
+    {0x9B0, (void *)LocalLight_loadData_0000973C},
+    {0x9B8, (void *)Node_setAnimPose},
+    {0x9D0, (void *)Node_hostioParms},
+    {0x9D8, (void *)Node_updateChildren},
+    {0x9E0, (void *)MapLighter_cullLights_0000A760},
+    {0x9E8, (void *)MapLighter_update_0000A10C},
+    {0x9F0, (void *)Node_handleMsg},
+    {0x9F8, (void *)Node_broadcastMsg},
+    {0xA00, (void *)Node_doCommand},
+    {0xA08, (void *)Node_saveData},
+    {0xA10, (void *)Node_loadData},
+    {0xA18, (void *)Node_setAnimPose},
+    {0xA28, (void *)MapLighter_vslot11_00009320},
 };
 
 const PortUsoModule port_uso_modules[] = {
@@ -6562,5 +6915,6 @@ const PortUsoModule port_uso_modules[] = {
     {"heli.uso", 48, port_heli_data, port_heli_data_init, 52160, port_heli_rodata, port_heli_rodata_init, 256, 0, 0, port_heli_data_rel, 136, port_heli_rodata_rel, 8, 0},
     {"fire.uso", 49, port_fire_data, port_fire_data_init, 9120, 0, 0, 0, 0, 0, port_fire_data_rel, 36, 0, 0, 0},
     {"checkpoint.uso", 50, port_checkpoint_data, port_checkpoint_data_init, 16128, port_checkpoint_rodata, port_checkpoint_rodata_init, 16, 0, 0, port_checkpoint_data_rel, 92, 0, 0, 0},
+    {"snoweffects.uso", 60, port_snoweffects_data, port_snoweffects_data_init, 29728, port_snoweffects_rodata, port_snoweffects_rodata_init, 256, port_snoweffects_bss, 96, port_snoweffects_data_rel, 227, 0, 0, 0},
 };
-const int port_uso_nmodules = 29;
+const int port_uso_nmodules = 30;

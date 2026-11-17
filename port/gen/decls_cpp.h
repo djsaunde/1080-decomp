@@ -6,7 +6,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/* 279 callees: 276 from a definition, 0 from a header declaration, 3 by hand, 0 fallback int f(...) */
+/* 329 callees: 326 from a definition, 0 from a header declaration, 3 by hand, 0 fallback int f(...) */
 int AnimDataMgr_lookup(void *, int, ...);
 int /*void*/ AnimPlayer_advance(void *, ...);
 int /*void*/ AnimPlayer_start(void *, int, int, int, int, int, ...);
@@ -15,6 +15,11 @@ int /*void*/ AudioSeq_AudioListPushBack(void *, void *, ...);
 int /*void*/ AudioThread_QueueCmdF32(int, int, ...);
 int /*void*/ AudioThread_QueueCmdS8(int, signed char, ...);
 int /*void*/ Audio_InitNoteLists(void *, ...);
+int Backup_arcadeEntryIsNew(void *, ...);
+int Backup_ghostGetBoard(void *, ...);
+int Backup_ghostGetBoardFlag(void *, ...);
+int Backup_ghostGetRider(void *, ...);
+int /*void*/ Backup_sessionClearNew(void *, ...);
 int /*void*/ BaseMat_init_000517E4(void *, ...);
 unsigned int BasePolyShape_addPoints(int, void *, void *, void *, unsigned int, ...);
 int BasePolyShape_addTri(void *, int, int, int, int, int, ...);
@@ -36,6 +41,7 @@ int CollShape_query(void *, ...);
 int CollShape_raycast(void *, int, void *, void *, void *, void *, int, void *, ...);
 #endif
 void * ColourItemType_ctor(...);
+void * ColourItem_ctor(void *, ...);
 int /*void*/ ConsoleMgr_closeOwnerWins(void *, int, ...);
 int /*void*/ CoolGadget_setLabelPos(void *, int, int, int, int, ...);
 int /*void*/ CoolGadget_setLabels(void *, int, int, ...);
@@ -47,8 +53,11 @@ int /*void*/ DNode_resetXform_00065360(void *, void *, ...);
 int /*void*/ DNode_solveContacts(void *, ...);
 #endif
 int /*void*/ DynArrPool_init(void *, int, ...);
+void * EraseOptions_ctor(void *, void *, ...);
 int /*void*/ Fader_buildTexture(void *, ...);
+int Fader_checkDone_00013924(void *, ...);
 int Fader_isDone_00013980(void *, ...);
+int /*void*/ Fader_start(void *, int, int, ...);
 int /*void*/ FogParms_emit_00043F1C(void *, ...);
 int /*void*/ FogParms_setDefault_00043EAC(int, ...);
 int /*void*/ FogParms_set_00043EF0(void *, void *, int, int, ...);
@@ -58,12 +67,15 @@ int /*void*/ ItemMgr_addType(void *, void *, int, ...);
 int ItemMgr_registerTemplate(int, void *, ...);
 void * ItemType_ctor(...);
 int /*void*/ ItemType_setNext(void *, int, ...);
+void * LanguageOptions_ctor(void *, void *, ...);
 int /*void*/ MNode_display(void *, ...);
 int /*void*/ MNode_initMatrices(void *, ...);
 #ifndef PORT_NODECL_MNode_update
 int MNode_update(void *, ...);
 #endif
 int /*void*/ MainLogo_reset(void *, ...);
+int /*void*/ MainOptions_buildMenu(void *, ...);
+void * MainOptions_ctor(void *, void *, ...);
 #ifndef PORT_NODECL_Mat_clone_0004FBA4
 void * Mat_clone_0004FBA4(void *, void *, ...);
 #endif
@@ -119,9 +131,15 @@ int /*void*/ RcpMgr_loadTask_0004D354(void *, ...);
 #endif
 int /*void*/ RcpMgr_service(void *, ...);
 int RcpMgr_startTask(void *, ...);
+void * RecordOptions_ctor(void *, void *, ...);
+int RecordOptions_nextCourse(void *, ...);
+int RecordOptions_prevCourse(void *, ...);
+void * ReplayOptions_ctor(void *, void *, ...);
 int /*void*/ RiderAnim_init_0000D458(int, ...);
 int /*void*/ RiderAnim_updateSlowdown_0000ECEC(void *, ...);
+#ifndef PORT_NODECL_SNode_ctor
 void * SNode_ctor(void *, ...);
+#endif
 void * ScreenWindow_ctor(void *, int, ...);
 #ifndef PORT_NODECL_SelItem_drawSpriteColor_00004068
 int /*void*/ SelItem_drawSpriteColor_00004068(void *, int, int, void *, void *, int, ...);
@@ -129,12 +147,17 @@ int /*void*/ SelItem_drawSpriteColor_00004068(void *, int, int, void *, void *, 
 int /*void*/ SelItem_drawSpriteWhite_00003FF8(int, int, int, int, int, ...);
 int /*void*/ SnowAI_reset(void *, ...);
 int /*void*/ SnowBoarder_mirrorFlip_0000E124(void *, ...);
+int SnowRing_emitTick_000046BC(void *, ...);
+int /*void*/ SnowRing_setSlotState_00004714(void *, int, int, int, ...);
+int /*void*/ SnowRing_updateBasis_00004374(...);
+void * SoundOptions_ctor(void *, void *, ...);
 int /*void*/ Window_display(void *, ...);
 int Window_projectPoint(void *, void *, int, void *, ...);
 int /*void*/ absrot_matrix4(void *, int, float, int, ...);
 int /*void*/ anim_unpackKey(int, void *, void *, ...);
 int app_freeAllOfType(int, ...);
 int app_setHeapMode(void *, ...);
+int /*void*/ arc_recordCourseTime_0000019C(void *, int, ...);
 int /*void*/ boot_stub_00066C58(...);
 int cam_isSphereInView(void *, int, float, float, float, void *, float, ...);
 int /*void*/ coll_pushClear_00035E64(void *, ...);
@@ -147,6 +170,11 @@ int /*void*/ dma_waitAll(void *, ...);
 float fcos(float, ...);
 int fs_gdlFileInfo(int, int, int, ...);
 int fs_gdlSeekFile(void *, int, int, ...);
+float fsin(float, ...);
+#ifndef PORT_NODECL_game_createProcessWindow
+void * game_createProcessWindow(int, int, ...);
+#endif
+void * game_init(void *, int, int, int, ...);
 int game_isUsoLoaded(int, ...);
 int /*void*/ game_loadUso(void *, int, ...);
 int /*void*/ gfx_addWindow(void *, int, ...);
@@ -224,13 +252,24 @@ unsigned int gl_osVirtualToPhysical(unsigned int, ...);
 int /*void*/ gl_osYieldThread(...);
 int gl_sprintf(void *, const void *, ...);
 int /*void*/ guMtxF2L(void *, void *, ...);
+int /*void*/ gui_clearRows_00010A9C(void *, ...);
 #ifndef PORT_NODECL_gui_drawSprite
 int /*void*/ gui_drawSprite(void *, int, int, int, ...);
 #endif
 int /*void*/ gui_drawSpriteIA8Clip_00002BB0(void *, int, int, int, int, ...);
 int gui_floorPow2(int, ...);
+int /*void*/ gui_fontAdjustAdvance(void *, int, int = 0, ...);
+#ifndef PORT_NODECL_gui_fontCreate
+void * gui_fontCreate(void *, int, int, int, int, int, ...);
+#endif
 #ifndef PORT_NODECL_gui_loadTileIA8
 int /*void*/ gui_loadTileIA8(void *, void *, int, int, int, int, int, int, int, ...);
+#endif
+#ifndef PORT_NODECL_gui_loadTileRGBA16
+int /*void*/ gui_loadTileRGBA16(void *, void *, int, int, int, int, int, int, int, ...);
+#endif
+#ifndef PORT_NODECL_gui_loadTileRGBA32
+int /*void*/ gui_loadTileRGBA32(void *, void *, int, int, int, int, int, int, int, ...);
 #endif
 #ifndef PORT_NODECL_gui_setColorEnvPrim_000017DC
 int /*void*/ gui_setColorEnvPrim_000017DC(void *, int, void *, int, ...);
@@ -275,6 +314,7 @@ int input_checkPressed_00011E00(void *, int, ...);
 #ifndef PORT_NODECL_input_checkReleased_00011FA8
 int input_checkReleased_00011FA8(void *, int, ...);
 #endif
+int input_getPad_00011D40(void *, int, ...);
 int /*void*/ input_setRacePadsActive(void *, int, ...);
 int /*void*/ light_setF124_000550A0(void *, float, ...);
 int /*void*/ list_append(void *, int, ...);
@@ -296,11 +336,14 @@ int /*void*/ math_vec3Cross(void *, void *, void *, ...);
 int /*void*/ math_vec3Length_0005BBCC(...);
 int math_vec3Normalize(void *, ...);
 int /*void*/ math_xformCombine(void *, void *, void *, ...);
+#ifndef PORT_NODECL_mem_new
 int mem_new(int, ...);
+#endif
 int mem_newAligned(...);
 void * memcpy(void *, void *, unsigned int, ...);
 void * memtrack_begin(void *, int, ...);
 int memtrack_end(...);
+int /*void*/ node_linkBack_0004E888(void *, void *, ...);
 int /*void*/ nodelist_checkNode(void *, ...);
 #ifndef PORT_NODECL_nodelist_dispatch
 int /*void*/ nodelist_dispatch(void *, ...);
@@ -321,6 +364,8 @@ int pad_initGlobal(int, ...);
 int /*void*/ pad_initMotors_00067264(void *, ...);
 int /*void*/ pad_requestGlobal(int, ...);
 int /*void*/ pad_sendMsg_00067168(void *, ...);
+int /*void*/ pad_setPause_00067470(void *, int, ...);
+int /*void*/ pad_setRumble(void *, int, int, ...);
 int /*void*/ pad_startRumble(int, int, int, ...);
 int /*void*/ pad_update(void *, ...);
 int /*void*/ pad_updateMotor_00067084(void *, int, int, ...);
@@ -329,15 +374,26 @@ int /*void*/ prof_beginSection(int, ...);
 float prof_timerRead_0004DD3C(int, ...);
 int /*void*/ prof_timerStart(int, ...);
 int /*void*/ prof_timerStop(int, ...);
+int /*void*/ settings_applySoundMode_0001266C(void *, int, ...);
 int /*void*/ settings_save_00012150(void *, ...);
+int /*void*/ settings_vol0Down_000124C4(void *, ...);
+int /*void*/ settings_vol0Up_0001252C(void *, ...);
+int /*void*/ settings_vol1Down_000123F0(void *, ...);
+int /*void*/ settings_vol1Up_00012458(void *, ...);
+int /*void*/ settings_vol2Down_00012598(void *, ...);
+int /*void*/ settings_vol2Up_00012600(void *, ...);
 int snd_AudioUpdate(...);
 int /*void*/ snd_FrameUpdate(...);
 int /*void*/ snd_Init(int, int, int, ...);
 int /*void*/ snd_PlayPlayer0Seq0(...);
 int /*void*/ snd_PreNMI(...);
 int /*void*/ snd_postEvent(...);
+int /*void*/ snd_setPlayer3FreqScaleFromStick(...);
 int /*void*/ snd_soundObjSetPan_00000B2C(void *, float, ...);
 int /*void*/ snd_soundObjSetReverb(void *, int, ...);
+#ifndef PORT_NODECL_snd_startPlayer2Seq_0000027C
+int /*void*/ snd_startPlayer2Seq_0000027C(...);
+#endif
 #ifndef PORT_NODECL_sqrtf
 float sqrtf(float);
 #endif
@@ -356,6 +412,18 @@ int sys_staticArrayOverflow(...);
 int /*void*/ sys_writebackDCacheAll(...);
 int /*void*/ tit_langMenuInput_00001BB8(int, ...);
 int tit_nextDemo_000000C0(int, ...);
+#ifndef PORT_NODECL_vr_backToMainMenu
+int /*void*/ vr_backToMainMenu(...);
+#endif
+int /*void*/ vr_drawBackground(void *, ...);
+#ifndef PORT_NODECL_vr_drawCenteredLabel
+int /*void*/ vr_drawCenteredLabel(void *, int, int, ...);
+#endif
+int /*void*/ vr_drawFooterLabels(void *, ...);
+int /*void*/ vr_drawGhostRow(void *, int, int, int, int, int, ...);
+int /*void*/ vr_initLabels(void *, ...);
+int /*void*/ vr_loadSprites(void *, ...);
+int /*void*/ vr_popMenu(void *, ...);
 #ifdef __cplusplus
 }
 #endif

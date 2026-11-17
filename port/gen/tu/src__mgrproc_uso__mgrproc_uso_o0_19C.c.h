@@ -5,3 +5,7 @@
 #pragma weak mgr_prepareReplay_00000A14
 /* port-drop: mgr_prepareReplay_00000A14 */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_0118E4(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_0120A8(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_01DA48(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_07ACE0(); /* CALL placeholder token: file-scope K&R declaration */

@@ -60,3 +60,6 @@ heli	heli.uso	RoData	256
 fire	fire.uso	Data	9120
 checkpoint	checkpoint.uso	Data	16128
 checkpoint	checkpoint.uso	RoData	16
+snoweffects	snoweffects.uso	Data	29728
+snoweffects	snoweffects.uso	RoData	256
+snoweffects	snoweffects.uso	Bss	96

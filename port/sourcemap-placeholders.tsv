@@ -8,6 +8,7 @@ arc_closeSession_00000748	src/arcproc_uso/arcproc_uso_tail1.c	c	src/arcproc_uso/
 arc_drawNumber_000016F4	src/arcproc_uso/arcproc_uso_tail1.c	c	src/arcproc_uso/arcproc_uso_ncc_16F4.cpp
 arc_initCourses_00000688	src/arcproc_uso/arcproc_uso_tail1.c	c	src/arcproc_uso/arcproc_uso_o0_688.c
 arc_openSession_000005C8	src/arcproc_uso/arcproc_uso_tail1.c	c	src/arcproc_uso/arcproc_uso_o0_5C8.c
+Balloon_display	src/balloon_uso/balloon_uso.c	c	src/balloon_uso/balloon_uso_ncc_1A8.cpp
 BGBox_ctor	src/bootup_uso/bootup_uso.c	c	src/bootup_uso/bootup_uso_ncc_CA0.cpp
 EnvSettings_load	src/bootup_uso/bootup_uso.c	c	src/bootup_uso/bootup_uso_ncc_7328.cpp
 FogTmpl_create	src/bootup_uso/bootup_uso.c	nm	src/match_imports/FogTmpl_create.c
@@ -70,6 +71,7 @@ Fader_ctor	src/bootup_uso/bootup_uso_tail4.c	nm	src/match_imports/Fader_ctor.c
 Fader_display	src/bootup_uso/bootup_uso_tail4.c	c	src/bootup_uso/bootup_uso_ncc_1304C.cpp
 FloatPosParms_ctor	src/bootup_uso/bootup_uso_tail4.c	nm	src/match_imports/FloatPosParms_ctor.c
 func_00000000	src/bootup_uso/bootup_uso_tail4.c	extra	src/bootup_uso/bootup_uso.c
+CheckpointCyl_isBetweenPosts	src/checkpoint_uso/checkpoint_uso.c	c	src/checkpoint_uso/checkpoint_uso_ncc_45C.cpp
 CoolGadget_ctor	src/game_libs/game_libs.c	nm	src/game_libs/game_libs_ncc_15FC.cpp
 CountDownGadget_setTime	src/game_libs/game_libs.c	nm	src/match_imports/CountDownGadget_setTime.c
 CourseGadget_display	src/game_libs/game_libs.c	c	src/game_libs/game_libs_o2_2B94.c
@@ -3589,6 +3591,11 @@ mgr_drawResults_000023FC	src/mgrproc_uso/mgrproc_uso.c	c	src/mgrproc_uso/mgrproc
 mgr_drawSpriteStack_00002850	src/mgrproc_uso/mgrproc_uso.c	nm	src/match_imports/mgr_drawSpriteStack_00002850.c
 mgr_initMatchRace_00000700	src/mgrproc_uso/mgrproc_uso_o0_19C.c	c	src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp
 mgr_prepareReplay_00000A14	src/mgrproc_uso/mgrproc_uso_o0_19C.c	c	src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp
+LocalLight_ctor_00009328	src/snoweffects_uso/snoweffects_uso.c	c	src/snoweffects_uso/snoweffects_uso_mp72_9328.cpp
+MapLighter_syncLight_00009F44	src/snoweffects_uso/snoweffects_uso.c	c	src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp
+SnowRing_emit_000047D4	src/snoweffects_uso/snoweffects_uso.c	c	src/snoweffects_uso/snoweffects_uso_ncc_47d4.cpp
+SNode_ctor	src/snoweffects_uso/snoweffects_uso_mp72_9328.cpp	extra	src/game_libs/game_libs_post0b.c
+mem_new	src/snoweffects_uso/snoweffects_uso_mp72_9328.cpp	extra	src/game_libs/game_libs_post0b.c
 tim_closeSession_0000065C	src/timproc_uso_b1/timproc_uso_b1.c	c	src/timproc_uso_b1/timproc_uso_b1_o0_65C.c
 tim_drawTime_00001340	src/timproc_uso_b1/timproc_uso_b1.c	c	src/timproc_uso_b1/timproc_uso_b1_ncc_1340.cpp
 tim_main	src/timproc_uso_b1/timproc_uso_b1.c	c	src/timproc_uso_b1/timproc_uso_b1_o0_B0.c
@@ -3628,3 +3635,13 @@ SelItem_reset_00003890	src/timproc_uso_b5/timproc_uso_b5_8FC8.c	extra	src/timpro
 KeyMessage_display	src/titproc_uso/titproc_uso.c	nm	src/match_imports/KeyMessage_display.c
 TitleDemoProcess_handleInput	src/titproc_uso/titproc_uso.c	c	src/titproc_uso/titproc_uso_mp72_116C.cpp
 tit_procMain	src/titproc_uso/titproc_uso.c	none	src/titproc_uso/titproc_uso_5DC.c
+EraseOptions_drawGui	src/viewrec_uso/viewrec_uso.c	c	src/viewrec_uso/viewrec_uso_mp72_3878.cpp
+GENNewRecordsProcess_ctor	src/viewrec_uso/viewrec_uso.c	c	src/viewrec_uso/viewrec_uso_ncc_2d0.cpp
+GENNewRecordsProcess_update	src/viewrec_uso/viewrec_uso.c	c	src/viewrec_uso/viewrec_uso_ncc.cpp
+RecordOptions_coursePageInput	src/viewrec_uso/viewrec_uso.c	c	src/viewrec_uso/viewrec_uso_ncc.cpp
+RecordOptions_menuInput	src/viewrec_uso/viewrec_uso.c	c	src/viewrec_uso/viewrec_uso_ncc.cpp
+SoundOptions_update	src/viewrec_uso/viewrec_uso.c	c	src/viewrec_uso/viewrec_uso_mp72_4990.cpp
+vr_backToMainMenu	src/viewrec_uso/viewrec_uso.c	c	src/viewrec_uso/viewrec_uso_ncc.cpp
+vr_drawCenteredLabel	src/viewrec_uso/viewrec_uso.c	c	src/viewrec_uso/viewrec_uso_ncc.cpp
+vr_resetColours	src/viewrec_uso/viewrec_uso.c	c	src/viewrec_uso/viewrec_uso_ncc.cpp
+vr_backToMainMenu	src/viewrec_uso/viewrec_uso_mp72_4990.cpp	extra	src/viewrec_uso/viewrec_uso_ncc.cpp

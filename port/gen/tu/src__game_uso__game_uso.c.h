@@ -223,6 +223,7 @@ int game_uso_func_048020(); /* CALL placeholder token: file-scope K&R declaratio
 int game_uso_func_049280(); /* CALL placeholder token: file-scope K&R declaration */
 int game_uso_func_04A188(); /* CALL placeholder token: file-scope K&R declaration */
 int game_uso_func_051C28(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_053104(); /* CALL placeholder token: file-scope K&R declaration */
 int game_uso_func_055750(); /* CALL placeholder token: file-scope K&R declaration */
 int game_uso_func_071028(); /* CALL placeholder token: file-scope K&R declaration */
 int game_uso_func_072EE8(); /* CALL placeholder token: file-scope K&R declaration */

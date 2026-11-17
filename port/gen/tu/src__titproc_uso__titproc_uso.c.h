@@ -55,6 +55,7 @@ int titproc_uso_func_012150(); /* CALL placeholder token: file-scope K&R declara
 int titproc_uso_func_0139B0(); /* CALL placeholder token: file-scope K&R declaration */
 int titproc_uso_func_01B0F8(); /* CALL placeholder token: file-scope K&R declaration */
 int titproc_uso_func_01CCD4(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_01EEE4(); /* CALL placeholder token: file-scope K&R declaration */
 int titproc_uso_func_01F7FC(); /* CALL placeholder token: file-scope K&R declaration */
 int titproc_uso_func_04C678(); /* CALL placeholder token: file-scope K&R declaration */
 int titproc_uso_func_051C28(); /* CALL placeholder token: file-scope K&R declaration */

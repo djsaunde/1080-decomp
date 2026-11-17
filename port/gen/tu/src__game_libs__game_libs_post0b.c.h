@@ -236,9 +236,7 @@
 /* port-drop: nodelist_walk_0005534C */ /* placeholder copy; shipped body in src/game_libs/game_libs_ncc_5534C.cpp */
 #pragma weak sys_hang
 /* port-drop: sys_hang */ /* placeholder copy; shipped body in src/game_libs/game_libs_o2_34548.c */
-/* port-bind: Node_handleMsg gl_func_00000000 str_compare_00067B04 */
 /* port-bind: dma_invalCache gl_func_00000000 gl_osSetIntMask */
-/* port-bind: gfx_texelBytes gl_func_00000000 sys_fatal */
 /* port-bind: AnimCmd_setTableEntry D_00000000 port_bootup_data+0x0 */
 /* port-bind: AnimDataMgr_allocSlot D_00000000 port_bootup_data+0x0 */
 /* port-bind: AnimDataMgr_ctor D_00000000 port_bootup_data+0x0 */
