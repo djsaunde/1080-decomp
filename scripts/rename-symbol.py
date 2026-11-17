@@ -364,6 +364,12 @@ def module_zero_ok(old, idx, files):
             continue
         if p.endswith(".md"):
             continue  # prose ledgers (renames.tsv is skipped already)
+        if p == "Makefile":
+            # per-object rules of the segment's own units only (e.g. viewrec's REPLACE_FUNC_BODY entry for
+            # its offset-0 function, on build/[non_matching/]src/viewrec_uso/*.o)
+            own = re.compile(r"^(build/(non_matching/)?src/" + re.escape(seg) + r"/\S+\s*)+:")
+            if all(own.match(ln) for ln in t.split("\n") if tr.search(ln)):
+                continue
         return False, f"{p} (outside src/{seg}) uses it"
     return True, ""
 
