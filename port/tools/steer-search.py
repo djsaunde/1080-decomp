@@ -194,7 +194,7 @@ R0 = re.compile(r' r0=([0-9a-f]{8}),([0-9a-f]{8}),([0-9a-f]{8}),')
 E1 = re.compile(r' e1=([0-9a-f]{8}),(-?\d+),')
 
 
-def last_state(path):
+def last_state(path, after=0):
     """(step, raceState, pct, finished, health, points, cd, r0, e1, speed) of the last line with an e0=
     field, and the goal step (first line with pct >= 100), or None.  cd: (countdown ms, chk gates
     left, chk x, chk z, slalom x, slalom z, slalom flags) or None; r0: rider 0 (x, z) or None;
@@ -206,6 +206,8 @@ def last_state(path):
         return None, None
     for ln in fh:
         m = LINE.match(ln)
+        if m and after and int(m.group(1)) < after:
+            continue
         if m:
             c, r, e = CD.search(ln), R0.search(ln), E1.search(ln)
             last = (int(m.group(1)), int(m.group(2)), f32(m.group(3)), int(m.group(5)), int(m.group(6)),
@@ -265,6 +267,8 @@ class Runner:
         self.tenshoe = os.path.join(build, 'tenshoe')
         self.rom, self.work, self.n = rom, work, 0
         self.env = {k: v for k, v in os.environ.items() if not k.startswith('PORT_RDBG')}
+        self.after = 0  # --mode rounds: the current round's first step (last_state ignores earlier lines)
+        self.runner = [] if os.environ.get('RUN32') == 'env' else [RUN32]
 
     def run(self, text, frames, slot):
         d = os.path.join(self.work, 'c%d' % slot)
@@ -274,10 +278,10 @@ class Runner:
                 os.remove(os.path.join(d, f))
         with open(os.path.join(d, 's.input'), 'w') as fh:
             fh.write(text)
-        subprocess.run(['timeout', '300', RUN32, self.tenshoe, '--rom', self.rom, '--input', 's.input',
+        subprocess.run(['timeout', '300'] + self.runner + [self.tenshoe, '--rom', self.rom, '--input', 's.input',
                         '--frames', str(frames), '--trace', 'state.log'], cwd=d, env=self.env,
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return last_state(os.path.join(d, 'state.log'))
+        return last_state(os.path.join(d, 'state.log'), self.after)
 
 
 CRASH_W = float(os.environ.get('STEER_CRASH_W', 50))   # --mode match: a crash (health lost) in the window
@@ -285,10 +289,12 @@ LINE_W = float(os.environ.get('STEER_LINE_W', 0.001))  # --mode match: per unit 
 CPU_PATH = []           # --mode match: the CPU rider's (z, x) along the course, from a full-length run
 
 
-def cpu_path(path):
+def cpu_path(path, after=0):
     """[(z, x)] of rider 1 (r1=, the Match Race CPU) in a state.log, z increasing"""
     out = []
     for ln in open(path, errors='replace'):
+        if after and ln.startswith('F ') and int(ln.split(' ', 2)[1]) < after:
+            continue
         m = re.search(r' r1=([0-9a-f]{8}),[0-9a-f]{8},([0-9a-f]{8}),', ln)
         if m and ' race=1,' in ln:
             z, x = f32(m.group(2)), f32(m.group(1))
@@ -333,7 +339,10 @@ def main():
     ap.add_argument('--last', type=int, default=9000, help='give up past this step (default 9000)')
     ap.add_argument('--keep-prefix', type=int, default=0,
                     help='reuse the STICK windows of the existing --out before this step')
-    ap.add_argument('--mode', choices=('time', 'trick', 'match', 'contest'), default='time',
+    ap.add_argument('--rounds', type=int, default=6, help='--mode rounds: the last round to ride (default 6)')
+    ap.add_argument('--from', dest='src', default=os.path.join(GAME, 'port/host/match_race.input'),
+                    help='--mode rounds: the script whose won rounds are kept (default match_race.input)')
+    ap.add_argument('--mode', choices=('time', 'trick', 'match', 'contest', 'rounds'), default='time',
                     help='time: Crystal Lake Time Attack to the goal (default); trick: Trick Attack; match: Match Race; contest: Contest (as trick)')
     ap.add_argument('--tail-only', metavar='SCRIPT',
                     help='no search: take the STICK windows of SCRIPT, rebuild the post-goal tail')
@@ -347,6 +356,8 @@ def main():
         if a.out == os.path.join(GAME, 'port/host/race_crystal_lake.input'):
             a.out = os.path.join(GAME, 'port/host/%s.input' % ('trick_attack' if a.mode == 'trick' else 'contest'))
         return trick_main(a, *((TRICK_HEAD, TRICK_FIRST) if a.mode == 'trick' else (CONTEST_HEAD, CONTEST_FIRST)))
+    if a.mode == 'rounds':
+        return rounds_main(a)
     match = a.mode == 'match'
     acts = MATCH_ACTS if match else [(x, y, '') for x, y in ACTS]
     W = a.window or (30 if match else 60)
@@ -409,6 +420,136 @@ def main():
         fh.write(text)
     print('steer-search: goal at step %d (race time %d steps), END %d; %d runs, %.0f s -> %s' % (
         goal, goal - RACE_FIRST, end, nruns, time.time() - t0, a.out))
+    shutil.rmtree(work, ignore_errors=True)
+
+
+RACE = re.compile(r'^F (\d+) \S+ flow=(-?\d+),(-?\d+),(-?\d+) race=(\d+),')
+
+
+def race_starts(path, after):
+    """[step] where the race state turns 1 after step `after`, and the course start (r0 x, z)"""
+    out, prev = [], None
+    for ln in open(path, errors='replace'):
+        m = RACE.match(ln)
+        if not m:
+            continue
+        st, race = int(m.group(1)), int(m.group(5))
+        if st > after and race == 1 and prev != 1:
+            r = R0.search(ln)
+            out.append((st, r and (round(f32(r.group(1))), round(f32(r.group(3))))))
+        prev = race
+    return out
+
+
+def rounds_main(a):
+    """--mode rounds (run 869): ride every Match Race round of a blank save.  Keeps the won rounds of
+    --from (the STICK windows and the presses up to its last `# GOAL`), presses A A through the result
+    screens into the next round (MATCH_TAIL's first two presses), finds its race start, and searches it
+    as --mode match does (the CPU line of the round, fine 30-step windows).  Each round's goal is
+    written as `# ROUND k GOAL g WIN|LOSE` and the script is saved after every round, so a later call
+    with --from = the output resumes.  After the last round the tail presses A every 120 steps (the
+    result / ending / name entry screens) for STEER_ROUNDS_TAIL (3600) steps; `# END`."""
+    global LINE_W
+    text = open(a.src).read()
+    segs = [tuple(map(int, m.groups())) for m in re.finditer(r'^F (\d+)-(\d+) STICK (-?\d+),(-?\d+)', text, re.M)]
+    goals = [(int(m.group(1)) if m.group(1) else 1, int(m.group(2)))
+             for m in re.finditer(r'^# (?:ROUND (\d+) )?GOAL (\d+)', text, re.M)]
+    if not goals:
+        sys.exit('steer-search: %s has no # GOAL' % a.src)
+    last_goal = max(g for _, g in goals)
+    fixed = [ln + '\n' for ln in text.splitlines()
+             if re.match(r'^F \d+:\d+ ', ln) and int(re.match(r'^F (\d+)', ln).group(1)) <= last_goal]
+    partial = [sg for sg in segs if sg[0] > last_goal]  # a round cut by the budget: resumed below
+    segs = [sg for sg in segs if sg[0] <= last_goal]
+    notes = ['# ROUND %d GOAL %d %s\n' % (k, g, w) for k, g, w in
+             re.findall(r'^# ROUND (\d+) GOAL (\d+) (\w+)', text, re.M)] or ['# ROUND 1 GOAL %d WIN\n' % last_goal]
+    rnd = len(goals)
+    work = tempfile.mkdtemp(prefix='steer-rounds-')
+    R = Runner(a.build, a.rom, work)
+    W = a.window or 30
+
+    def body(extra_segs=(), extra=()):
+        return ('# Match Race, every round (port/tools/steer-search.py --mode rounds, run 869).\n'
+                '# Format: port/host/input_script.c.  Tied to the exact race physics; start from a blank SRAM.\n'
+                'PADS 1\n' + ''.join(notes) + ''.join(sorted(fixed + list(extra), key=lambda l: int(re.match(r'F (\d+)', l).group(1))))
+                + ''.join(seg_lines(s) for s in list(segs) + list(extra_segs)))
+
+    t0 = time.time()
+    with ThreadPoolExecutor(a.jobs or len(MATCH_ACTS)) as ex:
+        while rnd < a.rounds and time.time() - t0 < a.budget:
+            rnd += 1
+            fixed += [press(last_goal + 300, 'A', 'result screens'),
+                      press(last_goal + 420, 'A', 'result screens -> round %d' % rnd)]
+            R.after = 0
+            R.run(body(), last_goal + 1500, 0)
+            log = os.path.join(work, 'c0', 'state.log')
+            starts = race_starts(log, last_goal + 420)
+            if not starts:
+                flw = [ln.split()[3] for ln in open(log) if ln.startswith('F ')][-1:]
+                print('round %d: no race start after step %d (flow %s): the mode ended' % (rnd, last_goal + 420, flw))
+                fixed = fixed[:-2]
+                rnd -= 1
+                break
+            start, pos = starts[0]
+            print('round %d: race at step %d, start position %s' % (rnd, start, pos), flush=True)
+            R.after = start
+            LINE_W = float(os.environ.get('STEER_LINE_W', 0.001))
+            R.run(body([(start, start + 6000, 0, 0)]), start + 6000, 0)
+            CPU_PATH[:] = cpu_path(log, start)
+            t, rsegs, stack, hp0, goal = start, [], [], None, None
+            if partial and partial[0][0] >= start:
+                rsegs, t, partial = [sg + (0, '') for sg in partial], partial[-1][1] + 1, []
+                print('  resuming round %d at step %d (%d windows kept)' % (rnd, t, len(rsegs)), flush=True)
+            while time.time() - t0 < a.budget and t < start + 6000:
+                jobs = [(body(rsegs + [(t, t + 2 * W - 1, x, y, 0, b)]), t + 2 * W, k)
+                        for k, (x, y, b) in enumerate(MATCH_ACTS)]
+                res = list(ex.map(lambda j: R.run(*j), jobs))
+                ranked = sorted(((score(st, g, True, hp0), act, st, g) for act, (st, g) in zip(MATCH_ACTS, res)
+                                 if score(st, g, True, hp0) is not None), key=lambda r: -r[0])
+                while not ranked:
+                    if not stack:
+                        sys.exit('steer-search: round %d: no candidate survives at step %d' % (rnd, t))
+                    ranked = stack.pop(); rsegs.pop(); t -= W
+                sc, act, st, g = ranked[0]
+                rsegs.append((t, t + W - 1, act[0], act[1], 0, act[2])); stack.append(ranked[1:])
+                hp0 = st[4]
+                if (t - start) % (10 * W) == 0 or g:
+                    print('  r%d t=%d pct %.2f health %d speed %.0f%s%s (%.0f s)' % (
+                        rnd, t, st[2], st[4], st[9], ' cpu %.2f%s' % (st[8][0], ' fin' if st[8][1] else '') if st[8] else '',
+                        '  GOAL at %d' % g if g else '', time.time() - t0), flush=True)
+                if g is not None and g < t + W:
+                    goal = g
+                    break
+                t += W
+            if goal is None:
+                print('round %d: no goal within the budget (step %d): its %d windows saved, resume with --from %s'
+                      % (rnd, t, len(rsegs), a.out))
+                open(a.out, 'w').write(body(rsegs))
+                shutil.rmtree(work, ignore_errors=True)
+                return
+                rnd -= 1
+                break
+            rsegs[-1] = (rsegs[-1][0], goal) + tuple(rsegs[-1][2:])
+            segs += rsegs
+            R.after = start
+            R.run(body(), goal + 200, 0)
+            cpu = None
+            for ln in open(log, errors='replace'):
+                e = E1.search(ln)
+                if e and int(ln.split()[1]) >= start and int(e.group(2)) > 0:
+                    cpu = int(ln.split()[1])
+                    break
+            win = 'WIN' if cpu is None or goal < cpu else 'LOSE'
+            notes.append('# ROUND %d GOAL %d %s   (start %d at %s; the CPU rider %s)\n' % (
+                rnd, goal, win, start, pos, 'finishes at %d' % cpu if cpu else 'has not finished'))
+            print('round %d: GOAL %d %s (cpu %s), %.0f s' % (rnd, goal, win, cpu, time.time() - t0), flush=True)
+            last_goal = goal
+            open(a.out, 'w').write(body())
+    tail_n = int(os.environ.get('STEER_ROUNDS_TAIL', 3600))
+    tail = [press(last_goal + d, 'A', 'after round %d' % rnd) for d in range(300, tail_n, 120)]
+    end = last_goal + tail_n
+    open(a.out, 'w').write(body(extra=tail) + '# END %d\n' % end)
+    print('steer-search: %d round(s), END %d -> %s (%.0f s)' % (rnd, end, a.out, time.time() - t0))
     shutil.rmtree(work, ignore_errors=True)
 
 
