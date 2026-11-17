@@ -119,9 +119,22 @@ extern "C" void snoweffects_uso_func_00007960(SnowBody7 *t) {
  * name word per Parm (target 0xD8 / 0xD4 / 0xA0 / 0x9C / 0x98 hold the materialised by-value name
  * parameter, then 0x84 is the pooled copy for the GdlParmBase call). A non-POD PName (copy ctor)
  * gives both stores but passes the name by address; an identity inline returning the name gives a
- * pooled (shared) word, not one per Parm; an inline GdlParmBase ctor adds this == 0 checks. */
-struct PName { char *s; };
-struct Colour { float r, g, b, a; Colour() {} Colour(float r_, float g_, float b_, float a_) { r = r_; g = g_; b = b_; a = a_; } };
+ * pooled (shared) word, not one per Parm; an inline GdlParmBase ctor adds this == 0 checks.
+ * Run 680 (measured in splice form: objcopy --redefine-sym __ct__11SnowTarget9Fv=snoweffects_uso_func_00009328):
+ * 246 / 247 words (a shorter splice fits), register / offset-normalised 226 / 247, frame 192 vs 224.
+ * - The per-Parm name words come from passing each name as an rvalue: PName gets a converting ctor
+ *   and NM9() builds `PName(*(char **)..)`, so edg materialises one temp per inline Parm ctor (the
+ *   lvalue `*(PName *)..` form was passed through with no copy).
+ * - ParmC's Colour member must be a POD (ColourP): with a user ctor edg adds a this + 16 == 0 -> new(16)
+ *   check for the member.
+ * - The colour stores come out +0x94 .. +0x88 like the target with col[3] .. col[0] written in that order.
+ * Left: the frame (32 bytes; the target's Colour argument temps are val 0xC4 / lo 0xB4 / hi 0xA4, ours
+ * val lowest), ParmC's name copy to the outgoing word (the target reloads it from 0xA0 after the Colour
+ * copies, ours forwards it: 1 word), and the +0x234 / +0x238 store order. The `if (&n) {}` lever is no
+ * longer needed for the a1 Parms `this`. */
+struct PName { char *s; PName(char *p) { s = p; } };
+struct ColourP { float r, g, b, a; };
+struct Colour : ColourP { Colour(float r_, float g_, float b_, float a_) { r = r_; g = g_; b = b_; a = a_; } };
 struct Parms9;
 struct GdlParmBase9 {
     char hdr[0xC];
@@ -140,7 +153,7 @@ struct ParmI9 : GdlParmBase9 {
     virtual void v1();
 };
 struct ParmC9 : GdlParmBase9 {
-    Colour v; int f20;
+    ColourP v; int f20;
     ParmC9(Parms9 *o, PName n, Colour val, Colour lo, Colour hi, int fl) : GdlParmBase9(o, n, fl) { v = val; f20 = 0; }
     virtual void v1();
 };
@@ -150,7 +163,7 @@ struct ParmsHead9 {
     ParmsHead9() { vt = D_00000000 + 0xA34; count = 0; }
     void *operator new(unsigned n) { return mem_new(n); }
 };
-#define NM9(off) (*(PName *)(D_00000000 + (off)))
+#define NM9(off) PName(*(char **)(D_00000000 + (off)))
 struct Parms9 : ParmsHead9 {
     ParmF9 p08;
     ParmF9 p20;
@@ -184,6 +197,6 @@ struct SnowTarget9 : SNode9 {
 SnowTarget9::SnowTarget9() {
     name = D_00000000 + 0xA58;
     f22C = 0; f230 = 0; f234 = 1; f238 = 3; f23C = 0;
-    col[0] = 1.0f; col[1] = 1.0f; col[2] = 1.0f; col[3] = 1.0f;
+    col[3] = 1.0f; col[2] = 1.0f; col[1] = 1.0f; col[0] = 1.0f;
     f98 = 0.0f; f9C = 0.0f; fA0 = 0.0f; fA4 = 0.0f; fA8 = 0.0f;
 }
