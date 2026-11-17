@@ -153,6 +153,10 @@ struct TTrail {
     /* 0x1EC */ int mode;
 };
 
+/* identity inlines (run 696): a non-trivial argument gets an edg pool word, which shifts the pool-word
+ * membership of the op* temps after it (idv(fwd) / idf(|s|): 66 -> 52 differing words) */
+inline float idf(float a) { return a; }
+inline const TV &idv(const TV &v) { return v; }
 inline float lerpf(float a, float b, float t) { return (b - a) * t + a; }
 inline void lerp3(TV &p, const TV &b, float f) {
     float g = f, h = f; /* unused: the target's two frame words ahead of the fwd * f188 result */
@@ -226,11 +230,11 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
                 lerp3(p, t->b, (float)i / (float)(t->stride - 1));
             }
             t->points[t->writeOfs + i].pos = p;
-            t->points[t->writeOfs + i].vel = t->cam->fwd * t->f188;
+            t->points[t->writeOfs + i].vel = idv(t->cam->fwd) * t->f188;
             t->points[t->writeOfs + i].f28 = 0;
             t->points[t->writeOfs + i].w[1] = w;
             t->points[t->writeOfs + i].w[2] = t->f16C;
-            TV a = t->cam->up * t->f180 * fabs_(s);
+            TV a = t->cam->up * t->f180 * idf(fabs_(s));
             float k = (float)(0.0f < s ? t->stride - i - 1 : i) / (float)t->stride;
             TV d(*v114 * k * t->f184, s);
             TV e = *vFC * -1.0f;
