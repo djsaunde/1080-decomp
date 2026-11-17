@@ -82,15 +82,12 @@ extern float gl_func_00000000_heli_fff(float, float);
 #define HV(off) (*(Vec3 *)(self + (off)))
 
 }
-static inline int zf(float lo, int z) { return z * (int)(lo + lo + lo + lo + lo + lo); }
 static inline float clampf(float v, float lo, float hi) { if (v < lo) return lo; if (hi < v) return hi; return v; }
 /* smoothing store through a reference: keeps the store, the pitch dot / lerp and the clamp compare in one uopt
  * block, so -pi/8 and the lerp value take f18 / f16 and 2.0f / 1.0f are rematerialised per use (run 689) */
 /* store through a reference: uopt does not copy-propagate it, so the zero has one use and is not coloured;
  * ugen then reuses the stored register for the toTgt.y square, as in the target (run 689) */
 static inline void setf(float &d, float v) { d = v; }
-static inline void lerpTo(float &d, float t, float k) { d = (t - d) * k + d; }
-static inline void clampTo(float &d, float lo, float hi) { d = clampf(d, lo, hi); }
 /* ctor-less result struct for operator* (run 710) */
 struct V3b { float x, y, z; };
 static inline void set3(V3b &r, float a, float b, float c) { r.x = a; r.y = b; r.z = c; }
@@ -112,11 +109,20 @@ struct Vec3 {
     void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
 };
 static inline float dot(const Vec3 &a, const Vec3 &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
+static inline void fwdOf(Vec3 &r, const float *q) {
+    r.x = q[0] * q[2] * 2.0f + q[3] * q[1] * 2.0f;
+    r.y = q[1] * q[2] * 2.0f - q[3] * q[0] * 2.0f;
+    r.z = 1.0f - q[0] * q[0] * 2.0f - q[1] * q[1] * 2.0f;
+}
 /* one slerp component: cos-weighted old heading plus sin-weighted target direction, both over sin(ang) */
 static inline float slc(float sa, float t, float ang, float o, float d, float s) { return gl_func_00000000_heli_ff((1.0f - t) * ang) * o / s + d * sa / s; }
 /* slerp the heading h toward dir by t (run 719) */
 static inline void dum4A(void *a0, void *a1, void *a2, void *a3) { a0 = a0; a1 = a1; a2 = a2; a3 = a3; }
 static inline void dumf(float a0) { a0 = a0; }
+static inline int zf1(float lo, int z) { return z * (int)(lo); }
+static inline int zf4(float lo, int z) { return z * (int)(lo + lo + lo + lo); }
+static inline int zf6(float lo, int z) { return z * (int)(lo + lo + lo + lo + lo + lo); }
+static inline float clampP(float v, float lo, float hi, int z) { if ((v < lo)) return lo; if (zf1(v, z)) v = lo; if ((hi < v) + zf4(v, z)) return hi; return v; }
 static inline void slerp(Vec3 *h, const Vec3 &dir, float t) {
     float q0 = 0; float q1 = 0;
     float ang = gl_func_00000000_heli_ff(h->x * dir.x + h->y * dir.y + h->z * dir.z);
@@ -174,10 +180,9 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         }
         p = *(char **)(self + 0x168);
         if (p != 0) {
-            p = *(char **)(p + 0x2C);
-            if (p != 0 && *(float *)(p + 0x38) < (*(Vec3 *)&ppr).z) {
+            if ((*(char **)(p + 0x2C)) != 0) { p = (*(char **)(p + 0x2C)); if (*(float *)(p + 0x38) < (*(Vec3 *)&ppr).z) {
                 *(char **)(self + 0x168) = p;
-            }
+            } }
             HI(0x16C) = *(int *)(*(char **)(self + 0x168) + 0x3C);
         }
         mode = HI(0x16C);
@@ -324,28 +329,35 @@ extern "C" void heli_uso_func_00000B08(char *self) {
             g *= HF(0x154) / hh;
         }
         if (1) {}
-        *(float *)(self + 0x144 + zf(-0.3f, 0)) = (g - HF(0x144)) * (0.07f) + HF(0x144);
+        *(float *)(self + 0x144 + zf6(-0.3f, 0)) = (g - HF(0x144)) * (0.07f) + HF(0x144);
         yaw = clampf(yaw, -0.3f, 0.3f);
-        HF(0x14C) = HF(0x14C) + yaw * (0.06);
-        fwdAx.x = HF(0xF4) * HF(0xFC) * 2.0f + HF(0x100) * HF(0xF8) * 2.0f;
-        fwdAx.y = HF(0xF8) * HF(0xFC) * 2.0f - HF(0x100) * HF(0xF4) * 2.0f;
-        fwdAx.z = 1.0f - HF(0xF4) * HF(0xF4) * 2.0f - HF(0xF8) * HF(0xF8) * 2.0f;
-        pf = dot(fwdAx, vel) / 200.0f + fwdAx.y * (0.1);
-        lerpTo(HF(0x148), pf, 0.2f);
-        clampTo(HF(0x148), -0.3926991f, 0.3926991f);
+        *(float *)(self + 0x14C + zf4(-0.3926991f, 0)) = HF(0x14C) + yaw * (0.06);
+        if (1) {}
+        fwdOf(fwdAx, &HF(0xF4));
+        pf = dot(fwdAx, vel) / 200.0f;
+        pf = pf + fwdAx.y * (0.1);
+        f = (pf - HF(0x148)) * 0.2f + HF(0x148);
+        /* the (unsigned) fold adds an old-h use like zf1(), but zf1()'s (int) conversion costs one hidden ugen t-ring
+         * temp in the store address (run 770) */
+        *(float *)(self + 0x148 + 0 * (unsigned)(HF(0x148))) = f;
+        if (1) {}
+        /* two code-free dumf() calls hold two pooled edg float words for the whole statement, so clampP's return
+         * temp takes the slerp's sin-term word (M-220) as the old lerpTo / clampTo form did: that word is then one
+         * coloured live range (target lwc1 f16,148(sp) reloads) and the f4..f10 / t ring temps line up (run 770) */
+        *(float *)(self + 0x148) = (dumf(f), dumf(f), clampP(f, -0.3926991f, 0.3926991f, 0));
         HF(0xF4) = 0.0f;
         HF(0xF8) = 0.0f;
         HF(0xFC) = 0.0f;
         HF(0x100) = 1.0f;
-        /* code-free use of f: its live range reaches the zero stores' block start, so the zero piece takes
+        /* code-free use of g: its live range reaches the zero stores' block start, so the zero piece takes
          * f0 and the angle f2, as in the target (run 755) */
-        dumf(f);
-        f = HF(0x144); axZ.y = 0.0f; axZ.x = 0.0f; axZ.z = 1.0f;
-        gl_func_00000000_heli_ppf(self + 0xF4, &axZ, f);
-        f = HF(0x148); axX.x = 1.0f; axX.y = 0.0f; axX.z = 0.0f;
-        gl_func_00000000_heli_ppf(self + 0xF4, &axX, f);
-        f = -HF(0x14C); axY.y = 1.0f; axY.x = 0.0f; axY.z = 0.0f;
-        gl_func_00000000_heli_ppf(self + 0xF4, &axY, f);
+        dumf(g);
+        g = HF(0x144); axZ.y = 0.0f; axZ.x = 0.0f; axZ.z = 1.0f;
+        gl_func_00000000_heli_ppf(self + 0xF4, &axZ, g);
+        g = HF(0x148); axX.x = 1.0f; axX.y = 0.0f; axX.z = 0.0f;
+        gl_func_00000000_heli_ppf(self + 0xF4, &axX, g);
+        g = -HF(0x14C); axY.y = 1.0f; axY.x = 0.0f; axY.z = 0.0f;
+        gl_func_00000000_heli_ppf(self + 0xF4, &axY, g);
     }
     gl_func_00000000(self);
 }
