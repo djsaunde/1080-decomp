@@ -209,10 +209,6 @@ $(SNOW_MP72_E_DONOR): src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp src/snow
 SNOW_MP72_E_EX_FUNCS := snoweffects_uso_func_00006B28 snoweffects_uso_func_0000718C
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_MP72_E_EX_FUNCS),$(f)=$(SNOW_MP72_E_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_MP72_E_DONOR)
-# agent-e run 692: NON_MATCHING-only NCC donor for 0x9328 (the SnowTarget ctor, 246 / 247 words); callees and
-# vtables renamed to 0-pinned / Data-offset-pinned aliases (undefined_syms_auto.txt snowe9_*).
-SNOW_NM_E9_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_e9.cpp.o
-$(SNOW_NM_E9_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_e9.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h
 # 0x9328 (the SnowTarget Cfront ctor): EXACT MIPSpro 7.2.1 (EDG 2.29) donor, agent-b run 711 (replaces agent-e's
 # run 692 NCC NM donor). Written as an extern "C" function so EDG 2.29 keeps the object pointer in s0; callees
 # renamed to the 0-pinned blank-jal aliases (undefined_syms_auto.txt snowe9_*). Spliced in both trees.
