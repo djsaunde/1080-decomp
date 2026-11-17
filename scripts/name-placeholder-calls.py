@@ -749,9 +749,12 @@ def undefined_syms(path):
 
 def addr_tokens(path):
     """the address tokens that are placeholders in path's real object: zero-pinned AND undefined
-    there (a token defined in the object is a real local function, not an import placeholder)"""
+    there (a token defined in the object is a real local function, not an import placeholder).
+    A `plan --tok` token needs only to be undefined in the object: a USO module's object is
+    linked relocatable, so a blank-jal token such as TrkMenu_draw's `glv_2a44` is never pinned
+    in undefined_syms_auto.txt, and its jal is still the ROM TextReloc's site (run 817)."""
     o = obj_of(path)
-    return frozenset(zero_tokens() & undefined_syms(o)) if os.path.exists(o) else frozenset()
+    return frozenset((zero_tokens() | EXTRA_TOKS) & undefined_syms(o)) if os.path.exists(o) else frozenset()
 
 
 def addr_token_files():
@@ -1447,8 +1450,9 @@ def main():
     p.add_argument('--funcs', help='TSV of unit<TAB>function (e.g. port/gen/binds-left.tsv): name only the '
                    'sites inside those C functions (a .cpp unit is named whole)')
     p.add_argument('--tok', action='append', default=[],
-                   help='also treat this token as a placeholder when it is pinned to 0 in '
-                   'undefined_syms_auto.txt and undefined in the object (repeatable)')
+                   help='also treat this token as a placeholder when it is undefined in the object '
+                   '(pinned to 0 in undefined_syms_auto.txt or not: a relocatable USO object leaves '
+                   'its blank-jal tokens unpinned) (repeatable)')
     p = sub.add_parser('check'); p.add_argument('files', nargs='*')
     p.add_argument('--strict', action='store_true')
     sub.add_parser('selftest')
