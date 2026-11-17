@@ -24,6 +24,8 @@
  *    register directly, as the target's mov.s f2 / f12 arms); the pitch clamp stored through a reference
  *    (clampTo); tg for toTgt spelled as ps + 0x50 (= self + 0x12C), which keeps the toTgt loads in the
  *    target's order (92.4 -> 93.1).
+ *  - run 706: `if (1) {}` before case 2's V3(0x12C) store: the target stores 300 / 304 / 308(s0) directly
+ *    there; without the cut uopt colours self+0x12C (v0) for the three stores (93.1 -> 93.2).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -190,6 +192,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
             HF(0x114) = HF(0x114) + (mpos.x - HF(0x114)) * (0.2);
             HF(0x118) = HF(0x118) + (mpos.y - HF(0x118)) * (0.2);
             HF(0x11C) = HF(0x11C) + (mpos.z - HF(0x11C)) * (0.2);
+            if (1) {} /* block cut: self+0x12C is not a coloured LR here, the stores fold to 300(s0) (run 706) */
             V3(0x12C) = V3(0x114);
             HF(0x15C) = 0.0f;
             HF(0x158) = 2.0f;
