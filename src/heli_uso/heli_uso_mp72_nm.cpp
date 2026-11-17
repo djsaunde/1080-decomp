@@ -36,6 +36,12 @@
  *    inline slc() whose first parameter is sin(t * ang). The argument is evaluated before the cos call, and as
  *    an inline parameter it is coloured (target reloads it into f16 per component), so ugen evaluates the
  *    old-heading term first as in the target. Frame 0x178 -> 0x170 (93.25 -> 94.44).
+ *  - run 724: the frame laid out as the target's (EDG 2.29 allocates a scope's variables at its entry, in
+ *    declaration order): one function-scope scalar (ps) before toTgt, vel direct-initialised between dist and
+ *    side, mode in a block around the head + switch, key / p in the else-block, key2 / tg in the switch block,
+ *    case 2's item / next / mpos / k in blocks, and yaw / hh / g / fwdAx / pf / axZ / axX / axY as if-block
+ *    locals (g = roll, pf = pitch). The heading pointer is an expression again (the target spills it to a
+ *    uopt temp, 48(sp), not to a home slot). sp-offset diff rows 279 -> 113, 94.44 -> 94.39.
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -99,41 +105,29 @@ static inline void slerp(Vec3 *h, const Vec3 &dir, float t) {
 }
 #define V3(off) (*(Vec3 *)(self + (off)))
 #define FWD ((Vec3 *)(self + 0x138))
+#define COURSE (*(char **)(&heli_flow_b08 + 0x138))
 extern "C" void heli_uso_func_00000B08(char *self) {
     struct { float x, y, z; } ppr;
     char *player;
-    char *q;
+    Vec3 *ps;
     Vec3 toTgt;
     Vec3 dir;
     float dist;
-    Vec3 side;
-    HeliTypeTag key;
-    HeliTypeTag key2;
-    Vec3 tmp;
-    Vec3 mpos;
-    Vec3 *tg;
-    Vec3 *h;
-    Vec3 *ps;
-    float f;
-    float yaw;
-    char *p;
-    int mode;
-    Vec3 fwdAx;
-    Vec3 axZ;
-    Vec3 axX;
-    Vec3 axY;
-    p = *(char **)(&heli_flow_b08 + 0x138);
-    if (p == 0 && *(int *)(p + 0x48) == 0) {
+    if (COURSE == 0 && *(int *)(COURSE + 0x48) == 0) {
         return;
     }
-    player = **(char ***)(p + 0x44);
+    player = **(char ***)(COURSE + 0x44);
     ppr.x = *(float *)(player + 0xA0);
     ppr.y = *(float *)(player + 0xA4);
     ppr.z = *(float *)(player + 0xA8);
     if (1) {}
+    {
+    int mode;
     if (HI(0x170) != 0) {
         mode = HI(0x170);
     } else {
+        HeliTypeTag key;
+        char *p;
         if (*(int *)(player + 0xA54) == 6) {
             gl_func_00000000(self);
             HI(0x170) = 8;
@@ -142,20 +136,23 @@ extern "C" void heli_uso_func_00000B08(char *self) {
             key.v = *(int *)(&heli_data_00000000 + 0xCBAC);
             p = (char *)gl_func_00000000(heli_itemMgr_b08, key);
             if (p != 0) {
-                char *vt = ((Node *)(p))->vptr;
-                *(char **)(self + 0x168) = (char *)((int (*)(...))(((GdlVtEnt *)((char *)(vt) + 8))[12]).fn)((((GdlVtEnt *)((char *)(vt) + 8))[12]).delta + p, &(*(Vec3 *)&ppr), 0);
+#define VT (((Node *)(p))->vptr)
+                *(char **)(self + 0x168) = (char *)((int (*)(...))(((GdlVtEnt *)((char *)(VT) + 8))[12]).fn)((((GdlVtEnt *)((char *)(VT) + 8))[12]).delta + p, &(*(Vec3 *)&ppr), 0);
             }
         }
         p = *(char **)(self + 0x168);
         if (p != 0) {
-            q = *(char **)(p + 0x2C);
-            if (q != 0 && *(float *)(q + 0x38) < (*(Vec3 *)&ppr).z) {
-                *(char **)(self + 0x168) = q;
+            p = *(char **)(p + 0x2C);
+            if (p != 0 && *(float *)(p + 0x38) < (*(Vec3 *)&ppr).z) {
+                *(char **)(self + 0x168) = p;
             }
             HI(0x16C) = *(int *)(*(char **)(self + 0x168) + 0x3C);
         }
         mode = HI(0x16C);
     }
+    {
+    HeliTypeTag key2;
+    Vec3 *tg;
     tg = (Vec3 *)(self + 0x114);
     ps = (Vec3 *)(self + 0xDC);
     mode = mode * 1;
@@ -169,10 +166,9 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         }
         break;
     case 4:
-        f = (5000.0f);
         V3(0x114) = (*(Vec3 *)&ppr);
-        HF(0x118) += f;
-        HF(0x11C) += f;
+        HF(0x118) += (5000.0f);
+        HF(0x11C) += (5000.0f);
         HF(0x15C) = 1000.0f;
         HF(0x158) = 1.0f;
         HF(0x150) = 800.0f;
@@ -206,13 +202,18 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         HF(0x150) = 500.0f;
         HF(0x160) = 400.0f;
         break;
-    case 2:
+    case 2: {
+        char *p;
         key2.v = *(int *)(&heli_data_00000000 + 0xCBB0);
         p = (char *)gl_func_00000000(heli_itemMgr2_b08, key2, ps, 0);
         if (p != 0 && *(int *)(p + 0x2C) != 0) {
-            p = *(char **)(p + 0x2C);
-            mpos = *(Vec3 *)(p + 0x30);
-            mpos.y += (3000.0f);
+            char *q;
+            Vec3 mpos;
+            float k;
+            q = *(char **)(p + 0x2C);
+            mpos = *(Vec3 *)(q + 0x30);
+            k = (3000.0f);
+            mpos.y += k;
             HF(0x114) = HF(0x114) + (mpos.x - HF(0x114)) * (0.2);
             HF(0x118) = HF(0x118) + (mpos.y - HF(0x118)) * (0.2);
             HF(0x11C) = HF(0x11C) + (mpos.z - HF(0x11C)) * (0.2);
@@ -226,6 +227,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
             }
         }
         break;
+    }
     case 6:
         V3(0x114) = (*(Vec3 *)&ppr);
         break;
@@ -235,8 +237,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     dir = *tg - *ps;
     dist = gl_func_00000000_heli_ff(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z) * *(float *)(&heli_gGfxLib_d + 0x128);
     gl_func_00000000(&dir);
-    h = FWD; /* the heading pointer: one LR, spilled across the slerp calls (target sw a0,48(sp)) */
-    gl_func_00000000(h);
+    gl_func_00000000(FWD);
     slerp(FWD, dir, HF(0x164));
     if (dist < HF(0x15C)) {
         HF(0x154) = HF(0x160) * (dist / HF(0x15C));
@@ -247,36 +248,47 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     if (HF(0x150) < HF(0x154)) {
         HF(0x154) = HF(0x150);
     }
-    Vec3 vel = *h * HF(0x154);
+    }
+    }
+    Vec3 vel = *FWD * HF(0x154);
+    Vec3 side;
+    float f;
     V3(0xDC) += vel;
-    tg = (Vec3 *)((char *)ps + 0x50);
-    toTgt = *tg - *ps;
+    toTgt = *(Vec3 *)((char *)ps + 0x50) - *ps;
     side.x = 1.0f - HF(0xF8) * HF(0xF8) * 2.0f - HF(0xFC) * HF(0xFC) * 2.0f;
     side.y = HF(0xF4) * HF(0xF8) * 2.0f + HF(0x100) * HF(0xFC) * 2.0f;
     side.z = HF(0xF4) * HF(0xFC) * 2.0f - HF(0x100) * HF(0xF8) * 2.0f;
     setf(toTgt.y, 0.0f);
     f = gl_func_00000000_heli_ff(toTgt.x * toTgt.x + toTgt.y * toTgt.y + toTgt.z * toTgt.z);
     if (1.0f < f && f < (100000.0f)) {
+        float yaw;
+        int hh;
+        float g;
+        Vec3 fwdAx;
+        float pf;
+        Vec3 axZ;
+        Vec3 axX;
+        Vec3 axY;
         yaw = -(gl_func_00000000_heli_fff(toTgt.x, toTgt.z) - (3.1415927f)) - HF(0x14C);
         if ((3.1415927f) < yaw) {
             yaw -= (6.2831855f);
         } else if (yaw < (-3.1415927f)) {
             yaw += (6.2831855f);
         }
-        f = -(side.x * dir.x + side.y * dir.y + side.z * dir.z) * 1.5;
+        g = -(side.x * dir.x + side.y * dir.y + side.z * dir.z) * 1.5;
         if (HF(0x154) < 100.0f) {
-            int h = 100; /* int: uopt folds the conversion late, so 100.0f is materialised twice as in the target */
-            f *= HF(0x154) / h;
+            hh = 100;
+            g *= HF(0x154) / hh;
         }
         if (1) {}
-        HF(0x144) = (f - HF(0x144)) * (0.07f) + HF(0x144);
+        HF(0x144) = (g - HF(0x144)) * (0.07f) + HF(0x144);
         yaw = clampf(yaw, -0.3f, 0.3f);
         HF(0x14C) = HF(0x14C) + yaw * (0.06);
         fwdAx.x = HF(0xF4) * HF(0xFC) * 2.0f + HF(0x100) * HF(0xF8) * 2.0f;
         fwdAx.y = HF(0xF8) * HF(0xFC) * 2.0f - HF(0x100) * HF(0xF4) * 2.0f;
         fwdAx.z = 1.0f - HF(0xF4) * HF(0xF4) * 2.0f - HF(0xF8) * HF(0xF8) * 2.0f;
-        f = dot(fwdAx, vel) / 200.0f + fwdAx.y * (0.1);
-        lerpTo(HF(0x148), f, 0.2f);
+        pf = dot(fwdAx, vel) / 200.0f + fwdAx.y * (0.1);
+        lerpTo(HF(0x148), pf, 0.2f);
         clampTo(HF(0x148), -0.3926991f, 0.3926991f);
         HF(0xF4) = 0.0f;
         HF(0xF8) = 0.0f;
