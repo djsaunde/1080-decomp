@@ -22,7 +22,7 @@ void gl_func_00000000_snow_4714(void *, int, int, float);
  * sign from cam flags +0xA58 & 0x80), clear +0x120..+0x134, copy +0x34/+0x38 -> +0x3C/+0x40,
  * 0x4374(this); s = 0 below cam speed 60 (+0x348) or |speed| < lo (+0x1A4), +-1 above hi (+0x1A8),
  * else +-((1 - base) * t + base); sign flips clear +0x144; s -> +0x1A0; state (+0x9A2) != 97 or slow
- * or s == 0 clears +0x144; +0x74 = 0x46BC(this), slots[write].unk04[0] = mode (+0x1EC);
+ * or s == 0 clears +0x144; +0x74 = 0x46BC(this), slots[write].tex = mode (+0x1EC);
  * 0x4714(this, on, prevOn, w = +0x164); s *= 0.25 when the write slot is live; then for each of the
  * stride (+0x6C) points of the write ring row: pos = +0x138 (mode 2) or lerp(+0x120, +0x12C, i/(n-1)),
  * vel = cam +0x318 * +0x188 plus side / lift terms (cam +0x3B0 * +0x180 * |s|, +0x114 * (i or n-1-i)/n
@@ -140,7 +140,7 @@ struct TCam {
     /* 0xA58 */ int flags;
 };
 struct TPoint { TV pos; TV vel; float w[4]; int f28; };
-struct TSlot { int state; int unk04[2]; };
+struct TSlot { int state; int tex; int unk08; };
 struct TVtx { short ob[3]; short flag; short s, t; signed char rgba[4]; };
 struct TTrail {
     char pad00[0x2C];
@@ -264,7 +264,7 @@ extern "C" void BoardSpray_emit_00007FE0(TTrail *t) {
         t->hits = 0;
     }
     t->on = XCALL(gl_func_00000000_snow_46bc, SnowRing_emitTick_000046BC)(t); /* 0x46BC */
-    t->slots[t->write].unk04[0] = t->sprayTex;
+    t->slots[t->write].tex = t->sprayTex;
     w = t->alpha;
     XCALL(gl_func_00000000_snow_4714, SnowRing_setSlotState_00004714)(t, t->on, t->prevOn, w); /* SnowRing_setSlotState_00004714 */
     if (t->slots[t->write].state == 2) {

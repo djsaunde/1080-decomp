@@ -255,7 +255,7 @@ struct SnowEmB {
     /* 0x1BC */ float normDecay;
     /* 0x1C0 */ float normAlphaVel;
     /* 0x1C4 */ float normVelScale;
-    /* 0x1C8 */ int c1C8;
+    /* 0x1C8 */ int normAirFrames;
     /* 0x1CC */ int normBurst;
     /* 0x1D0 */ int normLastState;
     char pad1D4[0x1D8 - 0x1D4];
@@ -280,7 +280,7 @@ extern "C" void BoardTrail_spawnB_00006B28(SnowEmB *t) {
         t->normDecay = snow_ro_7C;
     }
     if (20.0f < t->cam->f348 && t->noGround != 0 && t->on != 1) {
-        t->c1C8++;
+        t->normAirFrames++;
     }
     if ((snow_game_6B28.flags & 0x820000) && t->cam->s9A0 == 97) {
         if (0.0f < t->f1D8 && t->cam->fA20 == 0.0f) { /* run 692: fA20 on the left gives the target's mtc1 zero (f16) before the fA20 load (f18) */
@@ -289,11 +289,11 @@ extern "C" void BoardTrail_spawnB_00006B28(SnowEmB *t) {
         t->f1D8 = t->cam->fA20;
     }
     if (t->normBurst != 0 || (t->on >= 2 && t->cam->state == 97)) {
-        if (t->c1C8 >= 7 && t->cam->state == 97) {
+        if (t->normAirFrames >= 7 && t->cam->state == 97) {
             t->normBurst = 3;
         }
         if (t->cam->state == 97) {
-            t->c1C8 = 0;
+            t->normAirFrames = 0;
         }
         if (t->normBurst != 0) {
             t->normBurst--;

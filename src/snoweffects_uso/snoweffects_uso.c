@@ -101,7 +101,7 @@ typedef struct BoardTrail {
     /* 0x1BC */ f32 normDecay;       /* particle decay */
     /* 0x1C0 */ f32 normAlphaVel;    /* particle alphaVel */
     /* 0x1C4 */ f32 normVelScale;    /* owner vel (+0x318) scale */
-    /* 0x1C8 */ s32 unk1C8;          /* frames with owner speed > 20, SnowRing +0x80 set, hits != 1; >= 7 at state 97 bursts */
+    /* 0x1C8 */ s32 normAirFrames;    /* frames with noGround (SnowRing +0x80) set, speed > 20, on != 1; >= 7 at state 97 bursts */
     /* 0x1CC */ s32 normBurst;       /* burst frames left (3; spawns while 1..2) */
     /* 0x1D0 */ s32 normLastState;   /* owner state, copied while SnowRing +0x80 is clear */
     /* 0x1D4 */ char unk1D4[0x1D8 - 0x1D4];
@@ -940,7 +940,7 @@ void BoardTrail_spawnA_000064B8(void) {
 }
 
 void BoardTrail_enableB_00006B08(BoardTrail *this) {
-    this->unk1C8 = 0;
+    this->normAirFrames = 0;
     this->flags |= 2;
     this->normBurst = 0;
     this->unk1D8 = 0.0f;
