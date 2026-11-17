@@ -14,7 +14,7 @@
  * original ucode order (each spelling checked by objdump -d -r of the object; agent-a run 531). */
 #define SO(p) ((SoundObj *)(p))
 extern int gl_func_000428FC();
-extern void gl_E354_emitf(s32, s32, s32, f32, s32, s32);
+extern void gl_E354_emitf(s32, s32, s32, PORT64_BITS(f32), s32, s32); /* PORT64_BITS: the callees take the bits (plan 21.10) */
 extern int gl_func_00043824(float, ...);
 extern int gl_func_000438F4();
 extern int gl_func_00044C38();
@@ -29,7 +29,7 @@ extern s32 D_raceB_E354;
 extern s32 D_raceC_E354;
 extern s32 D_raceD_E354;
 extern f32 D_E354_1C330[], D_E354_1C3B0[], D_E354_1C310[];
-extern s32 gl_E354_setf(s32, f32);
+extern s32 gl_E354_setf(s32, PORT64_BITS(f32));
 extern f32 D_E354_1C738_a, D_E354_1C738_b, D_E354_1C738_c, D_E354_1C73C_a, D_E354_1C73C_b, D_E354_1C73C_c;
 extern char D_E354_G[];
 extern void D_E354_GA(void);

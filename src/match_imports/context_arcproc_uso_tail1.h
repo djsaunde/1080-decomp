@@ -9,6 +9,7 @@ typedef signed int s32;
 typedef signed long long s64;
 typedef float f32;
 typedef double f64;
+#include "../../include/uso_call.h" /* PORT64_BITS */
 typedef struct GlInputFrame675A4 {
     s8 field_00;
     s8 field_01;
@@ -489,8 +490,9 @@ extern int arcproc_import_184(ArcPanel *);
 extern int arcproc_import_185(ArcPanel *, int);
 extern int arcproc_import_186(ArcContext *);
 extern int arcproc_import_174(ArcWidget *, int);
-extern int arcproc_import_187(ArcWidget *, int, float);
-extern int arcproc_import_188(ArcWidget *, int, int, float, float);
+/* = CourseGadget_setFloat2 / setVec4, which read the bits (plan 21.10) */
+extern int arcproc_import_187(ArcWidget *, int, PORT64_BITS(float));
+extern int arcproc_import_188(ArcWidget *, int, int, PORT64_BITS(float), PORT64_BITS(float));
 extern int arcproc_import_177(ArcWidget *, int, int, float, float);
 extern int arcproc_import_189(int, int);
 extern int arcproc_import_176(ArcWidget *, int);

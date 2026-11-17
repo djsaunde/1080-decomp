@@ -1360,7 +1360,7 @@ void arc_DataManager_reset_00001F0C(ArcDataManager *a0) {
  * target shape. Residual: initial a colored a2-with-copy vs direct-a1, arm3
  * stale-a2 CSE (addiu from a2 vs reload lw 32(v1)), t-reg renumber cascade. */
 extern int gl_proto_1f54(void *, int, int, float, float);
-extern int gl_proto_1c94(int, int, float);
+extern int gl_proto_1c94(int, int, PORT64_BITS(float)); /* = CourseGadget_setFloat2 (bits, plan 21.10) */
 void arc_DataManager_update(char *arg0) {
     char *bc;
     char *p44;

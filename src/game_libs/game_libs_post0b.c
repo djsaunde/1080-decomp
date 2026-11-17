@@ -2979,10 +2979,10 @@ void Spinner_update(int *a0) {
 }
 
 /* Spinner_hostioParms: 21-insn 2-call helper. */
-extern int gl_proto_3787C(void*, void*, void*, int, float, int);
+extern int gl_proto_3787C(void*, void*, void*, PORT64_FT, float, int); /* = hostio_addFloat (min, max floats; plan 21.10) */
 void Spinner_hostioParms(void *a0) {
     gl_proto_3787C(&gHostio, GL_DATA_STR(0x1EA18, "Speed"),
-                   (char*)a0 + 0x2C, 0xC0C00000, 6.0f, 0);
+                   (char*)a0 + 0x2C, PORT64_F(0xC0C00000), 6.0f, 0);
     CALL(Node_hostioParms)(a0);
 }
 

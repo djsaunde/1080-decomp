@@ -48,5 +48,5 @@ extern "C" void snd_SetChannel8Mode(int mode) {
     }
     { f32 &r = A308.f10; f32 &q = A308.f14; r = q; }
     { int &r = A308.f4; CALL(AudioThread_QueueCmdS8)(0x06000800, (s8)r); }
-    { f32 &r = A308.f10; XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x01000800, r); }
+    { f32 &r = A308.f10; XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x01000800, PORT_IBITS(r)); }
 }

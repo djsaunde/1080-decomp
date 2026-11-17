@@ -9,6 +9,7 @@ typedef signed int s32;
 typedef signed long long s64;
 typedef float f32;
 typedef double f64;
+#include "../../include/uso_call.h" /* PORT64_FT */
 typedef struct GlInputFrame675A4 {
     s8 field_00;
     s8 field_01;
@@ -696,7 +697,7 @@ typedef struct { V3_37540 v; s32 padC[7]; } Tmp_37540;
 extern f32 D_37540_19F8[], D_37540_19FC[], D_37540_1A00[];
 void StickCtrlB_update_00037540(char *o);
 void Spinner_update(int *a0);
-extern int gl_proto_3787C(void*, void*, void*, int, float, int);
+extern int gl_proto_3787C(void*, void*, void*, PORT64_FT, float, int); /* = hostio_addFloat (min, max floats; plan 21.10) */
 void Spinner_hostioParms(void *a0);
 int *SeekNode_ctor(int *a0, int a1, float a2);
 void SeekNode_update(char *o);

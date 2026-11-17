@@ -331,7 +331,11 @@ s32 arg2;
         break;
     case 3:
         XCALL(gl_func_emit, AudioThread_QueueCmdS32)(0xF8000000, 0);
+#ifdef PORT64 /* 0.3f: the definition takes a float (abi-scan X64KR, plan 21.10) */
+        PORT64_CALLP(void (int, float, signed char), snd_UpdateChannel10Emitter)(0, PORT64_F(0x3E99999A), 0);
+#else
         XCALL(gl_func_emit, snd_UpdateChannel10Emitter)(0, 0x3E99999A, 0);
+#endif
         break;
     case 6:
         switch (sub) {

@@ -3764,8 +3764,9 @@ void hud_addCountDownGadget(Hud *self, int a1, int a2, int *a3_int_ptr) {
  * named locals reserved a dead 8-byte stack slot, bloating the frame -48 -> -56;
  * IDO CSEs the inlined reads into single f0/f2 loads. */
 extern int gl_func_00000000();
-extern void gl_func_00000000_e84c2(int, float, float);
-extern void gl_func_00000000_e84c4(int, float, float, float, float);
+/* PORT64_BITS: CourseGadget_setFloat2 / setVec4 read the bits (plan 21.10) */
+extern void gl_func_00000000_e84c2(int, PORT64_BITS(float), PORT64_BITS(float));
+extern void gl_func_00000000_e84c4(int, PORT64_BITS(float), PORT64_BITS(float), PORT64_BITS(float), PORT64_BITS(float));
 void hud_addCourseGadget(int *s0, int a1, int a2, int a3) {
     int *q;
     s0[0x80 / 4] = CALL(CourseGadget_ctor)(0, a3);

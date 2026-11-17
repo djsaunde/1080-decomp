@@ -11885,7 +11885,7 @@ void AudioSeq_InitSequencePlayers(void) {
 //   the 256-block 0x358 store, so the 256-block fr web colours first (f2) and the reload
 //   web takes the same register (target `lwc1 $f2, 0x358`). See docs/IDO_CODEGEN.md
 //   kit CCXXXIII.
-extern int gl_func_00000000_f(int, float);
+extern int gl_func_00000000_f(int, PORT64_BITS(float)); /* AudioThread_QueueCmdF32 takes the bits (plan 21.10) */
 extern int gl_ref_000423C4(), gl_ref_00041E9C(), gl_ref_00042490(), gl_ref_00041ED4(), gl_ref_00046324(), gl_ref_00044E14();
 extern int D_2D37C_mode, D_2D37C_flag, D_2D37C_st, D_2D37C_arg, D_2D37C_g5, D_2D37C_g13, D_2D37C_gz, D_2D37C_g1, D_2D37C_g4;
 extern int D_2D37C_tmr;
@@ -12593,7 +12593,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SetPlayer1Channel15IO_2D
  * float in a1 via mfc1 with no frame slot. BYTE-EXACT 33/33 on the first
  * compile (agent-c 2026-09-06). */
 extern int D_00000000_1c0ac;
-extern int gl_func_00000000_f(int, float);
+extern int gl_func_00000000_f(int, PORT64_BITS(float)); /* AudioThread_QueueCmdF32 takes the bits (plan 21.10) */
 void snd_SetPlayer3FreqScaleFromStick(int a0, int a1) {
     /* volatile pointee = held-base pin: uopt materialises the pointer VALUE
      * (`lui v0,2; addiu v0,-0x3E28`, the 0x1C1D8 addend baked in the .o word)
@@ -12668,13 +12668,16 @@ int snd_ScheduleSeqAfter(int a0, int a1) {
  * externs resolving to 0x0 (4 distinct names break IDO's CSE on the
  * lui+sw pair — per feedback-ido-cse-bust-via-distinct-externs). */
 extern char D_2DDBC_a, D_2DDBC_b, D_2DDBC_c, D_2DDBC_d;
-void snd_ScheduleSeq(int a0, int a1, int a2, float a3) {
+/* PORT64_BITS (plan 21.10): every caller is K&R with the bits (snd_ScheduleSeqAfter's 0x3F800000, a tail call
+ * abi-scan does not see; snd_dispatchEvent's 0x3F333333), so on x86-64 the definition reads them from the integer
+ * register; a float there left D_2DDBC_d (= the player-1 volume D_2DE24_c) garbage after the race goal */
+void snd_ScheduleSeq(int a0, int a1, int a2, PORT64_BITS(float) a3) {
     int *p = &a0;
     a0 &= 0xFF;
     *(int*)&D_2DDBC_a = a0;
     *(int*)&D_2DDBC_b = a1;
     *(int*)&D_2DDBC_c = a2;
-    *(float*)&D_2DDBC_d = a3;
+    *(float*)&D_2DDBC_d = PORT64_BV(a3);
     (void)p;
 }
 
@@ -12795,7 +12798,7 @@ void snd_StopPlayer0Seq(void) {
  * was the shared gl_func_00000000 placeholder's K&R float->double promotion
  * (cvt.d.s -> a2/a3); resolved by calling the existing absolute-0 float alias
  * gl_func_00000000_f prototyped (int,float). 13/13 words exact. */
-extern int gl_func_00000000_f(int, float);
+extern int gl_func_00000000_f(int, PORT64_BITS(float)); /* AudioThread_QueueCmdF32 takes the bits (plan 21.10) */
 void snd_SetPlayer0ChannelFreqScale(int a0, float a2) {
     XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x04000000 | ((a0 & 0xFF) << 8), a2);
 }
@@ -13176,7 +13179,7 @@ int snd_SoundObjEventIndex(unsigned char *o) {
  * (target bnel with the dead duplicate 0x40). Not kept: the odd-case chain as a
  * switch (88.79 but 3688). */
 extern int gl_func_000428FC();
-extern void gl_E354_emitf(s32, s32, s32, f32, s32, s32);  /* 4th arg is a single float passed in a3 (target lw a3,120(sp)) */
+extern void gl_E354_emitf(s32, s32, s32, PORT64_BITS(f32), s32, s32);  /* 4th arg is a single float passed in a3 (target lw a3,120(sp)) */
 extern int gl_func_00043824(float, ...);
 extern int gl_func_000438F4();
 extern int gl_func_00044C38();
@@ -13195,7 +13198,7 @@ extern s32 D_raceB_E354;    /* race-mode word (v0 @123d4): 4|10 gate (distinct f
 extern s32 D_raceC_E354;    /* race word (t1 @125d8): ==0 -> increment 0x38 (switch6 case0) */
 extern s32 D_raceD_E354;    /* race word (v1 @12618): !=0,!=1,!=8 gate (distinct fresh lui) */
 extern f32 D_E354_1C330[], D_E354_1C3B0[], D_E354_1C310[];  /* per-table float arrays: target lui %hi(tbl)+addu idx+lwc1 %lo */
-extern s32 gl_E354_setf(s32, f32);  /* (cmd, single float in a1): target mfc1 a1 / lw a1, no cvt.d.s; blank jal (NM-only, like gl_E354_emitf) */
+extern s32 gl_E354_setf(s32, PORT64_BITS(f32));  /* (cmd, single float in a1): target mfc1 a1 / lw a1, no cvt.d.s; blank jal (NM-only, like gl_E354_emitf) */
 extern f32 D_E354_1C738_a, D_E354_1C738_b, D_E354_1C738_c, D_E354_1C73C_a, D_E354_1C73C_b, D_E354_1C73C_c;  /* scalar globals: target lui at,2 + folded %lo per access */
 extern char D_E354_G[];  /* array view: target holds &G (lui/addiu v1) for the +0/+0x14 counters */
 /* agent-g run 251: the same counters through function-typed symbols (cfe keeps a fn symbol's address as a
@@ -15559,7 +15562,7 @@ void snd_ResetChannel10Mode(void) {
 //   (join-block first insn -> copied into the `b` delay slot), while the tail keeps
 //   agent-c run 300's if(1)-split goto block. `mode = 1` is value-preserving (mode
 //   == 1 here), `mode = 0` is a dead store before the return.
-extern int gl_func_00000000_f(int, float);
+extern int gl_func_00000000_f(int, PORT64_BITS(float)); /* AudioThread_QueueCmdF32 takes the bits (plan 21.10) */
 extern int gl_func_00000000_c(int, s8);
 extern int D_31A74_st, D_31A74_g2, D_31A74_g3, D_31A74_accl, D_31A74_accs1, D_31A74_accs2, D_31A74_cur;
 extern f32 kRo_snd_UpdateChannel10Emitter_1968[], kRo_snd_UpdateChannel10Emitter_196C[], kRo_snd_UpdateChannel10Emitter_1970[], kRo_snd_UpdateChannel10Emitter_1974[];   /* per-site pool aliases (fresh lui at) */

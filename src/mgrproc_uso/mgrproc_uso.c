@@ -1779,7 +1779,7 @@ extern void import_000B139C();
 extern int import_000B7058();
 extern void import_000B14CC();
 extern void mgrproc_uso_func_016BB8();
-extern void mgrproc_uso_func_016BEC(int, int, int, int, float);
+extern void mgrproc_uso_func_016BEC(int, int, int, int, PORT64_BITS(float)); /* = CourseGadget_setVec4 (bits, plan 21.10) */
 extern void mgrproc_uso_func_04CD94();
 void mgr_DataManager_update(char *arg0) {
     char *a1;

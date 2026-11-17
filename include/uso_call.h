@@ -149,7 +149,32 @@
  *                   for a K&R `CALL(f)` site whose callee takes a float (abi-scan X64KR; a K&R call cannot
  *                   pass a float on x86-64).  Used only under `#ifdef PORT64`, with the ROM's CALL in the
  *                   `#else`; a C++ site calls f directly.
+ *   PORT64_BITS     a placeholder token's parameter type for a callee that takes the f32 BITS (an `int`
+ *                   parameter) while the site passes a float (or the bits): under PORT64 a GCC transparent
+ *                   union { int; float }, so either is accepted and passed as the int, with its bits, in an
+ *                   integer register (`extern int tok(int, PORT64_BITS(float));`); otherwise the given type.
+ *                   C only (C++ ignores transparent_union: use PORT_IBITS there).  On a DEFINITION's
+ *                   parameter (`void f(int *a0, PORT64_BITS(float) a1)`, read as PORT64_BV(a1)) it makes
+ *                   the callee read the bits from the integer register, for a callee whose O32 callers
+ *                   mostly pass the bits (K&R `CALL`s, `int` tokens); its float-passing tokens then take
+ *                   PORT64_BITS(float) too.
+ *   PORT_IBITS(x)   a float passed to a C++ declaration that takes the bits as an `int` (port/gen/decls_cpp.h):
+ *                   the int with x's bits under PORT (a plain float -> int argument converts the VALUE), x in
+ *                   the ROM build.
  */
+#ifdef PORT
+#define PORT_IBITS(x) (__extension__({ union { int i_; float f_; } u_; u_.f_ = (x); u_.i_; }))
+#else
+#define PORT_IBITS(x) x
+#endif
+#if defined(PORT64) && !defined(__cplusplus)
+typedef union { int i; float f; } __attribute__((transparent_union)) port64_bits_t;
+#define PORT64_BITS(t) port64_bits_t
+#define PORT64_BV(p) ((p).f)
+#else
+#define PORT64_BITS(t) t
+#define PORT64_BV(p) (p)
+#endif
 #ifdef PORT64
 #define PORT64_CALLP(T, f) PORT64_CALLP_(T, f, __COUNTER__)
 #define PORT64_CALLP_(T, f, n) PORT64_CALLP__(T, f, n)

@@ -1011,8 +1011,9 @@ void TimDataManager_init_00001A64(int *a0, int a1, int a2, int a3) {
  * (addiu materialized, sw 0(p)); third arg of the 0x80-dispatch call is
  * FLOAT 0.0f to prototyped (int,int,float) gl_proto_1c94 -> li a2,0 (O32
  * float-after-2-ints passes bits in $a2; int-0/K&R forms all emit move). */
-extern int gl_proto_1c68(void *, int, int, float, float);
-extern int gl_proto_1c94(int, int, float);
+/* = CourseGadget_setVec4 / setFloat2, which read the bits (plan 21.10) */
+extern int gl_proto_1c68(void *, int, int, PORT64_BITS(float), PORT64_BITS(float));
+extern int gl_proto_1c94(int, int, PORT64_BITS(float));
 void TimDataManager_update_00001BCC(char *arg0) {
     int v1;
     char *pa;

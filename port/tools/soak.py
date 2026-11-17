@@ -51,7 +51,11 @@ GATE_SEEDS = list(range(1, 13))
 GATE_STEPS = 5000
 GATE64_SEEDS = (2, 3)  # --gate --build64: these gate seeds also run x86-64 and must match (run 869)
 STUCK_SCREEN, STUCK_PRESSES = 900, 8  # stuck-screen: 30 s of an identical display list through 8 presses, B among them
-SOFT = ('frozen', 'nan-camera', 'x64-screen', 'x64-audio')
+# x64-audio is hard since run 870 (plan 21.10: the snd_* / AudioThread_QueueCmdF32 float-ABI fixes; the race's and
+# the gate64 seeds' PCM are identical).  x64-screen stays soft: the gate64 seed 2 differs at step 842 (flow 7's
+# first frame) in light colours that change with PORT_GFX_DUMP on EITHER build, an uninitialised read, not an ABI
+# difference (plan 21.10)
+SOFT = ('frozen', 'nan-camera', 'x64-screen')
 
 # ---------------------------------------------------------------- input generation
 
@@ -510,9 +514,8 @@ def compare64(d32, d64):
 
 
 def soft64(d32, d64):
-    """{class: (step, detail)}: the screen hash (x64-screen) and the audio (x64-audio, --audio64) of the two
-    runs.  Soft while the x86-64 float-argument ABI findings (abi-scan --x64: math_perspectiveF, the snd_*
-    calls) are open: the game state matches, what is drawn / heard does not yet (run 869)"""
+    """{class: (step, detail)}: the screen hash (x64-screen, soft: SOFT above) and the audio (x64-audio, --audio64,
+    hard since run 870) of the two runs (run 869)"""
     out = {}
     x, y = scr_rows(os.path.join(d32, 'state.log')) or [], scr_rows(os.path.join(d64, 'state.log')) or []
     for u, v in zip(x, y):
@@ -551,7 +554,7 @@ def main():
     ap.add_argument('--keep', action='store_true', help='keep every run directory (default: failures only)')
     ap.add_argument('--build64', help='also run every job on this x86-64 build (no i386 loader) and require its '
                     'state.log and SRAM to equal the i386 run (plan 21.8)')
-    ap.add_argument('--audio64', action='store_true', help='with --build64: compare the two runs\' audio too (soft)')
+    ap.add_argument('--audio64', action='store_true', help='with --build64: compare the two runs\' audio too (hard)')
     ap.add_argument('--no-screen', action='store_true', help='no PORT_TRACE_SCREEN (scr=, the stuck-screen check)')
     ap.add_argument('--gate64', action='store_true', help='with --build64: only the GATE64_SEEDS gate seeds, both builds')
     ap.add_argument('--gate', action='store_true', help='fixed seeds + every port/host/repro script')

@@ -33,7 +33,7 @@
 #include "uso_call.h"
 
 extern void gl2FB74_snd();                  /* USO-relocated submit (jal 0) */
-extern int gl_func_00000000_f(int, float);  /* (int, float) blank alias */
+extern int gl_func_00000000_f(int, PORT64_BITS(float));  /* (int, float) blank alias; the callee takes the bits (plan 21.10) */
 extern int gl_func_00042428();              /* pinned 0x42428, case 50 */
 void gl_ref_00044B70(int a0);               /* baked tail call (snd_SetPlayer0Channel0IO_30504) */
 void gl_ref_000423A4(unsigned char a0);     /* baked call (snd_ScheduleSeqDefault), case 512 */

@@ -1264,24 +1264,27 @@ void CourseGadget_setPos(int *a0, int a1, int a2) {
 }
 
 /* 5-insn 2-float setter (mtc1 in body — caller passes int in $a1/$a2). */
-void CourseGadget_setFloat2_0000254C(int *a0, float a1, float a2) {
-    COURSEG(a0)->pct[0] = a1;
-    COURSEG(a0)->pct[1] = a2;
+/* PORT64_BITS (plan 21.10): x86-64 reads these from the integer registers, where the O32 callers
+ * (K&R CALLs and int tokens with `*(int *)&f`) put the bits; the float-passing tokens are PORT64_BITS too */
+void CourseGadget_setFloat2_0000254C(int *a0, PORT64_BITS(float) a1, PORT64_BITS(float) a2) {
+    COURSEG(a0)->pct[0] = PORT64_BV(a1);
+    COURSEG(a0)->pct[1] = PORT64_BV(a2);
 }
 
 /* 8-insn 3-float setter (3rd float via stack round-trip per K&R ABI). */
-void CourseGadget_setVec3_00002560(int *a0, float a1, float a2, float a3) {
-    COURSEG(a0)->originX = a1;
-    COURSEG(a0)->originZ = a2;
-    COURSEG(a0)->extent = a3;
+void CourseGadget_setVec3_00002560(int *a0, PORT64_BITS(float) a1, PORT64_BITS(float) a2, PORT64_BITS(float) a3) {
+    COURSEG(a0)->originX = PORT64_BV(a1);
+    COURSEG(a0)->originZ = PORT64_BV(a2);
+    COURSEG(a0)->extent = PORT64_BV(a3);
 }
 
 /* 10-insn 4-float setter (3rd+4th via stack round-trip; 4th from caller sp+0x10). */
-void CourseGadget_setVec4_00002580(int *a0, float a1, float a2, float a3, float a4) {
-    COURSEG(a0)->marker[0][0] = a1;
-    COURSEG(a0)->marker[0][1] = a2;
-    COURSEG(a0)->marker[1][0] = a3;
-    COURSEG(a0)->marker[1][1] = a4;
+void CourseGadget_setVec4_00002580(int *a0, PORT64_BITS(float) a1, PORT64_BITS(float) a2, PORT64_BITS(float) a3,
+                                   PORT64_BITS(float) a4) {
+    COURSEG(a0)->marker[0][0] = PORT64_BV(a1);
+    COURSEG(a0)->marker[0][1] = PORT64_BV(a2);
+    COURSEG(a0)->marker[1][0] = PORT64_BV(a3);
+    COURSEG(a0)->marker[1][1] = PORT64_BV(a4);
 }
 
 /* CourseGadget_setCourse: mode -> slot-value setter (0x298, 166 words) -- EXACT

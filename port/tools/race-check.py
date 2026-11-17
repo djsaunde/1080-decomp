@@ -14,6 +14,9 @@ Two tenshoe runs, each from a fresh directory (no SRAM):
           SRAM (more writes than the boot's).
   ghost   a new process on that 1080.sram (the ghost script: Time Attack, Crystal Lake, idle pad):
           the ghost rider r1 must match the race's r0 bit for bit through the goal.
+With --gfx-steps / --audio (the build64 gate step, plan 21.10) the race run also dumps those steps' gfx
+tasks (PORT_GFX_DUMP, race/gfx: the race HUD) and writes its audio (--audio-out race/audio.wav), for a
+comparison of two builds' runs (i386 against x86-64).
 One summary line per check; exit status = number of failed checks.  The input script is tied to
 the exact race physics: a physics-affecting change legitimately breaks it, and the failure text
 says how to regenerate it (port/tools/steer-search.py).
@@ -40,14 +43,19 @@ def load(path):
     return out
 
 
-def run(build, rom, d, script, frames, sram=None):
+def run(build, rom, d, script, frames, sram=None, gfx_steps=None, audio=False):
     os.makedirs(d, exist_ok=True)
     args = ['timeout', '300', RUN32, os.path.join(build, 'tenshoe'), '--rom', rom, '--input', script,
             '--frames', str(frames), '--trace', os.path.join(d, 'state.log')]
     if sram:
         args += ['--sram', sram]
+    if audio:
+        args += ['--audio-out', os.path.join(d, 'audio.wav')]
+    env = dict(os.environ)
+    if gfx_steps:
+        env.update(PORT_GFX_DUMP=os.path.join(d, 'gfx'), PORT_GFX_DUMP_STEPS=gfx_steps)
     with open(os.path.join(d, 'run.log'), 'w') as fh:
-        rc = subprocess.run(args, cwd=d, stdout=fh, stderr=subprocess.STDOUT).returncode
+        rc = subprocess.run(args, cwd=d, stdout=fh, stderr=subprocess.STDOUT, env=env).returncode
     txt = open(os.path.join(d, 'run.log'), errors='replace').read()
     m = re.search(r'(\d+) SRAM writes', txt)
     return rc, load(os.path.join(d, 'state.log')), int(m.group(1)) if m else None
@@ -73,6 +81,8 @@ def main():
     ap.add_argument('-r', '--rom', default=os.path.join(GAME, 'baserom.z64'))
     ap.add_argument('-s', '--script', default=os.path.join(GAME, 'port/host/race_crystal_lake.input'))
     ap.add_argument('-g', '--ghost-script', default=os.path.join(GAME, 'port/host/race_crystal_lake_ghost.input'))
+    ap.add_argument('--gfx-steps', help='PORT_GFX_DUMP these steps of the race run (race/gfx)')
+    ap.add_argument('--audio', action='store_true', help='the race run writes race/audio.wav (--audio-out)')
     a = ap.parse_args()
     text = open(a.script).read()
     want_goal = int(re.search(r'^# GOAL (\d+)', text, re.M).group(1))
@@ -88,7 +98,7 @@ def main():
             fails.append(name)
 
     rd = os.path.join(a.outdir, 'race')
-    rc, st, writes = run(a.build, a.rom, rd, os.path.abspath(a.script), end)
+    rc, st, writes = run(a.build, a.rom, rd, os.path.abspath(a.script), end, gfx_steps=a.gfx_steps, audio=a.audio)
     start = first(st, lambda v: v[0] == 5 and v[1] == 1)
     goal = first(st, lambda v: v[4] is not None and v[4] >= 100.0, start or 0)
     retire = first(st, lambda v: v[0] == 5 and v[1] == 2, start or 0)

@@ -9,6 +9,7 @@ typedef signed int s32;
 typedef signed long long s64;
 typedef float f32;
 typedef double f64;
+#include "../../include/uso_call.h" /* PORT64_BITS */
 typedef struct GlInputFrame675A4 {
     s8 field_00;
     s8 field_01;
@@ -465,7 +466,7 @@ extern int h2hproc_1360_import_163();
 extern void h2hproc_1360_import_164();
 extern void h2hproc_1360_import_165();
 void h2h_WinsDisplay_display_00001360(int *self);
-extern void gl_func_15f0(void *, int, int, int, float);
+extern void gl_func_15f0(void *, int, int, int, PORT64_BITS(float)); /* = CourseGadget_setVec4 (bits, plan 21.10) */
 void h2h_DataManager_init(int *a0, int *a1, int a2);
 extern void h2hproc_17A0_import_30();
 extern void h2hproc_17A0_import_167();

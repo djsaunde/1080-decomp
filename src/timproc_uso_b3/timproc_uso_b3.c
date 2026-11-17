@@ -1141,7 +1141,7 @@ void TrkDataManager_loadData(char *a0) {
  * materialization at the state-1 draw call (0u probe inert). Same
  * allocator/scheduler-internal class as the Two-s-reg kit II residuals. */
 extern int gl_proto_1c68(void *, int, int, float, float);
-extern int gl_proto_1c94(int, int, float);
+extern int gl_proto_1c94(int, int, PORT64_BITS(float)); /* = CourseGadget_setFloat2 (bits, plan 21.10) */
 void TrkDataManager_update_00001C68(char *arg0) {
     int *fl;
     int v0;
@@ -1209,7 +1209,11 @@ void TrkDataManager_update_00001C68(char *arg0) {
         if (v0b == 1) {
             CALL(CountDownGadget_setTime)(DATAMGR(arg0)->countDown, DATAMGR(arg0)->score, 1);
             gl_proto_1c94(DATAMGR(arg0)->course, *(int *)&DATAMGR(arg0)->entries->pct, 0.0f);
+#ifdef PORT64 /* gl_proto_1c68 is also PointsPopup_setPosScale's (floats): CourseGadget_setVec4 reads the bits (plan 21.10) */
+            PORT64_CALLP(void (void *, int, int, int, int), CourseGadget_setVec4_00002580)(DATAMGR(arg0)->course, *(int *)&DATAMGR(arg0)->entries->posX, *(int *)&DATAMGR(arg0)->entries->progress, 0, 0);
+#else
             XCALL(gl_proto_1c68, CourseGadget_setVec4_00002580)(DATAMGR(arg0)->course, *(int *)&DATAMGR(arg0)->entries->posX, *(int *)&DATAMGR(arg0)->entries->progress, 0.0f, 0.0f);
+#endif
         }
         if (DATAMGR(arg0)->entries->pendingPoints != 0) {
             XCALL(gl_proto_1c68, PointsPopup_setPosScale)(DATAMGR(arg0)->points94, 0xA0, 0x46, 1.0f, 1.0f);

@@ -42,8 +42,10 @@
 #   build64    (plan 21.7 / 21.8, M6) the x86-64 build: configure + build, test_*, then the smoke, the race and
 #              the modes scripts 64-bit: every state.log equal to the i386 run's, the 64-bit race / modes
 #              checks pass; the smoke's gfx at PORT_GATE_GFX_STEPS (default 300,1000,1500,1900) equal to the
-#              i386 dump, address operands masked (port/tools/dlump-cmp.py, plan 21.9); abi-scan --x64
-#              count printed (PORT_GATE_BUILD64=0 skips it)
+#              i386 dump, address operands masked (port/tools/dlump-cmp.py, plan 21.9); the race run's gfx at
+#              PORT_GATE_RACE_GFX_STEPS (the race HUD: default 1800,3000,4700,7000) and its audio (--audio-out
+#              PCM) equal to the i386 race's (plan 21.10); soak64 with the screen / audio classes hard; abi-scan
+#              --x64 count printed (PORT_GATE_BUILD64=0 skips it)
 #   saves      test_backup + 4 short boots: the SRAM file is the N64 image (port/include/port_backup.h,
 #              plan 20): blank-SRAM save = the ROM defaults' big-endian image, reloads unchanged,
 #              a synthetic .sra loads, damaged primaries are restored from the mirrors
@@ -61,6 +63,9 @@ WT="$(cd "${LAND_WT:-$SELF_DIR/..}" && pwd)" || exit 99
 LOG="${PORT_GATE_TMP:-${TMPDIR:-/tmp}/port-gate-$(basename "$WT")}"
 FRAMES="${PORT_GATE_FRAMES:-2000}"; JOBS="${PORT_GATE_JOBS:-8}"
 GFX_STEPS="${PORT_GATE_GFX_STEPS:-300,1000,1500,1900}" # the smoke steps whose gfx build64 compares (plan 21.9)
+# the race script's steps whose gfx build64 compares (plan 21.10): racing with the HUD (course gadget, time),
+# the goal, the View Replay
+RACE_GFX_STEPS="${PORT_GATE_RACE_GFX_STEPS:-1800,3000,4700,7000}"
 REGEN=0; UPDATE=0
 for a in "$@"; do case "$a" in
   --regen) REGEN=1 ;; --update-baselines) UPDATE=1 ;;
@@ -277,7 +282,7 @@ fi
 # ---- race (plan 20.3): the scripted Crystal Lake run to the goal, its replay and its ghost
 start; if have tenshoe; then
   RC="$(mktemp -d "$LOG/race.XXXXXX")"  # a fresh dir per run (no rm of a variable path)
-  python3 port/tools/race-check.py -b "$B" -r "$ROM" -o "$RC" >"$RC/check.log" 2>&1; rc=$?
+  python3 port/tools/race-check.py -b "$B" -r "$ROM" -o "$RC" --gfx-steps "$RACE_GFX_STEPS" --audio >"$RC/check.log" 2>&1; rc=$?
   txt=$(grep -E '^  (goal|replay|ghost) ' "$RC/check.log" | awk '{$1=$1; print}' | paste -sd ';' | cut -c1-230)
   if [ $rc = 0 ]; then line race PASS "$txt"
   else line race FAIL "${txt:-$(tail -1 "$RC/check.log")}"; grep -vE '^  (goal|replay|ghost) ' "$RC/check.log" | sed 's/^/           /'; fi
@@ -330,13 +335,39 @@ if [ "${PORT_GATE_BUILD64:-1}" = 1 ]; then
     # the race and the modes scripts, 64-bit (RUN32=env: no i386 loader), next to the i386 runs' dirs
     R64=""; M64=""
     if [ -n "${RC:-}" ]; then R64="$(mktemp -d "$LOG/race64.XXXXXX")"
-      RUN32=env python3 port/tools/race-check.py -b "$B64" -r "$ROM" -o "$R64" >"$R64/check.log" 2>&1 || ok=0; fi
+      RUN32=env python3 port/tools/race-check.py -b "$B64" -r "$ROM" -o "$R64" --gfx-steps "$RACE_GFX_STEPS" --audio \
+        >"$R64/check.log" 2>&1 || ok=0; fi
+    # the race's HUD gfx and its audio PCM, i386 against x86-64 (plan 21.10: the float-ABI findings drew / played
+    # differently while every state.log matched)
+    rgfx="race gfx: not run"; raud="race audio: not run"
+    if [ -n "$R64" ] && { [ ! -d "$RC/race/gfx" ] || [ ! -f "$R64/race/audio.wav" ]; }; then
+      ok=0; rgfx="race gfx: missing"; raud="race audio: missing"
+    elif [ -n "$R64" ]; then
+      rgfx=$(python3 port/tools/dlump-cmp.py "$RC/race/gfx" "$R64/race/gfx" 2>&1) || ok=0
+      rgfx="race gfx: $(printf '%s' "$rgfx" | tail -1 | cut -c1-120)"
+      # identical through the goal (+60 steps) is required; a later difference (View Replay, run 870: from about
+      # step 6340, not in the audio command stream) is printed as INFO (plan 21.10 Left)
+      raud=$(python3 - "$RC/race/audio.wav" "$R64/race/audio.wav" port/host/race_crystal_lake.input <<'PY'
+import hashlib, re, sys
+a, b = open(sys.argv[1], 'rb').read(), open(sys.argv[2], 'rb').read()
+t = open(sys.argv[3]).read()
+goal, end = (int(re.search(r'^# %s (\d+)' % k, t, re.M).group(1)) for k in ('GOAL', 'END'))
+if a == b:
+    print('race audio: identical (%s, %d s)' % (hashlib.md5(a).hexdigest()[:8], (len(a) - 44) // 128000)); sys.exit(0)
+d = next((i for i in range(min(len(a), len(b))) if a[i] != b[i]), min(len(a), len(b)))
+step = int((d - 44) / max(1, len(a) - 44) * end)
+print('race audio: %s to about step %d (goal %d), then differ%s' % ('identical' if step > goal + 60 else 'DIFFER',
+      step, goal, ' (INFO: after the goal)' if step > goal + 60 else ''))
+sys.exit(0 if step > goal + 60 else 1)
+PY
+) || ok=0
+    fi
     if [ -n "${MC:-}" ]; then M64="$(mktemp -d "$LOG/modes64.XXXXXX")"
       RUN32=env python3 port/tools/modes-check.py -b "$B64" -r "$ROM" -o "$M64" >"$M64/check.log" 2>&1 || ok=0; fi
-    # two soak seeds (port/tools/soak.py GATE64_SEEDS, run 869) on both builds: no failure, and the state.logs
-    # and saves equal (scr=, the screen hash, and audio are soft until the x64 float-ABI findings are fixed)
+    # two soak seeds (port/tools/soak.py GATE64_SEEDS, run 869) on both builds: no failure, and the state.logs,
+    # saves and audio (--audio64, hard since run 870) equal (scr=, the screen hash, stays soft: plan 21.10)
     SK64="$(mktemp -d "$LOG/soak64.XXXXXX")"
-    python3 port/tools/soak.py -b "$B" --build64 "$B64" -r "$ROM" -o "$SK64" -j "$JOBS" --gate64 >"$SK64/soak.log" 2>&1 || ok=0
+    python3 port/tools/soak.py -b "$B" --build64 "$B64" -r "$ROM" -o "$SK64" -j "$JOBS" --gate64 --audio64 >"$SK64/soak.log" 2>&1 || ok=0
     sk64="soak64 $(head -1 "$SK64/soak.log" | sed -E 's/^soak: //; s/ x [0-9\/]+ steps.*; /: /')"
     sk64="$sk64$(grep -m1 -E '^  FAIL' "$SK64/soak.log" | awk '{print " (" $2 ")"}')"
     cmpr=$(python3 - "$LOG/smoke/state.log" "$S64/state.log" "${RC:-}" "$R64" "${MC:-}" "$M64" <<'PY'
@@ -366,7 +397,7 @@ PY
     abi=$(python3 port/tools/abi-scan.py --x64 "$B64/tenshoe" 2>/dev/null | cut -f1 | sed 's/X64P[0-9]*/X64P/' | sort | uniq -c | awk '{printf "%s %s ", $2, $1}')
     rr=$( [ -n "$R64" ] && { grep -qE ' FAIL ' "$R64/check.log" && echo "race64 FAIL" || echo "race64 ok"; } )
     mm=$( [ -n "$M64" ] && { grep -qE ' FAIL ' "$M64/check.log" && echo "modes64 FAIL" || echo "modes64 ok"; } )
-    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; $rr; $mm; $cmpr; gfx: $gfx; $sk64; abi-scan --x64 (INFO): ${abi:-0}"
+    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; $rr; $mm; $cmpr; gfx: $gfx; $rgfx; $raud; $sk64; abi-scan --x64 (INFO): ${abi:-0}"
   else ok=0; fi
   [ $ok = 1 ] && line build64 PASS "$why" || line build64 FAIL "$why"
 fi

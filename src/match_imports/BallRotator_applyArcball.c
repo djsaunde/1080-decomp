@@ -4,7 +4,12 @@
 #include "gdl/pad.h"
 void BallRotator_applyArcball(char *o, char *arg1) {
     extern Vec3 *gl_36224_direction(Vec3 *, char *, Vec3, Vec3, f32);
-#ifdef PORT /* math_arcballPoint returns its Vec3 by value: gcc's callee pops the hidden pointer (ret $4), so the
+#if defined(PORT64) /* the definition takes the two points as six floats: a Vec3 by value is not that on x86-64
+                     * (abi-scan X64P1 / X64P2, plan 21.10) */
+    extern Vec3 port_ballrot_arcball(char *, f32, f32, f32, f32, f32, f32, f32) __asm__("math_arcballPoint");
+#define gl_36224_direction(out, a, b, c, d) \
+    (*(out) = ({ Vec3 b_ = (b), c_ = (c); port_ballrot_arcball(a, b_.x, b_.y, b_.z, c_.x, c_.y, c_.z, d); }), (out))
+#elif defined(PORT) /* math_arcballPoint returns its Vec3 by value: gcc's callee pops the hidden pointer (ret $4), so the
              * out-pointer spelling drifts the stack 4 bytes per call (plan 18.17) */
     extern Vec3 port_ballrot_arcball(char *, Vec3, Vec3, f32) __asm__("math_arcballPoint");
 #define gl_36224_direction(out, a, b, c, d) (*(out) = port_ballrot_arcball(a, b, c, d), (out))

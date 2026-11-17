@@ -65,7 +65,7 @@ extern "C" void snd_TickChannel8Fade(void) {
         }
     }
     f = gSndCueQueues_307A8_p.f10;
-    XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x01000800, f);
+    XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x01000800, PORT_IBITS(f));
 }
 #ifdef PORT
 #undef gSndCueQueues_307A8_d

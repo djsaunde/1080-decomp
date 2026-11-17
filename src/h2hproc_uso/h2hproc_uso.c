@@ -1373,7 +1373,7 @@ void h2h_WinsDisplay_display_00001360(int *self) {
 INCLUDE_ASM("asm/nonmatchings/h2hproc_uso/h2hproc_uso", h2h_WinsDisplay_display_00001360);
 #endif
 
-extern void gl_func_15f0(void *, int, int, int, float);
+extern void gl_func_15f0(void *, int, int, int, PORT64_BITS(float)); /* = CourseGadget_setVec4 (bits, plan 21.10) */
 void h2h_DataManager_init(int *a0, int *a1, int a2) {
     char *base = &D_00000000;
     H2HDataManager *self = (H2HDataManager *)a0;

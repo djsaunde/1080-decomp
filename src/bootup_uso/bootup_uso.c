@@ -144,7 +144,11 @@ void snd_sendEvent(KR_PARAM0(int a0) KR_PARAM(int a1)) {
 void snd_updateChannel10Emitter(int a0, int a1, int a2) {
     int local1, local2;
     FCALL(snd_calcEmitterDistPan_000003F8)(a1, &local1, &local2, a2);
+#ifdef PORT64 /* the definition takes the distance as a float (abi-scan X64KR, plan 21.10) */
+    PORT64_CALLP(void (int, float, signed char), snd_UpdateChannel10Emitter)(a0, PORT64_F(local1), (signed char)local2);
+#else
     FCALL(snd_UpdateChannel10Emitter)(a0, local1, (signed char)local2);
+#endif
 }
 
 extern char sStr_Poop_Added_sound_heap_6550;

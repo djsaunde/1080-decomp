@@ -9,6 +9,7 @@ typedef signed int s32;
 typedef signed long long s64;
 typedef float f32;
 typedef double f64;
+#include "../../include/uso_call.h" /* PORT64_BITS */
 typedef struct GlInputFrame675A4 {
     s8 field_00;
     s8 field_01;
@@ -1422,7 +1423,7 @@ extern s32 D_raceD_E354;
 void snd_SoundObjUpdate(char *arg0, s32 arg1);
 s32 snd_FindNearestF32_2F1B8(f32 key, f32 *arr, s32 n);
 extern void gl_2F288_emit_byte(s32, s32);
-extern void gl_2F288_emit_float(s32, f32);
+extern void gl_2F288_emit_float(s32, PORT64_BITS(f32)); /* = AudioThread_QueueCmdF32, which takes the bits (plan 21.10) */
 typedef struct { u8 pad[0x1730]; f32 field_1730; } GL2F288Step;
 extern GL2F288Step gl_2F288_pool1730;
 extern f32 gl_2F288_pool1734[];
@@ -1447,7 +1448,7 @@ extern int gl_func_00000000();
 void snd_soundObjChannelsOff(int mode);
 extern void gl_2F9D4_byte(s32, s32);
 extern void gl_2F9D4_word(s32, s32);
-extern void gl_2F9D4_float(s32, f32);
+extern void gl_2F9D4_float(s32, PORT64_BITS(f32)); /* = AudioThread_QueueCmdF32 (bits) */
 void snd_SetPlayer0ChannelParams_2F9D4(s32 selector, s32 byte_value, s32 level, s32 raw_word,
                      s32 byte_10, s32 byte_14);
 extern int gl_func_00000000();

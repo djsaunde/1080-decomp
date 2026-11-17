@@ -9,6 +9,7 @@ typedef signed int s32;
 typedef signed long long s64;
 typedef float f32;
 typedef double f64;
+#include "../../include/uso_call.h" /* PORT64_BITS */
 typedef struct GlInputFrame675A4 {
     s8 field_00;
     s8 field_01;
@@ -517,7 +518,7 @@ extern void import_000B139C();
 extern int import_000B7058();
 extern void import_000B14CC();
 extern void mgrproc_uso_func_016BB8();
-extern void mgrproc_uso_func_016BEC(int, int, int, int, float);
+extern void mgrproc_uso_func_016BEC(int, int, int, int, PORT64_BITS(float)); /* = CourseGadget_setVec4 (bits, plan 21.10) */
 extern void mgrproc_uso_func_04CD94();
 void mgr_DataManager_update(char *arg0);
 extern char D_mgr3240_a;
