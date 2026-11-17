@@ -45,11 +45,11 @@ struct SnowParticle {
     /* 0x18 */ SnowV3 accel;   /* snowfall sway */
     /* 0x24 */ float gravity;
     /* 0x28 */ float minVelY;
-    /* 0x2C */ float unk2C;
+    /* 0x2C */ float angle;     /* sys_randf() * 360 at snowfall spawn */
     /* 0x30 */ float life;
     /* 0x34 */ float decay;     /* life lost per update */
     /* 0x38 */ float size;
-    /* 0x3C */ float unk3C;
+    /* 0x3C */ float aspect;    /* sprite height / width */
     /* 0x40 */ float sizeVel;
     /* 0x44 */ float fadeAt;    /* below this life the size starts changing */
     /* 0x48 */ unsigned char col[4];

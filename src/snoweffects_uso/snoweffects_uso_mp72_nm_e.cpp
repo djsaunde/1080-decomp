@@ -76,11 +76,11 @@ struct SnowCamE {
 struct SPart {
     SV pos; SV vel; SV acc;
     /* 0x24 */ float gravity;
-    float minVelY, unk2C;
+    float minVelY, angle;
     /* 0x30 */ float life;
     /* 0x34 */ float decay;
     /* 0x38 */ float size;
-    /* 0x3C */ float unk3C;
+    /* 0x3C */ float aspect;
     /* 0x40 */ float sizeVel;
     /* 0x44 */ float fadeAt;
     /* 0x48 */ C4 col;
@@ -89,10 +89,10 @@ struct SPart {
     /* 0x54 */ float alphaVel;
     void setLife(float l, float d) { life = l; decay = d; }
     void setAlpha(float a, float v) { alpha = a; alphaVel = v; }
-    /* 0x718C (run 732): size / fadeAt / unk3C, life / decay and alpha / alphaVel each through an inline, so the
+    /* 0x718C (run 732): size / fadeAt / aspect, life / decay and alpha / alphaVel each through an inline, so the
      * loaded fields go through edg's pooled float words and take the target's uopt colours (f16 / f16 / f12). The
      * unused middle parameter of setAlpha3 shifts alphaVel to the third pooled word (f12, as in the target). */
-    void setSz3(float s, float u, float f) { size = s; fadeAt = f; unk3C = u; }
+    void setSz3(float s, float u, float f) { size = s; fadeAt = f; aspect = u; }
     void setAlpha3(float a, float unused, float v) { alpha = a; alphaVel = v; }
 };
 extern "C" int gl_func_00000000_snow_norm(SV *);  /* math_vec3Normalize (int return): blank jal */
@@ -191,7 +191,7 @@ extern "C" void BoardTrail_spawnA_000064B8(SnowEm *t) {
                         p->pos.set(x, y + t->f178, z);
                         p->vel.set(n.x, n.y, n.z);
                         p->size = 1.0f;
-                        p->unk3C = 0.5f;
+                        p->aspect = 0.5f;
                         p->fadeAt = 256.0f;
                         p->col = t->cam->col;
                         if (t->burst != 0) {
@@ -325,7 +325,7 @@ extern "C" void BoardTrail_spawnB_00006B28(SnowEmB *t) {
                     p->vel.set(n.x, n.y, n.z);
                     p->fadeAt = 256.0f;
                     p->size = 1.0f;
-                    p->unk3C = 1.0f;
+                    p->aspect = 1.0f;
                     p->col.c[0] = col.c[0];
                     p->col.c[1] = col.c[1];
                     p->col.c[2] = col.c[2];

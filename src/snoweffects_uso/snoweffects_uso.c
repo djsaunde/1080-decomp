@@ -28,20 +28,20 @@ typedef struct SnowRGBA {
 typedef struct SnowParticle {
     /* 0x00 */ Vec3 pos;
     /* 0x0C */ Vec3 vel;
-    /* 0x18 */ Vec3 unk18;
-    /* 0x24 */ f32 unk24;
-    /* 0x28 */ f32 unk28;
-    /* 0x2C */ f32 unk2C;
-    /* 0x30 */ f32 unk30;
-    /* 0x34 */ f32 unk34;
-    /* 0x38 */ f32 unk38;
-    /* 0x3C */ f32 unk3C;
-    /* 0x40 */ f32 unk40;
-    /* 0x44 */ f32 unk44;
+    /* 0x18 */ Vec3 accel;           /* snowfall sway, added to vel (SnowFall_moveFlakes) */
+    /* 0x24 */ f32 gravity;          /* added to vel.y per update */
+    /* 0x28 */ f32 minVelY;          /* vel.y clamp (SnowFall_moveFlakes) */
+    /* 0x2C */ f32 angle;            /* sys_randf() * 360 at snowfall spawn; no reader */
+    /* 0x30 */ f32 life;             /* <= 0 kills (SnowPool_update); oldest = least life */
+    /* 0x34 */ f32 decay;            /* life lost per update */
+    /* 0x38 */ f32 size;             /* sprite width (SnowPool_display) */
+    /* 0x3C */ f32 aspect;           /* sprite height / width (SnowPool_display) */
+    /* 0x40 */ f32 sizeVel;          /* size change per update once life < fadeAt */
+    /* 0x44 */ f32 fadeAt;
     /* 0x48 */ SnowRGBA col;
-    /* 0x4C */ s32 unk4C;
-    /* 0x50 */ f32 unk50;
-    /* 0x54 */ f32 unk54;
+    /* 0x4C */ s32 unk4C;            /* only copied (SnowPool_remove) */
+    /* 0x50 */ f32 alpha;            /* 0..255 primitive alpha; < 0 kills */
+    /* 0x54 */ f32 alphaVel;         /* alpha lost per update */
 } SnowParticle;
 
 /* a Node-derived particle pool: items[max] from mem_new, count in use */
@@ -302,8 +302,8 @@ SnowParticle *SnowPool_oldest_00000680(SnowPool *this) {
     SnowParticle *found = 0;
     int i;
     for (i = 0; i < this->count; i++, p++) {
-        if (p->unk30 < best) {
-            best = p->unk30;
+        if (p->life < best) {
+            best = p->life;
             found = p;
         }
     }
@@ -335,28 +335,28 @@ void SnowPool_remove_00000718(SnowPool *this, SnowParticle *p) {
         p->vel.x = t.x;
         p->vel.y = t.y;
         p->vel.z = t.z;
-        t = this->items[this->count].unk18;
-        p->unk18.x = t.x;
-        p->unk18.y = t.y;
-        p->unk18.z = t.z;
-        p->unk24 = this->items[this->count].unk24;
-        p->unk28 = this->items[this->count].unk28;
-        p->unk2C = this->items[this->count].unk2C;
-        p->unk30 = this->items[this->count].unk30;
-        p->unk34 = this->items[this->count].unk34;
-        p->unk38 = this->items[this->count].unk38;
-        p->unk3C = this->items[this->count].unk3C;
-        p->unk40 = this->items[this->count].unk40;
-        p->unk44 = this->items[this->count].unk44;
+        t = this->items[this->count].accel;
+        p->accel.x = t.x;
+        p->accel.y = t.y;
+        p->accel.z = t.z;
+        p->gravity = this->items[this->count].gravity;
+        p->minVelY = this->items[this->count].minVelY;
+        p->angle = this->items[this->count].angle;
+        p->life = this->items[this->count].life;
+        p->decay = this->items[this->count].decay;
+        p->size = this->items[this->count].size;
+        p->aspect = this->items[this->count].aspect;
+        p->sizeVel = this->items[this->count].sizeVel;
+        p->fadeAt = this->items[this->count].fadeAt;
         p->col = this->items[this->count].col;
         p->unk4C = this->items[this->count].unk4C;
-        p->unk50 = this->items[this->count].unk50;
-        p->unk54 = this->items[this->count].unk54;
+        p->alpha = this->items[this->count].alpha;
+        p->alphaVel = this->items[this->count].alphaVel;
     }
 }
 
-/* SnowPool spawn with a random size / fade (sys_randf). The first sys_randf, the unk38 store and the
- * unk3C store share one source line: as1 schedules by source line, and only with these three on one line
+/* SnowPool spawn with a random size / fade (sys_randf). The first sys_randf, the size store and the
+ * aspect store share one source line: as1 schedules by source line, and only with these three on one line
  * does the p reload land after the r * 2 mul.s, as in the target. */
 SnowParticle *SnowPool_spawnRandom_0000097C(SnowPool *this, Vec3 *pos, Vec3 *vel) {
     SnowParticle *p = (SnowParticle *)CALL(SnowPool_alloc_000006D0)(this);
@@ -370,18 +370,18 @@ SnowParticle *SnowPool_spawnRandom_0000097C(SnowPool *this, Vec3 *pos, Vec3 *vel
         p->vel.z = z;
         p->vel.y = y;
         p->vel.x = x;
-        p->unk24 = *(f32 *)&D_00000000;
-        r = XCALL(gl_func_00000000_snow_randf, sys_randf)() /* sys_randf */; p->unk38 = (0, 10.0f) + r * 2; p->unk3C = 1.0f;
-        p->unk44 = 0.0f;
-        p->unk30 = 256.0f;
-        p->unk34 = 16.0f;
+        p->gravity = *(f32 *)&D_00000000;
+        r = XCALL(gl_func_00000000_snow_randf, sys_randf)() /* sys_randf */; p->size = (0, 10.0f) + r * 2; p->aspect = 1.0f;
+        p->fadeAt = 0.0f;
+        p->life = 256.0f;
+        p->decay = 16.0f;
         r = XCALL(gl_func_00000000_snow_randf, sys_randf)() /* sys_randf */;
         p->col.r = 251;
         p->col.g = 251;
         p->col.b = 251;
         p->col.a = 0;
-        p->unk50 = (0, 64.0f) + r * 64.0f;
-        p->unk54 = 0.0f;
+        p->alpha = (0, 64.0f) + r * 64.0f;
+        p->alphaVel = 0.0f;
     }
     return p;
 }
@@ -400,18 +400,18 @@ SnowParticle *SnowPool_spawn_00000A7C(SnowPool *this, Vec3 *pos) {
         p->pos.x = x;
         p->pos.y = y;
         p->pos.z = z;
-        p->unk34 = 255.0f;
-        p->unk50 = 255.0f;
+        p->decay = 255.0f;
+        p->alpha = 255.0f;
         p->vel.x = 0.0f;
         p->vel.y = 0.0f;
         p->vel.z = 0.0f;
-        p->unk24 = 0.0f;
-        p->unk40 = 0.0f;
-        p->unk44 = 0.0f;
-        p->unk54 = 0.0f;
-        p->unk38 = 2.0f;
-        p->unk3C = 1.0f;
-        p->unk30 = 256.0f;
+        p->gravity = 0.0f;
+        p->sizeVel = 0.0f;
+        p->fadeAt = 0.0f;
+        p->alphaVel = 0.0f;
+        p->size = 2.0f;
+        p->aspect = 1.0f;
+        p->life = 256.0f;
     }
     return p;
 }

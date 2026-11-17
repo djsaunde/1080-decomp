@@ -135,9 +135,9 @@ extern "C" void SnowFall_fill_000039C4(SnowFall *t) {
             p->size = 1.0f;
             p->sizeVel = 0.0f;
             p->fadeAt = 0.0f;
-            p->unk3C = 1.0f;
+            p->aspect = 1.0f;
             p->minVelY = -1.0f;
-            p->unk2C = XCALL(gl_func_00000000_snow_randf, sys_randf)() * 360.0f;
+            p->angle = XCALL(gl_func_00000000_snow_randf, sys_randf)() * 360.0f;
             p->vel.x = (XCALL(gl_func_00000000_snow_randf, sys_randf)() - 0.5f) * 0.0f;
             p->vel.y = -(XCALL(gl_func_00000000_snow_randf, sys_randf)() * 2.5f) - 1.0f;
             p->vel.z = (XCALL(gl_func_00000000_snow_randf, sys_randf)() - 0.5f) * 0.0f;
