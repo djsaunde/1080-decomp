@@ -3,10 +3,12 @@
 #   ./setup-lus.sh                       fetch LUS + prism into tools/lus, apply the patches
 #   ../replay/setup-gl-dev.sh            the EGL / GL headers (no sudo)
 #   make                                 build $(OUT)/f3dreplay
+#   ./setup-x11-dev.sh; make presenter   the live window (plan 19.11; port/tools/play.sh)
 # Only three LUS sources are compiled (interpreter, gfx_opengl, GfxDebugger) plus
 # Texture.cpp, prism and our Ship shim (shim/README); no SDL, ImGui or spdlog.
 REPO ?= $(abspath ../../../../..)
 GL_DEV ?= $(REPO)/tools/gl-dev/root
+X11_DEV ?= $(REPO)/tools/x11-dev/root
 LUS_TOOLS ?= $(REPO)/tools/lus
 LUS := $(LUS_TOOLS)/libultraship
 PRISM := $(LUS_TOOLS)/prism
@@ -40,6 +42,12 @@ $(OUT)/f3dreplay: $(OBJ)/f3dreplay.o $(OBJS)
 # the in-process renderer (port_fast3d.cpp, plan 19.7) driven by test_inproc on the 64-bit host
 $(OUT)/test_inproc: $(OBJ)/test_inproc.o $(OBJ)/port_fast3d.o $(OBJS)
 	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 -lm
+
+# the live presenter (plan 19.11): X11 + EGL window, the game's frames over shared memory
+$(OUT)/presenter: $(OBJ)/presenter.o $(OBJS)
+	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 $(LIBDIR)/libX11.so.6 -lm
+$(OBJ)/presenter.o: presenter.cpp ../dlump.h ../live_shm.h ../replay/egl_png.h $(SHIM_H) | $(OBJ)
+	$(XX) -I$(X11_DEV)/usr/include -Wall -Wextra -Wno-unused-parameter -c $< -o $@
 
 $(OBJ)/lus/%.o: $(LUS)/src/fast/%.cpp $(SHIM_H) | $(OBJ)/lus
 	$(XX) -w -c $< -o $@
