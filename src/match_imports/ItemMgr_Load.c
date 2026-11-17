@@ -18,11 +18,8 @@ void ItemMgr_Load(GLLoadObject *arg0) {
     for (;;) {
     case 0:
         gl_E39C_read(gl_E39C_stream, &key, 4);
-#ifdef PORT
-        /* the type tags compare as big-endian words: the ItemTypes' tags come from bootup Data
-         * words the blob typing swaps (0x7E50.., plan 18.11), so the file's tag is swapped too */
-        PORT_BE_SWAP32S(&key, 4);
-#endif
+        /* PORT: the tag stays as read (cartridge byte order): the ItemTypes' tags are bootup Data
+         * words port-gen-blob-types keeps unswapped (parm tags, run 846), like Parms_load's */
         if (key.field_00 == 0) goto done;
         snw_3E39C_count_origin(&count);
         *(GLLoadKey *)&copied_key = key;
