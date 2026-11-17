@@ -67,7 +67,7 @@ typedef struct SnowOwner {
 /* the board trail (donor class SnowEffect, name "board trail"; a SnowRing subclass) whose
  * BoardTrail_createPowder / _createSpec make the two particle children at +0x98 / +0xA0 (only the
  * fields its plain-C methods touch) */
-typedef struct SnowEffect {
+typedef struct BoardTrail {
     /* 0x000 */ char unk000[0x2C];
     /* 0x02C */ SnowOwner *cam;
     /* 0x030 */ char unk030[0x50 - 0x30];
@@ -126,18 +126,18 @@ typedef struct SnowEffect {
     /* 0x220 */ f32 specTintMix;     /* lerp from the owner colour (+0xA30) to specTint */
     /* 0x224 */ Vec3 specTint;       /* r, g, b in 0..1 (enableC: white) */
     /* 0x230 */ f32 unk230;          /* enableC clears it; spawnC does not read it */
-} SnowEffect;
+} BoardTrail;
 
 /* the 0x50-byte link node (ctor 0x9E88, update 0x9F44): couples a source object to an SNode-subclass
  * target it creates (0x9328) */
-typedef struct SnowLink {
+typedef struct MapLighter {
     /* 0x00 */ Node node;
     /* 0x2C */ s32 unk2C;
     /* 0x30 */ void *src;
     /* 0x34 */ s32 unk34;
     /* 0x38 */ Node *tgt;
     /* 0x3C */ char unk3C[0x50 - 0x3C];
-} SnowLink;
+} MapLighter;
 
 /* one 0x2C-byte emitter point (3EE4 allocates count of them at +0x90 and clears each with 0x3EB0) */
 typedef struct SnowPoint {
@@ -850,7 +850,7 @@ void BoardTrail_createPowder_00006144(char *this) {
 void BoardTrail_createSpec_00006248(char *this) {
 }
 
-void BoardTrail_spawn_0000634C(SnowEffect *this) {
+void BoardTrail_spawn_0000634C(BoardTrail *this) {
     if (this->flags & 1) {
         CALL(BoardTrail_spawnA_000064B8)(this);
     }
@@ -863,7 +863,7 @@ void BoardTrail_spawn_0000634C(SnowEffect *this) {
 }
 
 /* the trail narrows with the owner's sideways lean (state 98: full width) */
-void BoardTrail_calcWidth_000063B4(SnowEffect *this) {
+void BoardTrail_calcWidth_000063B4(BoardTrail *this) {
     SnowOwner *v = this->cam;
     float x, a;
     if (v->state != 98) {
@@ -881,7 +881,7 @@ extern f32 snow_ro_2C, snow_ro_30, snow_ro_34, snow_ro_38, snow_ro_3C, snow_ro_4
 extern f32 snow_ro_44, snow_ro_48, snow_ro_4C;
 
 /* default parameters of the 0x6144 child (flag bit 0 at +0x54), the 0x70C0 sibling */
-void BoardTrail_enableA_00006420(SnowEffect *this) {
+void BoardTrail_enableA_00006420(BoardTrail *this) {
     this->flags |= 1;
     this->powderGravity = snow_ro_2C;
     this->powderRiseY = snow_ro_30;
@@ -906,7 +906,7 @@ void BoardTrail_enableA_00006420(SnowEffect *this) {
 void BoardTrail_spawnA_000064B8(void) {
 }
 
-void BoardTrail_enableB_00006B08(SnowEffect *this) {
+void BoardTrail_enableB_00006B08(BoardTrail *this) {
     this->unk1C8 = 0;
     this->flags |= 2;
     this->normBurst = 0;
@@ -925,7 +925,7 @@ extern f32 snow_ro_80, snow_ro_84, snow_ro_88, snow_ro_8C, snow_ro_90, snow_ro_9
 extern f32 snow_ro_98, snow_ro_9C, snow_ro_A0, snow_ro_A4, snow_ro_A8, snow_ro_AC;
 
 /* default parameters of a new snow effect (called from its create, 0x6248) */
-void BoardTrail_enableC_000070C0(SnowEffect *this) {
+void BoardTrail_enableC_000070C0(BoardTrail *this) {
     this->flags |= 4;
     this->specGravity = snow_ro_80;
     this->unk1F0 = 0.0f;
@@ -1301,14 +1301,14 @@ void *LocalLightType_create_00009E10(char *type) {
     return item;
 }
 
-/* SnowLink ctor (the Cfront this == 0 protocol as `this != 0 || (this = new) != 0`): Node_ctor(Data+0xA64), vtable Data+0x9C4, name Data+0xA6C,
+/* MapLighter ctor (the Cfront this == 0 protocol as `this != 0 || (this = new) != 0`): Node_ctor(Data+0xA64), vtable Data+0x9C4, name Data+0xA6C,
  * then a new 0x9328 target attached as its child */
-/* the SnowLink vtable (Data+0x9C4; its USO reloc names the object, so the lo16 is 0: a 0 pin) */
+/* the MapLighter vtable (Data+0x9C4; its USO reloc names the object, so the lo16 is 0: a 0 pin) */
 extern char snowLink_vtbl_9C4;
 
-SnowLink *MapLighter_ctor_00009E88(SnowLink *this, int a1, void *src, int a3) {
+MapLighter *MapLighter_ctor_00009E88(MapLighter *this, int a1, void *src, int a3) {
     Node *c;
-    if (this != 0 || (this = (SnowLink *)CALL(mem_new)(0x50)) != 0) {
+    if (this != 0 || (this = (MapLighter *)CALL(mem_new)(0x50)) != 0) {
         CALL(Node_ctor)(this, (char *)&D_00000000 + 0xA64);
         this->node.vptr = (char *)&snowLink_vtbl_9C4;
         this->node.name = (char *)&D_00000000 + 0xA6C;
