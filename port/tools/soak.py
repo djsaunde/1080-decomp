@@ -451,6 +451,7 @@ def main():
     ap.add_argument('--minimise', action='store_true')
     ap.add_argument('--save-repro', action='store_true')
     ap.add_argument('--strict-camera', action='store_true')
+    ap.add_argument('--keep', action='store_true', help='keep every run directory (default: failures only)')
     ap.add_argument('--gate', action='store_true', help='fixed seeds + every port/host/repro script')
     ap.add_argument('--repro', nargs='*', help='re-run these repro scripts')
     ap.add_argument('--script', type=int, help='print the script of this seed and exit')
@@ -488,7 +489,7 @@ def main():
             jobs.append(('seed%d' % sd, s.text(), a.steps, sv, sd))
 
     def one(j):
-        return j, run(a, os.path.join(a.outdir, j[0]), j[1], j[2], srams[j[3]], keep_trace=False)
+        return j, run(a, os.path.join(a.outdir, j[0]), j[1], j[2], srams[j[3]], keep_trace=a.keep)
 
     with ThreadPoolExecutor(a.jobs) as ex:
         results = list(ex.map(one, jobs))
