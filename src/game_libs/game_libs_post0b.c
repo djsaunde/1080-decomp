@@ -391,7 +391,18 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", dbg_printfSink);
 //   (`lw a2,0x20(sp)`) because &a0 is address-taken. EXACT: unwrapped
 //   2026-10-16 (gl_func_00000000 is a real symbol at 0).
 void dbg_printf(int a0, ...) {
+#ifdef PORT64
+    /* plan 21.5: the variadic arguments are in registers on x86-64; pack them in the IDO layout */
+    extern int port_va_pack_printf(const char *fmt, __builtin_va_list ap, unsigned int *buf);
+    unsigned int packed[64] __attribute__((aligned(8)));
+    __builtin_va_list ap;
+    int aligned = (int)packed;
+    __builtin_va_start(ap, a0);
+    port_va_pack_printf((const char *)a0, ap, packed);
+    __builtin_va_end(ap);
+#else
     int aligned = (((int)((char *)&a0 + 4)) + 3) & ~3;
+#endif
     CALL(_Printf)((char *)&D_00000000 + 0x48D5C, 0, a0, aligned);
 }
 

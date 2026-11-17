@@ -154,7 +154,11 @@ s32 osStopTimer(OSTimer *t);
 /* boot / misc */
 void osInitialize(void);
 void osSyncPrintf(const char *fmt, ...);
+#ifdef PORT64 /* the game's IDO-layout cursor (plan 21.5) */
+int _Printf(void *(*prout)(void *, const char *, u32), void *arg, const char *fmt, const char *cursor);
+#else
 int _Printf(void *(*prout)(void *, const char *, u32), void *arg, const char *fmt, va_list ap);
+#endif
 
 /* boot globals (kernel low memory on the N64: osTvType = 0x80000300 etc.) */
 extern s32 osTvType;

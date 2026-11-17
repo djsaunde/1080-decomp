@@ -158,9 +158,22 @@ void port_time_reset(void) {
  * libultra's _Printf (game_libs_ido53_6E224.c) uses IDO's va_arg and cannot be
  * compiled by gcc; the host vsnprintf formats instead. prout(arg, str, len)
  * returns the next arg, NULL = stop (libultra contract). */
+#ifdef PORT64
+/* x86-64 (plan 21.5): the game hands _Printf an IDO-layout cursor (port/va_pack.c), not a va_list */
+extern void port_va_from_ido(const char *fmt, const char *cursor, unsigned long long *slots, void *vaOut);
+int _Printf(void *(*prout)(void *, const char *, u32), void *arg, const char *fmt, const char *cursor) {
+    unsigned long long slots[64];
+    va_list ap;
+    char buf[2048];
+    int n;
+
+    port_va_from_ido(fmt, cursor, slots, ap);
+    n = vsnprintf(buf, sizeof(buf), fmt, ap);
+#else
 int _Printf(void *(*prout)(void *, const char *, u32), void *arg, const char *fmt, va_list ap) {
     char buf[2048];
     int n = vsnprintf(buf, sizeof(buf), fmt, ap);
+#endif
 
     if (n < 0) {
         return -1;
