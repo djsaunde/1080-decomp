@@ -13,7 +13,7 @@ typedef struct { Gfx *buf; int count; } DList;
 struct GCtx {
     char pad0[0xC];
     DList *dl;
-    Gfx *next() { return &dl->buf[dl->count++]; }
+    Gfx *next() { return &dl->buf[dl->count++]; } Gfx *nextN() { int n = dl->count++; return &dl->buf[n]; }
 };
 /* snoweffects_uso_func_00000C90 (NON_MATCHING draft): the particle sprite draw. Calls the texture's
  * display list (+0x2C, its +0x60 through a blank import), builds the camera view matrix (camera +0x30),
@@ -29,15 +29,21 @@ struct GCtx {
  * agent-h run 717 (85.23 -> 89.59): the prim depth goes through a named `int z` (the target holds the
  * truncated depth in a uopt register, a3, before the & 0x7FFF), and scaled() returns a constructed
  * SnowV3c(x * sx, y * sy, z * sz): the ctor parameters take f0 / f2 / f12 as in the target with no
- * frame words (the named x / y / z locals cost three words between the return temp and r). */
+ * frame words (the named x / y / z locals cost three words between the return temp and r).
+ * Then 89.59 -> 90.99, all five callee-saved homes as in the target (self s0, hgt s1, i s2, the return
+ * temp address s3, wid ra): the first packet appends through nextN() (a named old count, so the prologue's
+ * count is its own LR: a2 / v1 as in the target), the texrect's w0 clamps go through an imax0() inline
+ * (its own temps instead of the pooled edg temps), scratch[] shrinks to one word, and the old
+ * `if (hgt) {} if (wid) {}` lines are dropped. */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
 #define G_RDPHALF_2 0xb3
 #define gImmp1(pkt, c, p0) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = _SHIFTL((c), 24, 8); _g->words.w1 = (unsigned int)(p0); }
+inline int imax0(int a) { return a > 0 ? a : 0; }
 #define gSPScisTextureRectangle(pkt, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
 { Gfx *_g = (Gfx *)(pkt); \
-    _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(MAX((s16)(xh),0), 12, 12) | _SHIFTL(MAX((s16)(yh),0), 0, 12)); \
+    _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(imax0((s16)(xh)), 12, 12) | _SHIFTL(imax0((s16)(yh)), 0, 12)); \
     _g->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MAX((s16)(yl),0), 0, 12)); \
     gImmp1(pkt, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
@@ -106,11 +112,11 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     int i;
     SnowPartC *p;
     if (p) {}
-    int scratch[5];
+    int scratch[1];
 
     scratch[0] = 0;
     d = gl_func_00000000(self->tex->dl);
-    gDPWord(c->next(), 0x06000000, d);
+    gDPWord(c->nextN(), 0x06000000, d);
     gl_func_00000000(SNOW_CAM->view, m);
     halfW = (float)(SNOW_CAM->scrW / 2);
     halfH = (float)(SNOW_CAM->scrH / 2);
@@ -136,7 +142,6 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 self->drawn++;
                 gSPScisTextureRectangle(c->next(), x0 << 2, y0 << 2, (x0 + wid) << 2, (y0 + hgt) << 2, 0, 0, 0,
                                         ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
-                if (hgt) {} if (wid) {}
             }
         }
     }
