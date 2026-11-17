@@ -59,13 +59,13 @@ extern "C" void SnowPool_buildTexDL_00000270(SnowTex *t) {
     gDPWord(t->dl->nextR(), 0xBA001301, 0);
     gDPWord(t->dl->nextR(), 0xB900031D, 0x00404240);
     gDPWord(t->dl->next(), 0xFCFFB3FF, 0xFF64FE7F);
-    gDPWord(t->dl->nextR(), 0xFA000000, 0 + SNOW_PH(t, 0x290));
+    gDPWord(t->dl->nextR(), 0xFA000000, 0 + SNOW_PH(t, 0x290)); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     t->w = 32;
     t->h = t->w;
-    gDPWord(t->dl->nextR(), 0xFD680000 | (((t->w - 1) & 0xFFF) + SNOW_PH(t, 0x308) + SNOW_PH(t, 0x30C) +
-                                          SNOW_PH(t, 0x310) + SNOW_PH(t, 0x314)), (int)D_00000000);
-    gDPWord(t->dl->next(), 0xF5680000 | (((((t->w + 7) >> 3) & 0x1FF) << 9) + SNOW_PH(t, 0x358) + SNOW_PH(t, 0x35C) +
-                                         SNOW_PH(t, 0x360) + SNOW_PH(t, 0x364)), 0x07014050);
+    gDPWord(t->dl->nextR(), 0xFD680000 | (((t->w - 1) & 0xFFF) + SNOW_PH(t, 0x308) + SNOW_PH(t, 0x30C) + /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+                                          SNOW_PH(t, 0x310) + SNOW_PH(t, 0x314)), (int)D_00000000); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+    gDPWord(t->dl->next(), 0xF5680000 | (((((t->w + 7) >> 3) & 0x1FF) << 9) + SNOW_PH(t, 0x358) + SNOW_PH(t, 0x35C) + /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+                                         SNOW_PH(t, 0x360) + SNOW_PH(t, 0x364)), 0x07014050); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     gDPWord(t->dl->nextB(), 0xE6000000, 0);
     gDPWord(t->dl->nextBI(), 0xF4000000, 0x07000000 | ((((t->w - 1) << 2) & 0xFFF) << 12) | (((t->h - 1) << 2) & 0xFFF));
     gDPWord(t->dl->nextR(), 0xE7000000, 0);
@@ -341,8 +341,8 @@ extern "C" void SnowFall_display_000028E0(SnowFallD *self) {
                     ge = c->next();
                     ge->words.w0 = 0xEE000000;
                     ge->words.w1 = (unsigned int)(((int)((cz * w + 1.0f) * snow_rodata_28E0.depthScale) + zf1(halfW, 0) + zf1(cx, 0) +
-                                                   (SNOW_W(self, 0x78) & 0) + (SNOW_W(self, 0x7C) & 0) + (SNOW_W(self, 0x80) & 0) +
-                                                   (SNOW_W(self, 0x84) & 0) + (SNOW_W(self, 0x88) & 0) + zf4(cz, 0) & 0x7FFF) << 16);
+                                                   (SNOW_W(self, 0x78) & 0) + (SNOW_W(self, 0x7C) & 0) + (SNOW_W(self, 0x80) & 0) + /* RAW: byte-lock SNOW_W phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+                                                   (SNOW_W(self, 0x84) & 0) + (SNOW_W(self, 0x88) & 0) + zf4(cz, 0) & 0x7FFF) << 16); /* RAW: byte-lock SNOW_W phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
                     self->drawn++;
                     gDPWord(c->next(), 0xE4000000 | ((((x0 + sw) << 2) & 0xFFF) << 12) | (((y0 + sz) << 2) & 0xFFF),
                             (((x0 << 2) & 0xFFF) << 12) | (((y0 << 2) & 0xFFF) + 0 * (x0 + x0 + y0 + y0 + (int)ge + (int)ge + i)));

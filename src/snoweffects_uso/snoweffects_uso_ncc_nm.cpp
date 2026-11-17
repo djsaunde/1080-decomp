@@ -108,15 +108,15 @@ extern "C" void PowderParticles_buildTexDL_000015D0(SnowTex *t) {
     if (1) {}
     XgDPSetTile(N0, t->dl->hop(), G_IM_FMT_I, G_IM_SIZ_8b, ((((t->w - 1 - 0 + 1) * G_IM_SIZ_8b_TILE_BYTES) + 7) >> 3), 0, G_TX_LOADTILE, 0, 0, 5, 0, 0, 5, 0);
     XgDPNoParam(N0, t->dl->hop(), G_RDPLOADSYNC);
-    XgDPLoadTileGeneric(N0, t->dl->hopI(), G_LOADTILE + SNOW_PH(t, 0x1A0), G_TX_LOADTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC);
-    XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC + SNOW_PH(t, 0x1C8));
+    XgDPLoadTileGeneric(N0, t->dl->hopI(), G_LOADTILE + SNOW_PH(t, 0x1A0), G_TX_LOADTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+    XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC + SNOW_PH(t, 0x1C8)); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     XgDPSetTile(N0, t->dl->hop(), G_IM_FMT_I, G_IM_SIZ_8b, ((((t->w - 1 - 0 + 1) * G_IM_SIZ_8b_LINE_BYTES) + 7) >> 3), 0, G_TX_RENDERTILE, 0, 0, 5, 0, 0, 5, 0);
-    XgDPLoadTileGeneric(N0, t->dl->hop(), G_SETTILESIZE + SNOW_PH(t, 0x218), G_TX_RENDERTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC);
-    XgDPWord(N0, t->dl->hop(), 0xBB000001 + SNOW_PH(t, 0x240), 0x80008000);
-    XgDPWord(N0, t->dl->hop(), 0xBA001402 + SNOW_PH(t, 0x268) + SNOW_PH(t, 0x26C) + SNOW_PH(t, 0x270), 0);
+    XgDPLoadTileGeneric(N0, t->dl->hop(), G_SETTILESIZE + SNOW_PH(t, 0x218), G_TX_RENDERTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+    XgDPWord(N0, t->dl->hop(), 0xBB000001 + SNOW_PH(t, 0x240), 0x80008000); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+    XgDPWord(N0, t->dl->hop(), 0xBA001402 + SNOW_PH(t, 0x268) + SNOW_PH(t, 0x26C) + SNOW_PH(t, 0x270), 0); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     XgDPWord(N0, t->dl->hop(), 0xBA001301, 0);
     XgDPWord(N0, t->dl->hop(), 0xB900031D, 0x00404A50);
-    XgDPWord(N0, t->dl->hop(), 0xFCFF9BFF + SNOW_PH(t, 0x2E0) + SNOW_PH(t, 0x2E4) + SNOW_PH(t, 0x2E8), 0xFF36FF7F);
+    XgDPWord(N0, t->dl->hop(), 0xFCFF9BFF + SNOW_PH(t, 0x2E0) + SNOW_PH(t, 0x2E4) + SNOW_PH(t, 0x2E8), 0xFF36FF7F); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     XgDPWord(N0, t->dl->hop(), 0xFA000000, 0);
     XgDPWord(N0, t->dl->hop(), 0xB9000201, 4);
     XgDPWord(N0, t->dl->hop(), 0xB8000000, 0);
@@ -133,15 +133,15 @@ extern "C" void NormalParticles_buildTexDL_00001A18(SnowTex *t) {
     if (1) {}
     XgDPSetTile(N0, t->dl->hop(), G_IM_FMT_IA, G_IM_SIZ_8b, ((((t->w - 1 - 0 + 1) * G_IM_SIZ_8b_TILE_BYTES) + 7) >> 3), 0, G_TX_LOADTILE, 0, 0, 5, 0, 0, 5, 0);
     XgDPNoParam(N0, t->dl->hop(), G_RDPLOADSYNC);
-    XgDPLoadTileGeneric(N0, t->dl->hopI(), G_LOADTILE + SNOW_PH(t, 0x1A0), G_TX_LOADTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC);
-    XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC + SNOW_PH(t, 0x1C8));
+    XgDPLoadTileGeneric(N0, t->dl->hopI(), G_LOADTILE + SNOW_PH(t, 0x1A0), G_TX_LOADTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+    XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC + SNOW_PH(t, 0x1C8)); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     XgDPSetTile(N0, t->dl->hop(), G_IM_FMT_IA, G_IM_SIZ_8b, ((((t->w - 1 - 0 + 1) * G_IM_SIZ_8b_LINE_BYTES) + 7) >> 3), 0, G_TX_RENDERTILE, 0, 0, 5, 0, 0, 5, 0);
-    XgDPLoadTileGeneric(N0, t->dl->hop(), G_SETTILESIZE + SNOW_PH(t, 0x218), G_TX_RENDERTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC);
-    XgDPWord(N0, t->dl->hop(), 0xBB000001 + SNOW_PH(t, 0x240), 0x80008000);
-    XgDPWord(N0, t->dl->hop(), 0xBA001402 + SNOW_PH(t, 0x268) + SNOW_PH(t, 0x26C) + SNOW_PH(t, 0x270), 0);
+    XgDPLoadTileGeneric(N0, t->dl->hop(), G_SETTILESIZE + SNOW_PH(t, 0x218), G_TX_RENDERTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+    XgDPWord(N0, t->dl->hop(), 0xBB000001 + SNOW_PH(t, 0x240), 0x80008000); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+    XgDPWord(N0, t->dl->hop(), 0xBA001402 + SNOW_PH(t, 0x268) + SNOW_PH(t, 0x26C) + SNOW_PH(t, 0x270), 0); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     XgDPWord(N0, t->dl->hop(), 0xBA001301, 0);
     XgDPWord(N0, t->dl->hop(), 0xB900031D, 0x00404A50);
-    XgDPWord(N0, t->dl->hop(), 0xFCFF9BFF + SNOW_PH(t, 0x2E0) + SNOW_PH(t, 0x2E4) + SNOW_PH(t, 0x2E8), 0xFF36FF7F);
+    XgDPWord(N0, t->dl->hop(), 0xFCFF9BFF + SNOW_PH(t, 0x2E0) + SNOW_PH(t, 0x2E4) + SNOW_PH(t, 0x2E8), 0xFF36FF7F); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     XgDPWord(N0, t->dl->hop(), 0xFA000000, 0);
     XgDPWord(N0, t->dl->hop(), 0xB9000201, 4);
     XgDPWord(N0, t->dl->hop(), 0xB8000000, 0);
@@ -168,14 +168,14 @@ extern "C" void SpecParticles_buildTexDL_00001E60(SnowTex *t) {
     XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC);
     if (1) {}
     XgDPSetTile(N0, t->dl->hopI(), G_IM_FMT_IA, G_IM_SIZ_8b, ((((t->w - 1 - 0 + 1) * G_IM_SIZ_8b_LINE_BYTES) + 7) >> 3), 0, G_TX_RENDERTILE, 0, 0, 6, 0, 0, 6, 0);
-    XgDPLoadTileGeneric(N0, t->dl->hop(), G_SETTILESIZE + SNOW_PH(t, 0x250), G_TX_RENDERTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC);
+    XgDPLoadTileGeneric(N0, t->dl->hop(), G_SETTILESIZE + SNOW_PH(t, 0x250), G_TX_RENDERTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     XgDPWord(N0, t->dl->hop(), 0xBB000001, 0x80008000);
-    XgDPWord(N0, t->dl->hop(), 0xBA001402 + SNOW_PH(t, 0x2B0) + SNOW_PH(t, 0x2B4), 0);
+    XgDPWord(N0, t->dl->hop(), 0xBA001402 + SNOW_PH(t, 0x2B0) + SNOW_PH(t, 0x2B4), 0); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     XgDPWord(N0, t->dl->hop(), 0xBA001301, 0);
     XgDPWord(N0, t->dl->hop(), 0xBA000C02, 0);
     XgDPWord(N0, t->dl->hop(), 0xBA000602, 0xC0);
     XgDPWord(N0, t->dl->hop(), 0xB900031D, 0x00404A50);
-    XgDPWord(N0, t->dl->hop(), 0xFCFF9BFF + SNOW_PH(t, 0x3A0) + SNOW_PH(t, 0x3A4) + SNOW_PH(t, 0x3A8), 0xFF377FBF);
+    XgDPWord(N0, t->dl->hop(), 0xFCFF9BFF + SNOW_PH(t, 0x3A0) + SNOW_PH(t, 0x3A4) + SNOW_PH(t, 0x3A8), 0xFF377FBF); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     XgDPWord(N0, t->dl->hop(), 0xFA000000, 0);
     XgDPWord(N0, t->dl->hop(), 0xB9000201, 4);
     XgDPWord(N0, t->dl->hop(), 0xB8000000, 0);
@@ -200,15 +200,15 @@ extern "C" void SnowFall_buildTexDL_00002310(SnowTex *t) {
     if (1) {}
     XgDPSetTile(N0, t->dl->hop(), G_IM_FMT_I, G_IM_SIZ_8b, ((((t->w - 1 - 0 + 1) * G_IM_SIZ_8b_TILE_BYTES) + 7) >> 3), 0, G_TX_LOADTILE, 0, 0, 5, 0, 0, 5, 0);
     XgDPNoParam(N0, t->dl->hop(), G_RDPLOADSYNC);
-    XgDPLoadTileGeneric(N0, t->dl->hopI(), G_LOADTILE + SNOW_PH(t, 0x1A0), G_TX_LOADTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC);
-    XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC + SNOW_PH(t, 0x1C8));
+    XgDPLoadTileGeneric(N0, t->dl->hopI(), G_LOADTILE + SNOW_PH(t, 0x1A0), G_TX_LOADTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+    XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC + SNOW_PH(t, 0x1C8)); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     XgDPSetTile(N0, t->dl->hop(), G_IM_FMT_I, G_IM_SIZ_8b, ((((t->w - 1 - 0 + 1) * G_IM_SIZ_8b_LINE_BYTES) + 7) >> 3), 0, G_TX_RENDERTILE, 0, 0, 5, 0, 0, 5, 0);
-    XgDPLoadTileGeneric(N0, t->dl->hop(), G_SETTILESIZE + SNOW_PH(t, 0x218), G_TX_RENDERTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC);
-    XgDPWord(N0, t->dl->hop(), 0xBB000001 + SNOW_PH(t, 0x240), 0x80008000);
-    XgDPWord(N0, t->dl->hop(), 0xBA001402 + SNOW_PH(t, 0x268) + SNOW_PH(t, 0x26C) + SNOW_PH(t, 0x270), 0);
+    XgDPLoadTileGeneric(N0, t->dl->hop(), G_SETTILESIZE + SNOW_PH(t, 0x218), G_TX_RENDERTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+    XgDPWord(N0, t->dl->hop(), 0xBB000001 + SNOW_PH(t, 0x240), 0x80008000); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
+    XgDPWord(N0, t->dl->hop(), 0xBA001402 + SNOW_PH(t, 0x268) + SNOW_PH(t, 0x26C) + SNOW_PH(t, 0x270), 0); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     XgDPWord(N0, t->dl->hop(), 0xBA001301, 0);
     XgDPWord(N0, t->dl->hop(), 0xB900031D, 0x00404A50);
-    XgDPWord(N0, t->dl->hop(), 0xFCFFB3FF + SNOW_PH(t, 0x2E0) + SNOW_PH(t, 0x2E4) + SNOW_PH(t, 0x2E8), 0xFF65FEFF);
+    XgDPWord(N0, t->dl->hop(), 0xFCFFB3FF + SNOW_PH(t, 0x2E0) + SNOW_PH(t, 0x2E4) + SNOW_PH(t, 0x2E8), 0xFF65FEFF); /* RAW: byte-lock SNOW_PH phantom word (& 0: zero-code counted load that sets uopt's live-unit cut) */
     XgDPWord(N0, t->dl->hop(), 0xFA000000, 0x80);
     XgDPWord(N0, t->dl->hop(), 0xB9000201, 4);
     XgDPWord(N0, t->dl->hop(), 0xB8000000, 0);

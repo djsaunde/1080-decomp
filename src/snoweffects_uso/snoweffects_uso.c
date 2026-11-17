@@ -4,6 +4,7 @@
 #include "gdl/item.h"
 #include "gdl/gfxlib.h"
 #include "gdl/window.h"
+#include "gdl/polyshape.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -55,11 +56,23 @@ typedef struct SnowPool {
 
 float snoweffects_uso_func_00000000(Vec3 *a, Vec3 *b);
 
-/* the snow effect object whose 0x6144 / 0x6248 create the two child nodes at +0x98 / +0xA0 (only the
- * fields its default inits 0x6420 / 0x70C0 set) */
+/* the object a trail follows (SnowRing +0x2C, the donors' `cam`): only what the plain-C code reads */
+typedef struct SnowOwner {
+    /* 0x000 */ char unk000[0x970];
+    /* 0x970 */ f32 lean;            /* signed sideways speed (BoardTrail_calcWidth) */
+    /* 0x974 */ char unk974[0x9A2 - 0x974];
+    /* 0x9A2 */ s16 state;           /* 97 / 98 select trail modes */
+} SnowOwner;
+
+/* the board trail (donor class SnowEffect, name "board trail"; a SnowRing subclass) whose
+ * BoardTrail_createPowder / _createSpec make the two particle children at +0x98 / +0xA0 (only the
+ * fields its plain-C methods touch) */
 typedef struct SnowEffect {
-    /* 0x000 */ char unk000[0x54];
-    /* 0x054 */ s32 flags;
+    /* 0x000 */ char unk000[0x2C];
+    /* 0x02C */ SnowOwner *cam;
+    /* 0x030 */ char unk030[0x50 - 0x30];
+    /* 0x050 */ f32 width;           /* end-point spread scale (virtual slot 13) */
+    /* 0x054 */ s32 flags;           /* bit 0 / 1 / 2: spawn effects A / B / C */
     /* 0x058 */ char unk058[0x174 - 0x58];
     /* 0x174 */ f32 unk174;
     /* 0x178 */ f32 unk178;
@@ -75,7 +88,11 @@ typedef struct SnowEffect {
     /* 0x1A0 */ s32 unk1A0;
     /* 0x1A4 */ s32 unk1A4;
     /* 0x1A8 */ s32 unk1A8;
-    /* 0x1AC */ char unk1AC[0x1DC - 0x1AC];
+    /* 0x1AC */ char unk1AC[0x1C8 - 0x1AC];
+    /* 0x1C8 */ s32 unk1C8;          /* effect B course-state counters (BoardTrail_spawnB) */
+    /* 0x1CC */ s32 unk1CC;
+    /* 0x1D0 */ char unk1D0[0x1D8 - 0x1D0];
+    /* 0x1D8 */ f32 unk1D8;
     /* 0x1DC */ f32 unk1DC;
     /* 0x1E0 */ f32 unk1E0;
     /* 0x1E4 */ f32 unk1E4;
@@ -127,14 +144,15 @@ typedef struct SnowSlot {
  * points each, stepped by 0x46BC / 0x535C / 0x53E8 */
 typedef struct SnowRing {
     /* 0x00 */ Node node;
-    /* 0x2C */ s32 unk2C;
+    /* 0x2C */ struct SnowOwner *cam;
     /* 0x30 */ s32 unk30;
     /* 0x34 */ f32 unk34;
     /* 0x38 */ f32 unk38;
     /* 0x3C */ char unk3C[8];
     /* 0x44 */ f32 unk44;
     /* 0x48 */ f32 unk48;
-    /* 0x4C */ char unk4C[8];
+    /* 0x4C */ f32 unk4C;
+    /* 0x50 */ f32 width;           /* end-point spread scale (virtual slot 13, SnowRing_calcWidth) */
     /* 0x54 */ s32 unk54;
     /* 0x58 */ s32 readOfs;
     /* 0x5C */ s32 writeOfs;
@@ -147,8 +165,8 @@ typedef struct SnowRing {
     /* 0x78 */ s32 unk78;
     /* 0x7C */ s32 unk7C;
     /* 0x80 */ s32 unk80;
-    /* 0x84 */ s32 unk84;
-    /* 0x88 */ s32 unk88;
+    /* 0x84 */ s32 emitTimer;       /* frames to the next ring advance (SnowRing_emitTick) */
+    /* 0x88 */ s32 emitPeriod;
     /* 0x8C */ void *vtx;           /* size Vtx (16-byte aligned) */
     /* 0x90 */ SnowPoint *points;   /* size points */
     /* 0x94 */ SnowSlot *slots;     /* count slots */
@@ -157,7 +175,9 @@ typedef struct SnowRing {
     /* 0xB4 */ char unkB4[0x120 - 0xB4];
     /* 0x120 */ Vec3 unk120;
     /* 0x12C */ Vec3 unk12C;
-    /* 0x138 */ char unk138[0x154 - 0x138];
+    /* 0x138 */ char unk138[0x144 - 0x138];
+    /* 0x144 */ s32 hits;           /* end points pushed back by the probe (placeEnds); >= 2 emits */
+    /* 0x148 */ char unk148[0x154 - 0x148];
     /* 0x154 */ f32 unk154[8];
     /* 0x174 */ f32 unk174;
     /* 0x178 */ f32 unk178;
@@ -215,6 +235,7 @@ extern float gl_func_00000000_snow_randf(void);
 /* typed blank (0) alias for the CollShape_nearestHit import: the float radius goes in a2 */
 extern int gl_func_00000000_snow_hit(int shape, int ray, float radius, SnowHit *hit);
 
+/* UNNAMED: sentinel the Vec3 dot product at Text+0: a *_00000000 name is never renamed (rename-symbol.py refuses it) */
 float snoweffects_uso_func_00000000(Vec3 *a, Vec3 *b) {
     return a->x * b->x + a->y * b->y + a->z * b->z;
 }
@@ -438,10 +459,11 @@ void SnowFall_moveFlakes_000027A8(SnowFall *this) {
 void SnowFall_display_000028E0(void) {
 }
 
-void SnowFall_rotateNormal_00003544(char *this, float *out, Vec3 *v) {
-    out[0] = snoweffects_uso_func_00000000(v, (Vec3 *)(this + 0x74));
-    out[1] = snoweffects_uso_func_00000000(v, (Vec3 *)(this + 0x80));
-    out[2] = snoweffects_uso_func_00000000(v, (Vec3 *)(this + 0x8C));
+/* out = camRot * v (one dot per camera axis row) */
+void SnowFall_rotateNormal_00003544(SnowFall *this, float *out, Vec3 *v) {
+    out[0] = snoweffects_uso_func_00000000(v, (Vec3 *)this->camRot[0]); /* UNNAMED: sentinel Text+0 Vec3 dot */
+    out[1] = snoweffects_uso_func_00000000(v, (Vec3 *)this->camRot[1]); /* UNNAMED: sentinel Text+0 Vec3 dot */
+    out[2] = snoweffects_uso_func_00000000(v, (Vec3 *)this->camRot[2]); /* UNNAMED: sentinel Text+0 Vec3 dot */
 }
 
 void SnowFall_setPlaneDist_000035B0(char *this, float *n, float *p, float s) {
@@ -450,7 +472,7 @@ void SnowFall_setPlaneDist_000035B0(char *this, float *n, float *p, float s) {
     t.x = p[0] - n[0] * s;
     t.y = p[1] - n[1] * s;
     t.z = p[2] - n[2] * s;
-    n[3] = snoweffects_uso_func_00000000(&t, (Vec3 *)n);
+    n[3] = snoweffects_uso_func_00000000(&t, (Vec3 *)n); /* UNNAMED: sentinel Text+0 Vec3 dot */
 }
 
 /* the current window's camera view matrix (camera +0xB4, rows of four) */
@@ -607,7 +629,7 @@ extern f32 snow_ro_24;
 void SnowRing_init_00003EE4(SnowRing *this, int a1, int stride, int count, int a4, float f5, float f6) {
     int i;
     int n;
-    this->unk2C = a1;
+    this->cam = (SnowOwner *)a1;
     this->unk30 = a4;
     this->unk34 = f5;
     this->unk38 = f6;
@@ -631,7 +653,7 @@ void SnowRing_init_00003EE4(SnowRing *this, int a1, int stride, int count, int a
     this->slots = (SnowSlot *)CALL(mem_new)(count * sizeof(SnowSlot));
     this->dl = (void *)CALL(gfx_newDLContext)(0, (char *)&D_00000000 + 0x634, 0x18, 0, 0, 0, 0);
     ((void (*)(void *))VT_SLOT(this->node.vptr, 11).fn)((char *)this + VT_SLOT(this->node.vptr, 11).delta);
-    this->unk84 = this->unk88 = 4;
+    this->emitTimer = this->emitPeriod = 4;
     this->unk48 = this->unk154[0] = 0.0f;
     this->unk44 = 1.0f;
     this->unk154[1] = 100.0f;
@@ -660,15 +682,16 @@ void SnowRing_setupDL_00004188(void) {
 void SnowRing_updateBasis_00004374(void) {
 }
 
-int SnowRing_emitTick_000046BC(char *this) {
-    if (*(int *)(this + 0x144) >= 2) {
-        if (--*(int *)(this + 0x84) < 0) {
-            *(int *)(this + 0x84) = *(int *)(this + 0x88);
+/* both end points landed (hits >= 2): count the emit timer down, advancing the ring when it runs out */
+int SnowRing_emitTick_000046BC(SnowRing *this) {
+    if (this->hits >= 2) {
+        if (--this->emitTimer < 0) {
+            this->emitTimer = this->emitPeriod;
             CALL(SnowRing_advance_0000535C)(this);
         }
         return 1;
     }
-    *(int *)(this + 0x84) = 1;
+    this->emitTimer = 1;
     return 0;
 }
 
@@ -694,8 +717,8 @@ void SnowRing_setSlotState_00004714(SnowRing *r, int on, int prev, int a3) {
 void SnowRing_emit_000047D4(void) {
 }
 
-void SnowRing_calcWidth_00004E4C(char *a0) {
-    *(float *)(a0 + 0x50) = 1.0f;
+void SnowRing_calcWidth_00004E4C(SnowRing *this) {
+    this->width = 1.0f;
 }
 
 /* basis end points + collision push-back: EXACT via the IDO 7.1 NCC donor
@@ -743,15 +766,16 @@ void SnowRing_advance_0000535C(SnowRing *r) {
     }
 }
 
-int SnowRing_countSlots_000053E8(char *this) {
-    int d = *(int *)(this + 0x5C) - *(int *)(this + 0x58);
+int SnowRing_countSlots_000053E8(SnowRing *this) {
+    int d = this->writeOfs - this->readOfs;
     if (d < 0) {
-        d += *(int *)(this + 0x68);
+        d += this->size;
     }
-    d = d / *(int *)(this + 0x6C) + 1;
+    d = d / this->stride + 1;
     return d;
 }
 
+/* UNNAMED: unknown-role empty two-argument virtual (trail vtables slot 16); no caller in the module */
 void SnowRing_vslot16_00005440(int a0, int a1) {
     (void)&a0;
     (void)&a1;
@@ -813,28 +837,29 @@ void BoardTrail_createPowder_00006144(char *this) {
 void BoardTrail_createSpec_00006248(char *this) {
 }
 
-void BoardTrail_spawn_0000634C(char *this) {
-    if (*(int *)(this + 0x54) & 1) {
+void BoardTrail_spawn_0000634C(SnowEffect *this) {
+    if (this->flags & 1) {
         CALL(BoardTrail_spawnA_000064B8)(this);
     }
-    if (*(int *)(this + 0x54) & 2) {
+    if (this->flags & 2) {
         CALL(BoardTrail_spawnB_00006B28)(this);
     }
-    if (*(int *)(this + 0x54) & 4) {
+    if (this->flags & 4) {
         CALL(BoardTrail_spawnC_0000718C)(this);
     }
 }
 
-void BoardTrail_calcWidth_000063B4(char *this) {
-    char *v = *(char **)(this + 0x2C);
+/* the trail narrows with the owner's sideways lean (state 98: full width) */
+void BoardTrail_calcWidth_000063B4(SnowEffect *this) {
+    SnowOwner *v = this->cam;
     float x, a;
-    if (*(s16 *)(v + 0x9A2) != 98) {
-        x = *(float *)(v + 0x970);
+    if (v->state != 98) {
+        x = v->lean;
         a = (x < 0.0f) ? -x : x;
-        /* RoData+0x28: the module's own .rodata, spelled off the zero placeholder */
-        *(float *)(this + 0x50) = 1.0f - *(float *)((char *)&D_00000000 + 0x28) * a;
+        /* RAW: data-table RoData+0x28 (the lean factor): the module's own .rodata, spelled off the zero placeholder */
+        this->width = 1.0f - *(float *)((char *)&D_00000000 + 0x28) * a;
     } else {
-        *(float *)(this + 0x50) = 1.0f;
+        this->width = 1.0f;
     }
 }
 
@@ -868,11 +893,11 @@ void BoardTrail_enableA_00006420(SnowEffect *this) {
 void BoardTrail_spawnA_000064B8(void) {
 }
 
-void BoardTrail_enableB_00006B08(char *a0) {
-    *(int *)(a0 + 0x1C8) = 0;
-    *(int *)(a0 + 0x54) |= 2;
-    *(int *)(a0 + 0x1CC) = 0;
-    *(float *)(a0 + 0x1D8) = 0.0f;
+void BoardTrail_enableB_00006B08(SnowEffect *this) {
+    this->unk1C8 = 0;
+    this->flags |= 2;
+    this->unk1CC = 0;
+    this->unk1D8 = 0.0f;
 }
 
 /* 0x6B28: spawn update of effect B (flag bit 1): game-flag RoData defaults (+0x1B0..+0x1C4), course-state
@@ -916,14 +941,14 @@ void BoardTrail_enableC_000070C0(SnowEffect *this) {
 void BoardTrail_spawnC_0000718C(void) {
 }
 
-void HandTrail_init_000078E8(char *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
+void HandTrail_init_000078E8(SnowRing *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
     (void)&a1;
     (void)&a2;
     (void)&a3;
-    *(char **)(this + 0xC) = (char *)&D_00000000 + 0x660;
+    this->node.name = (char *)&D_00000000 + 0x660; /* "hand trail" */
     XCALL(gl_func_00000000_snow_3ee4, SnowRing_init_00003EE4)(this, a3, 2, a4, a5, f6, f7);
-    *(float *)(this + 0x15C) = 24.0f;
-    *(float *)(this + 0x164) = 140.0f;
+    this->unk154[2] = 24.0f;
+    this->unk154[4] = 140.0f;
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 673),
@@ -1010,15 +1035,15 @@ void fs_gdlReadVec3_snow_00007EF0(Vec3 *dst) {
 }
 
 /* emitter ctor tail, the 0x78E8 twin: name = Data+0x810, 0x3EE4 init with stride 4, then 0x9010(this, 97) */
-void BoardSpray_init_00007F60(char *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
+void BoardSpray_init_00007F60(SnowRing *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
     (void)&a1;
     (void)&a2;
     (void)&a3;
-    *(char **)(this + 0xC) = (char *)&D_00000000 + 0x810;
+    this->node.name = (char *)&D_00000000 + 0x810; /* "board spray" */
     XCALL(gl_func_00000000_snow_3ee4, SnowRing_init_00003EE4)(this, a3, 4, a4, a5, f6, f7);
     CALL(BoardSpray_setDefaults_00009010)(this, 97);
-    *(float *)(this + 0x194) = 0.0f;
-    *(float *)(this + 0x198) = 100.0f;
+    this->unk194 = 0.0f;
+    this->unk198 = 100.0f;
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_7fe0.cpp (trail emitter update,
@@ -1055,7 +1080,7 @@ void BoardSpray_setDefaults_00009010(SnowRing *this, int a1) {
     this->unk1A8 = snow_ro_D8;
     this->unk1AC = snow_ro_DC;
     this->unk154[1] = 0.0f;
-    this->unk88 = 3;
+    this->emitPeriod = 3;
     this->unk154[2] = 184.0f;
     this->unk154[3] = 130.0f;
     this->unk154[5] = snow_ro_E0;
@@ -1065,6 +1090,7 @@ void BoardSpray_setDefaults_00009010(SnowRing *this, int a1) {
     this->unk1EC = 2;
 }
 
+/* UNNAMED: unknown-role empty two-argument virtual (board spray slot 16, SnowRing_vslot16 override) */
 void BoardSpray_vslot16_000090F0(int a0, int a1) {
     (void)&a0;
     (void)&a1;
@@ -1135,6 +1161,7 @@ void fs_gdlReadQuad_snow_000092C8(Quad4 *dst) {
     *dst = buf;
 }
 
+/* UNNAMED: unknown-role empty virtual (MapLighter vtable Data+0x9C4 slot 11) */
 void MapLighter_vslot11_00009320(void) {
 }
 
@@ -1165,14 +1192,38 @@ void LocalLight_checkDirty_00009768(void *self) {
 void LocalLight_buildLitVerts_00009884(void *self) {
 }
 
-void LocalLight_saveColours_00009BE8(char *this, char *src) {
-    SnowRGBA *cols = *(SnowRGBA **)(src + 0x50);
+/* a "Local Light" (LocalLight_ctor_00009328, an SNode with the DynLight::Parms at +0x240): the
+ * mesh vertices it lights and their flicker state (only what the plain-C methods touch) */
+typedef struct LocalLight {
+    /* 0x000 */ char unk000[0x5C];
+    /* 0x05C */ Vec3 pos;
+    /* 0x068 */ char unk068[0x70 - 0x68];
+    /* 0x070 */ f32 unk70;            /* 1.0f from LocalLightType_create */
+    /* 0x074 */ char unk074[0xAC - 0x74];
+    /* 0x0AC */ s16 vtx[0x40];        /* lit mesh vertex indices */
+    /* 0x12C */ SnowRGBA col[0x40];   /* their saved colours; .a = falloff */
+    /* 0x22C */ s32 n;
+    /* 0x230 */ s32 updateList;
+    /* 0x234 */ s32 flags;            /* bit 2: in view (MapLighter_cullLights) */
+    /* 0x238 */ s32 timer;
+    /* 0x23C */ s32 step;
+    /* 0x240 */ char unk240[0x288 - 0x240];
+    /* 0x288 */ Vec3 colour;
+    /* 0x294 */ char unk294[0x2AC - 0x294];
+    /* 0x2AC */ s32 seq;              /* flicker sequence index (Data+0x958) */
+    /* 0x2B0 */ char unk2B0[0x2C4 - 0x2B0];
+    /* 0x2C4 */ s32 period;
+} LocalLight;
+
+/* save the mesh colours of the lit vertices (the base the flicker adds to) */
+void LocalLight_saveColours_00009BE8(LocalLight *this, MorphPoly *src) {
+    SnowRGBA *cols = (SnowRGBA *)src->poly.base.vtxColours;
     int i;
-    for (i = 0; i < *(int *)(this + 0x22C); i++) {
-        int idx = ((s16 *)(this + 0xAC))[i];
-        ((SnowRGBA *)(this + 0x12C))[i].r = cols[idx].r;
-        ((SnowRGBA *)(this + 0x12C))[i].g = cols[idx].g;
-        ((SnowRGBA *)(this + 0x12C))[i].b = cols[idx].b;
+    for (i = 0; i < this->n; i++) {
+        int idx = this->vtx[i];
+        this->col[i].r = cols[idx].r;
+        this->col[i].g = cols[idx].g;
+        this->col[i].b = cols[idx].b;
     }
 }
 
@@ -1183,26 +1234,9 @@ typedef struct SnowFlicker {
 } SnowFlicker;
 extern SnowFlicker *snow_flickerTbl_958[];
 
-/* the glow / flicker state of a snow light (only what 0x9BE8 / 0x9C48 touch) */
-typedef struct SnowGlow {
-    /* 0x000 */ char unk000[0xAC];
-    /* 0x0AC */ s16 vtx[0x40];
-    /* 0x12C */ SnowRGBA col[0x40];
-    /* 0x22C */ s32 n;
-    /* 0x230 */ s32 updateList;
-    /* 0x234 */ s32 unk234;
-    /* 0x238 */ s32 timer;
-    /* 0x23C */ s32 step;
-    /* 0x240 */ char unk240[0x288 - 0x240];
-    /* 0x288 */ Vec3 colour;
-    /* 0x294 */ char unk294[0x2AC - 0x294];
-    /* 0x2AC */ s32 seq;
-    /* 0x2B0 */ char unk2B0[0x2C4 - 0x2B0];
-    /* 0x2C4 */ s32 period;
-} SnowGlow;
 
-void LocalLight_flicker_00009C48(SnowGlow *this, char *src) {
-    SnowRGBA *cols = *(SnowRGBA **)(src + 0x50);
+void LocalLight_flicker_00009C48(LocalLight *this, MorphPoly *src) {
+    SnowRGBA *cols = (SnowRGBA *)src->poly.base.vtxColours;
     SnowFlicker *fl = snow_flickerTbl_958[this->seq];
     float f;
     int i;
@@ -1230,7 +1264,7 @@ void LocalLight_flicker_00009C48(SnowGlow *this, char *src) {
         cols[idx].b = b;
     }
     if (this->updateList != 0) {
-        CALL(MorphPoly_applyUpdateList_0004A9F0)(src, *(void **)(src + 0x50), this->updateList);
+        CALL(MorphPoly_applyUpdateList_0004A9F0)(src, (void *)src->poly.base.vtxColours, this->updateList);
     }
 }
 
@@ -1242,10 +1276,10 @@ void *LocalLightType_create_00009E10(char *type) {
     int *item;
     int *head;
     item = (int *)CALL(LocalLight_ctor_00009328)(0) /* 0x9328 ctor */;
-    *(float *)((char *)item + 0x70) = 1.0f;
-    head = *(int **)(type + 0x40);
-    if (*(int **)(type + 0x40) != 0) {
-        CALL(list_append)( /* list_append */ (char *)item + 0x10, head, *(int **)(type + 0x40));
+    ((LocalLight *)item)->unk70 = 1.0f;
+    head = (int *)((ItemType *)type)->unk40;
+    if ((int *)((ItemType *)type)->unk40 != 0) {
+        CALL(list_append)((char *)item + 0x10, head, (int *)((ItemType *)type)->unk40);
         if ((int)NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
@@ -1319,17 +1353,17 @@ void MapLighter_cullLights_0000A760(char *self) {
     char padA[0x8];
     char *type;
     char *item;
-    key.v = *(int *)(&D_00000000 + 0xA80);
+    key.v = *(int *)(&D_00000000 + 0xA80); /* RAW: data-table Data+0xA80: the "lig" ItemType tag word */
     type = (char *)CALL(ItemMgr_findType_0003EA98)(snow_itemMgr, key);
     if (type != 0) {
         SnowIterNode *it[2];
-        it[1] = *(SnowIterNode **)(type + 0x10);
+        it[1] = (SnowIterNode *)((ItemType *)type)->node.children; /* the type's items */
         while (SNOW_ITER_NEXT(it) != 0) {
             item = it[0]->data;
-            if (*(int *)(it[0]->data + 0x22C) != 0 && *(int *)(it[0]->data + 0x2AC) != 0) {
-                if (XCALL(gl_func_00000000_snow_cull, cam_isSphereInView)(*(void **)(&snow_gGfxLib + 0x254), 3,
-                        *(float *)(item + 0x5C), *(float *)(item + 0x60), *(float *)(item + 0x64), 0, 0.0f)) {
-                    *(int *)(item + 0x234) |= 4;
+            if (((LocalLight *)it[0]->data)->n != 0 && ((LocalLight *)it[0]->data)->seq != 0) {
+                if (XCALL(gl_func_00000000_snow_cull, cam_isSphereInView)(((GfxLib *)&snow_gGfxLib)->curWindow, 3,
+                        ((LocalLight *)item)->pos.x, ((LocalLight *)item)->pos.y, ((LocalLight *)item)->pos.z, 0, 0.0f)) {
+                    ((LocalLight *)item)->flags |= 4;
                 }
             }
         }
