@@ -2,7 +2,7 @@
  * Fast3D interpreter (pinned + the plan-14 patch series) and write a PNG.
  * PC port plan section 19.6. 64-bit host, EGL offscreen, no SDL / ImGui.
  *
- *   f3dreplay in.dlmp out.png [--scale N] [--ucode f3dex|line3d] [--readback out.rb] [--fb-out out.rgba16]
+ *   f3dreplay in.dlmp out.png [--then in2.dlmp ...] [--scale N] [--ucode f3dex|line3d] [--readback out.rb] [--fb-out out.rgba16]
  *   LIBGL_ALWAYS_SOFTWARE=1 f3dreplay ...   llvmpipe, for the golden tests
  *
  * The dump's memory image is rebuilt AT ITS ORIGINAL ADDRESSES: every chunk is
@@ -28,7 +28,14 @@
  *
  * The dump's DLUMP_FB_* chunks (the framebuffer model, plan 19.10: what the game's CPU read from
  * or wrote into the colour / depth images) are replayed as the in-process renderer serves them
- * (FbModel below); --fb-out writes the read-back colour image (320x240 big-endian RGBA5551). */
+ * (FbModel below); --fb-out writes the read-back colour image (320x240 big-endian RGBA5551).
+ *
+ * --then (repeatable, run 849): the later gfx tasks of the same frame, drawn into the SAME frame
+ * after in.dlmp, as the RDP does: one Run whose root calls each task's root in order, so the colour
+ * and depth images carry across the tasks (a split-screen frame is one task per half, then the
+ * overlay task; replayed alone, each shows the rest of the screen black). Each dump's lists are
+ * widened from its own words (the game patches shared lists between tasks: LOD / view toggles),
+ * the other data is mapped once, the later dump winning where they differ (reported). */
 
 #include <sys/mman.h>
 
@@ -70,11 +77,20 @@ struct Chunk {
     const uint8_t* data;
 };
 
+struct WideDl;
+/* one gfx task's dump; sDumps is reserved up front, so the Chunk data pointers stay valid */
+struct Dump {
+    std::vector<uint8_t> file;
+    const DlumpHeader* hdr;
+    std::vector<Chunk> chunks;
+    std::vector<WideDl>* dls;
+};
+static std::vector<Dump> sDumps;
 static std::vector<uint8_t> sFile;
 static const DlumpHeader* sHdr;
-static std::vector<Chunk> sChunks;
+static std::vector<Chunk> sChunks; /* every dump's chunks, in task order */
 
-static bool load(const char* path) {
+static bool load_one(const char* path) {
     FILE* f = std::fopen(path, "rb");
     if (f == nullptr) {
         std::fprintf(stderr, "f3dreplay: cannot open %s\n", path);
@@ -105,6 +121,25 @@ static bool load(const char* path) {
         sChunks.push_back({ c->kind, c->addr, c->size, c->aux, (const uint8_t*)(c + 1) });
         off += sizeof(*c) + ((c->size + 3) & ~3u);
     }
+    return true;
+}
+
+/* load a dump into sDumps (load_one parses into the s* scratch globals; sChunks then accumulates) */
+static bool load(const char* path) {
+    std::vector<Chunk> before = std::move(sChunks);
+    sChunks.clear();
+    sFile.clear();
+    if (!load_one(path)) {
+        return false;
+    }
+    Dump d;
+    d.file = std::move(sFile); /* the buffer moves, the chunk pointers into it stay valid */
+    d.hdr = sHdr;
+    d.chunks = sChunks;
+    d.dls = nullptr;
+    before.insert(before.end(), sChunks.begin(), sChunks.end());
+    sChunks = std::move(before);
+    sDumps.push_back(std::move(d));
     return true;
 }
 
@@ -144,10 +179,31 @@ static bool map_arena() {
          * loaded module owns; vouch for the arena */
         gfx_register_raw_address_range((const void*)x.first, x.second - x.first);
     }
-    for (const Chunk& c : sChunks) {
-        if (has_data(c)) {
+    /* task order: a later task's bytes win; count the non-list bytes that differ from an earlier task's */
+    std::vector<std::pair<uint32_t, uint32_t>> earlier, mine; /* [lo, hi) */
+    uint64_t differ = 0;
+    for (const Dump& dp : sDumps) {
+        mine.clear();
+        for (const Chunk& c : dp.chunks) {
+            if (!has_data(c)) {
+                continue;
+            }
+            if (c.kind != DLUMP_DL && !earlier.empty()) {
+                for (auto& r : earlier) {
+                    uint32_t lo = std::max(r.first, c.addr), hi = std::min(r.second, c.addr + c.size);
+                    for (uint32_t a = lo; a < hi; a++) {
+                        differ += *(const uint8_t*)(uintptr_t)a != c.data[a - c.addr];
+                    }
+                }
+            }
             std::memcpy((void*)(uintptr_t)c.addr, c.data, c.size);
+            mine.push_back({ c.addr, c.addr + c.size });
         }
+        earlier.insert(earlier.end(), mine.begin(), mine.end());
+    }
+    if (sDumps.size() > 1) {
+        std::printf("f3dreplay: %zu tasks in one frame; %llu data bytes differ between them (the later task's kept)\n",
+                    sDumps.size(), (unsigned long long)differ);
     }
     return true;
 }
@@ -158,8 +214,9 @@ struct WideDl {
     uint32_t addr, n;
     std::vector<Fast::F3DGfx> cmds;
 };
-static std::vector<WideDl> sDls;
+static std::vector<WideDl> sDls; /* the dump being widened (then moved into its Dump) */
 static int sUnresolved;
+static size_t sDlCount;
 
 static Fast::F3DGfx* wide(uint32_t addr) {
     for (WideDl& d : sDls) {
@@ -170,8 +227,8 @@ static Fast::F3DGfx* wide(uint32_t addr) {
     return nullptr;
 }
 
-static void widen_lists() {
-    for (const Chunk& c : sChunks) {
+static void widen_lists_one(const std::vector<Chunk>& chunks) {
+    for (const Chunk& c : chunks) {
         if (c.kind != DLUMP_DL || c.size < 8) {
             continue;
         }
@@ -201,6 +258,21 @@ static void widen_lists() {
             }
         }
     }
+}
+
+/* widen each dump against its own lists; returns each dump's root (nullptr if missing) */
+static std::vector<Fast::F3DGfx*> widen_lists() {
+    std::vector<Fast::F3DGfx*> roots;
+    for (Dump& dp : sDumps) {
+        sDls.clear();
+        widen_lists_one(dp.chunks);
+        roots.push_back(wide(dp.hdr->rootAddr));
+        sDlCount += sDls.size();
+        /* moving the vector keeps each list's F3DGfx array (and the G_DL pointers into it) in place */
+        dp.dls = new std::vector<WideDl>(std::move(sDls));
+        sDls.clear();
+    }
+    return roots;
 }
 
 /* ---------------- the framebuffer model (DLUMP_FB_*, plan 19.10) ---------------- */
@@ -366,7 +438,7 @@ int main(int argc, char** argv) {
     const char* fbOutPath = nullptr;
     UcodeHandlers ucode = ucode_f3dex_line3d;
     if (argc < 3) {
-        std::fprintf(stderr, "usage: f3dreplay in.dlmp out.png [--scale N] [--ucode f3dex|line3d] [--readback out.rb] [--fb-out out.rgba16]\n");
+        std::fprintf(stderr, "usage: f3dreplay in.dlmp out.png [--then in2.dlmp ...] [--scale N] [--ucode f3dex|line3d] [--readback out.rb] [--fb-out out.rgba16]\n");
         return 2;
     }
     for (int i = 3; i + 1 < argc; i++) {
@@ -378,16 +450,44 @@ int main(int argc, char** argv) {
             readbackPath = argv[++i];
         } else if (std::strcmp(argv[i], "--fb-out") == 0) {
             fbOutPath = argv[++i];
+        } else if (std::strcmp(argv[i], "--then") == 0) {
+            ++i; /* the later tasks: collected below */
         }
     }
-    if (!load(argv[1]) || !map_arena()) {
+    std::vector<const char*> paths = { argv[1] };
+    for (int i = 3; i + 1 < argc; i++) {
+        if (std::strcmp(argv[i], "--then") == 0) {
+            paths.push_back(argv[++i]);
+        }
+    }
+    sDumps.reserve(paths.size());
+    for (const char* p : paths) {
+        if (!load(p)) {
+            return 1;
+        }
+    }
+    if (!map_arena()) {
         return 1;
     }
-    widen_lists();
-    Fast::F3DGfx* root = wide(sHdr->rootAddr);
-    if (root == nullptr) {
-        std::fprintf(stderr, "f3dreplay: the root list 0x%08x is not in the dump\n", sHdr->rootAddr);
-        return 1;
+    std::vector<Fast::F3DGfx*> roots = widen_lists();
+    for (size_t i = 0; i < roots.size(); i++) {
+        if (roots[i] == nullptr) {
+            std::fprintf(stderr, "f3dreplay: the root list 0x%08x is not in %s\n", sDumps[i].hdr->rootAddr, paths[i]);
+            return 1;
+        }
+    }
+    Fast::F3DGfx* root = roots[0];
+    /* more than one task: a frame list that calls each task's root in turn */
+    std::vector<Fast::F3DGfx> frame;
+    if (roots.size() > 1) {
+        frame.resize(roots.size() + 1);
+        for (size_t i = 0; i < roots.size(); i++) {
+            frame[i].words.w0 = 0x06000000u; /* G_DL, push: each root ends in G_ENDDL */
+            frame[i].words.w1 = (uintptr_t)roots[i];
+        }
+        frame[roots.size()].words.w0 = 0xB8000000u;
+        frame[roots.size()].words.w1 = 0;
+        root = frame.data();
     }
     /* The depth image carries over between frames: 1080 clears Z (a FILLRECT with the colour image set to the
      * Z buffer) before its G_SETZIMG, so the interpreter knows the Z address only from the previous frame.
@@ -395,7 +495,7 @@ int main(int argc, char** argv) {
      * one-dump replay it is still unset, and the fill paints 0xFFFC as colour (near-white, plan 19.9). Seed it
      * with the dump's first G_SETZIMG through a prologue list: SETZIMG, then G_DL to the root. */
     std::vector<Fast::F3DGfx> prologue;
-    for (WideDl& d : sDls) {
+    for (WideDl& d : *sDumps[0].dls) {
         for (Fast::F3DGfx& g : d.cmds) {
             if (prologue.empty() && ((g.words.w0 >> 24) & 0xFF) == 0xFE) {
                 prologue.resize(3);
@@ -464,7 +564,7 @@ int main(int argc, char** argv) {
         std::fprintf(stderr, "f3dreplay: read-back check failed\n");
         return 4;
     }
-    std::printf("f3dreplay: %s -> %s: %zu lists widened, %d unresolved G_DL\n", argv[1], argv[2], sDls.size(),
+    std::printf("f3dreplay: %s -> %s: %zu lists widened, %d unresolved G_DL\n", argv[1], argv[2], sDlCount,
                 sUnresolved);
     return sUnresolved != 0 ? 3 : 0;
 }

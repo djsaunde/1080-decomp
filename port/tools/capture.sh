@@ -5,7 +5,7 @@
 #
 #   port/tools/capture.sh -b <port build dir> [-o OUT] [-n FRAMES] [-e EVERY] [-f FIRST]
 #                         [-r ROM] [-c COLS] [-s SHRINK] [-S RENDER_SCALE] [-x F3DREPLAY]
-#                         [-i INPUT] [-F STEPS] [-a "EXTRA TENSHOE ARGS"]
+#                         [-i INPUT] [-F STEPS] [-M] [-a "EXTRA TENSHOE ARGS"]
 #
 #   -b   a configured + built PORT_LINK=ON build (holds tenshoe; plan 13.5)
 #   -o   output directory (default ./capture-<date>-<time>); must be new or hold no earlier
@@ -19,6 +19,10 @@
 #   -i   an input script for tenshoe --input (scripted pads; format in port/host/input_script.c)
 #   -F   dump only the frames of these steps (PORT_GFX_DUMP_STEPS, e.g. "700,750-752"; replaces
 #        -e / -f); tiles are then labelled with the step, not the task number
+#   -M   whole frames: render all the gfx tasks of a step into ONE image (f3dreplay --then), as the
+#        RDP leaves the framebuffer: the split-screen halves and the overlay task (logo, HUD) drawn
+#        over the 3D task. png/fNNNNNN_sSTEP.png, NNNNNN = the step's first task. Use with -F or -e 1
+#        (a step whose tasks were not all dumped renders only those)
 #   -a   more tenshoe arguments (e.g. "--record in.log"); tenshoe always writes OUT/state.log
 #
 # Output in OUT: run.log (tenshoe's stdout / stderr and exit code; a crash is reported, the
@@ -31,13 +35,13 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 GAME="$(cd "$HERE/../.." && pwd)"
 MONO="$(cd "$GAME/../.." && pwd)"
 BUILD= OUT=./capture-$(date +%Y%m%d-%H%M%S) FRAMES=300 EVERY=1 FIRST=0 ROM="$GAME/baserom.z64" COLS=10 SCALE=2 RSCALE=1 F3D=
-INPUT= STEPS= EXTRA=
-while getopts "b:o:n:e:f:r:c:s:S:x:i:F:a:h" o; do
+INPUT= STEPS= EXTRA= WHOLE=0
+while getopts "b:o:n:e:f:r:c:s:S:x:i:F:a:Mh" o; do
     case $o in
     b) BUILD=$OPTARG ;; o) OUT=$OPTARG ;; n) FRAMES=$OPTARG ;; e) EVERY=$OPTARG ;;
     f) FIRST=$OPTARG ;; r) ROM=$OPTARG ;; c) COLS=$OPTARG ;; s) SCALE=$OPTARG ;; S) RSCALE=$OPTARG ;; x) F3D=$OPTARG ;;
-    i) INPUT=$OPTARG ;; F) STEPS=$OPTARG ;; a) EXTRA=$OPTARG ;;
-    *) sed -n '2,28p' "$0"; exit 2 ;;
+    i) INPUT=$OPTARG ;; F) STEPS=$OPTARG ;; a) EXTRA=$OPTARG ;; M) WHOLE=1 ;;
+    *) sed -n '2,32p' "$0"; exit 2 ;;
     esac
 done
 [ -n "$BUILD" ] && [ -x "$BUILD/tenshoe" ] || { echo "capture: -b <build dir with tenshoe> is required"; exit 2; }
@@ -77,17 +81,37 @@ dumps=("$OUT"/dump/gfx_*.dlmp)
 export LIBGL_ALWAYS_SOFTWARE=1
 : >"$OUT/replay.log"
 bad=0
+if [ $WHOLE = 1 ]; then
+    # one image per step: the first task's dump, then --then each later task of that step, in order
+    declare -A first=() rest=()
+    order=()
+    for d in "${dumps[@]}"; do
+        n="$(basename "$d" .dlmp)"; n=${n#gfx_}
+        st=$(awk -v t="$n" '$1 == t { print $2; exit }' "$OUT/dump/steps.txt" 2>/dev/null)
+        st=${st:-task$n}
+        if [ -z "${first[$st]:-}" ]; then first[$st]=$d; order+=("$st"); else rest[$st]="${rest[$st]:-} --then $d"; fi
+    done
+    for st in "${order[@]}"; do
+        n="$(basename "${first[$st]}" .dlmp)"; n=${n#gfx_}
+        # shellcheck disable=SC2086  # rest is split on purpose
+        "$F3D" "${first[$st]}" "$OUT/png/f${n}_s$st.png" ${rest[$st]:-} --scale "$RSCALE" >>"$OUT/replay.log" 2>&1 ||
+            { bad=$((bad + 1)); echo "FAILED step $st" >>"$OUT/replay.log"; }
+    done
+    echo "capture: ${#dumps[@]} dumps rendered as ${#order[@]} whole frames ($bad failed; replay.log)"
+    dumps_done=1
+fi
 for d in "${dumps[@]}"; do
+    [ "${dumps_done:-0}" = 1 ] && break
     n="$(basename "$d" .dlmp)"; n=${n#gfx_}
     png="$OUT/png/t$n.png"
     st=$(awk -v t="$n" '$1 == t { print $2; exit }' "$OUT/dump/steps.txt" 2>/dev/null)
     [ -n "$STEPS" ] && [ -n "$st" ] && png="$OUT/png/t${n}_s$st.png"  # the sheet labels the last number
     "$F3D" "$d" "$png" --scale "$RSCALE" >>"$OUT/replay.log" 2>&1 || { bad=$((bad + 1)); echo "FAILED $d" >>"$OUT/replay.log"; }
 done
-echo "capture: ${#dumps[@]} dumps rendered ($bad failed; replay.log)"
+[ "${dumps_done:-0}" = 1 ] || echo "capture: ${#dumps[@]} dumps rendered ($bad failed; replay.log)"
 grep -v " 0 unresolved G_DL" "$OUT/replay.log" | grep -v "^replay: GL" | head -5
 
-python3 "$HERE/contact_sheet.py" "$OUT/sheet.png" "$OUT"/png/t*.png --cols "$COLS" --scale "$SCALE"
+python3 "$HERE/contact_sheet.py" "$OUT/sheet.png" "$OUT"/png/[tf]*.png --cols "$COLS" --scale "$SCALE"
 python3 "$GAME/port/gfx/tools/dlump.py" --total "${dumps[@]}" >"$OUT/histogram.txt" 2>&1
 echo "capture: histogram -> $OUT/histogram.txt"
 exit 0
