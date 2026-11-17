@@ -39,6 +39,9 @@
 #              Match Race reaches the goal (before the CPU when the script says `# WIN`), and an
 #              options change survives a reload in a new process.  Physics-tied like the race step:
 #              the failure prints the regenerate command for each script
+#   soak       port/tools/soak.py --gate (~8 s, plan 20.7): 12 fixed fuzz seeds x 5000 steps and every
+#              port/host/repro/*.input (soak-found crash repros) run clean: no signal / sys_fatal / trap /
+#              hang / NaN rider fields / stuck retrace / audio badAddr; a failure prints its class and step
 #   saves      test_backup + 4 short boots: the SRAM file is the N64 image (port/include/port_backup.h,
 #              plan 20): blank-SRAM save = the ROM defaults' big-endian image, reloads unchanged,
 #              a synthetic .sra loads, damaged primaries are restored from the mirrors
@@ -322,6 +325,18 @@ start; if have tenshoe; then
   txt=$(grep -E '^  [a-z0-9]+ +(ok|FAIL)' "$MC/check.log" | awk '{printf "%s %s; ", $1, $2}' | sed 's/; $//')
   if [ $rc = 0 ]; then line modes PASS "$txt"
   else line modes FAIL "${txt:-$(tail -1 "$MC/check.log")}"; grep -E 'FAIL|regenerate' "$MC/check.log" | sed 's/^/           /'; fi
+fi
+
+# ---- soak (plan 20.7, run 864): port/tools/soak.py --gate: fixed fuzz seeds (random menus, rides, pauses,
+# 2 / 4 pads; blank, saved and all-unlocked SRAM) and every port/host/repro/*.input (minimised crash
+# repros) must run clean: no signal, sys_fatal, trap, hang, NaN / Inf rider fields, stuck retrace or
+# audio badAddr / unknown op.  ~8 s
+start; if have tenshoe; then
+  SK="$(mktemp -d "$LOG/soak.XXXXXX")"  # a fresh dir per run (no rm of a variable path)
+  python3 port/tools/soak.py -b "$B" -r "$ROM" -o "$SK" -j "$JOBS" --gate >"$SK/soak.log" 2>&1; rc=$?
+  txt="$(head -1 "$SK/soak.log" | sed 's/^soak: //')"
+  if [ $rc = 0 ]; then line soak PASS "$txt"
+  else line soak FAIL "${txt:-$(tail -1 "$SK/soak.log")}"; grep -E '^  (FAIL|min)|first:' "$SK/soak.log" | cut -c1-200 | sed 's/^/           /'; fi
 fi
 
 # ---- saves (plan 20): the SRAM file is the N64 image (port/include/port_backup.h).  test_backup's unit
