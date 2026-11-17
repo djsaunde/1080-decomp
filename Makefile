@@ -6222,10 +6222,6 @@ VIEWREC_NM_B_DONOR := build/src/viewrec_uso/viewrec_uso_mp72_nm_3878.cpp.o
 build/non_matching/src/viewrec_uso/viewrec_uso.c.o: private REPLACE_FUNC_BODY += viewrec_uso_func_00003878=$(VIEWREC_NM_B_DONOR)
 build/non_matching/src/viewrec_uso/viewrec_uso.c.o: $(VIEWREC_NM_B_DONOR)
 # agent-h run 694: NON_MATCHING-only NCC donor for snoweffects 0x47D4 (trail emitter update; FP colouring left);
-# agent-b run 675: NON_MATCHING-only functions from agent-b's snoweffects donor (1E60: 300 words = target).
-# (559C went EXACT in run 686 and moved to SNOW_B_FUNCS.)
-SNOW_NM_B_FUNCS := snoweffects_uso_func_00001E60
-build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_B_FUNCS),$(f)=$(SNOW_B_DONOR))
 # agent-h run 694: NON_MATCHING-only NCC donor (0x47D4 until run 709, now EXACT below);
 # run 699: 0xC90 (particle sprite draw) moved here from agent-c's SNOW_C_NM_FUNCS.
 SNOW_NM_H_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp.o
