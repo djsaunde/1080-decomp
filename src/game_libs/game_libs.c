@@ -564,16 +564,18 @@ int SpeedGadget_release(char *a0) {
 }
 
 /* SpeedGadget_setSpeed: 3-way value-formatter dispatcher — picks one of
- * 3 format strings by a1's magnitude and calls the cross-USO
- * printf-like gl_func_00000000. Per-arm arg counts/buffers differ. */
+ * 3 format strings by a1's magnitude (the km/h padding) and sprintf's a1 into
+ * the gadget text. Every arm passes a1: the ROM sets a2 = a1 once, in the first
+ * branch's delay slot (run 846: the 2-argument arms left the port's km/h
+ * readout printing stack garbage, "12292108"); the bytes are the same. */
 extern int gl_data_00000000;
 void SpeedGadget_setSpeed(char *a0, int a1) {
     if (a1 < 10) {
         CALL(gl_sprintf)(((Gadget *)a0)->text, (char*)&gl_data_00000000 + 0xCC10, a1);
     } else if (a1 < 100) {
-        CALL(gl_sprintf)(((Gadget *)a0)->text, (char*)&gl_data_00000000 + 0xCC18);
+        CALL(gl_sprintf)(((Gadget *)a0)->text, (char*)&gl_data_00000000 + 0xCC18, a1);
     } else {
-        CALL(gl_sprintf)(((Gadget *)a0)->text, (char*)&gl_data_00000000 + 0xCC1C);
+        CALL(gl_sprintf)(((Gadget *)a0)->text, (char*)&gl_data_00000000 + 0xCC1C, a1);
     }
 }
 
