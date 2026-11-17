@@ -2588,7 +2588,7 @@ void SnowAI_dtor(int *a0, int a1) {
     if (a0 == 0) return;
     NODE(a0)->vptr = (char *)&D_00000000;
     if (a1 & 1) {
-        GCALL(mem_delete)();
+        GCALL(mem_delete)(KR_ARG0(a0));
     }
 }
 
@@ -2723,7 +2723,7 @@ void SnowAI_onWin(int *a0) {
 void SnowAI_onLose(int *a0) {
     int v;
     if (AI(a0)->rider->controller != 2) {
-        CALL(SnowAI_enterFinish)();
+        CALL(SnowAI_enterFinish)(KR_ARG0(a0));
         v = CALL(SnowAI_isAtFinish)(a0);
         AI(a0)->atFinish =v;
         if (v != 0) {

@@ -148,8 +148,8 @@ void snd_updateChannel10Emitter(int a0, int a1, int a2) {
 }
 
 extern char sStr_Poop_Added_sound_heap_6550;
-void snd_addSoundHeap(void) {
-    FCALL(snd_AddSoundHeap)();
+void snd_addSoundHeap(KR_PARAM0(int kr_a0) KR_PARAM(int kr_a1)) {
+    FCALL(snd_AddSoundHeap)(KR_ARG0(kr_a0) KR_ARG(kr_a1));
     FCALL(dbg_printf)(&sStr_Poop_Added_sound_heap_6550);
 }
 
@@ -4402,7 +4402,7 @@ void Tv1Tmpl_display(char *a0) {
         int counter = ((Tv1Tmpl *)a0)->displayCount + 1;
         ((Tv1Tmpl *)a0)->displayCount = counter;
         if (counter == 1) {
-            FCALL(Tv1Tmpl_stepPicture_00007D04)();
+            FCALL(Tv1Tmpl_stepPicture_00007D04)(KR_ARG0(a0));
         }
     }
 }
@@ -4821,7 +4821,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowTmpl_create);
 #endif
 
 void Tree_handleMsg(char *a0, int *a1) {
-    FCALL(SNode_handleMsg)(a0);
+    FCALL(SNode_handleMsg)(a0 KR_ARG(a1));
     if (*a1 == 7 || *a1 == 19) {
         TREE(a0)->coll.obj.pos[0] = TREE(a0)->snode.pos[0];
         TREE(a0)->coll.obj.pos[1] = TREE(a0)->snode.pos[1];
@@ -6575,7 +6575,7 @@ void SnowBoarder_mirrorFlip_0000E124(SnowBoarder *sb) {
     sb->flags ^= SNOWB_FLAG_MIRROR;
     sb->fwdSpeed = 0.0f;
     if (sb->flags & SNOWB_FLAG_08) {
-        FCALL(SnowBoarder_setDefaultDdms)();
+        FCALL(SnowBoarder_setDefaultDdms)(KR_ARG0(sb));
     } else {
         FCALL(SnowBoarder_setRiderDdms)(sb);
     }

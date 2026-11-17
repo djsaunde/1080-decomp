@@ -298,7 +298,7 @@ void AnimPlayer_setKey(AnimPlayer *a0, int a1, int a2, int a3, float f) {
  *   }
  *   return v0->[0x10][a2*8/4]; */
 int AnimPlayer_getKeyFrame(AnimPlayer *a0, int a1, int a2) {
-    AnimData *v0 = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr); /* AnimDataMgr_lookup(mgr, a1) */
+    AnimData *v0 = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr KR_ARG(a1)); /* AnimDataMgr_lookup(mgr, a1) */
     if (a2 >= v0->numKeys) {
         int v = FCALL(anim_formatId)(a1);                      /* anim_formatId */
         FCALL(sys_fatal)(GL_DATA_STR(0x22180, "BadKeyFrame %d - %s"), a2, v); /* sys_fatal("BadKeyFrame %d - %s") */
@@ -310,7 +310,7 @@ int AnimPlayer_getKeyFrame(AnimPlayer *a0, int a1, int a2) {
  *   Same bounds-check + array-deref pattern, but returns float from
  *   offset +4 in the 8-byte entry. */
 float AnimPlayer_getKeyTime(AnimPlayer *a0, int a1, int a2) {
-    AnimData *v0 = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr); /* AnimDataMgr_lookup(mgr, a1) */
+    AnimData *v0 = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr KR_ARG(a1)); /* AnimDataMgr_lookup(mgr, a1) */
     if (a2 >= v0->numKeys) {
         int v = FCALL(anim_formatId)(a1);                      /* anim_formatId */
         FCALL(sys_fatal)(GL_DATA_STR(0x22194, "BadKeyTime %d - %s"), a2, v); /* sys_fatal("BadKeyTime %d - %s") */
@@ -712,7 +712,7 @@ void Friction_handleMsg_000640E4(int a0, int *a1) {
     if (v == 9) {
         CALL(Friction_reset_00064124)(a0);
     } else {
-        CALL(QNode_handleMsg)(a0);
+        CALL(QNode_handleMsg)(a0 KR_ARG(a1)); /* $a1 = the message, untouched on the else branch */
     }
 }
 
@@ -1628,7 +1628,7 @@ typedef struct Vec3_f { float x, y, z; } Vec3_f;
  * undefined_syms_auto.txt) -- a direct in-unit call bakes 0x0C018BD9.
  */
 extern int gl_func_00062F64_65250();
-void DNode_addImpulseAt_00065250(int a0, Vec3_f *a1) {
+void DNode_addImpulseAt_00065250(int a0, Vec3_f *a1 KR_PARAM(int kr_a2)) {
     Vec3_f f;
     volatile int pad2;
     Vec3_f e;
@@ -1648,7 +1648,7 @@ void DNode_addImpulseAt_00065250(int a0, Vec3_f *a1) {
     f = e;
     /* DNodeAccum_addForce_000641DC(&impulseAcc, point - worldCog, force): a1 is the world point;
      * the force argument is the caller's third arg, left in $a2 (K&R pass-through) */
-    XCALL(gl_func_00062F64_65250, DNodeAccum_addForce_000641DC)(&DNODE(a0)->impulseAcc, &f);
+    XCALL(gl_func_00062F64_65250, DNodeAccum_addForce_000641DC)(&DNODE(a0)->impulseAcc, &f KR_ARG(kr_a2));
 }
 
 /* DNode_addMoveAt_000652D8: 34-insn Vec3-diff + buf-copy chain + dispatch (0x88, frame 0x60).
@@ -1668,7 +1668,7 @@ void DNode_addImpulseAt_00065250(int a0, Vec3_f *a1) {
  * blank alias gl_func_00062F64_652D8 (= 0 in undefined_syms_auto.txt): the USO word
  * is a load-time reloc, a direct in-unit call would bake the jal target. */
 extern int gl_func_00062F64_652D8();
-void DNode_addMoveAt_000652D8(int a0, Vec3_f *a1) {
+void DNode_addMoveAt_000652D8(int a0, Vec3_f *a1 KR_PARAM(int kr_a2)) {
     Vec3_f f;
     volatile int pad2;
     Vec3_f e;
@@ -1687,7 +1687,7 @@ void DNode_addMoveAt_000652D8(int a0, Vec3_f *a1) {
     e = d;
     f = e;
     /* DNodeAccum_addForce_000641DC(&moveAcc, point - worldCog, force in $a2) */
-    XCALL(gl_func_00062F64_652D8, DNodeAccum_addForce_000641DC)(&DNODE(a0)->moveAcc, &f);
+    XCALL(gl_func_00062F64_652D8, DNodeAccum_addForce_000641DC)(&DNODE(a0)->moveAcc, &f KR_ARG(kr_a2));
 }
 
 /* DNode_resetXform_00065360: transform-object reset (58 words, BYTE-EXACT 2026-10-14 agent-g).
@@ -2257,7 +2257,7 @@ unlink:
  * BEFORE a0[1] = a1 (as1 then pulls the a1[0] load into the slot). */
 void dlist_insertBefore_00066484(int *a0, int *a1) {
     if (a0[1] != a0[0]) {
-        CALL(dlist_splice_000664F0)();
+        CALL(dlist_splice_000664F0)(KR_ARG0(a0) KR_ARG(a1));
     } else {
         a0[0] = a1[0];
         a0[1] = (int)a1;
@@ -4485,7 +4485,7 @@ void ImageFile_init_00068960(char *a0) {
     IMAGEFILE(a0)->format = 0;
     IMAGEFILE(a0)->base.data = 0;
     IMAGEFILE(a0)->dataSize = 0;
-    CALL(BinFile_init_000682F8)();
+    CALL(BinFile_init_000682F8)(KR_ARG0(a0));
 }
 
 /* ImageFile_load_00068990: record-stream reader (93 words, 0x174, exported sym 2482).
@@ -4752,7 +4752,11 @@ void skin_cmdSkinAnim(NodeListState *self) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef int (*GP_00068DD4)();
+#ifdef PORT /* the K&R a0 pass-through is passed explicitly (KR_ARG0, plan 18.9) */
+extern void gl_func_00000000_68dd4v();
+#else
 extern void gl_func_00000000_68dd4v(void);
+#endif
 void skin_cmdSkinShape(NodeListState *arg0) {
     int *p;
     s32 sp30;
@@ -4767,7 +4771,7 @@ void skin_cmdSkinShape(NodeListState *arg0) {
     int A;
     int B;
 
-    XCALL(gl_func_00000000_68dd4v, nodelist_checkPrevMNode)();
+    XCALL(gl_func_00000000_68dd4v, nodelist_checkPrevMNode)(KR_ARG0(arg0));
     x = arg0->parent->mnode;
     MNODE(x)->mtxMode = 8;
     A = (int)arg0->cursor;
@@ -5349,8 +5353,8 @@ void SkinMgr_reset(int *self) {
 }
 
 extern int gl_func_00000000();
-int SkinMgr_addAnim(char *a0) {
-    return CALL(list_append)(a0 + 0x48);
+int SkinMgr_addAnim(char *a0 KR_PARAM(int kr_a1)) {
+    return CALL(list_append)(a0 + 0x48 KR_ARG(kr_a1));
 }
 
 extern int gl_ref_0007D594();

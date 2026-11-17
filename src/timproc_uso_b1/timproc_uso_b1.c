@@ -1022,7 +1022,7 @@ void TimDataManager_update_00001BCC(char *arg0) {
     char *pe;
     char *pf;
 
-    CALL(RaceTracker_toggleGhost)();
+    CALL(RaceTracker_toggleGhost)(KR_ARG0(arg0));
     if (1) {
         pa = (char *)TIMDATAMGR(arg0)->race;
         if ((RACEPROC(pa)->flags & 0x10000) && (RACEPROC(pa)->raceState == 1)) {

@@ -420,7 +420,7 @@ void arc_releaseSprites_00000E58(ArcRace *a0) {
 extern int gl_func_00000000();
 void ARCRaceProcess_onCountdownStart(ArcRace *a0) {
     if (a0->race.flags & RACEF_SPRITES) {
-        CALL(arc_releaseSprites_00000E58)();
+        CALL(arc_releaseSprites_00000E58)(KR_ARG0(a0));
     }
 }
 
@@ -872,12 +872,12 @@ void ARCRaceProcess_drawIntro(char *arg0) {
 
 int arcproc_uso_func_00000000();
 
-void ARCRaceProcess_drawResultExtra(void) {
-    XCALL(arcproc_uso_func_00000000, arc_drawResultScore_000014C8)();
+void ARCRaceProcess_drawResultExtra(KR_PARAM0(int kr_a0)) {
+    XCALL(arcproc_uso_func_00000000, arc_drawResultScore_000014C8)(KR_ARG0(kr_a0));
 }
 
-void ARCRaceProcess_drawTimeUpExtra(void) {
-    CALL(arc_drawResultScore_000014C8)();
+void ARCRaceProcess_drawTimeUpExtra(KR_PARAM0(int kr_a0)) {
+    CALL(arc_drawResultScore_000014C8)(KR_ARG0(kr_a0));
 }
 
 /* arc_drawResultScore_000014C8: gated HUD fade/draw. Sets a {1,1,1,1} Vec4 (sp48..54).
@@ -1279,7 +1279,7 @@ void arc_DataManager_init(ArcDataManager *arg0, char *arg1, int arg2, char *arg3
     arg0->colour[1] = (float)255 / denom;
     arg0->colour[3] = r0;
     if (((RaceProcess *)arg1)->flags & RACEF_SPRITES) {
-        CALL(hud_addPointsGadgetList)();
+        CALL(hud_addPointsGadgetList)(KR_ARG0(arg0));
         CALL(hud_addSpeedGadget)(arg0, 0xE8, 0x13, (int)arg0->base.entries + 0x10);
         CALL(hud_addCountDownGadget)(arg0, 0x69, 0x11, &arg0->base.score);
         CALL(hud_addCourseGadget)(arg0, 0x123, 0xE1, 1);
@@ -1762,8 +1762,8 @@ void ARCMenuProcess_handleInput(int *a0)
   }
 }
 
-void ARCMenuProcess_drawGui(void) {
-    XCALL(arcproc_uso_func_00000000, arc_drawMenuBackground_00002884)();
+void ARCMenuProcess_drawGui(KR_PARAM0(int a0)) {
+    XCALL(arcproc_uso_func_00000000, arc_drawMenuBackground_00002884)(KR_ARG0(a0));
 }
 
 /* arc_drawMenuBackground_00002884: 62-insn double-loop initializer (fresh decode

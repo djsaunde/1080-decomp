@@ -1040,7 +1040,7 @@ void TrkDataManager_init_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
         TIMDATAMGR(arg0)->colour[2] = 1.0f;
         TIMDATAMGR(arg0)->colour[1] = 1.0f;
         TIMDATAMGR(arg0)->colour[0] = 1.0f;
-        CALL(hud_addPointsGadgetList)();
+        CALL(hud_addPointsGadgetList)(KR_ARG0(arg0));
         CALL(hud_addSpeedGadget)(arg0, 0xE8, 0x13, (int)DATAMGR(arg0)->entries + 0x10);
         CALL(hud_addCountDownGadget)(arg0, 0x69, 0x11, arg0 + 0xA0);
         CALL(hud_addCourseGadget)(arg0, 0x123, 0xE1, 1);
@@ -1101,7 +1101,7 @@ void TrkDataManager_loadData(char *a0) {
     }
     DATAMGR(a0)->shownScore = 0;
     TRKDATAMGR(a0)->ghostReplayMode = 1;
-    CALL(RaceTracker_reset)();
+    CALL(RaceTracker_reset)(KR_ARG0(a0));
 }
 
 /* EXACT 2026-10-23 (agent-g run 138): (c) was a FLOAT 0.0f third arg (li a2,0)
@@ -1151,7 +1151,7 @@ void TrkDataManager_update_00001C68(char *arg0) {
     int r;
     int t1;
 
-    CALL(RaceTracker_toggleGhost)();
+    CALL(RaceTracker_toggleGhost)(KR_ARG0(arg0));
     if ((RACEPROC(TRKDATAMGR(arg0)->race)->flags & 0x10000) && (RACEPROC(TRKDATAMGR(arg0)->race)->raceState == 1)) {
         DATAMGR(arg0)->elapsed = DATAMGR(arg0)->elapsed + 0x21;
         CALL(RaceTracker_passCheckpoints)(arg0);

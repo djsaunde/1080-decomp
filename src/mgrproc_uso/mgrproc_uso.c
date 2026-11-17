@@ -377,8 +377,8 @@ void mgr_releaseSprites_000012AC(MgrRace *a0) {
 
 void mgrproc_uso_func_00000000();  /* K&R-style: matches the K&R def above */
 
-void MGRRaceProcess_onCountdownStart(void) {
-    XCALL(mgrproc_uso_func_00000000, mgr_releaseSprites_000012AC)();
+void MGRRaceProcess_onCountdownStart(KR_PARAM0(int a0)) {
+    XCALL(mgrproc_uso_func_00000000, mgr_releaseSprites_000012AC)(KR_ARG0(a0));
 }
 
 /* MGRRaceProcess_endTimerEnabled: 41-insn lazy-init guard. Idempotent
@@ -997,12 +997,12 @@ extern int mgrproc_uso_func_01B0F8();
 extern int mgrproc_uso_func_01CCD4();
 extern int mgrproc_uso_func_07BA68();
 extern int import_000B7FF0();
-void mgr_restartForEnding_00001B58(int *a0) {
+void mgr_restartForEnding_00001B58(int *a0 KR_PARAM(int kr_a1)) {
   int *p;
   int *t6;
   int *c4;
   int *t7;
-  XCALL(mgrproc_uso_func_01B0F8, RaceProcess_restart)(a0);
+  XCALL(mgrproc_uso_func_01B0F8, RaceProcess_restart)(a0 KR_ARG(kr_a1));
   p = *((int **) (((char *) (&D_00000000)) + 0x134));
   c4 = (int *) p[0xC4 / 4];
   t6 = (int *) c4[0x800 / 4];
@@ -1257,7 +1257,7 @@ void MGRRaceProcess_drawResultExtra(int *a0) {
             MGRRACE(a0)->overlayAlpha += kRo_MGRRaceProcess_drawResultExtra_60C;
         }
         if (kRo_MGRRaceProcess_drawResultExtra_610 < MGRRACE(a0)->overlayAlpha) {
-            CALL(mgr_drawResults_000023FC)();
+            CALL(mgr_drawResults_000023FC)(KR_ARG0(a0));
         }
     }
 }
@@ -1561,7 +1561,7 @@ void MgrNameEntry_drawExitOverlay(int *a0) {
     }
     v = MGRNAMEENT(a0)->alpha;
     if (v <= 0.0f) {
-        CALL(NameEntry_drawExitOverlay)(); /* jal -> nameent.uso Text+0x718 = nameent.uso NameEntry_drawExitOverlay (TextReloc import, proven by name-placeholder-calls) */
+        CALL(NameEntry_drawExitOverlay)(KR_ARG0(a0)); /* jal -> nameent.uso Text+0x718 = nameent.uso NameEntry_drawExitOverlay (TextReloc import, proven by name-placeholder-calls) */
     }
 }
 
@@ -1846,7 +1846,7 @@ void mgr_DataManager_display(MgrDataManager *a0) {
     if (v0 == 2) goto end;
     if (!(*(float*)&D_mgr3240_a <= 0.0f)) goto end;
     if (!(*(float*)&D_mgr3240_b <= 0.0f)) goto end;
-    CALL(hud_releaseGadgets)();
+    CALL(hud_releaseGadgets)(KR_ARG0(a0));
     CALL(Node_hideDisplay_0000E490)(a0);
 end:
     CALL(RaceTracker_display)(a0);

@@ -154,9 +154,12 @@ void NameEntry_updateEntry(char *self) {
                 name[i] = NEPROC(self)->message->letters[i];
                 i++;
             } while (i != 3);
-            CALL(Backup_writeCourseArcadeOptions_0000B3DC)(NEPROC(self)->session, name,
+            /* the ROM relocs: the first jal is Backup_sessionSetNewNames(session, name, rider, board),
+             * the second Backup_writeCourseArcadeOptions(session) (the names were swapped: on the
+             * port each call went to the other function, plan 18.9) */
+            CALL(Backup_sessionSetNewNames)(NEPROC(self)->session, name,
                 ((u8 *)&INPUT_MGR(D_00000000).playerRider)[3], ((u8 *)&INPUT_MGR(D_00000000).playerBoard)[3]); /* the s32s' low bytes */
-            CALL(Backup_sessionSetNewNames)(NEPROC(self)->session);
+            CALL(Backup_writeCourseArcadeOptions_0000B3DC)(NEPROC(self)->session);
         }
         CALL(Process_fadeOut_0000F954)(self, -1, 0);
     } else {

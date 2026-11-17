@@ -4215,7 +4215,7 @@ void SelectWin_state3_00007430(char *scr) {
     GenCamera *cam_root;
 
     if (SELWIN(scr)->stage == 0) {
-        step = FCALL(SelectWin_charCheatIndex_00008C44)() - 1;
+        step = FCALL(SelectWin_charCheatIndex_00008C44)(KR_ARG0(scr)) - 1;
         if (step >= 0) {
             if ((SELWIN(scr)->cheatTimer & 0xF) == 0) {
                 FCALL(dbg_printf)((char *)&XDATA(D_00000000, port_genproc_data, 0x0) + 0x00001320,
@@ -4572,7 +4572,7 @@ void SelectWin_state6_00007B2C(char *arg0) {
     char *tv0_5;
 
     if (SELWIN(arg0)->stage == 1) {
-        temp_v0 = XCALL(timproc_uso_b5_alias, SelectWin_boardCheatIndex_00008D38)();
+        temp_v0 = XCALL(timproc_uso_b5_alias, SelectWin_boardCheatIndex_00008D38)(KR_ARG0(arg0));
         if (temp_v0 != 0) {
             temp_v1 = *(s32 **)((char *)&D_00000000 + 0xF60 + (temp_v0 * 4));
             if (XCALL(timproc_uso_b5_alias, input_checkPressed_00011E00)(&import_80020098, temp_v1[SELWIN(arg0)->cheatStep]) != 0) {
@@ -5283,8 +5283,12 @@ z:
 
 /* int-return K&R form (2026-07-10, 80F4): caller stores the callee's v0
  * passthrough and passes arg0. Codegen identical (v0 untouched here). */
+#ifdef PORT /* K&R pass-through parameters (plan 18.9) */
+int SelectWin_callPrevStageBit_0000894C(int kr_a0) {
+#else
 int SelectWin_callPrevStageBit_0000894C() {
-    FCALL(SelectWin_prevStageBit_000088A0)();
+#endif
+    FCALL(SelectWin_prevStageBit_000088A0)(KR_ARG0(kr_a0));
 }
 
 extern float D_b5_896C_2A0;
@@ -6507,7 +6511,7 @@ void CharacterItem_update_0000BB88(int *a0) {
   {
   }
   p->view[3] = a;
-  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)();
+  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)(KR_ARG0(a0));
 }
 
 /* 5-insn float store: stores a1 to a0->_2A0 and (a0->_2B8)->_120.
@@ -6844,7 +6848,7 @@ void BoardItem_update_0000C1B4(int *a0) {
   {
   }
   p->view[3] = a;
-  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)();
+  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)(KR_ARG0(a0));
 }
 
 /* BoardItem_setAlpha_0000C1F4: 5-insn float-store, RECOVERED 2026-05-28
@@ -7163,7 +7167,7 @@ void CourseItem_update_0000C8AC(int *a0) {
     v1->view[0] = c;
     v1->view[3] = d;
   }
-  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)();
+  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)(KR_ARG0(a0));
 }
 
 
@@ -7369,7 +7373,7 @@ void TesuriItem_update_0000CC74(int *a0) {
   {
   }
   p->view[3] = a;
-  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)();
+  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)(KR_ARG0(a0));
 }
 
 /* TesuriItem_setAlpha_0000CCB4: sibling of 0000C1F4 (last store at 0x11C
@@ -7521,7 +7525,7 @@ void LevelItem_update_0000CE6C(int *a0) {
   {
   }
   p->view[3] = a;
-  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)();
+  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)(KR_ARG0(a0));
 }
 
 /* LevelItem_drawStats_0000CEB4: EXACT via the IDO 7.1 cfe -O2 donor

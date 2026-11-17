@@ -1630,7 +1630,7 @@ void GameDemoProcess_handleInput(GameDemoProcess *s0) {
     }
     a1 = s0->race.flags;
     if ((a1 << 14) < 0) {
-        XCALL(titproc_uso_func_01B0F8, RaceProcess_restart)(s0);
+        XCALL(titproc_uso_func_01B0F8, RaceProcess_restart)(s0 KR_ARG(a1)); /* a1 = race.flags, still in $a1 at the jal */
         p3c = (int *)WORLDREG(INPUT_MGR(import_00020098).game)->players[0].rider;
         arg = (int)SNOWB(p3c)->input;
         XCALL(titproc_uso_func_07BA68, pad_reset_000673FC)(arg, 0);

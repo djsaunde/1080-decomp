@@ -111,7 +111,7 @@ void edd_DataManager_init(char *a0) {
 
 void edd_DataManager_update(char *a0) {
     if (*(int*)(&D_00000000 + 0x74) == 0) {
-        CALL(RaceTracker_passCheckpoints)();
+        CALL(RaceTracker_passCheckpoints)(KR_ARG0(a0));
         CALL(RaceTracker_passGates)(a0);
         if ((DATAMGR(a0)->score -= 0xA) < 0) {
             DATAMGR(a0)->score = 0;

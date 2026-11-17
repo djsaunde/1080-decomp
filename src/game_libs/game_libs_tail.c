@@ -1338,8 +1338,12 @@ void Backup_sessionListNewCourses(BackupSession *a0, int *a1) {
 }
 
 extern int gl_func_00000000();
+#ifdef PORT /* K&R pass-through parameters (plan 18.9) */
+int Backup_sessionHasNew(int kr_a0) {
+#else
 int Backup_sessionHasNew() {
-    int r = CALL(Backup_sessionCountNew)();
+#endif
+    int r = CALL(Backup_sessionCountNew)(KR_ARG0(kr_a0));
     if (r != 0) return 1;
     return 0;
 }
@@ -2929,7 +2933,7 @@ void RaceTracker_popTrickPoints(RaceTracker *arg0, int arg1) {
 
     a2 = arg0->pointsList;
     if ((a2 != 0) && (arg0->hudFlags & 2)) {
-        CALL(snd_sendEvent)(0x22);
+        CALL(snd_sendEvent)(0x22 KR_ARG(arg1));
         v0 = (char *)CALL(PointsGadget_allocSlot_00003B1C)(arg0->pointsList, arg1, 0, 0);
         denom = 255.0f;
         POPUP(v0)->parms.yps.value = 70.0f;
@@ -3265,7 +3269,7 @@ void RaceTracker_startTrick(RaceTracker *self, int a1, int a2) {
     int *vt;
     int *new_a0;
     if (a1) {}
-    v0 = (int*)CALL(RaceTracker_findEntry)(self);
+    v0 = (int*)CALL(RaceTracker_findEntry)(self KR_ARG(a1));
     a2_var = -1;
     if (v0 == 0) return;
     if ((v0[1] & 1) == 0) return;
@@ -3301,7 +3305,7 @@ extern int gl_func_00000000();
 void RaceTracker_endTrick(int a0, int a1, int a2, int a3) {
     int v0;
     if (a1) {}
-    v0 = CALL(RaceTracker_findEntry)();
+    v0 = CALL(RaceTracker_findEntry)(KR_ARG0(a0) KR_ARG(a1));
     if (v0 != 0 && (((RaceEntry *)v0)->flags & 1)) {
         if ((((RaceTracker *)a0)->hudFlags & 2) && ((RaceEntry *)v0)->pending == 1) {
             if (a2 != 0) {
@@ -3639,7 +3643,7 @@ void hud_addSpeedGadget(Hud *self, int a1, int a2, float *a3_float) {
     volatile int pad[2];  /* phantom-slot lever, 8-byte form (wave-2 2026-06-11) */
     self->speedValue = (int)a3_float;
     if (self->sprites60 == 0) {
-        CALL(hud_initSprites_0000E5D0)();
+        CALL(hud_initSprites_0000E5D0)(KR_ARG0(self));
     }
     self->speed = CALL(SpeedGadget_ctor)(0, self->sprites60);
     CALL(SpeedGadget_setSpeed)((int *)self->speed, (int)*(float *)self->speedValue);
@@ -3687,7 +3691,7 @@ void hud_addCountDownGadget(Hud *self, int a1, int a2, int *a3_int_ptr) {
     volatile int pad[2];  /* phantom-slot lever, 8-byte form (wave-2 2026-06-11) */
     self->countDownValue = (int)a3_int_ptr;
     if (self->sprites64 == 0) {
-        CALL(hud_initSprites_0000E53C)();
+        CALL(hud_initSprites_0000E53C)(KR_ARG0(self));
     }
     self->countDown = CALL(CountDownGadget_ctor)(0, self->sprites64, self->sprites68);
     CALL(CountDownGadget_setTime)((int *)self->countDown, *(int *)self->countDownValue, 1);
@@ -3767,7 +3771,7 @@ void hud_addTimeGadget(Hud *self, int a1, int a2, int *a3_int_ptr) {
     int *q;
     volatile int pad[2];
     if (self->sprites60 == 0) {
-        CALL(hud_initSprites_0000E5D0)();
+        CALL(hud_initSprites_0000E5D0)(KR_ARG0(self));
     }
     self->timeValue = (int)a3_int_ptr;
     self->time = CALL(TimeGadget_ctor)(0, self->sprites60);
@@ -3804,7 +3808,7 @@ void hud_addPointsGadget(Hud *self, int a1, int a2, int a3) {
     volatile int pad;
     inv = 255.0f;
     if (self->sprites60 == 0) {
-        CALL(hud_initSprites_0000E5D0)();
+        CALL(hud_initSprites_0000E5D0)(KR_ARG0(self));
     }
     self->pointsValue = a3;
     self->points = CALL(PointsGadget_ctor)(0, self->sprites60);

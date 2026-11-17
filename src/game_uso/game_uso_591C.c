@@ -108,7 +108,7 @@ void SnowAI_steer(int *a0) {
     if (import_8006EF48 == 0) return;
     v0 = self->modeFlags;
     if (v0 & 1) {
-        SnowAI_pickFork();
+        SnowAI_pickFork(KR_ARG0(a0));
         return;
     }
     if (v0 & 2) {

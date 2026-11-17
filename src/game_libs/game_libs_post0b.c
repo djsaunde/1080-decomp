@@ -854,13 +854,13 @@ int pad_initGlobal(int a0) {
 }
 
 extern int gl_func_00000000();
-void pad_setSlotValueGlobal(int a0) {
-    CALL(pad_setSlotValue_000671D4)(&gSysDevBlock_3A4E8);
+void pad_setSlotValueGlobal(int a0 KR_PARAM(int kr_a1) KR_PARAM(int a2)) {
+    CALL(pad_setSlotValue_000671D4)(&gSysDevBlock_3A4E8 KR_ARG(kr_a1) KR_ARG(a2));
 }
 
 extern int gl_func_00000000();
-int pad_hasRumblePakGlobal(int a0) {
-    return CALL(pad_getSlotState_00067358)(&gSysDevBlock_3A4E8) == 2;
+int pad_hasRumblePakGlobal(int a0 KR_PARAM(int kr_a1)) {
+    return CALL(pad_getSlotState_00067358)(&gSysDevBlock_3A4E8 KR_ARG(kr_a1)) == 2;
 }
 
 extern int gl_func_00000000();
@@ -1055,8 +1055,8 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", heap_tempAlloc);
 /* heap_tempFree: 10-insn 1-call wrapper. Split off 4-insn
  * sys_getResetType (`return *D_X` with arg-shadow). */
 extern char D_35338_X;
-void heap_tempFree(int a0) {
-    CALL(Mem_free)(&D_35338_X);
+void heap_tempFree(int a0 KR_PARAM(int kr_a1)) {
+    CALL(Mem_free)(&D_35338_X KR_ARG(kr_a1));
     (void)a0;
 }
 
@@ -1113,7 +1113,7 @@ int sys_getResetType(int a0) {
  * fs_gdlSeekFile -- unsigned selector, nested-!= goto chain for the 1, 0, 2
  * compare order (docs/IDO_CODEGEN.md #nested-ne-goto-chain-35648). */
 extern int gl_ref_0003B8E8; /* baked counter word 0x3B8E8 (pinned) */
-int fs_gdlOpenFile(GdlFile *o, int a1) {
+int fs_gdlOpenFile(GdlFile *o, int a1 KR_PARAM(int a2)) {
     int r;
     unsigned k = o->kind;
     if (k != GDLFILE_LOCAL) {
@@ -1131,7 +1131,7 @@ c1:
     }
     goto end;
 c0:
-    r = CALL(hostio_openFile)(&XDATA(D_00000000, port_bootup_bss, 0x3C768), a1);
+    r = CALL(hostio_openFile)(&XDATA(D_00000000, port_bootup_bss, 0x3C768), a1 KR_ARG(a2)); /* $a2: this function's own, untouched on the branch to c0 */
     o->handle = r;
     if (r == 0) {
         CALL(dbg_printf)(GL_DATA_STR(0x1E590, "Remote OpenFile fail '%s'\n"), a1);
@@ -1368,7 +1368,7 @@ c1:
 #endif
     goto end;
 c0:
-    r = CALL(hostio_seekFile)(&XDATA(D_00000000, port_bootup_bss, 0x3C768));
+    r = CALL(hostio_seekFile)(&XDATA(D_00000000, port_bootup_bss, 0x3C768) KR_ARG(a1) KR_ARG(a2)); /* $a1 / $a2 untouched on the branch to c0 */
     goto end;
 c2:
     if (a1 == 0) {
@@ -4667,7 +4667,7 @@ int *MNode_getCMtx(int *a0) {
 }
 
 void MNode_addChild(int *a0, int *a1) {
-    CALL(list_append)(a0 + 4);
+    CALL(list_append)(a0 + 4 KR_ARG(a1));
     if (a1[0x14/4] != 0) {
         a1[0x4/4] = 1;
     }
@@ -6816,7 +6816,7 @@ void ColourItem_handleMsg(int *a0, int *a1) {
         ((ColourItem *)a0)->rgb[1] = tmp[1];
         ((ColourItem *)a0)->rgb[2] = tmp[2];
     } else {
-        FCALL(Node_handleMsg)();
+        FCALL(Node_handleMsg)(KR_ARG0(a0) KR_ARG(a1)); /* $a0 / $a1 untouched (the third, tag, Node_handleMsg overwrites) */
     }
 }
 
@@ -8254,7 +8254,7 @@ extern int gl_func_00000000();
 void hostio_reset(HostioDev *dev) {
     dev->connected = 0;
     dev->flags &= ~HOSTIO_READY;
-    CALL(hostio_init)();
+    CALL(hostio_init)(KR_ARG0(dev));
 }
 
 /* hostio_init (0x60, 24 insns): posts a 0xA0-byte stack message record
@@ -8285,11 +8285,11 @@ int hostio_init(HostioDev *dev) {
 
 extern int gl_func_00000000();
 
-void hostio_addText(int a0) {
+void hostio_addText(int a0 KR_PARAM(int kr_a1)) {
     char buf[0x98];
     int pad;
     int local;
-    CALL(str_copyEnd)(buf);
+    CALL(str_copyEnd)(buf KR_ARG(kr_a1));
     local = 0x11;
     CALL(hostio_send)(&local);
 }
@@ -8553,11 +8553,11 @@ void hostio_beginGroup(int a0, int a1, int a2) {
 
 extern int gl_func_00000000();
 
-void hostio_addHeading(int a0) {
+void hostio_addHeading(int a0 KR_PARAM(int kr_a1)) {
     char buf[0x98];
     int pad;
     int local;
-    CALL(str_copyEnd)(buf);
+    CALL(str_copyEnd)(buf KR_ARG(kr_a1));
     local = 6;
     CALL(hostio_send)(&local);
 }
@@ -8593,7 +8593,7 @@ void hostio_addMatrix(int a0, int a1, int a2, int a3) {
     int *p;
     (void)a0;
     if (a1) {}
-    FCALL(str_copyEnd)(&buf58);
+    FCALL(str_copyEnd)(&buf58 KR_ARG(a1));
     buf50 = 16;
     FCALL(hostio_send)(&buf50);
     i = 0;
@@ -8636,7 +8636,7 @@ void hostio_addVQS(int a0, int a1, char *a2, int a3) {
     int hdr;
     (void)a0;
     if (a1) {}
-    FCALL(str_copyEnd)(buf);
+    FCALL(str_copyEnd)(buf KR_ARG(a1));
     hdr = 0x1A;
     FCALL(hostio_send)(&hdr);
     FCALL(hostio_updateFloat)(a2, a3);
@@ -9585,11 +9585,11 @@ void QNode_handleMsg(char *a0, int *a1) {
         QNODE(a0)->vqs.trans[0] = v.x;
         QNODE(a0)->vqs.trans[1] = v.y;
         QNODE(a0)->vqs.trans[2] = v.z;
-        CALL(MNode_handleMsg)();
+        CALL(MNode_handleMsg)(KR_ARG0(a0) KR_ARG(a1));
         break;
     }
     default:
-        CALL(MNode_handleMsg)();
+        CALL(MNode_handleMsg)(KR_ARG0(a0) KR_ARG(a1));
         break;
     }
 }
@@ -9754,8 +9754,12 @@ int mem_new(int a0) {
 }
 
 extern int gl_func_00000000();
+#ifdef PORT /* K&R pass-through parameters (plan 18.9) */
+int mem_newAligned(int kr_a0, int kr_a1) {
+#else
 int mem_newAligned() {
-    return CALL(heap_new)();
+#endif
+    return CALL(heap_new)(KR_ARG0(kr_a0) KR_ARG(kr_a1));
 }
 
 extern int gl_func_00000000();
@@ -9845,8 +9849,12 @@ int heap_new(unsigned int s1, int arg1) {
 }
 
 extern int gl_func_00000000();
+#ifdef PORT /* K&R pass-through parameters (plan 18.9) */
+int mem_heapNewThunk_00041258(int kr_a0, int a1) {
+#else
 int mem_heapNewThunk_00041258() {
-    return CALL(heap_new)();
+#endif
+    return CALL(heap_new)(KR_ARG0(kr_a0) KR_ARG(a1));
 }
 
 /* 8-insn passthrough wrapper (0x20). LANDED fuzzy=100. The historical
@@ -9854,8 +9862,8 @@ int mem_heapNewThunk_00041258() {
  * SUCCESSOR — `lui t6,0x4; lw t6,0xC160(t6)`) was REMOVED 2026-05-23 as
  * match-faking. Those insns belong to separate symbols now; the previously-
  * documented 0x28 size is stale. */
-void mem_deleteThunk_00041278(void) {
-    CALL(mem_delete)();
+void mem_deleteThunk_00041278(KR_PARAM0(int kr_a0)) {
+    CALL(mem_delete)(KR_ARG0(kr_a0));
 }
 
 /* mem_delete (cross-TU orphan merge): orphan lui t6,4; lw t6,0xC160
@@ -14531,7 +14539,7 @@ void MorphPoly_init(MorphPoly *self) {
     self->verts = 0;
     self->colours = 0;
     self->updateCount = 0;
-    CALL(MorphPoly_allocUpdateList)();
+    CALL(MorphPoly_allocUpdateList)(KR_ARG0(self));
     CALL(PolyShape_init)(self);
     {
         DLContext *g = ((DLContext *)gGfx->staticDL); /* gfx MainStaticDL */
@@ -14614,7 +14622,7 @@ void MorphPoly_morph(MorphPoly *a0) {
         CALL(MorphPoly_update_4AAF0)(a0);
     }
     if (a0->colours != 0) {
-        CALL(MorphPoly_updateColours)();
+        CALL(MorphPoly_updateColours)(KR_ARG0(a0));
     }
 }
 
@@ -14652,7 +14660,7 @@ void MorphPoly_setVerts_0004AA90(int *a0, int a1) {
     a0[0xC0/4] = a1;
     if (v0 & 0x800) {
         if (a0[0xD8/4] == 5 || (v0 & 0x400)) {
-            FCALL(BasePolyShape_genNormalsFast)();
+            FCALL(BasePolyShape_genNormalsFast)(KR_ARG0(a0) KR_ARG(a1));
         }
     }
     a0[0xD8/4]++;
@@ -17229,7 +17237,7 @@ void Window_dtor(char *a0, int a1) {
     if (a0 == (char*)0) return;
     ((Node *)a0)->vptr = (char *)&Window_vtbl;
     if (a1 & 1) {
-        CALL(mem_delete)();
+        CALL(mem_delete)(KR_ARG0(a0));
     }
 }
 
@@ -19241,7 +19249,7 @@ void BasePolyShape_doCommand(int *a0, int **a1) {
         a0[0x30 / 4] &= ~op;
         break;
     default:
-        CALL(Node_doCommand)();
+        CALL(Node_doCommand)(KR_ARG0(a0) KR_ARG(a1));
         break;
     }
 }
@@ -19369,11 +19377,11 @@ C:
 ONE:
     v1 = (int*)a1[1];
     if ((v0 = v1[0x4C/4]) != 8) {
-        CALL(Node_handleMsg)();
+        CALL(Node_handleMsg)(KR_ARG0(a0) KR_ARG(a1)); /* $a0 / $a1 untouched on both paths */
     }
     return;
 D:
-    CALL(Node_handleMsg)();
+    CALL(Node_handleMsg)(KR_ARG0(a0) KR_ARG(a1));
 }
 
 unsigned char BasePolyShape_getMatCodeChar_00052A4C(char *a0, int a1) {
@@ -20396,7 +20404,7 @@ void LightTarget_doCommand(char *a0, NodeMsg *a1) {
         a1->arg.payload = (char *)(p + 1);
         ((LightTarget *)a0)->mask = *p;
     } else {
-        CALL(Node_doCommand)();
+        CALL(Node_doCommand)(KR_ARG0(a0) KR_ARG(a1));
     }
 }
 
@@ -24277,7 +24285,7 @@ void math_mtx4Sub(float *a, float *b, int a2) {
  * `addiu a0,sp,0x28` recomputed in the delay slot); the 8-byte frame hole
  * comes for free (frame 0x68, no pad local). A single pointer for-loop
  * gives the a1-shared base; a single-level index loop fully unrolls. */
-void math_mtx4Transpose(float src[4][4]) {
+void math_mtx4Transpose(float src[4][4] KR_PARAM(int kr_a1)) {
     float dst[4][4];
     int i, j;
     for (i = 0; i < 4; i++) {
@@ -24285,7 +24293,7 @@ void math_mtx4Transpose(float src[4][4]) {
             dst[i][j] = src[j][i];
         }
     }
-    CALL(math_mtx4Copy)(dst);
+    CALL(math_mtx4Copy)(dst KR_ARG(kr_a1));
 }
 
 /* math_mtx4Inverse: 4x4-matrix normalize-by-scalar with degeneracy
@@ -24327,7 +24335,7 @@ void math_mtx4Inverse(int a0, float *m) {
     float as;
     int i;
     int t;
-    CALL(math_mtx4Adjugate)(a0);
+    CALL(math_mtx4Adjugate)(a0 KR_ARG(m));
     s = XCALL(gl_func_00000000_5e190s, math_mtx4Determinant)(m);
     as = (s < 0.0f) ? -s : s;
     if (as < *(float *)(GL_RODATA(0x204C))) {
@@ -24806,7 +24814,7 @@ void math_orthoF(f32 mf[4][4], f32 l, f32 r, f32 b, f32 t, f32 n, f32 f, f32 sca
 {
     int i, j;
 
-    XCALL(gl_func_00000000_5f3e0, math_mtx4Identity)();
+    XCALL(gl_func_00000000_5f3e0, math_mtx4Identity)(KR_ARG0(mf));
 
     mf[0][0] = 2/(r-l);
     mf[1][1] = 2/(t-b);
@@ -25762,7 +25770,7 @@ void ConsoleMgr_display(int *self) {
     v0 = (volatile int *)CONSOLEMGR(self)->input;
     if (v0[0x10 / 4] & 0x800) {
         if (v0[0x18 / 4] & 0x1) {
-            CALL(ConsoleMgr_prevWin)();
+            CALL(ConsoleMgr_prevWin)(KR_ARG0(self));
             v0 = (volatile int *)CONSOLEMGR(self)->input;
         }
         if (v0[0x18 / 4] & 0x2) {
@@ -26689,7 +26697,7 @@ int AnimData_readFrames(char *self, int a1, unsigned int a2, unsigned int a3) {
 extern int gl_func_00000000();
 void AnimData_waitFrames(int a0, int a1) {
     if (a1 != -1) {
-        CALL(fs_gdlWaitFile)(&gSysLib);
+        CALL(fs_gdlWaitFile)(&gSysLib KR_ARG(a1));
     }
 }
 

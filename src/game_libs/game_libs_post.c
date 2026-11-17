@@ -2370,8 +2370,8 @@ void AudioHeap_DiscardSequence(int key) {
     }
 }
 
-void AudioHeap_WritebackDCache(void) {
-    CALL(Audio_WritebackDCache)();
+void AudioHeap_WritebackDCache(KR_PARAM0(int kr_a0) KR_PARAM(int kr_a1)) {
+    CALL(Audio_WritebackDCache)(KR_ARG0(kr_a0) KR_ARG(kr_a1));
 }
 /* AudioHeap_AllocZeroedAttemptExternal: MATCHED 2026-05-31 — byte-identical to AudioHeap_AllocAttemptExternal; applied
  * its body (init v1=0; if(D[0x2178]) v1=cb(&D+0x2178); if(!v1) v1=cb(a0,a1); return v1). */
@@ -3261,7 +3261,7 @@ int y;
         return;
     }
     if (y == 0) {
-        CALL(AudioHeap_LoadLowPassFilter)(d);             /* AudioHeap_LoadLowPassFilter(d, x): $a1 = x untouched */
+        CALL(AudioHeap_LoadLowPassFilter)(d KR_ARG(x));   /* AudioHeap_LoadLowPassFilter(d, x): $a1 = x untouched */
         return;
     }
     if (x == 0) {
@@ -4895,7 +4895,7 @@ extern int gl_ref_0003773C();
 int AudioLoad_SyncLoadInstrument(int handle, int depth, int a2) {
     int *n;
     if (depth < 0x7F) {
-        n = (int *)CALL(Audio_GetInstrumentInner)(handle);
+        n = (int *)CALL(Audio_GetInstrumentInner)(handle KR_ARG(depth));
         if (n == 0) {
             return -1;
         }
@@ -6219,7 +6219,7 @@ extern int gl_func_00038604();
 extern int D_00000000;
 #define SL ((AudioSlowLoad *)obj)
 void AudioLoad_DmaSlowCopy(char *obj, int a1) {
-    CALL(Audio_InvalDCache)(SL->curRamAddr);
+    CALL(Audio_InvalDCache)(SL->curRamAddr KR_ARG(a1));
     CALL(gl_osCreateMesgQueue)(&SL->msgQueue, &SL->msg, 1);
     gl_func_00038604(SL->ioMesg, 0, 0, SL->curDevAddr, /* AudioLoad_Dma(&ioMesg, PRI_NORMAL, OS_READ, ...) */
                      SL->curRamAddr, a1, &SL->msgQueue,
@@ -7498,8 +7498,12 @@ int AudioThread_GetAsyncLoadStatus(int *a0) {
 }
 
 extern int gl_func_00000000();
+#ifdef PORT /* K&R pass-through parameters (plan 18.9) */
+int AudioThread_GetFontsForSequence(int kr_a0, int a1) {
+#else
 int AudioThread_GetFontsForSequence() {
-    return CALL(AudioLoad_GetFontsForSequence)();
+#endif
+    return CALL(AudioLoad_GetFontsForSequence)(KR_ARG0(kr_a0) KR_ARG(a1));
 }
 
 /* AudioThread_CheckSpecChange: 22-insn predicate. Loads via gl_func(&D_0+0x53C4,
@@ -10903,7 +10907,7 @@ void AudioSeq_SeqLayerProcessScript(AA30 *o) {
         o->h8--;
         if (o->b29) return;
         if (o->hA < o->h8) return;
-        CALL(Audio_SeqLayerNoteDecay)();
+        CALL(Audio_SeqLayerNoteDecay)(KR_ARG0(o));
         o->b29 = 1;
         return;
     }
@@ -11015,11 +11019,11 @@ extern int gl_func_00000000();
 void AudioSeq_SeqLayerProcessScriptStep1(char *o) {
     int st;
     if (!((SequenceLayer *)o)->continuousNotes) {
-        CALL(Audio_SeqLayerNoteDecay)();
+        CALL(Audio_SeqLayerNoteDecay)(KR_ARG0(o));
     } else {
         Note *p = ((SequenceLayer *)o)->note;
         if ((p != NULL) && (p->playbackState.wantedParentLayer == (SequenceLayer *)o)) {
-            CALL(Audio_SeqLayerNoteDecay)();
+            CALL(Audio_SeqLayerNoteDecay)(KR_ARG0(o));
         }
     }
     st = ((SequenceLayer *)o)->portamento.mode & ~0x80;
@@ -12539,8 +12543,8 @@ void snd_SetPlayer3FreqScaleFromStick(int a0, int a1) {
 
 /* snd_StopAudioCmds: 14-insn 2-call setup. func(); D_a=1; func(0xF8000000, 0). */
 extern int D_2DCF8_flag;
-void snd_StopAudioCmds(void) {
-    CALL(AudioThread_ResetAudioHeap)();
+void snd_StopAudioCmds(KR_PARAM0(int kr_a0)) {
+    CALL(AudioThread_ResetAudioHeap)(KR_ARG0(kr_a0));
     D_2DCF8_flag = 1;
     CALL(AudioThread_QueueCmdS32)(0xF8000000, 0);
 }
@@ -14195,10 +14199,10 @@ void snd_SetPlayer0Channel8IO1_30564(void) {
  * &D base directly (NOT a held pointer deref): the two `if (X) goto end`
  * arms each emit a `bnezl ...,end` likely-branch that hoists the epilogue's
  * `lw ra` into the delay slot. Byte-exact (16/16 words, reloc-filtered). */
-void snd_TriggerChannel8CueIfIdle(void) {
+void snd_TriggerChannel8CueIfIdle(KR_PARAM0(int kr_a0) KR_PARAM(int kr_a1) KR_PARAM(int kr_a2)) {
     if (SND_CUEQ(gSndCueQueues).fadeInFrames != 0) goto end;
     if (SND_CUEQ(gSndCueQueues).holdFrames != 0) goto end;
-    CALL(snd_TriggerChannel8Cue)();
+    CALL(snd_TriggerChannel8Cue)(KR_ARG0(kr_a0) KR_ARG(kr_a1) KR_ARG(kr_a2));
 end:
     return;
 }
@@ -15051,8 +15055,12 @@ void snd_HandleSeqEnd(int a, int b, int c) {
 }
 
 extern int gl_func_00000000();
+#ifdef PORT /* K&R pass-through parameters (plan 18.9) */
+int snd_AddSoundHeap(int kr_a0, int kr_a1) {
+#else
 int snd_AddSoundHeap() {
-    return CALL(AudioThread_InitExternalPool)();
+#endif
+    return CALL(AudioThread_InitExternalPool)(KR_ARG0(kr_a0) KR_ARG(kr_a1));
 }
 
 extern int gl_func_00000000();
@@ -16047,7 +16055,7 @@ void MCamera_doCommand(char *o, char *c) {
         *(int *)&((MCamera *)o)->target = val;
         return;
     }
-    CALL(Node_doCommand)(o);
+    CALL(Node_doCommand)(o KR_ARG(c)); /* $a1 = c: the default path branches straight to the jal */
 }
 
 /* MCamera_hostioParms: 27-insn 3-call wrapper. The float-promote "cap" was

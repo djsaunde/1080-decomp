@@ -505,7 +505,7 @@ int _Printf(char *(*prout)(char *, const char *, unsigned int), char *arg, const
 
 extern int gl_func_00000000();
 int gl_proutSprintf(int a0, int a1, int a2) {
-    return CALL(memcpy)(a0, a1) + a2;
+    return CALL(memcpy)(a0, a1 KR_ARG(a2)) + a2;
 }
 
 /* gl_sprintf: vsprintf-style varargs wrapper. MATCHED.

@@ -3679,7 +3679,7 @@ void RaceProcess_restartWithTimeout(RaceProcess *arg0, int arg1) {
     PadCtl *p;
     int *q;
 
-    CALL(RaceProcess_restart)(arg0);
+    CALL(RaceProcess_restart)(arg0 KR_ARG(arg1));
     state = (WorldRegistry *)GAMEFLOW(&gInputMgr)->game;
     q = (int *)state->players[0].rider;
     p = (PadCtl *)SNOWB(q)->input;
