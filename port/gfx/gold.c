@@ -20,9 +20,13 @@
  * gfx_setupMatTextures), loadtile (gfx_loadTexture's TexImage LoadTile and
  * LoadBlock dxt arms), sprite (Sprite_ctor / Sprite_display: G_ZS_PRIM +
  * G_SETPRIMDEPTH TEXRECTs), cull (CULL_FRONT, U64BGWall's G_CULLDL), splitz
- * (gfx_clearScreen per window) and fader (Fader_display's list verbatim). */
+ * (gfx_clearScreen per window) and fader (Fader_display's list verbatim).
+ *
+ * Run 834 (plan 19.9) adds fader_cpu: the Fader list over texels a CPU loop wrote with host u16 stores
+ * through PORT_RDP16, as Fader_buildTexture does (the convention for CPU-written RDP pixels). */
 
 #include "dlump.h"
+#include "../include/port.h" /* PORT_RDP16: the game's CPU texel stores (scene fader_cpu) */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1057,8 +1061,29 @@ static void *tex_fade1(void) { /* 32 x 32 I8 mask: a radial ramp, opaque at the 
     }
     return t;
 }
+static void fader_draw(void *t0, void *t1);
 static void scene_fader(void) {
-    void *t0 = tex_fade0(), *t1 = tex_fade1();
+    fader_draw(tex_fade0(), tex_fade1());
+}
+/* Plan 19.9: a CPU-generated texture, written as the game writes it. Fader_buildTexture's mode-0 fill stores
+ * the RGBA5551 value 1 (black, alpha 1) through host u16 stores, with PORT_RDP16 so the bytes are the
+ * big-endian texel Fast3D reads. The same texels built byte by byte (be16) must be identical, and the frame
+ * must dissolve to black (before the fix, host-order 1 read back as G = 4: dark green). */
+static void scene_fader_cpu(void) {
+    unsigned short *t0 = alloc(32 * 32 * 2);
+    unsigned char *ref = alloc(32 * 32 * 2);
+    int j;
+    for (j = 0; j != 0x400; j++) {
+        t0[j] = PORT_RDP16(1);
+        be16(ref + j * 2, rgba5551(0, 0, 0, 1));
+    }
+    if (memcmp(t0, ref, 32 * 32 * 2) != 0) {
+        fprintf(stderr, "gold: fader_cpu: PORT_RDP16 texels differ from the big-endian image\n");
+        exit(1);
+    }
+    fader_draw(t0, tex_fade1());
+}
+static void fader_draw(void *t0, void *t1) {
     frame_begin(FILL2(rgba5551(0, 0, 0, 1)));
     dp_rendermode(RM_OPA);
     sp_geom(G_SHADE | G_SHADING_SMOOTH);
@@ -1108,6 +1133,8 @@ static const Scene kScenes[] = {
     { "light", scene_light },       { "texgen", scene_texgen },   { "loadtile", scene_loadtile },
     { "sprite", scene_sprite },     { "cull", scene_cull },       { "splitz", scene_splitz },
     { "fader", scene_fader },
+    /* run 834 */
+    { "fader_cpu", scene_fader_cpu },
 };
 
 int main(int argc, char **argv) {
