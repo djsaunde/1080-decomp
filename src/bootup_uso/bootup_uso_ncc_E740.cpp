@@ -38,11 +38,18 @@ struct VO { char pad[0x28];
     virtual void v10(); virtual char *buf(); };
 #endif
 struct Obj { char pad[0x1C]; unsigned short *pix; };
+#ifdef PORT
+#include "port_fb.h" /* the framebuffer model (plan 19.10) */
+#endif
 extern "C" void ScreenThumbMat_grab_0000E740(Obj *self, int a1) {
     /* the 256x160 region at pixel (32, 58) of the 320-wide RGBA5551 frame buffer, sampled every
      * 4th pixel and every 5th row (byte offset 0x9140 = (58 * 320 + 32) * 2) */
     unsigned short *src = (unsigned short *)((VO *)GFX_E740->mainWindow)->buf() + (58 * 320 + 32);
     unsigned short *dst = self->pix;
+#ifdef PORT /* plan 19.10: the frame is read back into this image after the next task; the texels are rewritten */
+    port_fb_read_color(src - (58 * 320 + 32));
+    port_fb_texture_written(self->pix, 64 * 32 * 2);
+#endif
     for (int y = 0; y < 32; y++) {
         for (int x = 0; x < 64; x++) {
             *dst++ = *src;

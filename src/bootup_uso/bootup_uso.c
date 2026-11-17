@@ -4340,11 +4340,17 @@ extern char *gGfxLib_7D04_root[];
  * on GfxLib.mainWindow and indexes the result as a u16 RGBA5551 image: the frame buffer). */
 #define TV1_WIN (gGfxLib_7D04_root[6])
 extern float func_7D04_randf();
+#ifdef PORT
+#include "port_fb.h" /* the framebuffer model (plan 19.10) */
+#endif
 void Tv1Tmpl_stepPicture_00007D04(char *s0) {
     int a3 = ((Tv1Tmpl *)s0)->state;
     int k;
     ((Tv1Tmpl *)s0)->frameImage =
         ((u16 *(*)(char *))VT_SLOT(NODE(TV1_WIN)->vptr, 11).fn)(TV1_WIN + VT_SLOT(NODE(TV1_WIN)->vptr, 11).delta);
+#ifdef PORT /* plan 19.10: blitFrame samples the current window's colour buffer into both screens' texels */
+    port_fb_read_color(((Tv1Tmpl *)s0)->frameImage);
+#endif
     k = ((Tv1Tmpl *)s0)->state;
     if (k != 1) {
         if (k != 0) {
@@ -4379,7 +4385,12 @@ end:
      * the frame image is blitted into each screen material's texels (+0x1C, gdl/material.h) */
     FCALL(Tv1Tmpl_blitFrame_000077D0)(s0, *(int *)&((BaseMat *)*l)->texels, 0, a3); if (1) {}
     k = *(int *)&((Tv1Tmpl *)s0)->model; l = (int *)((Tv1Model *)k)->screens + 1;
-    FCALL(Tv1Tmpl_blitFrame_000077D0)(s0, *(int *)&((BaseMat *)*l)->texels, 1, a3); }
+    FCALL(Tv1Tmpl_blitFrame_000077D0)(s0, *(int *)&((BaseMat *)*l)->texels, 1, a3);
+#ifdef PORT /* plan 19.10: both screens' 64x32 RGBA16 texels were rewritten */
+    port_fb_texture_written(((BaseMat *)((Tv1Model *)k)->screens[0])->texels, 64 * 32 * 2);
+    port_fb_texture_written(((BaseMat *)((Tv1Model *)k)->screens[1])->texels, 64 * 32 * 2);
+#endif
+    }
     ((Tv1Tmpl *)s0)->state = a3;
 }
 

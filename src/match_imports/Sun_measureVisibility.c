@@ -1,6 +1,9 @@
 /* Native original-compiler source port from src/game_uso/game_uso.c. Target bytes unchanged. */
 #include "context_game_uso.h"
 #include "gdl/gfxlib.h"
+#ifdef PORT
+#include "port_fb.h" /* the framebuffer model (plan 19.10) */
+#endif
 void Sun_measureVisibility(GameUsoSentinelObject *obj) {
     int count = 0;
     /* import_8005C348 = bootup Bss+0x3C168, gGfxLib (uso-imports.py sites game) */
@@ -20,6 +23,7 @@ void Sun_measureVisibility(GameUsoSentinelObject *obj) {
         idx = (obj->y + ((B4Offset *)cursor)->row) * w + obj->x + ((B4Offset *)cursor)->column;
         if (idx > 0 && idx < w * h) {
 #ifdef PORT /* plan 19.9: the depth image is big-endian, like the N64's (the read-back stores it so) */
+            port_fb_read_depth(data, idx); /* plan 19.10: read back after the next task; this reads last frame's */
             if (data[idx] == PORT_RDP16(0xFFFC)) count++;
 #else
             if (data[idx] == 0xFFFC) count++;

@@ -10534,10 +10534,16 @@ void app_orthoZero_00042338(void) {
  * (`sh -2560(a0)`) instead of the pointer bump. See docs/IDO_CODEGEN.md
  * #same-line-inner-unrolled-loop-42374. */
 typedef unsigned short GridRow_42374[320];
+#ifdef PORT
+#include "port_fb.h" /* the framebuffer model (plan 19.10) */
+#endif
 void dbg_fillFbRect(int a0) {
     GridRow_42374 *g;
     int x, y;
     g = ((GridRow_42374 **)((ScreenWindow *)gGfx->mainWindow)->fbOwner)[a0 + 0x3D];
+#ifdef PORT /* plan 19.10: composited over the frame after the next task */
+    port_fb_cpu_wrote((void *)g, 50, 50, 100, 100);
+#endif
     for (x = 50; x < 150; x++) {
         for (y = 50; y < 150; y++) g[y][x] = 0xFFFF;
     }
@@ -11213,6 +11219,9 @@ void gfx_clearFbRect_00043468(int x, int y, int w, int h) {
     short *q;
     n = y * gGfxFbWidth_43468_a + x;
     p = (short *)((int *)(((int)gGfx->mainWindow) + 0xF4))[gGfx->fbIndex] + n;
+#ifdef PORT /* plan 19.10: composited over the frame after the next task */
+    port_fb_cpu_wrote((void *)((int *)(((int)gGfx->mainWindow) + 0xF4))[gGfx->fbIndex], x, y, w, h);
+#endif
     for (i = 0; i < h; i++) {
         for (j = 0; j < w; j++) { q = p; p = q + 1; *q = 0; }
         p += gGfxFbWidth_43468_a - w;
@@ -13595,6 +13604,9 @@ void gfx_drawFbSplash_00048184(GfxLib *a0) {
             dst[y * gGfxFbWidth_48184_w + x] = *p;
         }
     }
+#ifdef PORT /* plan 19.10: the whole cleared frame plus the centred 128x128 image */
+    port_fb_cpu_wrote(dst, 0, 0, gGfxFbWidth_48184_w, gGfxFbHeight_48184_h);
+#endif
 }
 
 /* gfx_addWindow: bounded queue append (ctr @+0x258, slots @+0x25C, cap 8;

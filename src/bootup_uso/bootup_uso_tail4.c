@@ -261,6 +261,9 @@ void Fader_start(char *s1, int a1, int a2) {
  * own counters i / j; the root load is followed by two empty blocks (ring
  * lever). Three all-zero alignment words follow (SUFFIX_BYTES_FORCE). */
 extern char *gGfxLib_13b20_root;
+#ifdef PORT
+#include "port_fb.h" /* the framebuffer model (plan 19.10) */
+#endif
 void Fader_buildTexture(char *arg0) {
     char *o;
     char *vt;
@@ -272,6 +275,12 @@ void Fader_buildTexture(char *arg0) {
     if (1) { }
     vt = (char *)NODE(o)->vptr;
     pal = ((u16 *(*)(char *, char *))VT_SLOT(vt, 11).fn)(o + VT_SLOT(vt, 11).delta, arg0); /* slot 11: the palette */
+#ifdef PORT /* plan 19.10: slot 11 is the main window's colour buffer (the frame); tex0 is rewritten below */
+    if (FADER(arg0)->mode != 0) {
+        port_fb_read_color(pal);
+    }
+    port_fb_texture_written(FADER(arg0)->texture, 0x400 * 2);
+#endif
     if (FADER(arg0)->mode != 0) {
         for (i = 0; i != 0x400; i++) {
             FADER(arg0)->texture[i] = pal[FADER(arg0)->screenIdx[i]];

@@ -24,6 +24,9 @@ extern char gGfxLib_46790_g[];
 extern unsigned char D_46790_font[];
 }
 static inline void put(unsigned short *&d, unsigned short v) { *d++ = v; }
+#ifdef PORT
+#include "port_fb.h" /* the framebuffer model (plan 19.10) */
+#endif
 extern "C" void gfx_drawFbChar_00046790(char *o, unsigned char ch, int x, int y) {
     unsigned short **q;
     unsigned short *dst;
@@ -34,6 +37,9 @@ extern "C" void gfx_drawFbChar_00046790(char *o, unsigned char ch, int x, int y)
 
     if (1) { q = &dst; }
     dst = ((Window *)GFXLIB(gGfxLib_46790_g)->mainWindow)->colorBuf[GFXLIB(o)->fbIndex]; /* the main window's colour buffer for this frame */
+#ifdef PORT /* plan 19.10: the 8x8 glyph is composited over the frame after the next task */
+    port_fb_cpu_wrote(dst, x, y, 8, 8);
+#endif
     dst += y * 320 + x;
     c = ch;
     if (c < 128) {
