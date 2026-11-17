@@ -18,11 +18,6 @@ struct SV {
     static void ct3(SV *p, float a, float b, float c) { if (p != 0) { p->x = a; p->y = b; p->z = c; } }
     SV &operator=(SV o) { x = o.x; y = o.y; z = o.z; return *this; }
     void set(float a, float b, float c) { x = a; y = b; z = c; }
-    /* run 727 (0x718C's pos / vel stores): the two unused middle parameters take the next two pooled float words,
-     * so c lands in the |a| word instead of the operator* y-product word. With c in the y-product word, that word's
-     * uopt priority beat the |a| word's and the whole a1 / a2 colouring shifted. (A named `float cc = c` does the same
-     * colouring but adds two frame words.) */
-    void set5(float a, float b, float d1, float d2, float c) { x = a; y = b; z = c; }
     SV operator*(float s) const { SV r; ct3(&r, x * s, y * s, z * s); return r; }
     SV &operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
     SV &operator+=(const SV &v) { x += v.x; y += v.y; z += v.z; return *this; }
@@ -45,8 +40,7 @@ struct SVb {
     void lerpComp(float r, float px, float py, float pz, const SVb &a) { x = (a.x - px) * r + px; y = (a.y - py) * r + py; z = (a.z - pz) * r + pz; }
     /* per-component lerp (0x718C): one materialised parameter p per statement, so each component loads into the
      * same pool word (f2) right before its use. */
-    /* run 727: p by const reference takes a pointer word, so the w statement's set() gets three new float words */
-    static float lerpF(float p, float q, float r) { float d = q - p; return d * r + p; }  /* run 727: named d */
+    static float lerpF(float p, float q, float r) { return (q - p) * r + p; }
     void lerpEach(const SVb &a, float r) { x = lerpF(x, a.x, r); y = lerpF(y, a.y, r); z = lerpF(z, a.z, r); }
 };
 /* run 723: the code-free `if (1) {}` ends uopt's block after set(), so the op+ return copy's &temp (0x6B28 sp+52)
@@ -82,6 +76,11 @@ struct SPart {
     /* 0x54 */ float alphaVel;
     void setLife(float l, float d) { life = l; decay = d; }
     void setAlpha(float a, float v) { alpha = a; alphaVel = v; }
+    /* 0x718C (run 732): size / fadeAt / unk3C, life / decay and alpha / alphaVel each through an inline, so the
+     * loaded fields go through edg's pooled float words and take the target's uopt colours (f16 / f16 / f12). The
+     * unused middle parameter of setAlpha3 shifts alphaVel to the third pooled word (f12, as in the target). */
+    void setSz3(float s, float u, float f) { size = s; fadeAt = f; unk3C = u; }
+    void setAlpha3(float a, float unused, float v) { alpha = a; alphaVel = v; }
 };
 extern "C" void gl_func_00000000_snow_norm(SV *);  /* math_vec3Normalize: blank jal */
 extern "C" SPart *gl_func_00000000_snow_pool(void *);  /* SnowPool_alloc_000006D0 / SnowPool_oldest_00000680: pointer-return blank jal */
@@ -258,8 +257,9 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
  * v318 * f208 + v114 * (1 + randf * RoData+0xB0) * f210 * |a| * (a > 0 ? -1 : 1) + v3B0 * f20C * |a|, fields
  * from +0x1DC..+0x1F8, alpha 128 + randf * 127, colour lerped from the camera colour to +0x224 by +0x220.
  * NM (run 727: 471 words and frame 368 = target). Since run 727 the |speed| / op* scalar LR is f16, |a| f0 and
- * the op* products f2 / f12 / f14 as in the target (set5, mulS, no `int sc[2]` pad). Left: the w / a1 temporaries
- * sit 4..8 bytes off, the early ramp r / lo colours, the lerp and colour-section FP ring. */
+ * the op* products f2 / f12 / f14 as in the target (mulS, no `int sc[2]` pad). Run 732: every register matches
+ * (named ramp d, setSz3 / setLife / setAlpha3, three colour c's); left are the frame offsets of the a1 / u / w /
+ * a2 temporaries. */
 extern "C" float snow_ro_B0;  /* RoData+0xB0: the 0x718C spin scale */
 struct SnowCamC {
     char pad000[0x318];
@@ -325,7 +325,8 @@ extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
             a = 1.0f;
         }
     } else {
-        r = ((sp < 0.0f ? -sp : sp) - t->lo) / (t->hi - t->lo);
+        float d = t->hi - t->lo; /* run 732: named d gives the target's lo f12 / d f14 / r f2 */
+        r = ((sp < 0.0f ? -sp : sp) - t->lo) / d;
         if (sp < 0.0f) {
             a = -((1.0f - t->f21C) * r + t->f21C);
         } else {
@@ -363,26 +364,22 @@ extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
             }
             w += a2;
             w += a1;
-            p->pos.set5(u.x, u.y, u.x, u.x, u.z);
-            p->vel.set5(w.x, w.y, w.x, w.x, w.z);
-            p->size = t->f1F8;
-            p->unk3C = 1.0f;
-            p->fadeAt = 256.0f;
+            p->pos.set(u.x, u.y, u.z);
+            p->vel.set(w.x, w.y, w.z);
+            p->setSz3(t->f1F8, 1.0f, 256.0f);
             p->sizeVel = t->f1DC;
             p->gravity = t->f1E0;
-            p->decay = t->f1E8;
-            p->life = 256.0f;
+            p->setLife(256.0f, t->f1E8);
             r = gl_func_00000000_snow_randf();
-            p->alphaVel = t->f1EC;
-            p->alpha = 128.0f + r * 127.0f;
+            p->setAlpha3(128.0f + r * 127.0f, t->f1EC, t->f1EC);
             {
-                float c, f = t->f220;
-                c = t->cam->col.c[0];
-                p->col.c[0] = (int)(c + (t->col[0] * 255.0f - c) * f);
-                c = t->cam->col.c[1];
-                p->col.c[1] = (int)(c + (t->col[1] * 255.0f - c) * f);
-                c = t->cam->col.c[2];
-                p->col.c[2] = (int)(c + (t->col[2] * 255.0f - c) * f);
+                float c0, c1, c2, f = t->f220; /* run 732: three c's, three LRs (target f14 / f16 / f18) */
+                c0 = t->cam->col.c[0];
+                p->col.c[0] = (int)(c0 + (t->col[0] * 255.0f - c0) * f);
+                c1 = t->cam->col.c[1];
+                p->col.c[1] = (int)(c1 + (t->col[1] * 255.0f - c1) * f);
+                c2 = t->cam->col.c[2];
+                p->col.c[2] = (int)(c2 + (t->col[2] * 255.0f - c2) * f);
             }
         }
     }
