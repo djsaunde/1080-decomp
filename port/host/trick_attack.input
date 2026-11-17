@@ -3,6 +3,8 @@
 # Tied to the exact race physics (regenerate: port/tools/steer-search.py -b <build> --mode trick).
 # Each "jump + grab" window: A (crouch) 20 steps then released = hop, B (grab) held in the air;
 # the trick is the grab + stick direction (include/game/tricktable.h, e.g. B + up = NOSE GRAB).
+# Run 857: the search steers through the "chk" checkpoints (each one passed between its posts adds
+# its seconds to the countdown; the trace's cd=); a window that misses one is backed out.
 PADS 1
 F 480:3 START          # title "Press START" -> language select
 F 560:3 A              # English
@@ -14,33 +16,73 @@ F 1100:3 A             # rider confirm -> Select Board
 F 1200:3 A             # board -> Select Course
 F 1350:3 A             # the default course -> race load; race state 1 at ~1424
 F 1424-1483 STICK 0,80
-F 1484-1543 STICK -80,0
-F 1484-1503 A
-F 1499-1534 B
-F 1544-1603 STICK 0,80
-F 1604-1663 STICK 80,0
-F 1604-1623 A
-F 1619-1654 B
+F 1484-1543 STICK 0,80
+F 1544-1603 STICK 0,0
+F 1544-1563 A
+F 1559-1594 B
+F 1604-1663 STICK 0,80
 F 1664-1723 STICK 0,80
-F 1724-1783 STICK -40,0
-F 1724-1743 A
-F 1739-1774 B
+F 1724-1783 STICK 0,80
 F 1784-1843 STICK 0,0
 F 1784-1803 A
 F 1799-1834 B
-F 1844-1903 STICK 80,0
-F 1844-1863 A
-F 1859-1894 B
-F 1904-1963 STICK 0,80
-F 1964-2023 STICK 0,80
-F 2024-2083 STICK 40,0
-F 2024-2043 A
-F 2039-2074 B
-F 2084-2143 STICK 0,80
-F 2144-2203 STICK 0,80
-F 2204-2263 STICK 0,0
-F 2204-2223 A
-F 2219-2254 B
-F 2264-2323 STICK -40,80
-# RACE END 2367   (race state 2: Time Up)
-# END 2667
+F 1844-1903 STICK 40,80
+F 1904-1963 STICK -80,80
+F 1964-2023 STICK 80,0
+F 1964-1983 A
+F 1979-2014 B
+F 2024-2083 STICK 0,80
+F 2084-2143 STICK -40,0
+F 2084-2103 A
+F 2099-2134 B
+F 2144-2203 STICK -80,80
+F 2204-2263 STICK 0,80
+F 2264-2323 STICK 0,0
+F 2264-2283 A
+F 2279-2314 B
+F 2324-2383 STICK 0,80
+F 2384-2443 STICK 0,80
+F 2444-2503 STICK 0,0
+F 2444-2463 A
+F 2459-2494 B
+F 2504-2563 STICK 40,80
+F 2564-2623 STICK 0,80
+F 2624-2683 STICK 40,80
+F 2684-2743 STICK 40,80
+F 2744-2803 STICK 40,0
+F 2744-2763 A
+F 2759-2794 B
+F 2804-2863 STICK 0,80
+F 2864-2923 STICK -40,0
+F 2864-2883 A
+F 2879-2914 B
+F 2924-2983 STICK 0,0
+F 2924-2943 A
+F 2939-2974 B
+F 2984-3043 STICK 0,80
+F 3044-3103 STICK 80,0
+F 3044-3063 A
+F 3059-3094 B
+F 3104-3163 STICK -80,0
+F 3104-3123 A
+F 3119-3154 B
+F 3164-3223 STICK 0,80
+F 3224-3283 STICK 0,80
+F 3284-3343 STICK 40,80
+F 3344-3403 STICK 0,80
+F 3404-3463 STICK 0,0
+F 3404-3423 A
+F 3419-3454 B
+F 3464-3523 STICK 0,80
+F 3524-3583 STICK -40,0
+F 3524-3543 A
+F 3539-3574 B
+F 3584-3643 STICK -80,0
+F 3584-3603 A
+F 3599-3634 B
+F 3644-3703 STICK 0,0
+F 3644-3663 A
+F 3659-3694 B
+# RACE END 3730   (race state 2: Time Up or the goal)
+# CHECKPOINTS 3   (countdown extensions; port/tools/modes-check.py wants at least this many)
+# END 4030

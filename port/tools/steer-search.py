@@ -45,7 +45,19 @@ score; the countdown ends the run).
 --mode match (run 853): Match Race (flow mode 3, mgrproc) against the CPU rider (SnowAI, the trace's
 e1 / r1), level Normal, the first course (Crystal Lake).  The same window search as Time Attack
 (the player's pct + health; a retire is out); the tail after the player's goal only presses A
-through the result screens (`# GOAL`, `# END`).
+through the result screens (`# GOAL`, `# END`).  Run 857: 30-step windows, 11 stick states with y
+centred (x 0, +-17, +-24, +-32, +-48, +-80: the CPU rider steers with |stickX| mostly under 0.15 and
+stickY 0; STEER_MATCH_ACTS=wide adds lean / crouch), the score adds STEER_SPEED_W (0.05) per km/h,
+takes STEER_CRASH_W (50) off a window that loses health and STEER_LINE_W (0.001) per unit of x off
+the CPU rider's line (beyond 500).  The script gets `# WIN` when the player finishes first.
+
+Run 857 (--mode trick / contest): the score is STEER_PCT_W (8) x pct + points / 20 + health / 10 +
+2 per second left on the countdown (the trace's cd=: DataManager +0xA0), minus 1 per 400 units of x
+off the next gate's line within 20000 units of it (a "chk" checkpoint must be crossed between its
+posts, RaceTracker_passCheckpoints / CheckpointCyl_isBetweenPosts; a slalom gate on its side,
+RaceTracker_passGates).  In Trick Attack a candidate that crosses a checkpoint's line outside the
+posts is out (backtracking as in --mode time), and the script records `# CHECKPOINTS n`, the
+countdown extensions, for port/tools/modes-check.py.
 """
 import argparse, os, re, shutil, struct, subprocess, sys, tempfile, time
 from concurrent.futures import ThreadPoolExecutor
@@ -86,6 +98,8 @@ TRICK_HEAD = """\
 # Tied to the exact race physics (regenerate: port/tools/steer-search.py -b <build> --mode trick).
 # Each "jump + grab" window: A (crouch) 20 steps then released = hop, B (grab) held in the air;
 # the trick is the grab + stick direction (include/game/tricktable.h, e.g. B + up = NOSE GRAB).
+# Run 857: the search steers through the "chk" checkpoints (each one passed between its posts adds
+# its seconds to the countdown; the trace's cd=); a window that misses one is backed out.
 PADS 1
 F 480:3 START          # title "Press START" -> language select
 F 560:3 A              # English
@@ -100,8 +114,10 @@ F 1350:3 A             # the default course -> race load; race state 1 at ~1424
 TRICK_FIRST = 1424
 
 MATCH_HEAD = """\
-# Match Race vs the CPU rider (port/tools/steer-search.py --mode match; run 853), level Normal,
+# Match Race vs the CPU rider (port/tools/steer-search.py --mode match; runs 853, 857), level Normal,
 # course 1 (Crystal Lake).  Format: port/host/input_script.c; steps are SysLib.frameCount.
+# Run 857: 30-step windows of fine steering, stick y centred: the player wins ("You Win! Advance
+# to next round"), the A presses go on to Round 2 (Crystal Peak).
 # Tied to the exact race physics (regenerate: port/tools/steer-search.py -b <build> --mode match).
 # Start from a fresh directory (a saved SRAM skips the language menu and shifts every step).
 PADS 1
@@ -135,6 +151,13 @@ F 1300:3 A             # board confirm -> race load (flow 3, 5); race state 1 at
 CONTEST_FIRST = 1493
 MATCH_TAIL_PRESSES = 8      # A every 120 steps after the goal: the result / standings screens
 # (stick x, stick y, jump + grab)
+# --mode match (run 857): fine steering with the stick y centred, as the CPU rider (SnowAI) rides
+# (its stickX mostly within +-0.15, stickY 0: a 60-step window of full lean or crouch loses to it);
+# raw 17 is just past the pad's 0.2 dead zone.  STEER_MATCH_ACTS=wide adds y 80 / -80.  (x, y, button)
+MATCH_ACTS = [(x, 0, '') for x in (0, -17, 17, -24, 24, -32, 32, -48, 48, -80, 80)]
+if os.environ.get('STEER_MATCH_ACTS') == 'wide':
+    MATCH_ACTS += [(x, y, '') for y in (80, -80) for x in (0, -20, 20, -40, 40, -80, 80)]
+SPEED_W = float(os.environ.get('STEER_SPEED_W', 0.05))   # --mode match: score per km/h at the lookahead end
 TRICK_ACTS = [(x, 80, 0) for x in (0, -40, 40, -80, 80)] + [(x, 0, 1) for x in (0, -40, 40, -80, 80)]
 
 LINE = re.compile(r'^F (\d+) .*?race=(\d+),.*? e0=([0-9a-f]{8}),([0-9a-f]{8}),(-?\d+),(-?\d+)(?:,(-?\d+),(-?\d+))?')
@@ -144,9 +167,16 @@ def f32(h):
     return struct.unpack('>f', bytes.fromhex(h))[0]
 
 
+CD = re.compile(r' cd=(-?\d+),(\d+),([0-9a-f]{8}),([0-9a-f]{8}),([0-9a-f]{8}),([0-9a-f]{8}),(-?\d+)')
+R0 = re.compile(r' r0=([0-9a-f]{8}),([0-9a-f]{8}),([0-9a-f]{8}),')
+E1 = re.compile(r' e1=([0-9a-f]{8}),(-?\d+),')
+
+
 def last_state(path):
-    """(step, raceState, pct, finished, health) of the last line with an e0= field, and the goal
-    step (first line with pct >= 100), or None"""
+    """(step, raceState, pct, finished, health, points, cd, r0, e1, speed) of the last line with an e0=
+    field, and the goal step (first line with pct >= 100), or None.  cd: (countdown ms, chk gates
+    left, chk x, chk z, slalom x, slalom z, slalom flags) or None; r0: rider 0 (x, z) or None;
+    e1: (pct, finished) of entries[1] (the Match Race CPU rider) or None"""
     last, goal = None, None
     try:
         fh = open(path, errors='replace')
@@ -155,16 +185,46 @@ def last_state(path):
     for ln in fh:
         m = LINE.match(ln)
         if m:
+            c, r, e = CD.search(ln), R0.search(ln), E1.search(ln)
             last = (int(m.group(1)), int(m.group(2)), f32(m.group(3)), int(m.group(5)), int(m.group(6)),
-                    int(m.group(7) or 0) + int(m.group(8) or 0))
+                    int(m.group(7) or 0) + int(m.group(8) or 0),
+                    c and (int(c.group(1)), int(c.group(2)), f32(c.group(3)), f32(c.group(4)),
+                           f32(c.group(5)), f32(c.group(6)), int(c.group(7))),
+                    r and (f32(r.group(1)), f32(r.group(3))),
+                    e and (f32(e.group(1)), int(e.group(2))), f32(m.group(4)))
             if goal is None and last[2] >= 100.0:
                 goal = last[0]
     return last, goal
 
 
+PCT_W = float(os.environ.get('STEER_PCT_W', 8))   # --mode trick / contest: course progress weight
+GATE_NEAR = 20000.0     # course units (world z) ahead of the rider: steer for the next gate
+GATE_W = 1.0 / 400      # score per unit of x on the wrong side of a gate
+
+
+def gate_score(st):
+    """--mode trick / contest: 2 per second on the countdown (a "chk" checkpoint in Trick Attack, a
+    cleared slalom gate in Contest extends it), minus GATE_W per unit of x the rider is off the next
+    gate's line when it is within GATE_NEAR (between the chk posts, about +-880 around x; on the
+    slalom gate's side: x - 200 and below for flags & 1, x + 200 and above otherwise)"""
+    cd, r0 = st[6], st[7]
+    if cd is None:
+        return 0.0
+    v = 2.0 * max(cd[0], 0) / 1000.0
+    if r0 is not None:
+        x, z = r0
+        if cd[1] > 0 and 0 <= cd[3] - z < GATE_NEAR:
+            v -= GATE_W * max(0.0, abs(x - cd[2]) - 600)
+        if cd[5] != 0 and 0 <= cd[5] - z < GATE_NEAR:
+            v -= GATE_W * (max(0.0, x - (cd[4] - 200)) if cd[6] & 1 else max(0.0, (cd[4] + 200) - x))
+    return v
+
+
 def seg_lines(s):
-    """one window: (first, last, x, y[, jump + grab])"""
+    """one window: (first, last, x, y[, jump + grab[, button held]])"""
     t, e, x, y = s[:4]
+    if len(s) > 5 and s[5]:
+        return 'F %d-%d STICK %d,%d\nF %d-%d %s\n' % (t, e, x, y, t, e, s[5])
     if len(s) > 4 and s[4]:
         return ('F %d-%d STICK %d,%d\nF %d-%d A\nF %d-%d B\n'
                 % (t, e, x, y, t, min(t + 19, e), min(t + 15, e), min(t + 50, e)))
@@ -195,7 +255,34 @@ class Runner:
         return last_state(os.path.join(d, 'state.log'))
 
 
-def score(st, goal):
+CRASH_W = float(os.environ.get('STEER_CRASH_W', 50))   # --mode match: a crash (health lost) in the window
+LINE_W = float(os.environ.get('STEER_LINE_W', 0.001))  # --mode match: per unit of x off the CPU rider's line
+CPU_PATH = []           # --mode match: the CPU rider's (z, x) along the course, from a full-length run
+
+
+def cpu_path(path):
+    """[(z, x)] of rider 1 (r1=, the Match Race CPU) in a state.log, z increasing"""
+    out = []
+    for ln in open(path, errors='replace'):
+        m = re.search(r' r1=([0-9a-f]{8}),[0-9a-f]{8},([0-9a-f]{8}),', ln)
+        if m and ' race=1,' in ln:
+            z, x = f32(m.group(2)), f32(m.group(1))
+            if not out or z > out[-1][0]:
+                out.append((z, x))
+    return out
+
+
+def line_off(x, z):
+    """|x - the CPU's x where it was at this z| (0 without a path or past its ends)"""
+    import bisect
+    i = bisect.bisect_left(CPU_PATH, (z,))
+    if i <= 0 or i >= len(CPU_PATH):
+        return 0.0
+    (z0, x0), (z1, x1) = CPU_PATH[i - 1], CPU_PATH[i]
+    return abs(x - (x0 + (x1 - x0) * (z - z0) / max(z1 - z0, 1e-6)))
+
+
+def score(st, goal, match=False, hp0=None):
     if st is None:
         return None
     step, race, pct, fin, hp = st[:5]
@@ -203,7 +290,11 @@ def score(st, goal):
         return 1e9 - goal                      # earliest goal wins
     if hp <= 0 or race == 2:
         return None                            # retired (or the race ended short of the goal)
-    return pct + 0.1 * min(hp, 100)
+    if not match:
+        return pct + 0.1 * min(hp, 100)
+    off = line_off(*st[7]) if st[7] else 0.0
+    return (pct + 0.1 * min(hp, 100) + SPEED_W * st[9] - (CRASH_W if hp0 is not None and hp < hp0 else 0.0)
+            - LINE_W * max(0.0, off - 500))
 
 
 def main():
@@ -211,8 +302,8 @@ def main():
     ap.add_argument('-b', '--build', required=True, help='PORT_LINK=ON build dir (holds tenshoe)')
     ap.add_argument('-o', '--out', default=os.path.join(GAME, 'port/host/race_crystal_lake.input'))
     ap.add_argument('-r', '--rom', default=os.path.join(GAME, 'baserom.z64'))
-    ap.add_argument('-w', '--window', type=int, default=60)
-    ap.add_argument('-j', '--jobs', type=int, default=len(ACTS))
+    ap.add_argument('-w', '--window', type=int, default=None, help='steps per window (default 60; --mode match 30)')
+    ap.add_argument('-j', '--jobs', type=int, default=None, help='parallel runs (default: one per stick state)')
     ap.add_argument('--budget', type=float, default=1200, help='wall seconds (default 1200)')
     ap.add_argument('--last', type=int, default=9000, help='give up past this step (default 9000)')
     ap.add_argument('--keep-prefix', type=int, default=0,
@@ -231,7 +322,9 @@ def main():
         if a.out == os.path.join(GAME, 'port/host/race_crystal_lake.input'):
             a.out = os.path.join(GAME, 'port/host/%s.input' % ('trick_attack' if a.mode == 'trick' else 'contest'))
         return trick_main(a, *((TRICK_HEAD, TRICK_FIRST) if a.mode == 'trick' else (CONTEST_HEAD, CONTEST_FIRST)))
-    W = a.window
+    match = a.mode == 'match'
+    acts = MATCH_ACTS if match else [(x, y, '') for x, y in ACTS]
+    W = a.window or (30 if match else 60)
     work = tempfile.mkdtemp(prefix='steer-search-')   # under $TMPDIR
     R = Runner(a.build, a.rom, work)
 
@@ -254,30 +347,42 @@ def main():
         shutil.rmtree(work, ignore_errors=True)
         return
     stack = []          # per committed window: the remaining ranked alternatives
-    t0, goal, nruns = time.time(), None, 0
-    with ThreadPoolExecutor(a.jobs) as ex:
+    t0, goal, nruns, hp0 = time.time(), None, 0, None
+    if match and LINE_W > 0:    # the CPU rider's line: one run of the head with the stick centred
+        R.run(script([(t, a.last, 0, 0)]), a.last, 0)
+        CPU_PATH[:] = cpu_path(os.path.join(work, 'c0', 'state.log'))
+        print('CPU line: %d points' % len(CPU_PATH), flush=True)
+    with ThreadPoolExecutor(a.jobs or len(acts)) as ex:
         while time.time() - t0 < a.budget and t < a.last:
-            jobs = [(script(segs + [(t, t + 2 * W - 1, x, y)]), t + 2 * W, k) for k, (x, y) in enumerate(ACTS)]
+            jobs = [(script(segs + [(t, t + 2 * W - 1, x, y, 0, b)]), t + 2 * W, k) for k, (x, y, b) in enumerate(acts)]
             res = list(ex.map(lambda j: R.run(*j), jobs)); nruns += len(jobs)
-            ranked = sorted(((score(st, g), act, st, g) for act, (st, g) in zip(ACTS, res)
-                             if score(st, g) is not None), key=lambda r: -r[0])
+            ranked = sorted(((score(st, g, match, hp0), act, st, g) for act, (st, g) in zip(acts, res)
+                             if score(st, g, match, hp0) is not None), key=lambda r: -r[0])
             while not ranked:   # every candidate retires: back up one window, take its next best
                 if not stack:
                     sys.exit('steer-search: no candidate survives the first window at step %d' % t)
                 ranked = stack.pop(); segs.pop(); t -= W
                 print('  backtrack to step %d (%d alternatives left)' % (t, len(ranked)), flush=True)
             sc, act, st, g = ranked[0]
-            segs.append((t, t + W - 1, act[0], act[1])); stack.append(ranked[1:])
-            print('t=%d stick=%d,%d -> step %d race %d pct %.2f health %d%s' % (
-                t, act[0], act[1], st[0], st[1], st[2], st[4], '  GOAL at %d' % g if g else ''), flush=True)
+            segs.append((t, t + W - 1, act[0], act[1], 0, act[2])); stack.append(ranked[1:])
+            hp0 = st[4]         # --mode match: a later window that loses health counts as a crash
+            print('t=%d stick=%d,%d%s -> step %d race %d pct %.2f health %d speed %.0f%s%s' % (
+                t, act[0], act[1], ' ' + act[2] if act[2] else '', st[0], st[1], st[2], st[4], st[9],
+                ' cpu %.2f%s' % (st[8][0], ' (finished)' if st[8][1] else '') if st[8] else '',
+                '  GOAL at %d' % g if g else ''), flush=True)
             if g is not None and g < t + W:
                 goal = g; break
             t += W
     if goal is None:
         sys.exit('steer-search: no goal within the budget (reached step %d; %d runs; scratch %s)' % (t, nruns, work))
-    segs[-1] = (segs[-1][0], goal, segs[-1][2], segs[-1][3])   # trim the last window to the goal
+    segs[-1] = (segs[-1][0], goal) + tuple(segs[-1][2:])   # trim the last window to the goal
     if a.mode == 'match':
+        R.run(script(segs), goal + 300, 0)
+        cpu = cpu_finish(os.path.join(work, 'c0', 'state.log'))
         tail = '# GOAL %d   (entries[0].pct reaches 100)\n' % goal
+        if cpu is None or goal < cpu:   # port/tools/modes-check.py then requires the win
+            tail += '# WIN   (the player finishes first: the CPU rider %s)\n' % (
+                'finishes at %d' % cpu if cpu else 'has not finished')
         for i in range(MATCH_TAIL_PRESSES):
             tail += press(goal + 300 + 120 * i, 'A', 'result screens')
         end = goal + 300 + 120 * MATCH_TAIL_PRESSES + 200
@@ -291,33 +396,69 @@ def main():
     shutil.rmtree(work, ignore_errors=True)
 
 
+def chk_misses(path, after):
+    """Trick Attack: the "chk" checkpoints passed after step `after` without a countdown extension
+    (the trace's cd= gates count drops while the countdown does not jump up: the rider crossed the
+    gate's line outside its posts, RaceTracker_passCheckpoints / CheckpointCyl_isBetweenPosts)"""
+    misses, prev = 0, None
+    for ln in open(path, errors='replace'):
+        c = CD.search(ln)
+        if not c:
+            continue
+        cur = (int(ln.split()[1]), int(c.group(1)), int(c.group(2)))
+        if prev and cur[0] > after and cur[2] < prev[2] and cur[1] <= prev[1]:
+            misses += 1
+        prev = cur
+    return misses
+
+
+def cpu_finish(path):
+    """the first step entries[1] (the Match Race CPU rider) has finished > 0, or None"""
+    for ln in open(path, errors='replace'):
+        e = E1.search(ln)
+        if e and int(e.group(2)) > 0:
+            return int(ln.split()[1])
+    return None
+
+
 def trick_main(a, head, first):
-    """--mode trick: greedy windows over TRICK_ACTS, score = pct + points / 20 (+ health), until
-    the countdown ends the race (race state 2)."""
-    W = a.window
+    """--mode trick / contest: windows over TRICK_ACTS, score = PCT_W x pct + points / 20 (+ health)
+    + gate_score (the countdown, the next gate's line), until the race ends (race state 2: Time Up
+    or the goal).  Trick Attack: a candidate that misses a "chk" checkpoint is out; when every
+    candidate of a window is out, back up one window and take its next best (as --mode time)."""
+    W = a.window or 60
     work = tempfile.mkdtemp(prefix='steer-search-')
     R = Runner(a.build, a.rom, work)
+    trick = head is TRICK_HEAD
     def sc(st):
         if st is None or st[4] <= 0:
             return None
-        return st[2] + st[5] / 20.0 + 0.1 * min(st[4], 100)
-    segs, t, t0, nruns, end = [], first, time.time(), 0, None
-    with ThreadPoolExecutor(min(a.jobs * 2, len(TRICK_ACTS))) as ex:
+        return PCT_W * st[2] + st[5] / 20.0 + 0.1 * min(st[4], 100) + gate_score(st)
+    def run(kc):
+        st, g = R.run(script(kc[1], head=head), t + 2 * W, kc[0])
+        if trick and st is not None and chk_misses(os.path.join(work, 'c%d' % kc[0], 'state.log'), t) > 0:
+            return None, g
+        return st, g
+    segs, stack, t, t0, nruns, end = [], [], first, time.time(), 0, None
+    with ThreadPoolExecutor(min((a.jobs or 5) * 2, len(TRICK_ACTS))) as ex:
         while time.time() - t0 < a.budget and t < a.last:
             cands = [segs + [(t, t + 2 * W - 1, x, y, j)] for (x, y, j) in TRICK_ACTS]
-            res = list(ex.map(lambda kc: R.run(script(kc[1], head=head), t + 2 * W, kc[0]),
-                              enumerate(cands)))
+            res = list(ex.map(run, enumerate(cands)))
             nruns += len(cands)
             ranked = sorted(((sc(st), k, st) for k, (st, g) in enumerate(res) if sc(st) is not None),
                             key=lambda r: -r[0])
-            if not ranked:
-                sys.exit('steer-search: every candidate failed at step %d (scratch %s)' % (t, work))
+            while not ranked:
+                if not stack:
+                    sys.exit('steer-search: every candidate failed at step %d (scratch %s)' % (t, work))
+                ranked = stack.pop(); segs.pop(); t -= W
+                print('  backtrack to step %d (%d alternatives left)' % (t, len(ranked)), flush=True)
             _, k, st = ranked[0]
             x, y, j = TRICK_ACTS[k]
-            segs.append((t, t + W - 1, x, y, j))
-            print('t=%d stick=%d,%d%s -> step %d race %d pct %.2f points %.0f' % (
-                t, x, y, ' jump+grab' if j else '', st[0], st[1], st[2], st[5]), flush=True)
-            if st[1] == 2:      # the countdown ran out within the lookahead: find the end step
+            segs.append((t, t + W - 1, x, y, j)); stack.append(ranked[1:])
+            print('t=%d stick=%d,%d%s -> step %d race %d pct %.2f points %.0f countdown %s' % (
+                t, x, y, ' jump+grab' if j else '', st[0], st[1], st[2], st[5],
+                st[6] and '%d (%d chk left)' % (st[6][0], st[6][1])), flush=True)
+            if st[1] == 2:      # the race ended within the lookahead (Time Up or the goal): its step
                 st2, _ = R.run(script(segs, head=head), t + 2 * W + 600, 0)
                 end = next((s for s, f, r, _ in flows(os.path.join(work, 'c0', 'state.log'))
                             if s > t and r == 2), None)
@@ -325,12 +466,21 @@ def trick_main(a, head, first):
             t += W
     if end is None:
         sys.exit('steer-search: the race did not end within the budget (step %d; scratch %s)' % (t, work))
-    text = script(segs, '# RACE END %d   (race state 2: Time Up)\n# END %d\n' % (end, end + 300),
-                  head=head)
+    ext, prev = 0, None     # countdown extensions (the trace's cd= jumps up: a passed "chk" / slalom gate)
+    for ln in open(os.path.join(work, 'c0', 'state.log'), errors='replace'):
+        c = CD.search(ln) if ' race=1,' in ln else None
+        cd = int(c.group(1)) if c else None
+        if cd is not None and prev is not None and cd > prev + 500:
+            ext += 1
+        prev = cd
+    tail = '# RACE END %d   (race state 2: Time Up or the goal)\n' % end
+    if trick:
+        tail += '# CHECKPOINTS %d   (countdown extensions; port/tools/modes-check.py wants at least this many)\n' % ext
+    text = script(segs, tail + '# END %d\n' % (end + 300), head=head)
     with open(a.out, 'w') as fh:
         fh.write(text)
-    print('steer-search: trick run ends at step %d; %d runs, %.0f s -> %s' % (
-        end, nruns, time.time() - t0, a.out))
+    print('steer-search: trick run ends at step %d, %d countdown extensions; %d runs, %.0f s -> %s' % (
+        end, ext, nruns, time.time() - t0, a.out))
     shutil.rmtree(work, ignore_errors=True)
 
 
