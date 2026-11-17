@@ -2,7 +2,10 @@
  * snoweffects_uso_ncc_c.cpp in agent-h run 699), spliced over the empty NON_MATCHING placeholder in
  * snoweffects_uso.c on the non_matching build only (the matching build keeps INCLUDE_ASM). 0x47D4 went
  * EXACT in run 709 and moved to snoweffects_uso_ncc_47d4.cpp. */
-extern "C" int gl_func_00000000(...);
+/* agent-h run 757: typed as returning long long (98.01 -> 98.05). The (int) conversion of the first call's
+ * result takes one ugen temp, which moves the t-register rotation after that call onto the target's
+ * (count + 1 in t6, dl in t9, ...). Side effect: d is then the low word (v1; the target stores v0). */
+extern "C" long long gl_func_00000000(...);
 
 /* ---- snoweffects_uso_func_00000C90 (moved from agent-c's snoweffects_uso_ncc_c.cpp, agent-h run 699) ---- */
 #include "../game_libs/ncc_drafts/gbi_subset.h"
