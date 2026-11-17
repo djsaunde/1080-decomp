@@ -45,8 +45,8 @@ void * ColourItem_ctor(void *, ...);
 int /*void*/ ConsoleMgr_closeOwnerWins(void *, int, ...);
 int /*void*/ CoolGadget_setLabelPos(void *, int, int, int, int, ...);
 int /*void*/ CoolGadget_setLabels(void *, int, int, ...);
-int /*void*/ DNode_addImpulseAt_00065250(int, void *, ...);
-int /*void*/ DNode_addMoveAt_000652D8(int, void *, ...);
+int /*void*/ DNode_addImpulseAt_00065250(int, void *, void *, ...);
+int /*void*/ DNode_addMoveAt_000652D8(int, void *, void *, ...);
 int /*void*/ DNode_init_00065060(void *, ...);
 int /*void*/ DNode_resetXform_00065360(void *, void *, ...);
 #ifndef PORT_NODECL_DNode_solveContacts
@@ -292,14 +292,14 @@ int gui_stringWidth_00001514(void *, void *, ...);
 int /*void*/ gui_texRect_00004568(void *, int, int, int, int, int, int, ...);
 #endif
 void * heap_tempAlloc(int, unsigned int, ...);
-int /*void*/ heap_tempFree(int, ...);
+int /*void*/ heap_tempFree(int, int, ...);
 int /*void*/ hostio_addButton(int, int, int, int, ...);
 int /*void*/ hostio_addFlag(void *, int, void *, int, ...);
-int /*void*/ hostio_addHeading(int, ...);
+int /*void*/ hostio_addHeading(int, int, ...);
 int /*void*/ hostio_addInt(int, int, void *, int, int, int, ...);
 int /*void*/ hostio_addIntVar(void *, int, void *, int, ...);
 int /*void*/ hostio_addLink(int, int, int, ...);
-int /*void*/ hostio_addText(int, ...);
+int /*void*/ hostio_addText(int, int, ...);
 int /*void*/ hostio_beginGroup(int, int, int, ...);
 int /*void*/ hostio_beginTreeNode(int, int, int, int, ...);
 int /*void*/ hostio_connect(void *, ...);
@@ -346,7 +346,7 @@ int /*void*/ math_xformCombine(void *, void *, void *, ...);
 #ifndef PORT_NODECL_mem_new
 int mem_new(int, ...);
 #endif
-int mem_newAligned(...);
+int mem_newAligned(int, int, ...);
 void * memcpy(void *, void *, unsigned int, ...);
 void * memtrack_begin(void *, int, ...);
 int memtrack_end(...);
