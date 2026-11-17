@@ -234,11 +234,11 @@ void port_audio_swap_font(void *font, int numInstruments, int numDrums, int numS
 /* ---- --audio-out: the game's AI output to a WAV (tenshoe, plan 15.9) ---- */
 
 /* Every AI buffer the driver queues (osAiSetNextBuffer -> host_audio_queue -> the headless sink)
- * is appended to a 16-bit stereo 32000 Hz WAV; the header's sizes are written at close.  With
- * PORT_AUDIO_DAC=1 it also models the DAC (seqrender's model, plan 15.7): it drains 32006 / 60
- * frames per retrace and reports the rest through osAiGetLength, so the driver picks its
- * 528..544-frame buffers as on hardware; by default osAiGetLength stays the headless 0, every
- * buffer is 560 frames and the WAV runs 5 % long against the game time.  The music
+ * is appended to a 16-bit stereo 32000 Hz WAV; the header's sizes are written at close.  It also
+ * models the DAC (seqrender's model, plan 15.7): it drains 32006 / 60 frames per retrace and
+ * reports the rest through osAiGetLength, so the driver picks its 528..544-frame buffers as on
+ * hardware and the WAV runs at the game's rate.  PORT_AUDIO_DAC=0 turns the model off
+ * (osAiGetLength stays the headless 0: every buffer is 560 frames, the WAV runs 5 % long).  The music
  * state (snd_HandleSeqEvent's mode word, bootup Data 0x1C0A8, and the command word 0x1C0AC) is
  * logged when it changes, with the retrace time. */
 static FILE *sCapFile;
@@ -311,9 +311,8 @@ int port_audio_capture_open(const char *path) {
     }
     capture_header(0);
     host_headless_set_audio_sink(capture_sink);
-    if (getenv("PORT_AUDIO_DAC") != NULL && getenv("PORT_AUDIO_DAC")[0] == '1') {
-        /* opt-in: with the DAC model tenshoe faults in AudioSeq_SequenceChannelProcessScript (address
-         * 0x1) a moment after the title sequence starts (seqrender, same model, does not): open */
+    if (getenv("PORT_AUDIO_DAC") == NULL || getenv("PORT_AUDIO_DAC")[0] != '0') {
+        /* the DAC model (default since run 840; its old fault was the 0xB5 byte-order bug, plan 15.10) */
         host_headless_set_audio_clock(capture_clock);
     }
     return 0;
