@@ -1,0 +1,82 @@
+# Crystal Lake Time Attack, ridden to the goal (port/tools/steer-search.py output; plan 20.3).
+# Format: port/host/input_script.c.  Steps are SysLib.frameCount (state.log's F number).
+# Tied to the exact race physics: when a physics-affecting fix makes the rider retire or miss the
+# goal, regenerate it:  port/tools/steer-search.py -b <port build> -o port/host/race_crystal_lake.input
+PADS 1
+F 480:3 START          # title "Press START" -> language select
+F 560:3 A              # English
+F 620:3 DD             # main menu: Match Race -> Time Attack
+F 680:3 A              # Time Attack -> Select Rider
+F 950:3 A              # rider (Akari Hayami)
+F 1050:3 A             # rider confirm -> Select Board
+F 1150:3 A             # board -> Select Course
+F 1360:3 A             # Crystal Lake (the default course) -> race load; race state 1 at ~1460
+F 1460-1519 STICK 0,80
+F 1520-1579 STICK 0,80
+F 1580-1639 STICK 0,80
+F 1640-1699 STICK 80,80
+F 1700-1759 STICK 0,80
+F 1760-1819 STICK 0,80
+F 1820-1879 STICK 0,80
+F 1880-1939 STICK 0,80
+F 1940-1999 STICK 0,80
+F 2000-2059 STICK 0,80
+F 2060-2119 STICK 0,80
+F 2120-2179 STICK 0,80
+F 2180-2239 STICK 0,80
+F 2240-2299 STICK 40,80
+F 2300-2359 STICK 0,80
+F 2360-2419 STICK 0,80
+F 2420-2479 STICK 0,80
+F 2480-2539 STICK 0,80
+F 2540-2599 STICK 40,80
+F 2600-2659 STICK 0,80
+F 2660-2719 STICK 0,80
+F 2720-2779 STICK 0,80
+F 2780-2839 STICK 0,80
+F 2840-2899 STICK 0,80
+F 2900-2959 STICK 0,80
+F 2960-3019 STICK 40,80
+F 3020-3079 STICK -40,80
+F 3080-3139 STICK 80,80
+F 3140-3199 STICK -40,80
+F 3200-3259 STICK 0,80
+F 3260-3319 STICK 0,80
+F 3320-3379 STICK 0,80
+F 3380-3439 STICK 40,80
+F 3440-3499 STICK 80,80
+F 3500-3559 STICK -80,80
+F 3560-3619 STICK 0,80
+F 3620-3679 STICK 0,80
+F 3680-3739 STICK 0,80
+F 3740-3799 STICK 0,80
+F 3800-3859 STICK -40,80
+F 3860-3919 STICK 0,80
+F 3920-3979 STICK 0,80
+F 3980-4039 STICK 0,80
+F 4040-4099 STICK 0,80
+F 4100-4159 STICK -40,80
+F 4160-4219 STICK 0,80
+F 4220-4279 STICK 0,80
+F 4280-4339 STICK 0,80
+F 4340-4399 STICK 0,80
+F 4400-4459 STICK 0,80
+F 4460-4519 STICK 0,80
+F 4520-4579 STICK 0,80
+F 4580-4621 STICK 0,80
+# GOAL 4621   (entries[0].pct reaches 100: "Goal!")
+F 5364:3 A      # name entry: A
+F 5424:3 A      # name entry: A
+F 5484:3 A      # name entry: A
+F 5544:3 A      # name entry: END
+F 5604:3 A      # name entry: END (again: the first press can land before the cursor takes input)
+F 5799:3 A      # Best Times -> TimMenu
+F 5918:3 DD     # TimMenu: Retry -> View Replay
+F 5978:3 A      # View Replay
+# REPLAY END 9245
+F 9345:3 DD     # TimMenu (back from the replay, cursor on Retry) -> View Replay
+F 9405:3 DD     # -> Update Ghost
+F 9465:3 A      # Update Ghost -> "Save ghost data?" (cursor on No)
+F 9545:3 DL     # No -> Yes
+F 9605:3 A      # save the ghost (SRAM)
+# END 9705

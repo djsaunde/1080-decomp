@@ -22,6 +22,11 @@
 #              speed; the camera's NaN / Inf count is printed, not gated: camTarget goes NaN at
 #              frame 1619 on main, run 839).
 #              2000: main crashed at ~2625 at the time of writing (agent-g run 835 is on it).
+#   race       port/tools/race-check.py (~10 s): port/host/race_crystal_lake.input from a fresh dir
+#              reaches "Goal!" at its `# GOAL` step; View Replay and the saved ghost (reloaded in a
+#              new process) give the race's rider positions bit for bit.  The script is tied to the
+#              exact physics: on a legitimate physics change regenerate it (port/tools/steer-search.py,
+#              the failure prints the command)
 #   saves      test_backup + 4 short boots: the SRAM file is the N64 image (port/include/port_backup.h,
 #              plan 20): blank-SRAM save = the ROM defaults' big-endian image, reloads unchanged,
 #              a synthetic .sra loads, damaged primaries are restored from the mirrors
@@ -237,6 +242,15 @@ PY
   txt="$FRAMES frames: rc $rc, state.log $nf frames, ${nan#* }"
   if [ $rc = 0 ] && [ "$nf" -ge "$FRAMES" ] && [ "${nan%% *}" = 0 ]; then line smoke PASS "$txt"
   else line smoke FAIL "$txt${why:+; $why}"; fi
+fi
+
+# ---- race (plan 20.3): the scripted Crystal Lake run to the goal, its replay and its ghost
+start; if have tenshoe; then
+  RC="$(mktemp -d "$LOG/race.XXXXXX")"  # a fresh dir per run (no rm of a variable path)
+  python3 port/tools/race-check.py -b "$B" -r "$ROM" -o "$RC" >"$RC/check.log" 2>&1; rc=$?
+  txt=$(grep -E '^  (goal|replay|ghost) ' "$RC/check.log" | awk '{$1=$1; print}' | paste -sd ';' | cut -c1-230)
+  if [ $rc = 0 ]; then line race PASS "$txt"
+  else line race FAIL "${txt:-$(tail -1 "$RC/check.log")}"; grep -vE '^  (goal|replay|ghost) ' "$RC/check.log" | sed 's/^/           /'; fi
 fi
 
 # ---- saves (plan 20): the SRAM file is the N64 image (port/include/port_backup.h).  test_backup's unit

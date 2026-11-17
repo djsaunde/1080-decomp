@@ -1,0 +1,12 @@
+# Crystal Lake Time Attack against the saved ghost (plan 20.2 / 20.3): run with the 1080.sram that
+# race_crystal_lake.input leaves (it saves its run as the ghost).  A saved SRAM skips the language
+# menu.  The pad stays idle in the race; the ghost is rider r1 in state.log, and
+# port/tools/race-check.py compares it with the r0 of the original race.
+PADS 1
+F 480:3 START          # title -> main menu (no language select on a saved SRAM)
+F 560:3 DD             # Match Race -> Time Attack
+F 620:3 A              # Time Attack -> Select Rider
+F 900:3 A              # rider (Akari Hayami)
+F 1000:3 A             # rider confirm -> Select Board
+F 1100:3 A             # board -> Select Course
+F 1300:3 A             # Crystal Lake -> race load (race state 1 at ~1375, the ghost is r1)
