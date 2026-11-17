@@ -2089,11 +2089,11 @@ void fs_stub_00066208(int a0) {}
 int fs_piReadWord_00066210(int a0, int a1) {
     int buf;
     int saved;
-    saved = gl_func_00000000(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
-    gl_func_00000000(); /* UNNAMED: mid-entry jal gl_osWritebackDCacheAll+0x4 (osWritebackDCacheAll entry 4 bytes into the build function, no symbol) */
+    saved = CALL(gl_osSetIntMask)(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
+    CALL(gl_osWritebackDCacheAll)(); /* UNNAMED: mid-entry jal gl_osWritebackDCacheAll+0x4 (osWritebackDCacheAll entry 4 bytes into the build function, no symbol) */
     CALL(gl_osInvalDCache)(&buf, 4);
     CALL(gl_osPiReadIo)(a1, &buf);
-    gl_func_00000000(saved); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
+    CALL(gl_osSetIntMask)(saved); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
     return buf;
 }
 
@@ -2155,9 +2155,9 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", fs_readBytes_00066264);
 extern int gl_func_00000000();
 
 void fs_piWriteWord_000662E8(int a0, int a1, int a2) {
-    int r = gl_func_00000000(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
-    gl_func_00000000(); /* UNNAMED: mid-entry jal gl_osWritebackDCacheAll+0x4 (osWritebackDCacheAll entry 4 bytes into the build function, no symbol) */
-    gl_func_00000000(r); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
+    int r = CALL(gl_osSetIntMask)(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
+    CALL(gl_osWritebackDCacheAll)(); /* UNNAMED: mid-entry jal gl_osWritebackDCacheAll+0x4 (osWritebackDCacheAll entry 4 bytes into the build function, no symbol) */
+    CALL(gl_osSetIntMask)(r); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
     CALL(gl_osPiWriteIo)(a1, a2);
 }
 

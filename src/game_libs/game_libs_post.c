@@ -3667,9 +3667,9 @@ void AudioHeap_Init(void) {
     XCALL(gl_func_00000000_21498v, AudioLoad_InitSlowLoads)();
     G.h4 = 0x1000;
     XCALL(gl_func_00000000_21498v, AudioLoad_LoadPermanentSamples)();
-    v = gl_func_00000000(1); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x36350; the symbol starts at 2 pad words) */
-    gl_func_00000000_21498v(); /* UNNAMED: mid-entry osWritebackDCacheAll = gl_osWritebackDCacheAll+0x4 (ROM TextReloc 0x36358; 1 pad word) */
-    gl_func_00000000_21498v(v); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x36360) */
+    v = CALL(gl_osSetIntMask)(1); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x36350; the symbol starts at 2 pad words) */
+    XCALL(gl_func_00000000_21498v, gl_osWritebackDCacheAll)(); /* UNNAMED: mid-entry osWritebackDCacheAll = gl_osWritebackDCacheAll+0x4 (ROM TextReloc 0x36358; 1 pad word) */
+    XCALL(gl_func_00000000_21498v, gl_osSetIntMask)(v); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x36360) */
 }
 #undef G
 
@@ -8057,9 +8057,9 @@ void Audio_InvalDCache(int a0, int a1) {
 //   USO placeholder.
 extern int gl_func_00000000();
 void Audio_WritebackDCache(int a0, int a1) {
-    int r1 = gl_func_00000000(1); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x3BDC0; the symbol starts at 2 pad words) */
-    gl_func_00000000(a0, a1); /* UNNAMED: mid-entry osWritebackDCache = gl_osWritebackDCache+0x4 (ROM TextReloc 0x3BDD0; 1 pad word) */
-    gl_func_00000000(r1); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x3BDD8) */
+    int r1 = CALL(gl_osSetIntMask)(1); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x3BDC0; the symbol starts at 2 pad words) */
+    CALL(gl_osWritebackDCache)(a0, a1); /* UNNAMED: mid-entry osWritebackDCache = gl_osWritebackDCache+0x4 (ROM TextReloc 0x3BDD0; 1 pad word) */
+    CALL(gl_osSetIntMask)(r1); /* UNNAMED: mid-entry osSetIntMask = gl_osSetIntMask+0x8 (ROM TextReloc 0x3BDD8) */
 }
 
 /* osAiSetNextBuffer = libultra osAiSetNextBuffer (2.0I aisetnextbuf.c

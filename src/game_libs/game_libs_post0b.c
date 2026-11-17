@@ -736,16 +736,16 @@ int sys_getRegionKseg0_00034BFC(int a0) {
 
 extern int gl_func_00000000();
 void sys_writebackDCacheAll() {
-    int r = gl_func_00000000(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
-    gl_func_00000000(); /* UNNAMED: mid-entry jal gl_osWritebackDCacheAll+0x4 (osWritebackDCacheAll entry 4 bytes into the build function, no symbol) */
-    gl_func_00000000(r); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
+    int r = CALL(gl_osSetIntMask)(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
+    CALL(gl_osWritebackDCacheAll)(); /* UNNAMED: mid-entry jal gl_osWritebackDCacheAll+0x4 (osWritebackDCacheAll entry 4 bytes into the build function, no symbol) */
+    CALL(gl_osSetIntMask)(r); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
 }
 
 extern int gl_func_00000000();
 void dma_writebackCache(int a0, int a1) {
-    int r = gl_func_00000000(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
-    gl_func_00000000(); /* UNNAMED: mid-entry jal gl_osWritebackDCacheAll+0x4 (osWritebackDCacheAll entry 4 bytes into the build function, no symbol) */
-    gl_func_00000000(r); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
+    int r = CALL(gl_osSetIntMask)(1); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
+    CALL(gl_osWritebackDCacheAll)(); /* UNNAMED: mid-entry jal gl_osWritebackDCacheAll+0x4 (osWritebackDCacheAll entry 4 bytes into the build function, no symbol) */
+    CALL(gl_osSetIntMask)(r); /* UNNAMED: mid-entry jal gl_osSetIntMask+0x8 (osSetIntMask entry 8 bytes into the build function, no symbol) */
 }
 
 // dma_invalCache — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
