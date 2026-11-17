@@ -77,6 +77,9 @@ int snoweffects_uso_func_000046BC(...);
  *   d ctor's |s| written back into its parameter (no named local), and `if (1) {}` at the top of TV::operator*.
  *   Left: the or a1 / addiu t3 preheader order, the vel statement's cam pointer (v1 vs v0) and the d ctor's |s|
  *   (f0 vs f12).
+ * Run 715 (13 -> 10 words): no &v114 / &vFC pointer locals (t->v114 / t->vFC read in place, LICM hoists the
+ *   addresses after the IV init: the or a1 / addiu t3 / addiu t4 order is fixed), two dead ints keep the frame.
+ *   Left: the vel statement's cam pointer (v1 vs v0) and the d ctor's |s| (f0 vs f12).
  * Left: pool word 1 colours f2 where the target has f12 (it wins the f2 race against the TV ctor's second
  *   parameter word; a forcing-uopt probe puts it on f12 for 97.9 %), the frame (368 vs 384: one TV pool
  *   word too many at the loop-body top and one word too many above it) and the hoisted sp addresses. ---- */
@@ -249,8 +252,9 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
         if (t->cam->state == 98) {
             fade = 0.0f;
         }
-        TV *v114 = &t->v114;
-        TV *vFC = &t->vFC;
+        /* run 715: two dead int words here (the old &v114 / &vFC pointer locals' frame slots). With the pointer
+         * locals gone, uopt emits the i*44 IV init ahead of the a0+276 / a0+252 hoists, as in the target. */
+        int g = 0, h = 0;
         TQ0 ua; /* run 701: up * f180 lives here (sp+336, the first word below vFC), not in a loop-body __V */
         for (i = 0; i < t->stride; i++) {
             TV p;
@@ -267,8 +271,8 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
             t->points[t->writeOfs + i].w[2] = t->f16C;
             TV a = ((TQ &)ua = t->cam->up * idw2(t->f180), (TV &)ua) * (s < 0.0f ? -s : s);
             float k = (float)(0.0f < s ? t->stride - i - 1 : i) / (float)t->stride;
-            TV d(*v114 * (0, k) * t->f184, s); /* run 708: (0, k) gives op*'s s its own pool word */
-            TV e = *vFC * -1.0f;
+            TV d(t->v114 * (0, k) * t->f184, s); /* run 708: (0, k) gives op*'s s its own pool word */
+            TV e = t->vFC * -1.0f;
             if (0.0f < s) {
                 d *= -1.0f;
             }
