@@ -26,6 +26,9 @@
  *    target's order (92.4 -> 93.1).
  *  - run 706: `if (1) {}` before case 2's V3(0x12C) store: the target stores 300 / 304 / 308(s0) directly
  *    there; without the cut uopt colours self+0x12C (v0) for the three stores (93.1 -> 93.2).
+ *  - run 710: operator* without a constructor temp: the products go through set3() (by-value float args, so
+ *    the three mul.s are issued before the stores, as in the target) into a ctor-less V3b, which makes the
+ *    temp a one-use LR in a t-reg (target `addiu t5,sp,136`); `if (1) {}` ahead of the mode test (93.21 -> 93.27).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -61,12 +64,15 @@ static inline float clampf(float v, float lo, float hi) { if (v < lo) return lo;
 static inline void setf(float &d, float v) { d = v; }
 static inline void lerpTo(float &d, float t, float k) { d = (t - d) * k + d; }
 static inline void clampTo(float &d, float lo, float hi) { d = clampf(d, lo, hi); }
+/* ctor-less result struct for operator* (run 710) */
+struct V3b { float x, y, z; };
+static inline void set3(V3b &r, float a, float b, float c) { r.x = a; r.y = b; r.z = c; }
 struct Vec3 {
     float x, y, z;
     Vec3() {}
     Vec3(float a, float b, float c) { x = a; y = b; z = c; }
     Vec3 operator-(const Vec3 &v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
-    Vec3 operator*(float s) const { return Vec3(x * s, y * s, z * s); }
+    Vec3 operator*(float s) const { V3b r; set3(r, x * s, y * s, z * s); return *(Vec3 *)&r; }
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
     void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
 };
@@ -107,6 +113,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     ppr.x = *(float *)(player + 0xA0);
     ppr.y = *(float *)(player + 0xA4);
     ppr.z = *(float *)(player + 0xA8);
+    if (1) {}
     if (HI(0x170) != 0) {
         mode = HI(0x170);
     } else {
