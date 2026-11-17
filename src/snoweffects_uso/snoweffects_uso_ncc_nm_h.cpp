@@ -59,7 +59,9 @@ struct GCtx {
  * (frame kept at 400). Then (-> 96.73) the texrect is the stock clamp form again: w0 / w1 MAX((s16)x, 0) in
  * xh / yh, xl / yl order, written as one comma statement with the E4 assignment (so the clamp temps take fresh
  * edg words instead of the pooled count word); EE / FB append through nextBI() / nextN(); one `if (y0) {}`
- * left; four tail packets reuse g. Loop-layout diffs 87 -> 16, sp-offset mismatches 0. */
+ * left; four tail packets reuse g. Loop-layout diffs 87 -> 16, sp-offset mismatches 0.
+ * agent-h run 746 (-> 96.83): `if (p) {}` after the texrect (no code) adds a use of p late in the loop
+ * body: p's uopt priority rises above y0 / the E4 pointer and p takes t1 as in the target. */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -172,6 +174,7 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 self->drawn++;
                 gTR(gt, c->nextI(), g1, c->nextN(), g2, c->nextN(), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
                     ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
+                if (p) {}
             }
         }
     }
