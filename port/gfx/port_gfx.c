@@ -456,8 +456,34 @@ void port_gfx_step_end(void) {
     }
 }
 
+/* PORT_TRACE_SCREEN=1 (soak.py, run 869): the step's gfx tasks' content hashes, combined, for the
+ * state trace's scr= field (port/trace.c): a screen-level progress signal in the menus */
+static int sScreenOn = -1;
+static u32 sScreenHash;
+
+int port_gfx_screen_hash(u32 *out) {
+    if (sScreenOn <= 0) {
+        return 0;
+    }
+    *out = sScreenHash;
+    sScreenHash = 0;
+    return 1;
+}
+
 void port_gfx_task(OSTask_t *task) {
     u32 seq = sGfxTasks++;
+
+    if (sScreenOn < 0) {
+        sScreenOn = (int)env_ul("PORT_TRACE_SCREEN", 0) != 0;
+    }
+    if (sScreenOn) {
+        DlumpOptions so;
+        memset(&so, 0, sizeof(so));
+#ifdef HAVE_MINCORE
+        so.readable = mapped;
+#endif
+        sScreenHash = sScreenHash * 31u + dlump_screen_hash(&so, (dlump_u32)(size_t)task->data_ptr);
+    }
 
     sNTaskImgs = -1; /* unknown unless the task is dumped or rendered */
 

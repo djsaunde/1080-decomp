@@ -139,4 +139,7 @@ int dlump_task(DlumpBuf *out, const DlumpOptions *opt, dlump_u32 seq, dlump_u32 
 
 void dlump_buf_free(DlumpBuf *b);
 
+/* A pointer-free content hash of the task's display list (dlump.c; soak.py's screen detector). */
+dlump_u32 dlump_screen_hash(const DlumpOptions *opt, dlump_u32 root);
+
 #endif

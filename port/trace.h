@@ -29,6 +29,8 @@
  *     "gtl" / "gtr" slalom gate: cleared on its left when forkFlags & 1, else on its right
  *     (RaceTracker_passGates); 0 when none: include/game/course.h RaceGate)
  *     [trn=<lesson>]  (Training, flow mode 7: TrnDataManager.lesson, the current lesson's TrickTable index)
+ *     [scr=<hash:hex8>]  (only with PORT_TRACE_SCREEN=1: the step's gfx tasks' display-list content hash,
+ *     pointer-free (dlump_screen_hash), 0 when no task ran; soak.py's screen-level stuck detector)
  *   e0 is the DataManager's RaceEntry 0 (the player, include/gdl/race.h): pct reaches 100.0 at the
  *   finish line ("Goal!") and finished counts the frames there; speed is what the HUD's km/h
  *   gadget prints ((int)speed, RaceTracker_update). Written only when its have bit is set.

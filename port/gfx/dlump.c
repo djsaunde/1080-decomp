@@ -469,3 +469,101 @@ void dlump_buf_free(DlumpBuf *b) {
     b->size = b->cap = 0;
     b->oom = 0;
 }
+
+/* A content hash of one gfx task (soak.py's screen-level stuck detector, run 869): every command
+ * word except the host addresses (G_DL / G_VTX / G_MTX / G_MOVEMEM / G_SETTIMG / G_SET*IMG /
+ * G_MOVEWORD / RDPHALF operands), plus the bytes the G_VTX / G_MTX / G_MOVEMEM commands load.  It
+ * changes when anything drawn moves or is recoloured and is the same on the i386 and the x86-64
+ * builds (no pointer is hashed).  A light walk: no ranges, no output. */
+#define FNV(h, v) ((h) = ((h) ^ (dlump_u32)(v)) * 16777619u)
+static int (*sHashReadable)(const void *p, size_t n);
+/* opt->readable (mincore: a system call) behind a cache of pages already seen mapped: the game's
+ * lists, vertices and matrices live in a few hundred pages that stay mapped */
+static int hash_readable(const void *p, size_t n) {
+    static size_t cache[4096];
+    size_t a = (size_t)p >> 12, b = ((size_t)p + (n ? n - 1 : 0)) >> 12, pg;
+    for (pg = a; pg <= b; pg++) {
+        if (cache[pg & 4095] != pg + 1) {
+            if (!sHashReadable((const void *)(pg << 12), 1)) {
+                return 0;
+            }
+            cache[pg & 4095] = pg + 1;
+        }
+    }
+    return 1;
+}
+
+dlump_u32 dlump_screen_hash(const DlumpOptions *opt, dlump_u32 root) {
+    Walk w;
+    DlumpOptions o = *opt;
+    dlump_u32 stack[DLUMP_DL_STACK], h = 2166136261u, pc = root, n = 0;
+    int sp = 0;
+
+    if (o.readable != NULL) {
+        sHashReadable = o.readable;
+        o.readable = hash_readable;
+    }
+    memset(&w, 0, sizeof(w));
+    w.opt = &o;
+    w.lastPage = (size_t)-1;
+    while (n++ < (1u << 18)) {
+        dlump_u32 w0, w1, op, addr = 0, size = 0, i;
+        if ((pc & 7) != 0 || !read_cmd(&w, pc, &w0, &w1)) {
+            FNV(h, 0xBAD);
+            break;
+        }
+        op = w0 >> 24;
+        pc += 8;
+        FNV(h, w0);
+        switch (op) {
+            case OP_DL:
+                if (((w0 >> 16) & 0xFF) == 0) {
+                    if (sp >= DLUMP_DL_STACK) {
+                        return h;
+                    }
+                    stack[sp++] = pc;
+                }
+                pc = resolve(&w, w1);
+                continue;
+            case OP_ENDDL:
+                if (sp == 0) {
+                    return h;
+                }
+                pc = stack[--sp];
+                continue;
+            case OP_MOVEWORD:
+                if ((w0 & 0xFF) == MW_SEGMENT) {
+                    w.seg[((w0 >> 8) & 0xFFFF) / 4 & 15] = w1;
+                } else {
+                    FNV(h, w1);
+                }
+                continue;
+            case OP_MTX:
+                addr = resolve(&w, w1), size = (w0 & 0xFFFF) ? (w0 & 0xFFFF) : 0x40;
+                break;
+            case OP_MOVEMEM:
+                addr = resolve(&w, w1), size = w0 & 0xFFFF;
+                break;
+            case OP_VTX:
+                addr = resolve(&w, w1), size = (w0 & 0x3FF) + 1;
+                break;
+            case OP_SETTIMG:
+            case OP_SETZIMG:
+            case OP_SETCIMG:
+            case 0xB4: /* G_RDPHALF_1: G_BRANCH_Z's list address */
+                continue;
+            default:
+                FNV(h, w1);
+                continue;
+        }
+        if (size <= 0x1000 && readable(&w, addr, size)) {
+            const dlump_u8 *p = (const dlump_u8 *)gptr(&w, addr);
+            for (i = 0; i + 4 <= size; i += 4) {
+                dlump_u32 v;
+                memcpy(&v, p + i, 4);
+                FNV(h, v);
+            }
+        }
+    }
+    return h;
+}

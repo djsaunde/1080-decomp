@@ -357,6 +357,12 @@ static NOINST void fn_frame(u32 frameCount) {
 }
 #endif
 
+/* port/gfx/port_gfx.c with PORT_TRACE_SCREEN=1: the step's display-list content hash (scr=) */
+__attribute__((weak)) int port_gfx_screen_hash(u32 *out) {
+    (void)out;
+    return 0;
+}
+
 void port_trace_frame_end(u32 frameCount) {
     PortTraceFrame f;
     int i;
@@ -402,6 +408,12 @@ void port_trace_frame_end(u32 frameCount) {
     }
     if (f.have & PORT_TRACE_HAVE_LESSON) {
         fprintf(sState, " trn=%d", (int)f.lesson);
+    }
+    {
+        u32 scr;
+        if (port_gfx_screen_hash(&scr)) {
+            fprintf(sState, " scr=%08x", (unsigned)scr);
+        }
     }
     fputc('\n', sState);
 }

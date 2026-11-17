@@ -38,10 +38,11 @@
 #              the failure prints the regenerate command for each script
 #   soak       port/tools/soak.py --gate (~8 s, plan 20.7): 12 fixed fuzz seeds x 5000 steps and every
 #              port/host/repro/*.input (soak-found crash repros) run clean: no signal / sys_fatal / trap /
-#              hang / NaN rider fields / stuck retrace / audio badAddr; a failure prints its class and step
+#              hang / NaN rider fields / stuck retrace / stuck screen (scr=, run 869) / audio badAddr; a failure prints its class and step
 #   build64    (plan 21.7 / 21.8, M6) the x86-64 build: configure + build, test_*, then the smoke, the race and
 #              the modes scripts 64-bit: every state.log equal to the i386 run's, the 64-bit race / modes
-#              checks pass; abi-scan --x64 count printed (PORT_GATE_BUILD64=0 skips it)
+#              checks pass; soak.py --gate64: two soak seeds on both builds, state.log + SRAM equal (run 869);
+#              abi-scan --x64 count printed (PORT_GATE_BUILD64=0 skips it)
 #   saves      test_backup + 4 short boots: the SRAM file is the N64 image (port/include/port_backup.h,
 #              plan 20): blank-SRAM save = the ROM defaults' big-endian image, reloads unchanged,
 #              a synthetic .sra loads, damaged primaries are restored from the mirrors
@@ -326,6 +327,12 @@ if [ "${PORT_GATE_BUILD64:-1}" = 1 ]; then
       RUN32=env python3 port/tools/race-check.py -b "$B64" -r "$ROM" -o "$R64" >"$R64/check.log" 2>&1 || ok=0; fi
     if [ -n "${MC:-}" ]; then M64="$(mktemp -d "$LOG/modes64.XXXXXX")"
       RUN32=env python3 port/tools/modes-check.py -b "$B64" -r "$ROM" -o "$M64" >"$M64/check.log" 2>&1 || ok=0; fi
+    # two soak seeds (port/tools/soak.py GATE64_SEEDS, run 869) on both builds: no failure, and the state.logs
+    # and saves equal (scr=, the screen hash, and audio are soft until the x64 float-ABI findings are fixed)
+    SK64="$(mktemp -d "$LOG/soak64.XXXXXX")"
+    python3 port/tools/soak.py -b "$B" --build64 "$B64" -r "$ROM" -o "$SK64" -j "$JOBS" --gate64 >"$SK64/soak.log" 2>&1 || ok=0
+    sk64="soak64 $(head -1 "$SK64/soak.log" | sed -E 's/^soak: //; s/ x [0-9\/]+ steps.*; /: /')"
+    sk64="$sk64$(grep -m1 -E '^  FAIL' "$SK64/soak.log" | awk '{print " (" $2 ")"}')"
     cmpr=$(python3 - "$LOG/smoke/state.log" "$S64/state.log" "${RC:-}" "$R64" "${MC:-}" "$M64" <<'PY'
 import os, re, sys
 def rows(p):
@@ -353,7 +360,7 @@ PY
     abi=$(python3 port/tools/abi-scan.py --x64 "$B64/tenshoe" 2>/dev/null | cut -f1 | sed 's/X64P[0-9]*/X64P/' | sort | uniq -c | awk '{printf "%s %s ", $2, $1}')
     rr=$( [ -n "$R64" ] && { grep -qE ' FAIL ' "$R64/check.log" && echo "race64 FAIL" || echo "race64 ok"; } )
     mm=$( [ -n "$M64" ] && { grep -qE ' FAIL ' "$M64/check.log" && echo "modes64 FAIL" || echo "modes64 ok"; } )
-    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; $rr; $mm; $cmpr; abi-scan --x64 (INFO): ${abi:-0}"
+    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; $rr; $mm; $cmpr; $sk64; abi-scan --x64 (INFO): ${abi:-0}"
   else ok=0; fi
   [ $ok = 1 ] && line build64 PASS "$why" || line build64 FAIL "$why"
 fi

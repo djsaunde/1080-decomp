@@ -49,7 +49,9 @@ HOST = os.path.join(GAME, 'port/host')
 REPRO = os.path.join(HOST, 'repro')
 GATE_SEEDS = list(range(1, 13))
 GATE_STEPS = 5000
-SOFT = ('frozen', 'nan-camera')
+GATE64_SEEDS = (2, 3)  # --gate --build64: these gate seeds also run x86-64 and must match (run 869)
+STUCK_SCREEN, STUCK_PRESSES = 900, 8  # stuck-screen: 30 s of an identical display list through 8 presses
+SOFT = ('frozen', 'nan-camera', 'x64-screen', 'x64-audio')
 
 # ---------------------------------------------------------------- input generation
 
@@ -226,27 +228,46 @@ SKIP_FN = ('port_crash_signal', 'port_sys_fatal', 'port_trap', '__kernel', 'host
            'abort', 'backtrace')
 
 
-def run(a, d, script_text, steps, sram_src=None, keep_trace=True):
-    """run tenshoe in a new dir d on script_text; returns a result dict"""
+def run(a, d, script_text, steps, sram_src=None, keep_trace=True, build=None):
+    """run tenshoe in a new dir d on script_text; returns a result dict.  build: another port build
+    (a.build64: the x86-64 one, run without the i386 loader)"""
     os.makedirs(d, exist_ok=True)
+    build = build or a.build
+    runner = [] if build == getattr(a, 'build64', None) else [RUN32]
     sp = os.path.join(d, 'in.input')
     open(sp, 'w').write(script_text)
     sram = os.path.join(d, '1080.sram')
     if sram_src:
         shutil.copyfile(sram_src, sram)
-    args = ['timeout', str(a.timeout), RUN32, os.path.join(a.build, 'tenshoe'), '--rom', a.rom, '--input', sp,
+    wav = os.path.join(d, 'audio.wav') if a.build64 and a.audio64 else '/dev/null'
+    args = ['timeout', str(a.timeout)] + runner + [os.path.join(build, 'tenshoe'), '--rom', a.rom, '--input', sp,
             '--frames', str(steps), '--trace', os.path.join(d, 'state.log'), '--sram', sram,
-            '--audio-out', '/dev/null']
+            '--audio-out', wav]
+    env = dict(os.environ, PORT_TRACE_SCREEN='0' if a.no_screen else '1')
     with open(os.path.join(d, 'out.log'), 'w') as fh:
-        rc = subprocess.run(args, cwd=d, stdout=fh, stderr=subprocess.STDOUT).returncode
-    res = analyse(a, d, rc, steps)
+        rc = subprocess.run(args, cwd=d, stdout=fh, stderr=subprocess.STDOUT, env=env).returncode
+    if wav != '/dev/null' and os.path.exists(wav):  # keep its hash only (a run's WAV is ~1 MB / 30 s)
+        import hashlib
+        open(wav + '.md5', 'w').write(hashlib.md5(open(wav, 'rb').read()).hexdigest())
+        os.remove(wav)
+    res = analyse(a, d, rc, steps, build, presses(script_text))
     if not keep_trace and not res['hard']:
         shutil.rmtree(d, ignore_errors=True)
     return res
 
 
-def analyse(a, d, rc, steps):
-    exe = os.path.join(a.build, 'tenshoe')
+def presses(script_text):
+    """the steps where a script line starts holding a button (STICK-only lines are not presses)"""
+    out = []
+    for m in re.finditer(r'^F (\d+)(?:[-:]\S*)? (?:P\d+ )?(.*)$', script_text, re.M):
+        toks = re.sub(r'#.*', '', m.group(2)).split()
+        if any(t != 'STICK' and not re.match(r'-?\d+,-?\d+$', t) for t in toks):
+            out.append(int(m.group(1)))
+    return sorted(out)
+
+
+def analyse(a, d, rc, steps, build=None, press_steps=()):
+    exe = os.path.join(build or a.build, 'tenshoe')
     out = open(os.path.join(d, 'out.log'), errors='replace').read()
     classes = {}  # key -> (step, detail)
     m = re.search(r'PORT: signal (\d+) at step (\d+)', out)
@@ -271,6 +292,8 @@ def analyse(a, d, rc, steps):
     last, rt_prev, rt_since = -1, None, 0
     froz_key, froz_since = None, 0
     modes, racing, starts, was_racing = set(), 0, set(), False
+    import bisect
+    scr_prev, scr_since = None, 0  # the screen detector: scr= (PORT_TRACE_SCREEN) unchanged since step
     try:
         fh = open(os.path.join(d, 'state.log'), errors='replace')
     except OSError:
@@ -298,6 +321,15 @@ def analyse(a, d, rc, steps):
                 k = 'nan-camera' if mm.group(1) == 'cam' else 'nan-entry' if mm.group(1) == 'e0' else 'nan-rider'
                 if k not in classes:
                     classes[k] = (step, '%s=%s' % (mm.group(1), mm.group(2)[:80]))
+        mm = re.search(r' scr=([0-9a-f]{8})', ln)
+        if mm and mm.group(1) != '00000000':
+            if mm.group(1) != scr_prev:
+                scr_prev, scr_since = mm.group(1), step
+            elif step - scr_since >= STUCK_SCREEN and 'stuck-screen' not in classes:
+                n = bisect.bisect_left(press_steps, step) - bisect.bisect_left(press_steps, scr_since + 30)
+                if n >= STUCK_PRESSES:  # pressed on, and nothing drawn changed
+                    classes['stuck-screen'] = (step, 'the display list unchanged since step %d through %d presses'
+                                               % (scr_since, n))
         mm = re.search(r' rt=(\d+)', ln)
         if mm:
             rt = int(mm.group(1))
@@ -431,6 +463,69 @@ def make_unlocked(a, base):
     return p
 
 
+def trace_rows(p):
+    """state.log lines, the `/N` after each r<i>'s fields (the RiderAnim state method's host address) dropped"""
+    try:
+        return [re.sub(r'/-?\d+(?= |$)', '', ln.rstrip('\n')) for ln in open(p, errors='replace')]
+    except OSError:
+        return None
+
+
+def scr_rows(p):
+    """[(step, scr)] of a state.log (the display-list hash; PORT_TRACE_SCREEN)"""
+    try:
+        return [(int(m.group(1)), m.group(2)) for m in
+                re.finditer(r'^F (\d+) .* scr=([0-9a-f]{8})', open(p, errors='replace').read(), re.M)]
+    except OSError:
+        return None
+
+
+def compare64(d32, d64):
+    """(class, step, detail) for the first difference between the i386 and the x86-64 run, or None"""
+    """the hard compare leaves out scr= (the screen hash) and the audio, compared by soft64"""
+    x, y = trace_rows(os.path.join(d32, 'state.log')), trace_rows(os.path.join(d64, 'state.log'))
+    if x is None or y is None:
+        return ('diverge64:missing', None, 'state.log missing')
+    x = [re.sub(r' scr=\S+', '', ln) for ln in x]
+    y = [re.sub(r' scr=\S+', '', ln) for ln in y]
+    for u, v in zip(x, y):
+        if u != v:
+            fu, fv = u.split(' '), v.split(' ')
+            if len(fu) != len(fv):
+                return ('diverge64:shape', None, u[:120])
+            keys = [p.split('=')[0] for p, q in zip(fu, fv) if p != q]
+            step = int(fu[1]) if fu[0] == 'F' else None
+            return ('diverge64:%s' % ','.join(keys[:3]), step,
+                    '; '.join('%s / %s' % (p[:60], q[:60]) for p, q in zip(fu, fv) if p != q)[:300])
+    if len(x) != len(y):
+        return ('diverge64:length', None, 'lengths %d / %d' % (len(x), len(y)))
+    try:
+        if open(os.path.join(d32, '1080.sram'), 'rb').read() != open(os.path.join(d64, '1080.sram'), 'rb').read():
+            return ('diverge64:sram', None, 'the saves differ')
+    except OSError:
+        pass
+    return None
+
+
+def soft64(d32, d64):
+    """{class: (step, detail)}: the screen hash (x64-screen) and the audio (x64-audio, --audio64) of the two
+    runs.  Soft while the x86-64 float-argument ABI findings (abi-scan --x64: math_perspectiveF, the snd_*
+    calls) are open: the game state matches, what is drawn / heard does not yet (run 869)"""
+    out = {}
+    x, y = scr_rows(os.path.join(d32, 'state.log')) or [], scr_rows(os.path.join(d64, 'state.log')) or []
+    for u, v in zip(x, y):
+        if u != v:
+            out['x64-screen'] = (u[0], 'step %d: scr %s / %s' % (u[0], u[1], v[1]))
+            break
+    try:
+        h = [open(os.path.join(dd, 'audio.wav.md5')).read() for dd in (d32, d64)]
+        if h[0] != h[1]:
+            out['x64-audio'] = (None, 'the WAVs differ (md5 %s / %s)' % (h[0][:8], h[1][:8]))
+    except OSError:
+        pass
+    return out
+
+
 def read_repro(path):
     text = open(path).read()
     m = re.search(r'^# END (\d+)', text, re.M)
@@ -452,6 +547,11 @@ def main():
     ap.add_argument('--save-repro', action='store_true')
     ap.add_argument('--strict-camera', action='store_true')
     ap.add_argument('--keep', action='store_true', help='keep every run directory (default: failures only)')
+    ap.add_argument('--build64', help='also run every job on this x86-64 build (no i386 loader) and require its '
+                    'state.log and SRAM to equal the i386 run (plan 21.8)')
+    ap.add_argument('--audio64', action='store_true', help='with --build64: compare the two runs\' audio too (soft)')
+    ap.add_argument('--no-screen', action='store_true', help='no PORT_TRACE_SCREEN (scr=, the stuck-screen check)')
+    ap.add_argument('--gate64', action='store_true', help='with --build64: only the GATE64_SEEDS gate seeds, both builds')
     ap.add_argument('--gate', action='store_true', help='fixed seeds + every port/host/repro script')
     ap.add_argument('--repro', nargs='*', help='re-run these repro scripts')
     ap.add_argument('--script', type=int, help='print the script of this seed and exit')
@@ -472,13 +572,19 @@ def main():
     srams = {'fresh': None, 'saved': saved, 'unlocked': make_unlocked(a, ghost or saved) if (ghost or saved) else None}
 
     jobs = []  # (name, text, steps, sram, seed)
-    if a.gate or a.repro is not None:
+    if a.gate64:  # the build64 gate step: GATE64_SEEDS only, i386 against x86-64
+        if not a.build64:
+            ap.error('--gate64 needs --build64')
+        a.gate = True
+    if (a.gate and not a.gate64) or a.repro is not None:
         paths = a.repro if a.repro else sorted(glob.glob(os.path.join(REPRO, '*.input')))
         for p in paths:
             text, n, sv = read_repro(p)
             jobs.append(('repro-' + os.path.basename(p)[:-6], text, n, sv, None))
     if a.gate:
         for i, sd in enumerate(GATE_SEEDS):
+            if a.gate64 and sd not in GATE64_SEEDS:
+                continue
             sv = ('fresh', 'unlocked', 'saved')[i % 3]
             s, _ = gen_script(sd, GATE_STEPS, sv)
             jobs.append(('seed%d' % sd, s.text(), GATE_STEPS, sv, sd))
@@ -489,7 +595,23 @@ def main():
             jobs.append(('seed%d' % sd, s.text(), a.steps, sv, sd))
 
     def one(j):
-        return j, run(a, os.path.join(a.outdir, j[0]), j[1], j[2], srams[j[3]], keep_trace=a.keep)
+        d = os.path.join(a.outdir, j[0])
+        if not a.build64 or (a.gate and j[4] not in GATE64_SEEDS):
+            return j, run(a, d, j[1], j[2], srams[j[3]], keep_trace=a.keep)
+        r = run(a, d, j[1], j[2], srams[j[3]], keep_trace=True)
+        r64 = run(a, os.path.join(d, 'x64'), j[1], j[2], srams[j[3]], keep_trace=True, build=a.build64)
+        for k, v in r64['classes'].items():  # the 64-bit run's own failures, tagged
+            r['classes']['x64:' + k] = v
+            if k in r64['hard']:
+                r['hard']['x64:' + k] = v
+        if not r['hard']:  # both clean: the traces and the saves must agree (plan 21.8, run 869)
+            diff = compare64(d, os.path.join(d, 'x64'))
+            if diff:
+                r['classes'][diff[0]] = r['hard'][diff[0]] = diff[1:]
+            r['classes'].update(soft64(d, os.path.join(d, 'x64')))
+        if not a.keep and not r['hard']:
+            shutil.rmtree(d, ignore_errors=True)
+        return j, r
 
     with ThreadPoolExecutor(a.jobs) as ex:
         results = list(ex.map(one, jobs))
