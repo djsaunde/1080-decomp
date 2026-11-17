@@ -114,7 +114,10 @@ try:
 except ImportError:
     if os.path.exists(VENV + '/bin/python') and not os.environ.get('NPC_REEXEC'):
         os.environ['NPC_REEXEC'] = '1'
-        os.execv(VENV + '/bin/python', [VENV + '/bin/python'] + sys.argv)
+        # sys.orig_argv, not sys.argv: port-gen-binds / port-gen-uso / name-data-sites load this
+        # module with sys.argv cut to [argv0], and a re-exec from there silently lost their options
+        # (port-gen-uso then read the default --lib)
+        os.execv(VENV + '/bin/python', [VENV + '/bin/python'] + getattr(sys, 'orig_argv', [None] + sys.argv)[1:])
     sys.exit('needs pyelftools + crunch64: run with /home/danjs/code/decomp/.venv/bin/python')
 
 from elftools.elf.elffile import ELFFile
@@ -200,7 +203,37 @@ def mask(src):
             if out[k] != '\n':
                 out[k] = ' '
         i = j
+    _blank_port_branches(src, out)
     return ''.join(out)
+
+
+_PP_RE = re.compile(r'[ \t]*#[ \t]*(ifdef|ifndef|if|elif|else|endif)\b[ \t]*(\w*)')
+
+
+def _blank_port_branches(src, out):
+    """Blank (in place) the code that only the PC port compiles: the `#ifdef PORT` branch and
+    the `#else` of an `#ifndef PORT`.  The scanner reads the MATCHING view of the source; a PORT
+    branch that repeats a statement head (`#ifdef PORT if (a) { #else if (b) { #endif`) would
+    otherwise unbalance the braces and silently drop every later function of the file."""
+    stack = []          # per open conditional: is the current branch PORT-only?
+    pos = 0
+    for line in src.split('\n'):
+        end = pos + len(line)
+        m = _PP_RE.match(line)
+        d = m.group(1) if m else None
+        if d in ('ifdef', 'ifndef', 'if'):
+            stack.append([d, m.group(2) == 'PORT' and d != 'if', d == 'ifdef' and m.group(2) == 'PORT'])
+        elif d in ('elif', 'else') and stack:
+            top = stack[-1]
+            if top[1]:              # an #ifdef / #ifndef PORT: the other branch
+                top[2] = (top[0] == 'ifndef') if d == 'else' else False
+        elif d == 'endif' and stack:
+            stack.pop()
+        elif any(t[2] for t in stack):
+            for k in range(pos, end):
+                if out[k] != '\n':
+                    out[k] = ' '
+        pos = end + 1
 
 
 def top_blocks(m):

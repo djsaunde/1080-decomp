@@ -238,14 +238,22 @@ def excluded_defs(names):
 # without float / double / long long parameters (render() checks).
 BYVALUE_CALLERS = {"ColourItemType_ctor"}
 
+# callees whose trailing fixed parameters a C++ caller omits: the C definition declares a
+# parameter only as a matching lever and overwrites it before any read, so the missing argument
+# is never read.  Declared with a default value (0) for that many trailing parameters.
+# gui_fontAdjustAdvance(int *, int, int): `a2 = a1` first (gui_uso.c); viewrec's 2-argument call.
+OPTIONAL_TAIL = {"gui_fontAdjustAdvance": 1}
+
 
 def cpp_units():
-    srcs = []
-    for line in open(GEN / "sources.cmake"):
-        m = re.match(r"\s+\$\{GAME_ROOT\}/(\S+\.cpp)$", line)
-        if m:
-            srcs.append(m.group(1))
-    return srcs
+    """the C++ units the port compiles: the .cpp sources of port/sourcemap.tsv (not
+    port/gen/sources.cmake, which port-gen-build.py writes only after this has run)"""
+    srcs = set()
+    for line in open(ROOT / "port/sourcemap.tsv"):
+        f = line.rstrip("\n").split("\t")
+        if len(f) > 3 and f[2].endswith(".cpp") and not line.startswith("#"):
+            srcs.add(f[2])
+    return sorted(srcs)
 
 
 def render(name, sig):
@@ -265,6 +273,9 @@ def render(name, sig):
     # callee takes (a K&R placeholder call; extra MIPS argument registers are ignored).  On i386
     # cdecl the fixed parameters are laid out identically and the caller pops the extras, so the
     # tail is ABI-exact for the real parameters and absorbs the surplus.
+    params = list(params)
+    for i in range(len(params) - OPTIONAL_TAIL.get(name, 0), len(params)):
+        params[i] += " = 0"
     ps = ", ".join(params)
     ps = (ps + ", ...") if ps else "..."
     # a void callee is declared int: IDO donors read the v0 a void call leaves behind
