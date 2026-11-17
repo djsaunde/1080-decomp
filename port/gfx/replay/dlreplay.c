@@ -11,8 +11,8 @@
  * culling, FILL-mode G_FILLRECT colour and Z clears, G_SETSCISSOR) with Gouraud
  * vertex colours. Textures, the combiner, lighting, fog and the blender are
  * Fast3D's job: the plan is libultraship's interpreter fed from the same memory
- * image (plan 19.3). The GL context is EGL surfaceless + a pbuffer-less FBO-free
- * default framebuffer of a pbuffer surface. */
+ * image (plan 19.3). GL: an EGL pbuffer on Mesa's surfaceless platform (falling
+ * back to the default display), legacy compatibility profile, no window. */
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
