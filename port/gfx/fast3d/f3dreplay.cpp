@@ -161,7 +161,8 @@ static bool map_arena() {
         }
         /* each G_SETTIMG image base too (zero page): a LOADTILE of an image's lower rows dumps only those rows,
          * and Fast3D drops a G_SETTIMG whose address no registered range holds; the next load then reads the
-         * previous image with the new offsets, past its end (run 861: Trick Attack's after-goal overlay) */
+         * previous image with the new offsets, past its end (run 861: Trick Attack's after-goal overlay).
+         * Since patch 0010 Fast3D skips those loads instead (no stale read), but the texture would be lost. */
         if (c.kind == DLUMP_DL) {
             for (uint32_t i = 0; i + 8 <= c.size; i += 8) {
                 uint32_t w[2];

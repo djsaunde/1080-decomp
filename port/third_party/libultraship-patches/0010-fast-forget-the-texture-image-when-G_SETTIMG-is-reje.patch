@@ -1,0 +1,96 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Tue, 17 Nov 2026 15:51:57 -0500
+Subject: [PATCH] fast: forget the texture image when G_SETTIMG is rejected
+
+gfx_set_timg_handler_rdp drops a G_SETTIMG whose address fails
+IsValidResolvedAddress, but it left texture_to_load as it was. The next
+LoadBlock / LoadTile / LoadTlut then read the PREVIOUS image's base at
+the new image's offsets and width: a wrong texture, and a read past the
+old image when the new one is larger (a crash in ImportTextureIA8 on a
+72-wide sprite whose LOADTILE rows 187..203 were applied to a 56-wide
+image's base).
+
+A rejected G_SETTIMG now clears texture_to_load (null address, no
+resource), and LoadBlock / LoadTile / LoadTlut skip their load while no
+valid image is set, so the tile or palette keeps its previous TMEM
+contents and nothing is read from a stale base. Each case logs once.
+
+The colour and depth image addresses (G_SETCIMG / G_SETZIMG) are not
+checked and never dereferenced by Fast3D (only compared, and read back
+by ports as identifiers), so they cannot go stale this way.
+---
+ src/fast/interpreter.cpp | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index 2a1b266..5af3872 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -2672,8 +2672,30 @@ void Interpreter::GfxDpSetTileSize(uint8_t tile, uint16_t uls, uint16_t ult, uin
+     mRdp->textures_changed[1] = true;
+ }
+ 
++// A G_SETTIMG whose address was rejected (gfx_set_timg_handler_rdp) leaves texture_to_load.addr null.
++// The loads that follow are skipped, so a tile or palette is never read from the previous image's base
++// at the new image's offsets. Logged once per kind.
++enum { REJECTED_LOAD_TLUT, REJECTED_LOAD_BLOCK, REJECTED_LOAD_TILE };
++
++static bool SkipLoadFromRejectedImage(const uint8_t* addr, int kind) {
++    static const char* const sNames[] = { "LoadTlut", "LoadBlock", "LoadTile" };
++    static bool sLogged[3];
++    if (addr != nullptr) {
++        return false;
++    }
++    if (!sLogged[kind]) {
++        sLogged[kind] = true;
++        SPDLOG_WARN("GfxDp{}: no valid texture image (G_SETTIMG rejected or unset), load skipped (logged once)",
++                    sNames[kind]);
++    }
++    return true;
++}
++
+ void Interpreter::GfxDpLoadTlut(uint8_t tile, uint32_t high_index) {
+     SUPPORT_CHECK(mRdp->texture_to_load.siz == G_IM_SIZ_16b);
++    if (SkipLoadFromRejectedImage(mRdp->texture_to_load.addr, REJECTED_LOAD_TLUT)) {
++        return;
++    }
+ 
+     uint16_t tmem = mRdp->texture_tile[tile].tmem;
+     const uint8_t* src = mRdp->texture_to_load.addr;
+@@ -2716,6 +2738,9 @@ void Interpreter::GfxDpLoadTlut(uint8_t tile, uint32_t high_index) {
+ void Interpreter::GfxDpLoadBlock(uint8_t tile, uint32_t uls, uint32_t ult, uint32_t lrs, uint32_t dxt) {
+     SUPPORT_CHECK(uls == 0);
+     SUPPORT_CHECK(ult == 0);
++    if (SkipLoadFromRejectedImage(mRdp->texture_to_load.addr, REJECTED_LOAD_BLOCK)) {
++        return;
++    }
+ 
+     // The lrs field rather seems to be number of pixels to load
+     uint32_t word_size_shift = 0;
+@@ -2805,6 +2830,9 @@ void Interpreter::GfxDpLoadBlock(uint8_t tile, uint32_t uls, uint32_t ult, uint3
+ 
+ void Interpreter::GfxDpLoadTile(uint8_t tile, uint32_t uls, uint32_t ult, uint32_t lrs, uint32_t lrt) {
+     SUPPORT_CHECK(tile == G_TX_LOADTILE);
++    if (SkipLoadFromRejectedImage(mRdp->texture_to_load.addr, REJECTED_LOAD_TILE)) {
++        return;
++    }
+ 
+     uint32_t word_size_shift = 0;
+     switch (mRdp->texture_to_load.siz) {
+@@ -4200,6 +4228,15 @@ bool gfx_set_timg_handler_rdp(F3DGfx** cmd0) {
+     }
+ 
+     if (!IsValidResolvedAddress(i)) {
++        // Forget the previous image: keeping it would make the next LoadBlock / LoadTile / LoadTlut read
++        // the old base at the new image's offsets (out of bounds when the new image is larger).
++        static bool sLogged = false;
++        if (!sLogged) {
++            sLogged = true;
++            SPDLOG_WARN("G_SETTIMG: rejected address 0x{:x}, its loads are skipped (logged once)",
++                        (unsigned long long)i);
++        }
++        gfx->GfxDpSetTextureImage(C0(21, 3), C0(19, 2), C0(0, 12) + 1, nullptr, 0, rawTexMetdata, nullptr);
+         return false;
+     }
+ 
