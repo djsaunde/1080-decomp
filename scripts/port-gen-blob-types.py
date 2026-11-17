@@ -149,6 +149,68 @@ KNOWN = [
     # SnowBoarder_ctor's tint list (addiu Data 0x8478, Text 0xAD50 loop): 0x18-byte records
     # {s32 key, s32 slot, f32 rgba[4]} up to key 0 (0x8670); table[slot] = &rec->rgba
     ("bootup", "Data", 0x8478, [(0, 8, "u32"), (8, 0x10, "f32")], 22, 0x18, "known:sb-tint"),
+    # --- bootup Data, run 821 ---
+    # OoT synthesis.c D_801304B0 (u16[8] {0x7FFF, 0xD001, ...}, unreferenced there too), after
+    # sEnvMixerOp / the three dmemDests words (gl_aud_sEnvMixer*, 0x1A2D0..0x1A2DC)
+    ("bootup", "Data", 0x1A2E0, [(0, 2, "u16")], 8, 2, "known:oot-synthesis"),
+    # OoT seqplayer.c sSeqInstructionArgsTable: one u8 per command 0xB0..0xFF (the 0x81 / 0x42
+    # arg-kind bytes), up to the "Audio:Track :Call" string at 0x1BCB0
+    ("bootup", "Data", 0x1BC60, [(0, 0x50, "u8")], 1, 0x50, "known:oot-seq-args"),
+    # snd_ResetVolumeLevels' lw of Sym 0x1C128 / +0x20: 11 f32 volume steps 0.0, 0.1 .. 1.0
+    ("bootup", "Data", 0x1C128, [(0, 4, "f32")], 11, 4, "known:snd-vol-steps"),
+    # a byte permutation of 0..15 between the snd f32 curves (no reader; bytes either way)
+    ("bootup", "Data", 0x1C320, [(0, 0x10, "u8")], 1, 0x10, "known:bytes"),
+    # sys_fatalHaltLoop's gl_fatalHaltExitCombo: 0-terminated s32 pad-button masks
+    ("bootup", "Data", 0x1E21C, [(0, 4, "u32")], 7, 4, "known:halt-combo"),
+    # unreferenced f32 data at two Syms: a 4x4 identity (1.0 every 0x14) and {-0.48, 0.8, 0.36, 1}
+    ("bootup", "Data", 0x1E9A4, [(0, 4, "f32")], 20, 4, "known:f32-values"),
+    # Sym 0x1F984 (next to the GfxLib screen size words 0x1F974..): 4 records of 10 u16
+    # ({0, 0, 0, 0xFF, 0, 0, 0x80, 0, 0, 0x32} x 3, then {0xFF x 3, 0x80 x 3, 0x32 x 3, 0});
+    # reader not located, u16 by the values (0x0080 / 0x00FF halves)
+    ("bootup", "Data", 0x1F984, [(0, 2, "u16")], 40, 2, "known:u16-values"),
+    # 12 f32 vec3 at the Syms 0x20350 .. 0x203D4 (0x1F9D8.. pointer table targets 0x2038C);
+    # the str rule took 0x203C8's 0.5f (3f 00 00 00) for "?"
+    ("bootup", "Data", 0x20350, [(0, 4, "f32")], 36, 4, "known:f32-vec3"),
+    # 3 f32 vec3 at the Syms 0x20598 / 0x205A4 / 0x205B0 ({-100, 100, -100}, ...)
+    ("bootup", "Data", 0x20598, [(0, 4, "f32")], 9, 4, "known:f32-vec3"),
+    # Sym 0x21130 (before the "ProcNodeList" string): a shape stream {op 6 (0), op 6 (0), op 2}
+    ("bootup", "Data", 0x21130, [(0, 4, "u32")], 5, 4, "known:shape"),
+    # fault_printFlags' tables (Flag55FB4 {s32 mask, s32 bits, char *name}, game_libs_post0b.c),
+    # mask-0 terminated; fault_printThread passes them (fpcsr = 0x214A4): 82 records to 0x215B8
+    ("bootup", "Data", 0x211E0, [(0, 8, "u32")], 82, 12, "known:fault-flags"),
+    # math_mtxChain_0005E288 (lwc1 0x21AC8 / 0x21ACC): 10 f32 series coefficients 1, -1/2, 3/8, ...
+    ("bootup", "Data", 0x21AC8, [(0, 4, "f32")], 10, 4, "known:series"),
+    # math_mtxToQuat (addiu 0x21AF0): Shoemake's next[3] = {1, 2, 0}
+    ("bootup", "Data", 0x21AF0, [(0, 4, "u32")], 3, 4, "known:quat-next"),
+    # libultra __osThreadTail {OSThread *next = 0, OSPri priority = -1} (__osRunQueue /
+    # __osActiveQueue at 0x2D698 / 0x2D69C point to it)
+    ("bootup", "Data", 0x2D690, [(0, 4, "u32")], 2, 4, "known:osThreadTail"),
+    # f64 1.0 in the RoData literal pool
+    ("bootup", "RoData", 0x24E0, [(0, 8, "f64")], 1, 8, "known:f64-values"),
+    # the shape streams at the Syms 0x20D2C .. 0x20D80 after the 0x20D04 mesh: flag ops 13 / 15 /
+    # 17 {1} and op 2 (no mesh op, so walk_assets does not take them)
+    ("bootup", "Data", 0x20D2C, [(0, 4, "u32")], 23, 4, "known:shape"),
+    # the head of the f32 table at Sym 0x70E8 (addiu, Text 0x4DA4; its +4.. were typed "index")
+    ("bootup", "Data", 0x70E8, [(0, 4, "f32")], 1, 4, "known:f32-table"),
+    # Sym 0x1FC74 (s32 7000) in the s32 row 0x1FC60..0x1FCA0 the code takes each address of
+    ("bootup", "Data", 0x1FC74, [(0, 4, "u32")], 1, 4, "known:s32-row"),
+    # --- game Data, run 821 ---
+    # lh 0xCC4 / 0xCC6 and addiu 0xCC8 (game Text 0xB4D4..): 9 s16 pairs {-2, 0, 2} to 0xCE8
+    ("game", "Data", 0xCC4, [(0, 2, "u16")], 18, 2, "known:s16-pairs"),
+    # Sym 0x1068: s32 {0, 100, 150, 200, 250, 300, 350, 400, 500, 3000, -1}
+    ("game", "Data", 0x1068, [(0, 4, "u32")], 11, 4, "known:s32-table"),
+    # the rumble patterns (addiu 0x109C / 0x10A4 / 0x10AC / 0x10C0 / 0x10DC -> pad_startRumble,
+    # as bootup 0x8170): 0xFF-terminated motor bytes up to Sym 0x10FC
+    ("game", "Data", 0x109C, [(0, 0x60, "u8")], 1, 0x60, "known:rumble"),
+    # --- genproc Data, run 821 ---
+    # the s32 tables the code indexes (0xF08.. access / index around the gap at 0xF20), the 8
+    # s32 {mask, 0x100} words the pointer at 0xF60 reaches, and 4 rows of 11 s32 at 0x11B0
+    ("genproc", "Data", 0xF08, [(0, 4, "u32")], 11, 4, "known:s32-table"),
+    ("genproc", "Data", 0xF40, [(0, 4, "u32")], 8, 4, "known:s32-table"),
+    ("genproc", "Data", 0x11B0, [(0, 4, "u32")], 44, 4, "known:s32-table"),
+    # boarder3 0x3B28: 231 s16[3] (the unreferenced sibling of the op 32 remap array; values
+    # ffcf ff89 ffc8 ...)
+    ("boarder3", "Data", 0x3B28, [(0, 2, "u16")], 231 * 3, 2, "known:s16-values"),
 ]
 # gamegfx (Data only, no relocs): five images, each an 8-byte header {0, 1} at an exported
 # symbol followed by texel bytes up to the next header.  The header reader is not located
@@ -568,6 +630,15 @@ def walk_assets(maps, ptrs, stats):
                     for i, n in ((0, nv), (1, nt)):
                         if tgt(key, a[i]):
                             typed_run(*tgt(key, a[i]), "f32", 3 * n, "shape:normals")
+                elif op == 30 and tgt(key, a[1]):
+                    # BasePolyShape +0x48 count / +0x6C table (polyshape.h): PolySeg {s32, u16 v[2]}
+                    # records (game_libs_ncc_4A308.cpp PolyShape_makeEdgeVtxs reads v[] as u16)
+                    n30 = word(m, a[0])
+                    if 0 < n30 <= 0x10000:
+                        for i in range(n30):
+                            tk, to = tgt(key, a[1])
+                            typed_run(tk, to + 8 * i, "u32", 1, "shape:polySeg")
+                            typed_run(tk, to + 8 * i + 4, "u16", 2, "shape:polySeg")
                 elif op == 32 and tgt(key, a[1]):
                     # remap (+0x70) is 3 u16 per entry, and its count is the command's own arg 0
                     # (+0x74), not nVerts: boarder3 0x4094 has 231 entries for 155 vertices
@@ -579,12 +650,43 @@ def walk_assets(maps, ptrs, stats):
                     collgrid(*tgt(key, a[0]))
 
 
-# libgdl node command streams (Node_doCommand / MNode / QNode_doCommand, game_libs_o2_396FC /
-# _40304): words {argc << 16 | op, argc args} like the shape stream, but no end op (the reader is
-# given the stream).  Op 114 (0x72) points to an s16[10] transform {pos x3, quat x4 / 32767,
-# scale x3}.  Known streams: the rider node list (bootup Data 0xA924..0xBBF0, op 1017 at its
-# start; SnowBoarder_loadBoardModel_0000B1B4 builds the rider model from it, include/game/snowboarder.h).
-NODE_STREAMS = [("bootup", "Data", 0xA924, 0xBBF0)]
+# libgdl node command streams (ProcNodeList -> nodelist_dispatchList_000558A0 / nodelist_walk_0005534C
+# / nodelist_dispatch, game_libs_ncc_*.cpp; Node_doCommand / MNode / QNode_doCommand): words
+# {argc << 16 | op, argc args} like the shape stream.  A list starts with op 1000 (the
+# ProcNodeList assert) and ends at a 0 word; op 1003 {fn, ...} opens a nested walk that its own
+# 0 word closes; op 1017 {list} runs a sub-list.  Op 114 (0x72) points to an s16[10] transform
+# {pos x3, quat x4 / 32767, scale x3}.  The streams are found from the data (every module's
+# Data / RoData, a 1000 word at a symbol / pointer target that parses to its end with known ops):
+# the rider node lists (bootup Data 0xA924 and 0xABBC, SnowBoarder_loadBoardModel_0000B1B4;
+# include/game/snowboarder.h) and map5_data 0x9D4 (an MNode "name" {scale, rotate, translate}
+# around a 1003 shape).
+NODE_OPS = {0} | set(range(100, 121)) | set(range(1000, 1020))
+
+
+def parse_node(m, pm, o):
+    """-> [(op, offset, argc)] of the node list at o up to its closing 0 word, or None"""
+    cmds, depth = [], 0
+    while o + 4 <= m.n and len(cmds) < 8192:
+        if o in pm or m.t[o] == "ptr":
+            return None
+        w = struct.unpack_from(">I", m.data, o)[0]
+        argc, op = w >> 16, w & 0xFFFF
+        if op not in NODE_OPS or argc > 16 or o + 4 + 4 * argc > m.n:
+            return None
+        if w == 0:
+            cmds.append((0, o, 0))
+            if depth == 0:
+                return cmds
+            depth -= 1
+            o += 4
+            continue
+        if op == 1003:
+            depth += 1
+        cmds.append((op, o, argc))
+        o += 4 + 4 * argc
+    return None
+
+
 # op 1003 {fn, ...} runs fn on the stream (NodeListState); skin_cmdSkinMgr (bootup Text 0x7D280)
 # reads {slot, SkinBone *table}: gdl/skin.h SkinBone {s16 count, s16 pad, SkinWeight *}, SkinWeight
 # {s16 vert, s16 weight}
@@ -610,28 +712,28 @@ def skin_bones(maps, ptrs, tk, to, stats):
 
 
 def node_streams(maps, ptrs, stats, rt=None, rom=None):
-    for short, sec, o, end in NODE_STREAMS:
-        key = (short, sec)
-        if key not in maps:
+    todo = [(key, o, True) for key, m in sorted(maps.items()) for o in sorted(m.starts)
+            if o % 4 == 0 and o + 4 <= m.n and struct.unpack_from(">I", m.data, o)[0] == 1000]
+    done = set()
+    while todo:
+        key, o, root = todo.pop(0)
+        if (key, o) in done or key not in maps:
             continue
+        done.add((key, o))
+        short, sec = key
         m, pm = maps[key], ptrs[key]
-        cmds = []
-        while o < end:
-            w = struct.unpack_from(">I", m.data, o)[0]
-            argc, op = w >> 16, w & 0xFFFF
-            if o in pm or argc > 16 or op > 0x1000 or o + 4 + 4 * argc > end:
-                cmds = None
-                break
-            cmds.append((op, o, argc))
-            o += 4 + 4 * argc
-        if not cmds or o != end:
-            stats["node stream: did not parse"] += 1
+        cmds = parse_node(m, pm, o)
+        if not cmds:
+            if not root:
+                stats["node stream: did not parse"] += 1
             continue
         for op, c, argc in cmds:
             m.put(c, "u32", "nodecmd", 1 + argc)       # relocated args stay ptr (put skips them)
             if op == 114 and (c + 4) in pm and pm[c + 4][0] in maps:
                 tk, to = pm[c + 4]
                 maps[tk].put(to, "u16", "nodecmd:xform", 10)
+            if op == 1017 and argc == 1 and (c + 4) in pm:
+                todo.append(pm[c + 4] + (False,))
             if op == 1003 and argc == 3 and (c + 12) in pm and rt is not None:
                 md = rom.by_short[short]
                 rel = {off: f1 for f1, off, _ in md.relocs(sec)}
@@ -912,13 +1014,16 @@ def main():
         d = m.data
         i = 0
         while i < m.n:
-            if m.t[i] is None and 0x20 <= d[i] < 0x7F and (i % 4 == 0 or i in bounds):
+            if m.t[i] is None and (0x20 <= d[i] < 0x7F or d[i] == 10) and (i % 4 == 0 or i in bounds):
                 j = i
                 while j < m.n and (0x20 <= d[j] < 0x7F or d[j] in (9, 10, 13, 0x1B)) and m.t[j] in (None, "u8"):
                     j += 1
                 # 4+ characters anywhere; 1-3 at an address the code takes or a pointer holds
                 # (parm tags "d00" / "he1" / "Env", formats "%s" / "%d_", viewrec "fff")
-                if j < m.n and d[j] == 0 and (j - i >= 4 or j > i and i in m.addr_taken | bounds):
+                # (a leading "\n" too: "\nContents of %s", the game.uso "\nDAM" / "\nNULL\n" tags)
+                npr = sum(1 for b in d[i:j] if 0x20 <= b < 0x7F)
+                if j < m.n and d[j] == 0 and npr and (d[i] != 10 or npr >= 3) and \
+                        (j - i >= 4 or j > i and i in m.addr_taken | bounds):
                     for b in range(i, j + 1):
                         if m.t[b] in (None, "u8"):
                             m.t[b], m.src[b] = "str", "str"
@@ -935,6 +1040,17 @@ def main():
                 for b in range(w):
                     m.t[p + b], m.src[p + b] = typ, "index"
                 p += w
+        if sec == "RoData":
+            # RoData literal-pool words no access typed (genproc 0x160 0.1f, 0x240 1e7f, 0x390
+            # 0.3f; bootup 0xD98 32 / 255.0f): f32 when the value is a float near 1 that is not text
+            for o in range(0, m.n - 3, 4):
+                if any(m.t[o + b] is not None for b in range(4)) or not any(d[o:o + 4]):
+                    continue
+                w = struct.unpack_from(">I", d, o)[0]
+                if 127 - 30 <= (w >> 23) & 0xFF <= 127 + 30 and plausible(d, o, "f32"):
+                    for b in range(4):
+                        m.t[o + b], m.src[o + b], m.st[o + b] = "f32", "value:f32", o
+                    stats["rodata f32 values"] += 1
         b = 0
         while b < m.n:     # zero runs of 8+ bytes; shorter ones stay inside their unknown run
             e = b
