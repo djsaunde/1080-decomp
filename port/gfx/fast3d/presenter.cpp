@@ -902,32 +902,7 @@ int main(int argc, char** argv) {
     bool endedNoted = false;
     while (!quit && !sStop) {
         /* events */
-        while (XPending(sWin.dpy) > 0) {
-            XEvent ev;
-            XNextEvent(sWin.dpy, &ev);
-            if (ev.type == KeyPress || ev.type == KeyRelease) {
-                KeySym ks = XLookupKeysym(&ev.xkey, 0);
-                in.key(ks, ev.type == KeyPress);
-                if (ev.xkey.send_event) {
-                    std::printf("presenter: synthetic %s %s (step %u)\n", XKeysymToString(ks),
-                                ev.type == KeyPress ? "down" : "up", lastStep);
-                }
-                if (ev.type == KeyPress && ks == XK_F11) {
-                    /* WSLg maps the window again: no stream may be playing then (live_audio.h) */
-                    live_audio_suspend(audio.openDelayMs != 0 ? audio.openDelayMs : 2500);
-                    sWin.toggleFullscreen();
-                }
-            } else if (ev.type == ConfigureNotify) {
-                sWin.w = (uint32_t)std::max(1, ev.xconfigure.width);
-                sWin.h = (uint32_t)std::max(1, ev.xconfigure.height);
-            } else if (ev.type == ClientMessage && (Atom)ev.xclient.data.l[0] == sWin.wmDelete) {
-                quit = true;
-            } else if (ev.type == FocusOut) {
-                /* drop held keys so nothing sticks (the joystick keeps its state) */
-                in.left = in.right = in.up = in.down = in.shift = false;
-                in.keys = 0;
-            }
-        }
+        live_pump(sWin, in, lastStep);
         in.pollJoystick();
         if (in.quit) {
             quit = true;

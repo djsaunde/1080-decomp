@@ -2,6 +2,7 @@
  * presenter.cpp (runs 856 / 858 / 861) so the native 64-bit game (native_host.cpp, plan 21.9) uses the
  * same code. */
 #include "live_window.h"
+#include "live_audio.h"
 
 #include <fcntl.h>
 #include <linux/joystick.h>
@@ -302,6 +303,8 @@ int live_pump(LiveX11& w, LiveInput& in, uint32_t step) {
                             ev.type == KeyPress ? "down" : "up", step);
             }
             if (ev.type == KeyPress && ks == XK_F11) {
+                /* WSLg maps the window again: no stream may be playing then (live_audio.h, run 867) */
+                live_audio_suspend(2500);
                 w.toggleFullscreen();
             }
         } else if (ev.type == ConfigureNotify) {

@@ -47,8 +47,8 @@ if [ "${1:-}" = --native ]; then NATIVE=1; shift; fi
 while getopts "b:r:s:Sml:n:p:Vh" o; do
     case $o in
     b) BUILD=$OPTARG ;; r) ROM=$OPTARG ;; s) SCALE=$OPTARG ;; S) SOFT=1 ;; n) NAME=$OPTARG ;; p) PARGS=$OPTARG ;;
-    m) MUTE=--mute ;; l) LAT=$OPTARG ;;
-    *) sed -n '2,31p' "$0"; exit 2 ;;
+    m) MUTE=--mute ;; l) LAT=$OPTARG ;; V) VSYNC=1 ;;
+    *) sed -n '2,39p' "$0"; exit 2 ;;
     esac
 done
 shift $((OPTIND - 1))

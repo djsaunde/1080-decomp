@@ -52,7 +52,7 @@ $(OBJ)/presenter.o: presenter.cpp ../dlump.h ../live_shm.h ../../host.h ../repla
                live_window.h live_backend.h $(SHIM_H) | $(OBJ)
 	$(XX) -I$(X11_DEV)/usr/include -Wall -Wextra -Wno-unused-parameter -c $< -o $@
 # the window (X11 + EGL) and its input, shared by the presenter and the native host (plan 21.9)
-$(OBJ)/live_window.o: live_window.cpp live_window.h live_gamepad.h ../live_shm.h | $(OBJ)
+$(OBJ)/live_window.o: live_window.cpp live_window.h live_audio.h live_gamepad.h ../live_shm.h | $(OBJ)
 	$(CXX) -std=c++20 $(CXXFLAGS) -I$(X11_DEV)/usr/include -I$(GL_DEV)/usr/include -Wall -Wextra -c $< -o $@
 $(OBJ)/live_audio.o: live_audio.cpp live_audio.h ../live_shm.h | $(OBJ)
 	$(CXX) -std=c++20 $(CXXFLAGS) -I$(PULSE_DEV)/usr/include -Wall -Wextra -c $< -o $@
