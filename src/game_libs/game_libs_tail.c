@@ -6,6 +6,9 @@
 #include "game/input.h"
 #include "game/course.h"
 #include "uso_call.h"
+#ifdef PORT
+#include "port_backup.h" /* port/include: the SRAM image byte order (Backup_read / Backup_write / backup_checksum) */
+#endif
 
 /* Tail half of game_libs.c, split off on 2026-05-07 along with
  * game_libs_o0_949C.c (the 4-fn -O0 cluster at 0x949C..0x959C).
@@ -90,6 +93,12 @@ void backup_checksum(s32 *out, s32 *src, s32 len, s32 key) {
     s32 *q;
     s32 chk;
 
+#ifdef PORT
+    /* the hardware's sum: the big-endian words of the record's SRAM image (port_backup.h) */
+    (void)q;
+    (void)i;
+    sum = port_backup_sum(src, len);
+#else
     if (len / 4 > 0) {
         do {
             q = src;
@@ -98,6 +107,7 @@ void backup_checksum(s32 *out, s32 *src, s32 len, s32 key) {
             sum += *q;
         } while (i != len / 4);
     }
+#endif
     chk = 0xF251F205 - sum;
     out[0] = chk;
     sum = chk - sum;
@@ -129,6 +139,12 @@ int backup_checksumOk(s32 *out, s32 *src, s32 len, s32 key) {
     s32 *q;
     s32 chk;
 
+#ifdef PORT
+    /* the hardware's sum: the big-endian words of the record's SRAM image (port_backup.h) */
+    (void)q;
+    (void)i;
+    sum = port_backup_sum(src, len);
+#else
     if (len / 4 > 0) {
         do {
             q = src;
@@ -137,6 +153,7 @@ int backup_checksumOk(s32 *out, s32 *src, s32 len, s32 key) {
             sum += *q;
         } while (i != len / 4);
     }
+#endif
     chk = out[0];
     if (sum + chk != 0xF251F205) {
         return 0;
@@ -1539,6 +1556,9 @@ void Backup_read(int a0, int a1, int a2, int a3) {
     CALL(fs_gdlOpenFile)(&gSysLib_data_B89C_arg, 0, GL_DATA(0xD4E0));
     CALL(fs_gdlSeekFile)(&gSysLib_data_B8AC_arg, 0, a2);
     CALL(fs_gdlReadFile)(&gSysLib_data_B8C0_arg, a1, a3);
+#ifdef PORT
+    port_backup_from_sram((void *)a1, a2, a3); /* SRAM is big-endian, the record host order (port_backup.h) */
+#endif
 }
 
 extern int gl_func_00000000();
@@ -1549,6 +1569,9 @@ void Backup_write(int a0, int a1, int a2, int a3) {
     CALL(sys_setWord4_00061D80)(&gSysLib_data_B8FC_arg, 2);
     CALL(fs_gdlOpenFile)(&gSysLib_data_B914_arg, 0, GL_DATA(0xD4E4));
     CALL(fs_gdlSeekFile)(&gSysLib_data_B924_arg, 0, a1);
+#ifdef PORT
+    a2 = (int)port_backup_to_sram((void *)a2, a1, a3); /* write a big-endian copy (port_backup.h) */
+#endif
     CALL(fs_gdlWriteFile)(&gSysLib_data_B938_arg, a2, a3);
 }
 

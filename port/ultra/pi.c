@@ -11,7 +11,9 @@
  *                           (GdlFile kind 2) DMA through it.
  *   0x05000000..0x06FFFFFF  64DD (osDriveRomInit): absent, reads return zeros
  * Data is copied as-is: the ROM is big-endian and so is everything DMA'd from
- * it; byte swapping happens in the readers (plan 4.4). osPiReadIo returns the
+ * it; byte swapping happens in the readers (plan 4.4). The SRAM image (and so the
+ * save file) is the N64's, big-endian: the game's Backup_read / Backup_write convert
+ * each record at that boundary (port/include/port_backup.h). osPiReadIo returns the
  * big-endian word as a host integer, as the N64 CPU would see it.
  *
  * Every DMA completes immediately and posts its OSIoMesg to the return queue

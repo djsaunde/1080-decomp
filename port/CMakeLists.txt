@@ -99,8 +99,9 @@ list(APPEND PORT_HOST_SOURCES gfx/port_gfx.c gfx/dlump.c gfx/port_fb.c)
 # the dump + f3dreplay (option (b)) is the default. PORT_FAST3D_FLAGS overrides the arch flags (empty = a 64-bit
 # compile of the library alone).
 option(PORT_GFX_FAST3D "render gfx tasks in process with libultraship's Fast3D (needs target-ABI C++ / GL)" OFF)
-# agent-g run 619: the SysApi table and the cartridge file system (host side)
-foreach(f sysapi.c fs/fs.c)
+# agent-g run 619: the SysApi table and the cartridge file system (host side); agent-c run 844:
+# the SRAM save's byte order (fs/backup_sram.c, port/include/port_backup.h)
+foreach(f sysapi.c fs/fs.c fs/backup_sram.c)
   if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${f})
     list(APPEND PORT_HOST_SOURCES ${f})
   endif()
@@ -220,6 +221,14 @@ if(PORT_LINK)
     target_compile_options(test_fs PRIVATE ${PORT_HOST_FLAGS})
     target_link_options(test_fs PRIVATE -m32 -no-pie)
   endif()
+
+  # the SRAM save format test (plan 20): fs/backup_sram.c alone; with a save file and the
+  # extracted bootup Data it also checks a game-written save against the ROM's default records
+  add_executable(test_backup fs/test_backup.c fs/backup_sram.c)
+  target_compile_definitions(test_backup PRIVATE PORT)
+  target_include_directories(test_backup PRIVATE ${GAME_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
+  target_compile_options(test_backup PRIVATE ${PORT_HOST_FLAGS})
+  target_link_options(test_backup PRIVATE -m32 -no-pie)
 endif()
 
 # port/undefined.txt: what the library needs from outside (no 32-bit libc needed).
