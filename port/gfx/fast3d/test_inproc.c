@@ -6,6 +6,10 @@
  * writes frame_NNNNNN.png per task; fast3d/golden.sh compares them with f3dreplay's PNGs.
  *
  *   test_inproc a.dlmp [b.dlmp ...]
+ *   test_inproc -s a.dlmp [b.dlmp ...]   one game step: one memory image (every dump's chunks copied
+ *                                        first), then the tasks rendered in the order given; with the
+ *                                        offscreen task before the one that samples it, this shows
+ *                                        render to texture (run 859) in process
  *
  * Each dump gets fresh mappings (the previous one's are unmapped first, and the texture cache
  * over them invalidated with port_fast3d_invalidate, as the game's CPU texture writers will),
@@ -55,6 +59,10 @@ static int map_ranges(unsigned long (*r)[2], int n) {
     return 0;
 }
 
+static int sStep;              /* -s: the dumps are one step */
+static unsigned char *sBufs[64];
+static int sNBufs;
+
 static int run(const char *path) {
     FILE *f = fopen(path, "rb");
     unsigned char *buf;
@@ -81,6 +89,10 @@ static int run(const char *path) {
     if (memcmp(h->magic, DLUMP_MAGIC, 8) != 0 || h->byteOrderMark != DLUMP_BYTE_ORDER_MARK) {
         fprintf(stderr, "test_inproc: %s: not a host-order DLMP\n", path);
         return -1;
+    }
+    if (sStep && sNBufs < 64) { /* keep it: mapped and copied by run_step */
+        sBufs[sNBufs++] = buf;
+        return 0;
     }
     for (i = 0; i < (unsigned)sNMaps; i++) { /* the next dump reuses these addresses for other texels */
         port_fast3d_invalidate((void *)sMaps[i].a, sMaps[i].b - sMaps[i].a);
@@ -112,8 +124,50 @@ static int run(const char *path) {
     return r;
 }
 
+/* -s: map the union of every dump's ranges, copy every dump's chunks, then render each root */
+static int run_step(void) {
+    static unsigned long ranges[MAXMAP][2];
+    int nr = 0, k, bad = 0;
+    unsigned int i;
+    size_t off;
+    for (k = 0; k < sNBufs; k++) {
+        const DlumpHeader *h = (const DlumpHeader *)sBufs[k];
+        for (off = h->headerSize, i = 0; i < h->chunkCount && nr < MAXMAP; i++) {
+            const DlumpChunk *c = (const DlumpChunk *)(sBufs[k] + off);
+            if (c->size != 0 && c->kind != DLUMP_ERROR && c->kind != DLUMP_IMAGE && c->kind != DLUMP_END) {
+                ranges[nr][0] = c->addr & ~4095ul;
+                ranges[nr][1] = ((unsigned long)c->addr + c->size + 4095) & ~4095ul;
+                nr++;
+            }
+            off += sizeof(*c) + ((c->size + 3) & ~3u);
+        }
+    }
+    if (map_ranges(ranges, nr) != 0) {
+        return -1;
+    }
+    for (k = 0; k < sNBufs; k++) {
+        const DlumpHeader *h = (const DlumpHeader *)sBufs[k];
+        for (off = h->headerSize, i = 0; i < h->chunkCount; i++) {
+            const DlumpChunk *c = (const DlumpChunk *)(sBufs[k] + off);
+            if (c->size != 0 && c->kind != DLUMP_ERROR && c->kind != DLUMP_IMAGE && c->kind != DLUMP_END) {
+                memcpy((void *)(unsigned long)c->addr, c + 1, c->size);
+            }
+            off += sizeof(*c) + ((c->size + 3) & ~3u);
+        }
+    }
+    for (k = 0; k < sNBufs; k++) {
+        bad += port_fast3d_task(((const DlumpHeader *)sBufs[k])->rootAddr) != 0;
+    }
+    return bad;
+}
+
 int main(int argc, char **argv) {
     int i, bad = 0;
+    if (argc > 1 && strcmp(argv[1], "-s") == 0) {
+        sStep = 1;
+        argv++;
+        argc--;
+    }
     if (argc < 2) {
         fprintf(stderr, "usage: test_inproc a.dlmp [b.dlmp ...]\n");
         return 2;
@@ -127,6 +181,9 @@ int main(int argc, char **argv) {
             fprintf(stderr, "test_inproc: %s: %d\n", argv[i], r);
             bad++;
         }
+    }
+    if (sStep && sNBufs > 0) {
+        bad += run_step();
     }
     {
         static unsigned char px[320 * 240 * 4];

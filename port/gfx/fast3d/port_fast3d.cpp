@@ -25,8 +25,17 @@
  *
  * The window. Here it is the EGL pbuffer of ../replay/egl_png.c (headless; this machine has no
  * SDL). A desktop build swaps EglWindow for LUS's SDL window backend; nothing else changes.
- * PORT_GFX_PNG=<dir> writes <dir>/frame_NNNNNN.png after every task. */
+ * PORT_GFX_PNG=<dir> writes <dir>/frame_NNNNNN.png after every task.
+ *
+ * Render to texture (run 859). A task whose colour images are all narrower than the 320-wide frame
+ * (the name-entry board's replay: G_SETCIMG width 192, scissor 192x96) draws into an offscreen image
+ * that a later task loads as a texture. Fast3D ignores G_SETCIMG and draws it into the window's
+ * top-left corner, so after such a task that corner is read back (patch 0003, big-endian RGBA5551)
+ * into the image in game memory and the textures cached over it are dropped (patch 0004): the
+ * next frame's overlay task samples it, one frame later, as on the N64. The game masks G_SETCIMG to
+ * 24 bits; the full pointer is the one registered writable mapping that holds the whole image. */
 
+#include <algorithm>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -90,6 +99,63 @@ void register_low_mappings(State& s) {
         }
     }
     std::fclose(f);
+}
+
+/* render to texture: the task's colour images (G_SETCIMG), Z images and scissor, from its raw lists */
+struct Offscreen {
+    bool off = false;
+    uint32_t img24 = 0, width = 0, height = 0;
+};
+
+Offscreen offscreen_target(uint32_t root) {
+    Offscreen o;
+    std::vector<uint32_t> zimgs;
+    std::vector<std::pair<uint32_t, uint32_t>> cimgs; /* (w0, w1) */
+    uint32_t stack[32], pc = root, sp = 0, lry = 0;
+    for (uint32_t n = 0; n < (1u << 20) && pc != 0 && (pc & 7) == 0; n++) {
+        const uint32_t* g = (const uint32_t*)(uintptr_t)pc;
+        const uint32_t w0 = g[0], w1 = g[1];
+        pc += 8;
+        switch (w0 >> 24) {
+            case 0x06: /* G_DL: push unless it is a branch */
+                if (((w0 >> 16) & 0xFF) == 0) {
+                    if (sp == 32) {
+                        return o;
+                    }
+                    stack[sp++] = pc;
+                }
+                pc = w1;
+                break;
+            case 0xB8: /* G_ENDDL */
+                pc = sp == 0 ? 0 : stack[--sp];
+                break;
+            case 0xFF:
+                cimgs.push_back({ w0, w1 });
+                break;
+            case 0xFE:
+                zimgs.push_back(w1 & 0xFFFFFF);
+                break;
+            case 0xED: /* G_SETSCISSOR: lower-right y, 10.2 */
+                lry = std::max(lry, (w1 & 0xFFF) >> 2);
+                break;
+            default:
+                break;
+        }
+    }
+    for (const auto& c : cimgs) {
+        const uint32_t width = (c.first & 0xFFF) + 1, a = c.second & 0xFFFFFF;
+        if (width >= 320) {
+            return Offscreen(); /* it draws into the frame */
+        }
+        if (std::find(zimgs.begin(), zimgs.end(), a) != zimgs.end() || ((c.first >> 19) & 3) != 2) {
+            continue; /* the Z image's clear, or not 16-bit */
+        }
+        o.off = true;
+        o.img24 = a;
+        o.width = width;
+    }
+    o.height = std::min<uint32_t>(lry != 0 ? lry : 240, 240);
+    return o;
 }
 
 #if UINTPTR_MAX > 0xFFFFFFFFu
@@ -204,10 +270,42 @@ extern "C" int port_fast3d_task_fb(unsigned int root, const PortFbRequests* rq) 
             s->gfx->ReadbackRequestDepth((uint32_t)(rq->depthIdx[i] % PORT_FB_W), (uint32_t)(rq->depthIdx[i] / PORT_FB_W));
         }
     }
+    /* render to texture: the offscreen image's region of the window, read back at the end of Run */
+    const Offscreen off = offscreen_target(root);
+    std::vector<uint16_t> rtt;
+    if (off.off) {
+        rtt.assign((size_t)off.width * off.height, 0);
+        s->gfx->ReadbackRequestRgba5551(0, 0, off.width, off.height, rtt.data(), true);
+    }
     std::unordered_map<Mtx*, MtxF> noReplacements;
     s->gfx->StartFrame();
     s->gfx->Run(list, noReplacements);
     glFinish();
+    if (off.off) {
+        const size_t bytes = rtt.size() * 2;
+        uintptr_t img = 0;
+        int found = 0;
+        for (uintptr_t hi = 0; hi < 16; hi++) {
+            const uintptr_t a = (hi << 24) | off.img24;
+            for (const auto& r : s->registered) {
+                if (a >= r.first && a + bytes <= r.second) {
+                    img = a;
+                    found++;
+                    break;
+                }
+            }
+        }
+        if (found == 1) {
+            std::memcpy((void*)img, rtt.data(), bytes);
+            gfx_texture_cache_invalidate_range((const void*)(img > 0x8000 ? img - 0x8000 : 0), bytes + (img > 0x8000 ? 0x8000 : img));
+        } else {
+            static int warned;
+            if (warned++ < 4) {
+                std::fprintf(stderr, "port_fast3d: render to texture: image 0x%06x %ux%u is in %d mappings (not stored)\n",
+                             off.img24, off.width, off.height, found);
+            }
+        }
+    }
     if (rq != nullptr) {
         const uintptr_t cimg = (uintptr_t)s->gfx->mRdp->color_image_address & 0xFFFFFF;
         const uintptr_t zimg = (uintptr_t)s->gfx->mRdp->z_buf_address & 0xFFFFFF;
