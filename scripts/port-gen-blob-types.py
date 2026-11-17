@@ -94,6 +94,37 @@ KNOWN = [
     ("snoweffects", "Data", 0x950, [(0, 4, "u32")], 1, 4, "known"),
     # viewrec vr_sndTbl_4990 (Data 0x318, SoundOptions_update): s32 sound id per row, 4 rows
     ("viewrec", "Data", 0x318, [(0, 4, "u32")], 4, 4, "known"),
+    # --- bootup Data, run 813 ---
+    # RSP ucode DMEM images (task.ucode_data of the RcpTask_setUcode* setters: Sgi20H 0x11990 /
+    # 0x13190, Sgi20HOut 0x13990, F3DEX_NoN 0x14190, F3DEX 0x15550, F3DLP_Rej 0x16550, F3DLX_Rej
+    # 0x16D50, Sgi20HFifo 0x17550; 0x12190 / 0x12990 / 0x14D50 / 0x15D50 are the unreferenced
+    # siblings) up to the audio tables: read by the RSP only, never by the port (Fast3D): bytes
+    ("bootup", "Data", 0x11990, [(0, 0x17D50 - 0x11990, "u8")], 1, 0x17D50 - 0x11990, "known:ucode-data"),
+    # gfx_drawFbSplash_00048184: the 128x128 u16 (RGBA5551) splash it copies into the colour
+    # buffer as u16 (D_48184_img)
+    ("bootup", "Data", 0x22A30, [(0, 2, "u16")], 128 * 128, 2, "known:splash"),
+    # math_atanLookup_00067FE4: 1025 u16 at D+0x2AA60, indexed by round(a0 / a1 * 1024)
+    ("bootup", "Data", 0x2AA60, [(0, 2, "u16")], 1025, 2, "known:atan"),
+    # math_acosf: D_69CC4_tbl, u16 indexed by (int)(|x| * 2048), x in [0, 1]: 2049 entries
+    ("bootup", "Data", 0x2C650, [(0, 2, "u16")], 2049, 2, "known:acos"),
+    # __osViInit's three OSViMode records (libultra vi.c: the NTSC / PAL / MPAL lan1 modes it
+    # picks by osTvType), the osViModeTable layout above
+    ("bootup", "Data", 0x2E530, [(0, 4, "u8"), (4, 0x4C, "u32")], 3, 0x50, "known:OSViMode"),
+    # the course descriptors (include/game/course.h, WorldCourse.desc): COURSE_OP_* streams of
+    # s32 words {argc << 16 | op, argc args} that game_createMap interprets, 0x67F0..0x6E30
+    # (the "World Registry" strings start at 0x6E30); their path arguments stay ptr
+    ("bootup", "Data", 0x67F0, [(0, 4, "u32")], (0x6E30 - 0x67F0) // 4, 4, "known:course-desc"),
+    # the record / options defaults Backup_resetCourseData_0000A670 / Backup_resetArcadeData_0000AAEC
+    # pass on: per course 0x24 of times (3 x 3 s32, Backup_courseRecordResetTimes) at 0xD268, then
+    # 0xC of scores (3 s32) at 0xD388, then 3 arcade entries of 0x18 (s32 x 6) at 0xD3E8
+    ("bootup", "Data", 0xD268, [(0, 4, "u32")], (0xD430 - 0xD268) // 4, 4, "known:backup-defaults"),
+    # aspMain's DMEM data image (aspMainDataStart, game_libs_rsp_ucode_31DF8; plan 15.2): RSP only,
+    # port/audio carries its own copy of the resample LUT (mixer_resample_lut): bytes
+    ("bootup", "Data", 0x1D340, [(0, 0x2E0, "u8")], 1, 0x2E0, "known:aspMain-data"),
+    # the rider node list's op 114 transforms (s16[10]: pos, quat / 32767, scale; QNode_doCommand
+    # case 0x72) tile 0xA0F8..0xA3A0 in 0x14 strides; the stream reaches 20 of the 34, the
+    # symbols at 0xA134 / 0xA1AC / 0xA210 / 0xA238 / 0xA29C / 0xA300 / 0xA328 are on the grid
+    ("bootup", "Data", 0xA0F8, [(0, 0x14, "u16")], 34, 0x14, "known:nodecmd:xform"),
 ]
 # gamegfx (Data only, no relocs): five images, each an 8-byte header {0, 1} at an exported
 # symbol followed by texel bytes up to the next header.  The header reader is not located
@@ -166,16 +197,35 @@ class Map:
                     self.t[o + b] = "conflict"
 
 
+def indexed(text, h, lo_off, rs):
+    """the LO16 access's base register is not the bare lui: an addu into it (or from it into
+    rs) lies between the HI16 and the LO16 instruction"""
+    if h is None:
+        return False
+    reg, hi_off = h
+    if rs != reg:
+        return True
+    if not 0 < lo_off - hi_off <= 4 * 32:
+        return False
+    for pc in range(hi_off + 4, lo_off, 4):
+        w = struct.unpack_from(">I", text, pc)[0]
+        if w >> 26 == 0 and w & 0x3F in (0x21, 0x2D) and (w >> 11) & 31 == rs:
+            return True
+    return False
+
+
 def analyse_text(md, rt, maps, stats):
     """HI16/LO16 pairs in md's Text that land in a Data / RoData section; follow addiu bases"""
     text = md.secs.get("Text")
     if not text:
         return
     rel = sorted(((o, f1 & 7, f1 >> 4) for f1, o, _ in md.relocs("Text")))
-    hi = {}
+    hi, hireg = {}, {}
     for off, typ, idx in rel:
         if typ == 3:
-            hi[idx] = struct.unpack_from(">I", text, off)[0] & 0xFFFF
+            w = struct.unpack_from(">I", text, off)[0]
+            hi[idx] = w & 0xFFFF
+            hireg[idx] = ((w >> 16) & 31, off)
             continue
         if typ != 2 or idx not in hi:
             continue
@@ -195,6 +245,11 @@ def analyse_text(md, rt, maps, stats):
         if op in MEMOP:
             m.put(addr, MEMOP[op][1], "access")
             stats["direct access"] += 1
+            if indexed(text, hireg.get(idx), off, rs):
+                # lui r; addu r, r, index; lw x, %lo(sym)(r): an indexed element (math_acosf,
+                # snd_SoundObjUpdate's f32 curves); extended forward below like "index"
+                m.idx_hints.append((addr, MEMOP[op][1]))
+                stats["indexed direct access"] += 1
         elif op == 0x09:      # addiu: address taken
             stats["address taken"] += 1
             m.addr_taken.add(addr)
@@ -306,6 +361,26 @@ def gfx_walk(md, sec, m, relocs, stats):
             elif op == 0x01:
                 mtx.append(c + 4)
         stats["gfx: display-list commands"] += (e - s) // 8
+    # static display lists with no address word (gfx_initRDPState's RDP init lists at bootup
+    # Data 0x224D0 / 0x224F0): an address the code takes that parses as immediate GBI1 commands
+    # (opcode >= 0xAF; no G_SPNOOP, so zero runs never match) up to G_ENDDL
+    for a in sorted(getattr(m, "addr_taken", ())):
+        if a % 8 or a in seen:
+            continue
+        e = a
+        while e + 8 <= m.n and e - a < 8 * 512:
+            op = d[e]
+            if op not in GBI1_OPS or op < 0xAF and not (op in ADDR_OPS and e + 4 in relocs):
+                break
+            e += 8
+            if op == G_ENDDL:
+                break
+        if e - a < 16 or d[e - 8] != G_ENDDL:
+            continue
+        for c in range(a, e, 8):
+            seen.add(c)
+            m.put(c, "u32", "gfx:static", 2)
+        stats["gfx: static display lists"] += 1
     return vtx, mtx
 
 
@@ -420,11 +495,77 @@ def walk_assets(maps, ptrs, stats):
                         if tgt(key, a[i]):
                             typed_run(*tgt(key, a[i]), "f32", 3 * n, "shape:normals")
                 elif op == 32 and tgt(key, a[1]):
-                    typed_run(*tgt(key, a[1]), "u16", 3 * nv, "shape:remap")
+                    # remap (+0x70) is 3 u16 per entry, and its count is the command's own arg 0
+                    # (+0x74), not nVerts: boarder3 0x4094 has 231 entries for 155 vertices
+                    n32 = word(m, a[0])
+                    typed_run(*tgt(key, a[1]), "u16", 3 * (n32 if 0 < n32 <= 0x10000 else nv), "shape:remap")
                 elif op == 29 and tgt(key, a[1]):
                     walk_mats(maps, ptrs, *tgt(key, a[1]), stats)
                 elif op == 35 and tgt(key, a[0]):
                     collgrid(*tgt(key, a[0]))
+
+
+# libgdl node command streams (Node_doCommand / MNode / QNode_doCommand, game_libs_o2_396FC /
+# _40304): words {argc << 16 | op, argc args} like the shape stream, but no end op (the reader is
+# given the stream).  Op 114 (0x72) points to an s16[10] transform {pos x3, quat x4 / 32767,
+# scale x3}.  Known streams: the rider node list (bootup Data 0xA924..0xBBF0, op 1017 at its
+# start; SnowBoarder_loadBoardModel_0000B1B4 builds the rider model from it, include/game/snowboarder.h).
+NODE_STREAMS = [("bootup", "Data", 0xA924, 0xBBF0)]
+# op 1003 {fn, ...} runs fn on the stream (NodeListState); skin_cmdSkinMgr (bootup Text 0x7D280)
+# reads {slot, SkinBone *table}: gdl/skin.h SkinBone {s16 count, s16 pad, SkinWeight *}, SkinWeight
+# {s16 vert, s16 weight}
+SKIN_CMD_SKINMGR = ("bootup", 0x7D280)
+
+
+def skin_bones(maps, ptrs, tk, to, stats):
+    m, pm = maps[tk], ptrs[tk]
+    for i in range(64):
+        e = to + 8 * i
+        if e + 8 > m.n:
+            break
+        cnt, pad = struct.unpack_from(">hh", m.data, e)
+        has = (e + 4) in pm
+        if pad or cnt < 0 or (cnt > 0) != has or (not has and struct.unpack_from(">I", m.data, e + 4)[0]):
+            break
+        if cnt:
+            m.put(e, "u16", "skin:bone", 2)
+            wk, wo = pm[e + 4]
+            if wk in maps:
+                maps[wk].put(wo, "u16", "skin:weights", 2 * cnt)
+            stats["skin bones"] += 1
+
+
+def node_streams(maps, ptrs, stats, rt=None, rom=None):
+    for short, sec, o, end in NODE_STREAMS:
+        key = (short, sec)
+        if key not in maps:
+            continue
+        m, pm = maps[key], ptrs[key]
+        cmds = []
+        while o < end:
+            w = struct.unpack_from(">I", m.data, o)[0]
+            argc, op = w >> 16, w & 0xFFFF
+            if o in pm or argc > 16 or op > 0x1000 or o + 4 + 4 * argc > end:
+                cmds = None
+                break
+            cmds.append((op, o, argc))
+            o += 4 + 4 * argc
+        if not cmds or o != end:
+            stats["node stream: did not parse"] += 1
+            continue
+        for op, c, argc in cmds:
+            m.put(c, "u32", "nodecmd", 1 + argc)       # relocated args stay ptr (put skips them)
+            if op == 114 and (c + 4) in pm and pm[c + 4][0] in maps:
+                tk, to = pm[c + 4]
+                maps[tk].put(to, "u16", "nodecmd:xform", 10)
+            if op == 1003 and argc == 3 and (c + 12) in pm and rt is not None:
+                md = rom.by_short[short]
+                rel = {off: f1 for f1, off, _ in md.relocs(sec)}
+                t = rt.raw(md, rel[c + 4] >> 4) if (c + 4) in rel else None
+                if t and (t[0].short, t[1]) == (SKIN_CMD_SKINMGR[0], "Text") and \
+                        (t[2] + struct.unpack_from(">I", m.data, c + 4)[0]) & 0xFFFFFFFF == SKIN_CMD_SKINMGR[1]:
+                    skin_bones(maps, ptrs, *pm[c + 12], stats)
+        stats["node streams"] += 1
 
 
 def tex_headers(m, bounds, stats):
@@ -637,6 +778,7 @@ def main():
             if (info >> 16) & 7 == 2 and UI.SEC_OF_TAG.get((info >> 20) & 0xF) == sec:
                 m.starts.add(v)
     walk_assets(maps, ptrs, stats)
+    node_streams(maps, ptrs, stats, rt, rom)
     for (short, sec), m in maps.items():
         bounds = m.starts | set(targets[(short, sec)])
         tex_headers(m, bounds, stats)
@@ -694,8 +836,12 @@ def main():
         for r in range(count):
             for fo, size, typ in fields:
                 o = base + r * stride + fo
-                for b in range(size):
-                    m.t[o + b], m.src[o + b], m.st[o + b] = typ, src, o + b // WIDTH.get(typ, 1) * WIDTH.get(typ, 1)
+                w = WIDTH.get(typ, 1)
+                for e in range(o, o + size, w):
+                    if typ != "u8" and any(m.t[e + b] in ("ptr", "audio") for b in range(w)):
+                        continue      # relocated words keep their host-order write
+                    for b in range(w):
+                        m.t[e + b], m.src[e + b], m.st[e + b] = typ, src, e
         stats["known layouts"] += 1
     # 5. write runs
     out = ["# generated by scripts/port-gen-blob-types.py -- do not edit.  Plan \"M1/M2: byte order\".",
