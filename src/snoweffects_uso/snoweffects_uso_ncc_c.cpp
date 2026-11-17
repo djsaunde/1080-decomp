@@ -148,6 +148,9 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * set3's `this` is then a fresh word of op-'s expansion that is released when it ends, so op*'s `a` reuses it
  * and r lands directly under op*'s return copy. That frees one word at the bottom (M 396), and the BA packet
  * via gDPWord adds it back (its `_g` block local), so the frame is 520 and every sp offset is the target's.
+ * Draw-block x is carried in the (dead there) wx, so x's live range no longer reaches the draw block and
+ * x / the p->pos.x load can share f18 as in the target; zf1(-halfH) on the third compare gives -halfH f16,
+ * and zf1(y) + zf1(z) on the first loop compare put y / z ahead of wx in the colouring (wx f24).
  * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
 extern "C" float gl_func_00000000_snow_randf(...);   /* sys_randf (typed blank jal: float return) */
@@ -273,7 +276,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
         cx = rot[0][0] * x + rot[1][0] * y + rot[2][0] * z + rot[3][0];
         cy = rot[0][1] * x + rot[1][1] * y + rot[2][1] * z + rot[3][1];
         cz = rot[0][2] * x + rot[1][2] * y + rot[2][2] * z + rot[3][2];
-        if ((cx < -30.0f) + zf8(cx, 0) + zf1(cy, 0) + zf1(cz, 0)) {
+        if ((cx < -30.0f) + zf8(cx, 0) + zf1(cy, 0) + zf1(cz, 0) + zf1(y, 0) + zf1(z, 0)) {
             wx = 60.0f;
         } else if (cx >= 30.0f) {
             wx = -60.0f;
@@ -311,15 +314,15 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
             p->pos.z = p->pos.z + self->axis[2].z * wz;
         }
         if (p->alpha > 0.0f) {
-            x = p->pos.x; y = p->pos.y; z = p->pos.z;
-            w = m[0][3] * x + m[1][3] * y + m[2][3] * z + m[3][3];
+            wx = p->pos.x; y = p->pos.y; z = p->pos.z;   /* wx is dead here: it carries the draw x */
+            w = m[0][3] * wx + m[1][3] * y + m[2][3] * z + m[3][3];
             if (SNOW_CAM2->nearZ < w && w < SNOW_CAM2->farZ) {
                 w = 1.0f / w;
                 sw = (int)(p->size * (halfH * 2.0f * w) + 1.0f);
                 cx = (m[0][0] * p->pos.x + m[1][0] * y + m[2][0] * z + m[3][0]) * w * halfW;
                 cy = (m[0][1] * p->pos.x + m[1][1] * y + m[2][1] * z + m[3][1]) * w * -halfH;
                 sz = (int)(p->size * (halfH * 2.0f * w) + 1.0f);
-                if (-halfW < cx && cx < halfW && -halfH < cy && cy < halfH) {
+                if (-halfW < cx && cx < halfW && (-halfH < cy) + zf1(-halfH, 0) && cy < halfH) {
                     x0 = (int)(cx + halfW - (float)(sw / 2) + (float)(&SNOW_CAM2->offX)[zf2(cy, 0)]);
                     y0 = (int)(cy + halfH - (float)(sz / 2) + (float)(&SNOW_CAM2->offY)[zf4(cx, 0)]);
                     cz = m[0][2] * p->pos.x + m[1][2] * y + m[2][2] * z + m[3][2];
