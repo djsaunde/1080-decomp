@@ -46,6 +46,9 @@ extern float gl_func_00000000_heli_fff(float, float);
 
 }
 static inline float clampf(float v, float lo, float hi) { return (v < lo) ? lo : ((hi < v) ? hi : v); }
+/* smoothing store through a reference: keeps the store, the pitch dot / lerp and the clamp compare in one uopt
+ * block, so -pi/8 and the lerp value take f18 / f16 and 2.0f / 1.0f are rematerialised per use (run 689) */
+static inline void lerpTo(float &d, float t, float k) { d = (t - d) * k + d; }
 struct Vec3 {
     float x, y, z;
     Vec3() {}
@@ -55,6 +58,7 @@ struct Vec3 {
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
     void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
 };
+static inline float dot(const Vec3 &a, const Vec3 &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 #define V3(off) (*(Vec3 *)(self + (off)))
 #define FWD ((Vec3 *)(self + 0x138))
 extern "C" void heli_uso_func_00000B08(char *self) {
@@ -237,17 +241,16 @@ extern "C" void heli_uso_func_00000B08(char *self) {
             int h = 100; /* int: uopt folds the conversion late, so 100.0f is materialised twice as in the target */
             f *= HF(0x154) / h;
         }
+        if (1) {}
         HF(0x144) = (f - HF(0x144)) * (0.07f) + HF(0x144);
         yaw = (yaw < (-0.3f)) ? (-0.3f) : (((0.3f) < yaw) ? (0.3f) : yaw);
         HF(0x14C) = HF(0x14C) + yaw * (0.06);
         fwdAx.x = HF(0xF4) * HF(0xFC) * 2.0f + HF(0x100) * HF(0xF8) * 2.0f;
         fwdAx.y = HF(0xF8) * HF(0xFC) * 2.0f - HF(0x100) * HF(0xF4) * 2.0f;
         fwdAx.z = 1.0f - HF(0xF4) * HF(0xF4) * 2.0f - HF(0xF8) * HF(0xF8) * 2.0f;
-        f = (fwdAx.x * vel.x + fwdAx.y * vel.y + fwdAx.z * vel.z) / 200.0f + fwdAx.y * (0.1);
-        HF(0x148) = (f - HF(0x148)) * (0.2f) + HF(0x148);
-        f = HF(0x148);
-        HF(0x148) = clampf(f, -0.3926991f, 0.3926991f);
-        if (1) {} /* block split: demotes the tail's constant LRs a little (88.7 -> 88.9) */
+        f = dot(fwdAx, vel) / 200.0f + fwdAx.y * (0.1);
+        lerpTo(HF(0x148), f, 0.2f);
+        HF(0x148) = clampf(HF(0x148), -0.3926991f, 0.3926991f);
         HF(0xF4) = 0.0f;
         HF(0xF8) = 0.0f;
         HF(0xFC) = 0.0f;
