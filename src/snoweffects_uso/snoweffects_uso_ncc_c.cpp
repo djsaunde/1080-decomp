@@ -18,6 +18,7 @@ struct GCtx {
     DList *dl;
     Gfx *next() { return &dl->buf[dl->count++]; }
     Gfx *nextN() { int n = dl->count++; Gfx *g = &dl->buf[n]; return g; }
+    Gfx *nextM() { int n = dl->count++; return &dl->buf[n]; }
     /* named-result appends for 0x270 (agent-c run 683). nextR's g, and the `if (1) {}` cut inside nextB /
      * nextBI, set where uopt's live units end: the target's packet-pointer rotation needs a unit cut inside
      * the LoadTile append (nextBI: the index n crosses the cut as a hidden t0 range, which also puts the
@@ -72,7 +73,7 @@ extern "C" void snoweffects_uso_func_00000270(SnowTex *t) {
 }
 
 extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at +0x254 */
-/* snoweffects_uso_func_000028E0 (NON_MATCHING, objdiff 90.0 %): the snowfall draw. Moves every
+/* snoweffects_uso_func_000028E0 (NON_MATCHING, objdiff 90.15 %): the snowfall draw. Moves every
  * flake by the camera motion since the last frame (camera +0x70 position * the gGfxLib world scale, minus +0x98,
  * times +0xA4), wraps it inside the camera-space box (x / y +-30, z -100..0) along the box axes
  * (+0x50 / +0x5C / +0x68; a y wrap re-rolls the flake's alpha against +0x4C), then projects the
@@ -81,11 +82,11 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * Levers: function-scope scalars above the two matrices (m at vfp-116, rot at vfp-180); the motion as ONE
  * expression `p->pos += (cam - last) * follow` (the target's two three-word copy chains), with `last` a reference
  * local (the target hoists &self->lastCam into t4 and spills it at the frame bottom) and operator- returning a
- * constructed SnowV3d (its store / copy schedule); `if (cy) if (cz) {}` keeps the camera-space
- * coordinates computed before the first wrap test (uopt otherwise sinks cy / cz into the branch blocks; this
- * nested form adds fewer blocks to c's range, so c keeps s2); sw, a second copy of sz, as the texW divisor
- * (the target's `or t1,t2,zero`); some packets through nextN() (agent-c run 712 climb: 88.9 -> 90.03 %).
- * Left: halfW loses its f30 home (split / spilled), the frame size (592 vs 520), the temps'
+ * constructed SnowV3d (its store / copy schedule); `if (cy) {} if (cz) {}` keeps the camera-space
+ * coordinates computed before the first wrap test (uopt otherwise sinks cy / cz into the branch blocks; two
+ * ifs instead of three keep c's block count low enough for s2); per-site packet appends (nextR / nextN /
+ * nextM / next) from an agent-c run 712 climb: 88.9 -> 90.15 %.
+ * Left: halfW loses its f30 home (split / spilled), the frame size (536 vs 520), the temps'
  * frame order (the target: += param, op* param, op- return, op- r, 4 words, op* return, op* r) and float colouring.
  * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
@@ -168,7 +169,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     }
     c = SNOW_CAM2->dl;
     d = gl_func_00000000(self->tex->dl);
-    gDPWord(c->nextN(), 0x06000000, d);
+    gDPWord(c->nextR(), 0x06000000, d);
     gl_func_00000000(SNOW_CAM2->view, m);
     gl_func_00000000(SNOW_CAM2->obj->rot, rot);
     halfW = (float)(SNOW_CAM2->scrW / 2);
@@ -179,14 +180,14 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     self->visible = 0;
     for (i = 0, p = self->items; i < self->count; i++, p++) {
         float cx, cy, cz;
-        float inv; int sz, sw; float sx, sy; int x0, y0;
+        float inv; int sz; float sx, sy; int x0, y0;
         float wx = 0.0f, wy = 0.0f, wz = 0.0f;
         p->pos += (cam - last) * self->follow;
         x = p->pos.x; y = p->pos.y; z = p->pos.z;
         cx = rot[0][0] * x + rot[1][0] * y + rot[2][0] * z + rot[3][0];
         cy = rot[0][1] * x + rot[1][1] * y + rot[2][1] * z + rot[3][1];
         cz = rot[0][2] * x + rot[1][2] * y + rot[2][2] * z + rot[3][2];
-        if (cy) if (cz) {}
+        if (cy) {} if (cz) {}
         if (cx < -30.0f) {
             wx = 60.0f;
         } else if (cx >= 30.0f) {
@@ -229,7 +230,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
             w = m[0][3] * x + m[1][3] * y + m[2][3] * z + m[3][3];
             if (SNOW_CAM2->nearZ < w && w < SNOW_CAM2->farZ) {
                 inv = 1.0f / w;
-                sz = (int)(p->size * (halfH * 2.0f * inv) + 1.0f); sw = sz;
+                sz = (int)(p->size * (halfH * 2.0f * inv) + 1.0f);
                 sx = (m[0][0] * x + m[1][0] * y + m[2][0] * z + m[3][0]) * inv * halfW;
                 sy = (m[0][1] * x + m[1][1] * y + m[2][1] * z + m[3][1]) * inv * -halfH;
                 if (-halfW < sx && sx < halfW && -halfH < sy && sy < halfH) {
@@ -238,11 +239,11 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
                     gDPWord(c->next(), 0xEE000000,
                             ((int)(((m[0][2] * x + m[1][2] * y + m[2][2] * z + m[3][2]) * inv + 1.0f) * snow_ro_10) & 0x7FFF) << 16);
                     self->drawn++;
-                    gDPWord(c->next(), 0xE4000000 | ((((x0 + sz) << 2) & 0xFFF) << 12) | (((y0 + sz) << 2) & 0xFFF),
+                    gDPWord(c->nextM(), 0xE4000000 | ((((x0 + sz) << 2) & 0xFFF) << 12) | (((y0 + sz) << 2) & 0xFFF),
                             (((x0 << 2) & 0xFFF) << 12) | ((y0 << 2) & 0xFFF));
-                    gDPWord(c->nextN(), 0xB4000000, 0);
+                    gDPWord(c->next(), 0xB4000000, 0);
                     gDPWord(c->next(), 0xB3000000,
-                            ((((self->texW << 10) - 1024) / sw) << 16) | ((((self->texH << 10) - 1024) / sz) & 0xFFFF));
+                            ((((self->texW << 10) - 1024) / sz) << 16) | ((((self->texH << 10) - 1024) / sz) & 0xFFFF));
                 }
             }
             self->visible++;
@@ -251,6 +252,6 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     self->lastCam = cam;
     gDPWord(c->next(), 0xE7000000, 0);
     gDPWord(c->next(), 0xB9000201, 0);
-    gDPWord(c->nextN(), 0xBA001301, 0x80000);
-    gDPWord(c->nextN(), 0xBB000000, 0);
+    gDPWord(c->next(), 0xBA001301, 0x80000);
+    gDPWord(c->next(), 0xBB000000, 0);
 }
