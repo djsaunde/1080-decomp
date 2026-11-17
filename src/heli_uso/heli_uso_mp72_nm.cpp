@@ -52,6 +52,8 @@
  *    cut from the `this` store, so they are not folded into 312(s0); they use the self+0x138 item, whose live range
  *    then reaches vel and overlaps the speed loads, so its uopt temp is 48 and t * ang's is 56 as in the target
  *    (spill slots 48 / 56 fixed; 94.44 -> 94.91).
+ *  - run 735: toTgt's target point through the dead player pointer (assigned before vel, kept in v0) and a
+ *    ctor-less sub() ending in `if (1) {}` (94.91 -> 95.39).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -95,6 +97,11 @@ struct Vec3 {
     Vec3() {}
     Vec3(float a, float b, float c) { x = a; y = b; z = c; }
     Vec3 operator-(const Vec3 &v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
+    /* toTgt's difference (run 735): ctor-less like operator*, so the result temp's address is not a
+     * this-or-new join value (no coloured register; ugen recomputes sp+124 per use as in the target); the
+     * `if (1) {}` after the stores ends the uopt block, so the 2.0f / HF(0xF8) live ranges of the side
+     * vector do not cover the subtraction and take f2 / f14 as in the target */
+    Vec3 sub(const Vec3 &v) const { V3b r; set3(r, x - v.x, y - v.y, z - v.z); if (1) {} return *(Vec3 *)&r; }
     Vec3 operator*(const float &s) const { if (1) {} V3b r; set3(r, x * s, y * s, z * s); return *(Vec3 *)&r; }
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
     void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
@@ -261,13 +268,17 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     if (HF(0x150) < HF(0x154)) {
         HF(0x154) = HF(0x150);
     }
+    /* player is dead here: reused for the target point self+0x12C, assigned in this earlier block so
+     * uopt keeps it in a register (target `addiu v0,s0,300`, loads 0 / 4 / 8(v0)) instead of folding it
+     * into 80(ps) (run 735) */
+    player = self + 0x12C;
     }
     }
     Vec3 vel = *FWD * HF(0x154);
     Vec3 side;
     float f;
     V3(0xDC) += vel;
-    toTgt = *(Vec3 *)((char *)ps + 0x50) - *ps;
+    toTgt = (*(Vec3 *)player).sub(*ps);
     side.x = 1.0f - HF(0xF8) * HF(0xF8) * 2.0f - HF(0xFC) * HF(0xFC) * 2.0f;
     side.y = HF(0xF4) * HF(0xF8) * 2.0f + HF(0x100) * HF(0xFC) * 2.0f;
     side.z = HF(0xF4) * HF(0xFC) * 2.0f - HF(0x100) * HF(0xF8) * 2.0f;
