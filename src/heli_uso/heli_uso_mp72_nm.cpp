@@ -120,7 +120,7 @@ static inline void fwdOf(Vec3 &r, const float *q) {
     r.z = 1.0f - q[0] * q[0] * 2.0f - q[1] * q[1] * 2.0f;
 }
 /* one slerp component: cos-weighted old heading plus sin-weighted target direction, both over sin(ang) */
-static inline float slc(float sa, float t, float ang, float o, float d, float s) { return gl_func_00000000_heli_ff((1.0f - t) * ang) * o / s + d * sa / s; }
+static inline float slc(float sa, float t, float ang, float o, float d, float s) { return XCALL(gl_func_00000000_heli_ff, fsin)((1.0f - t) * ang) * o / s + d * sa / s; }
 /* slerp the heading h toward dir by t (run 719) */
 static inline void dum4A(void *a0, void *a1, void *a2, void *a3) { a0 = a0; a1 = a1; a2 = a2; a3 = a3; }
 static inline void dumf(float a0) { a0 = a0; }
@@ -134,14 +134,14 @@ static inline float idm(float x) { x = x; return x; }
 static inline float clampP(float v, float lo, float hi, int z) { if ((v < lo)) return lo; if (zf1(v, z)) v = lo; if ((hi < v) + zf4(v, z)) return hi; return v; }
 static inline void slerp(Vec3 *h, const Vec3 &dir, float t) {
     float q0 = 0; float q1 = 0;
-    float ang = gl_func_00000000_heli_ff(h->x * dir.x + h->y * dir.y + h->z * dir.z);
-    float s = gl_func_00000000_heli_ff(ang);
+    float ang = XCALL(gl_func_00000000_heli_ff, math_acosf)(h->x * dir.x + h->y * dir.y + h->z * dir.z);
+    float s = XCALL(gl_func_00000000_heli_ff, fsin)(ang);
     Vec3 old = *h;
     dumf(t);
     if ((s < 0.0f ? -s : s) > (0.001)) {
-        h->x = slc(gl_func_00000000_heli_ff(t * ang), t, ang, old.x, dir.x, s);
-        h->y = slc(gl_func_00000000_heli_ff(t * ang), t, ang, old.y, dir.y, s);
-        h->z = slc(gl_func_00000000_heli_ff(t * ang), t, ang, old.z, dir.z, s);
+        h->x = slc(XCALL(gl_func_00000000_heli_ff, fsin)(t * ang), t, ang, old.x, dir.x, s);
+        h->y = slc(XCALL(gl_func_00000000_heli_ff, fsin)(t * ang), t, ang, old.y, dir.y, s);
+        h->z = slc(XCALL(gl_func_00000000_heli_ff, fsin)(t * ang), t, ang, old.z, dir.z, s);
     }
 }
 #define V3(off) (*(Vec3 *)(self + (off)))
@@ -179,12 +179,12 @@ extern "C" void Heli_update(char *self) {
         HeliTypeTag key;
         char *p;
         if (*(int *)(player + 0xA54) == 6) {
-            gl_func_00000000(self);
+            CALL(Heli_placeAtMarker)(self);
             HI(0x170) = 8;
         }
         if (*(char **)(self + 0x168) == 0) {
             key.v = *(int *)(&heli_data_00000000 + 0xCBAC);
-            p = (char *)gl_func_00000000(heli_itemMgr_b08, key);
+            p = (char *)CALL(ItemMgr_findType_0003EA98)(heli_itemMgr_b08, key);
             if (p != 0) {
 #define VT (((Node *)(p))->vptr)
                 *(char **)(self + 0x168) = (char *)((int (*)(...))(((GdlVtEnt *)((char *)(VT) + 8))[12]).fn)((char *)((((GdlVtEnt *)((char *)(VT) + 8))[12]).delta + (int)p), &(*(Vec3 *)&ppr), 0);
@@ -262,7 +262,7 @@ extern "C" void Heli_update(char *self) {
     case 2: {
         char *p;
         key2.v = *(int *)(&heli_data_00000000 + 0xCBB0);
-        p = (char *)gl_func_00000000(heli_itemMgr2_b08, key2, ps, 0);
+        p = (char *)CALL(ItemMgr_queryType)(heli_itemMgr2_b08, key2, ps, 0);
         if (zp(p, 0)) p = 0;
         if (p != 0 && *(int *)(p + 0x2C) != 0) {
             char *q;
@@ -294,9 +294,9 @@ extern "C" void Heli_update(char *self) {
     /* ctor-less like toTgt's (run 739): the op- result temp (sp+212) is no longer a coloured this-or-new join
      * value; ugen recomputes it in t3 and the op= temp (sp+252) takes v0 as in the target */
     dir = tg->sub(*ps);
-    dist = gl_func_00000000_heli_ff(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z) * *(float *)(&heli_gGfxLib_d + 0x128);
-    gl_func_00000000(&dir);
-    gl_func_00000000(FWD);
+    dist = XCALL(gl_func_00000000_heli_ff, math_vec3Length_0005BBCC)(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z) * *(float *)(&heli_gGfxLib_d + 0x128);
+    CALL(math_vec3Normalize)(&dir);
+    CALL(math_vec3Normalize)(FWD);
     slerp(FWD, dir, HF(0x164));
     if (dist < HF(0x15C)) {
         HF(0x154) = HF(0x160) * (dist / HF(0x15C));
@@ -324,7 +324,7 @@ extern "C" void Heli_update(char *self) {
     side.y = HF(0xF4) * HF(0xF8) * 2.0f + HF(0x100) * HF(0xFC) * 2.0f;
     side.z = HF(0xF4) * HF(0xFC) * 2.0f - HF(0x100) * HF(0xF8) * 2.0f;
     setf(toTgt.y, 0.0f);
-    f = gl_func_00000000_heli_ff(toTgt.x * toTgt.x + toTgt.y * toTgt.y + toTgt.z * toTgt.z);
+    f = XCALL(gl_func_00000000_heli_ff, math_vec3Length_0005BBCC)(toTgt.x * toTgt.x + toTgt.y * toTgt.y + toTgt.z * toTgt.z);
     if (1.0f < f && f < (100000.0f)) {
         float yaw;
         int hh;
@@ -334,7 +334,7 @@ extern "C" void Heli_update(char *self) {
         Vec3 axZ;
         Vec3 axX;
         Vec3 axY;
-        yaw = -(gl_func_00000000_heli_fff(toTgt.x, toTgt.z) - (3.1415927f)) - HF(0x14C);
+        yaw = -(XCALL(gl_func_00000000_heli_fff, math_atan2s_00068044)(toTgt.x, toTgt.z) - (3.1415927f)) - HF(0x14C);
         if ((3.1415927f) < yaw) {
             yaw -= (6.2831855f);
         } else if (yaw < (-3.1415927f)) {
@@ -370,11 +370,11 @@ extern "C" void Heli_update(char *self) {
         HF(0xFC) = hh;
         HF(0x100) = 1.0f;
         f = HF(0x144); axZ.x = hh; axZ.y = hh; axZ.z = 1.0f;
-        gl_func_00000000_heli_ppf(self + 0xF4, &axZ, f);
+        XCALL(gl_func_00000000_heli_ppf, math_quatRotateAxisAngle)(self + 0xF4, &axZ, f);
         f = HF(0x148); axX.x = 1.0f; axX.y = 0.0f; axX.z = 0.0f;
-        gl_func_00000000_heli_ppf(self + 0xF4, &axX, f);
+        XCALL(gl_func_00000000_heli_ppf, math_quatRotateAxisAngle)(self + 0xF4, &axX, f);
         f = -HF(0x14C); axY.x = 0.0f; axY.y = 1.0f; axY.z = 0.0f;
-        gl_func_00000000_heli_ppf(self + 0xF4, &axY, f);
+        XCALL(gl_func_00000000_heli_ppf, math_quatRotateAxisAngle)(self + 0xF4, &axY, f);
     }
-    gl_func_00000000(self);
+    CALL(QNode_update)(self);
 }
