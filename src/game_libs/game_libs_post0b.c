@@ -1166,6 +1166,14 @@ end:
  *   (docs/IDO_CODEGEN.md #same-line-store-pair-schedule-35440)
  * - Baked absolute addresses are per-site gl_ref_ pins. */
 extern int gl_ref_0003B8E8, gl_ref_0003B8EC;
+/* The SRAM path's PI DMA needs an 8-aligned RAM buffer.  On the port the buffer is wherever the
+ * host put it (Backup_writeOptions' `char buf[8]` is not 8-aligned on the i386 stack) and the PI
+ * shim copies with memcpy, so the check is off under PORT (plan 18.9). */
+#ifdef PORT
+#define SRAM_DMA_MISALIGNED(p) 0
+#else
+#define SRAM_DMA_MISALIGNED(p) ((p) & 7)
+#endif
 extern char sFmt_SRAM_read_from_1E5AC, sStr_bad_SRAM_DMA_align_1E5C8, sFmt_ReadFile_Error_1E5DC;
 typedef struct {
     short h;
@@ -1196,7 +1204,7 @@ L2: {
         int tmp;
         CALL(dbg_printf)(&sFmt_SRAM_read_from_1E5AC, a1, a2, gl_ref_0003B8E8);
         if (a2 != 0) {
-            if (a1 & 7) {
+            if (SRAM_DMA_MISALIGNED(a1)) {
                 CALL(sys_fatal)(&sStr_bad_SRAM_DMA_align_1E5C8);
             }
             CALL(gl_osCreateMesgQueue)(buf, &tmp, 1);
@@ -1466,7 +1474,7 @@ L2: {
         int tmp;
         CALL(dbg_printf)(&sFmt_SRAM_write_to_1E61C, a1, a2, gl_ref_0003B8E8);
         if (a2 != 0) {
-            if (a1 & 7) {
+            if (SRAM_DMA_MISALIGNED(a1)) {
                 CALL(sys_fatal)(&sStr_bad_SRAM_DMA_align_1E638);
             }
             CALL(gl_osCreateMesgQueue)(buf, &tmp, 1);

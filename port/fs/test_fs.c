@@ -78,7 +78,10 @@ int main(int argc, char **argv)
         CHECK(port_fs_read(f, buf, 16) == 16);
         CHECK(((unsigned char *)buf)[3] == rom[start + 3]);
         CHECK(port_fs_tell(f) == start + 16);
-        CHECK(port_fs_read(f, (char *)buf + 1, 4) == PORT_FS_ERR_ALIGN && port_fs_errno() == PORT_FS_ERR_ALIGN);
+        /* any alignment is accepted on the port (plan 18.9) */
+        CHECK(port_fs_read(f, (char *)buf + 1, 4) == 4);
+        CHECK(((unsigned char *)buf)[1] == rom[start + 16]);
+        port_fs_seek(f, 1, -4);
         /* clamp at the end of the window */
         port_fs_seek(f, 1, 0x2280 - 16 - 8);
         CHECK(port_fs_read(f, buf, 64) == 8);

@@ -85,4 +85,32 @@
 #define XDATA(tok, sym, off) tok
 #endif
 
+/*
+ * K&R argument pass-throughs (PC port, plan 18.9; scripts/port-kr-passthrough-audit.py lists the
+ * sites).  IDO code often calls with FEWER arguments than the callee reads: the missing ones ride
+ * through in $a0..$a3 from the caller's own arguments, untouched, and the matched C reproduces
+ * that by not passing them.  On the port (i386 cdecl) the callee would read stack garbage.
+ *
+ *   KR_ARG(x)       ", x" under PORT, nothing in the ROM build: the value that rides through,
+ *                   passed explicitly (`CALL(AudioHeap_Alloc)(pool KR_ARG(size))`)
+ *   KR_ARG0(x)      "x": the same as the first argument (`CALL(f)(KR_ARG0(a0) KR_ARG(a1))`)
+ *   KR_PARAM(decl)  ", decl" under PORT: a parameter the ROM function never names because it
+ *                   only passes it through
+ *   KR_PARAM0(decl) the same as the only parameter of a ROM `(void)` function: "decl" under PORT,
+ *                   "void" in the ROM build (`void f(KR_PARAM0(int a0)) { CALL(g)(KR_ARG0(a0)); }`)
+ *
+ * The ROM expansion is empty, so the matched bytes are unchanged by construction.
+ */
+#ifdef PORT
+#define KR_ARG(x) , x
+#define KR_ARG0(x) x
+#define KR_PARAM(decl) , decl
+#define KR_PARAM0(decl) decl
+#else
+#define KR_ARG(x)
+#define KR_ARG0(x)
+#define KR_PARAM(decl)
+#define KR_PARAM0(decl) void
+#endif
+
 #endif

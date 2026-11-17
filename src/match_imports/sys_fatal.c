@@ -135,6 +135,14 @@ void sys_fatal(u8 *fmt, ...) {
     int c;
     u8 *old;
 
+#ifdef PORT
+    {   /* plan 18.9: headless, the halt below is a silent hang; port/main.c reports and exits */
+        extern void port_sys_fatal(const char *fmt, __builtin_va_list ap) __attribute__((noreturn));
+        __builtin_va_list ap;
+        __builtin_va_start(ap, fmt);
+        port_sys_fatal((const char *)fmt, ap);
+    }
+#endif
     gl_ref_00034810((char *)&D_00000000 + 0x21E14);
     VA_START(args, fmt);
     start = args;

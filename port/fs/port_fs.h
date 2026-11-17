@@ -18,8 +18,8 @@
  *   - An open file is a window on the first record after the Info record: the 12-byte record
  *     header is read, then [pos, pos + size) is the payload.  For a .bin file that record is its
  *     BinaryDataSection.
- *   - Reads are fread-like (fs_read): buf must be 8-aligned (else errno -0x1C), size is clamped
- *     to the window, bytes are copied raw (big-endian, Yay0 left compressed: the readers decode).
+ *   - Reads are fread-like (fs_read): size is clamped to the window (the kernel's 8-alignment
+ *     check on buf, errno -0x1C, is dropped: plan 18.9), bytes are copied raw (big-endian, Yay0 left compressed: the readers decode).
  *   - Seek: whence 0 sets the DEVICE offset (as fs_seek does), else adds.  Tell = romStart + pos,
  *     a ROM address (fileRomAddr; the dma_readAsync source).
  *   - Info: the ROM address of the file's Data section payload (uso_findDataSection: walk the
@@ -30,7 +30,7 @@
 #define PORT_FS_H
 
 #define PORT_FS_ERR_NOT_FOUND (-0x11) /* uso_find_file / uso_load: unknown device or name */
-#define PORT_FS_ERR_ALIGN (-0x1C)     /* fs_read: buffer not 8-aligned */
+#define PORT_FS_ERR_ALIGN (-0x1C)     /* the kernel's fs_read: buffer not 8-aligned (not produced on the port) */
 #define PORT_FS_ERR_NO_DATA (-1000)   /* uso_findDataSection: ran out of records */
 #define PORT_FS_ERR_NO_HANDLE (-18)   /* no free handle (the kernel's alloc failure code) */
 

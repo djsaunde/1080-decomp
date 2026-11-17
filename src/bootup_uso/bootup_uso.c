@@ -102,24 +102,27 @@ void snd_setLevelRampTarget(int a0) {
     }
 }
 
-void snd_setSoundOutputMode_000001FC(void) {
-    FCALL(snd_SetSoundOutputMode)();
+/* The snd_* wrappers below take no named parameters: the arguments ride through in $a0..$a3 to
+ * the game_libs callee (a K&R pass-through).  KR_PARAM0 / KR_ARG pass them on the port
+ * (uso_call.h, plan 18.9); the ROM expansion is the plain `(void)` / `()`. */
+void snd_setSoundOutputMode_000001FC(KR_PARAM0(int a0)) {
+    FCALL(snd_SetSoundOutputMode)(KR_ARG0(a0));
 }
 
-void snd_setPlayer1VolumeLevel(void) {
-    FCALL(snd_SetPlayer1VolumeLevel)();
+void snd_setPlayer1VolumeLevel(KR_PARAM0(int a0)) {
+    FCALL(snd_SetPlayer1VolumeLevel)(KR_ARG0(a0));
 }
 
-void snd_setPlayer0VolumeLevel_0000023C(void) {
-    FCALL(snd_SetPlayer0VolumeLevel)();
+void snd_setPlayer0VolumeLevel_0000023C(KR_PARAM0(int a0)) {
+    FCALL(snd_SetPlayer0VolumeLevel)(KR_ARG0(a0));
 }
 
-void snd_setPlayer2VolumeLevel(void) {
-    FCALL(snd_SetPlayer2VolumeLevel)();
+void snd_setPlayer2VolumeLevel(KR_PARAM0(int a0)) {
+    FCALL(snd_SetPlayer2VolumeLevel)(KR_ARG0(a0));
 }
 
-void snd_startPlayer2Seq_0000027C(void) {
-    FCALL(snd_StartPlayer2Seq)();
+void snd_startPlayer2Seq_0000027C(KR_PARAM0(int a0) KR_PARAM(int a1)) {
+    FCALL(snd_StartPlayer2Seq)(KR_ARG0(a0) KR_ARG(a1));
 }
 
 void snd_muteAll_0000029C(void) {
@@ -130,12 +133,12 @@ void snd_unmuteAll(void) {
     FCALL(snd_UnmuteAll)();
 }
 
-void snd_postEvent(void) {
-    FCALL(snd_PostEvent)();
+void snd_postEvent(KR_PARAM0(int a0)) {
+    FCALL(snd_PostEvent)(KR_ARG0(a0));
 }
 
-void snd_sendEvent(void) {
-    FCALL(snd_dispatchEvent)();
+void snd_sendEvent(KR_PARAM0(int a0) KR_PARAM(int a1)) {
+    FCALL(snd_dispatchEvent)(KR_ARG0(a0) KR_ARG(a1));
 }
 
 void snd_updateChannel10Emitter(int a0, int a1, int a2) {
@@ -156,12 +159,12 @@ void snd_removeSoundHeap(void) {
     FCALL(dbg_printf)(&sStr_Poop_Removed_sound_heap_6568);
 }
 
-void snd_setPlayer1Channel15IO(void) {
-    FCALL(snd_SetPlayer1Channel15IO_2D910)();
+void snd_setPlayer1Channel15IO(KR_PARAM0(int a0) KR_PARAM(int a1) KR_PARAM(int a2) KR_PARAM(int a3)) {
+    FCALL(snd_SetPlayer1Channel15IO_2D910)(KR_ARG0(a0) KR_ARG(a1) KR_ARG(a2) KR_ARG(a3));
 }
 
-void snd_setPlayer3FreqScaleFromStick(void) {
-    FCALL(snd_SetPlayer3FreqScaleFromStick)();
+void snd_setPlayer3FreqScaleFromStick(KR_PARAM0(int a0) KR_PARAM(int a1)) {
+    FCALL(snd_SetPlayer3FreqScaleFromStick)(KR_ARG0(a0) KR_ARG(a1));
 }
 
 // snd_calcEmitterDistPan_000003F8(Vec3 *world, float *outDist, int *outProj, Obj *obj):

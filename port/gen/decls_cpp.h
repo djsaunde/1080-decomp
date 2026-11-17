@@ -394,12 +394,12 @@ int /*void*/ snd_FrameUpdate(...);
 int /*void*/ snd_Init(int, int, int, ...);
 int /*void*/ snd_PlayPlayer0Seq0(...);
 int /*void*/ snd_PreNMI(...);
-int /*void*/ snd_postEvent(...);
-int /*void*/ snd_setPlayer3FreqScaleFromStick(...);
+int /*void*/ snd_postEvent(int, ...);
+int /*void*/ snd_setPlayer3FreqScaleFromStick(int, int, ...);
 int /*void*/ snd_soundObjSetPan_00000B2C(void *, float, ...);
 int /*void*/ snd_soundObjSetReverb(void *, int, ...);
 #ifndef PORT_NODECL_snd_startPlayer2Seq_0000027C
-int /*void*/ snd_startPlayer2Seq_0000027C(...);
+int /*void*/ snd_startPlayer2Seq_0000027C(int, int, ...);
 #endif
 #ifndef PORT_NODECL_sqrtf
 float sqrtf(float);

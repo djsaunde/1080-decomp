@@ -2380,10 +2380,13 @@ void AudioHeap_WritebackDCache(void) {
  * same symbol (D_00000000 via gAudioContext) and offsets as the raw spellings it
  * replaced; #undef after AudioHeap_DiscardSampleCaches. */
 #define gAudioCtx (*(AudioContext *)&gAudioContext)
+/* PORT (plan 18.9): the allocator wrappers below call AudioHeap_Alloc / AudioHeap_AllocZeroed
+ * with the pool only; the size rides through in $a1 from their own second argument.  KR_ARG
+ * passes it on the port (without it AudioHeap_Init's note table came back NULL). */
 int AudioHeap_AllocZeroedAttemptExternal(int a0, int a1) {
     int v1 = 0;
     if (gAudioCtx.externalPool.startRamAddr != 0) {
-        v1 = CALL(AudioHeap_AllocZeroed)(&gAudioCtx.externalPool);
+        v1 = CALL(AudioHeap_AllocZeroed)(&gAudioCtx.externalPool KR_ARG(a1));
     }
     if (v1 == 0) {
         v1 = CALL(AudioHeap_AllocZeroed)(a0, a1);
@@ -2402,7 +2405,7 @@ extern int gl_func_00000000();
 int AudioHeap_AllocAttemptExternal(int a0, int a1) {
     int v1 = 0;
     if (gAudioCtx.externalPool.startRamAddr != 0) {
-        v1 = CALL(AudioHeap_Alloc)(&gAudioCtx.externalPool);
+        v1 = CALL(AudioHeap_Alloc)(&gAudioCtx.externalPool KR_ARG(a1));
     }
     if (v1 == 0) {
         v1 = CALL(AudioHeap_Alloc)(a0, a1);
@@ -2411,7 +2414,7 @@ int AudioHeap_AllocAttemptExternal(int a0, int a1) {
 }
 
 int AudioHeap_AllocDmaMemory(int a0, int a1) {
-    int v = CALL(AudioHeap_Alloc)(a0);
+    int v = CALL(AudioHeap_Alloc)(a0 KR_ARG(a1));
     if (v != 0) {
         CALL(AudioHeap_WritebackDCache)(v, a1);
     }
@@ -2419,7 +2422,7 @@ int AudioHeap_AllocDmaMemory(int a0, int a1) {
 }
 
 int AudioHeap_AllocDmaMemoryZeroed(int a0, int a1) {
-    int v = CALL(AudioHeap_AllocZeroed)(a0);
+    int v = CALL(AudioHeap_AllocZeroed)(a0 KR_ARG(a1));
     if (v != 0) {
         CALL(AudioHeap_WritebackDCache)(v, a1);
     }
@@ -2465,8 +2468,8 @@ int AudioHeap_AllocDmaMemoryZeroed(int a0, int a1) {
  * #feedback-ido-goto-epilogue-shared-saves-redundant-set) saves 2 insns
  * vs the if/return form. */
 extern int gl_func_00000000();
-void *AudioHeap_AllocZeroed(AudioAllocPool *pool) {
-    char *p = (char *)CALL(AudioHeap_Alloc)(pool);
+void *AudioHeap_AllocZeroed(AudioAllocPool *pool KR_PARAM(unsigned int size)) {
+    char *p = (char *)CALL(AudioHeap_Alloc)(pool KR_ARG(size));
     char *c;
     if (p == 0) goto out;
     for (c = p; c < (char *)pool->curRamAddr; c++) {
@@ -11598,7 +11601,7 @@ extern int gl_ref_0003E8C4();
 void AudioSeq_ResetSequencePlayer(char *a0) {
     char *p;
     int i;
-    CALL(AudioSeq_SequencePlayerDisable)();
+    CALL(AudioSeq_SequencePlayerDisable)(KR_ARG0(a0)); /* a0 rides through (plan 18.9) */
     i = 0;
     SP->stopScript = 0;
     SP->delay = 0;

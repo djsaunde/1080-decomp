@@ -235,9 +235,11 @@ static int raw_read(PortFsFile *f, void *buf, int size)
 {
     int total;
 
-    if ((unsigned long)buf & 7) {
-        return sErrno = PORT_FS_ERR_ALIGN;
-    }
+    /* The kernel's fs_read rejects a buffer that is not 8-aligned (-0x1C: a PI DMA constraint).
+     * The port copies with memcpy, and its stack / heap layout is the host's: a buffer the N64
+     * frame happened to give 8-byte alignment (SnowBoard_InitInstance -> fs_readRecord's
+     * 68-byte AppVersion on the stack) is only 4-aligned on i386.  So the port accepts any
+     * alignment (plan 18.9); PORT_FS_ERR_ALIGN is no longer produced. */
     total = size;
     if (total < 0) {
         return 0;

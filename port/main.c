@@ -74,6 +74,30 @@ void port_rcp_stuck(void *rcpMgr, const char *where) {
     host_fatal("main: RCP wait cannot complete");
 }
 
+/* sys_fatal (PORT entry, plan 18.9): the N64 prints the message on the console window and
+ * halts in sys_fatalHaltLoop, polling the pads forever.  Headless, that is a silent hang, so
+ * the port reports the message (the game's %d / %f / %s / %c / %x; its %r is printed as %x)
+ * with a backtrace and exits. */
+extern int backtrace(void **frames, int n) __attribute__((weak));
+extern void backtrace_symbols_fd(void *const *frames, int n, int fd) __attribute__((weak));
+__attribute__((noreturn)) void port_sys_fatal(const char *fmt, va_list ap) {
+    char f[512];
+    size_t i;
+    for (i = 0; fmt[i] != '\0' && i + 1 < sizeof(f); i++) {
+        f[i] = (fmt[i] == 'r' && i > 0 && fmt[i - 1] == '%') ? 'x' : fmt[i];
+    }
+    f[i] = '\0';
+    fprintf(stderr, "PORT: sys_fatal: ");
+    vfprintf(stderr, f, ap);
+    fprintf(stderr, "\n");
+    if (backtrace != 0 && backtrace_symbols_fd != 0) {
+        void *frames[64];
+        int n = backtrace(frames, 64);
+        backtrace_symbols_fd(frames, n, 2);
+    }
+    host_fatal("main: the game called sys_fatal (on the N64: the console message and a halt)");
+}
+
 typedef struct Options {
     const char *romPath;
     const char *sramPath;
