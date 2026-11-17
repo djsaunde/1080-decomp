@@ -6188,17 +6188,15 @@ SNOW_NCC_E_FUNCS := snoweffects_uso_func_00008C60 snoweffects_uso_func_00009FE8 
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NCC_E_FUNCS),$(f)=$(SNOW_NCC_E_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NCC_E_DONOR)
 # snoweffects.uso below 0x6000: agent-c's NCC donor for 0x270 / 0xC90 / 0x28E0 (agent-c run 655; kept apart
-# from agent-h's SNOW_* blocks and agent-e's SNOW_NCC_E block). NON_MATCHING-only splices for now (0x28E0 since
-# agent-c run 667).
+# from agent-h's SNOW_* blocks and agent-e's SNOW_NCC_E block). 0x270 and 0x28E0 EXACT on both paths
+# (0x28E0: agent-c runs 667-794, agent-g run 793).
 SNOW_C_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_c.cpp.o
 $(SNOW_C_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_c.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_C_FUNCS := snoweffects_uso_func_00000270
+SNOW_C_FUNCS := snoweffects_uso_func_00000270 snoweffects_uso_func_000028E0
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_C_FUNCS),$(f)=$(SNOW_C_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_C_DONOR)
-SNOW_C_NM_FUNCS := snoweffects_uso_func_000028E0
-build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_C_NM_FUNCS),$(f)=$(SNOW_C_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_C_DONOR)
 
 # agent-a run 677: EXACT NCC donor for snoweffects 0xA10C (snow light update), both build paths.

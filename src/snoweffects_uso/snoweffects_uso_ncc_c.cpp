@@ -4,6 +4,7 @@
  * end of the Makefile). NCC donors build without -I include. */
 #include "../game_libs/ncc_drafts/gbi_subset.h"
 extern "C" int gl_func_00000000(...);
+extern "C" void gl_func_00000000_snow_v(...);   /* the two matrix calls, void-typed: keeps v0 free for the FA count (agent-e run 786) */
 extern "C" char D_00000000[];
 struct GCtx;
 /* gfx_resetDLContext, void-typed blank jal (frees v0 for the context temp; agent-h run 649) */
@@ -158,12 +159,6 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * keeps the 0xB3 w0 constant live across the first divide as in the target (int ring and div order).
  * agent-h run 792 / agent-c run 794: E7 and B4 append through atB(count++) (an `if (1) {}` cut before the
  * Gfx address), which fixes uopt's tail-block split: tail packet pointers a0 / a1 / a2 / a0, B4 / B3 g a0 / a1.
- * agent-c run 794 (agent-g run 790 / agent-h run 792 levers): E4 through plain next() (drops nextM's pool word,
- * which forced y0 off a2) and `padw` after BB restores the 8 frame bytes; EE through a block-scoped `ge` whose
- * next() falls in the x0 / y0 uopt block once zf4(cx) moves from the offY index to the first draw compare, so ge
- * (a3) interferes with SNOW_CAM2, which takes t0. Counted zero uses: `0 * (int)ge` in E4 (ge forbidden a0 by
- * the E4 g) and `0 * (x0 + y0)` in EE (x0 / y0 / ge tie at 20: a1 / a2 / a3). Keeping those uses out of the E4
- * word keeps E4 and B4 in one live unit (an extra loop unit swaps the op* / op- copy addresses t5 / ra).
  * Needs `snow_rodata_28E0 = 0`; keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
 extern "C" float gl_func_00000000_snow_randf(...);   /* sys_randf (typed blank jal: float return) */
@@ -225,6 +220,8 @@ struct SnowFallD {
 struct SnowRoData28E0 { float ro[4]; float depthScale; };
 extern "C" SnowRoData28E0 snow_rodata_28E0;
 /* zero-code priority folds (agent-e run 756): z is always 0, uopt counts each v use and then folds the product */
+inline int idn3(int v) { int t = v; int u = t; return u; }
+#define SNOW_W(p, off) (*(int *)((char *)(p) + (off)))   /* phantom word read (& 0: no code, moves uopt's live-unit cut) */
 static inline int zf1(float v, int z) { return z * (int)(v); }
 static inline int zf2(float v, int z) { return z * (int)(v + v); }
 static inline int zf4(float v, int z) { return z * (int)(v + v + v + v); }
@@ -271,12 +268,12 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     c = SNOW_CAM2->dl;
     d = (int)self->tex;
     d = gl_func_00000000(((SnowDLHolder2 *)d)->dl);
-    snowW(c->nextR(), 0x06000000, d);
-    gl_func_00000000(SNOW_CAM2->view, m);
-    gl_func_00000000(SNOW_CAM2->obj->rot, rot);
+    snowW(c->nextR(), 0x06000000, idn3(d));
+    gl_func_00000000_snow_v(SNOW_CAM2->view, m);
+    gl_func_00000000_snow_v(SNOW_CAM2->obj->rot, rot);
     halfW = (float)(SNOW_CAM2->scrW / 2);
     halfH = (float)(SNOW_CAM2->scrH / 2);
-    gDPWord(c->nextN(), 0xFA000000,
+    gDPWord(c->next(), 0xFA000000,
             (((unsigned int)(self->r * 255.0f) & 0xFF) << 24) | (((unsigned int)(self->g * 255.0f) & 0xFF) << 16) |
             (((unsigned int)(self->b * 255.0f) & 0xFF) << 8) | ((unsigned int)(self->a * 255.0f) & 0xFF));
     self->visible = 0;
@@ -338,17 +335,17 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
                 if ((-halfW < cx) + zf4(cx, 0) && cx < halfW && (-halfH < cy) + zf1(-halfH, 0) && cy < halfH) {
                     Gfx *ge;
                     x0 = (int)(cx + halfW - (float)(sw / 2) + (float)(&SNOW_CAM2->offX)[zf2(cy, 0)]);
-                    y0 = (int)(cy + halfH - (float)(sz / 2) + (float)(&SNOW_CAM2->offY)[0]);
+                    y0 = (int)(cy + halfH - (float)(sz / 2) + (float)SNOW_CAM2->offY);
                     cz = m[0][2] * p->pos.x + m[1][2] * y + m[2][2] * z + m[3][2];
                     ge = c->next();
                     ge->words.w0 = 0xEE000000;
                     ge->words.w1 = (unsigned int)(((int)((cz * w + 1.0f) * snow_rodata_28E0.depthScale) + zf1(halfW, 0) + zf1(cx, 0) +
-                                                   zf4(cz, 0) + 0 * (x0 + y0) & 0x7FFF) << 16);
+                                                   (SNOW_W(self, 0x78) & 0) + (SNOW_W(self, 0x7C) & 0) + (SNOW_W(self, 0x80) & 0) +
+                                                   (SNOW_W(self, 0x84) & 0) + (SNOW_W(self, 0x88) & 0) + zf4(cz, 0) & 0x7FFF) << 16);
                     self->drawn++;
-                    if (1) {}
                     gDPWord(c->next(), 0xE4000000 | ((((x0 + sw) << 2) & 0xFFF) << 12) | (((y0 + sz) << 2) & 0xFFF),
-                            (((x0 << 2) & 0xFFF) << 12) | (((y0 << 2) & 0xFFF) + 0 * (int)ge));
-                    gDPWord(c->atB(c->dl->count++), 0xB4000000, 0);
+                            (((x0 << 2) & 0xFFF) << 12) | (((y0 << 2) & 0xFFF) + 0 * (x0 + x0 + y0 + y0 + (int)ge + (int)ge + i)));
+                    gDPWord(c->next(), 0xB4000000, 0);
                     gDPWord(c->next(), 0xB3000000,
                             ((((self->texW << 10) - 1024) / sw & 0xFFFF) << 16) | ((((self->texH << 10) - 1024) / sz) & 0xFFFF));
                 }

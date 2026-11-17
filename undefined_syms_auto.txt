@@ -5869,6 +5869,7 @@ snowb_vtbl_SnowChild0_1C8 = 0x00000000;  /* snoweffects Data+0x1C8 child0 vtable
 snowb_vtbl_SnowChildA_158 = 0x00000000;  /* snoweffects Data+0x158 childA vtable (6144) */
 snowb_vtbl_SnowChildB_238 = 0x00000000;  /* snoweffects Data+0x238 childB vtable (6248) */
 gl_func_00000000_snow_reset = 0x00000000;  /* gfx_resetDLContext (snoweffects 0x15D0 family, void-typed blank jal) */
+gl_func_00000000_snow_v = 0x00000000;  /* snoweffects 0x28E0: the two matrix calls, void-typed blank jal */
 gl_func_00000000_snow_ff = 0x00000000;  /* math_acosf / fcos / fsin (snoweffects 0x4E5C NM donor, float(float) blank jal) */
 gl_func_00000000_snow_hitf = 0x00000000;  /* snoweffects_uso_func_000052D4 (0x4E5C NM donor, float-returning blank jal) */
 snow_tex_6FD8 = 0x00000000;  /* snoweffects Data+0x6FD8 texture (0x15D0; reloc on the object, lo16 0) */
