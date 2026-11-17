@@ -2,7 +2,7 @@
  * over the empty NON_MATCHING placeholder in heli_uso.c on the non_matching build only (the matching build
  * keeps INCLUDE_ASM). 0xB08 is the Heli per-frame update (decode: docs/1080_NEW_MODULES.md "heli.uso").
  * MIPSpro 7.2.1 is the right front end: the target's 8-way switch is an inline jump table (RoData+0x7C),
- * which IDO 7.1 NCC (EDG 2.19) never emits. Levers that took mp72 from 77.3 to 85.7:
+ * which IDO 7.1 NCC (EDG 2.19) never emits. Levers that took mp72 from 77.3 to 88.2:
  *  - an explicit empty `default: break;` after case 6. The default edge then gets its own block, so uopt
  *    computes tg / ps (self+0x114 / self+0xDC) at the end of every case, as the target does; without it the
  *    default goes straight to the join and both are computed once there.
@@ -12,6 +12,9 @@
  *  - `f *= HF(0x154) / h` with `int h = 100` (run 678): with two 100.0f literals uopt keeps one constant LR
  *    (f14) for the compare and the divide; the int is converted late, so each site rematerialises
  *    `lui at,0x42c8` as the target does (84.2 -> 85.7).
+ *  - the three axis-angle angles go through the float local f, assigned before each axis (run 682): the target
+ *    loads each angle with lwc1 + mfc1 a2 ahead of the axis stores (a direct HF() argument gives lw a2;
+ *    a block-scope float costs frame slots) (85.7 -> 88.2).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -243,12 +246,12 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         HF(0xF8) = 0.0f;
         HF(0xFC) = 0.0f;
         HF(0x100) = 1.0f;
-        axZ.y = 0.0f; axZ.x = 0.0f; axZ.z = 1.0f;
-        gl_func_00000000_heli_ppf(self + 0xF4, &axZ, HF(0x144));
-        axX.x = 1.0f; axX.y = 0.0f; axX.z = 0.0f;
-        gl_func_00000000_heli_ppf(self + 0xF4, &axX, HF(0x148));
-        axY.y = 1.0f; axY.x = 0.0f; axY.z = 0.0f;
-        gl_func_00000000_heli_ppf(self + 0xF4, &axY, -HF(0x14C));
+        f = HF(0x144); axZ.y = 0.0f; axZ.x = 0.0f; axZ.z = 1.0f;
+        gl_func_00000000_heli_ppf(self + 0xF4, &axZ, f);
+        f = HF(0x148); axX.x = 1.0f; axX.y = 0.0f; axX.z = 0.0f;
+        gl_func_00000000_heli_ppf(self + 0xF4, &axX, f);
+        f = -HF(0x14C); axY.y = 1.0f; axY.x = 0.0f; axY.z = 0.0f;
+        gl_func_00000000_heli_ppf(self + 0xF4, &axY, f);
     }
     gl_func_00000000(self);
 }
