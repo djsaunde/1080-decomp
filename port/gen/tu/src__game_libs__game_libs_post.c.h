@@ -198,4 +198,5 @@
 /* port-bind: sys_fatalSwapBuffer_00034180 D_00000000 port_bootup_bss+0x3C168 */
 /* port-bind: sys_timeInFrames_00033444 D_00000000 port_bootup_bss+0x3C740 */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
+int gl_32e18_blank(); /* CALL placeholder token: file-scope K&R declaration */
 int gl_func_0001CA10_1FFAC(); /* CALL placeholder token: file-scope K&R declaration */

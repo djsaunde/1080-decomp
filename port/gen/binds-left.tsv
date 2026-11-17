@@ -7,9 +7,7 @@ src/eddproc_uso/eddproc_uso.c	edd_readVec3Parm_0000044C	gl_func_00000000	unnamed
 src/game_libs/game_libs_ncc_48AEC.cpp	PolyShape_display	gl_func_00000000	ambiguous	PolyShape_stub_0004C20C*1 math_mtx4Copy*1 guMtxF2L*2 gl_osVirtualToPhysical*4 gfx_emitPerspNorm_00057574*1 gfx_emitStateAndPrimColour_00042684*1 gfx_emitCycleType*1 gfx_emitGeometryMode*1 gfx_emitCombineMode*1 gfx_emitRenderMode*1 gfx_transformLightDirs_000432BC*1	15
 src/game_libs/game_libs_post.c	AudioHeap_DiscardSampleCaches	gl_func_00000000	ambiguous	Audio_GetInstrumentInner*1 Audio_GetDrum*1	2
 src/game_libs/game_libs_post.c	AudioHeap_Init	gl_func_00000000_21498v	ambiguous	gl_osWritebackDCacheAll+0x4*1 gl_osSetIntMask+0x8*1	2
-src/game_libs/game_libs_post.c	AudioLoad_RelocateFontAndPreloadSamples	gl_25504_AllocSampleCache	ambiguous	aud_AllocSampleCachePersistent*2 aud_AllocSampleCacheTemporary*2	4
 src/game_libs/game_libs_post.c	Audio_WritebackDCache	gl_func_00000000	ambiguous	gl_osSetIntMask+0x8*2 gl_osWritebackDCache+0x4*1	3
-src/game_libs/game_libs_post.c	MCamera_ctor	gl_32e18_blank	ambiguous	mem_new*9 Node_ctor*1 MNode_initMatrices*1 math_mtxAddTranslation*2 math_mtx4Identity*1	14
 src/game_libs/game_libs_post0b.c	dma_writebackCache	gl_func_00000000	ambiguous	gl_osSetIntMask+0x8*2 gl_osWritebackDCacheAll+0x4*1	3
 src/game_libs/game_libs_post0b.c	sys_writebackDCacheAll	gl_func_00000000	ambiguous	gl_osSetIntMask+0x8*2 gl_osWritebackDCacheAll+0x4*1	3
 src/game_libs/game_libs_post1b.c	fs_piReadWord_00066210	gl_func_00000000	ambiguous	gl_osSetIntMask+0x8*2 gl_osWritebackDCacheAll+0x4*1	3
@@ -20,8 +18,6 @@ src/gui_uso/gui_uso.c	gui_stringWidth	gl_func_00000000	unnamed	Text+0x0	1
 src/gui_uso/gui_uso_ncc_0F04.cpp	gui_drawStringScaled_00000F04	gl_func_00000000	ambiguous	str_len*1 Text+0x0*1	2
 src/heli_uso/heli_uso.c	Heli_update	gl_func_00000000	ambiguous	Heli_placeAtMarker*1 ItemMgr_findType_0003EA98*1 ItemMgr_queryType*1 math_vec3Normalize*2 QNode_update*1	6
 src/heli_uso/heli_uso.c	Heli_update	gl_func_00000000_heli_ff	ambiguous	math_vec3Length_0005BBCC*2 math_acosf*1 fsin*7	10
-src/match_imports/snd_HandleSeqEvent_30AF4.c	snd_HandleSeqEvent_30AF4	gl_func_emit_30AF4v	ambiguous	AudioThread_QueueCmdS32*1 snd_soundObjChannelsOff*1 snd_PostEvent*8	10
-src/match_imports/snd_HandleSeqEvent_30AF4.c	snd_HandleSeqEvent_30AF4	gl_func_emit	ambiguous	snd_soundObjChannelsOff*1 snd_InitCueQueues*1 snd_PlayPlayer1SeqDefault*6 AudioThread_GetLayerSamplesLeft*1 AudioThread_WaitForAudioTask*1 AudioThread_QueueCmdS32*8 AudioThread_QueueCmdS8*1 snd_ScheduleSeqAfter*4 snd_PostEvent*5 snd_PlayPlayer0Seq0*1 snd_PlayPlayer2Seq*1 snd_TriggerChannel8Cue*1 snd_UpdateChannel10Emitter*1 snd_SetLevelRampTarget*1	33
 src/nameent_uso/nameent_uso.c	NameEnterMessage_ctor	gl_func_00000000	ambiguous	mem_new*2 Node_ctor*1 Backup_sessionCountNew*1 gui_spriteInit*3	7
 src/nameent_uso/nameent_uso.c	NameEnterMessage_display	gl_func_00000000	ambiguous	gui_spriteRefresh*4 gui_setColorEnvPrim_000017DC*6 gui_drawSprite*2 gui_drawSpriteIA8Clip_00002BB0*2 gui_setScissor*2	16
 src/nameent_uso/nameent_uso.c	NameEnterMessage_update	gl_func_00000000	ambiguous	input_checkPressed_00011E00*4 Fader_isDone_00013980*1	5
@@ -44,7 +40,6 @@ src/snoweffects_uso/snoweffects_uso.c	SnowRing_draw_000040B4	gl_func_00000000	am
 src/snoweffects_uso/snoweffects_uso.c	SnowRing_placeEnds_00004E5C	gl_func_00000000_snow_ff	ambiguous	math_acosf*1 fcos*2 fsin*2	5
 src/snoweffects_uso/snoweffects_uso.c	SnowRing_setupDL_00004188	gl_func_00000000	ambiguous	guMtxIdentF*1 guMtxF2L*1 gl_osVirtualToPhysical*1	3
 src/snoweffects_uso/snoweffects_uso.c	SnowRing_updateBasis_00004374	gl_func_00000000	ambiguous	math_vec3Normalize*2 math_vec3Cross*1	3
-src/timproc_uso_b3/timproc_uso_b3.c	TrkMenu_draw_00002A44	glv_2a44	ambiguous	TrkMenu_drawHeader_00002DF0*1 gui_setCombine_00001794*7 gui_spriteRefresh*7 gui_drawSprite*7 TrkMenu_drawLabel130_00003050*2 TrkMenu_drawLabel_00002EEC*2 TrkMenu_drawPair_00002F48*2	28
 src/trnproc_uso/trnproc_uso.c	TrnDataManager_buildLessonInputs	gl_func_00000000	ambiguous	TrickTable_getInputMask_0000C378*1 TrnDataManager_stickDirSprite*1	2
 src/trnproc_uso/trnproc_uso.c	TrnDataManager_drawLesson	gl_func_00000000	ambiguous	gui_setupRenderMode_0000055C*1 TrnDataManager_isTrickDone*1 gui_setColor_00001A5C*1 TrickTable_getEntry_0000C344*1 gl_sprintf*1 gui_drawString*1 gui_drawSprite*1	7
 src/trnproc_uso/trnproc_uso.c	TrnDataManager_drawLesson	gl_func_00000000_void	ambiguous	gui_spriteRefresh*2 gui_setCombine_00001794*2 gui_drawSprite*1	5
@@ -68,6 +63,5 @@ src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20HOut_0004D1F4	D_4D1F4_a	un
 src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20H_0004D16C	D_4D16C_a	unnamed	+0:	1
 src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20H_0004D188	D_4D188_a	unnamed	+0:	1
 src/game_libs/game_libs_post0b.c	hostio_start	D_349E0_b	ambiguous	+0:port_bootup_bss+0x3C768*2|port_bootup_bss+0x3C79C*1	3
-src/match_imports/snd_HandleSeqEvent_30AF4.c	snd_HandleSeqEvent_30AF4	gl_state_30AF4	ambiguous	+0:port_bootup_data+0x1C09C*1|port_bootup_data+0x1C0A8*1|port_bootup_data+0x1C080*2|port_bootup_data+0x1C0B0*1|port_bootup_bss+0x338*1	6
 src/timproc_uso_b1/timproc_uso_b1.c	TimMenu_ctor	D_b1_21D4_d1	ambiguous	+0:TimMenu_rowRetry_00001FA0*1|TimMenu_rowGhost_00001FE4*1|TimMenu_rowToggle_00002028*1|TimMenu_rowChangeCourse*1|TimMenu_rowChangeBoard*1|TimMenu_rowChangeCharacter*1|TimMenu_rowQuit_00002178*1	7
 src/timproc_uso_b3/timproc_uso_b3.c	TrkMenu_ctor	D_b3_23E4_d1	ambiguous	+0:TrkMenu_rowRetry_000021B0*1|TrkMenu_rowGhost_000021F4*1|TrkMenu_rowToggle_00002238*1|TrkMenu_rowChangeCourse*1|TrkMenu_rowChangeBoard*1|TrkMenu_rowChangeCharacter*1|TrkMenu_rowQuit_00002388*1	7
