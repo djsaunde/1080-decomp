@@ -16,6 +16,7 @@ struct GCtx {
     DList *dl;
     Gfx *next() { return &dl->buf[dl->count++]; } Gfx *nextN() { int n = dl->count++; return &dl->buf[n]; }
     Gfx *nextI() { int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
+    Gfx *nextBI() { int n = dl->count++; if (1) {} return &dl->buf[n]; }
 };
 /* snoweffects_uso_func_00000C90 (NON_MATCHING draft): the particle sprite draw. Calls the texture's
  * display list (+0x2C, its +0x60 through a blank import), builds the camera view matrix (camera +0x30),
@@ -55,7 +56,10 @@ struct GCtx {
  * .. | _SHIFTL((int)alpha, 0, 8) in r, g, b, a order: the unsigned (u32) terms keep the target's load order
  * col[0], col[1], alpha, col[2] (no plain-int order of the four terms gives it). Then (-> 96.23) xl clamps
  * through MAX like yl (yl written first), E4 / B4 append through nextI() / nextN(), and the E7 tail packet reuses g
- * (frame kept at 400). */
+ * (frame kept at 400). Then (-> 96.73) the texrect is the stock clamp form again: w0 / w1 MAX((s16)x, 0) in
+ * xh / yh, xl / yl order, written as one comma statement with the E4 assignment (so the clamp temps take fresh
+ * edg words instead of the pooled count word); EE / FB append through nextBI() / nextN(); one `if (y0) {}`
+ * left; four tail packets reuse g. Loop-layout diffs 87 -> 16, sp-offset mismatches 0. */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -64,9 +68,9 @@ inline int imax0(int a) { return a > 0 ? a : 0; }
 
 #define gImmpV(g, pkt, c, p0) { g = (pkt); (g)->words.w0 = _SHIFTL((c), 24, 8); (g)->words.w1 = (unsigned int)(p0); }
 #define gTR(g0, pkt, g1, pkt2, g2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
-{ g0 = (pkt); \
-    g0->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(imax0((s16)(yh)), 0, 12) | _SHIFTL(imax0((s16)(xh)), 12, 12)); \
-    g0->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(yl),0), 0, 12) | _SHIFTL(MAX((s16)(xl),0), 12, 12)); \
+{ g0 = (pkt), \
+    g0->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(MAX((s16)(xh),0), 12, 12) | _SHIFTL(MAX((s16)(yh),0), 0, 12)), \
+    g0->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MAX(0,(s16)(yl)), 0, 12)); \
     gImmpV(g1, pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmpV(g2, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
@@ -159,13 +163,12 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 x0 = (int)(sx + halfW - (float)(wid / 2) + (float)SNOW_CAM->offX);
                 y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
                 z = (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4);
-                ge = c->next(); gW(ge, 0xEE000000, (z & 0x7FFF) << 16);
+                ge = c->nextBI(); gW(ge, 0xEE000000, (z & 0x7FFF) << 16);
                 if (y0) {}
-                gf = c->next(); gW(gf, 0xFB000000, _SHIFTL(p->col[0], 24, 8) | _SHIFTL(p->col[1], 16, 8) | _SHIFTL(p->col[2], 8, 8) |
+                gf = c->nextN(); gW(gf, 0xFB000000, _SHIFTL(p->col[0], 24, 8) | _SHIFTL(p->col[1], 16, 8) | _SHIFTL(p->col[2], 8, 8) |
                                                  _SHIFTL((int)p->alpha, 0, 8));
                 x1 = x0 + wid;
                 y1 = y0 + hgt;
-                if (y0) {}
                 self->drawn++;
                 gTR(gt, c->nextI(), g1, c->nextN(), g2, c->nextN(), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
                     ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
@@ -174,8 +177,8 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     }
     g = c->next(); gW(g, 0xE7000000, 0);
     g = c->next(); gW(g, 0xBB000000, 0);
-    gDPWord(c->next(), 0xBA001301, 0x80000);
+    g = c->next(); gW(g, 0xBA001301, 0x80000);
     gDPWord(c->next(), 0xBA000C02, 0x2000);
-    gDPWord(c->next(), 0xB9000201, 0);
+    g = c->next(); gW(g, 0xB9000201, 0);
     g = c->next(); gW(g, 0xBA000602, 0);
 }
