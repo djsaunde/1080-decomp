@@ -126,6 +126,10 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * (`cx = row; cy = row; cx = cx * w * halfW; cy = ...`), so uopt keeps the variables in the compares (no
  * expression temp + mov.s). Code-free zf() folds raise priorities: wy (f16, wx f24 as in the target), w, x, cx, cy.
  * self->tex goes through a local (v0); the FA red channel keeps `& 0xFF` (the target's `or t8,t7,zero`).
+ * agent-c run 769 (96.11 -> 97.42 %): the `if (cy) if (cz) {}` hack is gone. Code-free folds in the loop-top
+ * compares (`(cx < -30.0f) + zf8(cx, 0) + zf1(cy, 0) + zf1(cz, 0)`, `+ zf12(cz, 0)`) keep cy / cz in the cx
+ * block (computed in source order cx, cy, cz) and order the colours as the target: cx f0, cz f2, cy f12. The
+ * depth row is computed into cz before the EE packet (the target's schedule around the x0 / y0 conversions).
  * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
 extern "C" float gl_func_00000000_snow_randf(...);   /* sys_randf (typed blank jal: float return) */
@@ -186,8 +190,11 @@ struct SnowFallD {
 extern "C" float snow_ro_10;
 inline int snowOne() { return 1; }
 /* zero-code priority folds (agent-e run 756): z is always 0, uopt counts each v use and then folds the product */
+static inline int zf1(float v, int z) { return z * (int)(v); }
 static inline int zf2(float v, int z) { return z * (int)(v + v); }
 static inline int zf4(float v, int z) { return z * (int)(v + v + v + v); }
+static inline int zf8(float v, int z) { return z * (int)(v + v + v + v + v + v + v + v); }
+static inline int zf12(float v, int z) { return z * (int)(v + v + v + v + v + v + v + v + v + v + v + v); }
 inline void snowW(Gfx *g, unsigned int a, unsigned int b) { g->words.w0 = a; g->words.w1 = b; }
 
 extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
@@ -244,8 +251,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
         cx = rot[0][0] * x + rot[1][0] * y + rot[2][0] * z + rot[3][0];
         cy = rot[0][1] * x + rot[1][1] * y + rot[2][1] * z + rot[3][1];
         cz = rot[0][2] * x + rot[1][2] * y + rot[2][2] * z + rot[3][2];
-        if (cy) if (cz) {}
-        if (cx < -30.0f) {
+        if ((cx < -30.0f) + zf8(cx, 0) + zf1(cy, 0) + zf1(cz, 0)) {
             wx = 60.0f;
         } else if (cx >= 30.0f) {
             wx = -60.0f;
@@ -255,7 +261,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
         } else if (cy >= 30.0f) {
             wy = -60.0f;
         }
-        if (cz < -100.0f) {
+        if ((cz < -100.0f) + zf12(cz, 0)) {
             wz = 100.0f;
         } else if (cz >= 0.0f) {
             wz = -100.0f;
@@ -296,8 +302,9 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
                 if (-halfW < cx && cx < halfW && -halfH < cy && cy < halfH) {
                     x0 = (int)(cx + halfW - (float)(sw / 2) + (float)(&SNOW_CAM2->offX)[zf2(cy, 0)]);
                     y0 = (int)(cy + halfH - (float)(sz / 2) + (float)(&SNOW_CAM2->offY)[zf4(cx, 0)]);
+                    cz = m[0][2] * x + m[1][2] * y + m[2][2] * z + m[3][2];
                     snowW(c->next(), 0xEE000000,
-                            ((int)(((m[0][2] * x + m[1][2] * y + m[2][2] * z + m[3][2]) * w + (float)snowOne()) * snow_ro_10) & 0x7FFF) << 16);
+                            ((int)((cz * w + (float)snowOne()) * snow_ro_10) & 0x7FFF) << 16);
                     self->drawn++;
                     if (1) {}
                     gDPWord(c->nextM(), 0xE4000000 | ((((x0 + sw) << 2) & 0xFFF) << 12) | (((y0 + sz) << 2) & 0xFFF),
