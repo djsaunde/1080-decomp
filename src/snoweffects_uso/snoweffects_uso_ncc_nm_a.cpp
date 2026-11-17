@@ -1,6 +1,6 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for snoweffects.uso 0x7FE0 (agent-a runs 661 / 665 / 669 / 677 / 681),
+/* IDO 7.1 NCC (C++) NON_MATCHING donor for snoweffects.uso 0x7FE0 (agent-a runs 661 / 665 / 669 / 677 / 681 / 688),
  * spliced over the placeholder on the non_matching build only (Makefile SNOW_NM_A_FUNCS): 800 / 800 words,
- * objdiff 97.7 %. A donor body has to be exactly the target's length (a size change shifts the later
+ * objdiff 97.8 %. A donor body has to be exactly the target's length (a size change shifts the later
  * functions of the non_matching object). 0xA10C moved to the exact donor snoweffects_uso_ncc_a.cpp (run 677).
  */
 #include "snoweffects_ncc.h"
@@ -47,16 +47,29 @@ int snoweffects_uso_func_000046BC(...);
  *   statements are s = word 2, ctor params = words 3 / 1 / 4 (fabs_(s) * f184 reads f0). k is a named
  *   float between a and d (the target's one-word gap there). i / s / v / w declared in that order puts the
  *   s and w spill homes at vfp-8 / vfp-16 as in the target.
+ * Run 688 (97.75 -> 97.83 %, frame 368 -> 384 as in the target):
+ * - the w[] stores were one index high (target: w at +0x1C, f16C at +0x20, f17C at +0x18): w[0..2].
+ * - d's ctor takes the vector BY VALUE and |s| inside: `TV(TV v, float s) { float a = fabs_(s); ... }`.
+ *   The arg is then the inline's param word, allocated deep after the *f184 result (target sp+100),
+ *   not a third __V temp at the loop-body top, and the word copy precedes the fabs as in the target.
+ * - the +0x120.. clears go through `i` (no `int z` block local: one frame word fewer above the __Vs).
+ * - two dead floats in lerp3 give the two frame words between the p param temp and fwd * f188's r.
+ * Left (frame): up * f180's __V is the lower of the two (target: the higher, sp+336), the a statement
+ *   has 2 words fewer ahead of up's r and 1 more after it; the d ctor has its param-word gap 1 / 2
+ *   where the target has 2 / 1 (fr: /tmp/claude-1000/agent-a/w688/sl.py, md.py reads -g3 vfp names).
+ *   The addiu t3 / t4 vs `or a1` order is uopt's LICM / IV-init order (source line joins and moving the
+ *   pointer locals into the loop do not change it).
  * Left: pool word 1 colours f2 where the target has f12 (it wins the f2 race against the TV ctor's second
  *   parameter word; a forcing-uopt probe puts it on f12 for 97.9 %), the frame (368 vs 384: one TV pool
  *   word too many at the loop-body top and one word too many above it) and the hoisted sp addresses. ---- */
 extern "C" void SnowRing_setSlotState_00004714(void *, int, int, float);
 
+inline float fabs_(float x) { return x < 0.0f ? -x : x; }
 struct TV {
     float x, y, z;
     TV() {}
     TV(float a, float b, float c) { x = a; y = b; z = c; }
-    TV(const TV &v, float s) { x = v.x * s; y = v.y * s; z = v.z * s; }
+    TV(TV v, float s) { float a = fabs_(s); x = v.x * a; y = v.y * a; z = v.z * a; }
     TV operator*(float s) const { TV r(x * s, y * s, z * s); return r; }
     /* by value: `p = t->mid` copies the source into the param temp as words (lw / sw through a3),
      * then member-wise as floats, as in the target (run 665: 79.0 -> 85.5 %) */
@@ -139,12 +152,12 @@ struct TTrail {
 
 inline float lerpf(float a, float b, float t) { return (b - a) * t + a; }
 inline void lerp3(TV &p, const TV &b, float f) {
+    float g = f, h = f; /* unused: the target's two frame words ahead of the fwd * f188 result */
     p.x = lerpf(p.x, b.x, f);
     p.y = lerpf(p.y, b.y, f);
     p.z = lerpf(p.z, b.z, f);
 }
 
-inline float fabs_(float x) { return x < 0.0f ? -x : x; }
 extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
     int i;
     float s;
@@ -155,7 +168,7 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
     } else {
         t->speed = t->cam->lean;
     }
-    { int z = 0; t->a.x = z; t->a.y = z; t->a.z = z; t->b.x = z; t->b.y = z; t->b.z = z; }
+    t->a.x = i = 0; t->a.y = i; t->a.z = i; t->b.x = i; t->b.y = i; t->b.z = i;
     t->f3C = t->f34;
     t->f40 = t->f38;
     snoweffects_uso_func_00004374(t);
@@ -211,29 +224,29 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
             t->points[t->writeOfs + i].pos = p;
             t->points[t->writeOfs + i].vel = t->cam->fwd * t->f188;
             t->points[t->writeOfs + i].f28 = 0;
-            t->points[t->writeOfs + i].w[2] = w;
-            t->points[t->writeOfs + i].w[3] = t->f16C;
+            t->points[t->writeOfs + i].w[1] = w;
+            t->points[t->writeOfs + i].w[2] = t->f16C;
             TV a = t->cam->up * t->f180 * fabs_(s);
             float k = (float)(0.0f < s ? t->stride - i - 1 : i) / (float)t->stride;
-            TV d(*v114 * k * t->f184, fabs_(s));
+            TV d(*v114 * k * t->f184, s);
             TV e = *vFC * -1.0f;
             if (0.0f < s) {
                 d *= -1.0f;
             }
             t->points[t->writeOfs + i].vel += d;
             if (i == 3) {
-                t->points[t->writeOfs + i].w[1] = t->f17C * t->f19C;
+                t->points[t->writeOfs + i].w[0] = t->f17C * t->f19C;
             }
             if (i == 2) {
                 t->points[t->writeOfs + i].vel += a;
-                t->points[t->writeOfs + i].w[1] = t->f17C;
+                t->points[t->writeOfs + i].w[0] = t->f17C;
             }
             if (i == 1) {
                 t->points[t->writeOfs + i].vel += a;
-                t->points[t->writeOfs + i].w[1] = t->f17C;
+                t->points[t->writeOfs + i].w[0] = t->f17C;
             }
             if (i == 0) {
-                t->points[t->writeOfs + i].w[1] = t->f17C * t->f19C;
+                t->points[t->writeOfs + i].w[0] = t->f17C * t->f19C;
             }
             float u = i * t->texStep - 0.5;
             if (t->mode != 2) {
