@@ -22,6 +22,9 @@
 #              speed; the camera's NaN / Inf count is printed, not gated: camTarget goes NaN at
 #              frame 1619 on main, run 839).
 #              2000: main crashed at ~2625 at the time of writing (agent-g run 835 is on it).
+#   saves      test_backup + 4 short boots: the SRAM file is the N64 image (port/include/port_backup.h,
+#              plan 20): blank-SRAM save = the ROM defaults' big-endian image, reloads unchanged,
+#              a synthetic .sra loads, damaged primaries are restored from the mirrors
 #   abi        port/tools/abi-scan.py (DWARF call sites vs definitions) against
 #              port/tools/abi-baseline.tsv: no new float / int / double / struct-return mismatch
 # --regen             keep the regenerated port/gen + sourcemap (default: restore, report stale)
@@ -234,6 +237,36 @@ PY
   txt="$FRAMES frames: rc $rc, state.log $nf frames, ${nan#* }"
   if [ $rc = 0 ] && [ "$nf" -ge "$FRAMES" ] && [ "${nan%% *}" = 0 ]; then line smoke PASS "$txt"
   else line smoke FAIL "$txt${why:+; $why}"; fi
+fi
+
+# ---- saves (plan 20): the SRAM file is the N64 image (port/include/port_backup.h).  test_backup's unit
+# checks; a blank-SRAM boot whose save must equal the ROM defaults' big-endian image (test_backup builds
+# it from the extracted bootup Data, hardware checksums); reloading that save and a synthetic .sra
+# (non-default records + a ghost) must leave each file unchanged with one SRAM write (the header: no
+# chunk reset); damaged primaries must be restored from the mirrors.  Files: $LOG/saves.XXXXXX.
+start; if have test_backup && have tenshoe; then
+  V=$(mktemp -d "$LOG/saves.XXXXXX"); err=""  # a fresh dir per run (no rm of a variable path)
+  boot() {  # boot <sram> <tag>: 30 frames; echoes the SRAM write count
+    ( cd "$V" && timeout 120 "$RUN32" "$B/tenshoe" --rom "$ROM" --sram "$1" --frames 30 >"$V/$2.log" 2>&1 )
+    grep -oE '[0-9]+ SRAM writes' "$V/$2.log" | cut -d' ' -f1; }
+  "$RUN32" "$B/test_backup" >"$V/unit.log" 2>&1 || err="$err unit($(grep -m1 FAIL "$V/unit.log"))"
+  w=$(boot "$V/fresh.sram" fresh)
+  "$RUN32" "$B/test_backup" "$V/fresh.sram" "$B/extracted/uso/bootup.uso/02_Data.bin" "$V/synth.sra" \
+    >"$V/defaults.log" 2>&1 || err="$err defaults($(grep -m1 FAIL "$V/defaults.log" | cut -c1-90))"
+  for f in fresh.sram synth.sra; do
+    [ -f "$V/$f" ] || continue
+    cp "$V/$f" "$V/reload-$f"; w=$(boot "$V/reload-$f" "reload-$f")
+    { [ "$w" = 1 ] && cmp -s "$V/$f" "$V/reload-$f"; } || err="$err reload-$f(${w:-?} writes)"
+  done
+  if [ -f "$V/synth.sra" ]; then  # one byte of the course and the options primaries
+    cp "$V/synth.sra" "$V/damaged.sram"
+    printf '\167' | dd of="$V/damaged.sram" bs=1 seek=$((0x20)) conv=notrunc 2>/dev/null
+    printf '\167' | dd of="$V/damaged.sram" bs=1 seek=$((0x1FB)) conv=notrunc 2>/dev/null
+    w=$(boot "$V/damaged.sram" damaged)
+    cmp -s "$V/synth.sra" "$V/damaged.sram" || err="$err mirror-restore(${w:-?} writes)"
+  fi
+  if [ -z "$err" ]; then line saves PASS "$(tail -1 "$V/defaults.log" | cut -d' ' -f2-4); fresh = ROM defaults' N64 image; reload / .sra / mirror restore OK"
+  else line saves FAIL "$err"; fi
 fi
 
 # ---- abi: DWARF call sites vs definitions in the linked tenshoe
