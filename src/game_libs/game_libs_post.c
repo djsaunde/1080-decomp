@@ -11810,6 +11810,19 @@ extern f32 D_2D37C_f358s[], D_2D37C_f358l[], D_2D37C_f35Cs[], D_2D37C_f35Cl[], D
  * the post-call i reload a3 (t2) and rec[2] t2 (t3). Note the target stores z to 35C BEFORE fr
  * to 358 (swapping the two stores reads 0.03 lower only because f0 then lines up by chance).
  * Spelling-grid over assign order x keep-alives x store order x i spelling x decl order: flat. */
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+extern char port_bootup_data[];
+#define D_2D37C_f358l (*(__typeof__(D_2D37C_f358l) *)(port_bootup_bss + 0x0))
+#define D_2D37C_f358s (*(__typeof__(D_2D37C_f358s) *)(port_bootup_bss + 0x0))
+#define D_2D37C_f35Cl (*(__typeof__(D_2D37C_f35Cl) *)(port_bootup_bss + 0x0))
+#define D_2D37C_f35Cs (*(__typeof__(D_2D37C_f35Cs) *)(port_bootup_bss + 0x0))
+#define D_2D37C_f35Cw (*(__typeof__(D_2D37C_f35Cw) *)(port_bootup_bss + 0x0))
+#define D_2D37C_f360l (*(__typeof__(D_2D37C_f360l) *)(port_bootup_bss + 0x0))
+#define D_2D37C_f360s (*(__typeof__(D_2D37C_f360s) *)(port_bootup_bss + 0x0))
+#define D_2D37C_flag (*(__typeof__(D_2D37C_flag) *)(port_bootup_data + 0x1C0A0))
+#define D_2D37C_mode (*(__typeof__(D_2D37C_mode) *)(port_bootup_data + 0x1C0A0))
+#endif
 void snd_UpdateTimers(void) {
     int st;
     int v;
@@ -11892,6 +11905,17 @@ void snd_UpdateTimers(void) {
     gl_ref_00044E14();
     CALL(AudioThread_ScheduleProcessCmds)();
 }
+#ifdef PORT
+#undef D_2D37C_f358l
+#undef D_2D37C_f358s
+#undef D_2D37C_f35Cl
+#undef D_2D37C_f35Cs
+#undef D_2D37C_f35Cw
+#undef D_2D37C_f360l
+#undef D_2D37C_f360s
+#undef D_2D37C_flag
+#undef D_2D37C_mode
+#endif
 #undef raw
 
 /* snd_MuteAll: boundary-corrected (orphan-fn delete+merge). The 2-word
@@ -15440,6 +15464,12 @@ extern f32 D_31A74_tbl[];   /* base-0 f32 table indexed by mode (lui at; addu at
 #define ACCS2_31A74 (*(f32 *)((char *)&D_31A74_accs2 + 0x1CAC0))
 extern int D_31A74_curv;   /* agent-c run 183: pinned at 0x1CAA8 itself (target addiu v0,%lo + lw/sw 0(v0)) */
 #define CUR_31A74 D_31A74_curv
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_data[];
+#define D_31A74_accl (*(__typeof__(D_31A74_accl) *)(port_bootup_data + 0x0))
+#define D_31A74_accs1 (*(__typeof__(D_31A74_accs1) *)(port_bootup_data + 0x0))
+#define D_31A74_accs2 (*(__typeof__(D_31A74_accs2) *)(port_bootup_data + 0x0))
+#endif
 void snd_UpdateChannel10Emitter(int mode, f32 v, s8 sel) {
     f32 acc;
     f32 r;
@@ -15516,6 +15546,11 @@ c31t:
 z31t:
     if (1) {} ACCS2_31A74 = r; goto c31t;
 }
+#ifdef PORT
+#undef D_31A74_accl
+#undef D_31A74_accs1
+#undef D_31A74_accs2
+#endif
 
 void snd_RampInit(SndLevelRamp *a0, int a1, int a2) { a0->target = a1; a0->count = a2; a0->frac = 0; }
 

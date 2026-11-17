@@ -77,6 +77,29 @@ typedef struct Gl2FB74Bank {
 } Gl2FB74Bank;
 extern Gl2FB74Bank D_2FB74_bank;
 
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+extern char port_bootup_data[];
+#define D_2FB74_cmdsrc (*(__typeof__(D_2FB74_cmdsrc) *)(port_bootup_data + 0x1C0B4))
+#define D_2FB74_cnt (*(__typeof__(D_2FB74_cnt) *)(port_bootup_data + 0x1C908))
+#define D_2FB74_cnt2 (*(__typeof__(D_2FB74_cnt2) *)(port_bootup_data + 0x1C908))
+#define D_2FB74_cnt3 (*(__typeof__(D_2FB74_cnt3) *)(port_bootup_data + 0x1C908))
+#define D_2FB74_cnt3w (*(__typeof__(D_2FB74_cnt3w) *)(port_bootup_data + 0x1C908))
+#define D_2FB74_cnt4 (*(__typeof__(D_2FB74_cnt4) *)(port_bootup_data + 0x1C908))
+#define D_2FB74_g7 (*(__typeof__(D_2FB74_g7) *)(port_bootup_bss + 0x314))
+#define D_2FB74_g8 (*(__typeof__(D_2FB74_g8) *)(port_bootup_data + 0x1C0B4))
+#define D_2FB74_gA (*(__typeof__(D_2FB74_gA) *)(port_bootup_data + 0x1C0B4))
+#define D_2FB74_gB (*(__typeof__(D_2FB74_gB) *)(port_bootup_data + 0x1C0B4))
+#define D_2FB74_gD (*(__typeof__(D_2FB74_gD) *)(port_bootup_bss + 0x314))
+#define D_2FB74_gF (*(__typeof__(D_2FB74_gF) *)(port_bootup_bss + 0x314))
+#define D_2FB74_gH (*(__typeof__(D_2FB74_gH) *)(port_bootup_bss + 0x31C))
+#define D_2FB74_gJ (*(__typeof__(D_2FB74_gJ) *)(port_bootup_bss + 0x31C))
+#define D_2FB74_gK (*(__typeof__(D_2FB74_gK) *)(port_bootup_data + 0x1C0B4))
+#define D_2FB74_gO (*(__typeof__(D_2FB74_gO) *)(port_bootup_bss + 0x31C))
+#define D_2FB74_gS (*(__typeof__(D_2FB74_gS) *)(port_bootup_data + 0x1C0B4))
+#define D_2FB74_tgl (*(__typeof__(D_2FB74_tgl) *)(port_bootup_data + 0x1C90C))
+#define D_2FB74_tglw (*(__typeof__(D_2FB74_tglw) *)(port_bootup_data + 0x1C90C))
+#endif
 void snd_dispatchEvent(s32 sel, s32 v) {
     s32 t;
     s32 cmd;
@@ -393,3 +416,24 @@ L_lad5:
     }
     gl_ref_00044B70(sel);
 }
+#ifdef PORT
+#undef D_2FB74_cmdsrc
+#undef D_2FB74_cnt
+#undef D_2FB74_cnt2
+#undef D_2FB74_cnt3
+#undef D_2FB74_cnt3w
+#undef D_2FB74_cnt4
+#undef D_2FB74_g7
+#undef D_2FB74_g8
+#undef D_2FB74_gA
+#undef D_2FB74_gB
+#undef D_2FB74_gD
+#undef D_2FB74_gF
+#undef D_2FB74_gH
+#undef D_2FB74_gJ
+#undef D_2FB74_gK
+#undef D_2FB74_gO
+#undef D_2FB74_gS
+#undef D_2FB74_tgl
+#undef D_2FB74_tglw
+#endif

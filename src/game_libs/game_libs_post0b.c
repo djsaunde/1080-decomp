@@ -570,6 +570,9 @@ void hostio_sendNodeTree(char *o) {
  * base-0 word, cf. gHostio_34890_d/e), and the call-site &D is D_349E0_b.
  * `volatile` on a single flag symbol does NOT split the base (13 diffs). */
 extern int gSysLib_349E0_a, D_349E0_b;
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+#define gSysLib_349E0_a (*(__typeof__(gSysLib_349E0_a) *)((char *)&D_00000000 + 0))
+#endif
 void hostio_start(void) {
     gSysLib_349E0_a = gSysLib | 4;
     CALL(hostio_msg03_0003EFC4)(&D_349E0_b, GL_DATA_STR(0x1E460, "HostIO"), 900, 900);
@@ -577,6 +580,9 @@ void hostio_start(void) {
     CALL(hostio_connect)(&D_349E0_b);
     gSysLib = gSysLib_349E0_a & ~4;
 }
+#ifdef PORT
+#undef gSysLib_349E0_a
+#endif
 
 extern int gl_func_00000000();
 extern int D_00000000;
@@ -1327,6 +1333,13 @@ void fs_gdlWaitFile(int a0, int a1) {
  * The counter word 0x3B8E8 is accessed through per-site pins (load and two
  * stores and the final read each lui separately). */
 extern int gl_ref_0003B8E8, gl_ref_0003B8E8_35648_ld, gl_ref_0003B8E8_35648_st, gl_ref_0003B8E8_35648_rd;
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define gl_ref_0003B8E8 (*(__typeof__(gl_ref_0003B8E8) *)(port_bootup_bss + 0x3B8E8))
+#define gl_ref_0003B8E8_35648_ld (*(__typeof__(gl_ref_0003B8E8_35648_ld) *)(port_bootup_bss + 0x3B8E8))
+#define gl_ref_0003B8E8_35648_rd (*(__typeof__(gl_ref_0003B8E8_35648_rd) *)(port_bootup_bss + 0x3B8E8))
+#define gl_ref_0003B8E8_35648_st (*(__typeof__(gl_ref_0003B8E8_35648_st) *)(port_bootup_bss + 0x3B8E8))
+#endif
 int fs_gdlSeekFile(GdlFile *o, int a1, int a2) {
     int r;
     unsigned k = o->kind;
@@ -1359,6 +1372,12 @@ c2:
 end:
     return r;
 }
+#ifdef PORT
+#undef gl_ref_0003B8E8
+#undef gl_ref_0003B8E8_35648_ld
+#undef gl_ref_0003B8E8_35648_rd
+#undef gl_ref_0003B8E8_35648_st
+#endif
 
 // fs_gdlWriteFile — STRUCTURAL PASS + small BUNDLE BOUNDARY NOTE
 // (0x138 / 78 words, no episode). Raw-.word USO form (game_libs).
@@ -9950,6 +9969,11 @@ extern char D_415A4_u[];
 extern char D_415A4_v[];
 extern char *gConsoleNode_3EF04_415A4_g4;
 
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define gConsoleNode_3EF04_415A4_g3 (*(__typeof__(gConsoleNode_3EF04_415A4_g3) *)(port_bootup_bss + 0x3EF04))
+#define gConsoleNode_3EF04_415A4_g4 (*(__typeof__(gConsoleNode_3EF04_415A4_g4) *)(port_bootup_bss + 0x3EF04))
+#endif
 void App_main(O415A4 *self) {
     int a;
     int b;
@@ -10016,6 +10040,10 @@ void App_main(O415A4 *self) {
     CALL(app_run)(gSysLib_415A4_s6, self);
 #endif
 }
+#ifdef PORT
+#undef gConsoleNode_3EF04_415A4_g3
+#undef gConsoleNode_3EF04_415A4_g4
+#endif
 
 /* App_Reset: 25-insn 3-call vtable-dispatch.
  *   func(0x1F5E4);
@@ -12221,6 +12249,12 @@ extern float gl_func_00000000_fret();
 extern char gGfxLib_44EDC_a, gGfxPhase_44EDC_b, gGfxLib_44EDC_c, gGfxLib_44EDC_d, D_44EDC_e, gGfxPhase_44EDC_f,
     gGfxPhase_44EDC_h, gSysLib_44EDC_i;
 extern int D_44EDC_g[];
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define gGfxPhase_44EDC_b (*(__typeof__(gGfxPhase_44EDC_b) *)(port_bootup_bss + 0x3C7C8))
+#define gGfxPhase_44EDC_f (*(__typeof__(gGfxPhase_44EDC_f) *)(port_bootup_bss + 0x3C7C8))
+#define gGfxPhase_44EDC_h (*(__typeof__(gGfxPhase_44EDC_h) *)(port_bootup_bss + 0x3C7C8))
+#endif
 void gfx_end(GfxLib *arg0) {
     s32 k;
     s32 n;
@@ -12306,6 +12340,11 @@ void gfx_end(GfxLib *arg0) {
     CALL(gl_osSendMesg)(obj, 0x68, 1);
     CALL(gfx_setEvery4thFrameFlag)(arg0);
 }
+#ifdef PORT
+#undef gGfxPhase_44EDC_b
+#undef gGfxPhase_44EDC_f
+#undef gGfxPhase_44EDC_h
+#endif
 
 // gfx_emitProjection — STRUCTURAL PASS (0x22C / 140 words, no episode). Raw-.word
 // USO. realjr=2, regjr=0 → 2-function BUNDLE + BOUNDARY NOTE: named fn ends
@@ -19207,6 +19246,14 @@ void ShapeNode_addToGroup(int *self, int *target) {
  * v0, pushing the first base (two zero stores) into v1 -- an empty
  * `if (1) {}` after those stores (BB lever, cf 3EDBC) frees v0 for it. */
 extern int gPolyGeomMode_3EEC8_52674_a[2], gPolyGeomMode_3EEC8_52674_b[2], gPolyFlags_3EEC4_52674_c, gPolyGeomMode_3EEC8_52674_d[2], gPolyFlags_3EEC4_52674_e, D_52674_f, D_52674_g;
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+#define gPolyFlags_3EEC4_52674_c (*(__typeof__(gPolyFlags_3EEC4_52674_c) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyFlags_3EEC4_52674_e (*(__typeof__(gPolyFlags_3EEC4_52674_e) *)(port_bootup_bss + 0x3EEC4))
+#define gPolyGeomMode_3EEC8_52674_a (*(__typeof__(gPolyGeomMode_3EEC8_52674_a) *)(port_bootup_bss + 0x3EEC8))
+#define gPolyGeomMode_3EEC8_52674_b (*(__typeof__(gPolyGeomMode_3EEC8_52674_b) *)(port_bootup_bss + 0x3EEC8))
+#define gPolyGeomMode_3EEC8_52674_d (*(__typeof__(gPolyGeomMode_3EEC8_52674_d) *)(port_bootup_bss + 0x3EEC8))
+#endif
 void BasePolyShape_initGeomGlobals_00052674(void) {
     int v;
     gPolyGeomMode_3EEC8_52674_a[1] = 0;
@@ -19223,6 +19270,13 @@ void BasePolyShape_initGeomGlobals_00052674(void) {
     D_52674_f = 0;
     D_52674_g = 0;
 }
+#ifdef PORT
+#undef gPolyFlags_3EEC4_52674_c
+#undef gPolyFlags_3EEC4_52674_e
+#undef gPolyGeomMode_3EEC8_52674_a
+#undef gPolyGeomMode_3EEC8_52674_b
+#undef gPolyGeomMode_3EEC8_52674_d
+#endif
 
 // BasePolyShape_ctor (0x248 / 146 words): C++ constructor with cfront's
 // this == 0 -> new(0xB0) protocol, inline Sub() member ctor and an optional

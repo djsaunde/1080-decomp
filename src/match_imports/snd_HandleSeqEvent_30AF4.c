@@ -38,6 +38,26 @@ extern void gl_func_emit_30AF4v();
 extern void gl_func_00030AF4_44F18v();
 extern void gl_func_00030AF4_42364v();
 extern void gl_func_00030AF4_460D0v();
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7) */
+extern char port_bootup_bss[];
+extern char port_bootup_data[];
+#define D_30AF4_f (*(__typeof__(D_30AF4_f) *)(port_bootup_data + 0x1C0B4))
+#define D_30AF4_g (*(__typeof__(D_30AF4_g) *)(port_bootup_data + 0x1C0A8))
+#define D_30AF4_h (*(__typeof__(D_30AF4_h) *)(port_bootup_data + 0x1C0B0))
+#define D_30AF4_i (*(__typeof__(D_30AF4_i) *)(port_bootup_data + 0x1C0B4))
+#define D_30AF4_j (*(__typeof__(D_30AF4_j) *)(port_bootup_data + 0x1C0B0))
+#define D_30AF4_k (*(__typeof__(D_30AF4_k) *)(port_bootup_bss + 0x308))
+#define D_30AF4_l (*(__typeof__(D_30AF4_l) *)(port_bootup_bss + 0x308))
+#define D_30AF4_m (*(__typeof__(D_30AF4_m) *)(port_bootup_data + 0x1C0B4))
+#define D_30AF4_n (*(__typeof__(D_30AF4_n) *)(port_bootup_bss + 0x308))
+#define D_30AF4_o (*(__typeof__(D_30AF4_o) *)(port_bootup_bss + 0x308))
+#define D_30AF4_p (*(__typeof__(D_30AF4_p) *)(port_bootup_data + 0x1C0B0))
+#define D_30AF4_q (*(__typeof__(D_30AF4_q) *)(port_bootup_bss + 0x308))
+#define D_30AF4_r (*(__typeof__(D_30AF4_r) *)(port_bootup_bss + 0x308))
+#define D_30AF4_t (*(__typeof__(D_30AF4_t) *)(port_bootup_data + 0x1C0A8))
+#define D_30AF4_w (*(__typeof__(D_30AF4_w) *)(port_bootup_data + 0x1C0B0))
+#define D_30AF4_x (*(__typeof__(D_30AF4_x) *)(port_bootup_data + 0x1C0B4))
+#endif
 void snd_HandleSeqEvent_30AF4(mode, sub, arg2)
 s32 mode;
 u32 sub;
@@ -320,3 +340,21 @@ s32 arg2;
     gl_func_emit(0);
     gl_func_emit(0xFB000000, &gl_data_30AF4_45F78);
 }
+#ifdef PORT
+#undef D_30AF4_f
+#undef D_30AF4_g
+#undef D_30AF4_h
+#undef D_30AF4_i
+#undef D_30AF4_j
+#undef D_30AF4_k
+#undef D_30AF4_l
+#undef D_30AF4_m
+#undef D_30AF4_n
+#undef D_30AF4_o
+#undef D_30AF4_p
+#undef D_30AF4_q
+#undef D_30AF4_r
+#undef D_30AF4_t
+#undef D_30AF4_w
+#undef D_30AF4_x
+#endif
