@@ -6230,9 +6230,10 @@ SNOW_NM_H_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp.o
 $(SNOW_NM_H_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+# agent-h run 788 (agent-g run 785's source): 0xC90 EXACT, spliced in both trees.
 SNOW_NM_H_FUNCS := snoweffects_uso_func_00000C90
-build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_H_FUNCS),$(f)=$(SNOW_NM_H_DONOR))
-build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_H_DONOR)
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_H_FUNCS),$(f)=$(SNOW_NM_H_DONOR))
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_H_DONOR)
 # agent-h run 709: 0x47D4 (trail emitter update) EXACT, own NCC donor in both trees.
 SNOW_47D4_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_47d4.cpp.o
 $(SNOW_47D4_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_47d4.cpp

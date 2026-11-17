@@ -400,14 +400,11 @@ SnowParticle *SnowPool_spawn_00000A7C(SnowPool *this, Vec3 *pos) {
 void SnowPool_update_00000B44(SnowPool *this) {
 }
 
-#ifdef NON_MATCHING
-/* particle sprite draw (projected texture rectangles): NCC donor src/snoweffects_uso/snoweffects_uso_ncc_c.cpp
- * (agent-c run 655), REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
+/* particle sprite draw (projected texture rectangles): EXACT via the IDO 7.1 NCC donor
+ * src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp (agent-c run 655, agent-h runs 687-783, agent-g run 785),
+ * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
 void snoweffects_uso_func_00000C90(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000C90);
-#endif
 
 /* texture-sprite init: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
  * (agent-h run 649, agent-c run 691), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */

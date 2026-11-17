@@ -1,7 +1,7 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for snoweffects.uso 0xC90 (moved from agent-c's
- * snoweffects_uso_ncc_c.cpp in agent-h run 699), spliced over the empty NON_MATCHING placeholder in
- * snoweffects_uso.c on the non_matching build only (the matching build keeps INCLUDE_ASM). 0x47D4 went
- * EXACT in run 709 and moved to snoweffects_uso_ncc_47d4.cpp. */
+/* IDO 7.1 NCC (C++) donor for snoweffects.uso 0xC90, EXACT (agent-g run 785, wired in agent-h run 788; moved
+ * from agent-c's snoweffects_uso_ncc_c.cpp in agent-h run 699), REPLACE_FUNC_BODY-spliced over the empty
+ * placeholder in snoweffects_uso.c in both build trees. 0x47D4 went EXACT in run 709 and moved to
+ * snoweffects_uso_ncc_47d4.cpp. */
 /* agent-h run 762: back to an int return (run 757's long long typing is gone). */
 extern "C" int gl_func_00000000(...);
 
@@ -20,6 +20,7 @@ struct GCtx {
     char pad0[0xC];
     DList *dl;
     GCtx *me() { return this; }
+    Gfx *atE1(int d0, int n) { d0 = d0; dl->count = n + 1; return &dl->buf[n]; }
     Gfx *nextN_1(int d0) { d0 = d0; int n = dl->count++; return &dl->buf[n]; }
     Gfx *nextBI_1(int d0) { d0 = d0; return atBr(dl, dl->count++); }
     Gfx *atBcm(int n) { if (1) {} return &dl->buf[n + zc(0) * n + zc(0) * (n + n)]; }
@@ -33,7 +34,7 @@ struct GCtx {
     Gfx *atIq(DList *l, int n) { l->count = n + 1; return &dl->buf[n]; }
     Gfx *nextI() { int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
 };
-/* snoweffects_uso_func_00000C90 (NON_MATCHING draft): the particle sprite draw. Calls the texture's
+/* snoweffects_uso_func_00000C90 (EXACT): the particle sprite draw. Calls the texture's
  * display list (+0x2C, its +0x60 through a blank import), builds the camera view matrix (camera +0x30),
  * then for each particle: world position * the gGfxLib world scale (+0x128), projected through the
  * matrix; inside the near / far planes (+0xAC / +0xB0) and the half-screen box it records the prim
@@ -119,7 +120,12 @@ struct GCtx {
  * word (a3), the old count a pooled parameter (v1) and the dl its own word (a2), as in the target, and the prologue dl
  * is no longer a CSE temp shared with the E4 append. The texture call goes through tcall1(0, self->tex), which puts
  * the texture on the second pooled word: that word is now live where a0 is busy, so the s-middle temp that reuses it
- * takes a1 as in the target. */
+ * takes a1 as in the target.
+ * agent-g run 785 (-> EXACT): the y1 use counters move into the `if (y0 ..) {}` before FB (agent-h run 783), the E4
+ * append goes through atE1(0, c->dl->count) (the FB and E4 counts are one LR, v0), the yh clamp drops its dm1 dummy,
+ * and primDepth returns the EE pointer into the block-scope ge, which gTR's xh z0 fold uses five times (no code): the
+ * EE pointer LR (priority 26.7, between the FB pointer's 30 and the xh CSE's 25) then takes a1 and stays live through
+ * the xh block, so the xh CSE takes a2 and as1 hoists the yh clamp's a1 preset to the top of FB, as in the target. */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -127,9 +133,9 @@ typedef short s16;
 inline int imax0(int a) { return a > 0 ? a : 0; }
 
 #define gImmpV(g, pkt, c, p0) { g = (pkt); (g)->words.w0 = _SHIFTL((c), 24, 8); (g)->words.w1 = (unsigned int)(p0); }
-#define gTR(g0, pkt, g1, pkt2, g2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
+#define gTR(g0, pkt, g1, pkt2, g2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy, ee) \
 { g0 = (pkt); \
-    g0->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(((s16)(xh) > 0 ? (s16)(xh) + z0(0) * ((int)(s16)(xh) + (int)(s16)(xh)) : 0), 12, 12) | (dm1(0), _SHIFTL(MAX((s16)(yh),0), 0, 12))); \
+    g0->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(((s16)(xh) > 0 ? (s16)(xh) + z0(0) * ((int)(s16)(xh) + (int)(s16)(xh) + (int)(ee) + (int)(ee) + (int)(ee) + (int)(ee) + (int)(ee)) : 0), 12, 12) | (_SHIFTL(MAX((s16)(yh),0), 0, 12))); \
     g0->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | (dm3(0, 0, 0), _SHIFTL(((s16)(yl) > 0 ? (s16)(yl) + z0(0) * (int)(s16)(yl) : 0), 0, 12))); \
     gImmpV(g1, pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
@@ -143,7 +149,7 @@ inline int dm3(int a, int b, int c) { a = a; b = b; c = c; return 0; }
 inline int z0(int z) { return z; }
 /* the EE prim-depth packet as an inline: its depth parameter takes the pooled edg word that the texrect's MAX temps
  * reuse, so the depth and the xh / xl clamp results form one uopt live range (a3 in the target). */
-inline void primDepth(int z, GCtx *c) { Gfx *g = c->next(); gW(g, 0xEE000000, _SHIFTL(z & 0x7FFF, 16, 16) | _SHIFTL(0, 0, 16)); }
+inline Gfx *primDepth(int z, GCtx *c) { Gfx *g = c->next(); gW(g, 0xEE000000, _SHIFTL(z & 0x7FFF, 16, 16) | _SHIFTL(0, 0, 16)); return g; }
 struct SnowV3c { float x, y, z; SnowV3c(float ax, float ay, float az) { x = ax; y = ay; z = az; } };
 struct SnowPartC {
     SnowV3c pos;            /* 0x00 */
@@ -231,20 +237,21 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
             sx = (m[0][0] * v.x + m[1][0] * v.y + m[2][0] * v.z + m[3][0]) * inv * halfW;
             sy = (m[0][1] * v.x + m[1][1] * v.y + m[2][1] * v.z + m[3][1]) * inv * -halfH;
             if (-halfW < sx && sx < halfW && -halfH < sy && sy < halfH) {
+                Gfx *ge;
                 wid = (int)(k * (halfH * 2.0f * (1.0f / w)) + 1.0f);
                 x0 = (int)(sx + halfW - (float)(wid / 2) + (float)SNOW_CAM->offX);
                 y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
-                primDepth((int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_rodata_C90.depthScale), c);
+                ge = primDepth((int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_rodata_C90.depthScale), c);
                 if (c) {}
                 if (c) {}
-                if (y0) {}
+                if (y0 + z0(0) * ((int)p + (int)p + y0)) {}
                 gf = c->nextBI_1(0); gW(gf, 0xFB000000, _SHIFTL(p->col[0], 24, 8) | _SHIFTL(p->col[1], 16, 8) | _SHIFTL(p->col[2], 8, 8) |
                                                  _SHIFTL((int)p->alpha, 0, 8));
                 x1 = x0 + wid;
-                y1 = y0 + hgt + z0(0) * ((int)p + (int)p + y0);
+                y1 = y0 + hgt;
                 self->drawn++;
-                gTR(gt, c->nextI(), g1, c->me()->nextBIc_1(0), g2, c->nextNc_1(0), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
-                    ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
+                gTR(gt, c->atE1(0, c->dl->count), g1, c->me()->nextBIc_1(0), g2, c->nextNc_1(0), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
+                    ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt, ge);
                 if (p) {}
             }
         }
