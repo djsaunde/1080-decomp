@@ -35,7 +35,9 @@
  * and depth images carry across the tasks (a split-screen frame is one task per half, then the
  * overlay task; replayed alone, each shows the rest of the screen black). Each dump's lists are
  * widened from its own words (the game patches shared lists between tasks: LOD / view toggles),
- * the other data is mapped once, the later dump winning where they differ (reported). */
+ * the other data is mapped once, the later dump winning where they differ (reported). A task that
+ * draws only into a narrower offscreen image (render to texture, run 855) is rendered in a pass of its
+ * own first and its pixels are fed to the tasks that sample that image (Offscreen below). */
 
 #include <sys/mman.h>
 
@@ -371,6 +373,97 @@ struct FbModel {
     }
 };
 
+/* ---------------- render to texture (run 855) ---------------- */
+/* A task whose colour images are all narrower than the 320-wide frame draws into an offscreen image
+ * that a later task samples as a texture: the name-entry board (nameent.uso NameEntry_drawBoard)
+ * shows the race replay that the 3D task renders into a 192x96 RGBA16 image (G_SETCIMG width 192,
+ * scissor 192x96), and the overlay task loads that image (G_SETTIMG width 192). Fast3D ignores
+ * G_SETCIMG and draws every task into the frame: the replay landed in the frame's top-left corner and
+ * the board showed the image's stale memory (grey). With --then, such tasks are rendered first in a
+ * pass of their own; the pass's pixels are read back as big-endian RGBA5551 into the arena where the
+ * other tasks load that image, and the frame is then drawn from the other tasks alone. On the N64 the
+ * board shows the image the 3D task drew in the PREVIOUS frame (the overlay task runs first); here it
+ * is this frame's, one frame newer. */
+struct Offscreen {
+    uint32_t img24 = 0, width = 0, height = 0;
+};
+
+static bool offscreen_target(const Dump& dp, Offscreen* o) {
+    std::vector<uint32_t> zimgs;
+    for (const Chunk& c : dp.chunks) {
+        if (c.kind == DLUMP_IMAGE && (c.aux >> 24) == 0xFE) {
+            zimgs.push_back(c.addr & 0xFFFFFF);
+        }
+    }
+    bool any = false;
+    for (const Chunk& c : dp.chunks) {
+        if (c.kind != DLUMP_IMAGE || (c.aux >> 24) != 0xFF) {
+            continue;
+        }
+        const uint32_t width = (c.aux & 0xFFF) + 1, a = c.addr & 0xFFFFFF;
+        if (width >= 320) {
+            return false; /* draws into the frame */
+        }
+        if (std::find(zimgs.begin(), zimgs.end(), a) != zimgs.end() || ((c.aux >> 19) & 3) != 2) {
+            continue; /* the Z image as colour (its clear), or not 16-bit */
+        }
+        o->img24 = a;
+        o->width = width;
+        any = true;
+    }
+    if (!any) {
+        return false;
+    }
+    o->height = 0;
+    for (const Chunk& c : dp.chunks) { /* the scissor's lower-right y (G_SETSCISSOR 0xED, 10.2) */
+        if (c.kind != DLUMP_DL) {
+            continue;
+        }
+        for (uint32_t i = 0; i + 8 <= c.size; i += 8) {
+            uint32_t w[2];
+            std::memcpy(w, c.data + i, 8);
+            if ((w[0] >> 24) == 0xED) {
+                o->height = std::max(o->height, (w[1] & 0xFFF) >> 2);
+            }
+        }
+    }
+    o->height = std::min<uint32_t>(o->height ? o->height : 240, 240);
+    return true;
+}
+
+/* the offscreen pass's frame (glReadPixels, bottom row first, w x h at scale sc) -> the image in the
+ * arena, at every texture chunk of the other tasks that lies in it */
+static uint32_t offscreen_store(const Offscreen& o, const uint8_t* frame, uint32_t w, uint32_t h, uint32_t sc) {
+    uint32_t bytes = 0;
+    const uint32_t size = o.width * o.height * 2;
+    for (const Chunk& c : sChunks) {
+        if (c.kind != DLUMP_TEXTURE && c.kind != DLUMP_TLUT) {
+            continue;
+        }
+        const uint32_t base = (c.addr & 0xFF000000u) | o.img24;
+        if (c.addr < base || c.addr >= base + size) {
+            continue;
+        }
+        const uint32_t end = std::min(c.addr + c.size, base + size);
+        for (uint32_t a = c.addr & ~1u; a + 2 <= end; a += 2) {
+            if (a < c.addr) {
+                continue;
+            }
+            const uint32_t px = (a - base) / 2, x = px % o.width, y = px / o.width;
+            if (x * sc >= w || y * sc >= h) {
+                continue;
+            }
+            const uint8_t* f = frame + ((size_t)(h - 1 - y * sc) * w + x * sc) * 4;
+            const uint32_t v = ((uint32_t)(f[0] >> 3) << 11) | ((uint32_t)(f[1] >> 3) << 6) | ((uint32_t)(f[2] >> 3) << 1) | 1;
+            uint8_t* m = (uint8_t*)(uintptr_t)a;
+            m[0] = (uint8_t)(v >> 8); /* big-endian, as the RDP writes it */
+            m[1] = (uint8_t)v;
+            bytes += 2;
+        }
+    }
+    return bytes;
+}
+
 /* ---------------- main ---------------- */
 
 /* the read-back request (before Run) and its check / file (after) */
@@ -476,19 +569,43 @@ int main(int argc, char** argv) {
             return 1;
         }
     }
-    Fast::F3DGfx* root = roots[0];
-    /* more than one task: a frame list that calls each task's root in turn */
-    std::vector<Fast::F3DGfx> frame;
+    /* render to texture: with more than one task, the offscreen ones get a pass of their own */
+    std::vector<size_t> offTasks;
+    std::vector<Offscreen> offs;
     if (roots.size() > 1) {
-        frame.resize(roots.size() + 1);
         for (size_t i = 0; i < roots.size(); i++) {
-            frame[i].words.w0 = 0x06000000u; /* G_DL, push: each root ends in G_ENDDL */
-            frame[i].words.w1 = (uintptr_t)roots[i];
+            Offscreen o;
+            if (offscreen_target(sDumps[i], &o)) {
+                offTasks.push_back(i);
+                offs.push_back(o);
+            }
         }
-        frame[roots.size()].words.w0 = 0xB8000000u;
-        frame[roots.size()].words.w1 = 0;
-        root = frame.data();
+        if (offTasks.size() == roots.size()) {
+            offTasks.clear(); /* nothing draws the frame: render them as they are */
+            offs.clear();
+        }
     }
+    std::vector<Fast::F3DGfx*> offRoots, onRoots;
+    for (size_t i = 0; i < roots.size(); i++) {
+        (std::find(offTasks.begin(), offTasks.end(), i) != offTasks.end() ? offRoots : onRoots).push_back(roots[i]);
+    }
+    /* more than one task: a frame list that calls each task's root in turn */
+    std::vector<Fast::F3DGfx> frame, offFrame;
+    auto chain = [](std::vector<Fast::F3DGfx>& lst, const std::vector<Fast::F3DGfx*>& rs) -> Fast::F3DGfx* {
+        if (rs.size() == 1) {
+            return rs[0];
+        }
+        lst.resize(rs.size() + 1);
+        for (size_t i = 0; i < rs.size(); i++) {
+            lst[i].words.w0 = 0x06000000u; /* G_DL, push: each root ends in G_ENDDL */
+            lst[i].words.w1 = (uintptr_t)rs[i];
+        }
+        lst[rs.size()].words.w0 = 0xB8000000u;
+        lst[rs.size()].words.w1 = 0;
+        return lst.data();
+    };
+    Fast::F3DGfx* root = chain(frame, onRoots);
+    Fast::F3DGfx* offRoot = offRoots.empty() ? nullptr : chain(offFrame, offRoots);
     /* The depth image carries over between frames: 1080 clears Z (a FILLRECT with the colour image set to the
      * Z buffer) before its G_SETZIMG, so the interpreter knows the Z address only from the previous frame.
      * Fast3D treats that fill as a depth clear only when the colour image equals its current Z address; in a
@@ -544,9 +661,41 @@ int main(int argc, char** argv) {
         }
         rb.request(*gfx);
     }
+    std::unordered_map<Mtx*, MtxF> noReplacements;
+    if (offRoot != nullptr) {
+        /* the offscreen pass (render to texture, above); its Z clear is its own FILLRECT on the Z image */
+        std::vector<Fast::F3DGfx> offPrologue; /* its own first G_SETZIMG, as for the frame below */
+        for (WideDl& d : *sDumps[offTasks[0]].dls) {
+            for (Fast::F3DGfx& g : d.cmds) {
+                if (offPrologue.empty() && ((g.words.w0 >> 24) & 0xFF) == 0xFE) {
+                    offPrologue.resize(3);
+                    offPrologue[0].words.w0 = g.words.w0;
+                    offPrologue[0].words.w1 = g.words.w1;
+                    offPrologue[1].words.w0 = 0x06000000u;
+                    offPrologue[1].words.w1 = (uintptr_t)offRoot;
+                    offPrologue[2].words.w0 = 0xB8000000u;
+                    offPrologue[2].words.w1 = 0;
+                }
+            }
+        }
+        if (!offPrologue.empty()) {
+            offRoot = offPrologue.data();
+        }
+        gfx->StartFrame();
+        gfx->Run((Gfx*)offRoot, noReplacements);
+        glFinish();
+        std::vector<uint8_t> opx((size_t)w * h * 4);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glPixelStorei(GL_PACK_ALIGNMENT, 1);
+        glReadPixels(0, 0, (GLsizei)w, (GLsizei)h, GL_RGBA, GL_UNSIGNED_BYTE, opx.data());
+        for (size_t k = 0; k < offs.size(); k++) {
+            uint32_t n = offscreen_store(offs[k], opx.data(), w, h, scale);
+            std::printf("f3dreplay: task %zu renders to texture: image 0x%06x %ux%u, %u texture bytes fed to the "
+                        "other tasks\n", offTasks[k], offs[k].img24, offs[k].width, offs[k].height, n);
+        }
+    }
     FbModel fb;
     fb.request(*gfx);
-    std::unordered_map<Mtx*, MtxF> noReplacements;
     gfx->StartFrame();
     gfx->Run((Gfx*)root, noReplacements);
     glFinish();
