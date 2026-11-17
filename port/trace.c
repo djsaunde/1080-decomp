@@ -236,8 +236,16 @@ void port_trace_frame_end(u32 frameCount) {
                 fbits(r->quat[2]), fbits(r->quat[3]), fbits(r->speed), (int)r->animState);
     }
     if (f.have & PORT_TRACE_HAVE_ENTRY) {
-        fprintf(sState, " e0=%08x,%08x,%d,%d", fbits(f.entryPct), fbits(f.entrySpeed),
-                (int)f.entryFinished, (int)f.entryHealth);
+        fprintf(sState, " e0=%08x,%08x,%d,%d,%d,%d", fbits(f.entryPct), fbits(f.entrySpeed),
+                (int)f.entryFinished, (int)f.entryHealth, (int)f.entryScore, (int)f.entryPending);
+        for (i = 1; i < f.numEntries && i < PORT_TRACE_MAX_RIDERS; i++) {
+            fprintf(sState, " e%d=%08x,%d,%d,%d", i, fbits(f.entry[i].pct), (int)f.entry[i].finished,
+                    (int)f.entry[i].health, (int)f.entry[i].score);
+        }
+    }
+    if (f.have & PORT_TRACE_HAVE_TRICK) {
+        fprintf(sState, " tk=%x,%d,%d,%d", (unsigned)f.trickButtons, (int)f.trickFrames,
+                (int)f.trickQueued, (int)f.trickCur);
     }
     fputc('\n', sState);
 }

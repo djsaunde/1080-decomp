@@ -4733,6 +4733,12 @@ static void TrickTable_readEntry_0000C12C(int *a0) {
     } I16;
     I16 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 0x40);
+#ifdef PORT
+    /* TrickEntry (game/tricktable.h): name[16] and unk10[16] are bytes, the 8 words from +0x20
+     * (anims, inputMask, points, riderMask, flags, mirrorIndex) are big-endian in rom/tricks.bin.
+     * Unswapped, readTrickInput never matched an inputMask (0x2 read as 0x2000000): no trick. */
+    PORT_BE_SWAP32S(&buf.v[8], 0x20);
+#endif
     *(I16*)a0 = buf;
 }
 
@@ -7946,7 +7952,10 @@ void *game_ItemType_create_00011A94(int *arg0) {
  *   rt       RcpMgr.retraceCount (virtual: 2 per frame)
  *   el       GameFlow.dataMgr->elapsed (RaceTracker / DataManager, ms)
  *   race     dataMgr->owner->raceState / flags (RaceProcess)
- *   e0       dataMgr->entries[0]: pct (100 at the goal), speed (the HUD km/h), finished, health
+ *   e0       dataMgr->entries[0]: pct (100 at the goal), speed (the HUD km/h), finished, health,
+ *            score, pendingPoints; e1.. the other entries (pct, finished, health, score)
+ *   tk       rider 0's RiderAnim trick input: trickButtons, trickInputFrames, queuedTrick and
+ *            curTrick as TrickTable (game_uso_D_807FFBC0) indices
  *   r<i>     dataMgr->entries[i].rider (a SnowBoarder): dnode.vqs.trans, dnode.vqs.quat,
  *            dnode.speed, and the RiderAnim state method (anim->state.b, the PMF's function word;
  *            a host address on the port, a ROM address in an emulator trace: map both to names
@@ -8003,6 +8012,15 @@ void port_trace_collect(PortTraceFrame *f) {
             f->entrySpeed = dm->entries[0].speed;
             f->entryFinished = dm->entries[0].finished;
             f->entryHealth = dm->entries[0].health;
+            f->entryScore = dm->entries[0].score;
+            f->entryPending = dm->entries[0].pendingPoints;
+            f->numEntries = dm->numEntries;
+            for (i = 1; i < dm->numEntries && i < PORT_TRACE_MAX_RIDERS; i++) {
+                f->entry[i].pct = dm->entries[i].pct;
+                f->entry[i].finished = dm->entries[i].finished;
+                f->entry[i].health = dm->entries[i].health;
+                f->entry[i].score = dm->entries[i].score;
+            }
             f->have |= PORT_TRACE_HAVE_ENTRY;
         }
         if (PORT_TRACE_PTR(dm->entries)) {
@@ -8021,6 +8039,15 @@ void port_trace_collect(PortTraceFrame *f) {
                 o->quat[3] = r->dnode.vqs.quat[3];
                 o->speed = r->dnode.speed;
                 o->animState = PORT_TRACE_PTR(r->anim) ? r->anim->state.b : -1;
+                if (i == 0 && PORT_TRACE_PTR(r->anim)) {
+                    RiderAnim *ra = r->anim;
+                    char *tbl = (char *)game_uso_D_807FFBC0;
+                    f->trickButtons = (u32)ra->trickButtons;
+                    f->trickFrames = ra->trickInputFrames;
+                    f->trickQueued = ra->queuedTrick != NULL ? ((char *)ra->queuedTrick - tbl) / 0x40 : -1;
+                    f->trickCur = ra->curTrick != NULL ? ((char *)ra->curTrick - tbl) / 0x40 : -1;
+                    f->have |= PORT_TRACE_HAVE_TRICK;
+                }
                 f->numRiders++;
             }
             f->have |= PORT_TRACE_HAVE_RIDERS;

@@ -20,10 +20,14 @@
  *   F <frame> have=<hex> flow=<state>,<next>,<mode> race=<state>,<flags:hex>
  *     rand=<hex8> rt=<retraceCount> vi=<viRetraces> el=<elapsed>
  *     cam=<6 x hex8> r<i>=<px,py,pz,qx,qy,qz,qw,speed as hex8>/<anim>
- *     [e0=<pct:hex8>,<speed:hex8>,<finished>,<health>]
+ *     [e0=<pct:hex8>,<speed:hex8>,<finished>,<health>,<score>,<pending>]
+ *     [e<i>=<pct:hex8>,<finished>,<health>,<score>]  (i = 1 .. numEntries - 1, at most 3)
+ *     [tk=<trickButtons:hex>,<trickInputFrames>,<queuedTrick>,<curTrick>]  (TrickTable indices, -1 none)
  *   e0 is the DataManager's RaceEntry 0 (the player, include/gdl/race.h): pct reaches 100.0 at the
  *   finish line ("Goal!") and finished counts the frames there; speed is what the HUD's km/h
  *   gadget prints ((int)speed, RaceTracker_update). Written only when its have bit is set.
+ *   score is the flushed points (tricks, gates), pending the running trick's points (both 0 in a
+ *   race mode). e1.. are the other entries (Match Race CPU riders, the ghost, 2P VS player 2).
  * Floats are written as their IEEE bit patterns (hex8): diffs are exact.
  * Fields whose `have` bit is clear were not collected and are written as 0. */
 
@@ -37,6 +41,7 @@
 #define PORT_TRACE_HAVE_RAND 0x20    /* sys_randf state (bootup Data 0x21E04) */
 #define PORT_TRACE_HAVE_RETRACE 0x40 /* RcpMgr retraceCount (virtual) */
 #define PORT_TRACE_HAVE_ENTRY 0x80   /* DataManager entries[0]: pct, speed, finished, health */
+#define PORT_TRACE_HAVE_TRICK 0x100  /* rider 0's RiderAnim trick input / trick (tk=) */
 
 #define PORT_TRACE_MAX_RIDERS 4
 
@@ -67,6 +72,21 @@ typedef struct PortTraceFrame {
     f32 entrySpeed; /* entries[0].speed: the HUD km/h value */
     s32 entryFinished;
     s32 entryHealth;
+    s32 entryScore;   /* entries[0].score (the flushed trick / gate points) */
+    s32 entryPending; /* entries[0].pendingPoints (the running trick's points, not yet flushed) */
+    s32 numEntries;   /* DataManager.numEntries: e1.. are written for entries 1..numEntries-1 */
+    struct {
+        f32 pct;
+        s32 finished;
+        s32 health;
+        s32 score;
+    } entry[PORT_TRACE_MAX_RIDERS]; /* entries[i] (i >= 1): the CPU / ghost / 2P rider */
+    /* rider 0's RiderAnim trick fields (PORT_TRACE_HAVE_TRICK): trickButtons, trickInputFrames,
+     * queuedTrick / curTrick as TrickTable indices (-1 = none) */
+    u32 trickButtons;
+    s32 trickFrames;
+    s32 trickQueued;
+    s32 trickCur;
 } PortTraceFrame;
 
 /* Open the logs. Any path may be NULL. record: input log written;
