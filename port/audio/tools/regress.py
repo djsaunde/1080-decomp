@@ -39,10 +39,10 @@ SFX = [0x0E, 0x0F, 0x10, 0x11, 0x12, 0x14, 0x15, 0x16, 0x18, 0x19, 0x1A, 0x1B, 0
        0x33, 0xA3, 0xBC]
 
 
-# seq 9 (course 5's music) crashes the mixer when it starts in the boot audio spec (garbage reverb
-# ring addresses, plan 15.8 open item); the game only plays it after timproc's spec-3 change, so it
-# is rendered the game's way here (course5 renders it too).
-SEQ_ARGS = {9: ["--event", "4:5", "--post", "0x11@0.1"]}
+# seqs 7 / 9 / 19 are bigger than the boot spec's temporary sequence cache (0x2E00 bytes; the cache
+# has no bounds check, so the load runs into gAudioCtx: seq 9 then crashes the mixer on garbage reverb
+# addresses, seq 7 / 19 render with a corrupted reverb).  The game plays them in race spec 3 (plan 15.8).
+SEQ_ARGS = {7: ["--spec", "3", "--seq", "7"], 9: ["--spec", "3", "--seq", "9"], 19: ["--spec", "3", "--seq", "19"]}
 
 
 def cases():

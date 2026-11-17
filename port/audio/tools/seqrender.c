@@ -16,6 +16,9 @@
  *                            snd_HandleSeqEvent: the game's music state machine);
  *        --post K[:V][@SEC]  snd_dispatchEvent(K, V) at SEC (snd_postEvent / snd_sendEvent);
  *        --sfx K [--sfx-at SEC]  snd_PostEvent(K);
+ *        --spec N            snd_StopAudioCmds(N) (an audio-spec change) and 30 steps before --seq: the boot
+ *                            spec's temporary sequence cache is 0x2E00 bytes, seqs 7 / 9 / 19 are bigger
+ *                            (their load would run into gAudioCtx; the game plays them in race spec 3);
  *        --course N [--gametype G]  the race start as the game does it (plan 15.8):
  *            post 12:G (the title menu's game type: 0 match race .. 5 training; omitted = the
  *            boot value), event 4:N (timproc's snd_playSeq(4, course) at the race load), then
@@ -48,6 +51,7 @@
 #include "include/port_game.h"
 #include <signal.h>
 #include <ucontext.h>
+#include <sys/mman.h>
 
 /* game side (libgame.a), C linkage */
 extern int fs_gdlFileInfo(int sysLib, int name, int out);
@@ -58,6 +62,7 @@ extern void snd_FrameUpdate(void);
 extern void snd_seqEventDbg_00000148(int mode, int sub, int arg);
 extern int snd_PostEvent(int ev);
 extern void snd_dispatchEvent(int sel, int v);
+extern void snd_StopAudioCmds(int spec); /* AudioThread_ResetAudioHeap(spec) + 0xF8000000 (K&R) */
 extern void port_uso_init(void);
 
 /* gAudioCtx = bootup Bss 0x345C0 (port/gen/binds.tsv: AudioLoad_Init's D_00000000). Offsets:
@@ -68,6 +73,7 @@ extern void port_uso_init(void);
 #define ACTX_TEMPO_I2E 0x2074     /* s16 tempoInternalToExternal */
 #define ACTX_TICKS 0x2040         /* s16 ticksPerUpdate (updates per frame) */
 #define ACTX_SEQPLAYERS 0x2D00    /* SequencePlayer[4], 0x160 each */
+#define ACTX_SEQTEMPPOOL 0x22D0   /* seqCache.temporary.pool (0x21F8 + 0xD4 + 4): start, cur, size */
 #define SP_SIZE 0x160
 #define SP_SEQID 0x04
 #define SP_TEMPO 0x08
@@ -171,8 +177,6 @@ static host_u32 ai_buffered(void) {
 static void check_notes(const void *cmds, unsigned int bytes) { /* SEQRENDER_NOTES: enabled notes + the list */
     u8 *notes = *(u8 **)(port_bootup_bss + 0x345C0 + 0x2CFC);
     int k, n = *(int *)(port_bootup_bss + 0x345C0 + 0x2070);
-    static int once;
-    if (!once++) host_log("notes %p, %d", (void *)notes, n);
     for (k = 0; k < n && notes != NULL; k++) {
         u8 *nt = notes + 0xD0 * k, *ts, *sm;
         if ((*(u32 *)(nt + 0xB0) & 1) == 0) continue;
@@ -210,11 +214,44 @@ static void fpu_setup(void) { /* main.c's: FTZ / DAZ, round to nearest (plan 9.5
 
 /* a crash names its eip (addr2line -e seqrender) and the step */
 static volatile u32 sStep;
+static u8 *sWatch; /* SEQRENDER_WATCH: the page of gAudioCtx's head, read-only; writers are logged */
 static void on_segv(int sig, siginfo_t *si, void *uc) {
     ucontext_t *u = (ucontext_t *)uc;
+    if (sWatch != NULL && (u8 *)si->si_addr >= sWatch && (u8 *)si->si_addr < sWatch + 4096) {
+        int off = (int)((u8 *)si->si_addr - (u8 *)(port_bootup_bss + 0x345C0));
+        static int logged;
+        if (off >= 0 && off < 0x430 && logged < 20) {
+            logged++;
+            fprintf(stderr, "seqrender: watch: write to ctx%+d at step %u, eip 0x%08X\n", off, sStep,
+                    (unsigned)u->uc_mcontext.gregs[REG_EIP]);
+            if (logged == 1) { /* return-address candidates on the stack (text of the executable) */
+                extern char __executable_start[], etext[];
+                u32 *sp = (u32 *)u->uc_mcontext.gregs[REG_ESP];
+                int b, nb = 0;
+                for (b = 0; b < 256 && nb < 12; b++) {
+                    if (sp[b] >= (u32)__executable_start && sp[b] < (u32)etext) {
+                        fprintf(stderr, "  bt 0x%08X\n", sp[b]);
+                        nb++;
+                    }
+                }
+            }
+        }
+        mprotect(sWatch, 4096, PROT_READ | PROT_WRITE);
+        u->uc_mcontext.gregs[REG_EFL] |= 0x100; /* single-step, then re-arm in on_trap */
+        return;
+    }
     fprintf(stderr, "seqrender: SIGSEGV at step %u (%.2f s): address %p, eip 0x%08X\n", sStep, sStep / 30.0,
             si->si_addr, (unsigned)u->uc_mcontext.gregs[REG_EIP]);
     signal(sig, SIG_DFL);
+}
+
+static void on_trap(int sig, siginfo_t *si, void *uc) {
+    ucontext_t *u = (ucontext_t *)uc;
+    (void)sig; (void)si;
+    u->uc_mcontext.gregs[REG_EFL] &= ~0x100;
+    if (sWatch != NULL) {
+        mprotect(sWatch, 4096, PROT_READ);
+    }
 }
 
 static int rom_file(const char *name) {
@@ -254,7 +291,7 @@ typedef struct {
 
 static void usage(void) {
     fprintf(stderr, "usage: seqrender [--rom PATH] (--seq N | --event M[:S][@SEC] | --post K[:V][@SEC] | --sfx K | "
-                    "--course N [--gametype G])...\n"
+                    "--course N [--gametype G])... [--spec N]\n"
                     "                 [--seconds T] [--out FILE.wav] [--sfx-at SEC] [--no-sfx-player] [--tatums N]\n"
                     "                 [--quiet] [--summary]\n");
 }
@@ -271,7 +308,7 @@ int main(int argc, char **argv) {
     const char *romPath = "baserom.z64", *outPath = "seqrender.wav";
     Req req[MAX_REQ];
     int nReq = 0;
-    int list = 0, seq = -1, sfx = -1, sfxPlayer = 1, quiet = 0, tatums = 0, course = -1, gametype = -1, summary = 0;
+    int list = 0, spec = -1, seq = -1, sfx = -1, sfxPlayer = 1, quiet = 0, tatums = 0, course = -1, gametype = -1, summary = 0;
     double seconds = 30.0, sfxAt = 1.0;
     PortUltraConfig uc;
     HostConfig hc;
@@ -301,6 +338,7 @@ int main(int argc, char **argv) {
         else if (strcmp(a, "--post") == 0 && nReq < MAX_REQ) parse_req(&req[nReq++], 1, v);
         else if (strcmp(a, "--course") == 0) course = (int)strtol(v, NULL, 0);
         else if (strcmp(a, "--gametype") == 0) gametype = (int)strtol(v, NULL, 0);
+        else if (strcmp(a, "--spec") == 0) spec = (int)strtol(v, NULL, 0);
         else if (strcmp(a, "--seconds") == 0) seconds = strtod(v, NULL);
         else if (strcmp(a, "--sfx") == 0) sfx = (int)strtol(v, NULL, 0);
         else if (strcmp(a, "--sfx-at") == 0) sfxAt = strtod(v, NULL);
@@ -345,6 +383,8 @@ int main(int argc, char **argv) {
         sa.sa_sigaction = on_segv;
         sa.sa_flags = SA_SIGINFO;
         sigaction(SIGSEGV, &sa, NULL);
+        sa.sa_sigaction = on_trap;
+        sigaction(SIGTRAP, &sa, NULL);
     }
     fpu_setup();
     memset(&hc, 0, sizeof(hc));
@@ -418,7 +458,28 @@ int main(int argc, char **argv) {
     if (sfxPlayer) {
         snd_PlayPlayer0Seq0(); /* app_runInit */
     }
+    if (spec >= 0) { /* snd_HandleSeqEvent's spec change (mode 4: 3 / 4 / 6, mode 1: 0), then let it finish */
+        snd_StopAudioCmds(spec);
+        for (step = 0; step < 30; step++) {
+            snd_FrameUpdate();
+            audio_retrace();
+            audio_retrace();
+        }
+        if (sfxPlayer) {
+            snd_PlayPlayer0Seq0();
+        }
+    }
     if (seq >= 0) {
+        u8 *tbl = *(u8 **)(ACTX + ACTX_SEQTABLE);
+        u32 tmp = RD32(ACTX + ACTX_SEQTEMPPOOL + 8), sz = 0;
+        if (tbl != NULL && seq < (s16)RD16(ACTX + ACTX_NUMSEQS)) {
+            u8 *e = tbl + 0x10 + 0x10 * seq;
+            sz = RD32(e + 4) == 0 ? RD32(tbl + 0x10 + 0x10 * RD32(e) + 4) : RD32(e + 4); /* alias: size 0 */
+        }
+        if (sz > tmp) { /* the temporary sequence cache has no bounds check: the load runs into gAudioCtx */
+            host_log("seqrender: WARNING: seq %d is 0x%X bytes, this spec's temporary sequence cache 0x%X: the load "
+                     "overruns the heap into gAudioCtx (as it would on the N64); use --spec 3", seq, sz, tmp);
+        }
         snd_PlayPlayer1SeqDefault(seq);
     }
     if (getenv("SEQRENDER_DEBUG") != NULL) {
@@ -430,6 +491,10 @@ int main(int argc, char **argv) {
         for (k = 0; k < c[0x53B8] && k < 16; k++) {
             host_log("dbg: cmd[%u] %08X %08X", k, RD32(c + 0x5430 + 8 * k), RD32(c + 0x5430 + 8 * k + 4));
         }
+    }
+    if (getenv("SEQRENDER_WATCH") != NULL) {
+        sWatch = (u8 *)((unsigned long)(port_bootup_bss + 0x345C0 + 0x18) & ~4095UL);
+        mprotect(sWatch, 4096, PROT_READ);
     }
     sFrames = 0; /* the WAV starts at the request */
     sUnderruns = 0;
