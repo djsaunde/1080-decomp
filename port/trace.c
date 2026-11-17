@@ -247,5 +247,12 @@ void port_trace_frame_end(u32 frameCount) {
         fprintf(sState, " tk=%x,%d,%d,%d", (unsigned)f.trickButtons, (int)f.trickFrames,
                 (int)f.trickQueued, (int)f.trickCur);
     }
+    if (f.have & PORT_TRACE_HAVE_GATES) {
+        fprintf(sState, " cd=%d,%d,%08x,%08x,%08x,%08x,%d", (int)f.dmScore, (int)f.gatesLeft,
+                fbits(f.gateX), fbits(f.gateZ), fbits(f.forkX), fbits(f.forkZ), (int)f.forkFlags);
+    }
+    if (f.have & PORT_TRACE_HAVE_LESSON) {
+        fprintf(sState, " trn=%d", (int)f.lesson);
+    }
     fputc('\n', sState);
 }

@@ -7954,6 +7954,11 @@ void *game_ItemType_create_00011A94(int *arg0) {
  *   race     dataMgr->owner->raceState / flags (RaceProcess)
  *   e0       dataMgr->entries[0]: pct (100 at the goal), speed (the HUD km/h), finished, health,
  *            score, pendingPoints; e1.. the other entries (pct, finished, health, score)
+ *   cd       dataMgr->score (the Trick Attack / Contest countdown, ms) and entries[0].gate: the
+ *            "chk" gates still ahead and the next one's x / z (a gate counts as passed when the
+ *            rider crosses its z between its posts: RaceTracker_passCheckpoints); entries[0].gateA,
+ *            the next slalom gate (x, z, flags: RaceTracker_passGates)
+ *   trn      Training (flow mode 7): the TrnDataManager's current lesson (game/trnproc.h)
  *   tk       rider 0's RiderAnim trick input: trickButtons, trickInputFrames, queuedTrick and
  *            curTrick as TrickTable (game_uso_D_807FFBC0) indices
  *   r<i>     dataMgr->entries[i].rider (a SnowBoarder): dnode.vqs.trans, dnode.vqs.quat,
@@ -7966,6 +7971,7 @@ void *game_ItemType_create_00011A94(int *arg0) {
  * GameFlow.dataMgr and .game are never cleared when a race ends, so the race groups are read only
  * while game.uso is loaded (port/uso registry); between races they would point at freed heap. */
 #include "gdl/race.h"
+#include "game/trnproc.h"
 #include "port_game.h"
 #include "../../port/trace.h"
 #include "../../port/uso/port_uso.h"
@@ -8002,6 +8008,10 @@ void port_trace_collect(PortTraceFrame *f) {
     if (PORT_TRACE_PTR(dm)) {
         f->elapsed = dm->elapsed;
         f->have |= PORT_TRACE_HAVE_ELAPSED;
+        if (flow->flowMode == 7) {
+            f->lesson = ((TrnDataManager *)dm)->lesson;
+            f->have |= PORT_TRACE_HAVE_LESSON;
+        }
         {
             /* the owning RaceProcess: RaceTracker.owner (tim / trk init store it there); the
              * Match Race / Contest DataManagers keep it at +0xBC and 2P VS's at +0xB8
@@ -8033,6 +8043,25 @@ void port_trace_collect(PortTraceFrame *f) {
                 f->entry[i].score = dm->entries[i].score;
             }
             f->have |= PORT_TRACE_HAVE_ENTRY;
+            {
+                RaceGate *g = dm->entries[0].gate;
+                f->dmScore = dm->score;
+                if (PORT_TRACE_PTR(g)) {
+                    f->gateX = g->x;
+                    f->gateZ = g->z;
+                }
+                for (i = 0; PORT_TRACE_PTR(g) && i < 1000; g = g->next) {
+                    i++;
+                }
+                f->gatesLeft = i;
+                g = dm->entries[0].gateA;
+                if (PORT_TRACE_PTR(g)) {
+                    f->forkX = g->x;
+                    f->forkZ = g->z;
+                    f->forkFlags = g->flags;
+                }
+                f->have |= PORT_TRACE_HAVE_GATES;
+            }
         }
         if (PORT_TRACE_PTR(dm->entries)) {
             for (i = 0; i < dm->numEntries && f->numRiders < PORT_TRACE_MAX_RIDERS; i++) {

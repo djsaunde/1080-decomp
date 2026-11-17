@@ -23,6 +23,12 @@
  *     [e0=<pct:hex8>,<speed:hex8>,<finished>,<health>,<score>,<pending>]
  *     [e<i>=<pct:hex8>,<finished>,<health>,<score>]  (i = 1 .. numEntries - 1, at most 3)
  *     [tk=<trickButtons:hex>,<trickInputFrames>,<queuedTrick>,<curTrick>]  (TrickTable indices, -1 none)
+ *     [cd=<dm score>,<gates>,<gateX:hex8>,<gateZ:hex8>,<forkX:hex8>,<forkZ:hex8>,<forkFlags>]
+ *     (DataManager +0xA0: the Trick Attack / Contest countdown in ms, Time Up below 0; gates =
+ *     entries[0]'s "chk" gates still ahead, the next one's x / z; fork = entries[0].gateA, the next
+ *     "gtl" / "gtr" slalom gate: cleared on its left when forkFlags & 1, else on its right
+ *     (RaceTracker_passGates); 0 when none: include/game/course.h RaceGate)
+ *     [trn=<lesson>]  (Training, flow mode 7: TrnDataManager.lesson, the current lesson's TrickTable index)
  *   e0 is the DataManager's RaceEntry 0 (the player, include/gdl/race.h): pct reaches 100.0 at the
  *   finish line ("Goal!") and finished counts the frames there; speed is what the HUD's km/h
  *   gadget prints ((int)speed, RaceTracker_update). Written only when its have bit is set.
@@ -42,6 +48,8 @@
 #define PORT_TRACE_HAVE_RETRACE 0x40 /* RcpMgr retraceCount (virtual) */
 #define PORT_TRACE_HAVE_ENTRY 0x80   /* DataManager entries[0]: pct, speed, finished, health */
 #define PORT_TRACE_HAVE_TRICK 0x100  /* rider 0's RiderAnim trick input / trick (tk=) */
+#define PORT_TRACE_HAVE_LESSON 0x400 /* Training: TrnDataManager.lesson (trn=) */
+#define PORT_TRACE_HAVE_GATES 0x200  /* DataManager score / countdown and entries[0]'s next gate (cd=) */
 
 #define PORT_TRACE_MAX_RIDERS 4
 
@@ -87,6 +95,16 @@ typedef struct PortTraceFrame {
     s32 trickFrames;
     s32 trickQueued;
     s32 trickCur;
+    /* PORT_TRACE_HAVE_GATES: DataManager.score (+0xA0; the trk / arc countdown, ms), the number of
+     * "chk" gates left on entries[0].gate's list, the next gate's x / z */
+    s32 dmScore;
+    s32 gatesLeft;
+    f32 gateX;
+    f32 gateZ;
+    f32 forkX;
+    f32 forkZ;
+    s32 forkFlags;
+    s32 lesson;     /* PORT_TRACE_HAVE_LESSON: TrnDataManager.lesson (game/trnproc.h) */
 } PortTraceFrame;
 
 /* Open the logs. Any path may be NULL. record: input log written;
