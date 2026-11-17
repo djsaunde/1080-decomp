@@ -92,7 +92,7 @@ set(PORT_ULTRA_SOURCES ultra/thread.c ultra/message.c ultra/vi.c ultra/pi.c ultr
     ultra/ai_sp.c ultra/misc.c)
 set(PORT_HOST_SOURCES main.c host_headless.c host/input_script.c trace.c)
 # port/gfx (plan section 19, M2): port_gfx_task (the M_GFXTASK hook) and the PORT_GFX_DUMP writer
-list(APPEND PORT_HOST_SOURCES gfx/port_gfx.c gfx/dlump.c gfx/port_fb.c)
+list(APPEND PORT_HOST_SOURCES gfx/port_gfx.c gfx/dlump.c gfx/port_fb.c gfx/port_live.c)
 # plan 19.7: option (a), Fast3D in process (gfx/fast3d/port_fast3d.cpp + libultraship's src/fast, pinned + the
 # patch series, fetched by gfx/fast3d/setup-lus.sh). Needs a C++20 compiler, libstdc++, EGL / GL and the GL
 # headers for the target ABI: -m32 here, which this machine does not have (plan 19.7); the option stays OFF and

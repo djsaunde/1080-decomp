@@ -13,6 +13,10 @@
 #include "port_libc.h"
 #include "host.h"
 
+/* PORT_LIVE (port/gfx/port_live.c, plan 19.11): the live presenter's keyboard / gamepad */
+extern int port_live_read_pads(HostPad pads[HOST_MAX_PADS]) __attribute__((weak));
+extern int port_live_quit(void) __attribute__((weak));
+
 static HostPad sPads[HOST_MAX_PADS] = { { 0, 0, 0, 1, 0 } };
 static host_u32 sAudioRate;
 static host_u32 sFramesReady;
@@ -29,7 +33,7 @@ void host_shutdown(void) {
 }
 
 int host_poll_events(void) {
-    return 1;
+    return !(port_live_quit != NULL && port_live_quit());
 }
 
 /* weak: test_ultra links this file without the script reader */
@@ -48,6 +52,9 @@ void host_boot_pads(HostPad pads[HOST_MAX_PADS]) {
 void host_read_pads(HostPad pads[HOST_MAX_PADS]) {
     if (host_input_script_active != NULL && host_input_script_active()) {
         host_input_script_step(pads);
+        return;
+    }
+    if (port_live_read_pads != NULL && port_live_read_pads(pads)) {
         return;
     }
     memcpy(pads, sPads, sizeof(sPads));

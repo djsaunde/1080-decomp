@@ -61,6 +61,11 @@ __attribute__((weak)) void port_audio_task(OSTask_t *task) {
     (void)task;
 }
 
+/* the end of a step: port/gfx publishes the step's gfx tasks as one live frame (plan 19.11) */
+__attribute__((weak)) void port_gfx_step_end(void) {
+}
+extern void port_live_close(void) __attribute__((weak));
+
 /* PortUltraConfig.rcpTask: osSpTaskStartGo runs the task here, synchronously. */
 static void rcp_task(OSTask_t *task) {
     if (task->type == M_GFXTASK) {
@@ -217,6 +222,7 @@ static void step(void) {
     /* two virtual retraces per update (plan 9.1: 30 Hz = every other retrace) */
     port_vi_retrace();
     port_vi_retrace();
+    port_gfx_step_end();
     sSteps++;
 }
 
@@ -371,6 +377,9 @@ int main(int argc, char **argv) {
         port_game_boot();
     }
     run(&o, headless);
+    if (port_live_close != NULL) {
+        port_live_close();
+    }
     if (o.audioPath != NULL) {
         port_audio_capture_close();
     }

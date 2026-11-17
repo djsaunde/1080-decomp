@@ -13,6 +13,8 @@
  *                              step and state.log's F number): "700,750-760,900" (replaces
  *                              FIRST / EVERY; COUNT still applies). Every dump, with or without
  *                              it, adds a "task step" line to <dir>/steps.txt.
+ *   PORT_LIVE=<name>          send every task, as the same DLMP image, to the live presenter
+ *                              (/dev/shm/<name>; port_live.c, plan 19.11; port/tools/play.sh)
  *   PORT_FB_LOG=1              log the framebuffer-model request counters every 100 tasks
  *
  * The format is in dlump.h; port/gfx/tools/dlump.py reads and checks it, and
@@ -22,6 +24,7 @@
 #include "../ultra/ultra.h"
 #include "dlump.h"
 #include "port_fb_impl.h"
+#include "port_live.h"
 #ifdef PORT_GFX_FAST3D
 #include "fast3d/port_fast3d.h"
 #endif
@@ -315,11 +318,10 @@ static void collect_images(const DlumpBuf *b) {
     }
 }
 
-static void dump_task(OSTask_t *task, u32 seq) {
-    DlumpBuf buf = { 0 };
+/* the task's DLMP image (dlump.h) into buf: the PORT_GFX_DUMP file and the live frame (port_live.c)
+ * are the same bytes. Returns dlump_task's error count, -1 when out of memory. */
+static int build_task(OSTask_t *task, u32 seq, DlumpBuf *buf) {
     DlumpOptions opt;
-    char path[512];
-    FILE *f;
     int errs;
 
     DlumpExtra extra[PORT_FB_MAX_COLOR + PORT_FB_MAX_DEPTH + PORT_FB_MAX_WRITE];
@@ -391,13 +393,27 @@ static void dump_task(OSTask_t *task, u32 seq) {
     }
     opt.extra = extra;
     opt.nExtra = nExtra;
-    errs = dlump_task(&buf, &opt, seq, (dlump_u32)(size_t)task, task->type, (dlump_u32)(size_t)task->data_ptr,
+    errs = dlump_task(buf, &opt, seq, (dlump_u32)(size_t)task, task->type, (dlump_u32)(size_t)task->data_ptr,
                       task->data_size);
+    for (i = 0; i < nWriteData; i++) {
+        free(writeData[i]);
+    }
+    if (errs >= 0) {
+        collect_images(buf);
+    }
+    return errs;
+}
+
+static void dump_task(OSTask_t *task, u32 seq) {
+    DlumpBuf buf = { 0 };
+    char path[512];
+    FILE *f;
+    int errs = build_task(task, seq, &buf);
+
     if (errs < 0) {
         port_ultra_log("gfx: dump %u: out of memory", seq);
         goto done;
     }
-    collect_images(&buf);
     snprintf(path, sizeof(path), "%s/gfx_%06u.dlmp", sDump.dir, seq);
     f = fopen(path, "wb");
     if (f == NULL) {
@@ -412,8 +428,31 @@ static void dump_task(OSTask_t *task, u32 seq) {
     }
 done:
     dlump_buf_free(&buf);
-    for (i = 0; i < nWriteData; i++) {
-        free(writeData[i]);
+}
+
+/* PORT_LIVE (plan 19.11): the same image to the live presenter, one frame per game step */
+static u32 sLiveStep;   /* the step of the frame's first task (steps.txt's step) */
+static int sLiveTasks;  /* tasks in the frame so far */
+
+static void live_task(OSTask_t *task, u32 seq) {
+    static DlumpBuf buf; /* kept between tasks: dlump_task appends, so reuse its capacity */
+    if (sLiveTasks++ == 0) {
+        sLiveStep = cur_step();
+    }
+    buf.size = 0;
+    if (build_task(task, seq, &buf) < 0) {
+        port_ultra_log("gfx: live task %u: out of memory", seq);
+        buf.oom = 0;
+        return;
+    }
+    port_live_task(buf.data, buf.size);
+}
+
+/* main.c, at the end of every step: publish the step's tasks as one live frame */
+void port_gfx_step_end(void) {
+    if (sLiveTasks != 0) {
+        port_live_frame_end(sLiveStep); /* SysLib.frameCount has already advanced here */
+        sLiveTasks = 0;
     }
 }
 
@@ -454,6 +493,9 @@ void port_gfx_task(OSTask_t *task) {
             fprintf(f, "%06u %u\n", (unsigned)seq, (unsigned)cur_step());
             fclose(f);
         }
+    }
+    if (port_live_active()) {
+        live_task(task, seq);
     }
 #ifdef PORT_GFX_FAST3D
     /* option (a): render in process (the dump above, if any, saw the same lists), then serve the
