@@ -14,7 +14,16 @@ static int name_eq(const char *a, const char *b)
     return *a == *b;
 }
 
-#define PORT_USO_MAX_ID 135     /* gUsoModuleSlots[135] (USO_FORMAT section 8) */
+/* bootup.uso's Text section, as the address space of the RSP microcode it embeds (plan 18.9).
+ * The game passes ucode text addresses to the RSP in OSTask_t.ucode / ucode_boot only: the
+ * F3DEX family IMEM images (Text +0x28F10 F3DEX_NoN, +0x2AE00 F3DEX, +0x2FC40 the SGI 2.0H
+ * fifo ucode ...) and aspMain (Text +0x46470 = game_libs 0x31E04, ROM 0xE16EDC; plan 15.2).
+ * The port has no RSP (Fast3D and port/audio replace the tasks), so nothing reads these bytes:
+ * the object only gives each ucode a distinct address at its ROM offset.  The sites name it with
+ * XDATA(tok, port_bootup_text, off), checked against the ROM TextRelocs (name-data-sites.py). */
+char port_bootup_text[0x89910];
+
+#define PORT_USO_MAX_ID 135    /* gUsoModuleSlots[135] (USO_FORMAT section 8) */
 
 static unsigned char sLoaded[PORT_USO_MAX_ID];
 

@@ -146,8 +146,23 @@ class RomTargets:
             if typ == 1:     # R_MIPS_26: the jal field holds the offset (sym value + field << 2)
                 ins = struct.unpack_from(">I", md.secs["Text"], off)[0]
                 return ex.name_text(v + ((ins & 0x3FFFFFF) << 2))
-            return ex.name_text(v + pin)
+            return text_data(ex, v + pin)
         return "%s+0x%X" % (blob_sym(ex.short, sec), v + pin)
+
+
+# Modules whose Text the port has as an address space (port_<mod>_text, port/uso/uso.c): bootup
+# embeds the RSP microcode (F3DEX family IMEM, aspMain) in Text outside every function of its
+# table; the game only hands those addresses to the RSP (OSTask_t.ucode), plan 18.9.
+TEXT_IMAGES = {"bootup"}
+
+
+def text_data(ex, off):
+    """the port spelling of a data address in ex's Text: the function (`f`, `f+0xK`), or
+    port_<mod>_text+0xK outside every function of a TEXT_IMAGES module (`Text+0xK` otherwise)"""
+    f = ex.name_text(off)
+    if f is not None and f.startswith("Text+") and ex.short in TEXT_IMAGES:
+        return "port_%s_text+0x%X" % (ex.short, off)
+    return f
 
 
 def load_pins():
@@ -346,9 +361,12 @@ def main():
                     if raw and raw[1] == "Text":
                         # an address in Text (a callback): the addend picks the function, and the
                         # port spelling drops it (`f-N` + the source's `+N`)
-                        f = raw[0].name_text(raw[2] + pins.get(sym, 0) + full)
-                        t = None if f is None or "+" in f else "%s%+d" % (f, -full) if full else f
-                        textdata.add(sym)
+                        f = text_data(raw[0], raw[2] + pins.get(sym, 0) + full)
+                        if f is not None and f.startswith("port_"):
+                            t = text_data(raw[0], raw[2] + pins.get(sym, 0))   # the ucode: the source keeps the addend
+                        else:
+                            t = None if f is None or "+" in f else "%s%+d" % (f, -full) if full else f
+                            textdata.add(sym)
                     pera[sym][full][t] += 1
                 elif typ == 2:
                     pera[sym][field - (0x100000000 if field & 0x80000000 else 0)][t] += 1

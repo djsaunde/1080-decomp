@@ -12,8 +12,9 @@ addend (`ambiguous`).  Those sites need the target at the site:
     XDATA(tok, sym, off)       include/uso_call.h: `tok` in the matching build (the bytes cannot
                                change); under PORT the object at sym + off with tok's type
 
-sym is the port/uso blob of the target module's section (`port_<mod>_data|rodata|bss`) or a
-function (an address in Text: a callback); off is the Sym value + the token's pinned value
+sym is the port/uso blob of the target module's section (`port_<mod>_data|rodata|bss`), a
+function (an address in Text: a callback) or `port_<mod>_text` (an address in Text outside every
+function: the embedded RSP microcode); off is the Sym value + the token's pinned value
 (for a Text target, minus the site's full addend, which the source keeps).
 
 Which source site is which reloc: the same proof as name-placeholder-calls.py `plan`.  A verify
@@ -66,6 +67,22 @@ def alias_macros():
 def file_aliases(text):
     return {m.group(1): m.group(2) for m in re.finditer(
         r'^[ \t]*#[ \t]*define[ \t]+(\w+)[ \t]+(\w+)[ \t]*(?:/\*.*?\*/[ \t]*|//.*)?$', text, re.M)}
+
+
+def makefile_renames():
+    """{source path: {token: name}}: the `objcopy --redefine-sym tok=name` renames of the
+    recipes whose rule lists that source (an NCC donor's D_00000000_j -> gGfxLib_48AEC_src):
+    the object's relocations carry the new name"""
+    out = collections.defaultdict(dict)
+    srcs = []
+    for line in open("Makefile", errors="replace"):
+        if not line.startswith("\t") and ":" in line and not line.lstrip().startswith("#"):
+            srcs = re.findall(r'\bsrc/\S+\.(?:c|cpp)\b', line)
+        elif line.startswith("\t") and "--redefine-sym" in line:
+            for a, b in re.findall(r'--redefine-sym\s+(\w+)=(\w+)', line):
+                for sp in srcs:
+                    out[sp][a] = b
+    return out
 
 
 def resolve_tok(tok, aliases):
@@ -125,7 +142,13 @@ def site_targets(md, rt, base, rb, rv, rsz, rel, want, pins, sym_of=None):
         else:
             full = field - (0x100000000 if field & 0x80000000 else 0)
         f = ex.name_text(v + pin + full)
-        out[sym].add(None if f is None or "+" in f or f.startswith("Text") else (f, -full))
+        if f is not None and f.startswith("Text+"):
+            # an address in Text outside every function of the module's table: the embedded
+            # RSP microcode (bootup Text +0x28F10 .. F3DEX family IMEM, +0x46470 aspMain, plan
+            # 18.9); the port spells it in the module's Text image, port_<mod>_text (port/uso/uso.c)
+            out[sym].add(("port_%s_text" % ex.short, v + pin))
+            continue
+        out[sym].add(None if f is None or "+" in f else (f, -full))
     return out
 
 
@@ -295,6 +318,7 @@ def cmd_check(a):
     rt = pgb.RomTargets(rom)
     pins = pgb.load_pins()
     aliases = alias_macros()
+    renames = makefile_renames()
     files = a.files or sorted(p for p in glob.glob("src/**/*.c", recursive=True) +
                               glob.glob("src/**/*.cpp", recursive=True)
                               if "XDATA" in open(p, errors="replace").read())
@@ -320,6 +344,7 @@ def cmd_check(a):
         for fn, tok, sym, off in uses:
             n += 1
             real = resolve_tok(tok, al)
+            real = renames.get(path, {}).get(real, real)
             fo = fn and (fn if fn in rfuncs else ("gl_" + fn) if ("gl_" + fn) in rfuncs else
                          cpp_alias(path, fn, rfuncs))
             if fo is None:
