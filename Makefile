@@ -178,7 +178,7 @@ $(SNOW_B_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_b.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym init__10SnowEffectFP4NodeT1iN23fT6=snoweffects_uso_func_00005FD4 --redefine-sym createA__10SnowEffectFv=snoweffects_uso_func_00006144 --redefine-sym createB__10SnowEffectFv=snoweffects_uso_func_00006248 --redefine-sym __ct__4NodeFPc=gl_func_00000000_snowb_node --redefine-sym __vtbl__8SnowNode=snowb_vtbl_SnowNode_60 --redefine-sym __vtbl__10SnowChild0=snowb_vtbl_SnowChild0_1C8 --redefine-sym __vtbl__10SnowChildA=snowb_vtbl_SnowChildA_158 --redefine-sym __vtbl__10SnowChildB=snowb_vtbl_SnowChildB_238 --redefine-sym __vtbl__12SnowBaseMatB=snowb_vtbl_BaseMat_559C --redefine-sym __vtbl__8SnowMatB=snowb_vtbl_Mat_559C $@
-SNOW_B_FUNCS := snoweffects_uso_func_00005FD4 snoweffects_uso_func_00006144 snoweffects_uso_func_00006248
+SNOW_B_FUNCS := snoweffects_uso_func_00005FD4 snoweffects_uso_func_00006144 snoweffects_uso_func_00006248 snoweffects_uso_func_0000559C
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_B_FUNCS),$(f)=$(SNOW_B_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_B_DONOR)
 # agent-h run 649: NON_MATCHING-only NCC donors (texture-sprite inits 15D0 / 1A18 / 2310; the 1E60 draft in
@@ -6210,6 +6210,6 @@ VIEWREC_NM_B_DONOR := build/src/viewrec_uso/viewrec_uso_mp72_nm_3878.cpp.o
 build/non_matching/src/viewrec_uso/viewrec_uso.c.o: private REPLACE_FUNC_BODY += viewrec_uso_func_00003878=$(VIEWREC_NM_B_DONOR)
 build/non_matching/src/viewrec_uso/viewrec_uso.c.o: $(VIEWREC_NM_B_DONOR)
 # agent-b run 675: NON_MATCHING-only functions from agent-b's snoweffects donor (1E60: 300 words = target).
-# agent-b run 679: 559C (654 words, frame 480 = target).
-SNOW_NM_B_FUNCS := snoweffects_uso_func_00001E60 snoweffects_uso_func_0000559C
+# (559C went EXACT in run 686 and moved to SNOW_B_FUNCS.)
+SNOW_NM_B_FUNCS := snoweffects_uso_func_00001E60
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_B_FUNCS),$(f)=$(SNOW_B_DONOR))

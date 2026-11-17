@@ -813,14 +813,10 @@ void SnowRing_update_0000544C(SnowRing *this) {
 }
 
 /* 0x559C: the trail-ring draw (Mat lights, scaled Vtx ring, per-slot texture loads, gSP1Triangle strips).
- * NCC donor in snoweffects_uso_ncc_b.cpp (agent-b run 679, 654 words / frame 480 = target), spliced over this
- * placeholder on the non_matching build. */
-#ifdef NON_MATCHING
+ * EXACT via the IDO 7.1 NCC donor in snoweffects_uso_ncc_b.cpp (agent-b runs 679 / 686), REPLACE_FUNC_BODY-
+ * spliced over this placeholder. */
 void snoweffects_uso_func_0000559C(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000559C);
-#endif
 
 /* snoweffects_uso_func_00005FD4: SnowEffect::init (name, groups, SnowRing_init, child0 at +0x9C).
  * EXACT via an IDO 7.1 NCC (C++) donor, src/snoweffects_uso/snoweffects_uso_ncc_b.cpp,

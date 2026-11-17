@@ -146,7 +146,7 @@ extern "C" void snoweffects_uso_func_00001E60(SnowTexB *t) {
     gDPWordB(t->dl->next(), 0xB8000000, 0);
 }
 
-/* 0x559C (NM, 654 words = target, frame 480 = target): the trail-ring draw (agent-b run 679). A Mat on the
+/* 0x559C EXACT (agent-b run 679 decode, run 686 exact): the trail-ring draw. A Mat on the
  * stack (BaseMat ctor protocol: this == 0 test, vptr Data+0x20640 at +0x5C, the 8- / 4-byte members, the
  * out-of-line BaseMat_init_000517E4; Mat vptr Data+0x1FBEC) with colour 1,1,1,1 is handed to
  * gfx_emitLights_000454C4 (float k in a3, so a typed void alias) after a gSPDisplayList of the texture's
@@ -167,15 +167,16 @@ extern "C" void snoweffects_uso_func_00001E60(SnowTexB *t) {
  * Packets go through nx() -> n1() -> next() with `(this + 0)` hops (run 686): each hop takes an edg pool
  * word, so the packet count shares the member-ctor `this` word (s1) and the list pointer the BaseMat-ctor
  * word (s0), as in the target. The trailing `if (ctx) {}` drops ctx's priority below j's (ctx s4).
- * Left (23 words): the ugen temp-register ring at the slot-loop head and the quad preheader, one
- * packet pointer v0 vs a0, and two spill slots (target 92 / 84, ours 84 / 88). */
-#define V2P(x) gl_func_00000000(/* osVirtualToPhysical */ x)
+ * The quad indices are written `i0 + j` / `i1 + j` (no a / b locals): uopt makes them induction variables
+ * whose i0 / i1 reloads sit after the loop guard, as in the target. The four slot-loop initialisers share
+ * one source line (as1 tie-break: the i1 store schedules first). */
+#define V2P(x) CALL(gl_osVirtualToPhysical)(x)
 struct M8B { int a, b; M8B() { b = 0; a = 0; } };
 struct M4B { int a; M4B() { a = 0; } };
 struct SnowBaseMatB {
     float c[4];
     char p10[0x34 - 0x10]; M8B m; char p3c[0x58 - 0x3C]; M4B n;
-    SnowBaseMatB() { gl_func_00000000(/* BaseMat_init_000517E4 */ this); }
+    SnowBaseMatB() { CALL(BaseMat_init_000517E4)(this); }
     virtual void v1();
 };
 struct SnowMatB : SnowBaseMatB { char p60[0x90 - 0x60]; SnowMatB() {} virtual void v1(); };
@@ -229,14 +230,11 @@ extern "C" void snoweffects_uso_func_0000559C(SnowRingB *t) {
     m.c[0] = m.c[1] = m.c[2] = m.c[3] = 1.0f;
     SnowCtxB *ctx = gfxB.win->ctx;
     ctx->put(0x06000000, t->dlh->phys());
-    gl_func_00000000_snowb_lights(/* gfx_emitLights_000454C4 */ &gfxB, ctx, &m, 1.0f);
+    XCALL(gl_func_00000000_snowb_lights, gfx_emitLights_000454C4)(&gfxB, ctx, &m, 1.0f);
     int vi = t->readOfs;
     int si = t->read;
-    int n = gl_func_00000000(/* SnowRing_countSlots_000053E8 */ t);
-    int prevTex = -1;
-    int prevState = 2;
-    int i0 = 0;
-    int i1 = 1;
+    int n = CALL(SnowRing_countSlots_000053E8)(t);
+    int prevTex = -1; int prevState = 2; int i0 = 0; int i1 = 1; /* one line: as1 tie-break order */
     { int sc0[4]; sc0[0] = 0; } /* dead: four edg pool words (frame lever) */
     if (n >= 2) {
         for (int k = 0; k < n; k++) {
@@ -267,15 +265,14 @@ extern "C" void snoweffects_uso_func_0000559C(SnowRingB *t) {
             int mask = t->stride * 2 - 1;
             if (prevState != 2 || t->slots[si].state != 2) {
                 if (k >= 2) {
-                    int a = i0, b = i1;
-                    for (j = 0; j < t->stride - 1; j++, a++, b++) {
+                    for (j = 0; j < t->stride - 1; j++) {
                         if (prevTex == 2) {
                             t->w = 32;
                             t->h = 32;
                             LOADTEXB(ctx->nx(), V2P(snowb_texTbl_588[t->slots[si].tex + j]), t->w, t->h);
                         }
-                        TRIB(ctx->nx(), (a - t->stride) & mask, (b - t->stride) & mask, b);
-                        TRIB(ctx->nx(), b, a, (a - t->stride) & mask);
+                        TRIB(ctx->nx(), (i0 + j - t->stride) & mask, (i1 + j - t->stride) & mask, i1 + j);
+                        TRIB(ctx->nx(), i1 + j, i0 + j, (i0 + j - t->stride) & mask);
                     }
                 }
             }
@@ -288,6 +285,6 @@ extern "C" void snoweffects_uso_func_0000559C(SnowRingB *t) {
         }
     }
     PKTB(ctx->nx(), 0xBB000000, 0);
-    gl_func_00000000(/* Node_display */ t);
+    CALL(Node_display)(t);
     if (ctx) {} /* code-free use: ctx priority 151.2 -> 140.5 (s2 -> s4) */
 }
