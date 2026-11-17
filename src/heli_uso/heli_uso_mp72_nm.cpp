@@ -90,6 +90,7 @@ static inline float clampf(float v, float lo, float hi) { if (v < lo) return lo;
 static inline void setf(float &d, float v) { d = v; }
 /* ctor-less result struct for operator* (run 710) */
 struct V3b { float x, y, z; };
+static inline void set3q(V3b &r, float a, float b, float c) { r.x = a; r.y = b; r.z = c; if (0 * (unsigned)b) r.y = b; }
 static inline void set3(V3b &r, float a, float b, float c) { r.x = a; r.y = b; r.z = c; }
 struct Vec3 {
     float x, y, z;
@@ -103,7 +104,9 @@ struct Vec3 {
     Vec3 sub(const Vec3 &v) const { V3b r; set3(r, x - v.x, y - v.y, z - v.z); if (1) {} return *(Vec3 *)&r; }
     /* the same with the cut first (run 739): dir goes through sub(), toTgt through subc(); the end cut stays on
      * dir's, the start cut on toTgt's (the 2.0f / 1.0f side-vector constants then load after the subtraction) */
-    Vec3 subc(const Vec3 &v) const { if (1) {} V3b r; set3(r, x - v.x, y - v.y, z - v.z); return *(Vec3 *)&r; }
+    /* trailing cut (agent-e run 771): M-168 leaves the side-vector block, so HF(0xF8) takes f14 */
+    Vec3 subc(const Vec3 &v) const { if (1) {} V3b r; set3(r, x - v.x, y - v.y, z - v.z); if (1) {} return *(Vec3 *)&r; }
+    Vec3 mq(const float &s) const { if (1) {} V3b r; set3q(r, x * s, y * s, z * s); return *(Vec3 *)&r; }
     Vec3 operator*(const float &s) const { if (1) {} V3b r; set3(r, x * s, y * s, z * s); return *(Vec3 *)&r; }
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
     void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
@@ -122,6 +125,7 @@ static inline void dumf(float a0) { a0 = a0; }
 static inline int zf1(float lo, int z) { return z * (int)(lo); }
 static inline int zf4(float lo, int z) { return z * (int)(lo + lo + lo + lo); }
 static inline int zf6(float lo, int z) { return z * (int)(lo + lo + lo + lo + lo + lo); }
+static inline float idm(float x) { x = x; return x; }
 static inline float clampP(float v, float lo, float hi, int z) { if ((v < lo)) return lo; if (zf1(v, z)) v = lo; if ((hi < v) + zf4(v, z)) return hi; return v; }
 static inline void slerp(Vec3 *h, const Vec3 &dir, float t) {
     float q0 = 0; float q1 = 0;
@@ -298,7 +302,9 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     player = self + 0x12C;
     }
     }
-    Vec3 vel = *FWD * HF(0x154);
+    /* mq() / set3q(): the code-free `if (0 * (unsigned)b)` adds uses to set3q's middle word (M-168 3.33, above
+     * M-220), and the dumf() pad shifts the pooled words (agent-e run 771) */
+    Vec3 vel = (dumf(HF(0x164)), FWD->mq(HF(0x154)));
     Vec3 side;
     float f;
     V3(0xDC) += vel;
@@ -329,22 +335,22 @@ extern "C" void heli_uso_func_00000B08(char *self) {
             g *= HF(0x154) / hh;
         }
         if (1) {}
-        *(float *)(self + 0x144 + zf6(-0.3f, 0)) = (g - HF(0x144)) * (0.07f) + HF(0x144);
+        *(float *)(self + 0x144 + zf6(-0.3f, 0) + 0 * (unsigned)(yaw + yaw)) = (g - HF(0x144)) * (0.07f) + HF(0x144);
         yaw = clampf(yaw, -0.3f, 0.3f);
         *(float *)(self + 0x14C + zf4(-0.3926991f, 0)) = HF(0x14C) + yaw * (0.06);
         if (1) {}
         fwdOf(fwdAx, &HF(0xF4));
         pf = dot(fwdAx, vel) / 200.0f;
         pf = pf + fwdAx.y * (0.1);
-        f = (pf - HF(0x148)) * 0.2f + HF(0x148);
+        /* three code-free dumf() calls hold three pooled edg float words, so idm()'s parameter (the lerp value) takes
+         * the slerp's sin-term word M-220 (target lwc1 f16,148(sp)); clampP's copy / return take M-160 / M-164
+         * (agent-g run 770 m3c0, agent-e run 771) */
+        f = (dumf(pf), dumf(pf), dumf(pf), idm((pf - HF(0x148)) * 0.2f + HF(0x148)));
         /* the (unsigned) fold adds an old-h use like zf1(), but zf1()'s (int) conversion costs one hidden ugen t-ring
          * temp in the store address (run 770) */
         *(float *)(self + 0x148 + 0 * (unsigned)(HF(0x148))) = f;
         if (1) {}
-        /* two code-free dumf() calls hold two pooled edg float words for the whole statement, so clampP's return
-         * temp takes the slerp's sin-term word (M-220) as the old lerpTo / clampTo form did: that word is then one
-         * coloured live range (target lwc1 f16,148(sp) reloads) and the f4..f10 / t ring temps line up (run 770) */
-        *(float *)(self + 0x148) = (dumf(f), dumf(f), clampP(f, -0.3926991f, 0.3926991f, 0));
+        *(float *)(self + 0x148) = clampP(f, -0.3926991f, 0.3926991f, 0);
         HF(0xF4) = 0.0f;
         HF(0xF8) = 0.0f;
         HF(0xFC) = 0.0f;
