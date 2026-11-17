@@ -73,6 +73,10 @@ int snoweffects_uso_func_000046BC(...);
  *   gives the two words ahead of up * f180's r, and |s| is a plain ?: (one word after the r, as in the target).
  *   Still left: the fwd / up op* y / z colours (f14 / f2 vs f2 / f14), the |s| / v114 * k / *f184 / d / e
  *   colour rotation, the vel statement's cam pointer (v1 vs v0) and the or a1 / addiu t3 order.
+ * Run 708 (40 -> 13 words differ, frame unchanged): `(0, k)` as d's first op* argument (a pool word for its s), the
+ *   d ctor's |s| written back into its parameter (no named local), and `if (1) {}` at the top of TV::operator*.
+ *   Left: the or a1 / addiu t3 preheader order, the vel statement's cam pointer (v1 vs v0) and the d ctor's |s|
+ *   (f0 vs f12).
  * Left: pool word 1 colours f2 where the target has f12 (it wins the f2 race against the TV ctor's second
  *   parameter word; a forcing-uopt probe puts it on f12 for 97.9 %), the frame (368 vs 384: one TV pool
  *   word too many at the loop-body top and one word too many above it) and the hoisted sp addresses. ---- */
@@ -92,8 +96,11 @@ struct TV {
     float x, y, z;
     TV() {}
     TV(float a, float b, float c) { x = a; y = b; z = c; }
-    TV(TV v, float s) { float a = fabs_(s); x = v.x * a; y = v.y * a; z = v.z * a; }
-    TV operator*(float s) const { TV r(x * s, y * s, z * s); return r; }
+    /* run 708: |s| goes back into the parameter (no named local: the (0, k) pool word takes its frame word) */
+    TV(TV v, float a) { a = fabs_(a); x = v.x * a; y = v.y * a; z = v.z * a; }
+    /* run 708: the leading `if (1) {}` (a unit split ahead of the products) moves the s / y / z words onto the
+     * target's colours in every op* (s f12, y f2, z f14) and the pre-loop |v| words with them */
+    TV operator*(float s) const { if (1) {} TV r(x * s, y * s, z * s); return r; }
     /* by value: `p = t->mid` copies the source into the param temp as words (lw / sw through a3),
      * then member-wise as floats, as in the target (run 665: 79.0 -> 85.5 %) */
     TV &operator=(TV o) { x = o.x; y = o.y; z = o.z; return *this; }
@@ -260,7 +267,7 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
             t->points[t->writeOfs + i].w[2] = t->f16C;
             TV a = ((TQ &)ua = t->cam->up * idw2(t->f180), (TV &)ua) * (s < 0.0f ? -s : s);
             float k = (float)(0.0f < s ? t->stride - i - 1 : i) / (float)t->stride;
-            TV d(*v114 * k * t->f184, s);
+            TV d(*v114 * (0, k) * t->f184, s); /* run 708: (0, k) gives op*'s s its own pool word */
             TV e = *vFC * -1.0f;
             if (0.0f < s) {
                 d *= -1.0f;
