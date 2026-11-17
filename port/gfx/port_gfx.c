@@ -5,7 +5,7 @@
  * in here: built with -DPORT_GFX_FAST3D=ON (plan 19.7, option (a)) every task is rendered in
  * process by libultraship's Fast3D (fast3d/port_fast3d.cpp); in every build the task can be dumped:
  *
- *   PORT_GFX_DUMP=<dir>        write <dir>/gfx_NNNNNN.dlmp for each gfx task
+ *   PORT_GFX_DUMP=<dir>        write <dir>/gfx_NNNNNN.dlmp for each gfx task (dir created, mkdir -p)
  *   PORT_GFX_DUMP_FIRST=<n>    skip the first n tasks (default 0)
  *   PORT_GFX_DUMP_EVERY=<n>    then dump every n-th task (default 1)
  *   PORT_GFX_DUMP_COUNT=<n>    at most n files (default unlimited)
@@ -24,6 +24,15 @@
 int mincore(void *addr, size_t len, unsigned char *vec);
 #define HAVE_MINCORE 1
 #endif
+
+#if defined(_WIN32)
+#include <direct.h>
+#define port_mkdir(p) _mkdir(p)
+#else
+#include <sys/stat.h>
+#define port_mkdir(p) mkdir((p), 0777)
+#endif
+#include <errno.h>
 
 typedef struct DumpCfg {
     int inited;
@@ -58,6 +67,32 @@ static int mapped(const void *p, size_t n) {
     return 1;
 }
 #endif
+
+/* mkdir -p: create dir and its missing parents. Errors are left to the fopen
+ * that follows (it logs "cannot write"). */
+static void make_dirs(const char *dir) {
+    char tmp[512];
+    size_t n = strlen(dir), i;
+
+    if (n == 0 || n >= sizeof(tmp)) {
+        return;
+    }
+    memcpy(tmp, dir, n + 1);
+    for (i = 1; i <= n; i++) {
+        if (tmp[i] == '/' || tmp[i] == '\0'
+#if defined(_WIN32)
+            || tmp[i] == '\\'
+#endif
+        ) {
+            char c = tmp[i];
+            tmp[i] = '\0';
+            if (port_mkdir(tmp) != 0 && errno != EEXIST) {
+                return;
+            }
+            tmp[i] = c;
+        }
+    }
+}
 
 static void dump_task(OSTask_t *task, u32 seq) {
     DlumpBuf buf = { 0 };
@@ -108,6 +143,9 @@ void port_gfx_task(OSTask_t *task) {
         sDump.count = env_ul("PORT_GFX_DUMP_COUNT", (unsigned long)-1);
         if (sDump.every == 0) {
             sDump.every = 1;
+        }
+        if (sDump.dir != NULL) {
+            make_dirs(sDump.dir);
         }
     }
     if (sDump.dir != NULL && seq >= sDump.first && (seq - sDump.first) % sDump.every == 0 &&

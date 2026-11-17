@@ -47,15 +47,18 @@ golden golden-update:
 endif
 
 # the OSTask_t layout asserts only hold on the 32-bit target
+# (into a directory that does not exist yet: the hook creates it, mkdir -p)
 test-hook: $(OUT)/test_port_gfx
-	$(RUN) $(OUT)/test_port_gfx $(OUT)
-	python3 tools/dlump.py --check $(OUT)/gfx_000001.dlmp $(OUT)/gfx_000005.dlmp
+	rm -rf $(OUT)/hook-dump
+	$(RUN) $(OUT)/test_port_gfx $(OUT)/hook-dump/a/b
+	python3 tools/dlump.py --check $(OUT)/hook-dump/a/b/gfx_000001.dlmp $(OUT)/hook-dump/a/b/gfx_000005.dlmp
 
 replay-test: test
 	$(MAKE) -C replay OUT=$(abspath $(OUT))
 	$(abspath $(OUT))/dlreplay $(OUT)/synth.dlmp $(OUT)/synth.png
 
 clean:
+	rm -rf $(OUT)/hook-dump
 	rm -f $(OUT)/test_dlump $(OUT)/test_port_gfx $(OUT)/gfx_*.dlmp $(OUT)/synth.dlmp $(OUT)/synth.png $(OUT)/dlreplay
 	rm -rf $(OUT)/gold $(OUT)/golden-out $(OUT)/f3dreplay $(OUT)/f3d-obj
 

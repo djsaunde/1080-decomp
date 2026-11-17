@@ -19,7 +19,8 @@ CXXFLAGS ?= -O2
 LUS_DEFS := -DENABLE_OPENGL -DCVAR_MSAA_VALUE='"gMSAAValue"' -DCVAR_INTERNAL_RESOLUTION='"gInternalResolution"' \
             -DCVAR_Z_FIGHTING_MODE='"gZFightingMode"' -DLUS_FAST_DIR='"$(LUS)/src/fast"'
 INC := -Ishim -I$(LUS)/include -I$(LUS)/include/fast -I$(LUS)/src -I$(PRISM)/src -I$(GL_DEV)/usr/include
-XX := $(CXX) -std=c++20 $(CXXFLAGS) $(LUS_DEFS) $(INC)
+# -MMD: objects follow the (patched) LUS headers, so a new patch rebuilds what it touches
+XX := $(CXX) -std=c++20 $(CXXFLAGS) $(LUS_DEFS) $(INC) -MMD -MP
 ifeq ($(wildcard $(LUS_TOOLS)/.complete),)
 $(error $(LUS_TOOLS) is missing: run port/gfx/fast3d/setup-lus.sh)
 endif
@@ -67,6 +68,8 @@ $(OBJ)/egl_png.o: ../replay/egl_png.c ../replay/egl_png.h | $(OBJ)
 
 $(OBJ) $(OBJ)/lus $(OBJ)/prism:
 	mkdir -p $@
+
+-include $(wildcard $(OBJ)/*.d $(OBJ)/lus/*.d $(OBJ)/prism/*.d)
 
 .PHONY: all
 all: $(OUT)/f3dreplay $(OUT)/test_inproc
