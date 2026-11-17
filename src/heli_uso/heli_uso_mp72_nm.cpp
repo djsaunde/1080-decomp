@@ -54,6 +54,7 @@
  *    (spill slots 48 / 56 fixed; 94.44 -> 94.91).
  *  - run 735: toTgt's target point through the dead player pointer (assigned before vel, kept in v0) and a
  *    ctor-less sub() ending in `if (1) {}` (94.91 -> 95.39).
+ *  - run 739: dir through the ctor-less sub() too, toTgt through subc() (the cut first) (95.39 -> 95.76).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -102,6 +103,9 @@ struct Vec3 {
      * `if (1) {}` after the stores ends the uopt block, so the 2.0f / HF(0xF8) live ranges of the side
      * vector do not cover the subtraction and take f2 / f14 as in the target */
     Vec3 sub(const Vec3 &v) const { V3b r; set3(r, x - v.x, y - v.y, z - v.z); if (1) {} return *(Vec3 *)&r; }
+    /* the same with the cut first (run 739): dir goes through sub(), toTgt through subc(); the end cut stays on
+     * dir's, the start cut on toTgt's (the 2.0f / 1.0f side-vector constants then load after the subtraction) */
+    Vec3 subc(const Vec3 &v) const { if (1) {} V3b r; set3(r, x - v.x, y - v.y, z - v.z); return *(Vec3 *)&r; }
     Vec3 operator*(const float &s) const { if (1) {} V3b r; set3(r, x * s, y * s, z * s); return *(Vec3 *)&r; }
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
     void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
@@ -254,7 +258,9 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     default:
         break;
     }
-    dir = *tg - *ps;
+    /* ctor-less like toTgt's (run 739): the op- result temp (sp+212) is no longer a coloured this-or-new join
+     * value; ugen recomputes it in t3 and the op= temp (sp+252) takes v0 as in the target */
+    dir = tg->sub(*ps);
     dist = gl_func_00000000_heli_ff(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z) * *(float *)(&heli_gGfxLib_d + 0x128);
     gl_func_00000000(&dir);
     gl_func_00000000(FWD);
@@ -278,7 +284,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     Vec3 side;
     float f;
     V3(0xDC) += vel;
-    toTgt = (*(Vec3 *)player).sub(*ps);
+    toTgt = (*(Vec3 *)player).subc(*ps);
     side.x = 1.0f - HF(0xF8) * HF(0xF8) * 2.0f - HF(0xFC) * HF(0xFC) * 2.0f;
     side.y = HF(0xF4) * HF(0xF8) * 2.0f + HF(0x100) * HF(0xFC) * 2.0f;
     side.z = HF(0xF4) * HF(0xFC) * 2.0f - HF(0x100) * HF(0xF8) * 2.0f;
