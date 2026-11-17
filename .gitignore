@@ -43,3 +43,4 @@ uoptlist
 
 # PC port: assets extracted from the user's ROM by port/tools/extract/extract.py (never commit).
 port/assets/extracted/
+port/gfx/fast3d/presenter
