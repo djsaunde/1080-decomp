@@ -118,6 +118,9 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * the two `+=` caller temps are swapped (target: op* result -268, op- result -280); i / last in t4 / t3
  * (target t3 / t4); the last spill at 112 (target 116:
  * the target's M is 400 with one more 8-byte unit under it).
+ * agent-c run 759 (95.34 -> 95.40 %): `last` is a pointer local lp set in the for-init (was a reference
+ * initialised at the top): the hoisted &lastCam LR is created after i's, wins no tie, and i / lp take t3 / t4 as in
+ * the target (i spilled to its home 312, lp at 108; target 116).
  * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
 extern "C" float gl_func_00000000_snow_randf(...);   /* sys_randf (typed blank jal: float return) */
@@ -193,7 +196,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     float cy;
     float m[4][4];
     float rot[4][4];
-    SnowV3d &last = self->lastCam;
+    SnowV3d *lp;
     float halfH;
     float cz;
     int sz;
@@ -224,8 +227,8 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
             ((unsigned int)(self->r * 255.0f) << 24) | (((unsigned int)(self->g * 255.0f) & 0xFF) << 16) |
             (((unsigned int)(self->b * 255.0f) & 0xFF) << 8) | ((unsigned int)(self->a * 255.0f) & 0xFF));
     self->visible = 0;
-    for (i = 0, p = self->items; i < self->count; i++, p++) {
-        p->pos += (cam - last) * self->follow;
+    for (i = 0, p = self->items, lp = &self->lastCam; i < self->count; i++, p++) {
+        p->pos += (cam - *lp) * self->follow;
         x = p->pos.x; y = p->pos.y; z = p->pos.z;
         wz = 0.0f; wy = 0.0f; wx = 0.0f;
         cx = rot[0][0] * x + rot[1][0] * y + rot[2][0] * z + rot[3][0];
