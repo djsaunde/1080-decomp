@@ -6196,7 +6196,7 @@ $(SNOW_C_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_c.cpp
 SNOW_C_FUNCS := snoweffects_uso_func_00000270
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_C_FUNCS),$(f)=$(SNOW_C_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_C_DONOR)
-SNOW_C_NM_FUNCS := snoweffects_uso_func_00000C90 snoweffects_uso_func_000028E0
+SNOW_C_NM_FUNCS := snoweffects_uso_func_000028E0
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_C_NM_FUNCS),$(f)=$(SNOW_C_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_C_DONOR)
 
@@ -6225,11 +6225,12 @@ build/non_matching/src/viewrec_uso/viewrec_uso.c.o: $(VIEWREC_NM_B_DONOR)
 # (559C went EXACT in run 686 and moved to SNOW_B_FUNCS.)
 SNOW_NM_B_FUNCS := snoweffects_uso_func_00001E60
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_B_FUNCS),$(f)=$(SNOW_B_DONOR))
-# agent-h run 694: NON_MATCHING-only NCC donor for snoweffects 0x47D4 (trail emitter update; FP colouring left).
+# agent-h run 694: NON_MATCHING-only NCC donor for snoweffects 0x47D4 (trail emitter update; FP colouring left);
+# run 699: 0xC90 (particle sprite draw) moved here from agent-c's SNOW_C_NM_FUNCS.
 SNOW_NM_H_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp.o
 $(SNOW_NM_H_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NM_H_FUNCS := snoweffects_uso_func_000047D4
+SNOW_NM_H_FUNCS := snoweffects_uso_func_000047D4 snoweffects_uso_func_00000C90
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_H_FUNCS),$(f)=$(SNOW_NM_H_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_H_DONOR)
