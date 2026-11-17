@@ -106,7 +106,9 @@ struct Vec3 {
      * dir's, the start cut on toTgt's (the 2.0f / 1.0f side-vector constants then load after the subtraction) */
     /* trailing cut (agent-e run 771): M-168 leaves the side-vector block, so HF(0xF8) takes f14 */
     Vec3 subc(const Vec3 &v) const { if (1) {} V3b r; set3(r, x - v.x, y - v.y, z - v.z); if (1) {} return *(Vec3 *)&r; }
-    Vec3 mq(const float &s) const { if (1) {} V3b r; set3q(r, x * s, y * s, z * s); return *(Vec3 *)&r; }
+    /* s by value (run 777): HF(0x154) is loaded before the cut, at the clamp join, so uopt PRE moves the reload
+     * into the clamp arm and the fall-through keeps the compare's f0 (target bc1fl delay slot `lwc1 f4,0(v0)`) */
+    Vec3 mq(float s) const { if (1) {} V3b r; set3q(r, x * s, y * s, z * s); return *(Vec3 *)&r; }
     Vec3 operator*(const float &s) const { if (1) {} V3b r; set3(r, x * s, y * s, z * s); return *(Vec3 *)&r; }
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
     void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
@@ -303,8 +305,8 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     }
     }
     /* mq() / set3q(): the code-free `if (0 * (unsigned)b)` adds uses to set3q's middle word (M-168 3.33, above
-     * M-220), and the dumf() pad shifts the pooled words (agent-e run 771) */
-    Vec3 vel = (dumf(HF(0x164)), FWD->mq(HF(0x154)));
+     * M-220) (agent-e run 771); mq()'s by-value parameter takes the pooled word the dumf() pad held (run 777) */
+    Vec3 vel = FWD->mq(HF(0x154));
     Vec3 side;
     float f;
     V3(0xDC) += vel;
