@@ -5390,9 +5390,6 @@ void RiderAnim_init_0000D458(s32 arg0) {
     }
     XCALL(game_uso_func_049280, sys_writebackDCacheAll)();
     XCALL(game_uso_func_048020, dma_read)(&sp30, 0xF10, 0x10);
-#ifdef PORT /* plan 19.9: the ROM image is big-endian; the check compares host words (04080040 02081040) */
-    PORT_BE_SWAP32S(sp30, 8);
-#endif
     if (sp30[0] != 0x04080040) {
         var_v0 = 0;
     } else if (sp30[1] != 0x02081040) {
