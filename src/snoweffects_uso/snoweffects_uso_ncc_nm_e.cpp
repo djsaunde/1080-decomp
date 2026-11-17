@@ -193,7 +193,9 @@ extern "C" void snoweffects_uso_func_000064B8(SnowEm *t) {
 /* 0x6B28: spawn update of effect B (flag bit 1), run 668: two RoData default sets picked by the game
  * flags, the course-state counters +0x1C8 / +0x1CC, then a camera-relative burst spawn (93.8 %, 358 words;
  * run 673's SVb gives the &vFC materialisation and |speed| in f2). Left: frame 240 vs 232 and the ugen FP
- * ring in the lerp. */
+ * ring in the lerp. Run 692: `fA20 == 0.0f` operand order and the nested spawn block (op+ temporary below x / y / z).
+ * Left: one inline word between the two n products (target r2 at vfp-100, ours -96) and the u copy address
+ * (target addiu v0 at the copy, ours hoisted into a0). */
 extern "C" float snow_ro_58, snow_ro_5C, snow_ro_60, snow_ro_64, snow_ro_68;
 extern "C" float snow_ro_6C, snow_ro_70, snow_ro_74, snow_ro_78, snow_ro_7C;
 struct SnowGame { char pad[0x8C]; /* 0x8C */ int flags; };
@@ -263,7 +265,7 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
         t->c1C8++;
     }
     if ((snow_game_6B28.flags & 0x820000) && t->cam->s9A0 == 97) {
-        if (0.0f < t->f1D8 && 0.0f == t->cam->fA20) {
+        if (0.0f < t->f1D8 && t->cam->fA20 == 0.0f) { /* run 692: fA20 on the left gives the target's mtc1 zero (f16) before the fA20 load (f18) */
             t->c1CC = 3;
         }
         t->f1D8 = t->cam->fA20;
@@ -289,26 +291,28 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
             }
             if (p != 0) {
                 float x, y, z;
-                s = t->speed < 0.0f ? -t->speed : t->speed;
-                if (s < 0.5) {
-                    s = 0.5f;
+                { /* run 692: the spawn statements in a nested block put the op+ temporary below x / y / z, as in the target */
+                    s = t->speed < 0.0f ? -t->speed : t->speed;
+                    if (s < 0.5) {
+                        s = 0.5f;
+                    }
+                    SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f * s);
+                    s = gl_func_00000000_snow_randf();
+                    u.lerpTo(t->vF0, s);
+                    x = u.x; y = u.y; z = u.z;
+                    p->pos.set(x, y, z);
+                    p->vel.set(n.x, n.y, n.z);
+                    p->fadeAt = 256.0f;
+                    p->size = 1.0f;
+                    p->unk3C = 1.0f;
+                    p->col.c[0] = col.c[0];
+                    p->col.c[1] = col.c[1];
+                    p->col.c[2] = col.c[2];
+                    p->sizeVel = t->f1B0;
+                    p->gravity = t->f1B4;
+                    p->setLife(256.0f, t->f1BC);
+                    p->setAlpha(256.0f, t->f1C0);
                 }
-                SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f * s);
-                s = gl_func_00000000_snow_randf();
-                u.lerpTo(t->vF0, s);
-                x = u.x; y = u.y; z = u.z;
-                p->pos.set(x, y, z);
-                p->vel.set(n.x, n.y, n.z);
-                p->fadeAt = 256.0f;
-                p->size = 1.0f;
-                p->unk3C = 1.0f;
-                p->col.c[0] = col.c[0];
-                p->col.c[1] = col.c[1];
-                p->col.c[2] = col.c[2];
-                p->sizeVel = t->f1B0;
-                p->gravity = t->f1B4;
-                p->setLife(256.0f, t->f1BC);
-                p->setAlpha(256.0f, t->f1C0);
             }
         }
     }
