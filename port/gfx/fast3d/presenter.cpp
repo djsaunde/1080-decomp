@@ -537,6 +537,22 @@ struct Renderer {
             chunks.push_back({ c->kind, c->addr, c->size, c->aux, (const uint8_t*)(c + 1) });
             off += (c->size + 3) & ~3u;
         }
+        /* every G_SETTIMG image base, mapped (and so vouched for, patch 0005) even when the dump only holds
+         * rows further in: a LOADTILE of an image's lower rows dumps those rows, and the base can sit in a block
+         * no chunk touches. Fast3D drops a G_SETTIMG it does not vouch for and the next load then reads the
+         * PREVIOUS image with the new offsets, past its end (run 861: Trick Attack's after-goal overlay) */
+        for (const Chunk& c : chunks) {
+            if (c.kind != DLUMP_DL) {
+                continue;
+            }
+            for (uint32_t i = 0; i + 8 <= c.size; i += 8) {
+                uint32_t w[2];
+                std::memcpy(w, c.data + i, 8);
+                if ((w[0] >> 24) == 0xFD && w[1] >= 0x10000 && w[1] < 0x10000000) {
+                    arena.ensure(w[1], 1);
+                }
+            }
+        }
         /* the data, at its own addresses; a changed texture / TLUT drops the cached textures around it */
         for (const Chunk& c : chunks) {
             if (!has_data(c.kind) || c.size == 0 || !arena.ensure(c.addr, c.size)) {

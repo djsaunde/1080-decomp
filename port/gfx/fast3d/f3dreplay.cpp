@@ -159,6 +159,18 @@ static bool map_arena() {
         if (has_data(c)) {
             r.push_back({ c.addr & ~(pg - 1), ((uint64_t)c.addr + c.size + pg - 1) & ~(pg - 1) });
         }
+        /* each G_SETTIMG image base too (zero page): a LOADTILE of an image's lower rows dumps only those rows,
+         * and Fast3D drops a G_SETTIMG whose address no registered range holds; the next load then reads the
+         * previous image with the new offsets, past its end (run 861: Trick Attack's after-goal overlay) */
+        if (c.kind == DLUMP_DL) {
+            for (uint32_t i = 0; i + 8 <= c.size; i += 8) {
+                uint32_t w[2];
+                std::memcpy(w, c.data + i, 8);
+                if ((w[0] >> 24) == 0xFD && w[1] >= 0x10000 && w[1] < 0x10000000) {
+                    r.push_back({ w[1] & ~(pg - 1), (w[1] & ~(pg - 1)) + pg });
+                }
+            }
+        }
     }
     std::sort(r.begin(), r.end());
     std::vector<std::pair<uint64_t, uint64_t>> m;
