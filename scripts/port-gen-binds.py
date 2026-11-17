@@ -198,6 +198,42 @@ def shim_entry(target, excluded, pad=None):
     return None
 
 
+XDATA_RE = re.compile(r'\bXDATA\s*\(\s*(\w+)\s*,\s*(\w+)\s*,\s*(-?\s*(?:0x[0-9A-Fa-f]+|\d+))\s*\)')
+ALIAS_DEF_RE = re.compile(r'^[ \t]*#[ \t]*define[ \t]+(\w+)[ \t]+(\w+)[ \t]*(?:/\*.*?\*/[ \t]*|//.*)?$', re.M)
+_INCLUDE_ALIASES = None
+
+
+def xdata_named(text):
+    """{(function, token): {ROM target spelling}} of the XDATA(tok, sym, off) sites
+    (scripts/name-data-sites.py): those sites reach their own object in the port, so their
+    targets leave the function's multiset.  tok may be an alias macro of the token."""
+    global _INCLUDE_ALIASES
+    if _INCLUDE_ALIASES is None:
+        import glob
+        _INCLUDE_ALIASES = {}
+        for p in glob.glob("include/**/*.h", recursive=True):
+            _INCLUDE_ALIASES.update(dict(ALIAS_DEF_RE.findall(open(p, errors="replace").read())))
+    out = collections.defaultdict(set)
+    if "XDATA" not in text:
+        return out
+    al = dict(_INCLUDE_ALIASES)
+    al.update(dict(ALIAS_DEF_RE.findall(text)))
+    m = npc.mask(text)
+    blocks = [b for b in npc.top_blocks(m) if npc.func_header_name(m, b[0], b[1])]
+    for x in XDATA_RE.finditer(m):
+        blk = next((b for b in blocks if b[1] < x.start() < b[2]), None)
+        if blk is None:
+            continue
+        tok, seen = x.group(1), set()
+        while tok in al and tok not in seen:
+            seen.add(tok)
+            tok = al[tok]
+        sym, off = x.group(2), int(x.group(3).replace(" ", ""), 0)
+        t = "%s+0x%X" % (sym, off) if sym.startswith("port_") else ("%s%+d" % (sym, off) if off else sym)
+        out[(npc.func_header_name(m, blk[0], blk[1]), tok)].add(t)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--lib", default="/tmp/claude-1000/port-build/libgame.a",
@@ -246,6 +282,7 @@ def main():
                 named[(st.func, st.tok)][npc.current_name(st.name) or st.name] += 1
         for (fnm, tok), c in npc.macro_named(text).items():
             named[(fnm, tok)] += c
+        xnamed = xdata_named(text)
         pool = collections.defaultdict(collections.Counter)
         for (_f, tok), c in named.items():
             pool[tok] += c
@@ -306,6 +343,18 @@ def main():
                     per[tok] -= named.get((fn, tok), collections.Counter())
                 if per[tok]:
                     calls.append((src, fn, tok, per[tok]))
+            for tok in list(perd):
+                gone = xnamed.get((fn, tok)) or xnamed.get((fo, tok))
+                if gone:
+                    for t in gone:
+                        perd[tok].pop(t, None)
+                        for c in pera.get(tok, {}).values():
+                            c.pop(t, None)
+                    if tok in pera:
+                        for k in [k for k, c in pera[tok].items() if not c]:
+                            del pera[tok][k]
+                    if not perd[tok]:
+                        del perd[tok]
             for tok, tg in perd.items():
                 data.append((src, fn, tok, tg, pera.get(tok, {}), tok in textdata))
                 if tok in textdata:

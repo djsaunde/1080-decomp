@@ -25,6 +25,19 @@
  *                                           per-site alias `gl_func_00000000_send`)
  *
  * NCC .cpp donors build without -I include: include this file by relative path.
+ *
+ * Data sites (agent-a run 625, scripts/name-data-sites.py):
+ *
+ *   XDATA(tok, sym, off)   tok
+ *
+ * A data placeholder (`D_00000000`, or an object-like alias macro of it such as MNode_vtbl)
+ * at a site whose ROM relocation points at sym + off, where several objects share the token
+ * (and the addend) inside one function, so the port cannot bind the token per function.
+ * sym is a port/uso blob (`port_bootup_bss`: the module's section as the port loads it) or
+ * a function (a callback address).  The matching expansion is tok itself (bytes unchanged
+ * by construction); `name-data-sites.py check` (gate step 5) re-verifies every XDATA
+ * against the ROM relocations of its function.  Under PORT the site is the object at
+ * sym + off, with tok's type.
  */
 #ifdef PORT
 /* PC port (docs/1080_PC_PORT_PLAN.md decision 4, section 14): the USO system is a static
@@ -36,6 +49,10 @@
  *    in the ROM, and no prototype of f (which may not be in scope, or may disagree with the
  *    IDO-era call) is needed.  A block-scope extern with an asm label names the symbol f;
  *    __COUNTER__ keeps each site's declaration distinct. */
+#define PORT_XDATA_(tok, sym, off, n) \
+    (*({ extern char __port_xdata_##n[] __asm__(#sym); (__typeof__(tok) *)(__port_xdata_##n + (off)); }))
+#define PORT_XDATA(tok, sym, off, n) PORT_XDATA_(tok, sym, off, n)
+#define XDATA(tok, sym, off) PORT_XDATA(tok, sym, off, __COUNTER__)
 #ifdef __cplusplus
 #define CALL(f) f
 #define FCALL(f) f
@@ -56,6 +73,7 @@
 #define FCALL(f) func_00000000
 #define GCALL(f) game_uso_func_00000000
 #define XCALL(tok, f) tok
+#define XDATA(tok, sym, off) tok
 #endif
 
 #endif

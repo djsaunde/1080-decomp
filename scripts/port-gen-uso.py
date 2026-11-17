@@ -49,12 +49,22 @@ def main():
     a = ap.parse_args()
     defined, _ = pgb.port_defined(a.lib)     # (names, dropped data objects) since run 616
     excluded = {r[0] for r in pgb.read_tsv("port/gen/excluded.tsv")}
+    # functions of the modules not decompiled yet (INCLUDE_ASM): nothing defines them on the host
+    # until their C lands, so their slots stay 0 (the blobs and relocations are otherwise complete)
+    undecomp = {r[0] for r in pgb.read_tsv("port/gen/excluded.tsv") if "include_asm" in r[-1]}
+    excluded -= undecomp
     rom = npc.Rom()
     rt = pgb.RomTargets(rom)
     used = set()
     for path in ("port/gen/aliases.ld", "port/gen/binds.tsv"):
         if os.path.exists(path):
             used |= set(re.findall(r"\bport_(\w+?)_(?:data|rodata|bss)\b", open(path).read()))
+    # XDATA(tok, port_<mod>_<sec>, off) sites in the source (scripts/name-data-sites.py)
+    import glob
+    for path in glob.glob("src/**/*.c*", recursive=True):
+        t = open(path, errors="replace").read()
+        if "XDATA" in t:
+            used |= set(re.findall(r"\bXDATA\s*\(\s*\w+\s*,\s*port_(\w+?)_(?:data|rodata|bss)\b", t))
     mods = [m for m in sorted(rom.mods, key=lambda m: m.id)
             if ("Text" in m.secs or m.short in used) and
             (any(s in m.secs for s in ("Data", "RoData")) or m.bss_size)]
@@ -89,7 +99,10 @@ def main():
                 k = struct.unpack_from(">I", md.secs[sec], off)[0]
                 if tsec == "Text":
                     nm = ex.name_text((v + k) & 0xFFFFFFFF)
-                    if nm in defined or nm in excluded:
+                    if nm in undecomp:
+                        ents.append((off, "0", "Text target %s:%s (not decompiled yet)" % (ex.short, nm)))
+                        stats["Text target in a module not decompiled yet"] += 1
+                    elif nm in defined or nm in excluded:
                         names.add(nm)
                         ents.append((off, "(void *)%s" % nm, None))
                         stats["Text target"] += 1

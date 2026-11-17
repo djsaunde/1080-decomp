@@ -22,7 +22,8 @@
 #      callee of its function) and uso-data-sites.py check (alias / GL_* claims,
 #      plus the plain-base-site ratchet that catches a merge dropping a GL_DATA_STR),
 #      and gameflow-import-sites.py check (every INPUT_MGR(tok) token's relocs target
-#      GameFlow, bootup Bss 0xF8, in the ROM).
+#      GameFlow, bootup Bss 0xF8, in the ROM), and name-data-sites.py check (every
+#      XDATA(tok, sym, off) names a ROM data target of its function).
 #   6. ROM coverage: scripts/rom-coverage.py --check assigns every baserom byte to one
 #      category (code-c / code-asm / data / asset / ucode / padding) from the ROM
 #      filesystem + linker map; fails on any unattributed byte, any USO Text without a
@@ -161,6 +162,8 @@ python3 scripts/uso-data-sites.py --no-build check > "$TMP/datasites.log" 2>&1 |
 echo "    uso-data-sites check: 0 mismatches ($(grep -c '' "$TMP/datasites.log") lines)"
 python3 scripts/gameflow-import-sites.py check > "$TMP/gameflow.log" 2>&1 || { grep -v '^check:' "$TMP/gameflow.log" | head -20; fail "gameflow-import-sites.py check (see $TMP/gameflow.log)"; }
 tail -1 "$TMP/gameflow.log" | sed 's/^/    /'
+python3 scripts/name-data-sites.py check > "$TMP/xdata.log" 2>&1 || { grep -v '^XDATA check:' "$TMP/xdata.log" | head -20; fail "name-data-sites.py check (see $TMP/xdata.log)"; }
+tail -1 "$TMP/xdata.log" | sed 's/^/    /'
 echo ">>> [6/6] ROM coverage (every byte attributed; docs/ROM_COVERAGE.md)"
 python3 scripts/rom-coverage.py --check > "$TMP/romcov.log" 2>&1 || { sed -n '/^Gaps/,$p' "$TMP/romcov.log" | head -30; fail "rom-coverage.py --check (see $TMP/romcov.log)"; }
 grep -E 'honest decomp|^Gaps' "$TMP/romcov.log" | sed 's/^ */    /'

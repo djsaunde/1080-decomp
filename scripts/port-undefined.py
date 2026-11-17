@@ -234,6 +234,7 @@ def main():
         "PORT_LIBC_DECLS_ONLY", 2)[-1])) | {"stdout", "stderr", "memcpy", "memmove", "memset",
                                              "strcmp", "sqrtf", "sqrt", "fabsf"}
     kernel_funcs = {r[0] for r in read_tsv(ROOT / "port/gen/excluded.tsv") if r[1] == "kernel"}
+    undecomp = {r[0] for r in read_tsv(ROOT / "port/gen/excluded.tsv") if "include_asm" in r[-1]}
 
     with tempfile.TemporaryDirectory(dir="/tmp/claude-1000") as tmp:
         und, refs, weak = undefined(lib, tmp, args.extra + args.extra_objects, load_aliases(args.aliases) if args.aliases else ())
@@ -243,6 +244,8 @@ def main():
             g = "weak: optional hooks (resolve to 0 when absent; game-side PORT work defines them)"
         elif not refs[s]["call"] + refs[s]["data"]:
             g = "unreferenced: named only by sections --gc-sections drops (no link error)"
+        elif s in undecomp:
+            g = "modules not decompiled yet (INCLUDE_ASM; defined once their C lands)"
         elif s in host_libc:
             g = "host libc / libm"
         else:

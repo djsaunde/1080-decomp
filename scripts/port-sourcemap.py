@@ -53,7 +53,11 @@ ROOT = Path(__file__).resolve().parent.parent
 # IDO-like predefines for the matching view of the source.
 CPP_MATCHING = ["-undef", "-D__sgi", "-Dsgi", "-D_MIPSEB", "-DMIPSEB", "-D__mips=2",
                 "-D_MIPS_SZINT=32", "-D_MIPS_SZLONG=32", "-D_MIPS_SZPTR=32",
-                "-D_MIPS_SIM=1", "-D_ABIO32=1", "-D__STDC__=1"]
+                "-D_MIPS_SIM=1", "-D_ABIO32=1", "-D__STDC__=1",
+                # an INCLUDE_ASM left in the matching view (a module not decompiled yet: the
+                # splat segment's own .s) is recorded as kind=asm, how=include_asm
+                "-DINCLUDE_ASM(F,N)=__port_include_asm(F,N)"]
+INCASM_RE = re.compile(r'__port_include_asm\s*\(\s*"([^"]+)"\s*,\s*(\w+)\s*\)')
 
 
 # --------------------------------------------------------------------------
@@ -321,6 +325,7 @@ class Scanner:
     def __init__(self):
         self.cache = {}
         self.cpp_fail = {}
+        self.incasm = set()
 
     def get(self, src):
         if src not in self.cache:
@@ -335,6 +340,9 @@ class Scanner:
             for g in gasm:
                 for s in asm_syms(g):
                     asmmap.setdefault(s, g)
+            for m in INCASM_RE.finditer(text):
+                asmmap.setdefault(m.group(2), "%s/%s.s" % (m.group(1), m.group(2)))
+                self.incasm.add(m.group(2))
             self.cache[src] = (defs, asmmap, True)
         return self.cache[src]
 
@@ -381,6 +389,8 @@ def resolve(func, src, tvars, scan, chain, depth=0):
     if func in defs:
         return src, kind_c, chain, ""
     if func in asmmap:
+        if func in scan.incasm:
+            return asmmap[func], "asm", chain, "INCLUDE_ASM in " + src
         return asmmap[func], "asm", chain, "GLOBAL_ASM in " + src
     renames, subsyms = post_compile_maps(tvars, target)
     if func in renames:
@@ -527,7 +537,7 @@ def main():
             problems.append((func, host, final, note))
         hops = [d for _, d in chain]
         if kind == "asm":
-            how = "asm"
+            how = "include_asm" if note.startswith("INCLUDE_ASM") else "asm"
         elif any(h.startswith("src/match_imports/") for h in hops):
             how = "import"
         elif hops:

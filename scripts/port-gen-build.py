@@ -72,7 +72,9 @@ def read_tsv(path):
     return rows
 
 
-def exclusion(func, seg, kind):
+def exclusion(func, seg, kind, how=""):
+    if how == "include_asm":
+        return "include_asm (module not decompiled yet: no C; port/uso keeps its blobs)"
     if kind == "asm":
         return "asm (GLOBAL_ASM; libultra .s / handwritten)"
     if seg == "kernel":
@@ -172,7 +174,7 @@ def main():
     keep = collections.defaultdict(set)
     for r in rows:
         func, seg, src, kind, how, host = r[:6]
-        why = exclusion(func, seg, kind)
+        why = exclusion(func, seg, kind, how)
         if why:
             excluded[func] = (seg, src, why)
         else:

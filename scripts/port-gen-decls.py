@@ -295,7 +295,9 @@ def main():
             del skip[src]
 
     guarded = {n for v in skip.values() for n in v}
-    defs.update(excluded_defs({n for n in want if n not in defs and n not in decls}))
+    # an unprototyped declaration (K&R `int f();` in some unit) loses to the excluded body's DWARF
+    defs.update(excluded_defs({n for n in want if n not in defs
+                               and (n not in decls or not decls[n][0][3])}))
     out, stats, fallback, byval = [], collections.Counter(), [], []
     for n in sorted(want):
         if n in defs:
