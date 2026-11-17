@@ -70,6 +70,14 @@ typedef union Gl2FB74Chan {
     u8 b[4];
 } Gl2FB74Chan;
 extern Gl2FB74Chan D_2FB74_chan;
+#ifdef PORT
+/* D_2FB74_chan is the music command word (bootup Data 0x1C0AC, gl_cmd_30AF4), swapped to a
+ * native u32 (port/gen/blob_types.tsv): its low byte is b[3] on the cartridge, b[0] on the host.
+ * With b[3] the race-start event 17 scheduled sequence 0 instead of the course's (plan 15.8). */
+#define CHAN_B3(p) ((u8)(p)->w)
+#else
+#define CHAN_B3(p) ((p)->b[3])
+#endif
 
 typedef struct Gl2FB74Bank {
     u8 pad[0x2F0];
@@ -288,7 +296,7 @@ void snd_dispatchEvent(s32 sel, s32 v) {
         if (D_2FB74_gC == 4) {
             if (D_2FB74_gD == 0) {
                 p = &D_2FB74_chan;
-                XCALL(gl2FB74_snd, snd_ScheduleSeqAfter)(p->b[3], 22);
+                XCALL(gl2FB74_snd, snd_ScheduleSeqAfter)(CHAN_B3(p), 22);
                 D_2FB74_gF = 1;
             }
         }
@@ -372,7 +380,7 @@ L_lad5:
         XCALL(gl2FB74_snd, AudioThread_QueueCmdS8)(0x6020301, (s8) (b + 61));
         p = &D_2FB74_chan;
         p->w = 15;
-        gl_ref_000423A4(p->b[3]);
+        gl_ref_000423A4(CHAN_B3(p));
         XCALL(gl2FB74_snd, AudioThread_QueueCmdS32)(0x83010000, 3200);
         cmd = D_2FB74_cmdsrc;
         break;
@@ -416,6 +424,7 @@ L_lad5:
     }
     gl_ref_00044B70(sel);
 }
+#undef CHAN_B3
 #ifdef PORT
 #undef D_2FB74_cmdsrc
 #undef D_2FB74_cnt
