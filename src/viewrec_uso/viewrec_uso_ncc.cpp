@@ -73,7 +73,7 @@ struct VrScreen60 : VrNode {
 
 /* the process update: until the fade-in has started, let the shown screen draw (slot 3); once it
  * has, wait for the shared Fader and then call onFadedIn (slot 11) */
-extern "C" void viewrec_uso_func_00001664(VrProc *self) {
+extern "C" void GENNewRecordsProcess_update(VrProc *self) {
     if (self->started == 0) {
         sVrScreen->display();
     }
@@ -86,12 +86,12 @@ extern "C" void viewrec_uso_func_00001664(VrProc *self) {
  * They are file-local statics in the original: as1 shares one `lui at` across accesses only for the
  * same static symbol (IDO_CODEGEN kit LX), and each access through its own block-scope reference
  * keeps uopt from CSEing the base, which gives the target's one `lui at` per pair of stores. The
- * splice renames this donor's .bss reloc to viewrec_uso_func_00000290_bss (pinned to 0x858). */
+ * splice renames this donor's .bss reloc to vr_resetColours_bss (pinned to 0x858). */
 static float sPrimColour[4];
 static float sEnvColour[4];
 
 /* 0x290: reset both colours to white (env green 0) */
-extern "C" void viewrec_uso_func_00000290() {
+extern "C" void vr_resetColours() {
     { float &r = sPrimColour[0]; r = 1.0f; }
     { float &r = sPrimColour[1]; r = 1.0f; }
     { float &r = sPrimColour[2]; r = 1.0f; }
@@ -106,21 +106,21 @@ extern "C" void viewrec_uso_func_00000290() {
  * the cursor to the previous / next enabled option (0x2088 / 0x2190); A leaves (fade out) unless the
  * screen was entered from the main menu, where A and B go back to it. Only edg's `sVrMenu->start()`
  * gives the menu / vptr registers of the final virtual call (cfe swaps them). */
-extern "C" void viewrec_uso_func_000022A8(VrScreen *self) {
+extern "C" void RecordOptions_coursePageInput(VrScreen *self) {
     char *pad;
     int back;
     pad = (char *)CALL(input_getPad_00011D40)(&gInputMgr_vrncc, 1);
     CALL(snd_setPlayer3FreqScaleFromStick)(*(signed char *)(pad + 8), *(signed char *)(pad + 9));
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x10001)) {
-        if (CALL(viewrec_uso_func_00002088)(self) != self->cursor) {
+        if (CALL(RecordOptions_prevCourse)(self) != self->cursor) {
             CALL(snd_postEvent)(1);
-            self->cursor = CALL(viewrec_uso_func_00002088)(self);
+            self->cursor = CALL(RecordOptions_prevCourse)(self);
         }
     }
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x4002)) {
-        if (CALL(viewrec_uso_func_00002190)(self) != self->cursor) {
+        if (CALL(RecordOptions_nextCourse)(self) != self->cursor) {
             CALL(snd_postEvent)(1);
-            self->cursor = CALL(viewrec_uso_func_00002190)(self);
+            self->cursor = CALL(RecordOptions_nextCourse)(self);
         }
     }
     back = 0;
@@ -138,7 +138,7 @@ extern "C" void viewrec_uso_func_000022A8(VrScreen *self) {
         CALL(snd_postEvent)(0x802);
         if (self->proc->flags & 0x1000) {
             if (self->proc->mode == 0x8000) {
-                CALL(viewrec_uso_func_00001000)(self->proc);
+                CALL(vr_popMenu)(self->proc);
             }
             self->proc->mode = 0x1000;
             sVrMenu->start();
@@ -154,7 +154,7 @@ extern "C" void viewrec_uso_func_000022A8(VrScreen *self) {
  * the picked options screen, B goes back to the tabs. edg: `old` declared at function scope (a
  * block-scope one takes a frame home 8 bytes higher), the state read through a local (v0, not
  * v1), the void alias on the snd_postEvent(5) before each proc / tab read. */
-extern "C" void viewrec_uso_func_0000266C(VrScreen60 *self) {
+extern "C" void RecordOptions_menuInput(VrScreen60 *self) {
     int old;
     int st = self->state;
     switch (st) {
@@ -229,7 +229,7 @@ extern "C" void viewrec_uso_func_0000266C(VrScreen60 *self) {
 /* 0x1488: draw label sprite i centred at y. edg: the sprite bound through a reference and then
  * addressed gives the target's frame (0x28, the pointer spilled at sp+0x1C across the first call);
  * a plain pointer local is 7 words off. */
-extern "C" void viewrec_uso_func_00001488(VrProc *proc, int i, int y) {
+extern "C" void vr_drawCenteredLabel(VrProc *proc, int i, int y) {
     VrSprite &label = sVrLabels[i];
     VrSprite *spr = &label;
     CALL(gui_spriteRefresh)(spr);
@@ -250,7 +250,7 @@ extern "C" void viewrec_uso_func_00000000() {
         if (sVrScreen) {}
         sVrScreen->start();
     }
-    CALL(viewrec_uso_func_00001A08)(sVrProc->mainMenu);
+    CALL(MainOptions_buildMenu)(sVrProc->mainMenu);
     if (sVrScreen) {}
     {
         VrProc *&p = sVrProc;

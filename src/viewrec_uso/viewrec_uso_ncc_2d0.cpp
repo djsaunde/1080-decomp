@@ -7,7 +7,7 @@
  * screens attached through an inline MEMBER addChild (a free inline or cfe-style macro colours the
  * child into s2 or spills the last one), the Fader through a child declared in its own block around
  * the switch (frame homes, see below), a separate 0-pinned GameFlow symbol for Fader_start, session
- * read through obj. The .bss reloc of the static colours is renamed viewrec_uso_func_000002D0_bss by
+ * read through obj. The .bss reloc of the static colours is renamed GENNewRecordsProcess_ctor_bss by
  * the splice (pinned to 0x858, sVrPrimColour). */
 #include "../../include/uso_call.h"
 
@@ -81,7 +81,7 @@ static inline char *procCtor(char *o2) {
     }
     return o2;
 }
-extern "C" VrProc *viewrec_uso_func_000002D0(VrProc *obj, int flags, int mode, int *session) {
+extern "C" VrProc *GENNewRecordsProcess_ctor(VrProc *obj, int flags, int mode, int *session) {
     if (obj != 0 || (obj = (VrProc *)CALL(mem_new)(0xE0)) != 0) {
         procCtor((char *)obj);
         *(char **)((char *)obj + 0x28) = &vr_vt_viewrec;
@@ -90,17 +90,17 @@ extern "C" VrProc *viewrec_uso_func_000002D0(VrProc *obj, int flags, int mode, i
         obj->flags = flags;
         obj->mode = mode;
         obj->unk78 = (flags >> 4) & 0xFF;
-        CALL(viewrec_uso_func_00000718)(obj);
-        CALL(viewrec_uso_func_000008C8)(obj);
+        CALL(vr_loadSprites)(obj);
+        CALL(vr_initLabels)(obj);
         obj->font = CALL(gui_fontCreate)(0, &vr_fontData, 72, 221, 3, 13);
         CALL(gui_fontAdjustAdvance)(obj->font, -3);
         obj->menuDepth = 0;
-        ADDCHILD(obj, obj->mainMenu = (VrScreen *)CALL(viewrec_uso_func_00001748)(0, obj));
-        ADDCHILD(obj, obj->screen60 = (VrScreen *)CALL(viewrec_uso_func_00001B4C)(0, obj));
-        ADDCHILD(obj, obj->screen68 = (VrScreen *)CALL(viewrec_uso_func_000036B4)(0, obj));
-        ADDCHILD(obj, obj->screen64 = (VrScreen *)CALL(viewrec_uso_func_00004518)(0, obj));
-        ADDCHILD(obj, obj->screen58 = (VrScreen *)CALL(viewrec_uso_func_00004854)(0, obj));
-        ADDCHILD(obj, obj->screen5C = (VrScreen *)CALL(viewrec_uso_func_00005200)(0, obj));
+        ADDCHILD(obj, obj->mainMenu = (VrScreen *)CALL(MainOptions_ctor)(0, obj));
+        ADDCHILD(obj, obj->screen60 = (VrScreen *)CALL(RecordOptions_ctor)(0, obj));
+        ADDCHILD(obj, obj->screen68 = (VrScreen *)CALL(EraseOptions_ctor)(0, obj));
+        ADDCHILD(obj, obj->screen64 = (VrScreen *)CALL(ReplayOptions_ctor)(0, obj));
+        ADDCHILD(obj, obj->screen58 = (VrScreen *)CALL(SoundOptions_ctor)(0, obj));
+        ADDCHILD(obj, obj->screen5C = (VrScreen *)CALL(LanguageOptions_ctor)(0, obj));
 
         sPrimColour[3] = 1.0f;
         sPrimColour[2] = 1.0f;

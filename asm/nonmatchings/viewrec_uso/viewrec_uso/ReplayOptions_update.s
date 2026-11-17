@@ -1,0 +1,14 @@
+nonmatching ReplayOptions_update, 0x28
+
+glabel ReplayOptions_update
+    /* 646EFA 00004670 27BDFFE8 */  .word 0x27BDFFE8
+    /* 646EFE 00004674 AFBF0014 */  .word 0xAFBF0014
+    /* 646F02 00004678 0C000000 */  .word 0x0C000000
+    /* 646F06 0000467C AFA40018 */  .word 0xAFA40018
+    /* 646F0A 00004680 0C000000 */  .word 0x0C000000
+    /* 646F0E 00004684 8FA40018 */  .word 0x8FA40018
+    /* 646F12 00004688 8FBF0014 */  .word 0x8FBF0014
+    /* 646F16 0000468C 27BD0018 */  .word 0x27BD0018
+    /* 646F1A 00004690 03E00008 */  .word 0x03E00008
+    /* 646F1E 00004694 00000000 */  .word 0x00000000
+endlabel ReplayOptions_update

@@ -1,8 +1,8 @@
-/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) EXACT donor for viewrec_uso_func_00003878 (the erase screen
+/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) EXACT donor for EraseOptions_drawGui (the erase screen
  * draw, 427 words), built by tools/ncc721.sh and spliced over the placeholder in viewrec_uso.c on both
  * build paths (agent-b run 675 body; agent-a run 743 made it exact). Its .rodata (four 0.1f literals at
  * +0x0..+0xC, the 5-entry switch table at +0x10) is viewrec RoData +0x0 (in-place %lo); the
- * splice-renamed reloc viewrec_uso_func_00003878_rodata is pinned to 0 in undefined_syms_auto.txt.
+ * splice-renamed reloc EraseOptions_drawGui_rodata is pinned to 0 in undefined_syms_auto.txt.
  * The last word: the target keeps a nop in the c.lt.s slot of the `selFade > 0` grid test, because as1
  * sees s5 / s6 / s7 (r and the constants 1 / 2) live at the switch's `jr`. as1 makes every text
  * address named by a data word before the function's `.end` a target of each jump-table `jr` in the
@@ -45,10 +45,10 @@ struct VrErase {
     int gCourse, gRider, gBoard, gMode; /* 0xB8 */
 };
 extern "C" VrSpr sVrLabels_3F0[8];
-extern "C" void viewrec_uso_func_00003878(VrErase *self);
+extern "C" void EraseOptions_drawGui(VrErase *self);
 /* the erase screen vtable's draw slot (viewrec Data+0x184): emitted before this body, see above */
-extern "C" void *vr_eraseDrawSlot_3878 = (void *)viewrec_uso_func_00003878;
-extern "C" void viewrec_uso_func_00003878(VrErase *self) {
+extern "C" void *vr_eraseDrawSlot_3878 = (void *)EraseOptions_drawGui;
+extern "C" void EraseOptions_drawGui(VrErase *self) {
     float col[4];
     int blink;
     volatile int unused[6];
@@ -68,8 +68,8 @@ extern "C" void viewrec_uso_func_00003878(VrErase *self) {
     col[3] = 1.0f;
     self->frame++;
     blink = (-self->frame << 4) & 0xFF;
-    CALL(viewrec_uso_func_000011B4)(self->proc);
-    CALL(viewrec_uso_func_000014DC)(self->proc);
+    CALL(vr_drawBackground)(self->proc);
+    CALL(vr_drawFooterLabels)(self->proc);
     if (self->proc->mode == 0x80000) {
         if (self->askFade > 0.0f) {
             self->askFade -= 0.1f;
@@ -130,16 +130,16 @@ extern "C" void viewrec_uso_func_00003878(VrErase *self) {
         switch (self->set) {
             case 0:
             case 1:
-                CALL(viewrec_uso_func_00001488)(self->proc, self->course, self->rowY);
+                CALL(vr_drawCenteredLabel)(self->proc, self->course, self->rowY);
                 break;
             case 2:
-                CALL(viewrec_uso_func_00001488)(self->proc, 10, self->rowY - 8);
+                CALL(vr_drawCenteredLabel)(self->proc, 10, self->rowY - 8);
                 break;
             case 3:
-                CALL(viewrec_uso_func_00001588)(self->proc, self->rowY - 18, self->gCourse, self->gRider, self->gBoard, self->gMode);
+                CALL(vr_drawGhostRow)(self->proc, self->rowY - 18, self->gCourse, self->gRider, self->gBoard, self->gMode);
                 break;
             case 4:
-                CALL(viewrec_uso_func_00001488)(self->proc, 9, self->rowY - 8);
+                CALL(vr_drawCenteredLabel)(self->proc, 9, self->rowY - 8);
                 break;
         }
         CALL(gui_spriteRefresh)(&sVrLabels[58]);

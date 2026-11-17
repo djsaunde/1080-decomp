@@ -1,10 +1,10 @@
 #include "../../include/uso_call.h"  /* donors build without -I include */
-/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) EXACT donor for viewrec_uso_func_00004990 (279 words), built by
+/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) EXACT donor for SoundOptions_update (279 words), built by
  * tools/ncc721.sh and spliced over the placeholder in viewrec_uso.c on both build paths (agent-g run 652).
  * Its two 4-label `switch (self->cursor)` are native 4-entry jump tables only under EDG 2.29 (cfe tables
  * from 5 labels, IDO 7.1 NCC never). The tables are viewrec RoData +0x38 / +0x48 (in-place %lo); this
  * donor's .rodata holds just the two tables, at +0x0 / +0x10, and the splice-renamed reloc
- * viewrec_uso_func_00004990_rodata is pinned to 0x38 in undefined_syms_auto.txt.
+ * SoundOptions_update_rodata is pinned to 0x38 in undefined_syms_auto.txt.
  * `self->mode--;` as its own statement (not `--self->mode` as the call arg) burns the ugen temp the target
  * skips in the sound-mode arms. */
 extern "C" int gl_func_00000000(...);
@@ -26,7 +26,7 @@ struct VrSoundOptions {
     /* 0x88 */ s32 mode;            /* options flags & 3 */
     /* 0x8C */ s32 levels[3];       /* options +0x12..+0x14 */
 };
-extern "C" void viewrec_uso_func_00004990(VrSoundOptions *self) {
+extern "C" void SoundOptions_update(VrSoundOptions *self) {
     self->levels[0] = ((u8 *)gInputMgr_vr.options)[0x12];
     self->levels[1] = ((u8 *)gInputMgr_vr.options)[0x13];
     self->levels[2] = ((u8 *)gInputMgr_vr.options)[0x14];
