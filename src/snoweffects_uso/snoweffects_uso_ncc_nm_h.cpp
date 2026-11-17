@@ -87,7 +87,13 @@ struct GCtx {
  * agent-h run 762 with agent-e's run 760 lever (-> 98.78): z0(0) * (..) use counters. The yl clamp in the E4 w1 is
  * written `yl > 0 ? yl + z0(0) * yl : 0`, y1 gets z0(0) * (p + p + y0), and a 16-term z0(0) * (c + ..) sits in the
  * BB tail packet's w1. These raise y0 / c priorities with no code: y0 takes t3 and the E4 pointer t4 as in the
- * target. (On this tail form the c term scores best on any packet from BB on: on E7 it gives 98.76.) */
+ * target. (On this tail form the c term scores best on any packet from BB on: on E7 it gives 98.76.)
+ * agent-h run 765 (-> 98.90): the EE packet goes through a primDepth(c, depth) inline (append via plain next()), so
+ * the depth lives on the pooled edg word the texrect's MAX temps reuse: depth and the xh / xl clamp results are one
+ * uopt live range. The xh clamp gets two extra z0 uses (`xh > 0 ? xh + z0(0) * (xh + xh) : 0`) so the xh CSE
+ * outranks that range: xh takes a2 and the depth / clamp range a3, as in the target, and the scheduler then hoists
+ * xh above the depth as in the target. pad0 / pad1 are frame fillers for the two loop words the old z / ge used
+ * (frame 400, v / __V / r at the target offsets). */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -97,7 +103,7 @@ inline int imax0(int a) { return a > 0 ? a : 0; }
 #define gImmpV(g, pkt, c, p0) { g = (pkt); (g)->words.w0 = _SHIFTL((c), 24, 8); (g)->words.w1 = (unsigned int)(p0); }
 #define gTR(g0, pkt, g1, pkt2, g2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
 { g0 = (pkt), \
-    g0->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(MAX((s16)(xh),0), 12, 12) | _SHIFTL(MAX((s16)(yh),0), 0, 12)), \
+    g0->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(((s16)(xh) > 0 ? (s16)(xh) + z0(0) * ((int)(s16)(xh) + (int)(s16)(xh)) : 0), 12, 12) | _SHIFTL(MAX((s16)(yh),0), 0, 12)), \
     g0->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(((s16)(yl) > 0 ? (s16)(yl) + z0(0) * (int)(s16)(yl) : 0), 0, 12)); \
     gImmpV(g1, pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
@@ -107,6 +113,9 @@ inline void dum3(int a, int b, int c) { a = a; b = b; c = c; }
 /* zero-code uopt use counter (agent-e runs 756 / 760): z is a constant inline parameter, so edg cannot fold
  * z0(0) * (..), but uopt counts every variable term as a use before it folds the product to 0 (no code). */
 inline int z0(int z) { return z; }
+/* the EE prim-depth packet as an inline: its depth parameter takes the pooled edg word that the texrect's MAX temps
+ * reuse, so the depth and the xh / xl clamp results form one uopt live range (a3 in the target). */
+inline void primDepth(GCtx *c, int z) { Gfx *g = c->next(); gW(g, 0xEE000000, _SHIFTL(z & 0x7FFF, 16, 16) | _SHIFTL(0, 0, 16)); }
 struct SnowV3c { float x, y, z; SnowV3c(float ax, float ay, float az) { x = ax; y = ay; z = az; } };
 struct SnowPartC {
     SnowV3c pos;            /* 0x00 */
@@ -179,8 +188,9 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     halfW = (float)(SNOW_CAM->scrW / 2);
     halfH = (float)(SNOW_CAM->scrH / 2);
     for (i = 0, p = self->items; i < self->count; i++, p++) {
-        int y0, z; Gfx *ge, *gf, *gt, *g1, *g2; int x1, y1;
+        int y0, pad0, pad1; Gfx *gf, *gt, *g1, *g2; int x1, y1;
         SnowV3c v = scaled(p->pos);
+        pad0 = 0; pad1 = 0;
         float w;
         w = m[0][3] * v.x + m[1][3] * v.y + m[2][3] * v.z + m[3][3];
         if (SNOW_CAM->nearZ < w && w < SNOW_CAM->farZ) {
@@ -193,8 +203,7 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 wid = (int)(k * (halfH * 2.0f * (1.0f / w)) + 1.0f);
                 x0 = (int)(sx + halfW - (float)(wid / 2) + (float)SNOW_CAM->offX);
                 y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
-                z = (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4);
-                ge = c->me()->nextI_3(0, 0, 0); gW(ge, 0xEE000000, _SHIFTL(z & 0x7FFF, 16, 16) | _SHIFTL(0, 0, 16));
+                primDepth(c, (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4));
                 if (c) {}
                 if (c) {}
                 if (y0) {}
