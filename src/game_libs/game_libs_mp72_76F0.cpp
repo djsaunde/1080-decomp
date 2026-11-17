@@ -111,6 +111,13 @@ extern f32 D_76F0_fadeA;
 extern f32 D_76F0_fadeB;
 extern f32 D_76F0_fadeC;
 
+#ifdef PORT /* one object for the bytes these tokens share, so gcc keeps the order (scripts/port-alias-audit.py, plan 18.7):
+            * fadeB / fadeC are XDATA'd per site (Data +0xC75C / +0xC760 swap between the two
+            * halves, plan 18.9), and every site must be the one port_bootup_data object */
+extern "C" char port_bootup_data[];
+#undef XDATA
+#define XDATA(tok, sym, off) (*(__typeof__(tok) *)((char *)&sym + (off)))
+#endif
 void RaceProcess_handleInput(GlObj76F0 *self) {
     s32 sp24;
     s32 sp20;
@@ -246,12 +253,12 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                 D_76F0_fadeA += 0.1f;
             }
             if (INPUT_MGR(gInputMgr_76F0).nextFlowMode != 3) {
-                if (D_76F0_fadeB < 1.0f) {
-                    D_76F0_fadeB += 0.1f;
+                if (XDATA(D_76F0_fadeB, port_bootup_data, 0xC75C) < 1.0f) {
+                    XDATA(D_76F0_fadeB, port_bootup_data, 0xC75C) += 0.1f;
                 }
             }
-            if (D_76F0_fadeC < 1.0f) {
-                D_76F0_fadeC += 0.1f;
+            if (XDATA(D_76F0_fadeC, port_bootup_data, 0xC760) < 1.0f) {
+                XDATA(D_76F0_fadeC, port_bootup_data, 0xC760) += 0.1f;
             }
             if (self->unk4DC) {}
         }
@@ -279,16 +286,16 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                 }
             }
             if (D_76F0_fadeA <= 0.0f) {
-                if (D_76F0_fadeB > 0.0f) {
-                    D_76F0_fadeB -= 0.01f;
-                    if (D_76F0_fadeB < 0.0f) {
-                        D_76F0_fadeB = 0.0f;
+                if (XDATA(D_76F0_fadeB, port_bootup_data, 0xC760) > 0.0f) {
+                    XDATA(D_76F0_fadeB, port_bootup_data, 0xC760) -= 0.01f;
+                    if (XDATA(D_76F0_fadeB, port_bootup_data, 0xC760) < 0.0f) {
+                        XDATA(D_76F0_fadeB, port_bootup_data, 0xC760) = 0.0f;
                     }
                 }
             }
             if ((self->unk4F8 == 0) && (INPUT_MGR(gInputMgr_76F0).nextFlowMode == 3)) {
-                if (D_76F0_fadeC < 1.0f) {
-                    D_76F0_fadeC += 0.1f;
+                if (XDATA(D_76F0_fadeC, port_bootup_data, 0xC75C) < 1.0f) {
+                    XDATA(D_76F0_fadeC, port_bootup_data, 0xC75C) += 0.1f;
                 }
             }
         }
@@ -339,5 +346,9 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
         ((VO76 *)self)->m27();
     }
 }
+#ifdef PORT
+#undef XDATA
+#define XDATA(tok, sym, off) PORT_XDATA(tok, sym, off, __COUNTER__)
+#endif
 
 }

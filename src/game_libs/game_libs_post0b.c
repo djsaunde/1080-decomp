@@ -575,9 +575,9 @@ extern int gSysLib_349E0_a, D_349E0_b;
 #endif
 void hostio_start(void) {
     gSysLib_349E0_a = gSysLib | 4;
-    CALL(hostio_msg03_0003EFC4)(&D_349E0_b, GL_DATA_STR(0x1E460, "HostIO"), 900, 900);
-    CALL(hostio_sendNodeTree)(D_349E0_b);
-    CALL(hostio_connect)(&D_349E0_b);
+    CALL(hostio_msg03_0003EFC4)(&XDATA(D_349E0_b, port_bootup_bss, 0x3C768), GL_DATA_STR(0x1E460, "HostIO"), 900, 900);
+    CALL(hostio_sendNodeTree)(XDATA(D_349E0_b, port_bootup_bss, 0x3C79C));
+    CALL(hostio_connect)(&XDATA(D_349E0_b, port_bootup_bss, 0x3C768));
     gSysLib = gSysLib_349E0_a & ~4;
 }
 #ifdef PORT
@@ -16364,14 +16364,14 @@ void RcpTask_setData(RcpTask *a0, int a1, int a2, int a3) {
 extern int D_4D16C_a;
 extern int D_4D16C_b;
 void RcpTask_setUcodeSgi20H_0004D16C(RcpTask *a0) {
-    a0->task.ucode = (u64 *)&D_4D16C_a;
+    a0->task.ucode = (u64 *)&XDATA(D_4D16C_a, port_bootup_text, 0x23300);
     a0->task.ucode_data = (u64 *)&D_4D16C_b;
 }
 
 extern int D_4D188_a;
 extern int D_4D188_b;
 void RcpTask_setUcodeSgi20H_0004D188(RcpTask *a0) {
-    a0->task.ucode = (u64 *)&D_4D188_a;
+    a0->task.ucode = (u64 *)&XDATA(D_4D188_a, port_bootup_text, 0x26700);
     a0->task.ucode_data = (u64 *)&D_4D188_b;
 }
 
@@ -16385,7 +16385,7 @@ void RcpTask_setOutputFifo_0004D1A4(RcpTask *a0, int a1, int a2) {
 extern int D_00000000_a[];
 extern int D_00000000_b[];
 void RcpTask_setUcodeSgi20HFifo_0004D1C0(RcpTask *a0, int a1, int a2) {
-    a0->task.ucode = (u64 *)D_00000000_a;
+    a0->task.ucode = (u64 *)XDATA(D_00000000_a, port_bootup_text, 0x2FC40);
     a0->task.ucode_data = (u64 *)D_00000000_b;
     a0->task.output_buff = (u64 *)a1;
     a0->task.output_buff_size = (u64 *)(a1 + a2);
@@ -16396,7 +16396,7 @@ void RcpTask_setUcodeSgi20HFifo_0004D1C0(RcpTask *a0, int a1, int a2) {
 extern int D_4D1F4_a;
 extern int D_4D1F4_b;
 void RcpTask_setUcodeSgi20HOut_0004D1F4(RcpTask *a0, int a1) {
-    a0->task.ucode = (u64 *)&D_4D1F4_a;
+    a0->task.ucode = (u64 *)&XDATA(D_4D1F4_a, port_bootup_text, 0x27B00);
     a0->task.ucode_data = (u64 *)&D_4D1F4_b;
     a0->task.output_buff = (u64 *)a1;
     a0->task.output_buff_size = (u64 *)((char*)a0 + 8);
@@ -16412,7 +16412,7 @@ void RcpTask_noUcode_fastQ(int a, int b, int c) {
 extern int D_00000000_a[];
 extern int D_00000000_b[];
 void RcpTask_setUcodeF3DEX(RcpTask *a0, int a1, int a2) {
-    a0->task.ucode = (u64 *)D_00000000_a;
+    a0->task.ucode = (u64 *)XDATA(D_00000000_a, port_bootup_text, 0x2AE00);
     a0->task.ucode_data = (u64 *)D_00000000_b;
     a0->task.output_buff = (u64 *)a1;
     a0->task.output_buff_size = (u64 *)(a1 + a2);
@@ -16432,7 +16432,7 @@ void RcpTask_noUcode_NoC(int a, int b, int c) {
 }
 
 void RcpTask_setUcodeF3DLP_Rej(RcpTask *a0, int a1, int a2) {
-    a0->task.ucode = (u64 *)D_00000000_a;
+    a0->task.ucode = (u64 *)XDATA(D_00000000_a, port_bootup_text, 0x2D4A0);
     a0->task.ucode_data = (u64 *)D_00000000_b;
     a0->task.output_buff = (u64 *)a1;
     a0->task.output_buff_size = (u64 *)(a1 + a2);
@@ -16441,7 +16441,7 @@ void RcpTask_setUcodeF3DLP_Rej(RcpTask *a0, int a1, int a2) {
 }
 
 void RcpTask_setUcodeF3DLX_Rej(RcpTask *a0, int a1, int a2) {
-    a0->task.ucode = (u64 *)D_00000000_a;
+    a0->task.ucode = (u64 *)XDATA(D_00000000_a, port_bootup_text, 0x2E870);
     a0->task.ucode_data = (u64 *)D_00000000_b;
     a0->task.output_buff = (u64 *)a1;
     a0->task.output_buff_size = (u64 *)(a1 + a2);
@@ -16450,7 +16450,7 @@ void RcpTask_setUcodeF3DLX_Rej(RcpTask *a0, int a1, int a2) {
 }
 
 void RcpTask_setUcodeF3DEX_NoN(RcpTask *a0) {
-    a0->task.ucode = (u64 *)D_00000000_a;
+    a0->task.ucode = (u64 *)XDATA(D_00000000_a, port_bootup_text, 0x28F10);
     a0->task.ucode_data = (u64 *)D_00000000_b;
 }
 

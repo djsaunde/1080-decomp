@@ -169,7 +169,7 @@ void Obj::draw() {
         return;
     }
     B = *(f32 (**)[4])(gGfxLib + 0xE4);
-    A = (Ctx *)((char *)&D_00000000_j + 0xA0);
+    A = (Ctx *)((char *)&XDATA(D_00000000_j, port_bootup_bss, 0x3C168) + 0xA0);
     if (B != 0) { if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {}
         /* agent-g run 430: eight code-free blocks at the arm start (and no `0 * (int)B` fold in the else): B's LR
          * (M-12) spans more units, its priority falls under i's (M-80), i takes v0 and B the target's v1, 99.886 -> 99.915 */
@@ -181,7 +181,7 @@ void Obj::draw() {
                 }
             }
         }
-#define mt ((Mtx *)((char *)&D_00000000_i + 0x3C8A0)) /* agent-c run 180: de-named (lever-sweep) */
+#define mt ((Mtx *)((char *)&XDATA(D_00000000_i, port_bootup_bss, 0x0) + 0x3C8A0)) /* agent-c run 180: de-named (lever-sweep) */
         FCALL(math_mtx4Copy)(mtx, mt); /* agent-g run 293: code-free test (random insertion search on the mtxQ body): 97.669 -> 97.697 */
         gctx = GS->ctx + 0 * ((int)(mt) + (int)(mt)); /* agent-c run 288: double folded use of the mt address (zero-use --exprs sweep), 97.51 -> 97.53 */
         { Mtx *c; if (me(me(me(me(GS->ctx))))) {} { Gfx *g; int d1 = 0, d2 = 0, d3 = 0; c = me(me(me(me(gctx))))->mtx(); gctx->cS(mt, c); if (c) {} A = (Ctx *)gctx->dl->count; gctx->dl->count = (int)A + 1; g = &gctx->dl->buf[(int)A]; g->w0 = 0x01020040; g->w1 = (u32)FCALL(gl_osVirtualToPhysical)(c); } } /* agent-g run 407: 98.297 -> 98.329 */
@@ -190,7 +190,7 @@ void Obj::draw() {
          * is vfp-108 = target (lE3's named g was allocated after mtx()'s six words, vfp-120), 99.915 -> 99.919 */
 #undef mt
     } else {
-        gctx = GS->ctx; FCALL(guMtxF2L)(I2((f32 (*)[4])((char *)&D_00000000_j + 0xA0)), (Mtx *)(A = (Ctx *)me(me(gctx))->mtx())); if (*(u32 *)&gctx->dl) {} if (1) {} B = (f32 (*)[4])((DLHead *)*(u32 *)&gctx->dl)->count; fG(me(me(me(gctx)))->nF0((int)B), (Mtx *)A); /* agent-g run 435 */ /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
+        gctx = GS->ctx; FCALL(guMtxF2L)(I2((f32 (*)[4])((char *)&XDATA(D_00000000_j, port_bootup_bss, 0x3C168) + 0xA0)), (Mtx *)(A = (Ctx *)me(me(gctx))->mtx())); if (*(u32 *)&gctx->dl) {} if (1) {} B = (f32 (*)[4])((DLHead *)*(u32 *)&gctx->dl)->count; fG(me(me(me(gctx)))->nF0((int)B), (Mtx *)A); /* agent-g run 435 */ /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
     }
     FCALL(gfx_emitPerspNorm_00057574)(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {

@@ -1,5 +1,6 @@
 #include "common.h"
 #include "audio.h"
+#include "uso_call.h"
 
 /* IDO 7.1 -O2 donor for AudioThread_UpdateImpl (0x57C / 351 words) = OoT's
  * AudioThread_UpdateImpl (thread.c) in its older form: no AudioLoad_ProcessScriptLoads,
@@ -200,10 +201,10 @@ AudioTask *AudioThread_UpdateImpl(void) {
     task = &gAudioCtx.curTask->task;
     task->type = 2;
     task->flags = 0;
-    task->ucode_boot = aspMainTextStart;
+    task->ucode_boot = XDATA(aspMainTextStart, port_bootup_text, 0x46470);
     task->ucode_boot_size = 0x1000;
     task->ucode_data_size = (aspMainDataEnd - aspMainDataStart) * sizeof(u64) - 1;
-    task->ucode = aspMainTextStart;
+    task->ucode = XDATA(aspMainTextStart, port_bootup_text, 0x46470);
     task->ucode_data = aspMainDataStart;
     task->ucode_size = 0x1000;
     task->dram_stack = NULL;

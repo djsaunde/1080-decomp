@@ -5708,9 +5708,9 @@ void RiderAnim_checkRow_0000E1FC(char *obj) {
     if (s->useDParms != 0) goto callA;
     raw = s->edge;
     m = (raw < 0.0f) ? -raw : raw;
-    if (*(double *)((char *)&game_uso_D_807FF458 + kRoD_0p1_208) < (double)m) {
+    if (*(double *)((char *)&XDATA(game_uso_D_807FF458, port_game_rodata, 0x0) + kRoD_0p1_208) < (double)m) {
     callA:
-        RiderAnim_enterState_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF458 + kPmf_RiderAnim_stateRowIn));
+        RiderAnim_enterState_0000D5BC(obj, *(Pair2 *)((char *)&XDATA(game_uso_D_807FF458, port_game_data, 0x0) + kPmf_RiderAnim_stateRowIn));
     } else {
         RiderAnim_enterState_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF440 + kPmf_RiderAnim_stateRow));
     }

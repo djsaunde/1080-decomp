@@ -52,7 +52,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     int v;
     XCALL(func_00000000_2DA4_v, memtrack_begin)(&sStr_ImgFileMgr_73EC, 0);
     XCALL(func_00000000_2DA4_v, memtrack_end)();
-    D_2DA4_obj = FCALL(TrickTable_ctor_0000C2D4)(0, &sStr_rom_tricks_bin_73F8);
+    XDATA(D_2DA4_obj, port_game_bss, 0x8) = FCALL(TrickTable_ctor_0000C2D4)(0, &sStr_rom_tricks_bin_73F8);
     v1 = (char *)WORLDREG(arg0)->bgRoot;
     a1 = (char *)D_2DA4_obj_rd;
     XCALL(func_00000000_2DA4_v, list_append)(v1 + 0x10, a1);
@@ -60,7 +60,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
         NODE(a1)->unk04 = 1;
     }
     NODE(a1)->parent = (Node *)v1;
-    XCALL(func_00000000_2DA4_v, AnimDataMgr_releaseFrames)(D_2DA4_obj);
+    XCALL(func_00000000_2DA4_v, AnimDataMgr_releaseFrames)(XDATA(D_2DA4_obj, port_bootup_bss, 0xD8));
     v = gPolyGeomMode_3EEC8_2DA4_cfg[1]; /* [1]: the geometry mode word */
     v = v | 0x80000 | 0x2000 | 0x20000;
     ((int *)&gPolyGeomMode_3EEC8)[1] = v;
@@ -73,7 +73,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     case 6: XCALL(func_00000000_2DA4_v, game_setupVs2P)(arg0, arg2); break;
     case 1:
         XCALL(func_00000000_2DA4_v, game_setupEmpty)(arg0, 0);
-        a1 = (char *)D_2DA4_obj; if (1) { a1 += 0x18; } *(int *)a1 = *(int *)a1 | 4;
+        a1 = (char *)XDATA(D_2DA4_obj, port_bootup_data, 0x7768); if (1) { a1 += 0x18; } *(int *)a1 = *(int *)a1 | 4;
         break;
     case 9: XCALL(func_00000000_2DA4_v, game_setupDemoSolo)(arg0, arg2); break;
     case 10: XCALL(func_00000000_2DA4_v, game_setupDemoRace)(arg0, arg2); break;
