@@ -26709,11 +26709,17 @@ int AnimData_readFrames(char *self, int a1, unsigned int a2, unsigned int a3) {
         { char *p = (char *)((AnimData *)self)->fileOffset + stride * a2;
         n[0] = stride * a3;
         CALL(fs_gdlSeekFile)(&gSysLib_62194_c, 0, p); }
+#ifdef PORT /* streamed frame data (s16 x 7 per node, big-endian); the port's DMA completes at once.
+             * The ROM returns the async read's slot in v0 (the bare `return;` below): AnimFrameCache
+             * keeps it as `pending` for AnimData_waitFrames.  gcc's eax is whatever the swap left,
+             * so the slot was never waited and the 9 DMA slots ran out at frame ~231 (run 839). */
+        { int slot = CALL(fs_gdlReadFileAsync)(&gSysLib_62194_d, a1, n[0]);
+          PORT_BE_SWAP16S((void *)a1, n[0]);
+          return slot; }
+#else
         CALL(fs_gdlReadFileAsync)(&gSysLib_62194_d, a1, n[0]);
-#ifdef PORT /* streamed frame data (s16 x 7 per node, big-endian); the port's DMA completes at once */
-        PORT_BE_SWAP16S((void *)a1, n[0]);
-#endif
         return;
+#endif
     }
     /* resident: copy (gl_func_00070324) and return -1 = nothing pending */
     stride = ((AnimData *)self)->numNodes * 14;

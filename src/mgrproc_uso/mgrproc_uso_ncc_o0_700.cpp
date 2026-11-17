@@ -67,6 +67,9 @@ int mgr_initMatchRace_00000700(ModeFlowProc *flow, int level) {
         }
         break;
     }
+#ifdef PORT /* g++ -O2 treats flowing off a non-void function as unreachable: no `ret` was emitted (run 839) */
+    return 0;
+#endif
 }
 
 s32 mgr_prepareReplay_00000A14(s32 *arg0, s32 *arg1) {
