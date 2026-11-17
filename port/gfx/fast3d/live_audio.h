@@ -19,6 +19,12 @@ struct LiveAudioOptions {
     bool mute = false;
     uint32_t latencyMs = 80;   /* PulseAudio's target buffer (tlength) */
     std::string dumpPath;      /* every byte received from the ring, raw (tests) */
+    /* PulseAudio is opened this long after live_audio_start (the ring is drained meanwhile). WSLg
+     * (run 867): an X window mapped while a PulseAudio stream is playing stalls the whole server
+     * (its RDP sink) for as long as the window lives, so the presenter's own window must be up
+     * first. Measured: 1 s after the map stalls, 2 s does not. */
+    uint32_t openDelayMs = 2500;
+    bool stats = false;        /* --audio-stats: one machine-readable summary line at exit */
 };
 
 /* fill the LiveAudio block of a new shared file (before LiveShmHeader.magic is written) */
@@ -26,6 +32,17 @@ void live_audio_layout(LiveAudio* a, uint32_t dataOffset, uint32_t bytes);
 /* start / stop the thread; base is the mapped file */
 void live_audio_start(uint8_t* base, const LiveAudioOptions& o);
 void live_audio_stop();
+/* close the PulseAudio stream now and reopen it ms later (the ring is drained meanwhile): call it
+ * before the window is mapped again (F11 fullscreen), which would otherwise stall WSLg's server */
+void live_audio_suspend(uint32_t ms);
+/* the counters, in seconds of audio (32000 Hz stereo s16) */
+struct LiveAudioStats {
+    double received;   /* everything taken from the ring */
+    double beforeOpen; /* drained before the output was opened (openDelayMs) */
+    double played;     /* written to PulseAudio */
+    double trimmed;    /* skipped because the output fell behind */
+};
+LiveAudioStats live_audio_stats();
 /* one line for the presenter's per-second status */
 std::string live_audio_status();
 

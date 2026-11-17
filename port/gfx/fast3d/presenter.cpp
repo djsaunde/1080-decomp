@@ -3,7 +3,8 @@
  *
  *   presenter [--shm NAME] [--scale N] [--png DIR] [--png-every N] [--png-steps A-B,C,...] [--frames N]
  *             [--inject STEP:KEY:d|u,...] [--js /dev/input/js0] [--stay]
- *             [--mute] [--audio-latency MS] [--audio-dump FILE] [--input SCRIPT]
+ *             [--mute] [--audio-latency MS] [--audio-dump FILE] [--audio-stats] [--audio-open-delay MS]
+ *             [--input SCRIPT]
  *
  * It creates /dev/shm/NAME (live_shm.h), opens a window, and then, while the game
  * (tenshoe with PORT_LIVE=NAME, port/gfx/port_live.c) runs:
@@ -15,7 +16,9 @@
  *     header, where the game's host_read_pads picks it up each step;
  *   - plays the game's audio from the shm audio ring through PulseAudio on its own thread
  *     (live_audio.cpp, plan 19.12; --mute drains it silently, --audio-latency sets the buffer,
- *     default 80 ms, --audio-dump FILE writes the raw PCM received).
+ *     default 80 ms, --audio-dump FILE writes the raw PCM received, --audio-stats prints a summary line
+ *     (port/tools/audio-check.sh), --audio-open-delay MS waits that long after the window is mapped
+ *     before opening PulseAudio: default 2500, see live_audio.h on WSLg).
  * port/tools/play.sh starts both.
  *
  * The memory image. As in f3dreplay, every data chunk is copied to ITS OWN (32-bit) address
@@ -734,6 +737,8 @@ int main(int argc, char** argv) {
             fbLog = true;
         } else if (a == "--no-fb-reply") {
             fbReply = false;
+        } else if (a == "--audio-stats") {
+            audio.stats = true;
         } else if (v == nullptr) {
             std::fprintf(stderr, "presenter: %s needs a value\n", a.c_str());
             return 2;
@@ -764,6 +769,8 @@ int main(int argc, char** argv) {
             maxFrames = (uint32_t)std::atoi(argv[++i]);
         } else if (a == "--audio-latency") {
             audio.latencyMs = (uint32_t)std::max(20, std::atoi(argv[++i]));
+        } else if (a == "--audio-open-delay") {
+            audio.openDelayMs = (uint32_t)std::max(0, std::atoi(argv[++i]));
         } else if (a == "--audio-dump") {
             audio.dumpPath = argv[++i];
         } else if (a == "--input") {
@@ -797,7 +804,8 @@ int main(int argc, char** argv) {
         } else {
             std::fprintf(stderr, "usage: presenter [--shm NAME] [--scale N] [--png DIR] [--png-every N] [--frames N] "
                                  "[--inject STEP:KEY:d|u,...] [--js DEV] [--slot-mb N] [--stay] "
-                                 "[--fb-log] [--no-fb-reply] [--mute] [--audio-latency MS] [--audio-dump FILE] [--input SCRIPT]\n");
+                                 "[--fb-log] [--no-fb-reply] [--mute] [--audio-latency MS] [--audio-dump FILE] [--audio-stats] "
+                                 "[--audio-open-delay MS] [--input SCRIPT]\n");
             return 2;
         }
     }
@@ -894,7 +902,32 @@ int main(int argc, char** argv) {
     bool endedNoted = false;
     while (!quit && !sStop) {
         /* events */
-        live_pump(sWin, in, lastStep);
+        while (XPending(sWin.dpy) > 0) {
+            XEvent ev;
+            XNextEvent(sWin.dpy, &ev);
+            if (ev.type == KeyPress || ev.type == KeyRelease) {
+                KeySym ks = XLookupKeysym(&ev.xkey, 0);
+                in.key(ks, ev.type == KeyPress);
+                if (ev.xkey.send_event) {
+                    std::printf("presenter: synthetic %s %s (step %u)\n", XKeysymToString(ks),
+                                ev.type == KeyPress ? "down" : "up", lastStep);
+                }
+                if (ev.type == KeyPress && ks == XK_F11) {
+                    /* WSLg maps the window again: no stream may be playing then (live_audio.h) */
+                    live_audio_suspend(audio.openDelayMs != 0 ? audio.openDelayMs : 2500);
+                    sWin.toggleFullscreen();
+                }
+            } else if (ev.type == ConfigureNotify) {
+                sWin.w = (uint32_t)std::max(1, ev.xconfigure.width);
+                sWin.h = (uint32_t)std::max(1, ev.xconfigure.height);
+            } else if (ev.type == ClientMessage && (Atom)ev.xclient.data.l[0] == sWin.wmDelete) {
+                quit = true;
+            } else if (ev.type == FocusOut) {
+                /* drop held keys so nothing sticks (the joystick keeps its state) */
+                in.left = in.right = in.up = in.down = in.shift = false;
+                in.keys = 0;
+            }
+        }
         in.pollJoystick();
         if (in.quit) {
             quit = true;

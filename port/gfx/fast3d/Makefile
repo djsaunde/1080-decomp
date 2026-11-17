@@ -94,3 +94,10 @@ $(OBJ) $(OBJ)/lus $(OBJ)/prism:
 
 .PHONY: all
 all: $(OUT)/f3dreplay $(OUT)/test_inproc
+
+# the live-audio check (run 867): a windowed Match Race in lockstep, played / received >= 95 %.
+# Needs a display and PulseAudio (WSLg), so it is not part of the port gate; AUDIO_CHECK_ARGS go to
+# port/tools/audio-check.sh (-f STEPS, -m MIN_PERCENT, -o DIR).
+.PHONY: audio-check
+audio-check:
+	../../tools/audio-check.sh $(AUDIO_CHECK_ARGS)

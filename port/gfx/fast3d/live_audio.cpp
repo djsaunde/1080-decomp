@@ -43,10 +43,14 @@ uint8_t* sData;
 LiveAudioOptions sOpt;
 std::thread sThread;
 std::atomic<bool> sStop{ false };
-std::atomic<uint64_t> sReceived{ 0 }, sPlayed{ 0 };
+std::atomic<uint64_t> sReceived{ 0 }, sPlayed{ 0 }, sBeforeOpen{ 0 };
 uint64_t sHash = 0xcbf29ce484222325ull;
 FILE* sDump;
 std::atomic<const char*> sOutput{ "none" };
+/* live_audio_suspend: the stream is closed and reopened at sReopenAt (seconds, now_s clock) */
+std::atomic<double> sReopenAt{ 0 };
+std::atomic<bool> sSuspendReq{ false }, sSuspended{ false };
+std::atomic<uint32_t> sSuspends{ 0 };
 
 #if LIVE_HAVE_PULSE
 struct Pulse {
@@ -122,10 +126,12 @@ struct Pulse {
         }
         return true;
     }
-    void close() {
+    void close(bool drainFirst = true) {
         if (s != nullptr) {
             int err = 0;
-            drain(s, &err);
+            if (drainFirst) {
+                drain(s, &err);
+            }
             free(s);
             s = nullptr;
         }
@@ -140,7 +146,7 @@ struct Pulse {
     }
     long queued() { return -1; }
     bool put(const uint8_t*, size_t) { return false; }
-    void close() {}
+    void close(bool = true) {}
 };
 #endif
 
@@ -174,9 +180,26 @@ void take(uint32_t tail, uint32_t n, uint8_t* out) {
     __atomic_store_n(&sA->tail, tail + n, __ATOMIC_RELEASE);
 }
 
+/* drain the ring (nothing played) until the time 'until' or a stop; counted as before-open */
+void drain_until(double until) {
+    while (!sStop.load() && now_s() < until) {
+        uint32_t head = __atomic_load_n(&sA->head, __ATOMIC_ACQUIRE), tail = sA->tail;
+        if (head != tail) {
+            take(tail, head - tail, nullptr);
+            sBeforeOpen += head - tail;
+        }
+        sleep_ms(5);
+    }
+}
+
 void run() {
     Pulse pa;
     bool playing = false;
+    if (!sOpt.mute && sOpt.openDelayMs != 0) {
+        /* let the window settle first (live_audio.h openDelayMs); the ring is drained meanwhile */
+        sOutput = "opening";
+        drain_until(now_s() + sOpt.openDelayMs / 1000.0);
+    }
     if (sOpt.mute) {
         sA->state = LIVE_AUDIO_MUTED;
         sOutput = "muted";
@@ -199,6 +222,32 @@ void run() {
     bool counted = false;
     uint32_t trims = 0;
     while (!sStop.load()) {
+        if (playing && sSuspendReq.load()) {
+            /* live_audio_suspend: no stream may play while the window is remapped (WSLg, live_audio.h) */
+            pa.close(false);
+            sOutput = "suspended";
+            sSuspended = true;
+            sSuspendReq = false;
+            double until;
+            do { /* a second request while suspended moves the reopen time */
+                until = sReopenAt.load();
+                drain_until(until);
+            } while (!sStop.load() && sReopenAt.load() != until);
+            sSuspended = false;
+            if (sStop.load()) {
+                break;
+            }
+            if (pa.open(sA->rate, sA->channels, sOpt.latencyMs)) {
+                sOutput = "pulse";
+                dryStart = 0;
+            } else {
+                playing = false;
+                sA->state = LIVE_AUDIO_OFF;
+                sOutput = "none (reopen failed)";
+            }
+            std::fflush(stdout);
+            continue;
+        }
         uint32_t head = __atomic_load_n(&sA->head, __ATOMIC_ACQUIRE), tail = sA->tail, avail = head - tail;
         if (!playing) { /* muted / no output: drain as it fills */
             if (avail != 0) {
@@ -282,6 +331,33 @@ void live_audio_start(uint8_t* base, const LiveAudioOptions& o) {
     sThread = std::thread(run);
 }
 
+void live_audio_suspend(uint32_t ms) {
+    if (!sThread.joinable() || sOpt.mute) {
+        return;
+    }
+    sReopenAt = now_s() + ms / 1000.0;
+    sSuspends++;
+    if (sSuspended.load()) {
+        return; /* already closed: only the reopen time moves */
+    }
+    sSuspendReq = true;
+    /* wait (bounded) for the thread to close the stream: it checks between writes of <= 10 ms, and
+     * a write blocks at most about latencyMs; while still opening (openDelayMs) it is not playing */
+    for (int i = 0; i < 100 && sSuspendReq.load() && sOutput.load() == std::string("pulse"); i++) {
+        sleep_ms(2);
+    }
+}
+
+LiveAudioStats live_audio_stats() {
+    const double bps = 4.0 * 32000.0;
+    LiveAudioStats st;
+    st.received = sReceived.load() / bps;
+    st.beforeOpen = sBeforeOpen.load() / bps;
+    st.played = sPlayed.load() / bps;
+    st.trimmed = sA != nullptr ? sA->trimmed / bps : 0.0;
+    return st;
+}
+
 void live_audio_stop() {
     if (!sThread.joinable()) {
         return;
@@ -296,6 +372,15 @@ void live_audio_stop() {
                 "%u underruns, %u bytes trimmed, %u game overruns\n",
                 (unsigned long long)sReceived.load(), sReceived.load() / (4.0 * 32000.0), (unsigned long long)sHash,
                 sPlayed.load() / (4.0 * 32000.0), sOutput.load(), sA->underruns, sA->trimmed, sA->overruns);
+    if (sOpt.stats) {
+        /* port/tools/audio-check.sh parses this line */
+        LiveAudioStats st = live_audio_stats();
+        double open = st.received - st.beforeOpen;
+        std::printf("presenter: audio-stats: output %s, received %.2f s, before open %.2f s, played %.2f s, trimmed "
+                    "%.2f s, underruns %u, game overruns %u, played/received-while-open %.1f%%\n",
+                    sOutput.load(), st.received, st.beforeOpen, st.played, st.trimmed, sA->underruns, sA->overruns,
+                    open > 0 ? 100.0 * st.played / open : 0.0);
+    }
 }
 
 std::string live_audio_status() {
@@ -304,7 +389,8 @@ std::string live_audio_status() {
     }
     char s[160];
     uint32_t backlog = __atomic_load_n(&sA->head, __ATOMIC_ACQUIRE) - sA->tail;
-    std::snprintf(s, sizeof(s), ", audio %s %.1f s, ring %u ms, underruns %u, trimmed %u", sOutput.load(),
-                  sReceived.load() / (4.0 * 32000.0), backlog / 128, sA->underruns, sA->trimmed);
+    std::snprintf(s, sizeof(s), ", audio %s %.1f s (played %.1f s), ring %u ms, underruns %u, trimmed %u",
+                  sOutput.load(), sReceived.load() / (4.0 * 32000.0), sPlayed.load() / (4.0 * 32000.0), backlog / 128,
+                  sA->underruns, sA->trimmed);
     return s;
 }

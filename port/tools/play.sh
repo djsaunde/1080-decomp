@@ -16,12 +16,13 @@
 #        use in <monorepo>/tools/play/<worktree>/build, about 3 minutes)
 #   -r   the ROM (default <game repo>/baserom.z64)
 #   -s   window scale over 320x240 (default 3: 960x720)
-#   -S   software GL (LIBGL_ALWAYS_SOFTWARE=1, llvmpipe) instead of the GPU
+#   -S   software GL (LIBGL_ALWAYS_SOFTWARE=1, llvmpipe) instead of the GPU: the fallback when the GPU
+#        path fails (no EGL config, "D3D12: Removing Device", a black or frozen window); slower
 #   -m   mute (no sound; the game's audio is still produced and drained)
 #   -l   audio buffer in ms (default 80; raise it if the sound crackles)
 #   -n   the shared-memory name (default 1080live-<pid>)
 #   -p   more presenter arguments (--png DIR --png-every N, --inject STEP:KEY:d|u,..., --frames N, --stay,
-#        --audio-dump FILE, --input SCRIPT: pads from a port/host/*.input script, in lockstep)
+#        --audio-dump FILE, --audio-stats, --input SCRIPT: pads from a port/host/*.input script, in lockstep)
 #   --   more tenshoe arguments (--frames N, --input SCRIPT, --record LOG, --trace LOG, --audio-out WAV, ...)
 #
 # The save (1080.sram) is kept in <monorepo>/tools/play/<worktree>/run between sessions.
@@ -34,7 +35,8 @@
 # One-time setup (no sudo): scripts/setup-i386-sysroot.sh (monorepo), port/gfx/fast3d/setup-lus.sh,
 # port/gfx/replay/setup-gl-dev.sh, port/gfx/fast3d/setup-x11-dev.sh, port/gfx/fast3d/setup-pulse-dev.sh;
 # this script runs the last four itself when their tools/ directories are missing (the audio one
-# may fail: the game then runs silent).
+# may fail: the game then runs silent). Sound opens 2.5 s after the window (WSLg: a window mapped while
+# a stream plays stalls its PulseAudio; so do other windows opened during play). Check: audio-check.sh.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 GAME="$(cd "$HERE/../.." && pwd)"
@@ -45,8 +47,8 @@ if [ "${1:-}" = --native ]; then NATIVE=1; shift; fi
 while getopts "b:r:s:Sml:n:p:Vh" o; do
     case $o in
     b) BUILD=$OPTARG ;; r) ROM=$OPTARG ;; s) SCALE=$OPTARG ;; S) SOFT=1 ;; n) NAME=$OPTARG ;; p) PARGS=$OPTARG ;;
-    m) MUTE=--mute ;; l) LAT=$OPTARG ;; V) VSYNC=1 ;;
-    *) sed -n '2,37p' "$0"; exit 2 ;;
+    m) MUTE=--mute ;; l) LAT=$OPTARG ;;
+    *) sed -n '2,31p' "$0"; exit 2 ;;
     esac
 done
 shift $((OPTIND - 1))
