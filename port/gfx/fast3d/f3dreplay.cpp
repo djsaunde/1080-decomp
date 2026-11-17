@@ -285,6 +285,28 @@ int main(int argc, char** argv) {
         std::fprintf(stderr, "f3dreplay: the root list 0x%08x is not in the dump\n", sHdr->rootAddr);
         return 1;
     }
+    /* The depth image carries over between frames: 1080 clears Z (a FILLRECT with the colour image set to the
+     * Z buffer) before its G_SETZIMG, so the interpreter knows the Z address only from the previous frame.
+     * Fast3D treats that fill as a depth clear only when the colour image equals its current Z address; in a
+     * one-dump replay it is still unset, and the fill paints 0xFFFC as colour (near-white, plan 19.9). Seed it
+     * with the dump's first G_SETZIMG through a prologue list: SETZIMG, then G_DL to the root. */
+    std::vector<Fast::F3DGfx> prologue;
+    for (WideDl& d : sDls) {
+        for (Fast::F3DGfx& g : d.cmds) {
+            if (prologue.empty() && ((g.words.w0 >> 24) & 0xFF) == 0xFE) {
+                prologue.resize(3);
+                prologue[0].words.w0 = g.words.w0;
+                prologue[0].words.w1 = g.words.w1;
+                prologue[1].words.w0 = 0x06000000u;
+                prologue[1].words.w1 = (uintptr_t)root;
+                prologue[2].words.w0 = 0xB8000000u;
+                prologue[2].words.w1 = 0;
+            }
+        }
+    }
+    if (!prologue.empty()) {
+        root = prologue.data();
+    }
     const uint32_t w = 320 * scale, h = 240 * scale;
     if (!gl_init((int)w, (int)h)) {
         std::fprintf(stderr, "f3dreplay: no EGL / GL context\n");
