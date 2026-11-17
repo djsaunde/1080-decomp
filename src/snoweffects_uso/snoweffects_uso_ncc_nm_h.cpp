@@ -14,6 +14,9 @@ typedef struct { Gfx *buf; int count; } DList;
 struct GCtx {
     char pad0[0xC];
     DList *dl;
+    GCtx *me() { return this; }
+    Gfx *nextN_1(int d0) { d0 = d0; int n = dl->count++; return &dl->buf[n]; }
+    Gfx *nextBI_1(int d0) { d0 = d0; int n = dl->count++; if (1) {} return &dl->buf[n]; }
     Gfx *next() { return &dl->buf[dl->count++]; } Gfx *nextN() { int n = dl->count++; return &dl->buf[n]; }
     Gfx *nextI() { int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
     Gfx *nextBI() { int n = dl->count++; if (1) {} return &dl->buf[n]; }
@@ -63,7 +66,12 @@ struct GCtx {
  * agent-h run 746 (-> 96.83): `if (p) {}` after the texrect (no code) adds a use of p late in the loop
  * body: p's uopt priority rises above y0 / the E4 pointer and p takes t1 as in the target.
  * agent-h run 750 (-> 97.09): two code-free `if (c) {}` lines after the EE packet raise c's uopt priority
- * (6.76 -> 7.5) above y0, so c takes t2 as in the target; B4 appends through nextBI(). */
+ * (6.76 -> 7.5) above y0, so c takes t2 as in the target; B4 appends through nextBI().
+ * agent-h run 754 (-> 97.37): constant-valued dummy parameters (agent-a's 0x7FE0 lever) on the EE and B3
+ * appends (nextBI_1(0) / nextN_1(0)): the dummy takes the next pooled edg word, so the packet's count / dl
+ * temps land on other words; scratch[] is gone, the prologue appends through c->me()->next(), five tail
+ * packets through c->me()->me()->me()->next() (the tail count gets its own word and takes v0 as in the
+ * target) and the BA0C02 tail packet through nextN(). */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -141,11 +149,9 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     float halfW, halfH;
     int i;
     SnowPartC *p;
-    int scratch[1];
 
-    scratch[0] = 0;
     d = gl_func_00000000(self->tex->dl);
-    g = c->next();
+    g = c->me()->next();
     g->words.w0 = 0x06000000;
     g->words.w1 = d;
     gl_func_00000000(SNOW_CAM->view, m);
@@ -167,7 +173,7 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 x0 = (int)(sx + halfW - (float)(wid / 2) + (float)SNOW_CAM->offX);
                 y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
                 z = (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4);
-                ge = c->nextBI(); gW(ge, 0xEE000000, (z & 0x7FFF) << 16);
+                ge = c->nextBI_1(0); gW(ge, 0xEE000000, (z & 0x7FFF) << 16);
                 if (c) {}
                 if (c) {}
                 if (y0) {}
@@ -176,16 +182,16 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 x1 = x0 + wid;
                 y1 = y0 + hgt;
                 self->drawn++;
-                gTR(gt, c->nextI(), g1, c->nextBI(), g2, c->nextN(), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
+                gTR(gt, c->nextI(), g1, c->nextBI(), g2, c->nextN_1(0), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
                     ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
                 if (p) {}
             }
         }
     }
-    g = c->next(); gW(g, 0xE7000000, 0);
-    g = c->next(); gW(g, 0xBB000000, 0);
-    g = c->next(); gW(g, 0xBA001301, 0x80000);
-    gDPWord(c->next(), 0xBA000C02, 0x2000);
-    g = c->next(); gW(g, 0xB9000201, 0);
-    g = c->next(); gW(g, 0xBA000602, 0);
+    g = c->me()->me()->me()->next(); gW(g, 0xE7000000, 0);
+    g = c->me()->me()->me()->next(); gW(g, 0xBB000000, 0);
+    g = c->me()->me()->me()->next(); gW(g, 0xBA001301, 0x80000);
+    gDPWord(c->nextN(), 0xBA000C02, 0x2000);
+    g = c->me()->me()->me()->next(); gW(g, 0xB9000201, 0);
+    g = c->me()->me()->me()->next(); gW(g, 0xBA000602, 0);
 }
