@@ -164,8 +164,11 @@ extern "C" void snoweffects_uso_func_00001E60(SnowTexB *t) {
  * block before the slot loop (pool words: puts k / mask / v / the scaled() temps at the target's slots).
  * The texture-list address through an inline holder->phys(): its `this` takes the BaseMat ctor's pool word,
  * so both share one callee-saved register as in the target (93.0 -> 97.3 %).
- * Left: s0 / s1 and s2 / s3 / s4 are permuted against the target (ctor this + packet head, member this +
- * packet count, &m + packet, j, ctx), the ugen temp-register ring offset, and two spill slots (84 / 92). */
+ * Packets go through nx() -> n1() -> next() with `(this + 0)` hops (run 686): each hop takes an edg pool
+ * word, so the packet count shares the member-ctor `this` word (s1) and the list pointer the BaseMat-ctor
+ * word (s0), as in the target. The trailing `if (ctx) {}` drops ctx's priority below j's (ctx s4).
+ * Left (23 words): the ugen temp-register ring at the slot-loop head and the quad preheader, one
+ * packet pointer v0 vs a0, and two spill slots (target 92 / 84, ours 84 / 88). */
 #define V2P(x) gl_func_00000000(/* osVirtualToPhysical */ x)
 struct M8B { int a, b; M8B() { b = 0; a = 0; } };
 struct M4B { int a; M4B() { a = 0; } };
@@ -177,7 +180,7 @@ struct SnowBaseMatB {
 };
 struct SnowMatB : SnowBaseMatB { char p60[0x90 - 0x60]; SnowMatB() {} virtual void v1(); };
 struct SnowDLB { Gfx *buf; int count; };
-struct SnowCtxB { char pad0[0xC]; SnowDLB *dl; Gfx *next() { return &dl->buf[dl->count++]; }
+struct SnowCtxB { char pad0[0xC]; SnowDLB *dl; Gfx *next() { return &dl->buf[dl->count++]; } Gfx *n1() { return (this + 0)->next(); } Gfx *nx() { return (this + 0)->n1(); }
     void put(unsigned int w0, unsigned int w1) { Gfx *g = next(); g->words.w0 = w0; g->words.w1 = w1; } };
 struct SnowV3B { float x, y, z; SnowV3B() {} SnowV3B(float a, float b, float c) { x = a; y = b; z = c; } };
 inline SnowV3B scaled(const SnowV3B &a, float sx, float sy, float sz) { return SnowV3B(a.x * sx, a.y * sy, a.z * sz); }
@@ -254,11 +257,11 @@ extern "C" void snoweffects_uso_func_0000559C(SnowRingB *t) {
                 p++;
             }
             if (!any || dead == t->stride) t->slots[si].state = 2;
-            gSPVertexB(ctx->next(), V2P(&t->vtx[vi]), t->stride, i0);
+            gSPVertexB(ctx->nx(),V2P(&t->vtx[vi]), t->stride, i0);
             if (t->slots[si].tex != prevTex && t->slots[si].tex != 2) {
                 t->w = 32;
                 t->h = 32;
-                LOADTEXB(ctx->next(), V2P(snowb_texTbl_588[t->slots[si].tex]), t->w, t->h);
+                LOADTEXB(ctx->nx(), V2P(snowb_texTbl_588[t->slots[si].tex]),t->w, t->h);
             }
             prevTex = t->slots[si].tex;
             int mask = t->stride * 2 - 1;
@@ -269,10 +272,10 @@ extern "C" void snoweffects_uso_func_0000559C(SnowRingB *t) {
                         if (prevTex == 2) {
                             t->w = 32;
                             t->h = 32;
-                            LOADTEXB(ctx->next(), V2P(snowb_texTbl_588[t->slots[si].tex + j]), t->w, t->h);
+                            LOADTEXB(ctx->nx(), V2P(snowb_texTbl_588[t->slots[si].tex + j]), t->w, t->h);
                         }
-                        TRIB(ctx->next(), (a - t->stride) & mask, (b - t->stride) & mask, b);
-                        TRIB(ctx->next(), b, a, (a - t->stride) & mask);
+                        TRIB(ctx->nx(), (a - t->stride) & mask, (b - t->stride) & mask, b);
+                        TRIB(ctx->nx(), b, a, (a - t->stride) & mask);
                     }
                 }
             }
@@ -284,6 +287,7 @@ extern "C" void snoweffects_uso_func_0000559C(SnowRingB *t) {
             if (++si == t->count) si = 0;
         }
     }
-    ctx->put(0xBB000000, 0);
+    PKTB(ctx->nx(), 0xBB000000, 0);
     gl_func_00000000(/* Node_display */ t);
+    if (ctx) {} /* code-free use: ctx priority 151.2 -> 140.5 (s2 -> s4) */
 }
