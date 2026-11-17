@@ -12,5 +12,9 @@ void port_live_frame_end(unsigned step);          /* publish the frame (end of a
 int port_live_read_pads(HostPad pads[HOST_MAX_PADS]); /* 1 = pads filled from the presenter */
 int port_live_quit(void);                         /* the presenter asked the game to end */
 void port_live_close(void);                       /* the game is ending */
+/* after a gfx task's depth-clear model: store the presenter's newest depth / colour answers into
+ * the images rq asks about (run 859; no-op without PORT_LIVE or a reply file) */
+struct PortFbRequests;
+void port_live_fb_apply(const struct PortFbRequests *rq);
 
 #endif

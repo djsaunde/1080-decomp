@@ -29,11 +29,21 @@
  * name: Return, x, Left, ...) as a synthetic KeyPress (d) / KeyRelease (u) to the window with
  * XSendEvent; it comes back through the X server into the same event loop as a real key.
  * --png DIR writes DIR/live_SEQ_sSTEP.png every --png-every frames (default 0 = never).
+ * --fb-log prints the render-to-texture passes and read-back replies of every frame; --no-fb-reply
+ * creates no reply file (the game keeps its headless depth-clear model: an A/B switch).
  * --frames N exits after N rendered frames (tells the game to quit). --stay keeps the window
  * open after the game ends.
  *
- * Not yet: the framebuffer model's read-backs (DLUMP_FB_READ / FB_DEPTH) are not answered and
- * CPU writes (FB_WRITE, debug paths only) are not composited; see live_shm.h. No audio. */
+ * Render to texture (run 859, f3dreplay's run-855 pass): a task whose colour images are all narrower
+ * than the frame (the name-entry board's 192x96 replay) is rendered in a pass of its own first; its
+ * pixels are read back (patch 0003) as big-endian RGBA5551 into the arena where the other tasks load
+ * that image as a texture, and the textures there are invalidated; the frame is then drawn from the
+ * other tasks.
+ *
+ * Read-backs (run 859): the frame's DLUMP_FB_DEPTH pixels and DLUMP_FB_READ colour images are read
+ * back at the end of its Run (patch 0003) and written to /dev/shm/NAME-fb (LiveFbReply, live_shm.h),
+ * which the game stores into its images at its next gfx task. CPU writes (FB_WRITE, debug paths
+ * only) are not composited. No audio. */
 
 #include <fcntl.h>
 #include <linux/joystick.h>
@@ -354,7 +364,63 @@ struct WideDl {
 struct FrameStats {
     uint64_t bytes = 0, texBytesChanged = 0;
     uint32_t tasks = 0, invalidations = 0, unresolved = 0, badTasks = 0;
+    uint32_t rttTasks = 0, rttBytes = 0;                             /* render to texture */
+    uint32_t depthFar = 0, depthNear = 0, depthOther = 0, colorServed = 0; /* the replies */
 };
+
+/* what one task needs beyond its lists: render to texture, its Z image, its read requests */
+struct TaskInfo {
+    Fast::F3DGfx* root = nullptr;
+    bool off = false;                   /* draws only into an offscreen image (render to texture) */
+    uint32_t img24 = 0, width = 0, height = 0;
+    bool hasZimg = false;
+    Fast::F3DGfx zimg{};                /* its first G_SETZIMG (the prologue, plan 19.9) */
+};
+
+/* f3dreplay's offscreen_target (run 855): every colour image narrower than 320, 16-bit, not the Z image;
+ * the height from the scissor */
+static bool offscreen_target(const std::vector<Chunk>& chunks, TaskInfo* t) {
+    std::vector<uint32_t> zimgs;
+    for (const Chunk& c : chunks) {
+        if (c.kind == DLUMP_IMAGE && (c.aux >> 24) == 0xFE) {
+            zimgs.push_back(c.addr & 0xFFFFFF);
+        }
+    }
+    bool any = false;
+    for (const Chunk& c : chunks) {
+        if (c.kind != DLUMP_IMAGE || (c.aux >> 24) != 0xFF) {
+            continue;
+        }
+        const uint32_t width = (c.aux & 0xFFF) + 1, a = c.addr & 0xFFFFFF;
+        if (width >= 320) {
+            return false;
+        }
+        if (std::find(zimgs.begin(), zimgs.end(), a) != zimgs.end() || ((c.aux >> 19) & 3) != 2) {
+            continue;
+        }
+        t->img24 = a;
+        t->width = width;
+        any = true;
+    }
+    if (!any) {
+        return false;
+    }
+    t->height = 0;
+    for (const Chunk& c : chunks) {
+        if (c.kind != DLUMP_DL) {
+            continue;
+        }
+        for (uint32_t i = 0; i + 8 <= c.size; i += 8) {
+            uint32_t w[2];
+            std::memcpy(w, c.data + i, 8);
+            if ((w[0] >> 24) == 0xED) {
+                t->height = std::max(t->height, (w[1] & 0xFFF) >> 2);
+            }
+        }
+    }
+    t->height = std::min<uint32_t>(t->height ? t->height : 240, 240);
+    return true;
+}
 
 static bool has_data(uint32_t kind) {
     return kind == DLUMP_TASK || kind == DLUMP_VTX || kind == DLUMP_MTX || kind == DLUMP_MOVEMEM ||
@@ -370,7 +436,18 @@ struct Renderer {
     Arena arena;
     /* the lists of the current frame: one vector per task (kept until the next frame) */
     std::vector<std::unique_ptr<std::vector<WideDl>>> dls;
-    std::vector<Fast::F3DGfx> frameList, prologue;
+    std::vector<Fast::F3DGfx> frameList, prologue, offList, offPrologue;
+    /* the current frame's tasks, texture ranges (task, addr, size) and read requests */
+    std::vector<TaskInfo> infos;
+    struct TexRange {
+        size_t task;
+        uint32_t addr, size;
+    };
+    std::vector<TexRange> texRanges;
+    std::vector<uint32_t> fbReads;                         /* colour images (FB_READ addr) */
+    std::vector<std::pair<uint32_t, uint32_t>> fbDepths;   /* (Z image, pixel index) */
+    std::vector<std::vector<uint16_t>> rttPixels, readPixels;
+    LiveFbReply* reply = nullptr;                          /* /dev/shm/NAME-fb */
 
     void init(uint32_t w, uint32_t h) {
         cvars = std::make_shared<Ship::ConsoleVariable>();
@@ -397,6 +474,8 @@ struct Renderer {
      * returns the image's size (0 = malformed) and its widened root in *root */
     size_t task(const uint8_t* p, size_t n, Fast::F3DGfx** root, FrameStats& st) {
         const DlumpHeader* hdr = (const DlumpHeader*)p;
+        const size_t taskIdx = dls.size();
+        TaskInfo info;
         *root = nullptr;
         if (n < sizeof(DlumpHeader) || std::memcmp(hdr->magic, DLUMP_MAGIC, 8) != 0 || hdr->version != DLUMP_VERSION ||
             hdr->byteOrderMark != DLUMP_BYTE_ORDER_MARK) {
@@ -434,6 +513,27 @@ struct Renderer {
             }
             std::memcpy(dst, c.data, c.size);
         }
+        /* render to texture, the texture ranges it may feed, the read requests (deduplicated per frame) */
+        info.off = offscreen_target(chunks, &info);
+        for (const Chunk& c : chunks) {
+            if ((c.kind == DLUMP_TEXTURE || c.kind == DLUMP_TLUT) && c.size != 0) {
+                texRanges.push_back({ taskIdx, c.addr, c.size });
+            } else if (c.kind == DLUMP_FB_READ) {
+                if (std::find(fbReads.begin(), fbReads.end(), c.addr) == fbReads.end() && fbReads.size() < LIVE_FB_COLOR) {
+                    fbReads.push_back(c.addr);
+                }
+            } else if (c.kind == DLUMP_FB_DEPTH) {
+                for (uint32_t i = 0; i + 4 <= c.size; i += 4) {
+                    uint32_t idx;
+                    std::memcpy(&idx, c.data + i, 4);
+                    auto key = std::make_pair(c.addr, idx);
+                    if (idx < LIVE_FB_W * LIVE_FB_H && fbDepths.size() < LIVE_FB_DEPTH &&
+                        std::find(fbDepths.begin(), fbDepths.end(), key) == fbDepths.end()) {
+                        fbDepths.push_back(key);
+                    }
+                }
+            }
+        }
         /* the lists, widened from this task's own words */
         auto v = std::make_unique<std::vector<WideDl>>();
         for (const Chunk& c : chunks) {
@@ -465,15 +565,76 @@ struct Renderer {
             }
         }
         *root = wide(*v, hdr->rootAddr);
+        for (WideDl& d : *v) {
+            for (Fast::F3DGfx& g : d.cmds) {
+                if (!info.hasZimg && ((g.words.w0 >> 24) & 0xFF) == 0xFE) {
+                    info.hasZimg = true;
+                    info.zimg = g;
+                }
+            }
+        }
+        info.root = *root;
+        infos.push_back(info);
         dls.push_back(std::move(v));
         return off;
+    }
+
+    /* a list that calls each root in turn behind a SETZIMG prologue (f3dreplay --then, plan 19.9: 1080
+     * clears Z before its G_SETZIMG; harmless once the interpreter has seen a frame) */
+    static Fast::F3DGfx* chain(std::vector<Fast::F3DGfx>& lst, std::vector<Fast::F3DGfx>& pro,
+                               const std::vector<Fast::F3DGfx*>& rs, const TaskInfo& first) {
+        lst.assign(rs.size() + 1, Fast::F3DGfx{});
+        for (size_t i = 0; i < rs.size(); i++) {
+            lst[i].words.w0 = 0x06000000u; /* G_DL push */
+            lst[i].words.w1 = (uintptr_t)rs[i];
+        }
+        lst[rs.size()].words.w0 = 0xB8000000u; /* G_ENDDL */
+        pro.clear();
+        if (!first.hasZimg) {
+            return lst.data();
+        }
+        pro.resize(3);
+        pro[0] = first.zimg;
+        pro[1].words.w0 = 0x06000000u;
+        pro[1].words.w1 = (uintptr_t)lst.data();
+        pro[2].words.w0 = 0xB8000000u;
+        pro[2].words.w1 = 0;
+        return pro.data();
+    }
+
+    /* the offscreen pass's image (read back, big-endian RGBA5551, width x height) -> the arena, at every
+     * texture chunk of the onscreen tasks that lies in it (f3dreplay's offscreen_store); the textures
+     * cached there are dropped */
+    uint32_t rtt_store(const TaskInfo& o, const std::vector<uint16_t>& px) {
+        uint32_t bytes = 0;
+        const uint32_t size = o.width * o.height * 2;
+        for (const TexRange& r : texRanges) {
+            if (infos[r.task].off) {
+                continue;
+            }
+            const uint32_t base = (r.addr & 0xFF000000u) | o.img24;
+            if (r.addr < base || r.addr >= base + size || !arena.ensure(r.addr, r.size)) {
+                continue;
+            }
+            const uint32_t end = std::min(r.addr + r.size, base + size);
+            for (uint32_t a = (r.addr + 1) & ~1u; a + 2 <= end; a += 2) {
+                std::memcpy((void*)(uintptr_t)a, &px[(a - base) / 2], 2); /* already big-endian */
+                bytes += 2;
+            }
+            const uint32_t lo = r.addr > 0x8000 ? r.addr - 0x8000 : 0;
+            gfx_texture_cache_invalidate_range((const void*)(uintptr_t)lo, end - lo);
+        }
+        return bytes;
     }
 
     /* render one LiveFrame (slot) into the window and present it */
     bool frame(const uint8_t* slot, FrameStats& st) {
         const LiveFrame* lf = (const LiveFrame*)slot;
-        std::vector<Fast::F3DGfx*> roots;
         dls.clear();
+        infos.clear();
+        texRanges.clear();
+        fbReads.clear();
+        fbDepths.clear();
         size_t off = sizeof(LiveFrame);
         st.bytes = lf->bytes;
         for (uint32_t i = 0; i < lf->nTasks; i++) {
@@ -484,50 +645,117 @@ struct Renderer {
                 break;
             }
             off += used;
-            if (r != nullptr) {
-                roots.push_back(r);
-            } else {
+            if (r == nullptr) {
                 st.badTasks++;
             }
         }
-        st.tasks = (uint32_t)roots.size();
-        if (roots.empty()) {
-            return false;
+        /* the tasks to draw: render-to-texture ones apart, unless every task is one */
+        std::vector<Fast::F3DGfx*> onRoots, offRoots;
+        std::vector<size_t> offIdx;
+        size_t withRoot = 0;
+        for (const TaskInfo& t : infos) {
+            withRoot += t.root != nullptr;
         }
-        /* a frame list that calls each task's root in turn (f3dreplay --then) */
-        frameList.assign(roots.size() + 1, Fast::F3DGfx{});
-        for (size_t i = 0; i < roots.size(); i++) {
-            frameList[i].words.w0 = 0x06000000u; /* G_DL push */
-            frameList[i].words.w1 = (uintptr_t)roots[i];
-        }
-        frameList[roots.size()].words.w0 = 0xB8000000u; /* G_ENDDL */
-        /* seed the depth image (f3dreplay's prologue, plan 19.9): 1080 clears Z before its
-         * G_SETZIMG; harmless once the interpreter has seen a frame */
-        Fast::F3DGfx* root = frameList.data();
-        prologue.clear();
-        for (WideDl& d : *dls[0]) {
-            for (Fast::F3DGfx& g : d.cmds) {
-                if (prologue.empty() && ((g.words.w0 >> 24) & 0xFF) == 0xFE) {
-                    prologue.resize(3);
-                    prologue[0] = g;
-                    prologue[1].words.w0 = 0x06000000u;
-                    prologue[1].words.w1 = (uintptr_t)root;
-                    prologue[2].words.w0 = 0xB8000000u;
-                    prologue[2].words.w1 = 0;
-                }
+        for (size_t i = 0; i < infos.size(); i++) {
+            TaskInfo& t = infos[i];
+            if (t.root == nullptr) {
+                continue;
+            }
+            if (withRoot > 1 && t.off) {
+                offRoots.push_back(t.root);
+                offIdx.push_back(i);
+            } else {
+                onRoots.push_back(t.root);
             }
         }
-        if (!prologue.empty()) {
-            root = prologue.data();
+        if (onRoots.empty()) {
+            onRoots.swap(offRoots);
+            for (size_t i : offIdx) {
+                infos[i].off = false;
+            }
+            offIdx.clear();
+        }
+        st.tasks = (uint32_t)onRoots.size() + (uint32_t)offRoots.size();
+        if (onRoots.empty()) {
+            return false;
         }
         gfx->mGameWindowViewport.x = 0;
         gfx->mGameWindowViewport.y = 0;
         gfx->mGameWindowViewport.width = sWin.w;
         gfx->mGameWindowViewport.height = sWin.h;
         std::unordered_map<Mtx*, MtxF> noReplacements;
+        /* the offscreen pass: its pixels are read back at the end of its Run (patch 0003) */
+        if (!offRoots.empty()) {
+            Fast::F3DGfx* offRoot = chain(offList, offPrologue, offRoots, infos[offIdx[0]]);
+            rttPixels.resize(offIdx.size());
+            for (size_t k = 0; k < offIdx.size(); k++) {
+                const TaskInfo& o = infos[offIdx[k]];
+                rttPixels[k].assign((size_t)o.width * o.height, 0);
+                gfx->ReadbackRequestRgba5551(0, 0, o.width, o.height, rttPixels[k].data(), true);
+            }
+            gfx->StartFrame();
+            gfx->Run((Gfx*)offRoot, noReplacements);
+            for (size_t k = 0; k < offIdx.size(); k++) {
+                st.rttBytes += rtt_store(infos[offIdx[k]], rttPixels[k]);
+            }
+            st.rttTasks = (uint32_t)offIdx.size();
+        }
+        /* the frame, from the first task's SETZIMG (f3dreplay); the game's read requests ride on its Run */
+        Fast::F3DGfx* root = chain(frameList, prologue, onRoots, infos[0]);
+        if (reply != nullptr) {
+            readPixels.resize(fbReads.size());
+            for (size_t k = 0; k < fbReads.size(); k++) {
+                readPixels[k].assign((size_t)LIVE_FB_W * LIVE_FB_H, 0);
+                gfx->ReadbackRequestRgba5551(0, 0, LIVE_FB_W, LIVE_FB_H, readPixels[k].data(), true);
+            }
+            for (const auto& d : fbDepths) {
+                gfx->ReadbackRequestDepth(d.second % LIVE_FB_W, d.second / LIVE_FB_W);
+            }
+        }
         gfx->StartFrame();
         gfx->Run((Gfx*)root, noReplacements);
+        if (reply != nullptr) {
+            answer(lf, st);
+        }
         return true;
+    }
+
+    /* the replies (live_shm.h LiveFbReply): what this frame's Run read back, for the images it drew */
+    void answer(const LiveFrame* lf, FrameStats& st) {
+        const uint32_t cimg = (uint32_t)(uintptr_t)gfx->mRdp->color_image_address & 0xFFFFFF;
+        const uint32_t zimg = (uint32_t)(uintptr_t)gfx->mRdp->z_buf_address & 0xFFFFFF;
+        LiveFbReply* r = reply;
+        __atomic_store_n(&r->seq, r->seq + 1, __ATOMIC_RELEASE); /* odd: writing */
+        __atomic_thread_fence(__ATOMIC_SEQ_CST);
+        r->frameSeq = lf->seq;
+        r->step = lf->step;
+        uint32_t n = 0;
+        for (const auto& d : fbDepths) {
+            uint16_t z = 0;
+            if ((d.first & 0xFFFFFF) != zimg || !gfx->ReadbackGetDepth(d.second % LIVE_FB_W, d.second / LIVE_FB_W, &z)) {
+                st.depthOther++;
+                continue;
+            }
+            (z == 0xFFFC ? st.depthFar : st.depthNear)++;
+            r->depth[n].img = d.first;
+            r->depth[n].idx = d.second;
+            r->depth[n].z = z;
+            n++;
+        }
+        r->nDepth = n;
+        n = 0;
+        for (size_t k = 0; k < fbReads.size(); k++) {
+            if ((fbReads[k] & 0xFFFFFF) != cimg) {
+                continue;
+            }
+            r->color[n].img = fbReads[k];
+            std::memcpy(r->pixels[n], readPixels[k].data(), sizeof(r->pixels[n]));
+            n++;
+            st.colorServed++;
+        }
+        r->nColor = n;
+        __atomic_thread_fence(__ATOMIC_SEQ_CST);
+        __atomic_store_n(&r->seq, r->seq + 1, __ATOMIC_RELEASE); /* even: complete */
     }
     void present(const char* pngPath) {
         if (pngPath != nullptr) {
@@ -559,13 +787,17 @@ static void on_signal(int) {
 int main(int argc, char** argv) {
     std::string name = "1080live", pngDir, jsPath = "/dev/input/js0";
     uint32_t scale = 3, pngEvery = 0, maxFrames = 0, slots = LIVE_DEFAULT_SLOTS, slotBytes = LIVE_DEFAULT_SLOT_BYTES;
-    bool stay = false;
+    bool stay = false, fbLog = false, fbReply = true;
     std::vector<Inject> injects;
     for (int i = 1; i < argc; i++) {
         std::string a = argv[i];
         const char* v = i + 1 < argc ? argv[i + 1] : nullptr;
         if (a == "--stay") {
             stay = true;
+        } else if (a == "--fb-log") {
+            fbLog = true;
+        } else if (a == "--no-fb-reply") {
+            fbReply = false;
         } else if (v == nullptr) {
             std::fprintf(stderr, "presenter: %s needs a value\n", a.c_str());
             return 2;
@@ -607,7 +839,7 @@ int main(int argc, char** argv) {
             }
         } else {
             std::fprintf(stderr, "usage: presenter [--shm NAME] [--scale N] [--png DIR] [--png-every N] [--frames N] "
-                                 "[--inject STEP:KEY:d|u,...] [--js DEV] [--slot-mb N] [--stay]\n");
+                                 "[--inject STEP:KEY:d|u,...] [--js DEV] [--slot-mb N] [--stay] [--fb-log] [--no-fb-reply]\n");
             return 2;
         }
     }
@@ -635,15 +867,36 @@ int main(int argc, char** argv) {
     H->slotBytes = slotBytes;
     H->presenterPid = (live_u32)getpid();
     H->pads[0].connected = 1;
+    /* the read-back replies (run 859): a file of their own, ready before the magic */
+    std::string fbPath = path + "-fb";
+    LiveFbReply* reply = nullptr;
+    int ffd = fbReply ? ::open(fbPath.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0600) : -1;
+    if (ffd >= 0 && ftruncate(ffd, (off_t)sizeof(LiveFbReply)) == 0) {
+        void* m = mmap(nullptr, sizeof(LiveFbReply), PROT_READ | PROT_WRITE, MAP_SHARED, ffd, 0);
+        if (m != MAP_FAILED) {
+            reply = (LiveFbReply*)m;
+            std::memset(reply, 0, sizeof(*reply));
+            reply->magic = LIVE_FB_MAGIC;
+            reply->version = LIVE_FB_VERSION;
+        }
+    }
+    if (ffd >= 0) {
+        ::close(ffd);
+    }
+    if (reply == nullptr && fbReply) {
+        std::fprintf(stderr, "presenter: no %s: the game's read-backs will not be answered\n", fbPath.c_str());
+    }
     __atomic_store_n(&H->magic, LIVE_MAGIC, __ATOMIC_RELEASE);
 
     const uint32_t w = 320 * scale, h = 240 * scale;
     if (!sWin.open(w, h, "1080 Snowboarding (live)")) {
         unlink(path.c_str());
+        unlink(fbPath.c_str());
         return 1;
     }
     Renderer R;
     R.init(w, h);
+    R.reply = reply;
     Input in;
     in.openJoystick(jsPath.c_str());
     glClearColor(0, 0, 0, 1);
@@ -653,6 +906,7 @@ int main(int argc, char** argv) {
     std::fflush(stdout);
 
     uint32_t rendered = 0, lastStep = 0, secFrames = 0;
+    uint32_t secRtt = 0, secFar = 0, secNear = 0, secOther = 0, secColor = 0;
     uint64_t secBytes = 0;
     double secStart = now_s(), secRender = 0;
     bool quit = false;
@@ -709,6 +963,23 @@ int main(int argc, char** argv) {
                 rendered++;
                 secFrames++;
                 secBytes += st.bytes;
+                secRtt += st.rttTasks;
+                secFar += st.depthFar;
+                secNear += st.depthNear;
+                secOther += st.depthOther;
+                secColor += st.colorServed;
+                if (fbLog && st.rttTasks + st.depthFar + st.depthNear + st.depthOther + st.colorServed != 0) {
+                    std::printf("presenter: frame %u step %u: render to texture %u (%u bytes), depth %u far / %u nearer / "
+                                "%u not served, colour %u\n", rendered - 1, lf->step, st.rttTasks, st.rttBytes,
+                                st.depthFar, st.depthNear, st.depthOther, st.colorServed);
+                    if (R.reply != nullptr && R.reply->nDepth != 0) {
+                        std::printf("presenter:   z");
+                        for (uint32_t k = 0; k < R.reply->nDepth; k++) {
+                            std::printf(" %u:%04x", R.reply->depth[k].idx, R.reply->depth[k].z);
+                        }
+                        std::printf("\n");
+                    }
+                }
             }
             secRender += now_s() - t0;
             if (st.badTasks != 0 || st.unresolved != 0) {
@@ -750,6 +1021,11 @@ int main(int argc, char** argv) {
                         secFrames, secFrames ? secBytes / 1048576.0 / secFrames : 0.0,
                         secFrames ? secRender * 1000.0 / secFrames : 0.0, lastStep, H->dropped, lastPad.button,
                         lastPad.stick_x, lastPad.stick_y);
+            if (secRtt + secFar + secNear + secOther + secColor != 0) {
+                std::printf("presenter:   render to texture %u, depth replies %u far / %u nearer / %u not served, "
+                            "colour replies %u\n", secRtt, secFar, secNear, secOther, secColor);
+            }
+            secRtt = secFar = secNear = secOther = secColor = 0;
             std::fflush(stdout);
             /* a game that died without saying so (a crash) */
             if (H->gamePid != 0 && !__atomic_load_n(&H->gameExited, __ATOMIC_ACQUIRE) && kill((pid_t)H->gamePid, 0) != 0) {
@@ -772,5 +1048,6 @@ int main(int argc, char** argv) {
     }
     std::printf("presenter: %u frames rendered, %u dropped by the game, %u too big\n", rendered, H->dropped, H->tooBig);
     unlink(path.c_str());
+    unlink(fbPath.c_str());
     return 0;
 }

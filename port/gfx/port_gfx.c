@@ -505,7 +505,8 @@ void port_gfx_task(OSTask_t *task) {
     sNTaskImgs = 2;
 #endif
     /* option (b), the default here: the dump goes to fast3d/f3dreplay, the DLUMP_FB_* chunks with it.
-     * The game itself gets the depth-clear model (above) for its depth reads. */
+     * The game itself gets the depth-clear model (above) for its depth reads, and with PORT_LIVE the
+     * presenter's answers over it (port_live_fb_apply). */
 #ifndef PORT_GFX_FAST3D
     {
         static int zclear = -1;
@@ -516,6 +517,8 @@ void port_gfx_task(OSTask_t *task) {
             const PortFbRequests *rq = port_fb_requests();
             depth_clear_model((u32)(size_t)task->data_ptr, rq);
         }
+        /* PORT_LIVE (run 859): the presenter's real depth / colour over the clear, where it answered */
+        port_live_fb_apply(port_fb_requests());
     }
 #endif
     port_fb_task_done(sTaskImgs, sNTaskImgs);

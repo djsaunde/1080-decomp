@@ -22,11 +22,10 @@
  * built from the keyboard / gamepad; the game copies it at each step's input
  * poll (host_read_pads). padSeq increments on every write (a debugging aid).
  *
- * Read-backs (planned, plan 19.10 / 19.11): the DLUMP_FB_READ / DLUMP_FB_DEPTH
- * chunks already travel in the frame; the answers (the 320x240 RGBA5551 frame,
- * the requested depth pixels) would come back in the reserved fbReply area
- * with one frame of latency, the semantics the game already has (11.2). Not
- * served yet.
+ * Read-backs (presenter -> game, plan 19.10 / 19.11, run 859): the
+ * DLUMP_FB_READ / DLUMP_FB_DEPTH chunks travel in the frame; the answers come
+ * back in a second file, /dev/shm/<name>-fb (LiveFbReply below), so this
+ * header's layout is untouched.
  */
 #ifndef PORT_GFX_LIVE_SHM_H
 #define PORT_GFX_LIVE_SHM_H
@@ -82,5 +81,49 @@ typedef struct LiveFrame {
     live_u32 step;   /* SysLib.frameCount of the step (state.log's F) */
     live_u32 seq;    /* the frame's number since boot (head at publish) */
 } LiveFrame;
+
+/* ---------------- the framebuffer replies (run 859) ----------------
+ *
+ * /dev/shm/<name>-fb, created by the presenter before it writes LIVE_MAGIC, holds one
+ * LiveFbReply: the answers to the frame's DLUMP_FB_DEPTH / DLUMP_FB_READ requests, read back
+ * (patch 0003) at the end of the frame's Run. The game (port_live.c) picks the newest reply up at
+ * each gfx task and stores it into the images it asked about, after port_gfx.c's depth-clear model:
+ * the clear stays the fallback for every pixel no reply covers (no presenter, an older presenter
+ * without the file, the first frames). Latency: one to two steps (the N64's reader sees the last
+ * completed frame; here the presenter renders asynchronously).
+ *
+ * Seqlock: the presenter makes seq odd, writes, makes it even (release); the game copies the
+ * fields it uses and keeps them only if seq was even and unchanged across the copy. */
+#define LIVE_FB_MAGIC 0x5242464Cu /* "LFBR" */
+#define LIVE_FB_VERSION 1u
+#define LIVE_FB_W 320
+#define LIVE_FB_H 240
+#define LIVE_FB_DEPTH 64 /* = PORT_FB_MAX_DEPTH */
+#define LIVE_FB_COLOR 4  /* = PORT_FB_MAX_COLOR */
+
+typedef struct LiveFbDepth {
+    live_u32 img; /* the requested Z image (the game's full pointer, as in the FB_DEPTH chunk) */
+    live_u32 idx; /* y * 320 + x */
+    live_u32 z;   /* the N64 Z value (0xFFFC = far), host order; the game stores it big-endian */
+} LiveFbDepth;
+
+typedef struct LiveFbColor {
+    live_u32 img; /* the requested colour image (the FB_READ chunk's address) */
+    live_u32 pad;
+} LiveFbColor;
+
+typedef struct LiveFbReply {
+    live_u32 magic;   /* LIVE_FB_MAGIC */
+    live_u32 version; /* LIVE_FB_VERSION */
+    volatile live_u32 seq; /* the seqlock (odd while the presenter writes) */
+    live_u32 frameSeq;     /* LiveFrame.seq of the frame answered */
+    live_u32 step;         /* LiveFrame.step of the frame answered */
+    live_u32 nDepth;
+    live_u32 nColor;
+    live_u32 reserved[9];
+    LiveFbDepth depth[LIVE_FB_DEPTH];
+    LiveFbColor color[LIVE_FB_COLOR];
+    live_u16 pixels[LIVE_FB_COLOR][LIVE_FB_W * LIVE_FB_H]; /* RGBA5551, big-endian (the N64 image) */
+} LiveFbReply;
 
 #endif
