@@ -141,6 +141,9 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * Folds zf1(halfW) + zf1(cx) in the EE word (98.84 %): halfW / cx / depth colours. The sizes read plain p->size
  * (no zf2(w) fold, 98.90 %): 1 / w f14, cy f12 as the target. Left: x f16 / -halfH f18 swapped, the int
  * t-register rotations, and the temp area / spill 4 bytes low (r 172, spill 112; target 176 / 116).
+ * agent-c run 782 (98.94 -> 98.95 %): `lp = &self->lastCam` before the first SNOW_CAM2 load gives the lp item a
+ * lower uopt index than the SNOW_CAM2 item, so lp takes the first spill temp (spill 116, as the target). A dead
+ * `i = 0` before it keeps i's pick (t3) ahead of lp's (t4); tex now goes through d. r is still 172 (target 176).
  * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
 extern "C" float gl_func_00000000_snow_randf(...);   /* sys_randf (typed blank jal: float return) */
@@ -234,6 +237,8 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     float wy;
     float wx;
 
+    i = 0;
+    lp = &self->lastCam;
     gl_func_00000000(self);
     cam.x = SNOW_CAM2->obj->pos.x * SNOW_SCALE(0);
     cam.y = SNOW_CAM2->obj->pos.y * SNOW_SCALE(1);
@@ -243,8 +248,8 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
         self->filled = 1;
     }
     c = SNOW_CAM2->dl;
-    lp = (SnowV3d *)self->tex;
-    d = gl_func_00000000(((SnowDLHolder2 *)lp)->dl);
+    d = (int)self->tex;
+    d = gl_func_00000000(((SnowDLHolder2 *)d)->dl);
     snowW(c->nextR(), 0x06000000, d);
     gl_func_00000000(SNOW_CAM2->view, m);
     gl_func_00000000(SNOW_CAM2->obj->rot, rot);
@@ -256,7 +261,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     self->visible = 0;
     {
     SnowV3d t;
-    for (i = 0, p = self->items, lp = &self->lastCam; i < self->count; i++, p++) {
+    for (i = 0, p = self->items; i < self->count; i++, p++) {
         p->pos += (t = (cam - *lp) * self->follow);
         x = p->pos.x; y = p->pos.y; z = p->pos.z;
         wz = 0.0f; wy = 0.0f; wx = 0.0f;
