@@ -677,7 +677,40 @@ class Rom:
         if idx is None:
             return None
         ex, name = self.res.target(md, idx)
+        mm = re.fullmatch(r'(\w+)\+0x([0-9A-Fa-f]+)', name or '')
+        if mm and asm_pad().get(mm.group(1)) == int(mm.group(2), 16):
+            return mm.group(1)      # a jal past a libultra .s copy's leading padding: the function
         return name
+
+
+_PAD = None
+
+
+def asm_pad():
+    """asm function (port/sourcemap.tsv `.s` source) -> bytes of leading nop padding before its
+    first instruction: splat starts a libultra copy at the preceding object's alignment words, so
+    `gl_osSetIntMask+0x8` is the function itself (port-gen-binds.py asm_pad, plan 16.6)"""
+    global _PAD
+    if _PAD is None:
+        _PAD = {}
+        try:
+            rows = [l.rstrip('\n').split('\t') for l in open('port/sourcemap.tsv') if not l.startswith('#')]
+        except OSError:
+            rows = []
+        for r in rows:
+            if len(r) > 2 and r[2].endswith('.s') and os.path.exists(r[2]):
+                n, inside = 0, False
+                for line in open(r[2], errors='replace'):
+                    code = line.split('#')[0].strip()
+                    if code.startswith('glabel ') and code.split()[1] == r[0]:
+                        inside = True
+                    elif inside and code:
+                        if code != 'nop':
+                            break
+                        n += 1
+                if n:
+                    _PAD[r[0]] = 4 * n
+    return _PAD
 
 
 # ---------------------------------------------------------------- planning
