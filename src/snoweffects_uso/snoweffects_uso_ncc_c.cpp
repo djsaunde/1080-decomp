@@ -3,6 +3,7 @@
  * Kept apart from agent-h's snoweffects_uso_ncc*.cpp and agent-e's _e donor (own Makefile block at the
  * end of the Makefile). NCC donors build without -I include. */
 #include "../game_libs/ncc_drafts/gbi_subset.h"
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" int gl_func_00000000(...);
 extern "C" void gl_func_00000000_snow_v(...);   /* the two matrix calls, void-typed: keeps v0 free for the FA count (agent-e run 786) */
 extern "C" char D_00000000[];
@@ -51,8 +52,8 @@ struct SnowTex {
 #define SNOW_PH(p, off) (*(int *)((char *)(p) + (off)) & 0)
 extern "C" void SnowPool_buildTexDL_00000270(SnowTex *t) {
     t->name = D_00000000 + 0x2A8;
-    t->dl = (GCtx *)gl_func_00000000(0, D_00000000 + 0x2BC, 20, 0, 0, 0, 0);
-    gl_func_00000000_snow_reset(t->dl);
+    t->dl = (GCtx *)CALL(gfx_newDLContext)(0, D_00000000 + 0x2BC, 20, 0, 0, 0, 0);
+    XCALL(gl_func_00000000_snow_reset, gfx_resetDLContext)(t->dl);
     gDPWord(t->dl->nextR(), 0xE7000000, 0);
     gDPWord(t->dl->nextR(), 0xBA001402, 0);
     gDPWord(t->dl->nextR(), 0xBA001301, 0);
@@ -257,20 +258,20 @@ extern "C" void SnowFall_display_000028E0(SnowFallD *self) {
 
     i = 0;
     lp = &self->lastCam;
-    gl_func_00000000(self);
+    CALL(SnowFall_buildFrustum_0000374C)(self);
     cam.x = SNOW_CAM2->obj->pos.x * SNOW_SCALE(0);
     cam.y = SNOW_CAM2->obj->pos.y * SNOW_SCALE(1);
     cam.z = SNOW_CAM2->obj->pos.z * SNOW_SCALE(2);
     if (self->filled == 0) {
-        gl_func_00000000(self);
+        CALL(SnowFall_fill_000039C4)(self);
         self->filled = 1;
     }
     c = SNOW_CAM2->dl;
     d = (int)self->tex;
-    d = gl_func_00000000(((SnowDLHolder2 *)d)->dl);
+    d = CALL(gl_osVirtualToPhysical)(((SnowDLHolder2 *)d)->dl);
     snowW(c->nextR(), 0x06000000, idn3(d));
-    gl_func_00000000_snow_v(SNOW_CAM2->view, m);
-    gl_func_00000000_snow_v(SNOW_CAM2->obj->rot, rot);
+    XCALL(gl_func_00000000_snow_v, math_mtx4Copy)(SNOW_CAM2->view, m);
+    XCALL(gl_func_00000000_snow_v, math_mtx4Copy)(SNOW_CAM2->obj->rot, rot);
     halfW = (float)(SNOW_CAM2->scrW / 2);
     halfH = (float)(SNOW_CAM2->scrH / 2);
     gDPWord(c->next(), 0xFA000000,
@@ -310,7 +311,7 @@ extern "C" void SnowFall_display_000028E0(SnowFallD *self) {
             p->pos.x = p->pos.x + self->axis[1 + zf2(wy, 0)].x * wy;
             p->pos.y = p->pos.y + self->axis[1].y * wy;
             p->pos.z = p->pos.z + self->axis[1].z * wy;
-            if (self->fadeChance < gl_func_00000000_snow_randf()) {
+            if (self->fadeChance < XCALL(gl_func_00000000_snow_randf, sys_randf)()) {
                 if (self->fadeIn != 0) {
                     p->alpha = 1.0f;
                 } else {

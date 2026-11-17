@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for snoweffects.uso 0x47D4 (the trail emitter update), EXACT (agent-h run 709),
  * REPLACE_FUNC_BODY-spliced over the placeholder in snoweffects_uso.c in both build trees.
  * u4C = +-cam+0x970 (flag 0x80); p / q zeroed; call 0x4374; hits / u80; on = 0x46BC(t); alpha from
@@ -98,7 +99,7 @@ extern "C" void SnowRing_emit_000047D4(SnowEm *t) {
     t->q.x = i; t->q.y = i; t->q.z = i;
     t->len = t->u34;
     t->u40 = t->u38;
-    gl_func_00000000(t);  /* 0x4374 */
+    CALL(SnowRing_updateBasis_00004374)(t);  /* 0x4374 */
     if (t->hits <= 0) {
         t->u80 = 1;
     } else {
@@ -108,7 +109,7 @@ extern "C" void SnowRing_emit_000047D4(SnowEm *t) {
     if ((cam->mode != 98 && cam->mode != 97) || cam->speed < 5.0f) {
         t->hits = 0;
     }
-    t->on = gl_func_00000000_snow_46bc(t);
+    t->on = XCALL(gl_func_00000000_snow_46bc, SnowRing_emitTick_000046BC)(t);
     cam = t->cam;
     if (cam->speed < t->u160) {
         ab = t->u160 - 5.0f; a = t->u164 / ab * (cam->speed - 5.0f);
@@ -128,14 +129,14 @@ extern "C" void SnowRing_emit_000047D4(SnowEm *t) {
     }
     P = t->p;
     Q = t->q;
-    gl_func_00000000_snow_4714(t, t->on, t->prev, alpha);
+    XCALL(gl_func_00000000_snow_4714, SnowRing_setSlotState_00004714)(t, t->on, t->prev, alpha);
     if (t->slots[t->write].state == 2) {
         alpha = 0.0f;
     }
     if (t->stride == 4 && (cam = t->cam)->mode == 98) {
         lim = t->u158;
         dv = cam->v318;
-        gl_func_00000000(&dv);  /* math_vec3Normalize */
+        CALL(math_vec3Normalize)(&dv);  /* math_vec3Normalize */
         f = t->u154; dv.scale(f);
     } else {
         lim = 0.0f;

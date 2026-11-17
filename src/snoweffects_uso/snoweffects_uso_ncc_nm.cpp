@@ -21,6 +21,7 @@
  * the dl use of the EndDL packet (v1). The N1 hooks are no longer used. 0x1A18's texture is IA8.
  * Run 704 (agent-c): 0x1E60 EXACT the same way (cut sites of its own, see the function). */
 #include "../game_libs/ncc_drafts/gbi_subset.h"
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" int gl_func_00000000(...);
 extern "C" char D_00000000[];
 /* the textures (Data+0x6FD8 / 0x6BD0 / 0x5AC0 / 0x73E0; USO reloc carries the offset, lo16 0) */
@@ -98,8 +99,8 @@ struct SnowTex {
   XgDPLoadTileGeneric(m7, pkt, G_SETTILESIZE, G_TX_RENDERTILE, (uls)<<G_TEXTURE_IMAGE_FRAC, (ult)<<G_TEXTURE_IMAGE_FRAC, (lrs)<<G_TEXTURE_IMAGE_FRAC, (lrt)<<G_TEXTURE_IMAGE_FRAC) }
 extern "C" void PowderParticles_buildTexDL_000015D0(SnowTex *t) {
     t->name = D_00000000 + 0x2C8;
-    t->dl = (GCtx *)gl_func_00000000(0, D_00000000 + 0x2E0, 20, 0, 0, 0, 0);
-    gl_func_00000000_snow_reset(t->dl);
+    t->dl = (GCtx *)CALL(gfx_newDLContext)(0, D_00000000 + 0x2E0, 20, 0, 0, 0, 0);
+    XCALL(gl_func_00000000_snow_reset, gfx_resetDLContext)(t->dl);
     XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC);
     t->w = 32;
     t->h = 32;
@@ -123,8 +124,8 @@ extern "C" void PowderParticles_buildTexDL_000015D0(SnowTex *t) {
 
 extern "C" void NormalParticles_buildTexDL_00001A18(SnowTex *t) {
     t->name = D_00000000 + 0x2EC;
-    t->dl = (GCtx *)gl_func_00000000(0, D_00000000 + 0x304, 20, 0, 0, 0, 0);
-    gl_func_00000000_snow_reset(t->dl);
+    t->dl = (GCtx *)CALL(gfx_newDLContext)(0, D_00000000 + 0x304, 20, 0, 0, 0, 0);
+    XCALL(gl_func_00000000_snow_reset, gfx_resetDLContext)(t->dl);
     XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC);
     t->w = 32;
     t->h = 32;
@@ -154,8 +155,8 @@ extern "C" void NormalParticles_buildTexDL_00001A18(SnowTex *t) {
  * for the jr ra delay slot in this form. */
 extern "C" void SpecParticles_buildTexDL_00001E60(SnowTex *t) {
     t->name = D_00000000 + 0x310;
-    t->dl = (GCtx *)gl_func_00000000(0, D_00000000 + 0x328, 20, 0, 0, 0, 0);
-    gl_func_00000000_snow_reset(t->dl);
+    t->dl = (GCtx *)CALL(gfx_newDLContext)(0, D_00000000 + 0x328, 20, 0, 0, 0, 0);
+    XCALL(gl_func_00000000_snow_reset, gfx_resetDLContext)(t->dl);
     XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC);
     t->w = 64;
     t->h = 64;
@@ -190,8 +191,8 @@ extern "C" void SnowFall_buildTexDL_00002310(SnowTex *t) {
     t->fCC = 0.5f;
     t->fA4 = snow_ro_8;
     t->f98 = 0.0f; t->f9C = 0.0f; t->fA0 = 0.0f;
-    t->dl = (GCtx *)gl_func_00000000(0, D_00000000 + 0x340, 20, 0, 0, 0, 0);
-    gl_func_00000000_snow_reset(t->dl);
+    t->dl = (GCtx *)CALL(gfx_newDLContext)(0, D_00000000 + 0x340, 20, 0, 0, 0, 0);
+    XCALL(gl_func_00000000_snow_reset, gfx_resetDLContext)(t->dl);
     XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC);
     t->w = 8;
     t->h = 8;

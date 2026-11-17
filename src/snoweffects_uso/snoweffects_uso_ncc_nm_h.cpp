@@ -7,6 +7,7 @@ extern "C" int gl_func_00000000(...);
 
 /* ---- SnowPool_display_00000C90 (moved from agent-c's snoweffects_uso_ncc_c.cpp, agent-h run 699) ---- */
 #include "../game_libs/ncc_drafts/gbi_subset.h"
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 struct GCtx;
 /* zero-code use counter for the append inlines (defined before GCtx; z0 below is the same thing) */
 inline int zc(int z) { return z; }
@@ -201,7 +202,7 @@ extern "C" SnowRoData snow_rodata_C90;
 inline SnowV3c scaled(const SnowV3c &a) { return SnowV3c(a.x * snow_gfx_scale_128.sx, a.y * snow_gfx_scale_12C.sy, a.z * snow_gfx_scale_130.sz); }
 /* the texture display-list call: the texture goes in as the second inline parameter (after a constant dummy), so it
  * sits on the second pooled word, which the s-middle ternary temp reuses (a1 as in the target). */
-inline int tcall1(int d0, SnowDLHolder *t) { d0 = d0; return gl_func_00000000(t->dl, t); }
+inline int tcall1(int d0, SnowDLHolder *t) { d0 = d0; return CALL(gl_osVirtualToPhysical)(t->dl, t); }
 
 extern "C" void SnowPool_display_00000C90(SnowSprites *self) {
     GCtx *c = SNOW_CAM->dl;
@@ -222,7 +223,7 @@ extern "C" void SnowPool_display_00000C90(SnowSprites *self) {
     d = tcall1(0, self->tex);
     l = c->dl;
     putw(c->atIq(l, l->count), 0x06000000, d);
-    gl_func_00000000(SNOW_CAM->view, m);
+    CALL(math_mtx4Copy)(SNOW_CAM->view, m);
     halfW = (float)(SNOW_CAM->scrW / 2);
     halfH = (float)(SNOW_CAM->scrH / 2);
     for (i = 0, p = self->items; i < self->count; i++, p++) {

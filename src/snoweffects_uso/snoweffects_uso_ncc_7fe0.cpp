@@ -8,6 +8,7 @@
  * Dummy arguments must be constants: `s` dummies grow the rgba block past uopt's block size and split it.
  */
 #include "snoweffects_ncc.h"
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* the callees through typed 0-pinned aliases (the USO jals are blank): 0x4374 (void), 0x46BC (int),
  * SnowRing_setSlotState_00004714 (float in a3) */
 extern "C" {
@@ -233,7 +234,7 @@ extern "C" void BoardSpray_emit_00007FE0(TTrail *t) {
     t->a.x = i = 0; t->a.y = i; t->a.z = i; t->b.x = i; t->b.y = i; t->b.z = i;
     t->f3C = t->f34;
     t->f40 = t->f38;
-    gl_func_00000000_snowa_v(t); /* 0x4374 */
+    XCALL(gl_func_00000000_snowa_v, SnowRing_updateBasis_00004374)(t); /* 0x4374 */
     v = t->speed;
     if (t->cam->speed < 60.0f || fabs_(v) < t->lo) {
         s = 0.0f;
@@ -262,10 +263,10 @@ extern "C" void BoardSpray_emit_00007FE0(TTrail *t) {
     if (st0(t->cam) != 97 || spd1(t->cam) < 60.0f || fabs_(s) == 0.0f) {
         t->hits = 0;
     }
-    t->on = gl_func_00000000_snow_46bc(t); /* 0x46BC */
+    t->on = XCALL(gl_func_00000000_snow_46bc, SnowRing_emitTick_000046BC)(t); /* 0x46BC */
     t->slots[t->write].unk04[0] = t->mode;
     w = t->f164;
-    gl_func_00000000_snow_4714(t, t->on, t->prevOn, w); /* SnowRing_setSlotState_00004714 */
+    XCALL(gl_func_00000000_snow_4714, SnowRing_setSlotState_00004714)(t, t->on, t->prevOn, w); /* SnowRing_setSlotState_00004714 */
     if (t->slots[t->write].state == 2) {
         s *= 0.25f;
     }

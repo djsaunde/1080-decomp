@@ -350,11 +350,11 @@ SnowParticle *SnowPool_spawnRandom_0000097C(SnowPool *this, Vec3 *pos, Vec3 *vel
         p->vel.y = y;
         p->vel.x = x;
         p->unk24 = *(f32 *)&D_00000000;
-        r = gl_func_00000000_snow_randf() /* sys_randf */; p->unk38 = (0, 10.0f) + r * 2; p->unk3C = 1.0f;
+        r = XCALL(gl_func_00000000_snow_randf, sys_randf)() /* sys_randf */; p->unk38 = (0, 10.0f) + r * 2; p->unk3C = 1.0f;
         p->unk44 = 0.0f;
         p->unk30 = 256.0f;
         p->unk34 = 16.0f;
-        r = gl_func_00000000_snow_randf() /* sys_randf */;
+        r = XCALL(gl_func_00000000_snow_randf, sys_randf)() /* sys_randf */;
         p->col.r = 251;
         p->col.g = 251;
         p->col.b = 251;
@@ -1241,11 +1241,11 @@ void LocalLight_flicker_00009C48(SnowGlow *this, char *src) {
 void *LocalLightType_create_00009E10(char *type) {
     int *item;
     int *head;
-    item = (int *)gl_func_00000000(0) /* 0x9328 ctor */;
+    item = (int *)CALL(LocalLight_ctor_00009328)(0) /* 0x9328 ctor */;
     *(float *)((char *)item + 0x70) = 1.0f;
     head = *(int **)(type + 0x40);
     if (*(int **)(type + 0x40) != 0) {
-        gl_func_00000000( /* list_append */ (char *)item + 0x10, head, *(int **)(type + 0x40));
+        CALL(list_append)( /* list_append */ (char *)item + 0x10, head, *(int **)(type + 0x40));
         if ((int)NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
