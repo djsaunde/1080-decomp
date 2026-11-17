@@ -10,7 +10,7 @@
  * Load-bearing shapes (run 132, agent-c: 43 raw -> exact):
  *  - NO mask on the CUR_D increment; the two dead u8 masks go in the flags
  *    read-modify-writes instead (`obj->flags = (obj->flags & 0xFF) | 4` in
- *    case 0x41 and `| 1` in case 0x4C): each burns one ugen t-register at the
+ *    case 0x41 and `| 1` in case 0x4D): each burns one ugen t-register at the
  *    point where the target's temps run one ahead.
  *  - case 0x41's compare operand order: the target's `c.eq.s $f0,$f4` needs the
  *    seq-player field FIRST (`obj->fadeVolumeScale != ent->arg.asFloat`); the
@@ -20,6 +20,11 @@
  *    arg1 = channel / volume 0x2, arg2 = IO slot 0x3, arg 0x4. gl_func_0003ADFC
  *    is AudioThread_ProcessGlobalCmd (splat 0x26790), gl_func_0003BA24 the
  *    channel handler (splat 0x273B8).
+ *  - case labels (agent-c run 829) read off the ROM table (port/tools/jumptable-audit.py):
+ *    OoT's seq-player ops, 0x47 SET_TEMPO, 0x48 SET_TRANSPOSITION, 0x49 CHANGE_TEMPO,
+ *    0x4A / 0x4B FADE_TO_SET / SCALED_VOLUME, 0x4C RESET_VOLUME, 0x4D SET_BEND,
+ *    0x4E CHANGE_TEMPO_SEQTICKS (0x42..0x45 have no body). The pinned table made the old
+ *    labels (0x42..0x4C in body order) match too; gcc builds its table from the labels.
  *  - the levers documented above AudioThread_ProcessCmds in game_libs_post.c (the
  *    extern struct-array base, per-access cursor aliases, dead masks in the
  *    prologue, `if (ent) {}` / `if (cur) {}` empty tests). */
@@ -130,25 +135,25 @@ void AudioThread_ProcessCmds(u32 arg0) {
 #endif
                         }
                         break;
-                    case 0x42:
+                    case 0x47:
                         obj->tempo = ent->arg.asInt * 0x30;
                         break;
-                    case 0x43:
+                    case 0x49:
                         obj->tempoChange = ent->arg.asInt * 0x30;
                         break;
-                    case 0x44:
+                    case 0x4E:
                         obj->tempoChange = ent->arg.asInt;
                         break;
-                    case 0x45:
+                    case 0x48:
                         obj->transposition = ent->arg.asSbyte;
                         break;
                     case 0x46:
                         obj->seqScriptIO[ent->arg2] = ent->arg.asSbyte;
                         break;
-                    case 0x47:
+                    case 0x4A:
                         f2 = (f32) (s32) ent->arg1 / 127.0f;
                         goto block_24;
-                    case 0x48:
+                    case 0x4B:
                         f2 = ((f32) (s32) ent->arg1 / 100.0f) * obj->fadeVolume;
 block_24:
                         if (obj->state != 2) {
@@ -163,7 +168,7 @@ block_24:
                             }
                         }
                         break;
-                    case 0x4A:
+                    case 0x4C:
                         if (obj->state != 2) {
                             tmp = ent->arg.asInt;
                             if (tmp == 0) {
@@ -175,7 +180,7 @@ block_24:
                             }
                         }
                         break;
-                    case 0x4C:
+                    case 0x4D:
                         obj->bend = ent->arg.asFloat;
 #ifdef PORT
                         if (obj->bend == 1.0f) {
@@ -191,10 +196,7 @@ block_24:
                         }
 #endif
                         break;
-                    case 0x4D:
-                    case 0x4E:
-                        break;
-                    }
+                                        }
                 } else {
 #ifdef PORT
                     if (*(u32 *)obj & AUDIO_WORDBIT(0)) { /* seqPlayer->enabled (plan 18.3) */

@@ -36,30 +36,37 @@
  *    edge with the loop-top `slti` duplicated into its delay slot and the
  *    `move v0,zero; jr ra; nop` exit; the hoisted `li a2,0x40` is the
  *    switch's out-of-table compare constant made loop-invariant.
- *  - `return (unsigned char)(o[0x15] + 12)` = lbu/addiu/jr/andi tail. */
+ *  - `return (unsigned char)(o[0x15] + 12)` = lbu/addiu/jr/andi tail.
+ *
+ * Case labels (agent-c run 829): the table is indexed sel - 1, and the ROM's entries
+ * (port/tools/jumptable-audit.py) give one bit per arm: sel 1 -> the o[0x14] test, 2 -> 0,
+ * 4 -> 2, 8 -> 4, 16 -> 6, 32 -> 8 (64 -> 10 out of the table); every other value narrows the
+ * mask, so the loop picks the lowest set bit. The reading above (2, 3, 5, 9, 17, 1, with
+ * `case 32: default:`) is one entry off; the pinned table made it match as well (same
+ * range 1..32, same arm order), but on the PC port gcc builds its table from the labels.
+ * case 32 is now the `return 8` arm and still sets the table's upper bound. */
 int snd_SoundObjEventIndex(unsigned char *o) {
     unsigned char mask = 0xFF;
     unsigned char sel = o[0x31];
     do {
         switch (sel) {
-        case 2:
+        case 1:
             if (o[0x14] == 1) {
                 return (unsigned char)(o[0x15] + 12);
             }
             return 16;
-        case 3:
+        case 2:
             return 0;
-        case 5:
+        case 4:
             return 2;
-        case 9:
+        case 8:
             return 4;
-        case 17:
+        case 16:
             return 6;
-        case 1:
+        case 32:
             return 8;
         case 0x40:
             return 10;
-        case 32:
         default:
             mask <<= 1;
             sel &= mask;

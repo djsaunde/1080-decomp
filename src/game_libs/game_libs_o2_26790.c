@@ -11,7 +11,13 @@
  * gAudioCtx as a typed extern struct (cursor-first notes[i] addu), seqPlayer /
  * NoteSampleState flags as u32 bitfield runs, the mute / unmute loops walking a
  * byte pointer from their own base symbol (gAudioContext_26790_ent) so the bound re-reads
- * and the two read-modify-write stores stay. */
+ * and the two read-modify-write stores stay.
+ * Case labels (agent-c run 829): read off the ROM's two tables (port/tools/jumptable-audit.py).
+ * The pinned tables made the old labels (each one value too high, 0xF3 falling into a 0xF0
+ * label) match too: same bounds, same body order. On the PC port gcc builds the table from the
+ * labels, and with the old ones 0x82 (INIT_SEQPLAYER) ran SyncLoadSeqParts: no sequence ever
+ * started. 0xF2 is OoT's UNMUTE (with the optional note stop), 0xF9 the spec change, 0xFB the
+ * store; 0x84 / 0x86 / 0x87 / 0x89.. / 0xF7 / 0xF8 / 0xFA have no body. */
 
 typedef struct {
     u8 op; u8 arg0; u8 arg1; u8 arg2;
@@ -54,21 +60,21 @@ void AudioThread_ProcessGlobalCmd(gl_26790_AudioCmd *cmd) {
     u8 *p;
 
     switch (cmd->op) {
-        case 0x82:
+        case 0x81:
             CALL(AudioLoad_SyncLoadSeqParts)(cmd->arg1, 3);
             break;
 
-        case 0x83:
-        case 0x89:
+        case 0x82:
+        case 0x88:
             CALL(AudioLoad_SyncInitSeqPlayer)(cmd->arg0, cmd->arg1, cmd->arg2);
             func_3b164(cmd->arg0, cmd->asInt);
             break;
 
-        case 0x86:
+        case 0x85:
             CALL(AudioLoad_SyncInitSeqPlayerSkipTicks)(cmd->arg0, cmd->arg1, cmd->asInt);
             break;
 
-        case 0x84:
+        case 0x83:
             if (gAudioCtx.seqPlayers[cmd->arg0].enabled) {
                 if (cmd->asInt == 0) {
                     CALL(AudioSeq_SequencePlayerDisable)(&gAudioCtx.seqPlayers[cmd->arg0]);
@@ -78,11 +84,11 @@ void AudioThread_ProcessGlobalCmd(gl_26790_AudioCmd *cmd) {
             }
             break;
 
-        case 0xF1:
+        case 0xF0:
             gAudioCtx.soundOutputMode = cmd->asUInt;
             break;
 
-        case 0xF2:
+        case 0xF1:
             p = gAudioContext_26790_ent;
             for (i = 0; i < gAudioCtx.numSequencePlayers; i++) {
                 ((gl_26790_Ctx *)p)->seqPlayers[0].muted = 1;
@@ -91,7 +97,7 @@ void AudioThread_ProcessGlobalCmd(gl_26790_AudioCmd *cmd) {
             }
             break;
 
-        case 0xF3:
+        case 0xF2:
             if (cmd->asUInt == 1) {
                 for (i = 0; i < gAudioCtx.numNotes; i++) {
                     gl_26790_Note *note = &gAudioCtx.notes[i];
@@ -103,7 +109,6 @@ void AudioThread_ProcessGlobalCmd(gl_26790_AudioCmd *cmd) {
                     }
                 }
             }
-        case 0xF0:
             p = gAudioContext_26790_ent;
             for (i = 0; i < gAudioCtx.numSequencePlayers; i++) {
                 ((gl_26790_Ctx *)p)->seqPlayers[0].muted = 0;
@@ -112,19 +117,19 @@ void AudioThread_ProcessGlobalCmd(gl_26790_AudioCmd *cmd) {
             }
             break;
 
-        case 0xF4:
+        case 0xF3:
             CALL(AudioLoad_SyncLoadInstrument)(cmd->arg0, cmd->arg1, cmd->arg2);
             break;
 
-        case 0xF5:
+        case 0xF4:
             CALL(AudioLoad_AsyncLoadSampleBank)(cmd->arg0, cmd->arg1, cmd->arg2, &gAudioCtx.externalLoadQueue);
             break;
 
-        case 0xF6:
+        case 0xF5:
             CALL(AudioLoad_AsyncLoadFont)(cmd->arg0, cmd->arg1, cmd->arg2, &gAudioCtx.externalLoadQueue);
             break;
 
-        case 0xF7:
+        case 0xF6:
             CALL(AudioLoad_DiscardSeqFonts)(cmd->arg1);
             break;
 
@@ -132,16 +137,13 @@ void AudioThread_ProcessGlobalCmd(gl_26790_AudioCmd *cmd) {
             gAudioCtx.threadCmdChannelMask[cmd->arg0] = cmd->asUShort;
             break;
 
-        case 0xFA:
+        case 0xF9:
             gAudioCtx.resetStatus = 5;
             gAudioCtx.specId = cmd->asUInt;
             break;
 
-        case 0x81:
-            gl_26790_w = cmd->asUInt;
-            break;
-
         case 0xFB:
+            gl_26790_w = cmd->asUInt;
             break;
     }
 }

@@ -40,17 +40,21 @@
  * the bootup TextReloc table to symIdx 3, not to this address). */
 extern char D_00000000;
 
+/* Case labels (agent-c run 829): libultra's thread states, read off the ROM table
+ * (port/tools/jumptable-audit.py; index a0 - 1). The old labels 2 / 3 / 5 / 1 with
+ * `case 8: default:` were one table entry off; they matched too because the table is the
+ * ROM's (range 1..8, same arm order), but the PC port's gcc builds its table from the labels. */
 int dbg_threadStateName(int a0) {
-    switch (a0) {
-    case 2:
-        return (int)(GL_DATA_STR(0x1E3BC, "Stopped "));
-    case 3:
-        return (int)(GL_DATA_STR(0x1E3C8, "Runnable"));
-    case 5:
-        return (int)(GL_DATA_STR(0x1E3D4, "Running "));
+    switch (a0) { /* OS_STATE_STOPPED 1, RUNNABLE 2, RUNNING 4, WAITING 8 (labels: agent-c run 829, below) */
     case 1:
-        return (int)(GL_DATA_STR(0x1E3E0, "Waiting "));
+        return (int)(GL_DATA_STR(0x1E3BC, "Stopped "));
+    case 2:
+        return (int)(GL_DATA_STR(0x1E3C8, "Runnable"));
+    case 4:
+        return (int)(GL_DATA_STR(0x1E3D4, "Running "));
     case 8:
+        return (int)(GL_DATA_STR(0x1E3E0, "Waiting "));
+    case 3: case 5: case 6: case 7: /* no state: IDO's table density (with 1 / 2 / 4 / 8 alone it compiles compares) */
     default:
         return (int)(GL_DATA_STR(0x1E3EC, "Unknown"));
     }
