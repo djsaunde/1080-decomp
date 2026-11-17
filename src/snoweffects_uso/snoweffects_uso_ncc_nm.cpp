@@ -14,7 +14,7 @@
  * the packet-pointer colouring closer: 15D0 66 -> 42, 1A18 70 -> 46, 2310 72 -> 48 diff lines.
  * Run 676: three zero-code counted loads (`(*(int *)((char *)t + K) & 0)`, distinct K) in the prim colour (FA)
  * packet move the later live-unit boundaries: 42 -> 36, 46 -> 40, 48 -> 42. */
-#include "/home/danjs/code/decomp/projects/1080-agent-h/src/game_libs/ncc_drafts/gbi_subset.h"
+#include "../game_libs/ncc_drafts/gbi_subset.h"
 extern "C" int gl_func_00000000(...);
 extern "C" char D_00000000[];
 /* the textures (Data+0x6FD8 / 0x6BD0 / 0x5AC0 / 0x73E0; USO reloc carries the offset, lo16 0) */
