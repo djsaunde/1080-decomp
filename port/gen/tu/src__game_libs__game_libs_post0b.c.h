@@ -568,7 +568,6 @@
 /* port-bind: gfx_submitFrameTask_000469A8 D_00000000 port_bootup_bss+0x3C168 */
 /* port-bind: gfx_submitFrame_0004CDB0 D_00000000 port_bootup_bss+0x3C168 */
 /* port-bind: gfx_texelBytes gl_data_00000000 port_bootup_data+0x0 */
-/* port-bind: heap_new D_00000000+0 port_bootup_bss+0x3C770 */
 /* port-bind: heap_new D_00000000+128380 port_bootup_data+0x0 */
 /* port-bind: heap_new D_00000000+128408 port_bootup_data+0x0 */
 /* port-bind: heap_new D_00000000+246112 port_bootup_bss+0x0 */

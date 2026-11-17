@@ -21,10 +21,5 @@
 /* port-bind: h2h_WhiteFader_ctor D_00000000+992 port_h2hproc_data+0x0 */
 /* port-bind: h2h_WhiteFader_ctor D_00000000+1000 port_h2hproc_data+0x0 */
 /* port-bind: h2h_WhiteFader_display D_00000000 port_gui_bss+0x8 */
-/* port-bind: h2h_createPauseMenu_00000FD0 D_00000000+76 port_bootup_bss+0xF8 */
-/* port-bind: h2h_createPauseMenu_00000FD0 D_00000000+84 port_bootup_bss+0xF8 */
-/* port-bind: h2h_createPauseMenu_00000FD0 D_00000000+88 port_bootup_bss+0xF8 */
-/* port-bind: h2h_createPauseMenu_00000FD0 D_00000000+96 port_bootup_bss+0xF8 */
-/* port-bind: h2h_createPauseMenu_00000FD0 D_00000000+1012 port_h2hproc_data+0x0 */
 /* port-bind: h2h_openSession_0000020C D_00000000 port_bootup_bss+0xF8 */
 /* port-bind: h2h_startReplay_00000E04 D_00000000 port_bootup_bss+0xF8 */

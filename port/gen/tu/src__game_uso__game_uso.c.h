@@ -82,11 +82,6 @@
 /* port-bind: RiderAnim_stateCushionIn D_00000000 port_game_data+0x0 */
 /* port-bind: RiderAnim_stateEnding1 D_00000000 port_game_data+0x0 */
 /* port-bind: RiderAnim_stateEnding2 D_00000000 port_game_data+0x0 */
-/* port-bind: RiderAnim_stateFinish D_00000000+0 port_bootup_bss+0xF8 */
-/* port-bind: RiderAnim_stateFinish D_00000000+3880 port_game_data+0x0 */
-/* port-bind: RiderAnim_stateFinish D_00000000+3888 port_game_data+0x0 */
-/* port-bind: RiderAnim_stateFinish D_00000000+3896 port_game_data+0x0 */
-/* port-bind: RiderAnim_stateFinish D_00000000+3904 port_game_data+0x0 */
 /* port-bind: RiderAnim_stateFlipToRide D_00000000 port_game_data+0x0 */
 /* port-bind: RiderAnim_stateHopDrop D_00000000 port_game_data+0x0 */
 /* port-bind: RiderAnim_stateHopLand D_00000000 port_game_data+0x0 */

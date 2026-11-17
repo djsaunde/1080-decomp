@@ -11,6 +11,7 @@
 /* port-bind: TrkDataManager_init_000019CC D_00000000 port_bootup_bss+0xF8 */
 /* port-bind: TrkDataManager_loadData D_00000000 port_bootup_bss+0xF8 */
 /* port-bind: TrkItemType_create_000020EC D_00000000 port_bootup_data+0x75A0 */
+/* port-bind: TrkMenu_ctor D_b3_23E4_17D7 osCicId */
 /* port-bind: TrkMenu_drawLabel130_00003050 D_00000000+0 port_gui_bss+0x8 */
 /* port-bind: TrkMenu_drawLabel130_00003050 D_00000000+304 port_trkproc_bss+0x0 */
 /* port-bind: TrkMenu_drawPair_00002F48 D_00000000 port_trkproc_bss+0x0 */
