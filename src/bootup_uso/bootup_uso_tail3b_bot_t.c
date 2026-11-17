@@ -59,6 +59,10 @@ void settings_setFlag4_000126EC(char *arg0, s32 arg1) {
         *q = 0x15;
     }
     p = (u16 *)q;
+#ifdef PORT
+    r = NODE(&XDATA(gSnowBoard, port_bootup_bss, 0x58))->vptr; /* the callee is read through r: gcc evaluates the function designator before the
+     * arguments that assign it (IDO the other way round; plan 18.9) */
+#endif
     ((GP_000126EC)VT_SLOT(r, 5).fn)((char *)&XDATA(gSnowBoard, port_bootup_bss, 0x58) + VT_SLOT(r = NODE(&XDATA(gSnowBoard, port_bootup_bss, 0x58))->vptr, 5).delta, p);
 }
 

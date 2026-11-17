@@ -173,6 +173,10 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
  * notes retired: all four 2026-05-08 variants were two-statement forms. */
 void QuitProcess_onQuit(char *a0) {
     register char *p;
+#ifdef PORT
+    p = *(char **)&NODE(a0)->vptr; /* the callee is read through p: gcc evaluates the function designator before the
+     * arguments that assign it (IDO the other way round; plan 18.9) */
+#endif
     (*(void(**)(...))&VT_SLOT(p, 11).fn)(VT_SLOT((p = *(char **)&NODE(a0)->vptr), 11).delta + a0);
 }
 

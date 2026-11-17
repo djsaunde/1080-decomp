@@ -47,6 +47,10 @@ void Process_pause_0000F9E8(int *self) {
 
     FCALL(snd_muteAll_0000029C)();
     self[0x38 / 4] = FCALL(input_pauseRacePads)(&gInputMgr);
+#ifdef PORT
+    vt = (int*)((int*)self[0x48 / 4])[0x28 / 4]; /* the callee is read through vt: gcc evaluates the function designator before the
+     * arguments that assign it (IDO the other way round; plan 18.9) */
+#endif
     ((void(*)(int))vt[0x5C / 4])(self[0x48 / 4] + (int)VT_SLOT(vt = (int*)((int*)self[0x48 / 4])[0x28 / 4], 10).delta);
     ((int*)self[0x48 / 4])[0x7C / 4] = 0;
     self[0x30 / 4] = 1;
