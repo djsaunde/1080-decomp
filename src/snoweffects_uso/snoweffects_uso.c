@@ -338,12 +338,11 @@ void SnowPool_remove_00000718(SnowPool *this, SnowParticle *p) {
     }
 }
 
-#ifdef NON_MATCHING
-/* SnowPool spawn with a random size / fade (sys_randf). 63 / 65 words: the reload of p after the first
- * sys_randf call is scheduled one slot above the `r * 2` mul.s (target: below). Tried: statement order
- * hill-climb (both groups), (float)2 / 2 * r / named products, top-level locals. */
+/* SnowPool spawn with a random size / fade (sys_randf). The first sys_randf, the unk38 store and the
+ * unk3C store share one source line: as1 schedules by source line, and only with these three on one line
+ * does the p reload land after the r * 2 mul.s, as in the target. */
 SnowParticle *SnowPool_spawnRandom_0000097C(SnowPool *this, Vec3 *pos, Vec3 *vel) {
-    SnowParticle *p = (SnowParticle *)gl_func_00000000(this) /* 0x6D0 SnowPool alloc */;
+    SnowParticle *p = (SnowParticle *)CALL(SnowPool_alloc_000006D0)(this);
     if (p != 0) {
         float x, y, z, r;
         x = pos->x; y = pos->y; z = pos->z;
@@ -355,9 +354,7 @@ SnowParticle *SnowPool_spawnRandom_0000097C(SnowPool *this, Vec3 *pos, Vec3 *vel
         p->vel.y = y;
         p->vel.x = x;
         p->unk24 = *(f32 *)&D_00000000;
-        r = gl_func_00000000_snow_randf() /* sys_randf */;
-        p->unk38 = (0, 10.0f) + r * 2;
-        p->unk3C = 1.0f;
+        r = gl_func_00000000_snow_randf() /* sys_randf */; p->unk38 = (0, 10.0f) + r * 2; p->unk3C = 1.0f;
         p->unk44 = 0.0f;
         p->unk30 = 256.0f;
         p->unk34 = 16.0f;
@@ -371,9 +368,6 @@ SnowParticle *SnowPool_spawnRandom_0000097C(SnowPool *this, Vec3 *pos, Vec3 *vel
     }
     return p;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", SnowPool_spawnRandom_0000097C);
-#endif
 
 SnowParticle *SnowPool_spawn_00000A7C(SnowPool *this, Vec3 *pos) {
     SnowParticle *p = (SnowParticle *)CALL(SnowPool_alloc_000006D0)(this);
