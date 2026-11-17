@@ -4,6 +4,11 @@
 #include "gdl/pad.h"
 void BallRotator_applyArcball(char *o, char *arg1) {
     extern Vec3 *gl_36224_direction(Vec3 *, char *, Vec3, Vec3, f32);
+#ifdef PORT /* math_arcballPoint returns its Vec3 by value: gcc's callee pops the hidden pointer (ret $4), so the
+             * out-pointer spelling drifts the stack 4 bytes per call (plan 18.17) */
+    extern Vec3 port_ballrot_arcball(char *, Vec3, Vec3, f32) __asm__("math_arcballPoint");
+#define gl_36224_direction(out, a, b, c, d) (*(out) = port_ballrot_arcball(a, b, c, d), (out))
+#endif
     extern void gl_36224_matrix(f32 (*)[4], f32 (*)[4]);
     extern void gl_36224_between(GlQuaternion *, Vec3 *, Vec3 *);
     extern void gl_36224_product(GlQuaternion *, GlQuaternion *, GlQuaternion *);

@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for trk_drawScore_000013B8 (0x2A8 / 170 words), EXACT:
  * timer HUD draw (twin of arc_drawNumber_000016F4 / tim_drawTime_00001340, same family as
  * mgrproc 23FC). agent-g run 172 (kit CXVII): the cfe NM body as plain C++, 162 of 171 words (89.18).
@@ -56,14 +57,14 @@ extern "C" void trk_drawScore_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
     one[2] = 1.0f;
     one[3] = 1.0f;
     if (FL(arg0)->f & 2) {
-        trk_main(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
-        trk_main(&arg0->tim); if (1) {}
+        XCALL(trk_main, gui_setEnvPrimColor_00001EF4)(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
+        XCALL(trk_main, gui_spriteRefresh)(&arg0->tim); if (1) {}
         s32 w = arg0->tim.width() / 12 + 0 * arg0->tim.pw();
-        trk_main(&arg0->sA);
-        trk_main(&arg0->sB);
-        trk_main(&arg0->sC);
-        trk_main(buf, &D_b3_1240_base + 0x3D8, arg2);
-        s32 n = trk_main(buf);
+        XCALL(trk_main, gui_spriteRefresh)(&arg0->sA);
+        XCALL(trk_main, gui_spriteRefresh)(&arg0->sB);
+        XCALL(trk_main, gui_spriteRefresh)(&arg0->sC);
+        XCALL(trk_main, gl_sprintf)(buf, &D_b3_1240_base + 0x3D8, arg2);
+        s32 n = XCALL(trk_main, str_len)(buf);
         {
         s32 xoff, xb, xa, x;
         Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;
@@ -72,14 +73,14 @@ extern "C" void trk_drawScore_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
         xa = pA->pw() + xb + 4;
         x = pC->pw() + xa + 8;
         volatile s32 pad0, pad1, pad2;
-        trk_main(&arg0->sC, xa, arg1 + 0x32, 2);
+        XCALL(trk_main, gui_drawSprite)(&arg0->sC, xa, arg1 + 0x32, 2);
         for (i = 0; i < n; i++) {
             buf[i] -= 0x30;
-            trk_main(&arg0->tim, x + i * 13, arg1 - arg0->tim.img->gh() / 2 + 0x32, buf[i] * w, w);
+            XCALL(trk_main, gui_drawSpriteIA8Clip_00002BB0)(&arg0->tim, x + i * 13, arg1 - arg0->tim.img->gh() / 2 + 0x32, buf[i] * w, w);
         }
-        trk_main(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), one);
-        trk_main(&arg0->sA, xb, arg1 + 0x32, 2);
-        trk_main(&arg0->sB, xoff, arg1 + 0x32, 2);
+        XCALL(trk_main, gui_setColor_00001A5C)(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), one);
+        XCALL(trk_main, gui_drawSprite)(&arg0->sA, xb, arg1 + 0x32, 2);
+        XCALL(trk_main, gui_drawSprite)(&arg0->sB, xoff, arg1 + 0x32, 2);
         }
     }
 }

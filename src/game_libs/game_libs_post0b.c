@@ -10342,6 +10342,9 @@ void fs_readRecord_00041F90(char *obj, int a1) {
     CALL(sys_setWord4_00061D80)(&gSysLib_41f_o0, 1);
     if (CALL(fs_gdlOpenFile)(&gSysLib_41f_o1, a1, GL_DATA(0x1F6E0)) != 0) {
         CALL(fs_gdlReadFile)(&gSysLib_41f_o2, &buf, 68);
+#ifdef PORT /* rom/version.bin: w[0] is the big-endian version number (sys_formatVersion's %d), the rest text */
+        PORT_BE_SWAP32S(&buf, 4);
+#endif
         ((App *)obj)->version = buf;
         CALL(fs_gdlCloseFile)(&gSysLib_41f_o3);
         CALL(sys_formatVersion)(&((App *)obj)->version, buf2);
@@ -23013,9 +23016,16 @@ void math_mtx4ConvertLayout_0005BAF4(f32 (*m)[4]) {
    Next pass: split-fragments.py per leaf (each needs its symbol name),
    then the FP-compare-branch grind per docs/IDO_CODEGEN.md. */
 extern int gl_func_00000000();
+#ifdef PORT /* K&R pass-through: $f12 rides through to sqrtf and its $f0 comes back (plan 18.17). On the port the
+             * (void) body leaves its callers' C++ prototype `int f(...)` (port-gen-decls): a double pushed, eax read */
+float math_vec3Length_0005BBCC(float x) {
+    return XCALL(gl_func_00000000_695c, sqrtf)(x);
+}
+#else
 void math_vec3Length_0005BBCC(void) {
     CALL(sqrtf)();
 }
+#endif
 
 /* math_clampAbs: clamp a into [-b, b] (b >= 0), 14 insns, 0x38.
  * MATCHED 2026-09-05 (agent-c): boundary merge of the mis-split 8-word
@@ -26688,6 +26698,9 @@ int AnimData_readFrames(char *self, int a1, unsigned int a2, unsigned int a3) {
         n[0] = stride * a3;
         CALL(fs_gdlSeekFile)(&gSysLib_62194_c, 0, p); }
         CALL(fs_gdlReadFileAsync)(&gSysLib_62194_d, a1, n[0]);
+#ifdef PORT /* streamed frame data (s16 x 7 per node, big-endian); the port's DMA completes at once */
+        PORT_BE_SWAP16S((void *)a1, n[0]);
+#endif
         return;
     }
     /* resident: copy (gl_func_00070324) and return -1 = nothing pending */

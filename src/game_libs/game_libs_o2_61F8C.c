@@ -55,6 +55,9 @@ void AnimData_load(AnimData *self) {
                 gl_ref_00076400(sFmt_numkeys_2205C, self->numKeys);
                 self->keys = (AnimKey *)CALL(mem_new)(self->numKeys * 8);   /* mem_new */
                 CALL(fs_gdlReadFile)(base, self->keys, n);              /* fs_gdlReadFile */
+#ifdef PORT /* bulk read of big-endian AnimKey {s32 frame, f32 rate} records (plan 18.2: no swap in fs_gdlReadFile) */
+                PORT_BE_SWAP32S(self->keys, n);
+#endif
             } else {
                 buf = CALL(mem_new)(n);
                 CALL(fs_gdlReadFile)(base, buf, n);
@@ -71,6 +74,9 @@ void AnimData_load(AnimData *self) {
             if (((volatile int *)base)[1] == 0) {
                 self->frameData = CALL(mem_newAligned)(n, 8);         /* mem_newAligned */
                 CALL(fs_gdlReadFile)(base, self->frameData, n);
+#ifdef PORT /* resident frame data: s16 x 7 per node per frame, big-endian (anim_unpackKey reads s16) */
+                PORT_BE_SWAP16S(self->frameData, n);
+#endif
             } else {
                 self->frameData = 0;
                 self->fileOffset = CALL(fs_gdlSeekFile)(base, 1, 0);  /* fs_gdlSeekFile: current position */

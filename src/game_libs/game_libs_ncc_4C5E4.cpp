@@ -78,7 +78,7 @@ void Obj::run() {
     GFXLIB(g)->curWindow = (struct ScreenWindow *)this;
     fbIndex = GFXLIB(g)->fbIndex;
     curBg = bgDL[fbIndex];
-    GFXLIB(gGfxLib_4c5e4_sh)->perspNorm = XCALL(gl_func_0004C5E4_c34458, gfx_calcPerspNorm_000453D8)(g, nearWord, farWord); /* gfx_calcPerspNorm(near, far) */
+    GFXLIB(gGfxLib_4c5e4_sh)->perspNorm = XCALL(gl_func_0004C5E4_c34458, gfx_calcPerspNorm_000453D8)(g, PORT_FBITS(nearWord), PORT_FBITS(farWord)); /* gfx_calcPerspNorm(near, far) */
     unk1B4 = 0;
     g = mark15C; /* agent-g run 260 (kit CCXCIII spilltemps): the mark15C address first mentioned before the fbOwner load, so its item takes the first temp (spill 68 -> 72 = target); held in the dead g (a fresh name costs a home) */
     dl = ((DL **)((char *)fbOwner + fbIndex * 4))[0x198 / 4]; /* fbOwner->setupDL[fbIndex] */

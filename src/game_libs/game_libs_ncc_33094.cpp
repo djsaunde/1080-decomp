@@ -50,8 +50,8 @@ extern "C" int MCamera_updateLookAt(Obj *o) {
     b.mul(*k);
     gl_33094_emit((char *)o + 0xB4, a.x, a.y, a.z, b.x, b.y, b.z, o->v140.x, o->v140.y, o->v140.z);
     if (o->x130 != 0) {
-        CALL(absrot_matrix4)((char *)o + 0xB4, 1, o->x138, 0);
-        CALL(absrot_matrix4)((char *)o + 0xB4, 0, o->x134, 0);
+        CALL(absrot_matrix4)((char *)o + 0xB4, 1, PORT_FBITS(o->x138), 0);
+        CALL(absrot_matrix4)((char *)o + 0xB4, 0, PORT_FBITS(o->x134), 0);
     }
     { volatile int q0, q1, q2; } /* agent-g run 256: a third volatile moves the o+0xB4 spill 60 -> 56 = target (frame 0x90 kept): 93.62 -> 93.65 */
     return 1;

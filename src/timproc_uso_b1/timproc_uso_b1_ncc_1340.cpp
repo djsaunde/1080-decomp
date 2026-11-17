@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for tim_drawTime_00001340 (0x3B8 / 238 words), EXACT:
  * timer HUD draw with the mm:ss.cc split (the 23FC / timproc_b3 13B8 / arcproc 16F4 family). agent-g
  * run 172 (kit CXVII): the cfe NM body as plain C++ (228 of 238 words, 86.53).
@@ -52,15 +53,15 @@ extern "C" void tim_drawTime_00001340(Obj *arg0, s32 arg1, s32 arg2) {
         sec = arg2 / 1000;
         arg2 -= sec * 1000;
         arg2 = arg2 / 10;
-        tim_main(&D_00000000, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
-        tim_main(&arg0->tim); if (1) {}
+        XCALL(tim_main, gui_setEnvPrimColor_00001EF4)(&D_00000000, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
+        XCALL(tim_main, gui_spriteRefresh)(&arg0->tim); if (1) {}
         glyph = arg0->tim.width() / 12 + 0 * arg0->tim.pw();
-        tim_main(&arg0->sA);
-        tim_main(&arg0->sB);
-        tim_main(&arg0->sC);
-        tim_main(buf, &D_00000000 + 0x3F4, min, sec, arg2);
+        XCALL(tim_main, gui_spriteRefresh)(&arg0->sA);
+        XCALL(tim_main, gui_spriteRefresh)(&arg0->sB);
+        XCALL(tim_main, gui_spriteRefresh)(&arg0->sC);
+        XCALL(tim_main, gl_sprintf)(buf, &D_00000000 + 0x3F4, min, sec, arg2);
         {
-        s32 count = tim_main(buf);
+        s32 count = XCALL(tim_main, str_len)(buf);
         s32 x, pos4, posA1, pos6;
         Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;
         x = 160 - (pC->pw() + count * 13 + pA->pw() + pB->pw() + 16) / 2;
@@ -68,7 +69,7 @@ extern "C" void tim_drawTime_00001340(Obj *arg0, s32 arg1, s32 arg2) {
         posA1 = pA->pw() + pos4 + 4;
         pos6 = pC->pw() + posA1 + 8;
         volatile s32 pad0, pad1, pad2;
-        tim_main(&arg0->sC, posA1, arg1 + 0x32, 2);
+        XCALL(tim_main, gui_drawSprite)(&arg0->sC, posA1, arg1 + 0x32, 2);
         for (i = 0; i < count; i++) {
             if (buf[i] == 0x5B) {
                 buf[i] = 0xA;
@@ -77,12 +78,12 @@ extern "C" void tim_drawTime_00001340(Obj *arg0, s32 arg1, s32 arg2) {
             } else {
                 buf[i] = buf[i] - 0x30;
             }
-            tim_main(&arg0->tim, pos6 + i * 13, (arg1 - arg0->tim.img->gh() / 2) + 0x32, buf[i] * glyph, glyph);
+            XCALL(tim_main, gui_drawSpriteIA8Clip_00002BB0)(&arg0->tim, pos6 + i * 13, (arg1 - arg0->tim.img->gh() / 2) + 0x32, buf[i] * glyph, glyph);
         }
-        tim_main(&arg0->sA, (s32)(255.0f * arg0->alpha), one, 0xFF);
-        tim_main(&arg0->sA, pos4, arg1 + 0x32, 2);
-        tim_main(&arg0->sB, (s32)(255.0f * arg0->alpha), one, 0xFF);
-        tim_main(&arg0->sB, x, arg1 + 0x32, 2);
+        XCALL(tim_main, gui_setColorEnvPrim_000017DC)(&arg0->sA, (s32)(255.0f * arg0->alpha), one, 0xFF);
+        XCALL(tim_main, gui_drawSprite)(&arg0->sA, pos4, arg1 + 0x32, 2);
+        XCALL(tim_main, gui_setColorEnvPrim_000017DC)(&arg0->sB, (s32)(255.0f * arg0->alpha), one, 0xFF);
+        XCALL(tim_main, gui_drawSprite)(&arg0->sB, x, arg1 + 0x32, 2);
         }
     }
 }

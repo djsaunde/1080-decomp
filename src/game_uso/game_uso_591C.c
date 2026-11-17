@@ -30,6 +30,9 @@ void SnowAI_scanSegments(SnowAI *);
 int SnowAI_updateMarker();
 float SnowAI_rivalLeadZ(SnowAI *);
 int SnowAI_aimAlongSegment();
+#ifdef PORT /* the definition (game_uso_7C1C.c) returns its Vec3 by value: gcc's callee pops the hidden pointer (ret $4) */
+extern Vec3 port_591c_aimAlongSegment(void *, void *, void *, void *, void *) __asm__("SnowAI_aimAlongSegment");
+#endif
 void *SnowAI_aimWeave();
 void SnowAI_restoreRiderParms(SnowAI *);
 void SnowAI_scaleRiderMax(SnowAI *);
@@ -173,8 +176,13 @@ void SnowAI_steer(int *a0) {
     if (1) { p = &scratch_xz; }
     switch (v0 = self->aimMode) {
     case 0:
+#ifdef PORT /* called as an out-pointer function, the 4-byte drift corrupts this frame (plan 18.17) */
+        stage = port_591c_aimAlongSegment(self, helper_ptr, hit_parent, &staged_axis, &out_w);
+        v0 = (int)&stage;
+#else
         v0 = SnowAI_aimAlongSegment(&stage, self, helper_ptr, hit_parent,
             &staged_axis, &out_w);
+#endif
         *(Tri3i *)&res_a = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_a;
         x = res_c.x; scale = res_c.y; z = res_c.z; transform_out.x = x; transform_out.y = scale; transform_out.z = z;
