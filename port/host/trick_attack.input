@@ -1,15 +1,48 @@
-# tenshoe --input script: boot -> title -> main menu -> Trick Attack -> rider / board / course.
-# Steps are SysLib.frameCount (state.log F). Run 846 (agent-a): NOT yet verified to reach Trick
-# Attack: with these DD steps the run entered flow 0,3,1 (mode 3, the Match Race select, see
-# match_race.input); tune the DD spacing against state.log before relying on it.
+# Trick Attack, ridden with jumps and grabs (port/tools/steer-search.py --mode trick; run 853).
+# Format: port/host/input_script.c.  Steps are SysLib.frameCount (state.log's F number).
+# Tied to the exact race physics (regenerate: port/tools/steer-search.py -b <build> --mode trick).
+# Each "jump + grab" window: A (crouch) 20 steps then released = hop, B (grab) held in the air;
+# the trick is the grab + stick direction (include/game/tricktable.h, e.g. B + up = NOSE GRAB).
 PADS 1
-F 480:3 START          # title
+F 480:3 START          # title "Press START" -> language select
 F 560:3 A              # English
-F 620:3 DD             # Match Race -> Time Attack
-F 680:3 DD             # Trick Attack
-F 740:3 A              # flow 0,3,1
+F 620:3 DD             # main menu: Match Race -> Time Attack
+F 680:3 DD             # -> Trick Attack
+F 740:3 A              # Trick Attack (flow mode 6, TRICKMODE) -> Select Rider
 F 1000:3 A             # rider
-F 1100:3 A             # confirm
-F 1200:3 A             # board
-F 1350:3 A             # course
-F 1500-1900 STICK 0,60
+F 1100:3 A             # rider confirm -> Select Board
+F 1200:3 A             # board -> Select Course
+F 1350:3 A             # the default course -> race load; race state 1 at ~1424
+F 1424-1483 STICK -80,0
+F 1424-1443 A
+F 1439-1474 B
+F 1484-1543 STICK 40,0
+F 1484-1503 A
+F 1499-1534 B
+F 1544-1603 STICK -80,0
+F 1544-1563 A
+F 1559-1594 B
+F 1604-1663 STICK 40,80
+F 1664-1723 STICK 0,80
+F 1724-1783 STICK -80,0
+F 1724-1743 A
+F 1739-1774 B
+F 1784-1843 STICK 0,80
+F 1844-1903 STICK 0,0
+F 1844-1863 A
+F 1859-1894 B
+F 1904-1963 STICK 40,80
+F 1964-2023 STICK -40,80
+F 2024-2083 STICK 80,0
+F 2024-2043 A
+F 2039-2074 B
+F 2084-2143 STICK -40,80
+F 2144-2203 STICK 40,0
+F 2144-2163 A
+F 2159-2194 B
+F 2204-2263 STICK 0,80
+F 2264-2323 STICK -40,0
+F 2264-2283 A
+F 2279-2314 B
+# RACE END 2333   (race state 2: Time Up)
+# END 2633

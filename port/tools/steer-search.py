@@ -3,6 +3,7 @@
 
     port/tools/steer-search.py -b <port build dir> [-o port/host/race_crystal_lake.input]
                                [-w 60] [-j 5] [--budget 900] [--keep-prefix STEP]
+    port/tools/steer-search.py -b <port build dir> --mode trick [-o port/host/trick_attack.input]
 
 The race replays bit for bit from a given input script (the port is deterministic), so the search
 runs tenshoe headless from boot again for every candidate (about 2 s for 6000 steps) and keeps no
@@ -28,6 +29,14 @@ Lake), the STICK windows, then a post-goal tail placed relative to the goal step
 (A) -> TimMenu -> View Replay, and after the replay -> Update Ghost -> Yes (an SRAM ghost
 save).  `# GOAL <step>` and `# END <step>` comments record the goal step and the step count
 the gate should run (port/tools/race-check.py reads them).
+
+--mode trick (run 853): Trick Attack (flow mode 6, trkproc) on its default course.  Every window
+also has a "jump + grab" variant: A held for the first 20 steps (crouch, released = hop / jump),
+B (grab) from step 15 to 50 with the stick centred in y (stick forward at the landing crashes the
+rider), so a trick is the grab (+ stick direction) of include/game/tricktable.h.  The score adds
+entries[0].score + pendingPoints / 20 (the trace's e0 fields 5 / 6), and the run ends with the
+countdown ("Time Up", race state 2): the search stops at the first window whose best candidate
+ends the race.  No post-race tail: `# END` is the race end + 300 (TrkMenu is up by then).
 """
 import argparse, os, re, shutil, struct, subprocess, sys, tempfile, time
 from concurrent.futures import ThreadPoolExecutor
@@ -62,7 +71,28 @@ MENU_WAIT = 90         # TimMenu (flow 10) -> first press
 GHOST_END = 460        # END = replay end + this
 ACTS = [(0, 80), (-40, 80), (40, 80), (-80, 80), (80, 80)]
 
-LINE = re.compile(r'^F (\d+) .*?race=(\d+),.*? e0=([0-9a-f]{8}),([0-9a-f]{8}),(-?\d+),(-?\d+)')
+TRICK_HEAD = """\
+# Trick Attack, ridden with jumps and grabs (port/tools/steer-search.py --mode trick; run 853).
+# Format: port/host/input_script.c.  Steps are SysLib.frameCount (state.log's F number).
+# Tied to the exact race physics (regenerate: port/tools/steer-search.py -b <build> --mode trick).
+# Each "jump + grab" window: A (crouch) 20 steps then released = hop, B (grab) held in the air;
+# the trick is the grab + stick direction (include/game/tricktable.h, e.g. B + up = NOSE GRAB).
+PADS 1
+F 480:3 START          # title "Press START" -> language select
+F 560:3 A              # English
+F 620:3 DD             # main menu: Match Race -> Time Attack
+F 680:3 DD             # -> Trick Attack
+F 740:3 A              # Trick Attack (flow mode 6, TRICKMODE) -> Select Rider
+F 1000:3 A             # rider
+F 1100:3 A             # rider confirm -> Select Board
+F 1200:3 A             # board -> Select Course
+F 1350:3 A             # the default course -> race load; race state 1 at ~1424
+"""
+TRICK_FIRST = 1424
+# (stick x, stick y, jump + grab)
+TRICK_ACTS = [(x, 80, 0) for x in (0, -40, 40, -80, 80)] + [(x, 0, 1) for x in (0, -40, 40, -80, 80)]
+
+LINE = re.compile(r'^F (\d+) .*?race=(\d+),.*? e0=([0-9a-f]{8}),([0-9a-f]{8}),(-?\d+),(-?\d+)(?:,(-?\d+),(-?\d+))?')
 
 
 def f32(h):
@@ -80,15 +110,24 @@ def last_state(path):
     for ln in fh:
         m = LINE.match(ln)
         if m:
-            last = (int(m.group(1)), int(m.group(2)), f32(m.group(3)), int(m.group(5)), int(m.group(6)))
+            last = (int(m.group(1)), int(m.group(2)), f32(m.group(3)), int(m.group(5)), int(m.group(6)),
+                    int(m.group(7) or 0) + int(m.group(8) or 0))
             if goal is None and last[2] >= 100.0:
                 goal = last[0]
     return last, goal
 
 
-def script(segs, tail=''):
-    body = ''.join('F %d-%d STICK %d,%d\n' % s for s in segs)
-    return HEAD + body + tail
+def seg_lines(s):
+    """one window: (first, last, x, y[, jump + grab])"""
+    t, e, x, y = s[:4]
+    if len(s) > 4 and s[4]:
+        return ('F %d-%d STICK %d,%d\nF %d-%d A\nF %d-%d B\n'
+                % (t, e, x, y, t, min(t + 19, e), min(t + 15, e), min(t + 50, e)))
+    return 'F %d-%d STICK %d,%d\n' % (t, e, x, y)
+
+
+def script(segs, tail='', head=None):
+    return (head or HEAD) + ''.join(seg_lines(s) for s in segs) + tail
 
 
 class Runner:
@@ -114,7 +153,7 @@ class Runner:
 def score(st, goal):
     if st is None:
         return None
-    step, race, pct, fin, hp = st
+    step, race, pct, fin, hp = st[:5]
     if goal is not None:
         return 1e9 - goal                      # earliest goal wins
     if hp <= 0 or race == 2:
@@ -133,9 +172,15 @@ def main():
     ap.add_argument('--last', type=int, default=9000, help='give up past this step (default 9000)')
     ap.add_argument('--keep-prefix', type=int, default=0,
                     help='reuse the STICK windows of the existing --out before this step')
+    ap.add_argument('--mode', choices=('time', 'trick'), default='time',
+                    help='time: Crystal Lake Time Attack to the goal (default); trick: Trick Attack')
     ap.add_argument('--tail-only', metavar='SCRIPT',
                     help='no search: take the STICK windows of SCRIPT, rebuild the post-goal tail')
     a = ap.parse_args()
+    if a.mode == 'trick':
+        if a.out == os.path.join(GAME, 'port/host/race_crystal_lake.input'):
+            a.out = os.path.join(GAME, 'port/host/trick_attack.input')
+        return trick_main(a)
     W = a.window
     work = tempfile.mkdtemp(prefix='steer-search-')   # under $TMPDIR
     R = Runner(a.build, a.rom, work)
@@ -186,6 +231,49 @@ def main():
         fh.write(text)
     print('steer-search: goal at step %d (race time %d steps), END %d; %d runs, %.0f s -> %s' % (
         goal, goal - RACE_FIRST, end, nruns, time.time() - t0, a.out))
+    shutil.rmtree(work, ignore_errors=True)
+
+
+def trick_main(a):
+    """--mode trick: greedy windows over TRICK_ACTS, score = pct + points / 20 (+ health), until
+    the countdown ends the race (race state 2)."""
+    W = a.window
+    work = tempfile.mkdtemp(prefix='steer-search-')
+    R = Runner(a.build, a.rom, work)
+    def sc(st):
+        if st is None or st[4] <= 0:
+            return None
+        return st[2] + st[5] / 20.0 + 0.1 * min(st[4], 100)
+    segs, t, t0, nruns, end = [], TRICK_FIRST, time.time(), 0, None
+    with ThreadPoolExecutor(min(a.jobs * 2, len(TRICK_ACTS))) as ex:
+        while time.time() - t0 < a.budget and t < a.last:
+            cands = [segs + [(t, t + 2 * W - 1, x, y, j)] for (x, y, j) in TRICK_ACTS]
+            res = list(ex.map(lambda kc: R.run(script(kc[1], head=TRICK_HEAD), t + 2 * W, kc[0]),
+                              enumerate(cands)))
+            nruns += len(cands)
+            ranked = sorted(((sc(st), k, st) for k, (st, g) in enumerate(res) if sc(st) is not None),
+                            key=lambda r: -r[0])
+            if not ranked:
+                sys.exit('steer-search: every candidate failed at step %d (scratch %s)' % (t, work))
+            _, k, st = ranked[0]
+            x, y, j = TRICK_ACTS[k]
+            segs.append((t, t + W - 1, x, y, j))
+            print('t=%d stick=%d,%d%s -> step %d race %d pct %.2f points %.0f' % (
+                t, x, y, ' jump+grab' if j else '', st[0], st[1], st[2], st[5]), flush=True)
+            if st[1] == 2:      # the countdown ran out within the lookahead: find the end step
+                st2, _ = R.run(script(segs, head=TRICK_HEAD), t + 2 * W + 600, 0)
+                end = next((s for s, f, r, _ in flows(os.path.join(work, 'c0', 'state.log'))
+                            if s > t and r == 2), None)
+                break
+            t += W
+    if end is None:
+        sys.exit('steer-search: the race did not end within the budget (step %d; scratch %s)' % (t, work))
+    text = script(segs, '# RACE END %d   (race state 2: Time Up)\n# END %d\n' % (end, end + 300),
+                  head=TRICK_HEAD)
+    with open(a.out, 'w') as fh:
+        fh.write(text)
+    print('steer-search: trick run ends at step %d; %d runs, %.0f s -> %s' % (
+        end, nruns, time.time() - t0, a.out))
     shutil.rmtree(work, ignore_errors=True)
 
 
