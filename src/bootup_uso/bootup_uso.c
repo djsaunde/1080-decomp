@@ -5345,13 +5345,14 @@ extern char sStr_board_8A58;
 extern int D_00000000_b49c[];  /* base-0 alias: 3rd table's separate lui (no CSE with 1st table's addr temp) */
 /* PC port (plan 18.8): XDATA hand-bound from the ROM TextRelocs (verify compile differs): the
  * uso-path table Data+0x8338 (+0x18 / +0x1C, shared by both reads) and Bss+0xF8 gInputMgr (+0x40). */
-void SnowBoarder_createBoardShape_0000B49C(int idx, int j) {
+/* $v0 = the board PolyShape (BoardList_createItem adds it as a child) */
+PORT_V0_TYPE(int) SnowBoarder_createBoardShape_0000B49C(int idx, int j) {
     j = idx;
     if (j >= 10) j = 9;
     if (CALL(game_isUsoLoaded)(((int*)&XDATA(D_00000000, port_bootup_data, 0x8338))[j], j) == 0) {
         CALL(game_loadUso)(&XDATA(D_00000000, port_bootup_bss, 0xF8), ((int*)&XDATA(D_00000000, port_bootup_data, 0x8338))[j]);
     }
-    CALL(PolyShape_ctor)(0, &sStr_board_8A58, D_00000000_b49c[j], 0);  /* stream_readF32_00008A40+0x18 */
+    PORT_V0_RET CALL(PolyShape_ctor)(0, &sStr_board_8A58, D_00000000_b49c[j], 0);  /* stream_readF32_00008A40+0x18 */
 }
 
 /* SnowBoarder_limitSpeed - verified structural decode (0x23C, 143 insns,

@@ -3754,6 +3754,9 @@ int AudioHeap_AllocPermanent(int a0, int a1, int a2) {
     base->permanentCache[count].tableType = (short)a0;
     base->permanentCache[count].id = (short)a1;
     base->permanentCache[count].size = a2;
+#ifdef PORT /* the ROM falls off with the allocation still in $v0 (AsyncLoadInner / SyncLoad use it) */
+    return v0;
+#endif
 }
 
 /* aud_AllocSampleCacheTemporary: 20-insn alloc-via-jal-alt-entry + 3-field-set wrapper.
@@ -5245,10 +5248,11 @@ int AudioLoad_SyncInitSeqPlayerInternal(int recIdx, int bufIdx, int arg) {
 
 extern int gl_ref_00038174();
 extern int gl_ref_00037F80();
-void AudioLoad_SyncLoadSeq(int a0) {
+/* $v0 = AudioLoad_SyncLoad's RAM address (OoT: `return AudioLoad_SyncLoad(...)`); InitSeqPlayer keeps it */
+PORT_V0_TYPE(int) AudioLoad_SyncLoadSeq(int a0) {
     int r = gl_ref_00038174(0, a0);
     int scratch;
-    gl_ref_00037F80(0, r, &scratch);
+    PORT_V0_RET gl_ref_00037F80(0, r, &scratch);
 }
 
 // AudioLoad_GetSampleBank — STRUCTURAL PASS (0xD8 / 54 words, no episode).

@@ -874,8 +874,9 @@ void pad_waitIdleGlobal(int a0) {
 }
 
 extern int gl_func_00000000();
-void pad_getFlagGlobal(int a0) {
-    CALL(pad_getFlag_00067368)(&gSysDevBlock_3A4E8);
+/* $v0 = the pad flags (pad_isConnected masks them) */
+PORT_V0_TYPE(int) pad_getFlagGlobal(int a0) {
+    PORT_V0_RET CALL(pad_getFlag_00067368)(&gSysDevBlock_3A4E8);
 }
 
 // app_run — STRUCTURAL PASS (0x2B0 / 172 words, no episode).
@@ -13092,8 +13093,9 @@ void gfx_colorToRGB8_00046DC0(int a0, unsigned char *a1, float *a2) {
 }
 
 extern int gl_func_00000000();
-void gfx_newPolyShape_00046F80(int a0, int a1, int a2) {
-    CALL(PolyShape_ctor)(0, a1, a2, 0);
+/* $v0 = the new PolyShape (shape_cmdShape stores it) */
+PORT_V0_TYPE(int) gfx_newPolyShape_00046F80(int a0, int a1, int a2) {
+    PORT_V0_RET CALL(PolyShape_ctor)(0, a1, a2, 0);
 }
 
 // gfx_fillRect — STRUCTURAL PASS (0x138 / 85 words, no episode). Raw-.word
@@ -21123,13 +21125,14 @@ void fault_printFlags(int val, int a1, Flag55FB4 *e) {
  * placeholder (gl_func_00000000) with (buf, a0), (buf, &str1), (buf, a1),
  * (buf, &str2), (buf). str1/str2 = reloc-blind &D + 0x218C0 / 0x218CC. */
 extern int gl_func_00000000();
-void gfx_childName_00056084(int a0, int a1) {
+/* $v0 = the str_dup'd name (gfx_newDLChild stores it) */
+PORT_V0_TYPE(int) gfx_childName_00056084(int a0, int a1) {
     char buf[0x40];
     CALL(str_copyEnd)(buf, a0);
     CALL(str_catEnd)(buf, GL_DATA(0x218C0));
     CALL(str_catEnd)(buf, a1);
     CALL(str_catEnd)(buf, GL_DATA(0x218CC));
-    CALL(str_dup)(buf);
+    PORT_V0_RET CALL(str_dup)(buf);
 }
 
 /* gfx_bitIndex_000560E4: single-bit mask -> bit index (1 -> 0, 2 -> 1,

@@ -99,7 +99,13 @@
  *   KR_PARAM0(decl) the same as the only parameter of a ROM `(void)` function: "decl" under PORT,
  *                   "void" in the ROM build (`void f(KR_PARAM0(int a0)) { CALL(g)(KR_ARG0(a0)); }`)
  *
- * The ROM expansion is empty, so the matched bytes are unchanged by construction.
+ * The ROM expansion is empty, so the matched bytes are unchanged by construction. *
+ * Missing returns (PC port, run 842; port/tools/return-type-allow.tsv lists the reviewed rest).  A
+ * ROM function that ends without a return still "returns" $v0, which the matched C leaves holding
+ * the last callee's result; a caller that uses it gets garbage in eax on i386.
+ *   PORT_V0_RET     "return" under PORT, nothing in the ROM build: `PORT_V0_RET CALL(g)(x);`
+ *   PORT_V0_TYPE(t) "t" under PORT, "void" in the ROM build: the return type of a ROM `void`
+ *                   function whose $v0 its callers read (`PORT_V0_TYPE(int) f(int a0) {`)
  */
 #ifdef PORT
 #define KR_ARG(x) , x
@@ -116,6 +122,8 @@
  * pop the hidden pointer (`ret $4`) and the caller expect it: the stack drifts 4 bytes per call.
  * On the declaration (a C callee) or the definition (a C caller): the caller pops it, as in C. */
 #define PORT_SRET_NOPOP __attribute__((callee_pop_aggregate_return(0)))
+#define PORT_V0_RET return
+#define PORT_V0_TYPE(t) t
 #else
 #define KR_ARG(x)
 #define KR_ARG0(x)
@@ -124,6 +132,8 @@
 #define PORT_REFARG(x) x
 #define PORT_FBITS(x) x
 #define PORT_SRET_NOPOP
+#define PORT_V0_RET
+#define PORT_V0_TYPE(t) void
 #endif
 
 #endif

@@ -5288,7 +5288,7 @@ int SelectWin_callPrevStageBit_0000894C(int kr_a0) {
 #else
 int SelectWin_callPrevStageBit_0000894C() {
 #endif
-    FCALL(SelectWin_prevStageBit_000088A0)(KR_ARG0(kr_a0));
+    PORT_V0_RET FCALL(SelectWin_prevStageBit_000088A0)(KR_ARG0(kr_a0)); /* $v0 passthrough: the 3 state callers test it */
 }
 
 extern float D_b5_896C_2A0;
