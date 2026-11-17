@@ -40,7 +40,10 @@ struct GCtx {
  * k f18, sx / sy the f28 / f30 homes as in the target); the w0 clamp terms written yh-first (the target
  * then evaluates xh first); imax0 on xh / yh / xl; the env colour written alpha-first (the target loads
  * col[0] first); the texrect's third packet appends through nextN(); `if (y0) {}` before the FB packet
- * and before drawn++ (with them the xh CSE temp is computed right after x0, as in the target). */
+ * and before drawn++ (with them the xh CSE temp is computed right after x0, as in the target).
+ * agent-h run 731 (-> 94.08): the display-list packet goes through a function-scope Gfx *g declared
+ * after c. That is the target's 10th word above m, so m and everything below it down to scratch now sit at
+ * the target's offsets (sp-offset mismatches 32 -> 10). */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -104,6 +107,7 @@ inline SnowV3c scaled(const SnowV3c &a) { return SnowV3c(a.x * snow_gfx_scale_12
 
 extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     GCtx *c = SNOW_CAM->dl;
+    Gfx *g;
     int d;
     float inv;
     float k;
@@ -120,7 +124,9 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
 
     scratch[0] = 0;
     d = gl_func_00000000(self->tex->dl);
-    gDPWord(c->next(), 0x06000000, d);
+    g = c->next();
+    g->words.w0 = 0x06000000;
+    g->words.w1 = d;
     gl_func_00000000(SNOW_CAM->view, m);
     halfW = (float)(SNOW_CAM->scrW / 2);
     halfH = (float)(SNOW_CAM->scrH / 2);
