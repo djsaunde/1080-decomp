@@ -2,7 +2,7 @@
  * Fast3D interpreter (pinned + the plan-14 patch series) and write a PNG.
  * PC port plan section 19.6. 64-bit host, EGL offscreen, no SDL / ImGui.
  *
- *   f3dreplay in.dlmp out.png [--scale N] [--ucode f3dex|line3d] [--readback out.rb]
+ *   f3dreplay in.dlmp out.png [--scale N] [--ucode f3dex|line3d] [--readback out.rb] [--fb-out out.rgba16]
  *   LIBGL_ALWAYS_SOFTWARE=1 f3dreplay ...   llvmpipe, for the golden tests
  *
  * The dump's memory image is rebuilt AT ITS ORIGINAL ADDRESSES: every chunk is
@@ -24,7 +24,11 @@
  * grid of points are requested before Run() and serviced at its end. The answers go to
  * out.rb ("1080RB01", u32 width, height, point count, the pixels, then {u16 x, y, z} per
  * point; host order except the big-endian pixels), and the pixels are checked against the
- * PNG: each RGBA5551 channel must equal the 8-bit one >> 3 (row 0 = the top). */
+ * PNG: each RGBA5551 channel must equal the 8-bit one >> 3 (row 0 = the top).
+ *
+ * The dump's DLUMP_FB_* chunks (the framebuffer model, plan 19.10: what the game's CPU read from
+ * or wrote into the colour / depth images) are replayed as the in-process renderer serves them
+ * (FbModel below); --fb-out writes the read-back colour image (320x240 big-endian RGBA5551). */
 
 #include <sys/mman.h>
 
@@ -105,7 +109,8 @@ static bool load(const char* path) {
 }
 
 static bool has_data(const Chunk& c) {
-    return c.size != 0 && c.kind != DLUMP_ERROR && c.kind != DLUMP_IMAGE && c.kind != DLUMP_END;
+    return c.size != 0 && c.kind != DLUMP_ERROR && c.kind != DLUMP_IMAGE && c.kind != DLUMP_END &&
+           c.kind != DLUMP_FB_READ && c.kind != DLUMP_FB_DEPTH && c.kind != DLUMP_FB_WRITE;
 }
 
 /* Map every data chunk at its own address. Pages are merged first, so chunks
@@ -198,6 +203,102 @@ static void widen_lists() {
     }
 }
 
+/* ---------------- the framebuffer model (DLUMP_FB_*, plan 19.10) ---------------- */
+/* What the game's CPU did with the colour / depth images around this task, replayed the way the
+ * in-process renderer serves it (port_fast3d.cpp): FB_READ and FB_DEPTH go through patch 0003's
+ * read-back, FB_WRITE rectangles are composited over the frame. A chunk applies only if the
+ * task's last G_SETCIMG / G_SETZIMG names its image (low 24 bits). */
+struct FbModel {
+    struct Read {
+        uint32_t addr;
+        std::vector<uint16_t> px;
+    };
+    struct Depth {
+        uint32_t addr, idx;
+    };
+    std::vector<Read> reads;
+    std::vector<Depth> depths;
+    std::vector<const Chunk*> writes;
+    void request(Fast::Interpreter& gfx) {
+        for (const Chunk& c : sChunks) {
+            if (c.kind == DLUMP_FB_READ) {
+                reads.push_back({ c.addr, std::vector<uint16_t>((size_t)320 * 240, 0) });
+            } else if (c.kind == DLUMP_FB_DEPTH) {
+                for (uint32_t i = 0; i + 4 <= c.size; i += 4) {
+                    uint32_t idx;
+                    std::memcpy(&idx, c.data + i, 4);
+                    depths.push_back({ c.addr, idx });
+                    gfx.ReadbackRequestDepth(idx % 320, idx / 320);
+                }
+            } else if (c.kind == DLUMP_FB_WRITE && c.size >= 8) {
+                writes.push_back(&c);
+            }
+        }
+        for (Read& r : reads) {
+            gfx.ReadbackRequestRgba5551(0, 0, 320, 240, r.px.data(), true);
+        }
+    }
+    /* frame: glReadPixels of the w x h window (bottom row first); CPU writes are composited into it */
+    void finish(Fast::Interpreter& gfx, uint8_t* frame, uint32_t w, uint32_t h, const char* outPath) {
+        const uint32_t cimg = (uint32_t)(uintptr_t)gfx.mRdp->color_image_address & 0xFFFFFF;
+        const uint32_t zimg = (uint32_t)(uintptr_t)gfx.mRdp->z_buf_address & 0xFFFFFF;
+        const uint32_t sc = w / 320;
+        bool wrote = false;
+        for (Read& r : reads) {
+            bool drawn = (r.addr & 0xFFFFFF) == cimg;
+            uint32_t lit = 0;
+            for (const uint16_t& v : r.px) {
+                const uint8_t* b = (const uint8_t*)&v; /* big-endian RGBA5551 in memory */
+                lit += ((((uint32_t)b[0] << 8) | b[1]) & 0xFFFE) != 0; /* any colour bit set */
+            }
+            std::printf("fb read: colour image 0x%08x: %s, %u of %u pixels non-black\n", r.addr,
+                        drawn ? "drawn by this task" : "NOT this task's colour image", lit, 320 * 240);
+            if (drawn && outPath != nullptr && !wrote) {
+                FILE* f = std::fopen(outPath, "wb");
+                if (f != nullptr) {
+                    std::fwrite(r.px.data(), 2, r.px.size(), f); /* big-endian RGBA5551, the N64 image */
+                    std::fclose(f);
+                    wrote = true;
+                }
+            }
+        }
+        if (!depths.empty()) {
+            uint32_t far = 0, near = 0, other = 0;
+            for (const Depth& d : depths) {
+                uint16_t z = 0;
+                if ((d.addr & 0xFFFFFF) != zimg || !gfx.ReadbackGetDepth(d.idx % 320, d.idx / 320, &z)) {
+                    other++;
+                } else {
+                    (z == 0xFFFC ? far : near)++;
+                }
+            }
+            std::printf("fb depth: %zu pixels: %u far (0xFFFC), %u nearer, %u not served\n", depths.size(), far,
+                        near, other);
+        }
+        for (const Chunk* c : writes) {
+            uint16_t hdr[4];
+            std::memcpy(hdr, c->data, 8);
+            const uint32_t x0 = hdr[0], y0 = hdr[1], rw = hdr[2], rh = hdr[3];
+            if ((c->addr & 0xFFFFFF) != cimg || c->size < 8 + rw * rh * 2 || x0 + rw > 320 || y0 + rh > 240) {
+                std::printf("fb write: 0x%08x %ux%u skipped (not this task's colour image)\n", c->addr, rw, rh);
+                continue;
+            }
+            for (uint32_t y = 0; y < rh * sc; y++) {
+                for (uint32_t x = 0; x < rw * sc; x++) {
+                    const uint8_t* p = c->data + 8 + ((y / sc) * rw + x / sc) * 2;
+                    uint32_t v = ((uint32_t)p[0] << 8) | p[1]; /* big-endian RGBA5551 */
+                    uint8_t* o = frame + ((size_t)(h - 1 - (y0 * sc + y)) * w + x0 * sc + x) * 4;
+                    o[0] = (uint8_t)(((v >> 11) & 31) * 255 / 31);
+                    o[1] = (uint8_t)(((v >> 6) & 31) * 255 / 31);
+                    o[2] = (uint8_t)(((v >> 1) & 31) * 255 / 31);
+                    o[3] = 255;
+                }
+            }
+            std::printf("fb write: 0x%08x %ux%u at (%u, %u) composited\n", c->addr, rw, rh, x0, y0);
+        }
+    }
+};
+
 /* ---------------- main ---------------- */
 
 /* the read-back request (before Run) and its check / file (after) */
@@ -262,9 +363,10 @@ struct Readback {
 int main(int argc, char** argv) {
     int scale = 1;
     const char* readbackPath = nullptr;
+    const char* fbOutPath = nullptr;
     UcodeHandlers ucode = ucode_f3dex_line3d;
     if (argc < 3) {
-        std::fprintf(stderr, "usage: f3dreplay in.dlmp out.png [--scale N] [--ucode f3dex|line3d] [--readback out.rb]\n");
+        std::fprintf(stderr, "usage: f3dreplay in.dlmp out.png [--scale N] [--ucode f3dex|line3d] [--readback out.rb] [--fb-out out.rgba16]\n");
         return 2;
     }
     for (int i = 3; i + 1 < argc; i++) {
@@ -274,6 +376,8 @@ int main(int argc, char** argv) {
             ucode = std::strcmp(argv[++i], "f3dex") == 0 ? ucode_f3dex : ucode_f3dex_line3d;
         } else if (std::strcmp(argv[i], "--readback") == 0) {
             readbackPath = argv[++i];
+        } else if (std::strcmp(argv[i], "--fb-out") == 0) {
+            fbOutPath = argv[++i];
         }
     }
     if (!load(argv[1]) || !map_arena()) {
@@ -340,6 +444,8 @@ int main(int argc, char** argv) {
         }
         rb.request(*gfx);
     }
+    FbModel fb;
+    fb.request(*gfx);
     std::unordered_map<Mtx*, MtxF> noReplacements;
     gfx->StartFrame();
     gfx->Run((Gfx*)root, noReplacements);
@@ -349,6 +455,7 @@ int main(int argc, char** argv) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     glReadPixels(0, 0, (GLsizei)w, (GLsizei)h, GL_RGBA, GL_UNSIGNED_BYTE, px.data());
+    fb.finish(*gfx, px.data(), w, h, fbOutPath);
     if (!write_png(argv[2], px.data(), (int)w, (int)h)) {
         std::fprintf(stderr, "f3dreplay: cannot write %s\n", argv[2]);
         return 1;

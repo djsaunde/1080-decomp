@@ -22,8 +22,8 @@ $(OUT)/test_dlump: test_dlump.c dlump.c synth.c dlump.h synth.h
 	$(CC) $(CFLAGS) -o $@ test_dlump.c dlump.c synth.c
 
 # the real hook (port_gfx.c + mincore); meaningful on the -m32 target only
-$(OUT)/test_port_gfx: test_port_gfx.c port_gfx.c dlump.c synth.c dlump.h synth.h
-	$(CC) $(CFLAGS) -malign-double -DPORT -isystem $(REPO_GAME)/include -o $@ test_port_gfx.c port_gfx.c dlump.c synth.c
+$(OUT)/test_port_gfx: test_port_gfx.c port_gfx.c port_fb.c dlump.c synth.c dlump.h synth.h port_fb_impl.h ../include/port_fb.h
+	$(CC) $(CFLAGS) -malign-double -DPORT -isystem $(REPO_GAME)/include -o $@ test_port_gfx.c port_gfx.c port_fb.c dlump.c synth.c
 
 $(OUT)/gold: gold.c dlump.c dlump.h
 	$(CC) $(CFLAGS) -o $@ gold.c dlump.c -lm

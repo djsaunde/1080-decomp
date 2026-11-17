@@ -79,10 +79,25 @@ static void parse(const unsigned char *d, size_t n) {
 int main(int argc, char **argv) {
     const SynthFrame *fr = synth_build(0);
     DlumpBuf buf = { 0 };
-    DlumpOptions opt = { 0, NULL };
+    DlumpOptions opt = { 0, NULL, NULL, 0 };
+    DlumpExtra extra[2];
+    static const dlump_u32 depthIdx[2] = { 120 * 320 + 160, 0 };
     const DlumpHeader *h;
     int errs;
 
+    /* the framebuffer model's records (plan 19.10) ride along as extra chunks */
+    extra[0].kind = DLUMP_FB_READ;
+    extra[0].addr = fr->cimgAddr;
+    extra[0].size = 0;
+    extra[0].aux = 320;
+    extra[0].data = NULL;
+    extra[1].kind = DLUMP_FB_DEPTH;
+    extra[1].addr = fr->zimgAddr;
+    extra[1].size = sizeof(depthIdx);
+    extra[1].aux = 320;
+    extra[1].data = depthIdx;
+    opt.extra = extra;
+    opt.nExtra = 2;
     opt.arenaBase = fr->arenaBase;
     errs = dlump_task(&buf, &opt, 7, fr->taskAddr, 1, fr->rootAddr, fr->rootSize);
     CHECK(errs == 0);
@@ -108,6 +123,10 @@ int main(int argc, char **argv) {
     CHECK(has(DLUMP_IMAGE, fr->cimgAddr, 0) && has(DLUMP_IMAGE, fr->zimgAddr, 0));
     CHECK(count(DLUMP_IMAGE) == 2);
     CHECK(count(DLUMP_ERROR) == 0);
+    CHECK(has(DLUMP_FB_READ, fr->cimgAddr, 0) && count(DLUMP_FB_READ) == 1);
+    CHECK(has(DLUMP_FB_DEPTH, fr->zimgAddr, sizeof(depthIdx)) && count(DLUMP_FB_DEPTH) == 1);
+    opt.extra = NULL;
+    opt.nExtra = 0;
 
     if (argc > 1) {
         FILE *f = fopen(argv[1], "wb");

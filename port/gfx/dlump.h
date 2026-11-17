@@ -86,6 +86,17 @@ typedef enum DlumpKind {
     DLUMP_TLUT = 7,    /* LOADTLUT source; aux = the G_SETTIMG w0 in force */
     DLUMP_IMAGE = 8,   /* G_SETCIMG / G_SETZIMG target, no data (size 0); aux = the command's w0 */
     DLUMP_ERROR = 9,   /* data = NUL-terminated text; addr = the command address */
+    /* The framebuffer model (../include/port_fb.h, plan 19.10): what the game's CPU did with the
+     * colour / depth images around this task. Each applies only if the task's last G_SETCIMG
+     * (FB_READ, FB_WRITE) or G_SETZIMG (FB_DEPTH) names the image: low 24 bits equal to addr's. */
+    DLUMP_FB_READ = 10,  /* the CPU reads the colour image at addr (no data); after the task, read the frame back
+                            into it: 320x240 RGBA5551, big-endian; aux = width (320) */
+    DLUMP_FB_DEPTH = 11, /* the CPU reads these depth pixels of the Z image at addr: data = u32 pixel indices
+                            (y * width + x); after the task, store each one's N64 Z (0xFFFC = far), big-endian;
+                            aux = width */
+    DLUMP_FB_WRITE = 12, /* the CPU wrote a rectangle of the colour image at addr: data = u16 x, y, w, h, then
+                            w * h RGBA5551 pixels as in memory (big-endian), row by row; after the task,
+                            composite it over the frame, opaque; aux = width */
     DLUMP_KIND_COUNT
 } DlumpKind;
 
@@ -109,7 +120,16 @@ typedef struct DlumpOptions {
     /* Optional: nonzero if [p, p + n) may be read. NULL = only reject addresses
      * below 0x1000. port_gfx.c passes a mincore()-based check on Linux. */
     int (*readable)(const void *p, size_t n);
+    /* Optional: chunks appended after the walked ones (the DLUMP_FB_* records), written as
+     * given. data is copied (size bytes; NULL when size is 0). */
+    const struct DlumpExtra *extra;
+    size_t nExtra;
 } DlumpOptions;
+
+typedef struct DlumpExtra {
+    dlump_u32 kind, addr, size, aux;
+    const void *data;
+} DlumpExtra;
 
 /* Dump the task whose OSTask_t is at taskAddr (copied as DLUMP_TASK if nonzero)
  * and whose root list is rootAddr. Appends the whole file image to out.

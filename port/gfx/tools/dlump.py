@@ -18,7 +18,9 @@ import struct
 import sys
 
 KINDS = {0: "END", 1: "TASK", 2: "DL", 3: "VTX", 4: "MTX", 5: "MOVEMEM", 6: "TEXTURE", 7: "TLUT",
-         8: "IMAGE", 9: "ERROR"}
+         8: "IMAGE", 9: "ERROR", 10: "FB_READ", 11: "FB_DEPTH", 12: "FB_WRITE"}
+# kinds whose data is not a copy of game memory at addr (dlump.h)
+NOT_MEMORY = (8, 9, 10, 11, 12)
 
 # F3DEX 1.x (GBI 1) opcode names; 0xB5 is G_LINE3D in 1080's usage (plan 11.1, 14.3)
 OPS = {
@@ -80,7 +82,7 @@ class Dump:
         got = sum(c[2] for c in self.chunks if c[0] != 9)
         if got != self.data_bytes:
             raise ValueError("dataBytes %d != sum of chunks %d" % (self.data_bytes, got))
-        self.mem = sorted((a, a + s, d) for k, a, s, x, d in self.chunks if k not in (8, 9) and s)
+        self.mem = sorted((a, a + s, d) for k, a, s, x, d in self.chunks if k not in NOT_MEMORY and s)
 
     def covered(self, addr, size):
         """True if [addr, addr+size) is inside one chunk."""
@@ -173,6 +175,13 @@ def summary(d, hist):
     for k, a, s, x, data in d.chunks:
         if k == 9:
             print("  error @0x%08x: %s" % (a, data.rstrip(b"\0").decode("latin-1")))
+        elif k == 10:
+            print("  fb read: colour image 0x%08x" % a)
+        elif k == 11:
+            print("  fb depth: Z image 0x%08x, %d pixels" % (a, s // 4))
+        elif k == 12:
+            x0, y0, w, h = struct.unpack_from("<4H" if sys.byteorder == "little" else ">4H", data)
+            print("  fb write: colour image 0x%08x, %dx%d at (%d, %d)" % (a, w, h, x0, y0))
     print("  %-22s %8s" % ("command", "count"))
     for op, cnt in sorted(hist.items(), key=lambda kv: -kv[1]):
         flag = "" if op in CENSUS else "   <- not in the plan 11.1 census"

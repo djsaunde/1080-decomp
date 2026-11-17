@@ -49,6 +49,7 @@
 #include "../replay/egl_png.h"
 #include "egl_window.h"
 #include "port_fast3d.h"
+#include "../port_fb_impl.h"
 
 namespace Fast {
 void GfxSetInstance(std::shared_ptr<Interpreter> gfx);
@@ -163,6 +164,10 @@ extern "C" int port_fast3d_init(unsigned int width, unsigned int height) {
 }
 
 extern "C" int port_fast3d_task(unsigned int root) {
+    return port_fast3d_task_fb(root, nullptr);
+}
+
+extern "C" int port_fast3d_task_fb(unsigned int root, const PortFbRequests* rq) {
     State* s = sState;
     int unresolved = 0;
     if (s == nullptr && port_fast3d_init(320, 240) != 0) {
@@ -185,10 +190,52 @@ extern "C" int port_fast3d_task(unsigned int root) {
     s->gfx->mGameWindowViewport.y = 0;
     s->gfx->mGameWindowViewport.width = s->w;
     s->gfx->mGameWindowViewport.height = s->h;
+    /* the framebuffer model (plan 19.10): patch 0003 requests go in before Run() and are served at
+     * its end; the colour frame lands in a staging buffer and is copied into a game image only if
+     * the task drew into it */
+    std::vector<std::vector<uint16_t>> staging;
+    if (rq != nullptr) {
+        staging.resize((size_t)rq->nColor);
+        for (int i = 0; i < rq->nColor; i++) {
+            staging[i].assign((size_t)PORT_FB_W * PORT_FB_H, 0);
+            s->gfx->ReadbackRequestRgba5551(0, 0, PORT_FB_W, PORT_FB_H, staging[i].data(), true);
+        }
+        for (int i = 0; i < rq->nDepth; i++) {
+            s->gfx->ReadbackRequestDepth((uint32_t)(rq->depthIdx[i] % PORT_FB_W), (uint32_t)(rq->depthIdx[i] / PORT_FB_W));
+        }
+    }
     std::unordered_map<Mtx*, MtxF> noReplacements;
     s->gfx->StartFrame();
     s->gfx->Run(list, noReplacements);
     glFinish();
+    if (rq != nullptr) {
+        const uintptr_t cimg = (uintptr_t)s->gfx->mRdp->color_image_address & 0xFFFFFF;
+        const uintptr_t zimg = (uintptr_t)s->gfx->mRdp->z_buf_address & 0xFFFFFF;
+        for (int i = 0; i < rq->nColor; i++) {
+            if (((uintptr_t)rq->color[i] & 0xFFFFFF) == cimg) {
+                std::memcpy((void*)rq->color[i], staging[i].data(), staging[i].size() * 2);
+                /* a colour image can be a texture too (Mat_fromFrameBuffer) */
+                gfx_texture_cache_invalidate_range(rq->color[i], staging[i].size() * 2);
+            }
+        }
+        for (int i = 0; i < rq->nDepth; i++) {
+            uint16_t z;
+            if (((uintptr_t)rq->depthImg[i] & 0xFFFFFF) == zimg &&
+                s->gfx->ReadbackGetDepth((uint32_t)(rq->depthIdx[i] % PORT_FB_W),
+                                         (uint32_t)(rq->depthIdx[i] / PORT_FB_W), &z)) {
+                ((uint16_t*)rq->depthImg[i])[rq->depthIdx[i]] = (uint16_t)((z >> 8) | (z << 8)); /* big-endian */
+            }
+        }
+        if (rq->nWrite > 0) {
+            /* TODO (plan 19.10): composite CPU-written rectangles (debug text, the splash) over the
+             * window; f3dreplay does it on the read pixels. Only debug paths write today. */
+            static bool warned;
+            if (!warned) {
+                warned = true;
+                std::fprintf(stderr, "port_fast3d: CPU framebuffer writes are not composited in process yet\n");
+            }
+        }
+    }
     if (s->pngDir != nullptr) {
         std::vector<uint8_t> px((size_t)s->w * s->h * 4);
         char path[1024];
@@ -201,6 +248,11 @@ extern "C" int port_fast3d_task(unsigned int root) {
     s->gfx->EndFrame();
     s->seq++;
     return unresolved;
+}
+
+extern "C" void port_fast3d_last_images(unsigned int* cimg, unsigned int* zimg) {
+    *cimg = sState != nullptr ? (unsigned int)(uintptr_t)sState->gfx->mRdp->color_image_address : 0;
+    *zimg = sState != nullptr ? (unsigned int)(uintptr_t)sState->gfx->mRdp->z_buf_address : 0;
 }
 
 extern "C" void port_fast3d_invalidate(const void* addr, size_t size) {

@@ -381,7 +381,7 @@ static int cmp_range(const void *a, const void *b) {
 
 int dlump_task(DlumpBuf *out, const DlumpOptions *opt, dlump_u32 seq, dlump_u32 taskAddr,
                dlump_u32 taskType, dlump_u32 rootAddr, dlump_u32 rootSize) {
-    static const DlumpOptions defOpt = { 0, NULL };
+    static const DlumpOptions defOpt = { 0, NULL, NULL, 0 };
     Walk w;
     DlumpHeader h;
     size_t hdrAt, i, nOut = 0;
@@ -434,6 +434,12 @@ int dlump_task(DlumpBuf *out, const DlumpOptions *opt, dlump_u32 seq, dlump_u32 
         put_chunk(out, r->kind, r->addr, r->size, r->aux, r->size ? gptr(&w, r->addr) : NULL);
         h.chunkCount++;
         dataBytes += r->size;
+    }
+    for (i = 0; i < w.opt->nExtra; i++) {
+        const DlumpExtra *e = &w.opt->extra[i];
+        put_chunk(out, e->kind, e->addr, e->size, e->aux, e->size ? e->data : NULL);
+        h.chunkCount++;
+        dataBytes += e->size;
     }
     for (i = 0; i < w.nErrors && i < MAX_ERRORS; i++) {
         put_chunk(out, DLUMP_ERROR, w.errAddr[i], (dlump_u32)strlen(w.errText[i]) + 1, 0, w.errText[i]);
