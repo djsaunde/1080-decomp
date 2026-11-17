@@ -2,7 +2,7 @@
  * over the empty NON_MATCHING placeholder in heli_uso.c on the non_matching build only (the matching build
  * keeps INCLUDE_ASM). 0xB08 is the Heli per-frame update (decode: docs/1080_NEW_MODULES.md "heli.uso").
  * MIPSpro 7.2.1 is the right front end: the target's 8-way switch is an inline jump table (RoData+0x7C),
- * which IDO 7.1 NCC (EDG 2.19) never emits. Levers that took mp72 from 77.3 to 88.2:
+ * which IDO 7.1 NCC (EDG 2.19) never emits. Levers that took mp72 from 77.3 to 88.7:
  *  - an explicit empty `default: break;` after case 6. The default edge then gets its own block, so uopt
  *    computes tg / ps (self+0x114 / self+0xDC) at the end of every case, as the target does; without it the
  *    default goes straight to the join and both are computed once there.
@@ -15,6 +15,9 @@
  *  - the three axis-angle angles go through the float local f, assigned before each axis (run 682): the target
  *    loads each angle with lwc1 + mfc1 a2 ahead of the axis stores (a direct HF() argument gives lw a2;
  *    a block-scope float costs frame slots) (85.7 -> 88.2).
+ *  - run 682 also: the pitch clamp as an inline clampf() on f re-read from +0x148, and the toTgt length summed
+ *    y, x, z (the y-first order only rotates the FP temp ring closer to the target's; the target multiplies
+ *    x first) (88.2 -> 88.7).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -42,6 +45,7 @@ extern float gl_func_00000000_heli_fff(float, float);
 #define HV(off) (*(Vec3 *)(self + (off)))
 
 }
+static inline float clampf(float v, float lo, float hi) { return (v < lo) ? lo : ((hi < v) ? hi : v); }
 struct Vec3 {
     float x, y, z;
     Vec3() {}
@@ -220,7 +224,7 @@ extern "C" void heli_uso_func_00000B08(char *self) {
     side.y = HF(0xF4) * HF(0xF8) * 2.0f + HF(0x100) * HF(0xFC) * 2.0f;
     side.z = HF(0xF4) * HF(0xFC) * 2.0f - HF(0x100) * HF(0xF8) * 2.0f;
     toTgt.y = 0.0f;
-    f = gl_func_00000000_heli_ff(toTgt.x * toTgt.x + toTgt.y * toTgt.y + toTgt.z * toTgt.z);
+    f = gl_func_00000000_heli_ff(toTgt.y * toTgt.y + toTgt.x * toTgt.x + toTgt.z * toTgt.z);
     if (1.0f < f && f < (100000.0f)) {
         yaw = -(gl_func_00000000_heli_fff(toTgt.x, toTgt.z) - (3.1415927f)) - HF(0x14C);
         if ((3.1415927f) < yaw) {
@@ -241,7 +245,8 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         fwdAx.z = 1.0f - HF(0xF4) * HF(0xF4) * 2.0f - HF(0xF8) * HF(0xF8) * 2.0f;
         f = (fwdAx.x * vel.x + fwdAx.y * vel.y + fwdAx.z * vel.z) / 200.0f + fwdAx.y * (0.1);
         HF(0x148) = (f - HF(0x148)) * (0.2f) + HF(0x148);
-        HF(0x148) = (HF(0x148) < (-0.3926991f)) ? (-0.3926991f) : (((0.3926991f) < HF(0x148)) ? (0.3926991f) : HF(0x148));
+        f = HF(0x148);
+        HF(0x148) = clampf(f, -0.3926991f, 0.3926991f);
         HF(0xF4) = 0.0f;
         HF(0xF8) = 0.0f;
         HF(0xFC) = 0.0f;
