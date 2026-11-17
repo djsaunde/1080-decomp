@@ -269,7 +269,8 @@ static const SwapRange sBootupRanges[] = {
     {0x19FE8, 0x1A1D8, 2, "gLowPassFilterData s16[31][8]"},
     {0x1A1D8, 0x1A2C8, 2, "gHighPassFilterData s16[15][8]"},
     {0x1A2D0, 0x1A2E0, 4, "sEnvMixerOp + Left / Right / Default Haas dmem dests (u32)"},
-    {0x1CDD0, 0x1CDE0, 4, "gAudioHeapInitSizes s32[4]"},
+    {0x1CDD0, 0x1CDD4, 2, "gAudioHeapInitSizes unk0, tatumsPerBeat s16 (AudioHeap_Init reads +2 as s16)"},
+    {0x1CDD4, 0x1CDE0, 4, "gAudioHeapInitSizes heapSize, initPoolSize, permanentPoolSize s32"},
 };
 
 /* gAudioSpecs (0x1CC10, 8 x 0x38) and the ReverbSettings each points at

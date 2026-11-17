@@ -107,7 +107,8 @@ static void test_bootup(uint8_t *d) {
     CHECK_EQ(s0[7], 2);                 /* numReverbs */
     CHECK_EQ(h32(s0 + 0x0C), 0x500);
     CHECK_EQ(h32(d + 0x1CC10 + 4 * 0x38), 24000); /* spec 4: the 24 kHz one */
-    for (i = 1; i < 4; i++) { /* heapSize, initPoolSize, permanentPoolSize (word 0 is not read) */
+    CHECK_EQ((int16_t)h16(d + 0x1CDD2), 48); /* tatumsPerBeat: the s16 at +2 (AudioHeap_Init's tempo divisor) */
+    for (i = 1; i < 4; i++) { /* heapSize, initPoolSize, permanentPoolSize */
         CHECK(h32(d + 0x1CDD0 + 4 * i) != 0 && h32(d + 0x1CDD0 + 4 * i) < 0x400000); /* heap init sizes */
     }
     /* spec 0's reverbs (0x1CB00, 2 x 0x12): downsample 1, window b1 << 6, h4 0x7FFF / h2 0x3FFF */
