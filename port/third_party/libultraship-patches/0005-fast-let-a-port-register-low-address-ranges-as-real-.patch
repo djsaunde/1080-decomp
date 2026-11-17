@@ -1,0 +1,71 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Tue, 17 Nov 2026 09:55:05 -0500
+Subject: [PATCH 5/5] fast: let a port register low address ranges as real
+ memory
+
+gfx_set_timg_handler_rdp drops a G_SETTIMG whose resolved address is at or
+below 0x0FFFFFFF unless dladdr places it in a loaded module, because such an
+address is usually a segment that SegAddr could not resolve. A port whose
+display lists point at heap or arena memory in that range (a 32-bit
+non-PIE process, whose brk heap follows the executable at 0x08xxxxxx, or a
+replayer that rebuilds a captured task at its original addresses) then
+loses every texture and palette load from it. Add
+gfx_register_raw_address_range(start, size): addresses in a registered range
+pass the check. Nothing changes until a port registers a range.
+---
+ include/fast/interpreter.h |  1 +
+ src/fast/interpreter.cpp   | 15 ++++++++++++++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/include/fast/interpreter.h b/include/fast/interpreter.h
+index 591c47f..6582c94 100644
+--- a/include/fast/interpreter.h
++++ b/include/fast/interpreter.h
+@@ -618,6 +618,7 @@ const char* GfxGetOpcodeName(int8_t opcode);
+ extern "C" void gfx_texture_cache_clear();
+ extern "C" void gfx_texture_cache_delete(const void* addr);
+ extern "C" void gfx_texture_cache_invalidate_range(const void* addr, size_t size);
++extern "C" void gfx_register_raw_address_range(const void* start, size_t size);
+ extern "C" void gfx_readback_rgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
+                                       bool bswap);
+ extern "C" void gfx_readback_depth_request(uint32_t x, uint32_t y);
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index c5e57c2..f67f0ab 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -4090,13 +4090,22 @@ bool gfx_othermode_h_handler_f3d(F3DGfx** cmd0) {
+     return false;
+ }
+ 
++// Low address ranges the port has declared to be real memory (gfx_register_raw_address_range).
++static std::vector<std::pair<uintptr_t, uintptr_t>> sRawAddressRanges;
++
+ // A resolved address still in the N64 segmented range (<= 0x0FFFFFFF) usually means SegAddr
+ // failed to resolve it (segment not set up). Keep it only if it belongs to a loaded module,
+-// where it's a real low pointer (e.g. a static TLUT) rather than an unresolved segment addr.
++// where it's a real low pointer (e.g. a static TLUT) rather than an unresolved segment addr,
++// or to a range the port registered (heap or arena memory that no module owns).
+ static bool IsValidResolvedAddress(uintptr_t addr) {
+     if (addr > 0x0FFFFFFF) {
+         return true;
+     }
++    for (const auto& range : sRawAddressRanges) {
++        if (addr >= range.first && addr - range.first < range.second) {
++            return true;
++        }
++    }
+ 
+     // Still in the N64 segmented range, but might be a false positive (a real low pointer).
+ #ifdef _WIN32
+@@ -5762,6 +5771,10 @@ extern "C" void gfx_texture_cache_invalidate_range(const void* addr, size_t size
+     Fast::mInstance.lock().get()->TextureCacheInvalidateRange(addr, size);
+ }
+ 
++extern "C" void gfx_register_raw_address_range(const void* start, size_t size) {
++    Fast::sRawAddressRanges.emplace_back((uintptr_t)start, size);
++}
++
+ extern "C" void gfx_readback_rgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
+                                       bool bswap) {
+     Fast::mInstance.lock().get()->ReadbackRequestRgba5551(x, y, width, height, dst, bswap);

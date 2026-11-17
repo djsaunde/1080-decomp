@@ -20,6 +20,12 @@ Third-party code used by the PC port (docs/1080_PC_PORT_PLAN.md). The matching b
 
 ### How it is pulled in
 
+**Now (M2, run 824):** `port/gfx/fast3d/setup-lus.sh` fetches LUS at the pin and prism-processor at the
+commit LUS pins, into `<monorepo>/tools/lus/` (not committed), and applies the whole series with `git apply`. A
+stamp file names the pins and a hash of the patches, so a changed series re-fetches. Only `port/gfx/fast3d`
+builds from it so far (three `src/fast` files plus `Texture.cpp`, against a small Ship shim; no SDL, ImGui or
+spdlog). The submodule below is still the plan for the in-process build.
+
 **Chosen: a git submodule at the pinned commit, with the patches applied at configure time.** A submodule
 records the exact commit in our tree, works offline once cloned, and lets `git submodule status` show the pin.
 It is not added yet. The command, to be run when M2 starts:
@@ -81,7 +87,8 @@ only in CMake. It remains a fallback if submodules prove awkward.
   - libgfxd only with `GFX_DEBUG_DISASSEMBLER`;
   - StormLib only with `INCLUDE_MPQ_SUPPORT` (default OFF).
 - Keep `ENABLE_SCRIPTING` OFF (the default). It would pull in TinyCC, which is **LGPL**.
-- Before shipping, review the licence of each dependency CMake actually fetches or links. Not yet audited:
-  prism-processor's licence.
+- Before shipping, review the licence of each dependency CMake actually fetches or links. prism-processor
+  (the GLSL template preprocessor of the OpenGL backend, commit `1de0544`) is **MIT**, "Copyright (c) 2025 Lywx &
+  coco875" (checked in run 824); its notice ships too.
 - `GBI_UCODE` (default `F3DEX_GBI_2`) only selects the GBI macros that LUS itself compiles with. The game's
   lists are decoded by the ucode id we set at run time (`ucode_f3dex_line3d`, patch 1), not by this option.

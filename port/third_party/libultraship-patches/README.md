@@ -27,12 +27,16 @@ rebases easily when the pin moves.
 | 2 | `0002-fast-read-the-cycle-1-blender-fields-for-invisible-d.patch` | The "invisible" blender test (`A = 0, M = MEM`, a Z-only write) reads the **cycle 1** fields (bits 26 / 22) in 1-cycle mode, and the cycle 2 fields (bits 24 / 20) otherwise, as before. 1080 builds its 1-cycle render modes from one `GBL_c1` word and leaves cycle 2 at zero, so its Z-only mode 0x0C4C3078 was drawn opaque. Render modes that set both cycles to the same value, as the stock `G_RM_*` pairs do, behave exactly as before. |
 | 3 | `0003-fast-deferred-colour-depth-read-back-API-for-ports.patch` | Adds a **read-back API** for game code that reads the N64 colour or depth buffer from the CPU. Requests are queued before `Run()`. `ServiceReadbacks()` fulfils them at the end of `Run()`, after the frame is drawn and before it is resolved or presented, so the game thread never touches the GPU. The results are ready at the next update: one frame of latency, the same as reading the last completed N64 framebuffer. Colour: `ReadbackRequestRgba5551(x, y, w, h, dst, bswap)` / `gfx_readback_rgba5551`. It returns a region in **native coordinates (320x240)** as RGBA5551, **big-endian when `bswap` is set** (the N64 memory order that the texture importers read back), taken from the native-aspect centre of the game view and scaled to the native size with a nearest-neighbour blit. Depth: `ReadbackRequestDepth(x, y)`, then `ReadbackGetDepth(x, y, &z)` (`gfx_readback_depth_request` / `_get`), batched into one `GetPixelDepth` call. The units are LUS's (the top 14 bits of the 24-bit depth, << 2), so the far plane / cleared value reads **0xFFFC**, the N64 Z clear value that `Sun_measureVisibility` tests for. |
 | 4 | `0004-fast-texture-cache-invalidation-hooks-for-CPU-writte.patch` | Adds **texture-cache invalidation hooks**. `TextureCacheInvalidateRange(addr, size)` drops every cached texture whose texels or either palette start inside `[addr, addr + size)`, and marks both loaded tiles changed so the next draw looks them up again. The C entry points are `gfx_texture_cache_invalidate_range(addr, size)` and `gfx_texture_cache_delete(addr)` (the existing exact-address `TextureCacheDelete`). The port calls the range form from the `PORT` body of `gfx_flushTexture` (the `osWritebackDCache` site) and after each CPU texture writer: ScreenThumbMat_grab, Fader_buildTexture, Tv1Tmpl_blitFrame. |
+| 5 | `0005-fast-let-a-port-register-low-address-ranges-as-real-.patch` | Adds `gfx_register_raw_address_range(start, size)`. `gfx_set_timg_handler_rdp` drops a G_SETTIMG whose resolved address is at or below 0x0FFFFFFF unless `dladdr` places it in a loaded module (such an address is usually an unresolved segment). The 1080 port's lists point at memory no module owns in that range: in a 32-bit non-PIE process the brk heap follows the executable at 0x08xxxxxx, and the 64-bit replayer (`port/gfx/fast3d/f3dreplay`) rebuilds a dump at its original addresses. Without the patch every texture and palette load from there is silently skipped (found by the golden tests, plan 19.6). Addresses in a registered range pass the check; nothing changes until a port registers one. |
 
-The patches add 260 lines and remove 10 (patch 1: +93 / -6; patch 2: +5 / -2; patch 3: +129 / -2; patch 4:
-+33 / -0).
+The patches add 275 lines and remove 11 (patch 1: +93 / -6; patch 2: +5 / -2; patch 3: +129 / -2; patch 4:
++33 / -0; patch 5: +15 / -1).
 
 ## How the port uses them
 
+- Register the memory the lists point into with `gfx_register_raw_address_range` (patch 5): the game's heap
+  / arena in process, every mapped range of the dump in `f3dreplay`.
+- Call `gfx_set_target_ucode` **after** `Interpreter::Init`, which resets the ucode to F3DEX2.
 - Select the ucode once with `Fast::gfx_set_target_ucode(ucode_f3dex_line3d)`, for both `RcpTask_setUcodeF3DEX`
   and F3DLP.Rej. 1080 emits no G_QUAD (section 11.1), so decoding 0xB5 as a line costs nothing.
 - `SetNativeDimensions(320, 240)`, so that the read-back and depth coordinates are the game's own.
@@ -42,6 +46,11 @@ The patches add 260 lines and remove 10 (patch 1: +93 / -6; patch 2: +5 / -2; pa
   the simulation thread (decision 5), or keep `dst` from being read while the frame renders.
 
 ## Verification
+
+Run 824 (plan 19.6): the whole series is built and **run** in `port/gfx/fast3d/f3dreplay` (64-bit, EGL, no
+SDL / ImGui) and exercised by 11 golden-image scenes (`make -C port/gfx test`), G_LINE3D (patch 1) included.
+Patch 5 was made with `format-patch` like the others; patches 1-4 were not regenerated (their only
+difference would be the `[PATCH n/5]` subject counter).
 
 What was checked (run 611):
 - The series applies cleanly with `git am` to a fresh clone at 759b134. The resulting tree is identical to the
