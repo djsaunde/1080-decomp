@@ -7,6 +7,7 @@ extern "C" int gl_func_00000000(...);
 /* ---- snoweffects_uso_func_00000C90 (moved from agent-c's snoweffects_uso_ncc_c.cpp, agent-h run 699) ---- */
 #include "../game_libs/ncc_drafts/gbi_subset.h"
 struct GCtx;
+#define gW(g, a, b) { (g)->words.w0 = (a); (g)->words.w1 = (unsigned int)(b); }
 #define gDPWord(pkt, a, b) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = (a); _g->words.w1 = (unsigned int)(b); }
 typedef struct { Gfx *buf; int count; } DList;
 /* libgdl display-list context: the Gfx head at +0xC; next() appends one packet. */
@@ -43,20 +44,26 @@ struct GCtx {
  * and before drawn++ (with them the xh CSE temp is computed right after x0, as in the target).
  * agent-h run 731 (-> 94.08): the display-list packet goes through a function-scope Gfx *g declared
  * after c. That is the target's 10th word above m, so m and everything below it down to scratch now sit at
- * the target's offsets (sp-offset mismatches 32 -> 10). */
+ * the target's offsets (sp-offset mismatches 32 -> 10).
+ * agent-h run 737 (-> 94.41): the loop body declares its words up front (y0, z, the five packet pointers
+ * EE / FB / E4 / B4 / B3, and x1 = x0 + wid / y1 = y0 + hgt) and the packets go through them (gW / gTR /
+ * gImmpV take the pointer, so no `_g` block words); the BB and the last BA tail packets reuse the
+ * function-scope g. That puts v / __V / r at the target's sp+220 / 204 / 192 with frame 400 (the whole frame
+ * map now matches); the texrect's E4 packet appends through nextN(). */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
 #define G_RDPHALF_2 0xb3
-#define gImmp1(pkt, c, p0) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = _SHIFTL((c), 24, 8); _g->words.w1 = (unsigned int)(p0); }
 inline int imax0(int a) { return a > 0 ? a : 0; }
-#define gSPScisTextureRectangle(pkt, pkt2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
-{ Gfx *_g = (Gfx *)(pkt); \
-    _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(imax0((s16)(yh)), 0, 12) | _SHIFTL(imax0((s16)(xh)), 12, 12)); \
-    _g->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(imax0((s16)(xl)), 12, 12) | _SHIFTL(MAX((s16)(yl),0), 0, 12)); \
-    gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
+
+#define gImmpV(g, pkt, c, p0) { g = (pkt); (g)->words.w0 = _SHIFTL((c), 24, 8); (g)->words.w1 = (unsigned int)(p0); }
+#define gTR(g0, pkt, g1, pkt2, g2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
+{ g0 = (pkt); \
+    g0->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(imax0((s16)(yh)), 0, 12) | _SHIFTL(imax0((s16)(xh)), 12, 12)); \
+    g0->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(imax0((s16)(xl)), 12, 12) | _SHIFTL(MAX((s16)(yl),0), 0, 12)); \
+    gImmpV(g1, pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
-    gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
+    gImmpV(g2, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 
 struct SnowV3c { float x, y, z; SnowV3c(float ax, float ay, float az) { x = ax; y = ay; z = az; } };
 struct SnowPartC {
@@ -131,6 +138,7 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     halfW = (float)(SNOW_CAM->scrW / 2);
     halfH = (float)(SNOW_CAM->scrH / 2);
     for (i = 0, p = self->items; i < self->count; i++, p++) {
+        int y0, z; Gfx *ge, *gf, *gt, *g1, *g2; int x1, y1;
         SnowV3c v = scaled(p->pos);
         float w;
         w = m[0][3] * v.x + m[1][3] * v.y + m[2][3] * v.z + m[3][3];
@@ -143,23 +151,24 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
             if (-halfW < sx && sx < halfW && -halfH < sy && sy < halfH) {
                 wid = (int)(k * (halfH * 2.0f * (1.0f / w)) + 1.0f);
                 x0 = (int)(sx + halfW - (float)(wid / 2) + (float)SNOW_CAM->offX);
-                int y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
-                int z = (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4);
-                gDPWord(c->next(), 0xEE000000, (z & 0x7FFF) << 16);
+                y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
+                z = (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4);
+                ge = c->next(); gW(ge, 0xEE000000, (z & 0x7FFF) << 16);
                 if (y0) {}
-                gDPWord(c->next(), 0xFB000000,
-                        ((int)p->alpha & 0xFF) | (p->col[2] << 8) | (p->col[1] << 16) | (p->col[0] << 24));
+                gf = c->next(); gW(gf, 0xFB000000, ((int)p->alpha & 0xFF) | (p->col[2] << 8) | (p->col[1] << 16) | (p->col[0] << 24));
+                x1 = x0 + wid;
+                y1 = y0 + hgt;
                 if (y0) {}
                 self->drawn++;
-                gSPScisTextureRectangle(c->next(), c->next(), c->nextN(), x0 << 2, y0 << 2, (x0 + wid) << 2, (y0 + hgt) << 2, 0, 0, 0,
-                                        ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
+                gTR(gt, c->nextN(), g1, c->next(), g2, c->nextN(), x0 << 2, y0 << 2, x1 << 2, y1 << 2, 0, 0, 0,
+                    ((self->texW << 10) - 1024) / wid, ((self->texH << 10) - 1024) / hgt);
             }
         }
     }
     gDPWord(c->next(), 0xE7000000, 0);
-    gDPWord(c->next(), 0xBB000000, 0);
+    g = c->next(); gW(g, 0xBB000000, 0);
     gDPWord(c->next(), 0xBA001301, 0x80000);
     gDPWord(c->next(), 0xBA000C02, 0x2000);
     gDPWord(c->next(), 0xB9000201, 0);
-    gDPWord(c->next(), 0xBA000602, 0);
+    g = c->next(); gW(g, 0xBA000602, 0);
 }
