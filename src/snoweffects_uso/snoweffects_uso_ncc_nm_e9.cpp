@@ -16,8 +16,9 @@
  * are stored in reverse.
  * Run 697 (agent-b): ParmC takes its name AFTER the three Colours, (o, val, lo, hi, name, fl), so the name temp is
  * created after the Colour temps as in the target (and is reloaded from its word for the GdlParmBase call);
- * ParmC stores f20 before v, ParmI f14 before v (objdiff 95.66 -> 99.63 %). Code-shape residual: the +0x234 / +0x238
- * stores (ours 568 before 564; no statement order changes it). Frame 192 vs 224: our edg temps are homed
+ * ParmC stores f20 before v, ParmI f14 before v (objdiff 95.66 -> 99.63 %).
+ * Run 705 (agent-b): the five int stores each on their own source line (as1 line-group tie-break) put +0x234 before
+ * +0x238 as in the target; the code shape is now exact, only frame offsets differ. Frame 192 vs 224: our edg temps are homed
  * bottom-up in creation order (n1 lowest), the target's top-down (n1 at 216, a1 spill 220), and the target's
  * pool area below is 32 bytes larger.
  */
@@ -87,7 +88,11 @@ struct SnowTarget9 : SNode9 {
 };
 SnowTarget9::SnowTarget9() {
     name = D_00000000 + 0xA58;
-    f22C = 0; f230 = 0; f234 = 1; f238 = 3; f23C = 0;
+    f22C = 0;
+    f230 = 0;
+    f234 = 1;
+    f238 = 3;
+    f23C = 0;
     col[3] = 1.0f; col[2] = 1.0f; col[1] = 1.0f; col[0] = 1.0f;
     f98 = 0.0f; f9C = 0.0f; fA0 = 0.0f; fA4 = 0.0f; fA8 = 0.0f;
 }
