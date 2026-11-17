@@ -409,23 +409,15 @@ void snoweffects_uso_func_00000C90(void) {
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000C90);
 #endif
 
-#ifdef NON_MATCHING
-/* texture-sprite init: NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp (agent-h run 649),
- * REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
+/* texture-sprite init: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
+ * (agent-h run 649, agent-c run 691), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
 void snoweffects_uso_func_000015D0(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000015D0);
-#endif
 
-#ifdef NON_MATCHING
-/* texture-sprite init: NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp (agent-h run 649),
- * REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
+/* texture-sprite init: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
+ * (agent-h run 649, agent-c run 691), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
 void snoweffects_uso_func_00001A18(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00001A18);
-#endif
 
 /* 0x1E60: texture-sprite init (64 x 64 IA8, Data+0x5AC0), the 0x15D0 shape plus TextFilt / RGBDither packets.
  * NCC donor in snoweffects_uso_ncc_b.cpp (agent-b run 675, 300 words = target, ~90 %), spliced over this
@@ -437,14 +429,10 @@ void snoweffects_uso_func_00001E60(void) {
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00001E60);
 #endif
 
-#ifdef NON_MATCHING
-/* texture-sprite init: NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp (agent-h run 649),
- * REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
+/* texture-sprite init: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
+ * (agent-h run 649, agent-c run 691), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
 void snoweffects_uso_func_00002310(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00002310);
-#endif
 
 /* SnowFall flake motion: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc.cpp
  * (user Vec3 operator+=, RoData+0xC literal pin), REPLACE_FUNC_BODY-spliced over this placeholder. */

@@ -181,15 +181,15 @@ $(SNOW_B_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_b.cpp
 SNOW_B_FUNCS := snoweffects_uso_func_00005FD4 snoweffects_uso_func_00006144 snoweffects_uso_func_00006248 snoweffects_uso_func_0000559C
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_B_FUNCS),$(f)=$(SNOW_B_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_B_DONOR)
-# agent-h run 649: NON_MATCHING-only NCC donors (texture-sprite inits 15D0 / 1A18 / 2310; the 1E60 draft in
-# the donor is 301 words vs 300 and stays out); the matching build keeps INCLUDE_ASM.
+# agent-h run 649: NCC donors for the texture-sprite inits 15D0 / 1A18 / 2310 (EXACT since agent-c run 691,
+# spliced in both trees; the 1E60 draft in the donor is 301 words vs 300 and stays out).
 SNOW_NM_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp.o
 $(SNOW_NM_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 SNOW_NM_FUNCS := snoweffects_uso_func_000015D0 snoweffects_uso_func_00001A18 snoweffects_uso_func_00002310
-build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_FUNCS),$(f)=$(SNOW_NM_DONOR))
-build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_DONOR)
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_FUNCS),$(f)=$(SNOW_NM_DONOR))
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_DONOR)
 # agent-e runs 664 / 668 / 673: NON_MATCHING-only NCC donor for 0x64B8 (97.0 %), 0x6B28 (93.8 %) and
 # 0x718C (96.9 %), each the target's length.
 SNOW_NM_E_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp.o
