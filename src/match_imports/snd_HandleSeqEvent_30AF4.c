@@ -3,6 +3,14 @@
  * target's 528 words once linked with the callees / arena addresses at their own values and the TU's .rodata (switch-1
  * table, the 0.1f literal, switch-2 / switch-3 tables) at the USO RoData 0x1874 (scripts/match-origins-snd_HandleSeqEvent_30AF4.ld).
  * Void prototypes gl_func_emit_30AF4v / gl_func_00030AF4_{44F18,42364,460D0}v: calls whose result is never read. */
+#include "../../include/uso_call.h"
+/* PC port (agent-a run 817, plan 18.9): the callee of each `gl_func_emit` / `gl_func_emit_30AF4v`
+ * jal and the object of each `gl_state_30AF4` HI16 / LO16 pair, from bootup.uso's TextReloc at
+ * that site (snd_HandleSeqEvent_30AF4 = bootup Text 0x45160).  Call sites were paired with their
+ * jals by a verify copy that spells each call token uniquely (identical .text bytes and reloc
+ * offsets); gl_state_30AF4's six lui / addiu pairs (Text +0x4, +0x40, +0x80, +0xB4, +0x4B8,
+ * +0x5EC) are read off the object directly: Data 0x1C09C, 0x1C0A8 (lines prev / f0 = mode share
+ * the pair), 0x1C080 (the five clears and the first sv share two pairs), 0x1C0B0, Bss 0x338. */
 typedef unsigned char u8;
 typedef unsigned int u32;
 typedef signed int s32;
@@ -69,26 +77,26 @@ s32 arg2;
     s32 w;
     s32 sv;
     flag = 0;
-    if (gl_state_30AF4.f0 == 1) {
+    if (XDATA(gl_state_30AF4, port_bootup_data, 0x1C09C).f0 == 1) {
         gl_func_00041D0C();
     }
-    gl_func_emit_30AF4v(0xFB000000, &gl_data_30AF4_45010);
-    prev = gl_state_30AF4.f0;
-    gl_state_30AF4.f0 = mode;
-    gl_func_emit(0);
-    gl_func_emit_30AF4v(1);
+    XCALL(gl_func_emit_30AF4v, AudioThread_QueueCmdS32)(0xFB000000, &gl_data_30AF4_45010);
+    prev = XDATA(gl_state_30AF4, port_bootup_data, 0x1C0A8).f0;
+    XDATA(gl_state_30AF4, port_bootup_data, 0x1C0A8).f0 = mode;
+    XCALL(gl_func_emit, snd_soundObjChannelsOff)(0);
+    XCALL(gl_func_emit_30AF4v, snd_soundObjChannelsOff)(1);
     D_30AF4_b = 0;
     D_30AF4_c = 0;
     D_30AF4_d = 0;
     D_30AF4_e = 0;
-    gl_state_30AF4.f4 = 0;
-    gl_state_30AF4.f8 = 0;
-    gl_state_30AF4.f14 = 0;
-    gl_state_30AF4.f0 = 0;
-    gl_state_30AF4.f18 = 0;
-    gl_func_emit();
+    XDATA(gl_state_30AF4, port_bootup_data, 0x1C080).f4 = 0;
+    XDATA(gl_state_30AF4, port_bootup_data, 0x1C080).f8 = 0;
+    XDATA(gl_state_30AF4, port_bootup_data, 0x1C080).f14 = 0;
+    XDATA(gl_state_30AF4, port_bootup_data, 0x1C080).f0 = 0;
+    XDATA(gl_state_30AF4, port_bootup_data, 0x1C080).f18 = 0;
+    XCALL(gl_func_emit, snd_InitCueQueues)();
     gl_func_00030AF4_460D0v();
-    sv = (s32)&gl_state_30AF4 + 0 * (int)(flag);
+    sv = (s32)&XDATA(gl_state_30AF4, port_bootup_data, 0x1C080) + 0 * (int)(flag);
     if (sv) {}
     switch (mode) {
     case 0:
@@ -98,13 +106,13 @@ s32 arg2;
     case 1:
         D_30AF4_f = 0;
         gl_func_00042364(0);
-        gl_func_emit(2);
+        XCALL(gl_func_emit, snd_PlayPlayer1SeqDefault)(2);
         flag = 1;
         break;
     case 2:
         gl_func_00042364(2);
         gl_cmd_30AF4 = 16;
-        gl_func_emit(CMD_B3);
+        XCALL(gl_func_emit, snd_PlayPlayer1SeqDefault)(CMD_B3);
         flag = 1;
         break;
     case 3:
@@ -112,7 +120,7 @@ s32 arg2;
             gl_func_00042364(5);
             flag = 1;
         }
-        gl_func_emit(3);
+        XCALL(gl_func_emit, snd_PlayPlayer1SeqDefault)(3);
         break;
     case 4:
         if (prev == 0) {
@@ -121,10 +129,10 @@ s32 arg2;
         }
         if (prev == 3) {
             for (;;) {
-                if (gl_func_emit(2, 14, 0) < 100) {
+                if (XCALL(gl_func_emit, AudioThread_GetLayerSamplesLeft)(2, 14, 0) < 100) {
                     break;
                 }
-                gl_func_emit();
+                XCALL(gl_func_emit, AudioThread_WaitForAudioTask)();
             }
         }
         D_30AF4_h = sub + 0 * (int)(flag);
@@ -164,7 +172,7 @@ s32 arg2;
         } else {
             gl_cmd_30AF4 = 13;
         }
-        gl_func_emit(CMD_B3);
+        XCALL(gl_func_emit, snd_PlayPlayer1SeqDefault)(CMD_B3);
         break;
     case 6:
         {
@@ -201,16 +209,16 @@ s32 arg2;
         if (sv) {}
         if (D_30AF4_m == 0 && sub == 0) {
             ((GlState30AF4 *)sv)->fC = 256;
-            gl_func_emit(0x83010000, 2000);
+            XCALL(gl_func_emit, AudioThread_QueueCmdS32)(0x83010000, 2000);
             D_30AF4_o = 14;
         } else if (D_30AF4_p == 1) {
-            gl_func_emit(0x46010000, 0);
-            gl_func_emit(CMD_B3, w + 10);
+            XCALL(gl_func_emit, AudioThread_QueueCmdS8)(0x46010000, 0);
+            XCALL(gl_func_emit, snd_ScheduleSeqAfter)(CMD_B3, w + 10);
         } else {
-            gl_func_emit(0x83010000, 80);
-            gl_func_emit(CMD_B3, w);
+            XCALL(gl_func_emit, AudioThread_QueueCmdS32)(0x83010000, 80);
+            XCALL(gl_func_emit, snd_ScheduleSeqAfter)(CMD_B3, w);
         }
-        gl_func_emit(wv);
+        XCALL(gl_func_emit, snd_PostEvent)(wv);
         }
         break;
     case 7:
@@ -220,12 +228,12 @@ s32 arg2;
         if (gl_cmd_30AF4 != 15) {
             gl_cmd_30AF4 = 16;
             D_30AF4_r = 16;
-            gl_func_emit(CMD_B3);
+            XCALL(gl_func_emit, snd_PlayPlayer1SeqDefault)(CMD_B3);
         }
         break;
     case 9:
         gl_func_00030AF4_42364v(3);
-        sv = (u32)&gl_state_30AF4;
+        sv = (u32)&XDATA(gl_state_30AF4, port_bootup_data, 0x1C0B0);
         if (sv) {}
         *(s32 *)sv = sub;
         if (*(u32 *)sv == 1) {
@@ -233,24 +241,24 @@ s32 arg2;
         } else {
             gl_cmd_30AF4 = 17;
         }
-        gl_func_emit(CMD_B3, 35);
+        XCALL(gl_func_emit, snd_ScheduleSeqAfter)(CMD_B3, 35);
         flag = 1;
         break;
     case 10:
         gl_func_00042364(7);
         gl_cmd_30AF4 = 18;
-        gl_func_emit(0x81000F00, 0);
+        XCALL(gl_func_emit, AudioThread_QueueCmdS32)(0x81000F00, 0);
         sv = sub;
         D_30AF4_s = sv;
         if (sv == 2) {
-            gl_func_emit(0x81001300, 0);
+            XCALL(gl_func_emit, AudioThread_QueueCmdS32)(0x81001300, 0);
         }
-        gl_func_emit(CMD_B3);
+        XCALL(gl_func_emit, snd_PlayPlayer1SeqDefault)(CMD_B3);
         flag = 1;
         break;
     case 11:
         gl_cmd_30AF4 = 19;
-        gl_func_emit(CMD_B3, 80);
+        XCALL(gl_func_emit, snd_ScheduleSeqAfter)(CMD_B3, 80);
         break;
     case 12:
     case 13:
@@ -258,19 +266,19 @@ s32 arg2;
     }
     if (flag == 1) {
         gl_func_00041ED4();
-        gl_func_emit();
+        XCALL(gl_func_emit, snd_PlayPlayer0Seq0)();
         gl_func_00041F0C();
         gl_func_00041F44();
         if (mode != 4) {
-            gl_func_emit(0, 0);
+            XCALL(gl_func_emit, snd_PlayPlayer2Seq)(0, 0);
         }
     }
-    sv = (u32)&gl_state_30AF4;
+    sv = (u32)&XDATA(gl_state_30AF4, port_bootup_bss, 0x338);
     if (D_30AF4_t != 5) {
         gl_func_00030AF4_44F18v(0);
     } else {
         *(f32 *)&((GlState30AF4 *)sv)->f14 = 0.1f;
-        gl_func_emit(0, 100, ((GlState30AF4 *)sv)->f4);
+        XCALL(gl_func_emit, snd_TriggerChannel8Cue)(0, 100, ((GlState30AF4 *)sv)->f4);
         D_30AF4_v = 4;
     }
     switch (mode) {
@@ -286,59 +294,59 @@ s32 arg2;
         if (D_30AF4_x == 1 || D_30AF4_x == 3) {
             switch (D_30AF4_w) {
             case 0:
-                gl_func_emit_30AF4v(0x1F);
+                XCALL(gl_func_emit_30AF4v, snd_PostEvent)(0x1F);
                 break;
             case 1:
-                gl_func_emit_30AF4v(0x1B);
+                XCALL(gl_func_emit_30AF4v, snd_PostEvent)(0x1B);
                 break;
             case 2:
-                gl_func_emit_30AF4v(0x1D);
+                XCALL(gl_func_emit_30AF4v, snd_PostEvent)(0x1D);
                 break;
             case 3:
-                gl_func_emit_30AF4v(0x19);
+                XCALL(gl_func_emit_30AF4v, snd_PostEvent)(0x19);
                 break;
             case 4:
-                gl_func_emit_30AF4v(0x1E);
+                XCALL(gl_func_emit_30AF4v, snd_PostEvent)(0x1E);
                 break;
             case 5:
-                gl_func_emit_30AF4v(0x1C);
+                XCALL(gl_func_emit_30AF4v, snd_PostEvent)(0x1C);
                 break;
             case 6:
-                gl_func_emit_30AF4v(0x1A);
+                XCALL(gl_func_emit_30AF4v, snd_PostEvent)(0x1A);
                 break;
             case 7:
-                gl_func_emit_30AF4v(0x18);
+                XCALL(gl_func_emit_30AF4v, snd_PostEvent)(0x18);
                 break;
             }
         }
         if (D_30AF4_w == 8) {
-            gl_func_emit(0xBC);
+            XCALL(gl_func_emit, snd_PostEvent)(0xBC);
         }
         break;
     case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8:
         break;
     case 9:
-        gl_func_emit(0xF8000000, 0);
-        gl_func_emit(0xA3);
+        XCALL(gl_func_emit, AudioThread_QueueCmdS32)(0xF8000000, 0);
+        XCALL(gl_func_emit, snd_PostEvent)(0xA3);
         break;
     case 10:
-        gl_func_emit(0xF8000000, 0);
-        gl_func_emit(0, 0x3E99999A, 0);
+        XCALL(gl_func_emit, AudioThread_QueueCmdS32)(0xF8000000, 0);
+        XCALL(gl_func_emit, snd_UpdateChannel10Emitter)(0, 0x3E99999A, 0);
         break;
     case 11:
         switch (sub) {
         case 0:
-            gl_func_emit(14);
+            XCALL(gl_func_emit, snd_PostEvent)(14);
             break;
         case 1:
-            gl_func_emit(15);
+            XCALL(gl_func_emit, snd_PostEvent)(15);
             break;
         }
         break;
     }
-    gl_func_emit(0xFB000000, 0);
-    gl_func_emit(0);
-    gl_func_emit(0xFB000000, &gl_data_30AF4_45F78);
+    XCALL(gl_func_emit, AudioThread_QueueCmdS32)(0xFB000000, 0);
+    XCALL(gl_func_emit, snd_SetLevelRampTarget)(0);
+    XCALL(gl_func_emit, AudioThread_QueueCmdS32)(0xFB000000, &gl_data_30AF4_45F78);
 }
 #ifdef PORT
 #undef D_30AF4_f

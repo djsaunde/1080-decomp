@@ -1600,18 +1600,18 @@ void TrkMenu_draw_00002A44(char *arg0) {
     int w;
     int x;
 
-    glv_2a44(obj);
+    XCALL(glv_2a44, TrkMenu_drawHeader_00002DF0)(obj);
     TIMMENU(obj)->blink = TIMMENU(obj)->blink - 0x10;
     switch (TIMMENU(obj)->base.state) {
     case 1:
-        glv_2a44((char *)&XDATA(D_00000000, port_gui_bss, 0x8));
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1F0);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1F0, 0xA0, 0x25, 3);
-        glv_2a44(obj, 0x25);
-        glv_2a44(obj, *(unsigned char *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x178), 0x50);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1D8);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1D8);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1D8, 0xA0, 0x69, 3);
+        XCALL(glv_2a44, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_gui_bss, 0x8));
+        XCALL(glv_2a44, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1F0);
+        XCALL(glv_2a44, gui_drawSprite)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1F0, 0xA0, 0x25, 3);
+        XCALL(glv_2a44, TrkMenu_drawLabel130_00003050)(obj, 0x25);
+        XCALL(glv_2a44, TrkMenu_drawLabel_00002EEC)(obj, *(unsigned char *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x178), 0x50);
+        XCALL(glv_2a44, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1D8);
+        XCALL(glv_2a44, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1D8);
+        XCALL(glv_2a44, gui_drawSprite)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1D8, 0xA0, 0x69, 3);
         f = *(int *)&XDATA(D_00000000, port_bootup_bss, 0x28C);
         v0 = TIMMENU(obj)->promptY;
         if (f != 0) {
@@ -1622,31 +1622,31 @@ void TrkMenu_draw_00002A44(char *arg0) {
         if (f != 0) {
             a2 = x - 0xE;
         }
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x148);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x148);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x148, 0xA0, a2, 3);
-        glv_2a44(obj, v0 - 0x14);
+        XCALL(glv_2a44, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x148);
+        XCALL(glv_2a44, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x148);
+        XCALL(glv_2a44, gui_drawSprite)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x148, 0xA0, a2, 3);
+        XCALL(glv_2a44, TrkMenu_drawPair_00002F48)(obj, v0 - 0x14);
         return;
     case 2:
-        glv_2a44((char *)&XDATA(D_00000000, port_gui_bss, 0x8));
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1F0);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1F0, 0xA0, 0x25, 3);
-        glv_2a44(obj, 0x25);
-        glv_2a44(obj, *(unsigned char *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x178), 0x50);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1D8);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1D8);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1D8, 0xA0, 0x69, 3);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x160);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x160);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x160, 0xA0, 0x8E, 3);
+        XCALL(glv_2a44, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_gui_bss, 0x8));
+        XCALL(glv_2a44, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1F0);
+        XCALL(glv_2a44, gui_drawSprite)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1F0, 0xA0, 0x25, 3);
+        XCALL(glv_2a44, TrkMenu_drawLabel130_00003050)(obj, 0x25);
+        XCALL(glv_2a44, TrkMenu_drawLabel_00002EEC)(obj, *(unsigned char *)((char *)&XDATA(D_00000000, port_bootup_bss, 0xF8) + 0x178), 0x50);
+        XCALL(glv_2a44, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1D8);
+        XCALL(glv_2a44, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1D8);
+        XCALL(glv_2a44, gui_drawSprite)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x1D8, 0xA0, 0x69, 3);
+        XCALL(glv_2a44, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x160);
+        XCALL(glv_2a44, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x160);
+        XCALL(glv_2a44, gui_drawSprite)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x160, 0xA0, 0x8E, 3);
         w = TIMMENU(obj)->promptY;
         if (*(int *)&XDATA(D_00000000, port_bootup_bss, 0x28C) != 0) {
             w -= 8;
         }
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x178);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x178);
-        glv_2a44((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x178, 0xA0, w - 0x13, 3);
-        glv_2a44(obj, w);
+        XCALL(glv_2a44, gui_spriteRefresh)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x178);
+        XCALL(glv_2a44, gui_setCombine_00001794)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x178);
+        XCALL(glv_2a44, gui_drawSprite)((char *)&XDATA(D_00000000, port_trkproc_bss, 0x0) + 0x178, 0xA0, w - 0x13, 3);
+        XCALL(glv_2a44, TrkMenu_drawPair_00002F48)(obj, w);
         break;
     case 0:
         break;

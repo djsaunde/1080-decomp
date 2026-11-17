@@ -6819,17 +6819,17 @@ void AudioLoad_RelocateFontAndPreloadSamples(s32 fontId, void *fontData, SampleB
         switch (isAsync) {
             case 0:
                 if (sample->medium == sampleBankReloc->medium1) {
-                    sampleRamAddr = AudioHeap_AllocSampleCache(sample->size, sampleBankReloc->sampleBankId1, sample->sampleAddr, sample->medium);
+                    sampleRamAddr = XCALL(gl_25504_AllocSampleCache, aud_AllocSampleCachePersistent)(sample->size, sampleBankReloc->sampleBankId1, sample->sampleAddr, sample->medium);
                 } else if (sample->medium == sampleBankReloc->medium2) {
-                    sampleRamAddr = AudioHeap_AllocSampleCache(sample->size, sampleBankReloc->sampleBankId2, sample->sampleAddr, sample->medium);
+                    sampleRamAddr = XCALL(gl_25504_AllocSampleCache, aud_AllocSampleCachePersistent)(sample->size, sampleBankReloc->sampleBankId2, sample->sampleAddr, sample->medium);
                 }
                 break;
 
             case 1:
                 if (sample->medium == sampleBankReloc->medium1) {
-                    sampleRamAddr = AudioHeap_AllocSampleCache(sample->size, sampleBankReloc->sampleBankId1, sample->sampleAddr, sample->medium);
+                    sampleRamAddr = XCALL(gl_25504_AllocSampleCache, aud_AllocSampleCacheTemporary)(sample->size, sampleBankReloc->sampleBankId1, sample->sampleAddr, sample->medium);
                 } else if (sample->medium == sampleBankReloc->medium2) {
-                    sampleRamAddr = AudioHeap_AllocSampleCache(sample->size, sampleBankReloc->sampleBankId2, sample->sampleAddr, sample->medium);
+                    sampleRamAddr = XCALL(gl_25504_AllocSampleCache, aud_AllocSampleCacheTemporary)(sample->size, sampleBankReloc->sampleBankId2, sample->sampleAddr, sample->medium);
                 }
                 break;
         }
@@ -15770,47 +15770,47 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
     int pad[5];
     Vec3 v;
 
-    if (self == 0 && (self = (char *)gl_func_0001CA10(0x150)) == 0) {
+    if (self == 0 && (self = (char *)XCALL(gl_32e18_blank, mem_new)(0x150)) == 0) {
         goto end;
     }
     o = self;
-    if (o != 0 || (o = (char *)gl_func_0001CA10(0xB4)) != 0) {
-        gl_func_0001CA10(o, GL_DATA_STR(0x1E178, "<MNode>"));
+    if (o != 0 || (o = (char *)XCALL(gl_32e18_blank, mem_new)(0xB4)) != 0) {
+        XCALL(gl_32e18_blank, Node_ctor)(o, GL_DATA_STR(0x1E178, "<MNode>"));
         NODE(o)->vptr = (char *)&XDATA(MNode_vtbl, port_bootup_data, 0x1EAA8); /* the inlined MNode base ctor */
         r = (int *)(o + 0x2C);
-        if (r != 0 || (r = (int *)gl_func_0001CA10(4)) != 0) {
+        if (r != 0 || (r = (int *)XCALL(gl_32e18_blank, mem_new)(4)) != 0) {
             q = r;
-            if (q != 0 || (q = (int *)gl_func_0001CA10(4)) != 0) {
+            if (q != 0 || (q = (int *)XCALL(gl_32e18_blank, mem_new)(4)) != 0) {
                 *q = 0;
             }
         }
-        gl_func_0001CA10(o);
+        XCALL(gl_32e18_blank, MNode_initMatrices)(o);
         zv.x = 0.0f;
         o += 0x30;
         zv.y = 0.0f;
         zv.z = 0.0f;
-        gl_func_0001CA10(o, &zv);
+        XCALL(gl_32e18_blank, math_mtxAddTranslation)(o, &zv);
     }
     NODE(self)->vptr = (char *)&XDATA(MCamera_vtbl, port_bootup_data, 0x1E0E8);
     o = self + 0x110;
-    if (o != 0 || (o = (char *)gl_func_0001CA10(0x20)) != 0) {
+    if (o != 0 || (o = (char *)XCALL(gl_32e18_blank, mem_new)(0x20)) != 0) {
         b = o;
-        if (b != 0 || (b = (char *)gl_func_0001CA10(0x18)) != 0) {
+        if (b != 0 || (b = (char *)XCALL(gl_32e18_blank, mem_new)(0x18)) != 0) {
             p = (int *)b;
-            if (p != 0 || (p = (int *)gl_func_0001CA10(0x10)) != 0) {
+            if (p != 0 || (p = (int *)XCALL(gl_32e18_blank, mem_new)(0x10)) != 0) {
                 /* run 129: p[2] evaluated first (comma) = the target ori-before-addiu temps, stores still 0 then 8 */
                 p[0] = (p[2] = 0x8000, -1);
                 p[1] = 0;
             }
             q = (int *)(b + 0x10);
-            if (q != 0 || (q = (int *)gl_func_0001CA10(4)) != 0) {
+            if (q != 0 || (q = (int *)XCALL(gl_32e18_blank, mem_new)(4)) != 0) {
                 *q = 0;
             }
             NODE(b)->name = GL_DATA_STR(0x1E180, "<Unknown>");
             NODE(b)->parent = 0;
         }
         q = (int *)(o + 0x18);
-        if (q != 0 || (q = (int *)gl_func_0001CA10(8)) != 0) {
+        if (q != 0 || (q = (int *)XCALL(gl_32e18_blank, mem_new)(8)) != 0) {
             q[0] = 0;
             q[1] = 0;
         }
@@ -15818,7 +15818,7 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
     v.x = x;
     v.y = y;
     v.z = z;
-    gl_func_0001CA10(self + 0x30, &v);
+    XCALL(gl_32e18_blank, math_mtxAddTranslation)(self + 0x30, &v);
     NODE(self)->name = (const char *)GL_DATA_STR(0x1E18C, "camera");
     NODE(self)->flags |= 0x40;
     MCAM->target = (CamMNode *)arg1; if (1) {}
@@ -15826,7 +15826,7 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
     MCAM->lookDir.y = 0.0f;
     MCAM->unkFC = 0; /* run 129: int 0, not 0.0f -- its own mtc1 zero,$f10 as in the target (+1 word, length 159 = target) */
     MCAM->lookDir.z = 1.0f;
-    gl_func_0001CA10(MCAM->view);
+    XCALL(gl_32e18_blank, math_mtx4Identity)(MCAM->view);
     MCAM->rotEnable = 0;
     MCAM->pitch = 0.0f;
     MCAM->yaw = 0.0f;
