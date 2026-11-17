@@ -18,7 +18,7 @@ struct Iter {
     NodeB *first() { return next(); }
     NodeB *get() { return cur->obj; }
 };
-struct Sub { void lock() { gl_func_00000000(this); } };
+struct Sub { void lock() { CALL(sys_imin)(this); } };
 struct Owner { char pad[0xC]; Sub *x0c; Link *head; };
 extern "C" void Node_display(Owner *o) {
     Iter it(o->head);

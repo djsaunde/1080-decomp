@@ -16,6 +16,7 @@
  */
 typedef short s16; typedef unsigned int u32; typedef int s32;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 extern char D_00000000[];
 u32 gl_func_00000000(...);
@@ -37,7 +38,7 @@ struct Elem {
     void kill(int k) { gDPNoOp(ctx6C->at2(k)); }
     void clr(Elem *e) { gDPNoOp(e->ctx6C->at2(e->n80)); }
     void end(int i) { if (i != -1) { gSPEndDisplayList(ctx6C->at(i)); } }
-    void link(int i) { gSPBranchList(ctx6C->at2(n80), gl_func_00000000(ctx6C->at(i))); }
+    void link(int i) { gSPBranchList(ctx6C->at2(n80), CALL(gl_osVirtualToPhysical)(ctx6C->at(i))); }
 };
 void Elem::clip() {
     if (rows7C != 0) {

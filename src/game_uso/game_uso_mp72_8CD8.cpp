@@ -100,7 +100,7 @@ template <class T> inline const T *KP(const T *p) { if (0) { p = 0; } return p; 
 template <class T> inline const T &KR2(const T &r) { return *KP(&r); }
 template <class T> inline const T &KR5(const T &r) { return r; } /* run 426: plain const-ref identity (chain temp num 3 -> 2) */
 struct Vec3 {
-    void *operator new(unsigned n) { return game_uso_func_055750(n); }
+    void *operator new(unsigned n) { return XCALL(game_uso_func_055750, mem_new)(n); }
     float x, y, z;
     Vec3() {}
     void set(float a, float b, float c) { x = a; y = b; z = c; }

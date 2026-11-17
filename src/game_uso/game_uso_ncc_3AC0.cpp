@@ -35,7 +35,7 @@ struct Item {
     char pad[0x28];
     void *vt;
     char pad2[0x58 - 0x2C];
-    Item(Q q) { game_uso_func_051E64(this, q.p, 0, 0); vt = &game_uso_D_807FEAA8; }
+    Item(Q q) { XCALL(game_uso_func_051E64, ColourItemType_ctor)(this, q.p, 0, 0); vt = &game_uso_D_807FEAA8; }
 };
 #define NM(s, o) (*(Name *)(&game_uso_D_##s + (o)))
 #define BLK(k, s, o, ADD) Q q##k(NM(s, o)); ADD(arg0, new Item(q##k), -1);

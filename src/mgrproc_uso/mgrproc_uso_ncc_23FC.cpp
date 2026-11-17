@@ -47,6 +47,7 @@ typedef signed char s8;
 #include "../../include/game/modeproc.h" /* MgrRace: arg0 (agent-h run 552) */
 #include "../../include/gdl/backup.h" /* BackupSession.modes (C++-guarded since main 24749e1ce) */
 #include "../../include/game/input.h" /* GameFlow.dataMgr (agent-h run 565) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 extern char import_800201D0, import_80263D30, import_8024CAF8, import_80264A10;
 void import_0024E608(...);
@@ -115,8 +116,8 @@ void mgr_drawResults_000023FC(char *arg0) {
         volatile s32 pn;
         p770 = (char *)&MGRRACE(arg0)->sprites[8];
         import_0024F2C8(p770);
-        mgrproc_uso_func_083574(buf, &import_80264A10 + 0x640, min, sec, t);
-        n = mgrproc_uso_func_07C610(buf);
+        XCALL(mgrproc_uso_func_083574, gl_sprintf)(buf, &import_80264A10 + 0x640, min, sec, t);
+        n = XCALL(mgrproc_uso_func_07C610, str_len)(buf);
         vt = SPR(8)->pw();
         {
         s32 x;

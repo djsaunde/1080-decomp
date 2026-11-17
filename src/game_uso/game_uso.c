@@ -3227,12 +3227,12 @@ int SnowAI_isInSegmentWidth(a0, a1, a2)
 
     if (a2 == 0) {
 
-        game_uso_func_047B1C(&game_uso_D_807FEDB8 + 0x7BC, &game_uso_D_807FEDB8 + 0x7C8, 0x623);
+        XCALL(game_uso_func_047B1C, sys_assertFail)(&game_uso_D_807FEDB8 + 0x7BC, &game_uso_D_807FEDB8 + 0x7C8, 0x623);
     }
 
     out = (int*)(unsigned)local_190;
     if (out == 0) {
-        out = (int*)game_uso_func_055750(0xC);
+        out = (int*)XCALL(game_uso_func_055750, mem_new)(0xC);
         if (out == 0) goto skip1;
     }
     {
@@ -3248,7 +3248,7 @@ skip1:;
     p = (int*)local_DC;
     out = p;
     if ((unsigned)out == 0) {
-        out = (int*)game_uso_func_055750(0xC);
+        out = (int*)XCALL(game_uso_func_055750, mem_new)(0xC);
         if (out == 0) goto skip2;
     }
     {
@@ -3264,7 +3264,7 @@ skip2:;
     *(Tri3i *)local_EC = *(Tri3i *)p; *(Tri3i *)local_19C = *(Tri3i *)local_EC; *(Tri3i *)local_144 = *(Tri3i *)local_19C;
 
     if (1) { p = (int*)local_C4; } src_vec = (float*)p; if ((unsigned)src_vec == 0) {
-        src_vec = (float*)game_uso_func_055750(0xC);
+        src_vec = (float*)XCALL(game_uso_func_055750, mem_new)(0xC);
         if (src_vec == 0) goto skip3;
     }
     {
@@ -3277,7 +3277,7 @@ skip2:;
 skip3:;
 
     *(Tri3i *)local_EC = *(Tri3i *)p; *(Tri3i *)local_138 = *(Tri3i *)local_EC;
-    game_uso_func_071028((Vec3 *)local_138);
+    XCALL(game_uso_func_071028, math_vec3Normalize)((Vec3 *)local_138);
 
     *(Tri3i *)local_12C = *(Tri3i *)local_138;
     scale0 = (((CourseMarker *)a1)->parms.wid.value) * (src_x = 250.0f) + 50.0f;
@@ -3292,7 +3292,7 @@ skip3:;
     src_vec = AI(a0)->rider->dnode.vqs.trans;
     out = (int*)(unsigned)local_184;
     if (out == 0) {
-        out = (int*)game_uso_func_055750(0xC);
+        out = (int*)XCALL(game_uso_func_055750, mem_new)(0xC);
         if (out == 0) goto skip4;
     }
     {
@@ -3306,7 +3306,7 @@ skip4:;
 
     p = (int*)local_B8; out = p;
     if ((unsigned)out == 0) {
-        out = (int*)game_uso_func_055750(0xC);
+        out = (int*)XCALL(game_uso_func_055750, mem_new)(0xC);
         if (out == 0) goto skip5;
     }
     {
@@ -3321,7 +3321,7 @@ skip5:;
     *(Tri3i *)local_EC = *(Tri3i *)p;
     *(Tri3i *)local_120 = *(Tri3i *)local_EC;
     do { p = (int*)local_A0; } while (0); out = p; if ((unsigned)out == 0) {
-        out = (int*)game_uso_func_055750(0xC);
+        out = (int*)XCALL(game_uso_func_055750, mem_new)(0xC);
         if (out == 0) goto skip6;
     }
     {
@@ -3337,7 +3337,7 @@ skip6:;
     *(Tri3i *)local_178 = *(Tri3i *)local_EC;
     do { p = (int*)local_88; } while (0); out = p;
     if ((unsigned)out == 0) {
-        out = (int*)game_uso_func_055750(0xC);
+        out = (int*)XCALL(game_uso_func_055750, mem_new)(0xC);
         if (out == 0) goto skip7;
     }
     {
@@ -3352,7 +3352,7 @@ skip7:;
     *(Tri3i *)local_16C = *(Tri3i *)local_94;
     do { p = (int*)local_6C; } while (0); out = p;
     if ((unsigned)out == 0) {
-        out = (int*)game_uso_func_055750(0xC);
+        out = (int*)XCALL(game_uso_func_055750, mem_new)(0xC);
         if (out == 0) goto skip8;
     }
     {
@@ -3366,7 +3366,7 @@ skip8:;
     *(Tri3i *)local_7C = *(Tri3i *)p;
     *(Tri3i *)local_160 = *(Tri3i *)local_7C;
     do { p = (int*)local_38; } while (0); out = p; if ((unsigned)out == 0) {
-        out = (int*)game_uso_func_055750(0xC);
+        out = (int*)XCALL(game_uso_func_055750, mem_new)(0xC);
         if (out == 0) goto skip9;
     }
     {
@@ -3488,7 +3488,7 @@ typedef struct { int a; } S1A374;
 int SnowAI_findNearestMarker_0000A374(a0, a1, a2)
 int a0, a1, a2;
 {
-    int r = game_uso_func_053104(*(int *)&import_8006EF48, *(S1A374*)&a1);
+    int r = XCALL(game_uso_func_053104, ItemMgr_findType_0003EA98)(*(int *)&import_8006EF48, *(S1A374*)&a1);
     if (r == 0) return 0;
     return (int)CourseMarker_findNearestZ_000043D8((int **)r, (int *)a2, 0);
 }

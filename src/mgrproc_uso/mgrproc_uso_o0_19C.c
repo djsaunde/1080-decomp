@@ -96,21 +96,21 @@ mgr_procMain(a0, a1) char * a0; int a1; {
                 import_800200D8.v = 4;
                 break;
             case 4:
-                mgrproc_uso_func_0118E4(import_80020098, import_80073CF0[1]);
+                XCALL(mgrproc_uso_func_0118E4, game_loadUso)(import_80020098, import_80073CF0[1]);
                 gInputMgr_800200FC.v =
                     FLOWPROC(a0)->courseList->courses[FLOWPROC(a0)->courseList->idx];
                 import_80020118.v = import_80020118.v ^ 1;
                 import_80020215.v =
                     FLOWPROC(a0)->courseList->riders[FLOWPROC(a0)->courseList->idx];
                 import_80020217.v = import_80020128.arr[import_80020215.v];
-                mgrproc_uso_func_0120A8(import_80020098, 4,
+                XCALL(mgrproc_uso_func_0120A8, snd_playSeq_000120A8)(import_80020098, 4,
                                         gInputMgr_800200FC.v, 0);
                 import_000A8094(import_80020098, gInputMgr_800200FC.v);
                 v0_save = import_000B34B8(a0, *(int*)a0, 1);
                 node = (int*)MGRRaceProcess_ctor(0, 0x450000, v0_save,
                                                        (int)FLOWPROC(a0)->courseList,
                                                        *(int*)a0);
-                mgrproc_uso_func_01DA48(a0, 0, node);
+                XCALL(mgrproc_uso_func_01DA48, app_runProcess)(a0, 0, node);
                 loop_continue = 1;
                 break;
             case 5:
@@ -131,7 +131,7 @@ mgr_procMain(a0, a1) char * a0; int a1; {
                 node = (int*)import_000A5B9C(0, 1, 0);
                 base = import_80020098;
                 p10 = base + 0x10;
-                mgrproc_uso_func_07ACE0(p10, node);
+                XCALL(mgrproc_uso_func_07ACE0, list_append)(p10, node);
                 if (node[0x14 / 4] != 0) {
                     node[1] = 1;
                 }

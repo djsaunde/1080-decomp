@@ -20,7 +20,7 @@ struct Iter387 {
     Node387 *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }
     Node387 *get() { return cur->obj; }
 };
-struct Sub387 { void lock() { gl_func_00000000(this); } };
+struct Sub387 { void lock() { CALL(sys_imin)(this); } };
 struct Owner387 { char pad[0xC]; Sub387 *x0c; Link387 *head; };
 extern "C" void Node_update(Owner387 *o) {
     Iter387 it(o->head);

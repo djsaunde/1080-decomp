@@ -4031,7 +4031,7 @@ L12:
     }
     return;
 L13:
-    if (gl_func_00000000((char *)o->name, ((NodeMsgPayload *)c->arg.payload)->name) == 0) {
+    if (CALL(str_compare_00067B04)((char *)o->name, ((NodeMsgPayload *)c->arg.payload)->name) == 0) {
         c->reply = o;
     }
     return;
@@ -18959,7 +18959,7 @@ one:
 half:
     return 0.5f;
 def:
-    gl_func_00000000((char*)&gl_data_00000000 + 0x20F90, ((BaseMat *)self)->id);
+    CALL(sys_fatal)((char*)&gl_data_00000000 + 0x20F90, ((BaseMat *)self)->id);
     return 0.0f;
 }
 

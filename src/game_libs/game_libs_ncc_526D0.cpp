@@ -26,7 +26,7 @@ struct Blk6 { int w[6]; };
 struct Blk2 { int w[2]; };
 struct Flags { int v; };
 struct Sub {
-    void *operator new(unsigned n) { return gl_func_00000000_526d0_alloc(n); }
+    void *operator new(unsigned n) { return XCALL(gl_func_00000000_526d0_alloc, mem_new)(n); }
     int a, b, c, d, e;
     Sub() { c = 0; d = 0; }
 };
@@ -37,7 +37,7 @@ struct Base : Blk6 {
     virtual void f();
 };
 struct Obj : Base {
-    void *operator new(unsigned n) { return gl_func_00000000_526d0_alloc(n); }
+    void *operator new(unsigned n) { return XCALL(gl_func_00000000_526d0_alloc, mem_new)(n); }
     int m2C;
     Flags m30;
     Blk2 m34;

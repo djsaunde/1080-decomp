@@ -29,7 +29,7 @@
 extern "C" void *game_uso_func_055750(unsigned);
 extern "C" float game_uso_func_082880(float);
 struct Vec3 {
-    void *operator new(unsigned n) { return game_uso_func_055750(n); }
+    void *operator new(unsigned n) { return XCALL(game_uso_func_055750, mem_new)(n); }
     float x, y, z;
     Vec3() {}
     void set(float a, float b, float c) { x = a; y = b; z = c; }

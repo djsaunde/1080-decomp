@@ -19,7 +19,7 @@ struct Pair {
     M4 b;
     Pair(int x, Val p) { a = x; *(Val *)&b = p; }
 };
-struct L { void add(Pair *n) { func_00000000(this, n); } };
+struct L { void add(Pair *n) { FCALL(list_append)(this, n); } };
 extern "C" void map_addEntry_00007204(char *a0, int a1, Val p) {
     Pair *o = new Pair(a1, p);
     ((L *)(a0 + 0x2C))->add(o);

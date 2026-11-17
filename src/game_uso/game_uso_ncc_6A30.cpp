@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for SnowAI_finishRun (0x2C0 / 176 words).
  *
  * Per-frame steer update: va = w->pos; va += w->vel * k; 7ACC(self, &n, &va)
@@ -30,7 +31,7 @@
  * symbol is extern "C". */
 extern "C" void *game_uso_func_055750(unsigned);
 struct Vec3 {
-    void *operator new(unsigned n) { return game_uso_func_055750(n); }
+    void *operator new(unsigned n) { return XCALL(game_uso_func_055750, mem_new)(n); }
     float x, y, z;
     Vec3() {}
     void set(float a, float b, float c) { x = a; y = b; z = c; }

@@ -78,7 +78,7 @@ int tit_nextDemo_000000C0(counter)
 
     if (counter == 0) {
         counter = (int)INPUT_MGR(import_00020098).backup + 4;
-        v = titproc_uso_func_01EEE4(counter);
+        v = XCALL(titproc_uso_func_01EEE4, Backup_ghostGetMode)(counter);
         if (v != 2) {
             INPUT_MGR(import_00020098).demoIndex =
                 INPUT_MGR(import_00020098).demoIndex + 1;
@@ -87,7 +87,7 @@ int tit_nextDemo_000000C0(counter)
     }
     if (counter == 1) {
         counter = (int)INPUT_MGR(import_00020098).backup + 4;
-        v = titproc_uso_func_01EEE4(counter);
+        v = XCALL(titproc_uso_func_01EEE4, Backup_ghostGetMode)(counter);
         if (v != 1) {
             INPUT_MGR(import_00020098).demoIndex =
                 INPUT_MGR(import_00020098).demoIndex + 1;

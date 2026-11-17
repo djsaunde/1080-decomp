@@ -23,6 +23,7 @@ typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f
 typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/rideranim.h"
 #include "../../include/game/game_uso_data.h"
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 #define RIDER(p) ((SnowBoarder *)(p))
 int game_uso_func_077C44(...);
 void RiderAnim_clearState_0000D5DC(char *a0);
@@ -212,7 +213,7 @@ after_24:;
                 sp28 = 0;
                 sp30 = 0;
                 RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x2F);
-                game_uso_func_07C0FC((int)RIDER(var_v1)->input,
+                XCALL(game_uso_func_07C0FC, pad_setRumble)((int)RIDER(var_v1)->input,
                                      (char *)&game_uso_D_807FF68C + kRumble_hit1_109C, 0xA);
             }
         }
@@ -229,10 +230,10 @@ after_24:;
         RiderAnim_endTrick_0000D63C(arg0, (sp28 == 0));
         RA(arg0)->rider->riding = 0;
         if (sp30 != 0) {
-            game_uso_func_077C44(arg0, RA(arg0)->selectedAnim, 0, 2, 1, 1);
+            XCALL(game_uso_func_077C44, AnimPlayer_start)(arg0, RA(arg0)->selectedAnim, 0, 2, 1, 1);
             RiderAnim_queueState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF478 + kPmf_RiderAnim_stateCrashRecover), 2);
         } else {
-            game_uso_func_077C44(arg0, RA(arg0)->selectedAnim, 0, 1, 1, 1);
+            XCALL(game_uso_func_077C44, AnimPlayer_start)(arg0, RA(arg0)->selectedAnim, 0, 1, 1, 1);
             RiderAnim_queueState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF480 + kPmf_RiderAnim_stateResumeRide), 1);
         }
         RiderAnim_clearState_0000D5DC(arg0);
@@ -242,7 +243,7 @@ after_24:;
         RA(arg0)->trickPhase = 0;
         if (RA(arg0)->selectedAnim != 0) {
             RA(arg0)->selectedAnim = (RA(arg0)->selectedAnim & 0xFFFF) | 0x60000;
-            game_uso_func_077C44(arg0, RA(arg0)->selectedAnim, 0, 1, 1, 1);
+            XCALL(game_uso_func_077C44, AnimPlayer_start)(arg0, RA(arg0)->selectedAnim, 0, 1, 1, 1);
             RiderAnim_queueState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF3B8 + kPmfNull_DC8), 1);
         }
         RA(arg0)->rider->slowdown = 0x64;

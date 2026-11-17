@@ -60,8 +60,8 @@ app_launchNameEnt(a0, a1) int * a0; int a1; {
         root[0x28 / 4] = (int)&D_8C3C_root_desc;
     }
     call_root = root;
-    gl_func_00000000(call_root, a0[0]);
-    gl_func_00000000(call_root);
+    CALL(NameEntry_init)(call_root, a0[0]);
+    CALL(NameEntry_startEntry)(call_root);
     root = call_root;
     CALL(app_runProcess)(a0, 0, root);
 }
@@ -79,7 +79,7 @@ void app_launchViewRec(int a0, int a1, int a2, int a3) {
     CALL(game_loadUso)(&gInputMgr, &sStr_rom_viewrec_uso_D150);
     CALL(snd_playSeq_000120A8)(&gInputMgr, 8, 0, 0);
     /* UNNAMED: mid-entry bootup Text+0x2D0 = TimeGadget_ctor+0x104 (inside TimeGadget_ctor 0x1CC..0x308), no symbol of its own */
-    rv = gl_func_00000000(0, a1, a2, a3);
+    rv = CALL(GENNewRecordsProcess_ctor)(0, a1, a2, a3);
     CALL(app_runProcess)(a0, 1, rv);
 }
 

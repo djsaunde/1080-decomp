@@ -15,7 +15,7 @@ struct V3 {
     void operator=(V3 v) { set(v); }
 };
 struct Rec { V3 a, b, c; float w; };
-struct Sub { void lock() { gl_func_00000000(this); } };
+struct Sub { void lock() { CALL(sys_imin)(this); } };
 struct NodeB {
     char pad[4]; int x04; int flags; char pad0c[8]; void *owner; int x18; char pad1c[0xC];
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void tick();
