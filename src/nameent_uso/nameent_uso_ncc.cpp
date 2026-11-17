@@ -12,6 +12,15 @@ extern "C" char ne_gGui;
 extern "C" char ne_data[];
 
 /* gdl Node with its cfront vtable (vptr at +0x28): the slots this module calls */
+#ifdef PORT /* cfront layout: explicit vptr, the virtual as a slot call (port_cfront.h, plan 17.8; run 848:
+             * g++'s own virtual read a vptr at +0 and segfaulted on the name-entry screen) */
+#include "port_cfront.h"
+struct NeNode {
+    char node[0x28];
+    char *vptr;                         /* cfront vptr */
+    CF_V0(int, getBoardTexture, 11)     /* slot 11: the rider's board texture */
+};
+#else
 struct NeNode {
     char node[0x28];
     virtual void slot0(); virtual void slot1(); virtual void slot2(); virtual void slot3();
@@ -19,6 +28,7 @@ struct NeNode {
     virtual void slot8(); virtual void slot9(); virtual void slot10();
     virtual int getBoardTexture();      /* slot 11: the rider's board texture */
 };
+#endif
 
 /* GameFlow (bootup Bss+0xF8, include/game/input.h InputMgr): the current player's rider */
 struct NePlayer { char pad0[0x108]; NeNode *rider; };

@@ -477,12 +477,18 @@ void MainOptions_handleMsg(MainOptions *self, int *msg) {
 extern void vr_showRecordOptions_ref(void), vr_showReplayOptions_ref(void),
     vr_showSoundOptions_ref(void), vr_showLanguageOptions_ref(void), vr_showEraseOptions_ref(void);
 
+#ifdef PORT /* run 848: N64 RDRAM 0x284 (KSEG1 0xA0000284) holds 0x240B17D7 after the cartridge's boot (the game's
+             * boot-integrity check); the host has no such address (SIGSEGV), so the check passes */
+#define N64_BOOT_WORD_284 ((s32)0x240B17D7)
+#else
+#define N64_BOOT_WORD_284 (*(s32 *)0xA0000284)
+#endif
 /* fill the main menu: rows 1..5 of string bank vr_gLanguage + 42 (row 2 only when the word at
  * 0xA0000284 is 0x240B17D7); row 1 is disabled without a saved ghost */
 void MainOptions_buildMenu(MainOptions *self) {
     CALL(gui_clearRows_00010A9C)(self->proc->menu);
     CALL(gui_addRowSub_00010B6C)(self->proc->menu, ((vr_gLanguage + 42) << 16) | 1, -1, vr_showRecordOptions_ref);
-    if (*(s32 *)0xA0000284 == 0x240B17D7) {
+    if (N64_BOOT_WORD_284 == 0x240B17D7) {
         CALL(gui_addRowSub_00010B6C)(self->proc->menu, ((vr_gLanguage + 42) << 16) | 2, -1, vr_showReplayOptions_ref);
     }
     CALL(gui_addRowSub_00010B6C)(self->proc->menu, ((vr_gLanguage + 42) << 16) | 3, -1, vr_showSoundOptions_ref);

@@ -1266,6 +1266,12 @@ extern char D_b1_21D4_d1;
 extern char D_b1_21D4_d2, D_b1_21D4_d3, D_b1_21D4_d4, D_b1_21D4_d5;
 extern char D_b1_21D4_d6, D_b1_21D4_d7, D_b1_21D4_d8;
 extern char D_b1_21D4_base;
+#ifdef PORT /* run 848: N64 RDRAM 0x200 (KSEG1 0xA0000200) holds 0xAC290000 after the cartridge's boot (the
+             * game's boot-integrity check); the host has no such address (SIGSEGV), so the check passes */
+#define N64_BOOT_WORD_200 ((int)0xAC290000)
+#else
+#define N64_BOOT_WORD_200 (*(int *)0xA0000200)
+#endif
 char *TimMenu_ctor(char *arg0) {
     char *a3;
     char *a0;
@@ -1306,7 +1312,7 @@ char *TimMenu_ctor(char *arg0) {
         a3 = (char *)TIMMENU(arg0)->base.menu;
         CALL(list_append)(arg0 + 16, a3); if (NODE(a3)->parent != 0) { NODE(a3)->unk04 = 1; } NODE(a3)->parent = (Node *)arg0;
         if (INPUT_MGR(D_b1_21D4_base).unk184 == 0 ||
-            (*(int *)0xA0000200 == 0xAC290000) == 0) {
+            (N64_BOOT_WORD_200 == 0xAC290000) == 0) {
             GUIMENU(TIMMENU(arg0)->base.menu)->rows[2].enabled = 0;
         }
         a3 = (char *)INPUT_MGR(D_b1_21D4_base).fader;

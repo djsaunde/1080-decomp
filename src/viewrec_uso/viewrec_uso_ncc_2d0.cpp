@@ -12,6 +12,9 @@
 #include "../../include/uso_call.h"
 
 extern "C" int gl_func_00000000(...);
+#ifdef PORT
+#include "port_cfront.h"
+#endif
 struct VrNode {
     int unk00;
     int unk04;
@@ -20,12 +23,18 @@ struct VrNode {
     char pad10[0x14 - 0x10];
     VrNode *parent;
     char pad18[0x28 - 0x18];
+#ifdef PORT /* cfront layout: explicit vptr at +0x28, the virtuals as slot calls (port_cfront.h, plan 17.8; run 848:
+             * g++ put its own vptr at +0 and shifted every field by 4) */
+    char *vptr;                     /* cfront vptr */
+    CF_V0(void, display, 3) CF_V0(void, start, 10) CF_V0(void, onFadedIn, 11)
+#else
     virtual void slot0(); virtual void slot1(); virtual void slot2();
     virtual void display();
     virtual void slot4(); virtual void slot5(); virtual void slot6(); virtual void slot7();
     virtual void slot8(); virtual void slot9();
     virtual void start();
     virtual void onFadedIn();
+#endif
     void addChild(VrNode *c) { CALL(list_append)((char *)this + 16, c); if (c->parent != 0) c->unk04 = 1; c->parent = this; }
 };
 struct VrScreen : VrNode {

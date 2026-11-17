@@ -14,14 +14,23 @@ extern "C" void vr_backToMainMenu();
 #endif
 
 /* gdl Node with its cfront vtable: the slots this module calls */
+#ifdef PORT
+#include "port_cfront.h"
+#endif
 struct VrNode {
     char node[0x28];
+#ifdef PORT /* cfront layout: explicit vptr at +0x28, the virtuals as slot calls (port_cfront.h, plan 17.8; run 848:
+             * g++ put its own vptr at +0 and shifted every field by 4) */
+    char *vptr;                     /* cfront vptr */
+    CF_V0(void, display, 3) CF_V0(void, start, 10) CF_V0(void, onFadedIn, 11)
+#else
     virtual void slot0(); virtual void slot1(); virtual void slot2();
     virtual void display();         /* slot 3 */
     virtual void slot4(); virtual void slot5(); virtual void slot6(); virtual void slot7();
     virtual void slot8(); virtual void slot9();
     virtual void start();           /* slot 10 */
     virtual void onFadedIn();       /* slot 11 */
+#endif
 };
 
 /* the records process (ViewRecProc in viewrec_uso.c) */

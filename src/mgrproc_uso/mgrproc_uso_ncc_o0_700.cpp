@@ -20,6 +20,12 @@ int import_000B574C(...);
 int mgrproc_uso_D_01F97C(...);
 int import_000AE5B0(...);
 
+#ifdef PORT /* run 848: N64 RDRAM 0x284 (KSEG1 0xA0000284) holds 0x240B17D7 after the cartridge's boot (the game's
+             * boot-integrity check); the host has no such address (SIGSEGV), so the check passes */
+#define N64_BOOT_WORD_284 ((s32)0x240B17D7)
+#else
+#define N64_BOOT_WORD_284 (*(s32 *)0xA0000284)
+#endif
 int mgr_initMatchRace_00000700(ModeFlowProc *flow, int level) {
     register char *base; /* s0; case-1 dead address of import_8005C6E0 */
     flow->courseList->retries = 3;
@@ -27,7 +33,7 @@ int mgr_initMatchRace_00000700(ModeFlowProc *flow, int level) {
     switch (level) { /* irregular */
     case 1:
         base = &import_8005C6E0;
-        if (*(s32 *)0xA0000284 == 0x240B17D7) {
+        if (N64_BOOT_WORD_284 == 0x240B17D7) {
             flow->courseList->count = 4;
         } else {
             flow->courseList->count = 3;

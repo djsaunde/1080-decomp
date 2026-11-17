@@ -494,6 +494,12 @@ extern char port_bootup_bss[];
 #define import_800200DC_b (*(__typeof__(import_800200DC_b) *)(port_bootup_bss + 0xF8))
 #define import_800200DC_c (*(__typeof__(import_800200DC_c) *)(port_bootup_bss + 0xF8))
 #endif
+#ifdef PORT /* run 848: N64 RDRAM 0x200 (KSEG1 0xA0000200) holds 0xAC290000 after the cartridge's boot (the
+             * game's boot-integrity check); the host has no such address (SIGSEGV), so the check passes */
+#define N64_BOOT_WORD_200_V ((int)0xAC290000)
+#else
+#define N64_BOOT_WORD_200_V (*(volatile int *)0xA0000200)
+#endif
 void MGRRaceProcess_onEndTimerDone(int *a0) {
     int spill;          /* stack 0x24(sp) */
     int *s0 = a0;
@@ -502,7 +508,7 @@ void MGRRaceProcess_onEndTimerDone(int *a0) {
         if (mgr_isLastCourse_00000140(MGRRACE(a0)->courseList) != 0) {
             spill = 1;
             INPUT_MGR(import_800200DC).nextProcState = 7;
-            if (*(volatile int *)0xA0000200 == (int)0xAC290000) {
+            if (N64_BOOT_WORD_200_V == (int)0xAC290000) {
                 import_000A8114(&import_80020100, INPUT_MGR(import_80020100_b).level - 1);
             } else {
                 MGRRACE(s0)->retries = 0;

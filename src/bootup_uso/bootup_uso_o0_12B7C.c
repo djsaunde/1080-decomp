@@ -8,6 +8,12 @@
 
 extern int func_00000000();
 extern int D_00000000;
+#ifdef PORT /* run 848: N64 RDRAM 0x200 (KSEG1 0xA0000200) holds 0xAC290000 after the cartridge's boot (the
+             * game's boot-integrity check); the host has no such address (SIGSEGV), so the check passes */
+#define N64_BOOT_WORD_200 ((int)0xAC290000)
+#else
+#define N64_BOOT_WORD_200 (*(int *)0xA0000200)
+#endif
 
 /* settings_set8_00012818: 99.73% NON_MATCHING. Sole diff (0x5C/0x64): the
  * `if (D_A0000200 == 0xAC290000)` value-load. IDO -O0 emits
@@ -54,7 +60,7 @@ void settings_set8_00012818(char *a0, char *a1) {
 
     unused = &gSysLib;
 
-    if (*(int*)0xA0000200 == 0xAC290000) {
+    if (N64_BOOT_WORD_200 == 0xAC290000) {
         FCALL(settings_save_00012150)(a0);
     }
 }
