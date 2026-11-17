@@ -1,0 +1,105 @@
+# port/tools/abi-scan.py --update: accepted ABI findings (class, caller unit, caller, callee, issue, decl)
+P1	src/bootup_uso/bootup_uso_ncc_C234.cpp	SnowBoarder_procColl	ItemMgr_queryType	P1 decl struct4 def int	decl(int,struct4,ptr,int)->int
+P1	src/game_libs/game_libs_o2_2FB74.c	snd_dispatchEvent	AudioThread_QueueCmdF32	P1 decl float def int	decl(int,float)->int
+P1	src/game_libs/game_libs_post.c	snd_UpdateChannel10Emitter	AudioThread_QueueCmdF32	P1 decl float def int	decl(int,float)->int
+P1	src/game_libs/game_libs_post.c	snd_UpdateTimers	AudioThread_QueueCmdF32	P1 decl float def int	decl(int,float)->int
+P1	src/game_libs/game_libs_post0b.c	Window_setupView	math_perspectiveF	P1 decl int def float	decl(ptr,int,int,int,float)->int
+P1	src/game_uso/game_uso_ncc_6FA8.cpp	SnowAI_pickFinishBranch	SnowAI_findNearestMarker_0000A374	P1 decl struct4 def int	decl(ptr,struct4,ptr)->ptr
+P1	src/h2hproc_uso/h2hproc_uso.c	h2h_DataManager_init	CourseGadget_setVec4_00002580	P1 decl int def float	decl(ptr,int,int,int,float)->void
+P1	src/h2hproc_uso/h2hproc_uso.c	h2h_DataManager_update	CourseGadget_setVec4_00002580	P1 decl int def float	decl(ptr,int,int,int,float)->void
+P1	src/match_imports/BallRotator_applyArcball.c	BallRotator_applyArcball	math_arcballPoint	P1 decl struct12 def float	decl(ptr,struct12,struct12,float)->struct12
+P1	src/match_imports/ItemMgr_Load.c	ItemMgr_Load	ItemMgr_findType_0003EA98	P1 decl struct4 def int	decl(ptr,struct4)->ptr
+P1	src/match_imports/RaceTracker_findGates.c	RaceTracker_findGates	ItemMgr_queryType	P1 decl struct4 def int	decl(ptr,struct4,ptr,int)->ptr
+P1	src/match_imports/arc_DataManager_update.c	arc_DataManager_update	CourseGadget_setFloat2_0000254C	P1 decl int def float	decl(ptr,int,float)->int
+P1	src/match_imports/arc_DataManager_update.c	arc_DataManager_update	CourseGadget_setVec4_00002580	P1 decl int def float	decl(ptr,int,int,float,float)->int
+P1	src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c	snd_SetPlayer0ChannelParams_2F9D4	AudioThread_QueueCmdF32	P1 decl float def int	decl(int,float)->void
+P1	src/match_imports/snd_SoundObjUpdate.c	snd_SoundObjUpdate	AudioThread_QueueCmdF32	P1 decl float def int	decl(int,float)->int
+P1	src/match_imports/snd_SoundObjUpdateChannel.c	snd_SoundObjUpdateChannel	AudioThread_QueueCmdF32	P1 decl float def int	decl(int,float)->void
+P1	src/mgrproc_uso/mgrproc_uso.c	mgr_DataManager_update	CourseGadget_setVec4_00002580	P1 decl int def float	decl(int,int,int,int,float)->void
+P1	src/timproc_uso_b1/timproc_uso_b1.c	TimDataManager_update_00001BCC	CourseGadget_setFloat2_0000254C	P1 decl int def float	decl(int,int,float)->int
+P1	src/timproc_uso_b1/timproc_uso_b1.c	TimDataManager_update_00001BCC	CourseGadget_setVec4_00002580	P1 decl int def float	decl(ptr,int,int,float,float)->int
+P1	src/timproc_uso_b3/timproc_uso_b3.c	TrkDataManager_update_00001C68	CourseGadget_setFloat2_0000254C	P1 decl int def float	decl(int,int,float)->int
+P1	src/timproc_uso_b3/timproc_uso_b3.c	TrkDataManager_update_00001C68	CourseGadget_setVec4_00002580	P1 decl int def float	decl(ptr,int,int,float,float)->int
+P1	src/timproc_uso_b5/timproc_uso_b5_ncc_B368.cpp	SelCourseMap_display_0000B368	light_setF124_000550A0	P1 decl int def float	decl(ptr,int)->void
+P2	src/bootup_uso/bootup_uso.c	Fog_display	cam_isSphereInView	P2 decl int def float	decl(int,int,int,int,float,int,float)->int
+P2	src/bootup_uso/bootup_uso.c	SnowBCollider_ctor	Friction_ctor_00063DC4	P2 decl int def float	decl(ptr,int,int,int,float)->void
+P2	src/bootup_uso/bootup_uso.c	Snower_display	cam_isSphereInView	P2 decl int def float	decl(int,int,int,int,float,int,float)->int
+P2	src/bootup_uso/bootup_uso_90CC.c	SnowBoarder_ctor	port_ctor_QNode_ctor	P2 decl double def float	decl(ptr,ptr,double,float)->void
+P2	src/bootup_uso/bootup_uso_ncc_CFA0.cpp	SnowBoarder_display	cam_isSphereInView	P2 decl int def float	decl(ptr,int,int,int,float,ptr,float)->ptr
+P2	src/game_libs/game_libs_post0b.c	Window_setupView	math_perspectiveF	P2 decl int def float	decl(ptr,int,int,int,float)->int
+P2	src/game_libs/game_libs_post0b.c	math_det3x3	math_det2x2	P2 decl int def float	decl(float,float,int,int)->float
+P2	src/game_uso/game_uso.c	cam_ctor_00000858	MCamera_ctor	P2 decl int def float	decl(ptr,int,int,int,float)->void
+P2	src/h2hproc_uso/h2hproc_uso.c	h2h_DataManager_init	CourseGadget_setVec4_00002580	P2 decl int def float	decl(ptr,int,int,int,float)->void
+P2	src/h2hproc_uso/h2hproc_uso.c	h2h_DataManager_update	CourseGadget_setVec4_00002580	P2 decl int def float	decl(ptr,int,int,int,float)->void
+P2	src/match_imports/BallRotator_applyArcball.c	BallRotator_applyArcball	math_arcballPoint	P2 decl struct12 def float	decl(ptr,struct12,struct12,float)->struct12
+P2	src/match_imports/SNode_handleMsg.c	SNode_handleMsg	absrot_matrix4	P2 decl int def float	decl(ptr,int,int,int)->void
+P2	src/match_imports/SnowBoarder_handleMsg.c	SnowBoarder_handleMsg	ItemMgr_firstItemOfType	P2 decl int def struct4	decl(ptr,struct4,int)->ptr
+P2	src/match_imports/arc_DataManager_update.c	arc_DataManager_update	CourseGadget_setVec4_00002580	P2 decl int def float	decl(ptr,int,int,float,float)->int
+P2	src/mgrproc_uso/mgrproc_uso.c	mgr_DataManager_update	CourseGadget_setVec4_00002580	P2 decl int def float	decl(int,int,int,int,float)->void
+P2	src/timproc_uso_b1/timproc_uso_b1.c	TimDataManager_update_00001BCC	CourseGadget_setVec4_00002580	P2 decl int def float	decl(ptr,int,int,float,float)->int
+P2	src/timproc_uso_b3/timproc_uso_b3.c	TrkDataManager_update_00001C68	CourseGadget_setVec4_00002580	P2 decl int def float	decl(ptr,int,int,float,float)->int
+P3	src/bootup_uso/bootup_uso.c	Fog_display	cam_isSphereInView	P3 decl int def float	decl(int,int,int,int,float,int,float)->int
+P3	src/bootup_uso/bootup_uso.c	SnowBCollider_ctor	Friction_ctor_00063DC4	P3 decl int def float	decl(ptr,int,int,int,float)->void
+P3	src/bootup_uso/bootup_uso.c	SnowBoarder_createColliders_0000CCE0	SnowBCollider_ctor	P3 decl float def int	decl(int,ptr,int,float,float,float)->ptr
+P3	src/bootup_uso/bootup_uso.c	Snower_display	cam_isSphereInView	P3 decl int def float	decl(int,int,int,int,float,int,float)->int
+P3	src/bootup_uso/bootup_uso_90CC.c	SnowBoarder_ctor	CollObj_initCylinder	P3 decl int def float	decl(ptr,ptr,int,int,float)->void
+P3	src/bootup_uso/bootup_uso_ncc_31C0.cpp	cam_create	cam_ctor_00000858	P3 decl float def int	decl(ptr,ptr,ptr,float,float,float,int,ptr)->ptr
+P3	src/bootup_uso/bootup_uso_ncc_CFA0.cpp	SnowBoarder_display	cam_isSphereInView	P3 decl int def float	decl(ptr,int,int,int,float,ptr,float)->ptr
+P3	src/game_libs/game_libs_post0b.c	Spinner_hostioParms	hostio_addFloat	P3 decl int def float	decl(ptr,ptr,ptr,int,float,int)->int
+P3	src/game_libs/game_libs_post0b.c	Window_setupView	math_perspectiveF	P3 decl int def float	decl(ptr,int,int,int,float)->int
+P3	src/game_libs/game_libs_post0b.c	math_det3x3	math_det2x2	P3 decl int def float	decl(float,float,int,int)->float
+P3	src/game_libs/game_libs_post1b.c	AnimPlayer_applyPose	anim_blendPose	P3 decl int def float	decl(int,int,int,int,int,float)->int
+P3	src/game_uso/game_uso.c	cam_ctor_00000858	MCamera_ctor	P3 decl int def float	decl(ptr,int,int,int,float)->void
+P3	src/game_uso/game_uso_ncc_10A0C.cpp	RiderAnim_stateBrakeDeep	AnimPlayer_setBlend	P3 decl int def float	decl(ptr,int,int,int,int,int)->void
+P3	src/h2hproc_uso/h2hproc_uso.c	h2h_DataManager_init	CourseGadget_setVec4_00002580	P3 decl int def float	decl(ptr,int,int,int,float)->void
+P3	src/h2hproc_uso/h2hproc_uso.c	h2h_DataManager_update	CourseGadget_setVec4_00002580	P3 decl int def float	decl(ptr,int,int,int,float)->void
+P3	src/match_imports/snd_SoundObjUpdate.c	snd_SoundObjUpdate	snd_SetPlayer0ChannelParams_2F9D4	P3 decl float def int	decl(int,int,int,float,int,int)->void
+P3	src/mgrproc_uso/mgrproc_uso.c	mgr_DataManager_update	CourseGadget_setVec4_00002580	P3 decl int def float	decl(int,int,int,int,float)->void
+P4	src/bootup_uso/bootup_uso.c	SnowBoarder_createColliders_0000CCE0	SnowBCollider_ctor	P4 decl float def int	decl(int,ptr,int,float,float,float)->ptr
+P4	src/bootup_uso/bootup_uso_ncc_31C0.cpp	cam_create	cam_ctor_00000858	P4 decl float def int	decl(ptr,ptr,ptr,float,float,float,int,ptr)->ptr
+P7	src/game_libs/game_libs_post0b.c	math_mtx4Adjugate	math_det3x3	P7 decl float def int	decl(float,float,float,float,float,float,float,float,float)->float
+P7	src/game_libs/game_libs_post0b.c	math_mtx4Determinant	math_det3x3	P7 decl float def int	decl(float,float,float,float,float,float,float,float,float)->float
+P8	src/game_libs/game_libs_post0b.c	math_mtx4Adjugate	math_det3x3	P8 decl float def int	decl(float,float,float,float,float,float,float,float,float)->float
+P8	src/game_libs/game_libs_post0b.c	math_mtx4Determinant	math_det3x3	P8 decl float def int	decl(float,float,float,float,float,float,float,float,float)->float
+SRET	src/game_uso/game_uso_591C.c	SnowAI_steer	SnowAI_aimWeave	SRET decl ptr def struct12	decl(,...)->ptr
+SRET	src/game_uso/game_uso_ncc_1DDC.cpp	SnowChaseActorCam_update	cam_toTargetLocal_000023D4	SRET decl struct12 def ptr	decl(ptr)->struct12
+SRET	src/game_uso/game_uso_ncc_24BC.cpp	SnowChaseActorCam_applyMode_000024BC	cam_toTargetLocal_000023D4	SRET decl struct12 def ptr	decl(ptr)->struct12
+SRET	src/game_uso/game_uso_ncc_2CC8.cpp	SnowChaseActorLook_applyMode_00002CC8	cam_toTargetLocal_000023D4	SRET decl struct12 def ptr	decl(ptr)->struct12
+SRETPOP	src/game_uso/game_uso_591C.c	SnowAI_steer	SnowAI_aimAlongSegment	SRETPOP def_pops=1	decl(ptr,ptr,ptr,ptr,ptr)->struct12
+SRETPOP	src/game_uso/game_uso_ncc_6A30.cpp	SnowAI_finishRun	SnowAI_aimAlongSegment	SRETPOP def_pops=1	decl(ptr,int,int,ptr,int)->struct12
+SRETPOP	src/game_uso/game_uso_ncc_71E0.cpp	SnowAI_recoverStuck	SnowAI_aimAlongSegment	SRETPOP def_pops=1	decl(ptr,int,int,ptr,int)->struct12
+SRETPOP	src/match_imports/BallRotator_applyArcball.c	BallRotator_applyArcball	math_arcballPoint	SRETPOP def_pops=1	decl(ptr,struct12,struct12,float)->struct12
+UNPROTO	src/bootup_uso/bootup_uso.c	Tv1Tmpl_stepPicture_00007D04	sys_randf	UNPROTO def()->float	decl(,...)->float
+UNPROTO	src/bootup_uso/bootup_uso.c	snd_updateChannel10Emitter	snd_UpdateChannel10Emitter	UNPROTO def(int,float,int)->void	decl(,...)->int
+UNPROTO	src/game_libs/game_libs_o2_2FB74.c	snd_dispatchEvent	snd_ScheduleSeq	UNPROTO def(int,int,int,float)->void	decl(,...)->int
+UNPROTO	src/game_libs/game_libs_o2_3C0C.c	PointsGadget_allocSlot_00003C0C	sys_randf	UNPROTO def()->float	decl(,...)->float
+UNPROTO	src/game_libs/game_libs_post.c	Audio_NoteVibratoUpdate	Audio_GetPortamentoFreqScale	UNPROTO def(ptr)->float	decl(,...)->float
+UNPROTO	src/game_libs/game_libs_post.c	Audio_NoteVibratoUpdate	Audio_GetVibratoFreqScale	UNPROTO def(ptr)->float	decl(,...)->float
+UNPROTO	src/game_libs/game_libs_post.c	Audio_ProcessNotes	Audio_AdsrUpdate	UNPROTO def(ptr)->float	decl(,...)->float
+UNPROTO	src/game_libs/game_libs_post.c	snd_ScheduleSeqAfter	snd_ScheduleSeq	UNPROTO def(int,int,int,float)->void	decl(,...)->int
+UNPROTO	src/game_libs/game_libs_post0b.c	CamFollow_update	absrot_matrix4	UNPROTO def(ptr,int,float,int)->void	decl(,...)->int
+UNPROTO	src/game_libs/game_libs_post0b.c	CamFollow_update	math_mtxRotateAxis	UNPROTO def(ptr,int,float)->void	decl(,...)->int
+UNPROTO	src/game_libs/game_libs_post0b.c	LightTarget_display	gfx_selectLights_000478FC	UNPROTO def(ptr,ptr,int,float,int)->void	decl(,...)->int
+UNPROTO	src/game_libs/game_libs_post0b.c	gfx_end	prof_timerRead_0004DD2C	UNPROTO def(int)->float	decl(,...)->float
+UNPROTO	src/game_libs/game_libs_post0b.c	gfx_texImageBytes	gfx_texelBytes	UNPROTO def(ptr,int,int)->float	decl(,...)->float
+UNPROTO	src/game_libs/game_libs_post0b.c	math_mtx4Inverse	math_mtx4Determinant	UNPROTO def(ptr)->float	decl(,...)->float
+UNPROTO	src/game_libs/game_libs_post1b.c	AnimPlayer_advance	AnimPlayer_getKeyTime	UNPROTO def(ptr,int,int)->float	decl(,...)->float
+UNPROTO	src/game_libs/game_libs_post1b.c	DNode_applyAccums_00065448	DNodeAccum_apply_00064388	UNPROTO def(ptr,ptr,ptr,float)->void	decl(,...)->int
+UNPROTO	src/game_libs/game_libs_tail.c	hud_addCourseGadget	CourseGadget_setVec3_00002560	UNPROTO def(ptr,float,float,float)->void	decl(,...)->int
+UNPROTO	src/game_uso/game_uso.c	RiderAnim_stateBrake	AnimPlayer_setBlend	UNPROTO def(ptr,int,int,float,int,int)->void	decl(,...)->int
+UNPROTO	src/game_uso/game_uso.c	RiderAnim_stateBrakeBlendIn	AnimPlayer_setBlend	UNPROTO def(ptr,int,int,float,int,int)->void	decl(,...)->int
+UNPROTO	src/game_uso/game_uso.c	RiderAnim_stateRideBlendIn	AnimPlayer_setBlend	UNPROTO def(ptr,int,int,float,int,int)->void	decl(,...)->int
+UNPROTO	src/game_uso/game_uso.c	RiderAnim_stateRideDeepBlendIn	AnimPlayer_setBlend	UNPROTO def(ptr,int,int,float,int,int)->void	decl(,...)->int
+UNPROTO	src/game_uso/game_uso.c	RiderAnim_stateSwitchStanceEnd	SnowBoarder_yawPiOver_0000E270	UNPROTO def(ptr,float)->void	decl(,...)->int
+UNPROTO	src/h2hproc_uso/h2hproc_uso.c	h2h_DataManager_init	CourseGadget_setFloat2_0000254C	UNPROTO def(ptr,float,float)->void	decl(,...)->int
+UNPROTO	src/h2hproc_uso/h2hproc_uso.c	h2h_DataManager_init	CourseGadget_setVec3_00002560	UNPROTO def(ptr,float,float,float)->void	decl(,...)->int
+UNPROTO	src/h2hproc_uso/h2hproc_uso.c	h2h_DataManager_update	CourseGadget_setFloat2_0000254C	UNPROTO def(ptr,float,float)->void	decl(,...)->void
+UNPROTO	src/match_imports/snd_HandleSeqEvent_30AF4.c	snd_HandleSeqEvent_30AF4	snd_UpdateChannel10Emitter	UNPROTO def(int,float,int)->void	decl(,...)->int
+UNPROTO	src/mgrproc_uso/mgrproc_uso.c	mgr_DataManager_update	CourseGadget_setFloat2_0000254C	UNPROTO def(ptr,float,float)->void	decl(,...)->void
+UNPROTO	src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp	BoardTrail_spawnNormal_00006B28	sys_randf	UNPROTO def()->float	decl(,...)->float
+UNPROTO	src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp	BoardTrail_spawnPowder_000064B8	sys_randf	UNPROTO def()->float	decl(,...)->float
+UNPROTO	src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp	BoardTrail_spawnSpec_0000718C	sys_randf	UNPROTO def()->float	decl(,...)->float
+UNPROTO	src/snoweffects_uso/snoweffects_uso_ncc.cpp	SnowFall_fill_000039C4	sys_randf	UNPROTO def()->float	decl(,...)->float
+UNPROTO	src/snoweffects_uso/snoweffects_uso_ncc_c.cpp	SnowFall_display_000028E0	sys_randf	UNPROTO def()->float	decl(,...)->float
+UNPROTO	src/timproc_uso_b5/timproc_uso_b5_ncc_B624.cpp	SelCharacter_display_0000B624	light_setF124_000550A0	UNPROTO def(ptr,float)->void	decl(,...)->void
+UNPROTO	src/titproc_uso/titproc_uso.c	tit_randomUnlocked_00000418	sys_randf	UNPROTO def()->float	decl(,...)->float

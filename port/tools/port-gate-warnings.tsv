@@ -1,0 +1,310 @@
+# scripts/port-gate.sh --update-baselines: accepted port build warnings of the gated classes
+# (file, function, class, message, count).  A new key, or a higher count, fails the gate.
+include/gdl/gfxlib.h	-	-fpermissive	invalid conversion from ‘GfxLib*’ to ‘int’	10
+include/gdl/gl_data.h	-	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+include/uso_call.h	-	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+include/uso_call.h	-	-fpermissive	invalid conversion from ‘char*’ to ‘unsigned int’	2
+include/uso_call.h	-	-fpermissive	invalid conversion from ‘const void*’ to ‘void*’	1
+src/arcproc_uso/arcproc_uso_tail1.c	-	-Wreturn-type	return type defaults to ‘int’	1
+src/arcproc_uso/arcproc_uso_tail1.c	ArcNameEntry_drawEntryOverlay	-Wreturn-type	control reaches end of non-void function	1
+src/balloon_uso/balloon_uso_ncc_1A8.cpp	void Balloon_display(Balloon*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/balloon_uso/balloon_uso_ncc_1A8.cpp	void Balloon_display(Balloon*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/bootup_uso/bootup_uso.c	-	-Wreturn-type	return type defaults to ‘int’	1
+src/bootup_uso/bootup_uso.c	func_00000000	-Wreturn-type	control reaches end of non-void function	1
+src/bootup_uso/bootup_uso_ncc_55A0.cpp	void item_registerTemplates(int, int, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	8
+src/bootup_uso/bootup_uso_ncc_55A0.cpp	void item_registerTemplates(int, int, int)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	2
+src/bootup_uso/bootup_uso_ncc_55A0.cpp	void item_registerTemplates(int, int, int)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	2
+src/bootup_uso/bootup_uso_ncc_7204.cpp	void L::add(Pair*)	-fpermissive	invalid conversion from ‘Pair*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_7204.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/bootup_uso/bootup_uso_ncc_7328.cpp	void EnvSettings_load(char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/bootup_uso/bootup_uso_ncc_76F4.cpp	void Tv1_display(Tv1*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_B1B4.cpp	void SnowBoarder_loadBoardModel_0000B1B4(unsigned int, unsigned int, int, int, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_B75C.cpp	void SnowBoarder_updateOrient(SnowBoarder*)	-fpermissive	invalid conversion from ‘RiderInput*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_B75C.cpp	void SnowBoarder_updateOrient(SnowBoarder*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_C234.cpp	void SnowBoarder_procColl(SnowBoarder*)	-fpermissive	invalid conversion from ‘RiderInput*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_C234.cpp	void SnowBoarder_procColl(SnowBoarder*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	3
+src/bootup_uso/bootup_uso_ncc_C234.cpp	void SnowBoarder_procColl(SnowBoarder*)	-fpermissive	invalid conversion from ‘s32’ {aka ‘int’} to ‘void*’	1
+src/bootup_uso/bootup_uso_ncc_CA0.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/bootup_uso/bootup_uso_ncc_CAE8.cpp	void SnowBoarder_reset(char*)	-fpermissive	invalid conversion from ‘RiderAnim*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_CAE8.cpp	void SnowBoarder_reset(char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_CAE8.cpp	void SnowBoarder_reset(char*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	2
+src/bootup_uso/bootup_uso_ncc_E800.cpp	void SnowBoard_ctor()	-fpermissive	invalid conversion from ‘char*’ to ‘int’	7
+src/bootup_uso/bootup_uso_ncc_E800.cpp	void SnowBoard_ctor()	-fpermissive	invalid conversion from ‘int*’ to ‘int’	3
+src/bootup_uso/bootup_uso_ncc_F81C.cpp	void* game_createProcessWindow(int, int)	-fpermissive	invalid conversion from ‘float*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_F81C.cpp	void* game_createProcessWindow(int, int)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_FC28.cpp	void* PauseMenu_create(char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_FC28.cpp	void* QuitProcess_ctor(void*, int, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_FC28.cpp	void* QuitProcess_ctor(void*, int, int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/bootup_uso/bootup_uso_ncc_FC28.cpp	void* QuitProcess_ctor(void*, int, int)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	2
+src/bootup_uso/bootup_uso_ncc_FC28.cpp	void* QuitProcess_ctor0(void*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/bootup_uso/bootup_uso_ncc_FC28.cpp	void* QuitProcess_ctor0(void*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/bootup_uso/bootup_uso_ncc_FC28.cpp	void* QuitProcess_ctor0(void*)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	2
+src/bootup_uso/bootup_uso_o0_11D78.c	input_getStickX_00011D78	-Wreturn-type	‘return’ with no value, in function returning non-void	1
+src/bootup_uso/bootup_uso_o0_11DBC.c	input_getStickY_00011DBC	-Wreturn-type	‘return’ with no value, in function returning non-void	1
+src/eddproc_uso/eddproc_uso.c	edd_readFloatParm_0000035C	-Wimplicit-function-declaration	implicit declaration of function ‘eddproc_uso_func_edd_3C’; did you mean ‘eddproc_uso_func_00000000’?	1
+src/eddproc_uso/eddproc_uso.c	edd_readQuadParm_0000038C	-Wimplicit-function-declaration	implicit declaration of function ‘eddproc_uso_func_edd_78’; did you mean ‘eddproc_uso_func_00000000’?	1
+src/eddproc_uso/eddproc_uso.c	edd_readVec3Parm_0000044C	-Wimplicit-function-declaration	implicit declaration of function ‘eddproc_uso_func_edd_D0’; did you mean ‘eddproc_uso_func_00000000’?	1
+src/game_libs/game_libs_mid.c	-	-Wreturn-type	return type defaults to ‘int’	1
+src/game_libs/game_libs_mid.c	app_launchNameEnt	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_ncc_15FC.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/game_libs/game_libs_ncc_15FC.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_34890.cpp	void hostio_sendNodeTree(O*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_34890.cpp	void make(int, O*)	-fpermissive	invalid conversion from ‘X*’ to ‘int’	1
+src/game_libs/game_libs_ncc_34890.cpp	void make(int, O*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_34890.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_34EB4.cpp	void app_run(St*, App*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	15
+src/game_libs/game_libs_ncc_3863C.cpp	void Sub::lock()	-fpermissive	invalid conversion from ‘Sub*’ to ‘int’	1
+src/game_libs/game_libs_ncc_38728.cpp	void Sub387::lock()	-fpermissive	invalid conversion from ‘Sub387*’ to ‘int’	1
+src/game_libs/game_libs_ncc_38C98.cpp	void Node_printContents(Owner*, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/game_libs/game_libs_ncc_393B8.cpp	void Sub393::lock()	-fpermissive	invalid conversion from ‘Sub393*’ to ‘int’	1
+src/game_libs/game_libs_ncc_39E24.cpp	void SNode_display(char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_3AE58.cpp	Obj* CollShape_ctorPoly(Obj*, Mesh*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_3D48C.cpp	void ItemType_hostioParms(Owner3D4*)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	3
+src/game_libs/game_libs_ncc_3D48C.cpp	void ItemType_hostioParms(Owner3D4*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_3DD28.cpp	Obj* SNodeItemType_newItem(Owner*)	-fpermissive	invalid conversion from ‘Node*’ to ‘int’	1
+src/game_libs/game_libs_ncc_3E5E0.cpp	void ItemMgr_hostioParms(char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	5
+src/game_libs/game_libs_ncc_3E5E0.cpp	void loop(char*, int)	-fpermissive	invalid conversion from ‘CB2*’ to ‘int’	1
+src/game_libs/game_libs_ncc_3E5E0.cpp	void loop(char*, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/game_libs/game_libs_ncc_3E5E0.cpp	void reg0(char*)	-fpermissive	invalid conversion from ‘CB1*’ to ‘int’	1
+src/game_libs/game_libs_ncc_3E5E0.cpp	void reg0(char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/game_libs/game_libs_ncc_3E5E0.cpp	void reg1(char*)	-fpermissive	invalid conversion from ‘CB1*’ to ‘int’	1
+src/game_libs/game_libs_ncc_3E5E0.cpp	void reg1(char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/game_libs/game_libs_ncc_3FC58.cpp	void hostio_dispatch(int)	-fpermissive	invalid conversion from ‘Msg*’ to ‘int’	2
+src/game_libs/game_libs_ncc_3FC58.cpp	void hostio_dispatch(int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/game_libs/game_libs_ncc_40070.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_40974.cpp	void Sub::lock()	-fpermissive	invalid conversion from ‘Sub*’ to ‘int’	1
+src/game_libs/game_libs_ncc_412E8.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘Fog*’ to ‘int’	1
+src/game_libs/game_libs_ncc_412E8.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_41820.cpp	void Self::init()	-fpermissive	invalid conversion from ‘char*’ to ‘int’	4
+src/game_libs/game_libs_ncc_41820.cpp	void Self::init()	-fpermissive	invalid conversion from ‘int’ to ‘void*’	2
+src/game_libs/game_libs_ncc_41820.cpp	void Self::linkN(Rec*)	-fpermissive	invalid conversion from ‘Rec*’ to ‘int’	1
+src/game_libs/game_libs_ncc_41820.cpp	void lnk(Rec*, Self*)	-fpermissive	invalid conversion from ‘Rec*’ to ‘int’	1
+src/game_libs/game_libs_ncc_41820.cpp	void lnkB(Rec*, Self*)	-fpermissive	invalid conversion from ‘Rec*’ to ‘int’	1
+src/game_libs/game_libs_ncc_41A9C.cpp	void App_hostioParms(Self41A*)	-fpermissive	invalid conversion from ‘D41*’ to ‘int’	1
+src/game_libs/game_libs_ncc_41A9C.cpp	void App_hostioParms(Self41A*)	-fpermissive	invalid conversion from ‘E41*’ to ‘int’	1
+src/game_libs/game_libs_ncc_41A9C.cpp	void App_hostioParms(Self41A*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	25
+src/game_libs/game_libs_ncc_41D40.cpp	void App_Update(int)	-fpermissive	invalid conversion from ‘Elem*’ to ‘int’	1
+src/game_libs/game_libs_ncc_41D40.cpp	void App_Update(int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/game_libs/game_libs_ncc_41D40.cpp	void App_Update(int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_41D40.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_41EDC.cpp	void App_Display(Owner*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_42938.cpp	void dbg_screenOverlay_00042938()	-fpermissive	invalid conversion from ‘Vp*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_432BC.cpp	void gfx_transformLightDirs_000432BC(int, float*, int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_43654.cpp	void PolyShape_buildStateDL_00043654(Mat*, char*)	-fpermissive	invalid conversion from ‘DLContext*’ to ‘int’	1
+src/game_libs/game_libs_ncc_43654.cpp	void PolyShape_buildStateDL_00043654(Mat*, char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_43D38.cpp	void Elem::link(int)	-fpermissive	invalid conversion from ‘Gfx*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_445AC.cpp	-	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_445AC.cpp	void GfxLib_init(Obj*)	-fpermissive	invalid conversion from ‘Obj*’ to ‘int’	1
+src/game_libs/game_libs_ncc_445AC.cpp	void GfxLib_init(Obj*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	8
+src/game_libs/game_libs_ncc_445AC.cpp	void GfxLib_init(Obj*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_445AC.cpp	void GfxLib_init(Obj*)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	6
+src/game_libs/game_libs_ncc_44CE8.cpp	Rec* gfx_addDdm(Obj*, unsigned int, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/game_libs/game_libs_ncc_45178.cpp	void gfx_emitProjection(Obj*)	-fpermissive	invalid conversion from ‘Mtx*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_454C4.cpp	void Obj::setLights(Ctx*, f32*, f32)	-fpermissive	invalid conversion from ‘Ambient*’ to ‘unsigned int’	2
+src/game_libs/game_libs_ncc_454C4.cpp	void Obj::setLights(Ctx*, f32*, f32)	-fpermissive	invalid conversion from ‘Light*’ to ‘unsigned int’	2
+src/game_libs/game_libs_ncc_45CB0.cpp	void gfx_emitOneLight_00045CB0(int, Ctx*, float*)	-fpermissive	invalid conversion from ‘Lt*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_45CB0.cpp	void gfx_emitOneLight_00045CB0(int, Ctx*, float*)	-fpermissive	invalid conversion from ‘unsigned char*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_46050.cpp	s32 gfx_drawText(Font*, u8*, s32)	-fpermissive	invalid conversion from ‘void*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_46FA8.cpp	void gfx_fillRect(Obj*, int, int, int, int, int)	-fpermissive	invalid conversion from ‘Ctx*’ to ‘int’	1
+src/game_libs/game_libs_ncc_46FA8.cpp	void gfx_fillRect(Obj*, int, int, int, int, int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	2
+src/game_libs/game_libs_ncc_483BC.cpp	void PolyShape_emitTriBatch_000483BC(Obj488A0*)	-fpermissive	invalid conversion from ‘Vtx488A0*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_48510.cpp	void Strip::add(Vtx*, s16*, int*, u16*)	-fpermissive	invalid conversion from ‘Vtx*’ to ‘int’	1
+src/game_libs/game_libs_ncc_488A0.cpp	void gfx_emitLineBatch_000488A0(Obj488A0*)	-fpermissive	invalid conversion from ‘Vtx488A0*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_48AEC.cpp	void Obj::draw()	-fpermissive	invalid conversion from ‘Ctx*’ to ‘int’	1
+src/game_libs/game_libs_ncc_48AEC.cpp	void Obj::draw()	-fpermissive	invalid conversion from ‘Gfx*’ to ‘int’	1
+src/game_libs/game_libs_ncc_48AEC.cpp	void Obj::draw()	-fpermissive	invalid conversion from ‘Mtx*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_48AEC.cpp	void Obj::draw()	-fpermissive	invalid conversion from ‘Obj*’ to ‘int’	1
+src/game_libs/game_libs_ncc_48AEC.cpp	void Obj::draw()	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_48AEC.cpp	void dY3(void*, Ctx*, int, Ctx*)	-fpermissive	invalid conversion from ‘Gfx*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_48AEC.cpp	void dZ1(void*, Ctx*, int, Ctx*)	-fpermissive	invalid conversion from ‘Gfx*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_48AEC.cpp	void fG(Gfx*, Mtx*)	-fpermissive	invalid conversion from ‘Mtx*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_493AC.cpp	int Mgr::run()	-fpermissive	invalid conversion from ‘char*’ to ‘int’	11
+src/game_libs/game_libs_ncc_493AC.cpp	int Mgr::run()	-fpermissive	invalid conversion from ‘u8*’ {aka ‘unsigned char*’} to ‘int’	1
+src/game_libs/game_libs_ncc_493AC.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_49B3C.cpp	void PolyShape_hostioParms(char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	5
+src/game_libs/game_libs_ncc_49B3C.cpp	void regp(char*, char*, char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_49DBC.cpp	u8* PolyShape_shade_00049DBC(BasePolyShape*, s32, s32, s32, BaseMat*)	-fpermissive	invalid conversion from ‘long long int (*)[2]’ to ‘int’	1
+src/game_libs/game_libs_ncc_49DBC.cpp	u8* PolyShape_shade_00049DBC(BasePolyShape*, s32, s32, s32, BaseMat*)	-fpermissive	invalid conversion from ‘s32’ {aka ‘int’} to ‘void*’	2
+src/game_libs/game_libs_ncc_49DBC.cpp	u8* PolyShape_shade_00049DBC(BasePolyShape*, s32, s32, s32, BaseMat*)	-fpermissive	invalid conversion from ‘u16*’ {aka ‘short unsigned int*’} to ‘int’	1
+src/game_libs/game_libs_ncc_4A308.cpp	s32 PolyShape_makeEdgeVtxs(char*, int, int, int, char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_4A308.cpp	s32 PolyShape_makeEdgeVtxs(char*, int, int, int, char*)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	6
+src/game_libs/game_libs_ncc_4A308.cpp	s32 PolyShape_makeEdgeVtxs(char*, int, int, int, char*)	-fpermissive	invalid conversion from ‘unsigned char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_4B0A8.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_4B0A8.cpp	void* res(Elem*, Elem*)	-fpermissive	invalid conversion from ‘DL*’ to ‘int’	1
+src/game_libs/game_libs_ncc_4B0A8.cpp	void* res(Elem*, Elem*)	-fpermissive	invalid conversion from ‘Pair*’ to ‘int’	1
+src/game_libs/game_libs_ncc_4B0A8.cpp	void* res(Elem*, Elem*)	-fpermissive	invalid conversion from ‘char*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_4B0A8.cpp	void* res(Elem*, Elem*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_4B0A8.cpp	void* res(Elem*, Elem*)	-fpermissive	invalid conversion from ‘unsigned int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_4B620.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	3
+src/game_libs/game_libs_ncc_4B620.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	1
+src/game_libs/game_libs_ncc_4B620.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_4C5E4.cpp	void Obj::run()	-fpermissive	invalid conversion from ‘Obj*’ to ‘int’	1
+src/game_libs/game_libs_ncc_4C5E4.cpp	void Obj::run()	-fpermissive	invalid conversion from ‘Vp*’ to ‘unsigned int’	1
+src/game_libs/game_libs_ncc_4C5E4.cpp	void Obj::run()	-fpermissive	invalid conversion from ‘char*’ to ‘int’	3
+src/game_libs/game_libs_ncc_4C5E4.cpp	void Obj::run()	-fpermissive	invalid conversion from ‘void*’ to ‘int’	1
+src/game_libs/game_libs_ncc_4D468.cpp	S4D* RcpMgr_ctor(S4D*)	-fpermissive	invalid conversion from ‘S4D*’ to ‘int’	1
+src/game_libs/game_libs_ncc_4D468.cpp	S4D* RcpMgr_ctor(S4D*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	3
+src/game_libs/game_libs_ncc_4D468.cpp	S4D* RcpMgr_ctor(S4D*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	3
+src/game_libs/game_libs_ncc_4D468.cpp	void bind(int, int, int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_4D688.cpp	S4D* RcpMgr_ctor(S4D*)	-fpermissive	invalid conversion from ‘S4D*’ to ‘int’	1
+src/game_libs/game_libs_ncc_4D688.cpp	S4D* RcpMgr_ctor(S4D*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	3
+src/game_libs/game_libs_ncc_4D688.cpp	S4D* RcpMgr_ctor(S4D*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	2
+src/game_libs/game_libs_ncc_4D688.cpp	void Obj::run()	-fpermissive	invalid conversion from ‘char*’ to ‘int’	10
+src/game_libs/game_libs_ncc_4D688.cpp	void Obj::run()	-fpermissive	invalid conversion from ‘int’ to ‘void*’	2
+src/game_libs/game_libs_ncc_4D688.cpp	void RcpMgr_loadTask_0004D354(RcpTask*)	-fpermissive	invalid conversion from ‘OSTask_t*’ to ‘int’	1
+src/game_libs/game_libs_ncc_4D688.cpp	void RcpMgr_update(int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_4D688.cpp	void RcpMgr_update(int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_4D688.cpp	void bind(int, int, int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_4E244.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_4E584.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_4FBA4.cpp	void* operator new(unsigned int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_5062C.cpp	int BasePolyShape_subdivide(int, int, int, int, int, int, int, V3, V3, V3, V3, V3, V3)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	10
+src/game_libs/game_libs_ncc_526D0.cpp	-	-fpermissive	invalid conversion from ‘int’ to ‘void*’	2
+src/game_libs/game_libs_ncc_55470.cpp	void nodelist_dispatch(Strm*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_578B4.cpp	void gfx_loadTexture(DLContext*, BaseMat*, s32)	-fpermissive	invalid conversion from ‘char*’ to ‘unsigned int’	5
+src/game_libs/game_libs_ncc_5AFD4.cpp	void Mem_init(Heap*, Blk*, char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_608A4.cpp	void TextWin::draw(int)	-fpermissive	invalid conversion from ‘Pt*’ to ‘int’	1
+src/game_libs/game_libs_ncc_62A2C.cpp	void anim_blendPose(Animator*, int, int, float, int, float)	-fpermissive	invalid conversion from ‘Animator*’ to ‘int’	2
+src/game_libs/game_libs_ncc_62A2C.cpp	void anim_blendPose(Animator*, int, int, float, int, float)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	2
+src/game_libs/game_libs_ncc_63964.cpp	void PhysQNode_pushProbes_00063964(O*, f32, int, int)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	1
+src/game_libs/game_libs_ncc_65494.cpp	void DNode_solveContacts(Self*)	-fpermissive	invalid conversion from ‘Self*’ to ‘int’	2
+src/game_libs/game_libs_ncc_65494.cpp	void DNode_solveContacts(Self*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_libs/game_libs_ncc_66A50.cpp	void boot_halt_00066A50(int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_libs/game_libs_ncc_66A50.cpp	void boot_halt_00066A50(int)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	1
+src/game_libs/game_libs_ncc_66EEC.cpp	void pad_threadLoop_00066EEC(char*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	2
+src/game_libs/game_libs_ncc_690A8.cpp	void SkinAnim_bind(Obj*, Mgr*, V3s*)	-fpermissive	invalid conversion from ‘M4*’ to ‘int’	1
+src/game_libs/game_libs_ncc_o0_8E48.cpp	char* app_createGame_00008E48(char**, int, s32)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	3
+src/game_libs/game_libs_ncc_o0_8FFC.cpp	int app_createGame_00008FFC(int, int, int)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	1
+src/game_libs/game_libs_ncc_o0_8FFC.cpp	int app_createGame_00008FFC(int, int, int)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	1
+src/game_libs/game_libs_ncc_o0_8FFC.cpp	int app_createGame_00009100(int, int, int)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	1
+src/game_libs/game_libs_ncc_o0_8FFC.cpp	int app_createGame_00009100(int, int, int)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	1
+src/game_libs/game_libs_ncc_o0_9204.cpp	int app_createGame_00009204(int, int, int)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	1
+src/game_libs/game_libs_ncc_o0_9204.cpp	int app_createGame_00009204(int, int, int)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	1
+src/game_libs/game_libs_ncc_o0_9204.cpp	int app_createGame_000092F4(int, int)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	1
+src/game_libs/game_libs_ncc_o0_9204.cpp	int app_createGame_000092F4(int, int)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	1
+src/game_libs/game_libs_ncc_o0_959C.cpp	int* ColourItem_create_0000959C(int*)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	1
+src/game_libs/game_libs_o2_34548.c	dbg_printThreads	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post.c	AudioHeap_AllocPermanent	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post.c	AudioLoad_SyncInitSeqPlayerInternal	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post.c	AudioLoad_SyncLoadInstrument	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post.c	AudioLoad_SyncLoadSample	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post.c	Audio_SeqLayerDecayRelease	-Wimplicit-function-declaration	implicit declaration of function ‘gl_func_0003D414’; did you mean ‘gl_func_00038604’?	1
+src/game_libs/game_libs_post.c	snd_SetPlayer2ChannelIO_3190C	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	AnimPlayer_reset	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	BasePolyShape_addPoints	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	BasePolyShape_ctor	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	BasePolyShape_subdivide	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	ColourItemType_buildItems	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	ColourItemType_findNearest	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	ColourItemType_findNextByZ	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	ColourItemType_getItemPos	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	ItemType_getItem	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	MNodeItemType_getItemPos	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	MNode_update	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	MNode_updateChildren	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	Mat_clone_0004FBA4	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	Mesh_paint	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	Node_broadcastMsg	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	PolyShape_init	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	PolyShape_makeEdgeVtxs	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	PolyShape_shade_00049DBC	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	SNodeItemType_buildItems	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	SNodeItemType_findNearest	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	SNodeItemType_findNextByZ	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	SNodeItemType_getItemPos	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	SNodeItemType_newItem	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	Sprite_ctor_0004B620	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	dbg_printThreads	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	fs_gdlReadQuad_000515FC	-Wreturn-type	return type defaults to ‘int’	1
+src/game_libs/game_libs_post0b.c	math_bestAlignedIndex_00036A48	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	nodelist_displayFlagged_00039EE4	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post0b.c	nodelist_updateFlagged_00039F7C	-Wreturn-type	control reaches end of non-void function	1
+src/game_libs/game_libs_post1b.c	str_fill	-Wreturn-type	control reaches end of non-void function	1
+src/game_uso/game_uso.c	RiderAnim_checkGroundSpin_0000E91C	-Wimplicit-function-declaration	implicit declaration of function ‘RiderAnim_readStickSpin_0000EAF4’	1
+src/game_uso/game_uso.c	RiderAnim_startQueuedTrick_0000E35C	-Wreturn-type	control reaches end of non-void function	1
+src/game_uso/game_uso_mp72_8CD8.cpp	-	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_uso/game_uso_ncc_6A30.cpp	-	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_uso/game_uso_ncc_71E0.cpp	-	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_uso/game_uso_ncc_97EC.cpp	-	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/game_uso/game_uso_ncc_BB8C.cpp	void LensFlare_display(Obj*)	-fpermissive	invalid conversion from ‘P2*’ to ‘int’	1
+src/game_uso/game_uso_ncc_D204.cpp	void RiderAnim_update_0000D204(H*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_uso/game_uso_ncc_D204.cpp	void RiderAnim_update_0000D204(H*)	-fpermissive	invalid conversion from ‘s32’ {aka ‘int’} to ‘void*’	1
+src/game_uso/game_uso_ncc_D9CC.cpp	void RiderAnim_selectAnim_0000D9CC(char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/game_uso/game_uso_ncc_D9CC.cpp	void RiderAnim_selectAnim_0000D9CC(char*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/gui_uso/gui_uso_ncc_0F04.cpp	void gui_drawStringScaled_00000F04(Font*, s32, s32, f32, f32, unsigned char*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/gui_uso/gui_uso_ncc_2DE0.cpp	void Ctx::loadIA8(int, s32, s32)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/gui_uso/gui_uso_ncc_2DE0.cpp	void Ctx::loadRGBA16(int, s32, s32)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/gui_uso/gui_uso_ncc_2DE0.cpp	void Ctx::loadRGBA32(int, s32, s32)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/gui_uso/gui_uso_ncc_329C.cpp	void Ctx::loadIA8(int, s32, s32)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/gui_uso/gui_uso_ncc_329C.cpp	void Ctx::loadRGBA16(int, s32, s32)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/gui_uso/gui_uso_ncc_329C.cpp	void Ctx::loadRGBA32(int, s32, s32)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/gui_uso/gui_uso_ncc_3714.cpp	void gui_drawSpriteScroll_00003714(Obj*, s32, s32, s32, s32, f32, f32)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp	void h2h_WinsDisplay_update_00001204(char*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/match_imports/CharacterList_createItem.c	CharacterList_createItem	-Wimplicit-function-declaration	implicit declaration of function ‘gen_imp_AnimPlayer_reset’; did you mean ‘gen_imp_AnimPlayer_start’?	1
+src/match_imports/CharacterList_createItem.c	CharacterList_createItem	-Wimplicit-function-declaration	implicit declaration of function ‘gen_imp_SnowBoarder_loadBoardModel_0000B1B4’	1
+src/match_imports/CharacterList_createItem.c	CharacterList_createItem	-Wimplicit-function-declaration	implicit declaration of function ‘import_0010D33C’; did you mean ‘import_0010806C’?	1
+src/match_imports/Parms_load_00035C6C.c	Parms_load_00035C6C	-Wreturn-type	control reaches end of non-void function	1
+src/mgrproc_uso/mgrproc_uso.c	-	-Wreturn-type	return type defaults to ‘int’	1
+src/mgrproc_uso/mgrproc_uso.c	MGRRaceProcess_onRaceOver	-Wimplicit-function-declaration	implicit declaration of function ‘import_000B2888’; did you mean ‘import_000B72F4’?	1
+src/mgrproc_uso/mgrproc_uso.c	mgr_pauseContinue_00000AE0	-Wreturn-type	control reaches end of non-void function	1
+src/mgrproc_uso/mgrproc_uso_o0_19C.c	-	-Wreturn-type	return type defaults to ‘int’	1
+src/mgrproc_uso/mgrproc_uso_o0_19C.c	mgr_procMain	-Wreturn-type	control reaches end of non-void function	1
+src/nameent_uso/nameent_uso.c	NameEnterMessage_ctor	-Wreturn-type	control reaches end of non-void function	1
+src/nameent_uso/nameent_uso_ncc.cpp	NeEntry* NameEnterMessage_ctor(NeEntry*, void*, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/nameent_uso/nameent_uso_ncc.cpp	NeEntry* NameEnterMessage_ctor(NeEntry*, void*, int)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	1
+src/nameent_uso/nameent_uso_ncc.cpp	void NameEnterMessage_display(NeEntry*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/nameent_uso/nameent_uso_ncc.cpp	void NameEntry_drawBoard(NeProc*)	-fpermissive	invalid conversion from ‘NeImage*’ to ‘int’	1
+src/nameent_uso/nameent_uso_ncc.cpp	void NameEntry_drawBoard(NeProc*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp	void BoardTrail_spawnNormal_00006B28(SnowEmB*)	-fpermissive	invalid conversion from ‘void*’ to ‘SPart*’	2
+src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp	void BoardTrail_spawnPowder_000064B8(SnowEm*)	-fpermissive	invalid conversion from ‘void*’ to ‘SPart*’	2
+src/snoweffects_uso/snoweffects_uso_mp72_nm_e.cpp	void BoardTrail_spawnSpec_0000718C(SnowEmC*)	-fpermissive	invalid conversion from ‘void*’ to ‘SPart*’	2
+src/snoweffects_uso/snoweffects_uso_ncc.cpp	void SnowRing_placeEnds_00004E5C(SnowBasis*)	-fpermissive	invalid conversion from ‘SnowBV3*’ to ‘int’	2
+src/snoweffects_uso/snoweffects_uso_ncc.cpp	void SnowRing_placeEnds_00004E5C(SnowBasis*)	-fpermissive	invalid conversion from ‘SnowQuad*’ to ‘int’	2
+src/snoweffects_uso/snoweffects_uso_ncc.cpp	void SnowRing_setupDL_00004188(SnowRing*, DLCtx*)	-fpermissive	invalid conversion from ‘char*’ to ‘unsigned int’	1
+src/snoweffects_uso/snoweffects_uso_ncc_b.cpp	void SnowRing_display_0000559C(SnowRingB*)	-fpermissive	invalid conversion from ‘SnowVtxB*’ to ‘unsigned int’	1
+src/snoweffects_uso/snoweffects_uso_ncc_b.cpp	void lnk(Node*, Node*)	-fpermissive	invalid conversion from ‘Node*’ to ‘int’	1
+src/snoweffects_uso/snoweffects_uso_ncc_c.cpp	void SnowFall_display_000028E0(SnowFallD*)	-fpermissive	invalid conversion from ‘void*’ to ‘unsigned int’	1
+src/snoweffects_uso/snoweffects_uso_ncc_c.cpp	void SnowPool_buildTexDL_00000270(SnowTex*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/snoweffects_uso/snoweffects_uso_ncc_e.cpp	void BoardSpray_placeEnds_00008D70(SnowProbe*)	-fpermissive	invalid conversion from ‘Quad4*’ to ‘int’	2
+src/snoweffects_uso/snoweffects_uso_ncc_e.cpp	void BoardSpray_placeEnds_00008D70(SnowProbe*)	-fpermissive	invalid conversion from ‘SV*’ to ‘int’	2
+src/snoweffects_uso/snoweffects_uso_ncc_e.cpp	void HandTrail_placeEnds_00007960(SnowBody7*)	-fpermissive	invalid conversion from ‘SnowV*’ to ‘int’	1
+src/snoweffects_uso/snoweffects_uso_ncc_e.cpp	void HandTrail_placeEnds_00007960(SnowBody7*)	-fpermissive	invalid conversion from ‘int*’ to ‘int’	1
+src/snoweffects_uso/snoweffects_uso_ncc_e.cpp	void LocalLight_buildLitVerts_00009884(SnowGlowE*, SnowMesh*)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	1
+src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp	void NormalParticles_buildTexDL_00001A18(SnowTex*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp	void PowderParticles_buildTexDL_000015D0(SnowTex*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp	void SnowFall_buildTexDL_00002310(SnowTex*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp	void SpecParticles_buildTexDL_00001E60(SnowTex*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/snoweffects_uso/snoweffects_uso_ncc_nm_h.cpp	int tcall1(int, SnowDLHolder*)	-fpermissive	invalid conversion from ‘void*’ to ‘unsigned int’	1
+src/timproc_uso_b1/timproc_uso_b1.c	-	-Wreturn-type	return type defaults to ‘int’	1
+src/timproc_uso_b1/timproc_uso_b1.c	tim_main	-Wreturn-type	control reaches end of non-void function	1
+src/timproc_uso_b3/timproc_uso_b3.c	-	-Wreturn-type	return type defaults to ‘int’	1
+src/timproc_uso_b3/timproc_uso_b3.c	trk_main	-Wreturn-type	control reaches end of non-void function	1
+src/timproc_uso_b5/timproc_uso_b5.c	SelItem_drawStatBarRight_00003C8C	-Wint-to-pointer-cast	cast to pointer from integer of different size	1
+src/timproc_uso_b5/timproc_uso_b5.c	SelItem_drawStatBar_00003A4C	-Wint-to-pointer-cast	cast to pointer from integer of different size	1
+src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_beginTransition_00008688	-Wimplicit-function-declaration	implicit declaration of function ‘SelectWin_prevFocusItem_00008AD4’; did you mean ‘SelectWin_saveFocus_0000866C’?	1
+src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_callPrevStageBit_0000894C	-Wreturn-type	control reaches end of non-void function	1
+src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_display_00006394	-Wimplicit-function-declaration	implicit declaration of function ‘SelectWin_canScrollNext_00006900’	1
+src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_display_00006394	-Wimplicit-function-declaration	implicit declaration of function ‘SelectWin_canScrollPrev_0000687C’	1
+src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_display_00006394	-Wimplicit-function-declaration	implicit declaration of function ‘SelectWin_curItem_00008A38’	1
+src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_display_00006394	-Wimplicit-function-declaration	implicit declaration of function ‘SelectWin_prevStageItem_00008A64’	1
+src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_display_00006394	-Wimplicit-function-declaration	implicit declaration of function ‘gen_imp_Node_display’; did you mean ‘gen_imp_Node_update’?	1
+src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_state5_000079A4	-Wimplicit-function-declaration	implicit declaration of function ‘SelectWin_findItem_00008988’; did you mean ‘SelectWin_init_00005BF0’?	1
+src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_state8_000080F4	-Wimplicit-function-declaration	implicit declaration of function ‘import_000A7ECC’; did you mean ‘import_000A5FBC’?	1
+src/timproc_uso_b5/timproc_uso_b5_ncc_BDEC.cpp	void CharacterItem_drawArrows_0000BDEC(char*, char*, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/titproc_uso/titproc_uso.c	GameDemoProcess_ctor	-Wimplicit-function-declaration	implicit declaration of function ‘import_000AE700’; did you mean ‘import_000A7ECC’?	1
+src/titproc_uso/titproc_uso.c	GameDemoProcess_ctor	-Wimplicit-function-declaration	implicit declaration of function ‘import_000B0DBC’; did you mean ‘import_000A5FBC’?	1
+src/titproc_uso/titproc_uso_mp72_116C.cpp	void TitleDemoProcess_handleInput(char*)	-fpermissive	invalid conversion from ‘Node*’ to ‘int’	1
+src/trnproc_uso/trnproc_uso.c	TrnDataManager_isLessonAvailable	-Wreturn-type	control reaches end of non-void function	1
+src/trnproc_uso/trnproc_uso_ncc.cpp	int TrnDataManager_isLessonAvailable(TrnDataManager*, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/trnproc_uso/trnproc_uso_ncc.cpp	void TrnDataManager_buildLessonInputs(TrnDataManager*, int)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/trnproc_uso/trnproc_uso_ncc.cpp	void TrnDataManager_drawLesson(TrnDataManager*)	-fpermissive	invalid conversion from ‘RaceSprite*’ to ‘int’	1
+src/trnproc_uso/trnproc_uso_ncc.cpp	void TrnDataManager_drawLesson(TrnDataManager*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/trnproc_uso/trnproc_uso_ncc.cpp	void TrnDataManager_drawLesson(TrnDataManager*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	2
+src/trnproc_uso/trnproc_uso_ncc.cpp	void TrnDataManager_drawResults(TrnDataManager*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	2
+src/trnproc_uso/trnproc_uso_ncc.cpp	void TrnDataManager_drawResults(TrnDataManager*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	8
+src/viewrec_uso/viewrec_uso_ncc_2d0.cpp	VrProc* GENNewRecordsProcess_ctor(VrProc*, int, int, int*)	-fpermissive	invalid conversion from ‘VrNode*’ to ‘int’	1
+src/viewrec_uso/viewrec_uso_ncc_2d0.cpp	VrProc* GENNewRecordsProcess_ctor(VrProc*, int, int, int*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/viewrec_uso/viewrec_uso_ncc_2d0.cpp	VrProc* GENNewRecordsProcess_ctor(VrProc*, int, int, int*)	-fpermissive	invalid conversion from ‘int’ to ‘void*’	2
+src/viewrec_uso/viewrec_uso_ncc_2d0.cpp	VrProc* GENNewRecordsProcess_ctor(VrProc*, int, int, int*)	-fpermissive	invalid conversion from ‘void*’ to ‘int’	1
+src/viewrec_uso/viewrec_uso_ncc_2d0.cpp	char* nodeCtor(char*)	-fpermissive	invalid conversion from ‘char*’ to ‘int’	1
+src/viewrec_uso/viewrec_uso_ncc_2d0.cpp	void VrNode::addChild(VrNode*)	-fpermissive	invalid conversion from ‘VrNode*’ to ‘int’	1
