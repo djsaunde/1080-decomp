@@ -79,6 +79,13 @@ when pyelftools / crunch64 are missing):
                                hosts, and CALLs inside #define bodies as npc_ucm_K sites (all
                                of a macro site's expansions must call its name). A site that
                                cannot be proven fails like a wrong name. ~60 s tree-wide.
+                               It also runs check_port_defs (run 836, every shipped unit of
+                               port/sourcemap.tsv): a BARE call whose token is a function the
+                               PC port defines (a module's Text+0 `func_00000000`, or a real
+                               name used as a blank-jal token such as `tim_main(...)`) runs
+                               that definition on the port, since port-gen-binds binds only
+                               undefined tokens; it fails unless every ROM callee of the
+                               function's jals through the token is the token itself.
 
 Names come from the BUILD (build/tenshoe.elf + map, and the Yay0 block .lnk.o files for the
 compressed modules). Run it after the readability gate's clean build: an incremental make can
@@ -1560,6 +1567,17 @@ def cmd_selftest(a, rom, mv):
     # and the per-site compile re-derives every XCALL(game_uso_func_055750, mem_new)
     xs = [(s.name, res['derived'].get(s.i)) for s in res['sites'] if s.tok == 'game_uso_func_055750' and s.name]
     assert len(xs) > 50 and all(n == d for n, d in xs), xs[:5]
+    # run 836: a BARE call through a token the port defines fails (SnowBoarder_reset's bzero spelled
+    # func_00000000, run 830): un-name tim_drawTime's XCALL(tim_main, f) sites
+    tp = 'src/timproc_uso_b1/timproc_uso_b1_ncc_1340.cpp'
+    treal = open(tp).read()
+    assert 'XCALL(tim_main,' in treal
+    try:
+        open(tp, 'w').write(re.sub(r'XCALL\(tim_main, \w+\)', 'tim_main', treal))
+        assert check_port_defs(quiet=True) == 1
+    finally:
+        open(tp, 'w').write(treal)
+    assert check_port_defs(quiet=True) == 0
     print('selftest OK')
     return 0
 
@@ -1579,7 +1597,8 @@ def cmd_check(a, rom, mv):
                     print(f'{res["path"]}: {s.func}: {spelled(s.tok, s.name)} -- '
                           f'{"ROM callee " + got if got else res["error"] or res["left"].get(s.i)}')
     elif a.order:
-        return check_order(files, rom, mv)
+        rc = check_order(files, rom, mv)
+        return 1 if check_port_defs() or rc else 0
     else:
         for path in files:
             nn, bb = check_fast(path, open(path, errors='replace').read(), rom)
@@ -1670,6 +1689,144 @@ def check_order(files, rom, mv, quiet=False):
         print(f'check --order: {n} named calls ({single} in single-callee groups, {proven} proven per site by '
               f'the verify compile), {bad} not among the ROM callees, {wrong} wrong per site, {unproven} unproven')
     return 1 if bad or wrong or unproven else 0
+
+
+def _port_view(src):
+    """Same length as src: the text the PC port compiles (the #else of an `#ifdef PORT` and the
+    `#ifndef PORT` branch blanked, the PORT branches kept)."""
+    out, stack, pos = list(src), [], 0      # stack: [is_port_cond, port_branch_active]
+    for line in src.split('\n'):
+        end = pos + len(line)
+        m = _PP_RE.match(line)
+        d = m.group(1) if m else None
+        if d in ('ifdef', 'ifndef', 'if'):
+            stack.append([d != 'if' and m.group(2) == 'PORT', d == 'ifdef'])
+        elif d in ('elif', 'else') and stack and stack[-1][0]:
+            stack[-1][1] = not stack[-1][1] if d == 'else' else False
+        elif d == 'endif' and stack:
+            stack.pop()
+        elif any(t[0] and not t[1] for t in stack):
+            for k in range(pos, end):
+                out[k] = ' '
+        pos = end + 1
+    return ''.join(out)
+
+
+def check_port_defs(quiet=False):
+    """check --order, run 836: a call the source leaves BARE (no CALL / XCALL name) whose token is a
+    function the PC port DEFINES (a module's Text+0 function `func_00000000` / `gui_func_00000000`
+    ..., or a real name used as a blank-jal token: tim_drawTime's `tim_main(...)`).
+
+    port-gen-binds binds only the tokens the port leaves undefined; a defined token keeps its own
+    definition, so on the port the call silently runs that function (SnowBoarder_reset's bzero
+    spelled func_00000000 ran bootup's empty Text+0 function: a NaN rider, run 830).  Per proven
+    function (its object bytes are the ROM's) and token S the port defines (port/sourcemap.tsv),
+    the ROM TextReloc callee of every jal against S, after the CALL-named sites are taken out,
+    must be S itself -- unless the PORT view of the function (C; the file for C++) has no bare
+    `S(` site left (a PORT branch names the call, or the extra jals belong to a named site that
+    the compiler duplicated / to cfront's own protocol).  -> number of failing (function, token)."""
+    if not os.path.exists('port/sourcemap.tsv'):
+        return 0
+    spec = importlib.util.spec_from_file_location('pgb_defs', 'scripts/port-gen-binds.py')
+    pgb = importlib.util.module_from_spec(spec)
+    argv, sys.argv = sys.argv, [sys.argv[0]]
+    try:
+        spec.loader.exec_module(pgb)
+    finally:
+        sys.argv = argv
+    rows = [l.rstrip('\n').split('\t') for l in open('port/sourcemap.tsv')
+            if l.strip() and not l.startswith(('#', 'function\t'))]
+    defined = {r[0] for r in rows}      # (not `gl_` + name: gl_func_00000000 is undefined on the port)
+    by_src = collections.defaultdict(list)
+    for r in rows:
+        if len(r) > 2 and r[2].endswith(('.c', '.cpp')):
+            by_src[r[2]].append(r[0])
+    rom, mv = pgb.npc.Rom(), pgb.npc.MakeVars()
+    rt = pgb.RomTargets(rom)
+    pins = pgb.load_pins()
+    bad = funcs = 0
+    for src in sorted(by_src):
+        obj = obj_of(src)
+        if not os.path.exists(obj):
+            continue
+        orel = [r for r in pgb.obj_relocs(obj) if r[1] == 4 and r[2] in defined]
+        if not orel:
+            continue
+        md = rom.module_for(src) or pgb.npc.donor_module(src, rom, mv)
+        if md is None or not md.funcs:
+            continue
+        text = open(src, errors='replace').read()
+        named = collections.defaultdict(collections.Counter)
+        for st in scan(text)[0]:
+            if st.name is not None:
+                named[(st.func, st.tok)][current_name(st.name) or st.name] += 1
+        for (fnm, tok), c in macro_named(text).items():
+            named[(fnm, tok)] += c
+        pool = collections.defaultdict(collections.Counter)
+        for (_f, tok), c in named.items():
+            pool[tok] += c
+        pv = mask(_port_view(text))
+        pblocks = [b for b in top_blocks(pv) if func_header_name(pv, b[0], b[1])]
+        spans = [(mt.start(), mt.end()) for mt in MAC_RE.finditer(pv)]
+        macro_toks = {mt.group(1) for d in re.finditer(r'(?m)^[ \t]*#[ \t]*define\b(?:[^\n]*\\\n)*[^\n]*',
+                                                       _port_view(text))
+                      for mt in re.finditer(r'\b(\w+)\s*\(', d.group(0))}
+        cpp = src.endswith('.cpp')
+
+        def bare(tok, fn):
+            """bare `tok(` call sites in the PORT view (of fn's block; the file for C++)"""
+            if tok in macro_toks:
+                return 1
+            n = 0
+            for mt in re.finditer(r'\b' + re.escape(tok) + r'\s*\(', pv):
+                if is_decl(pv, mt.start()) or any(a <= mt.start() < b for a, b in spans):
+                    continue
+                if not cpp:
+                    blk = next((b for b in pblocks if b[1] < mt.start() < b[2]), None)
+                    if blk is None or func_header_name(pv, blk[0], blk[1]) != fn:
+                        continue
+                n += 1
+            return n
+        rfuncs, _ = elf_info(obj)
+        rall = reloc_offsets(obj)
+        upins = pgb.donor_pins(src, pins)
+        for fn in by_src[src]:
+            fo = fn if fn in rfuncs else ('gl_' + fn) if ('gl_' + fn) in rfuncs else None
+            if fo is None:
+                continue
+            base = rom.func_off(md, fo)
+            rv, rsz, rb = rfuncs[fo]
+            per = collections.defaultdict(collections.Counter)
+            for off, _t, sym in orel:
+                if rv <= off < rv + rsz:
+                    per[sym][rt.target(md, base + off - rv, upins.get(sym, 0)) if base is not None else None] += 1
+            if not per:
+                continue
+            if base is None or not rom_bytes_match(md, base, rb, rv, rall):
+                continue        # not the ROM code (a REPLACE_FUNC_BODY host stand-in): its donor is checked
+            funcs += 1
+            for sym, c in per.items():
+                if cpp:
+                    take = c & pool[sym]
+                    pool[sym] -= take
+                    c = c - take
+                else:
+                    c = c - named.get((fn, sym), collections.Counter())
+                other = {t: k for t, k in c.items() if t not in (sym, 'gl_' + sym) and 'gl_' + str(t) != sym}
+                if not other:
+                    continue
+                nb = bare(sym, fn)
+                if not nb:
+                    continue
+                bad += 1
+                if not quiet:
+                    print(f'{src}: {fn}: {nb} bare {sym}(...) site(s) call the port\'s own {sym}, but the ROM '
+                          f'callee is {" ".join("%s*%d" % kv for kv in sorted(other.items(), key=str))} -- '
+                          f'DEFINED-TOKEN CALL: name it (XCALL({sym}, f) / plan --tok {sym}) or #ifdef PORT')
+    if not quiet:
+        print(f'check --order: {funcs} proven functions with jals against port-defined tokens, '
+              f'{bad} bare defined-token call(s) to the wrong function')
+    return bad
 
 
 _LINES = {}
