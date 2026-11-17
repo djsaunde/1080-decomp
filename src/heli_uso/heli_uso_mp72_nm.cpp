@@ -351,19 +351,19 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         *(float *)(self + 0x148 + 0 * (unsigned)(HF(0x148))) = f;
         if (1) {}
         *(float *)(self + 0x148) = clampP(f, -0.3926991f, 0.3926991f, 0);
-        HF(0xF4) = 0.0f;
-        HF(0xF8) = 0.0f;
-        HF(0xFC) = 0.0f;
+        /* the five zeros go through the int hh: the int-to-float conversion folds only in uopt, so they form their
+         * own web (num 4 / den 1), picked before the angle value and given f0; the angle value is f, not g, so
+         * g's live range ends at the HF(0x144) store and g takes f14 there, HF(0x144) f2 (agent-e run 756, run 774) */
+        hh = 0; HF(0xF4) = hh;
+        HF(0xF8) = hh;
+        HF(0xFC) = hh;
         HF(0x100) = 1.0f;
-        /* code-free use of g: its live range reaches the zero stores' block start, so the zero piece takes
-         * f0 and the angle f2, as in the target (run 755) */
-        dumf(g);
-        g = HF(0x144); axZ.y = 0.0f; axZ.x = 0.0f; axZ.z = 1.0f;
-        gl_func_00000000_heli_ppf(self + 0xF4, &axZ, g);
-        g = HF(0x148); axX.x = 1.0f; axX.y = 0.0f; axX.z = 0.0f;
-        gl_func_00000000_heli_ppf(self + 0xF4, &axX, g);
-        g = -HF(0x14C); axY.y = 1.0f; axY.x = 0.0f; axY.z = 0.0f;
-        gl_func_00000000_heli_ppf(self + 0xF4, &axY, g);
+        f = HF(0x144); axZ.y = hh; axZ.x = hh; axZ.z = 1.0f;
+        gl_func_00000000_heli_ppf(self + 0xF4, &axZ, f);
+        f = HF(0x148); axX.x = 1.0f; axX.y = 0.0f; axX.z = 0.0f;
+        gl_func_00000000_heli_ppf(self + 0xF4, &axX, f);
+        f = -HF(0x14C); axY.y = 1.0f; axY.x = 0.0f; axY.z = 0.0f;
+        gl_func_00000000_heli_ppf(self + 0xF4, &axY, f);
     }
     gl_func_00000000(self);
 }
