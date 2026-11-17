@@ -130,6 +130,8 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * compares (`(cx < -30.0f) + zf8(cx, 0) + zf1(cy, 0) + zf1(cz, 0)`, `+ zf12(cz, 0)`) keep cy / cz in the cx
  * block (computed in source order cx, cy, cz) and order the colours as the target: cx f0, cz f2, cy f12. The
  * depth row is computed into cz before the EE packet (the target's schedule around the x0 / y0 conversions).
+ * `tex` declared last puts m / rot at sp+404 / 340 (agent-e run 767); a zf4(cz) fold in the EE word moves 1 / w
+ * to f14 as in the target.
  * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
 extern "C" float gl_func_00000000_snow_randf(...);   /* sys_randf (typed blank jal: float return) */
@@ -203,7 +205,6 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     float halfW;
     SnowFlake *p;
     int d;
-    SnowDLHolder2 *tex;
     float x;
     float y;
     float z;
@@ -223,6 +224,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     float wz;
     float wy;
     float wx;
+    SnowDLHolder2 *tex;
 
     gl_func_00000000(self);
     cam.x = SNOW_CAM2->obj->pos.x * SNOW_SCALE(0);
@@ -304,7 +306,7 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
                     y0 = (int)(cy + halfH - (float)(sz / 2) + (float)(&SNOW_CAM2->offY)[zf4(cx, 0)]);
                     cz = m[0][2] * x + m[1][2] * y + m[2][2] * z + m[3][2];
                     snowW(c->next(), 0xEE000000,
-                            ((int)((cz * w + (float)snowOne()) * snow_ro_10) & 0x7FFF) << 16);
+                            ((int)((cz * w + (float)snowOne()) * snow_ro_10) + zf4(cz, 0) & 0x7FFF) << 16);
                     self->drawn++;
                     if (1) {}
                     gDPWord(c->nextM(), 0xE4000000 | ((((x0 + sw) << 2) & 0xFFF) << 12) | (((y0 + sz) << 2) & 0xFFF),
