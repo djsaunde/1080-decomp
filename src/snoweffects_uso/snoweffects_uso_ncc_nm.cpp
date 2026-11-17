@@ -18,7 +18,8 @@
  * two `(this + 0)` hops (hop / hopI), one `if (1) {}` cut after the SetTImg packet and ten SNOW_PH zero-code
  * counted loads; together they put uopt's 20-load unit cuts inside the hop chains of packets 4 / 6 / 8 / 10,
  * so the hop temp holds a1 from packet 2 to packet 12 (the target's a2 / a3 rotation), and the last cut after
- * the dl use of the EndDL packet (v1). The N1 hooks are no longer used. 0x1A18's texture is IA8. */
+ * the dl use of the EndDL packet (v1). The N1 hooks are no longer used. 0x1A18's texture is IA8.
+ * Run 704 (agent-c): 0x1E60 EXACT the same way (cut sites of its own, see the function). */
 #include "../game_libs/ncc_drafts/gbi_subset.h"
 extern "C" int gl_func_00000000(...);
 extern "C" char D_00000000[];
@@ -145,25 +146,38 @@ extern "C" void snoweffects_uso_func_00001A18(SnowTex *t) {
     XgDPWord(N0, t->dl->hop(), 0xB8000000, 0);
 }
 
-/* DRAFT, not spliced: 301 words vs 300 (the target fills the jr ra delay slot with the sp restore). */
+/* 0x1E60 (64 x 64 IA8, Data+0x5AC0; agent-c run 704): the same hop-everywhere form. Its two extra packets
+ * (TextFilt / RGBDither) move uopt's 20-load unit cuts, so the cut sites differ from 0x15D0: `if (1) {}` after
+ * the SetTImg and after the second PipeSync, hopI on the render SetTile, and 6 SNOW_PH loads (SetTileSize,
+ * the 0xBA001402 word, the combine word). The hop temps that straddle a cut colour the target's hidden t0, so
+ * E700 takes t1 and F568 a3; the 0xBA000602 / EndDL packets straddle a cut (a3). No dead switch is needed
+ * for the jr ra delay slot in this form. */
 extern "C" void snoweffects_uso_func_00001E60(SnowTex *t) {
     t->name = D_00000000 + 0x310;
     t->dl = (GCtx *)gl_func_00000000(0, D_00000000 + 0x328, 20, 0, 0, 0, 0);
     gl_func_00000000_snow_reset(t->dl);
-    gDPPipeSync(t->dl->next());
+    XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC);
     t->w = 64;
     t->h = 64;
-    gDPLoadTextureTile(t->dl->next(), snow_tex_5AC0, G_IM_FMT_IA, G_IM_SIZ_8b, t->w, t->h, 0, 0, t->w - 1, t->h - 1, 0, 0, 0, 6, 6, 0, 0);
-    gDPWord(t->dl->next(), 0xBB000001, 0x80008000);
-    gDPWord(t->dl->next(), 0xBA001402, 0);
-    gDPWord(t->dl->next(), 0xBA001301, 0);
-    gDPWord(t->dl->next(), 0xBA000C02, 0);
-    gDPWord(t->dl->next(), 0xBA000602, 0xC0);
-    gDPWord(t->dl->next(), 0xB900031D, 0x00404A50);
-    gDPWord(t->dl->next(), 0xFCFF9BFF, 0xFF377FBF);
-    gDPWord(t->dl->next(), 0xFA000000, 0);
-    gDPWord(t->dl->next(), 0xB9000201, 4);
-    gDPWord(t->dl->next(), 0xB8000000, 0);
+    XgSetImage(N0, t->dl->hop(), G_SETTIMG, G_IM_FMT_IA, G_IM_SIZ_8b, t->w, snow_tex_5AC0);
+    if (1) {}
+    XgDPSetTile(N0, t->dl->hop(), G_IM_FMT_IA, G_IM_SIZ_8b, ((((t->w - 1 - 0 + 1) * G_IM_SIZ_8b_TILE_BYTES) + 7) >> 3), 0, G_TX_LOADTILE, 0, 0, 6, 0, 0, 6, 0);
+    XgDPNoParam(N0, t->dl->hop(), G_RDPLOADSYNC);
+    XgDPLoadTileGeneric(N0, t->dl->hop(), G_LOADTILE, G_TX_LOADTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC);
+    XgDPNoParam(N0, t->dl->hop(), G_RDPPIPESYNC);
+    if (1) {}
+    XgDPSetTile(N0, t->dl->hopI(), G_IM_FMT_IA, G_IM_SIZ_8b, ((((t->w - 1 - 0 + 1) * G_IM_SIZ_8b_LINE_BYTES) + 7) >> 3), 0, G_TX_RENDERTILE, 0, 0, 6, 0, 0, 6, 0);
+    XgDPLoadTileGeneric(N0, t->dl->hop(), G_SETTILESIZE + SNOW_PH(t, 0x250), G_TX_RENDERTILE, 0, 0, (t->w - 1) << G_TEXTURE_IMAGE_FRAC, (t->h - 1) << G_TEXTURE_IMAGE_FRAC);
+    XgDPWord(N0, t->dl->hop(), 0xBB000001, 0x80008000);
+    XgDPWord(N0, t->dl->hop(), 0xBA001402 + SNOW_PH(t, 0x2B0) + SNOW_PH(t, 0x2B4), 0);
+    XgDPWord(N0, t->dl->hop(), 0xBA001301, 0);
+    XgDPWord(N0, t->dl->hop(), 0xBA000C02, 0);
+    XgDPWord(N0, t->dl->hop(), 0xBA000602, 0xC0);
+    XgDPWord(N0, t->dl->hop(), 0xB900031D, 0x00404A50);
+    XgDPWord(N0, t->dl->hop(), 0xFCFF9BFF + SNOW_PH(t, 0x3A0) + SNOW_PH(t, 0x3A4) + SNOW_PH(t, 0x3A8), 0xFF377FBF);
+    XgDPWord(N0, t->dl->hop(), 0xFA000000, 0);
+    XgDPWord(N0, t->dl->hop(), 0xB9000201, 4);
+    XgDPWord(N0, t->dl->hop(), 0xB8000000, 0);
 }
 
 extern "C" void snoweffects_uso_func_00002310(SnowTex *t) {
