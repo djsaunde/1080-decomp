@@ -160,7 +160,10 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * products in f0 / f2 / f12 before storing them (agent-h run 687, objdiff 82.9 -> 84.9). */
 struct SnowGfxLibS { char pad0[0x128]; float sx, sy, sz; };
 extern "C" SnowGfxLibS snow_gfx_scale_128, snow_gfx_scale_12C, snow_gfx_scale_130;
-extern "C" float snow_ro_4;
+/* the depth scale is RoData+0x4. It is read through a 0-based RoData alias, so the lo16 carries the +4 as in the
+ * target (`lwc1 f10,4(at)`; a symbol at RoData+4 gives lo16 0). agent-h run 768. */
+struct SnowRoData { float ro0; float depthScale; };
+extern "C" SnowRoData snow_rodata_C90;
 inline SnowV3c scaled(const SnowV3c &a) { return SnowV3c(a.x * snow_gfx_scale_128.sx, a.y * snow_gfx_scale_12C.sy, a.z * snow_gfx_scale_130.sz); }
 
 extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
@@ -203,7 +206,7 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 wid = (int)(k * (halfH * 2.0f * (1.0f / w)) + 1.0f);
                 x0 = (int)(sx + halfW - (float)(wid / 2) + (float)SNOW_CAM->offX);
                 y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
-                primDepth(c, (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4));
+                primDepth(c, (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_rodata_C90.depthScale));
                 if (c) {}
                 if (c) {}
                 if (y0) {}

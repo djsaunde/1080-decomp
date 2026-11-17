@@ -5876,6 +5876,7 @@ snow_tex_5AC0 = 0x00000000;  /* snoweffects Data+0x5AC0 texture (0x1E60; reloc o
 snow_tex_73E0 = 0x00000000;  /* snoweffects Data+0x73E0 texture (0x2310; reloc on the object, lo16 0) */
 snow_ro_8 = 0x00000008;  /* snoweffects RoData+0x8 float (0x2310 sprite default) */
 snow_ro_4 = 0x00000004;  /* snoweffects RoData+0x4 float (0xC90 depth scale, own lui; agent-c NM donor) */
+snow_rodata_C90 = 0x00000000;  /* snoweffects RoData base alias (0xC90 NM donor reads the +0x4 depth scale through it, so lo16 = 4) */
 snow_ro_10 = 0x00000010;  /* snoweffects RoData+0x10 float (0x28E0 depth scale, own lui; agent-c NM donor) */
 snow_gfx_scale_128 = 0x00000128;  /* gGfxLib+0x128 world scale x (snoweffects 0xC90, import lo16 0x128, own lui) */
 snow_gfx_scale_12C = 0x0000012C;  /* gGfxLib+0x12C world scale y (snoweffects 0xC90, own lui) */
