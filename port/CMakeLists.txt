@@ -37,9 +37,30 @@ endif()
 # merges tentative definitions (the match_imports context headers define
 # gl_storage_66B64_threadRegion in several units).  -ffunction-sections lets
 # --gc-sections drop the renamed-dead placeholder copies.
-set(PORT_ARCH_FLAGS -m32 -malign-double -msse2 -mfpmath=sse -ffp-contract=off -fno-strict-aliasing
-    -fno-pie -fno-stack-protector -ffunction-sections -fdata-sections)
-set(PORT_DEFS PORT)
+# PORT_64 (M6, plan section 21): the x86-64 build.  No -m32 / -malign-double (x86-64 aligns u64 / f64
+# to 8 already); PORT64 selects the 64-bit spellings under PORT.  -no-pie + the small code model keep
+# the image (text, data, bss, the blobs) below 2 GB, the low-address model of plan 21.
+option(PORT_64 "M6: build for x86-64 (plan section 21); default is the 32-bit i386 build" OFF)
+if(PORT_64)
+  # Every game-visible unit (the game, port/uso, port/ultra, the host layer that reads game structs)
+  # is compiled with -mx32: x86-64 code with the ILP32 data model, so every struct, blob and cfront
+  # layout stays the N64's.  cc-select.py assembles those units as ELF64 objects; they run below 2 GB
+  # (non-PIE image, brk heap, a MAP_32BIT stack: host/main64.c).  PORT_X32_CHECK only parses the
+  # glibc headers: their gnu/stubs-x32.h comes from port/include/x32 (no x32 libc is linked).
+  set(PORT_M32)
+  set(PORT_X32_SYSINC "/usr/include/x86_64-linux-gnu" CACHE PATH "the x86-64 glibc multiarch headers (parsed by -mx32)")
+  set(PORT_ARCH_FLAGS
+      $<$<COMPILE_LANGUAGE:C,CXX>:-mx32 -isystem${CMAKE_CURRENT_SOURCE_DIR}/include/x32 -isystem${PORT_X32_SYSINC}>
+      -msse2 -mfpmath=sse -ffp-contract=off -fno-strict-aliasing
+      -fno-pie -fno-stack-protector -ffunction-sections -fdata-sections
+      $<$<COMPILE_LANGUAGE:C,CXX>:-fcf-protection=none>)
+  set(PORT_DEFS PORT PORT64)
+else()
+  set(PORT_M32 -m32)
+  set(PORT_ARCH_FLAGS -m32 -malign-double -msse2 -mfpmath=sse -ffp-contract=off -fno-strict-aliasing
+      -fno-pie -fno-stack-protector -ffunction-sections -fdata-sections)
+  set(PORT_DEFS PORT)
+endif()
 
 include(${PORT_GEN}/sources.cmake)
 
@@ -89,7 +110,7 @@ target_compile_options(uso PRIVATE ${PORT_ARCH_FLAGS})
 # PORT_LIBC_DECLS_ONLY (port_libc.h declares the libc functions by hand), so the undefined
 # target can check the whole link.
 set(PORT_ULTRA_SOURCES ultra/thread.c ultra/message.c ultra/vi.c ultra/pi.c ultra/si.c
-    ultra/ai_sp.c ultra/misc.c)
+    ultra/ai_sp.c ultra/misc.c ultra/va_pack.c)
 set(PORT_HOST_SOURCES main.c host_headless.c host/input_script.c trace.c)
 # port/gfx (plan section 19, M2): port_gfx_task (the M_GFXTASK hook) and the PORT_GFX_DUMP writer
 list(APPEND PORT_HOST_SOURCES gfx/port_gfx.c gfx/dlump.c gfx/port_fb.c gfx/port_live.c)
@@ -107,7 +128,7 @@ foreach(f sysapi.c fs/fs.c fs/backup_sram.c)
   endif()
 endforeach()
 set(PORT_HOST_FLAGS ${PORT_ARCH_FLAGS} -std=gnu99 -fno-math-errno)
-set(PORT_HOST_DEFS PORT)
+set(PORT_HOST_DEFS ${PORT_DEFS})
 if(NOT PORT_LINK)
   list(APPEND PORT_HOST_DEFS PORT_LIBC_DECLS_ONLY)
 endif()
@@ -147,9 +168,22 @@ if(PORT_GFX_FAST3D)
   target_compile_definitions(porthost PRIVATE PORT_GFX_FAST3D)
 endif()
 
+if(PORT_64)
+  # the LP64 entry (plan 21): low stack, low heap, argv / environ copied below 2 GB, then port_main
+  add_library(porthost64 OBJECT host/main64.c host/x32_glue.c)
+  target_compile_options(porthost64 PRIVATE -fno-pie -O2 -g)
+  target_compile_definitions(porthost PRIVATE main=port_main)
+  set(PORT_ENTRY64 $<TARGET_OBJECTS:porthost64>)
+  # the libc calls whose x32 / LP64 memory layouts differ go through host/x32_glue.c (plan 21.4)
+  set(PORT64_WRAP)
+  foreach(f __vfprintf_chk __vsnprintf_chk __vsprintf_chk vfprintf vsnprintf vsprintf strtol strtoul strtod
+            fseek sbrk __errno_location mmap sigaction backtrace backtrace_symbols_fd)
+    list(APPEND PORT64_WRAP -Wl,--wrap=${f})
+  endforeach()
+endif()
 if(PORT_LINK)
-  add_executable(tenshoe $<TARGET_OBJECTS:porthost>)
-  target_link_options(tenshoe PRIVATE -m32 -no-pie -Wl,--gc-sections)
+  add_executable(tenshoe $<TARGET_OBJECTS:porthost> ${PORT_ENTRY64})
+  target_link_options(tenshoe PRIVATE ${PORT_M32} -no-pie ${PORT64_WRAP} -Wl,--gc-sections)
   # whole-archive: every shipped body is a root; the shim (port/ultra, port/uso)
   # resolves port/undefined.txt.
   # port/gen/aliases.ld: the token aliases (scripts/port-gen-binds.py), an implicit linker script
@@ -167,7 +201,7 @@ if(PORT_LINK)
   if(PORT_TRAP_UNDEFINED)
     message(WARNING "PORT_TRAP_UNDEFINED=ON: debug build, undefined symbols become aborting traps")
     add_executable(tenshoe_probe $<TARGET_OBJECTS:porthost>)
-    target_link_options(tenshoe_probe PRIVATE -m32 -no-pie -Wl,--gc-sections -Wl,--export-dynamic
+    target_link_options(tenshoe_probe PRIVATE ${PORT_M32} -no-pie -Wl,--gc-sections -Wl,--export-dynamic
                         -Wl,--warn-unresolved-symbols)  # the same roots as tenshoe below
     target_link_libraries(tenshoe_probe PRIVATE -Wl,--whole-archive game uso ultra audio -Wl,--no-whole-archive
                           ${PORT_GEN}/aliases.ld m)
@@ -189,7 +223,7 @@ if(PORT_LINK)
       VERBATIM)
     target_sources(tenshoe PRIVATE trap/trap.c ${CMAKE_CURRENT_BINARY_DIR}/port_traps.c)
     set_source_files_properties(trap/trap.c ${CMAKE_CURRENT_BINARY_DIR}/port_traps.c
-                                PROPERTIES COMPILE_OPTIONS "-m32;-fno-pie;-g")
+                                PROPERTIES COMPILE_OPTIONS "${PORT_M32};-fno-pie;-g")
     target_link_options(tenshoe PRIVATE -Wl,--export-dynamic)
   endif()
 
@@ -197,38 +231,38 @@ if(PORT_LINK)
   # renders a sequence to a WAV.  The host sources minus main.c (it has its own main).
   set(PORT_SEQRENDER_HOST ${PORT_HOST_SOURCES})
   list(REMOVE_ITEM PORT_SEQRENDER_HOST main.c)
-  add_executable(seqrender audio/tools/seqrender.c ${PORT_SEQRENDER_HOST})
-  target_compile_definitions(seqrender PRIVATE ${PORT_HOST_DEFS})
+  add_executable(seqrender audio/tools/seqrender.c ${PORT_SEQRENDER_HOST} ${PORT_ENTRY64})
+  target_compile_definitions(seqrender PRIVATE ${PORT_HOST_DEFS} $<$<BOOL:${PORT_64}>:main=port_main>)
   target_include_directories(seqrender PRIVATE ${GAME_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
   target_compile_options(seqrender PRIVATE ${PORT_HOST_FLAGS})
-  target_link_options(seqrender PRIVATE -m32 -no-pie -Wl,--gc-sections)
+  target_link_options(seqrender PRIVATE ${PORT_M32} -no-pie ${PORT64_WRAP} -Wl,--gc-sections)
   target_link_libraries(seqrender PRIVATE -Wl,--whole-archive game uso ultra audio -Wl,--no-whole-archive
                         ${PORT_GEN}/aliases.ld m)
 
   # the shim's self-test (plan 17.6): no game code, no ROM
-  add_executable(test_ultra ultra/test_ultra.c host_headless.c)
-  target_compile_definitions(test_ultra PRIVATE PORT)
+  add_executable(test_ultra ultra/test_ultra.c host_headless.c ${PORT_ENTRY64})
+  target_compile_definitions(test_ultra PRIVATE ${PORT_DEFS} $<$<BOOL:${PORT_64}>:main=port_main>)
   target_include_directories(test_ultra PRIVATE ${GAME_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
   target_compile_options(test_ultra PRIVATE ${PORT_HOST_FLAGS})
-  target_link_options(test_ultra PRIVATE -m32 -no-pie)
+  target_link_options(test_ultra PRIVATE ${PORT_M32} -no-pie ${PORT64_WRAP})
   target_link_libraries(test_ultra PRIVATE ultra m)
 
   # the file-system host test: fs.c and the ROM only
   if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/fs/test_fs.c)
-    add_executable(test_fs fs/test_fs.c fs/fs.c)
-    target_compile_definitions(test_fs PRIVATE PORT)
+    add_executable(test_fs fs/test_fs.c fs/fs.c ${PORT_ENTRY64})
+    target_compile_definitions(test_fs PRIVATE ${PORT_DEFS} $<$<BOOL:${PORT_64}>:main=port_main>)
     target_include_directories(test_fs PRIVATE ${GAME_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
     target_compile_options(test_fs PRIVATE ${PORT_HOST_FLAGS})
-    target_link_options(test_fs PRIVATE -m32 -no-pie)
+    target_link_options(test_fs PRIVATE ${PORT_M32} -no-pie ${PORT64_WRAP})
   endif()
 
   # the SRAM save format test (plan 20): fs/backup_sram.c alone; with a save file and the
   # extracted bootup Data it also checks a game-written save against the ROM's default records
-  add_executable(test_backup fs/test_backup.c fs/backup_sram.c)
-  target_compile_definitions(test_backup PRIVATE PORT)
+  add_executable(test_backup fs/test_backup.c fs/backup_sram.c ${PORT_ENTRY64})
+  target_compile_definitions(test_backup PRIVATE ${PORT_DEFS} $<$<BOOL:${PORT_64}>:main=port_main>)
   target_include_directories(test_backup PRIVATE ${GAME_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
   target_compile_options(test_backup PRIVATE ${PORT_HOST_FLAGS})
-  target_link_options(test_backup PRIVATE -m32 -no-pie)
+  target_link_options(test_backup PRIVATE ${PORT_M32} -no-pie ${PORT64_WRAP})
 endif()
 
 # port/undefined.txt: what the library needs from outside (no 32-bit libc needed).

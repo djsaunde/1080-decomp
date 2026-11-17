@@ -185,15 +185,34 @@ def filter_asm(text, drop, alias, noinit, local=()):
     return "\n".join(out) + "\n", found
 
 
+def x32_to_elf64(text):
+    """the x32 unit's tables that the ELF64 loader reads with 8-byte entries: the constructor /
+    destructor arrays (.init_array / .fini_array / .ctors / .dtors) hold `.long fn` in x32"""
+    out = []
+    section = ""
+    for line in text.splitlines():
+        toks = re.split(r"[\s,]+", line.strip())
+        if toks and toks[0] in (".section", ".text", ".data", ".bss", ".previous", ".popsection"):
+            section = toks[1] if toks[0] == ".section" and len(toks) > 1 else toks[0]
+        if section.split(".")[1:2] and section.split(".")[1] in ("init_array", "fini_array", "ctors", "dtors") \
+                and toks and toks[0] == ".long":
+            line = line.replace(".long", ".quad", 1)
+        out.append(line)
+    return "\n".join(out) + "\n"
+
+
 def main():
     argv = sys.argv[1:]
     hdr = None
     for i, a in enumerate(argv):
         if a == "-include" and i + 1 < len(argv) and "/port/gen/tu/" in argv[i + 1]:
             hdr = argv[i + 1]
-    if hdr is None or "-c" not in argv or "-o" not in argv:
+    # PORT_64 (plan 21): -mx32 units (the ILP32 data model in x86-64 code) are compiled to
+    # assembly and assembled as ELF64 objects (-m64), so they link into the x86-64 executable
+    x32 = "-mx32" in argv
+    if (hdr is None and not x32) or "-c" not in argv or "-o" not in argv:
         os.execvp(argv[0], argv)
-    drop, alias, noinit, local = parse_header(hdr)
+    drop, alias, noinit, local = parse_header(hdr) if hdr else (set(), [], set(), [])
     oi = argv.index("-o")
     obj = argv[oi + 1]
     asm = obj + ".s"
@@ -203,11 +222,17 @@ def main():
     p = subprocess.run(cmd)
     if p.returncode:
         return p.returncode
-    with open(asm) as fh:
-        text, found = filter_asm(fh.read(), drop, alias, noinit, local)
-    with open(asm, "w") as fh:
-        fh.write(text)
-    m32 = [a for a in argv if a in ("-m32", "-m64")]
+    if hdr:
+        with open(asm) as fh:
+            text, found = filter_asm(fh.read(), drop, alias, noinit, local)
+        with open(asm, "w") as fh:
+            fh.write(text)
+    if x32:
+        with open(asm) as fh:
+            text = x32_to_elf64(fh.read())
+        with open(asm, "w") as fh:
+            fh.write(text)
+    m32 = ["-m64"] if x32 else [a for a in argv if a in ("-m32", "-m64")]
     p = subprocess.run([argv[0]] + m32 + ["-c", "-o", obj, asm])
     return p.returncode
 

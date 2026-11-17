@@ -65,8 +65,14 @@ static u8 *device_ptr(u32 phys, u32 size, int *writable) {
     if (phys >= SRAM_PHYS && phys < SRAM_PHYS_END) {
         u32 off = phys - SRAM_PHYS;
         if (off <= PORT_SRAM_SIZE && size <= PORT_SRAM_SIZE - off) {
+            u8 *base = sSram;
             *writable = 1;
-            return sSram + off;
+#ifdef PORT64
+            /* x32 (plan 21): gcc folds sSram + (phys - SRAM_PHYS) into the immediate sSram - 0x8000000,
+             * which an ELF64 R_X86_64_32 cannot hold; keep the base in a register */
+            __asm__("" : "+r"(base));
+#endif
+            return base + off;
         }
         port_ultra_log("ultra: SRAM access out of range (0x%08X + 0x%X)", phys, size);
         return NULL;

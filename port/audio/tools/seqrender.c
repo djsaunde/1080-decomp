@@ -235,6 +235,13 @@ static void fpu_setup(void) { /* main.c's: FTZ / DAZ, round to nearest (plan 9.5
 /* a crash names its eip (addr2line -e seqrender) and the step */
 static volatile u32 sStep;
 static u8 *sWatch; /* SEQRENDER_WATCH: the page of gAudioCtx's head, read-only; writers are logged */
+#ifdef PORT64 /* plan 21: x86-64 registers (x32 data model) */
+#define SEQ_REG_PC REG_RIP
+#define SEQ_REG_SP REG_RSP
+#else
+#define SEQ_REG_PC REG_EIP
+#define SEQ_REG_SP REG_ESP
+#endif
 static void on_segv(int sig, siginfo_t *si, void *uc) {
     ucontext_t *u = (ucontext_t *)uc;
     if (sWatch != NULL && (u8 *)si->si_addr >= sWatch && (u8 *)si->si_addr < sWatch + 4096) {
@@ -243,10 +250,10 @@ static void on_segv(int sig, siginfo_t *si, void *uc) {
         if (off >= 0 && off < 0x430 && logged < 20) {
             logged++;
             fprintf(stderr, "seqrender: watch: write to ctx%+d at step %u, eip 0x%08X\n", off, sStep,
-                    (unsigned)u->uc_mcontext.gregs[REG_EIP]);
+                    (unsigned)u->uc_mcontext.gregs[SEQ_REG_PC]);
             if (logged == 1) { /* return-address candidates on the stack (text of the executable) */
                 extern char __executable_start[], etext[];
-                u32 *sp = (u32 *)u->uc_mcontext.gregs[REG_ESP];
+                u32 *sp = (u32 *)u->uc_mcontext.gregs[SEQ_REG_SP];
                 int b, nb = 0;
                 for (b = 0; b < 256 && nb < 12; b++) {
                     if (sp[b] >= (u32)__executable_start && sp[b] < (u32)etext) {
@@ -261,7 +268,7 @@ static void on_segv(int sig, siginfo_t *si, void *uc) {
         return;
     }
     fprintf(stderr, "seqrender: SIGSEGV at step %u (%.2f s): address %p, eip 0x%08X\n", sStep, sStep / 30.0,
-            si->si_addr, (unsigned)u->uc_mcontext.gregs[REG_EIP]);
+            si->si_addr, (unsigned)u->uc_mcontext.gregs[SEQ_REG_PC]);
     signal(sig, SIG_DFL);
 }
 
