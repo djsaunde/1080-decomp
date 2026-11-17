@@ -175,6 +175,33 @@ def load_pins():
     return pins
 
 
+def donor_pins(src, pins):
+    """pins for one unit.  A match_imports donor is linked alone first, each token at its value in
+    scripts/match-origins-<f>.ld (--emit-relocs keeps the relocs, the field now holds that value
+    + the source's addend); scripts/bind-native-relocations.py renames each reloc's symbol
+    (scripts/match-bindings-<f>.json `renames`), and the ROM link adds the renamed symbol's
+    value (undefined_syms_auto.txt, = the json's bindings).  So a token's pin is the sum of the
+    two, not undefined_syms_auto's value of the token (`bootup_27E8_ref_7334` links at 0 and its
+    carrier `sStr_rom_game_uso_7334` at 0x7334; plan 18.11)."""
+    p = Path("scripts/match-bindings-%s.json" % Path(src).stem)
+    o = Path("scripts/match-origins-%s.ld" % Path(src).stem)
+    if not src.startswith("src/match_imports/") or not p.exists() or not o.exists():
+        return pins
+    import json
+    d = json.load(open(p))
+    b = d.get("original_ROM_minus_curated_addend_bindings", {})
+    first = {}
+    for line in open(o):
+        m = re.match(r"\s*(\w+)\s*=\s*(0x[0-9A-Fa-f]+|\d+)\s*;", line)
+        if m:
+            first[m.group(1)] = int(m.group(2), 0)
+    out = dict(pins)
+    for tok, ren in d.get("renames", {}).items():
+        v = (first.get(tok, 0) + pins.get(ren, b.get(ren, 0))) & 0xFFFFFFFF   # 32-bit fields
+        out[tok] = v - (1 << 32) if v & 0x80000000 else v
+    return out
+
+
 def port_defined(lib):
     """(global symbols libgame.a defines, {data object it defines: its member object}).  The
     data objects (B / D: the objects the C++ donors define for their static initialisers,
@@ -308,6 +335,7 @@ def main():
             continue
         rfuncs, _ = npc.elf_info(obj)
         rall = npc.reloc_offsets(obj)
+        upins = donor_pins(src, pins)
         orel = [r for r in obj_relocs(obj) if r[2] not in defined]
         # sites the source already names (CALL macros) call the real name in the port object:
         # take their callees out of the ROM multiset first (C and C++: the scanner is lexical)
@@ -341,7 +369,7 @@ def main():
             for off, typ, sym in orel:
                 if not rv <= off < rv + rsz:
                     continue
-                t = rt.target(md, base + off - rv, pins.get(sym, 0))
+                t = rt.target(md, base + off - rv, upins.get(sym, 0))
                 if typ == 4:
                     per[sym][t] += 1
                     gcall[sym][t] += 1
@@ -361,9 +389,9 @@ def main():
                     if raw and raw[1] == "Text":
                         # an address in Text (a callback): the addend picks the function, and the
                         # port spelling drops it (`f-N` + the source's `+N`)
-                        f = text_data(raw[0], raw[2] + pins.get(sym, 0) + full)
+                        f = text_data(raw[0], raw[2] + upins.get(sym, 0) + full)
                         if f is not None and f.startswith("port_"):
-                            t = text_data(raw[0], raw[2] + pins.get(sym, 0))   # the ucode: the source keeps the addend
+                            t = text_data(raw[0], raw[2] + upins.get(sym, 0))   # the ucode: the source keeps the addend
                         else:
                             t = None if f is None or "+" in f else "%s%+d" % (f, -full) if full else f
                             textdata.add(sym)

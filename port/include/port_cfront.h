@@ -25,6 +25,14 @@ struct PortCfVtEnt {
     int (*fn)();
 };
 
+/* The cfront constructor protocol (plan 18.11): a cfront ctor called with this == 0 allocates the
+ * object itself (`if (this == 0) this = new(size)`) and returns this; the ROM calls them that way
+ * (`BGBox_ctor(0, name, ..)`).  A gcc ctor neither allocates nor returns anything, so each donor
+ * whose ctor the ROM calls by name defines an extern "C" port_ctor_<name> entry with
+ * CF_CTOR_NEW, and port/sourcemap.tsv renames that entry (not the mangled ctor) to <name>. */
+inline void *operator new(unsigned, void *p) { return p; }
+#define CF_CTOR_NEW(self, Cls, args) ((self) != 0 ? ::new ((void *)(self)) Cls args : new Cls args)
+
 #define CF_SLOT(vt, n) (((PortCfVtEnt *)((char *)(vt) + 8))[n])
 #define CF_THIS(n) ((char *)this + CF_SLOT(this->vptr, n).delta)
 #define CF_FN(n, T) ((T)CF_SLOT(this->vptr, n).fn)

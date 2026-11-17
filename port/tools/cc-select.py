@@ -14,7 +14,7 @@ assembled:
                           (port/sourcemap.tsv).  The header's `#pragma weak SYM`
                           has already stopped gcc from inlining the placeholder.
                           The dead copy is unreferenced; --gc-sections drops it.
-  port-alias: NEW TARGET  NEW is defined as a global alias of TARGET (the
+  port-alias: NEW TARGET [ALSO..]  NEW is defined as a global alias of TARGET (the
                           shipped name of a cfront-mangled C++ donor body, which
                           the matching build gets from objcopy --redefine-sym).
                           A mangled `_Z` TARGET is made local, since every donor
@@ -72,6 +72,10 @@ def parse_header(path):
                         BINDS.setdefault(parts[0], {})[parts[1]] = parts[2]
                 elif kind == "alias":
                     alias.append((parts[0], parts[1]))
+                    for also in parts[2:]:
+                        # `port-alias: NEW TARGET ALSO..`: TARGET is an entry (a cfront ctor's
+                        # port_ctor_NEW, plan 18.11) and the body NEW's binds name is ALSO
+                        alias.append((parts[0], also))
                 else:
                     noinit.add(parts[0])
     # a bound function compiled under another label (a C++ donor's `port-alias: NEW TARGET`:
@@ -166,7 +170,11 @@ def filter_asm(text, drop, alias, noinit, local=()):
     if dead is not None:
         raise SystemExit("cc-select: unterminated dropped body %s" % dead)
     # `.text` before the aliases: gas `.set` needs no section, but keep it tidy.
+    done = set()
     for new, target in alias:
+        if new in done:
+            continue    # the extra (bind-only) targets of a `port-alias: NEW TARGET ALSO..`
+        done.add(new)
         out += ["\t.globl\t%s" % new, "\t.type\t%s, @function" % new, "\t.set\t%s, %s" % (new, target)]
     return "\n".join(out) + "\n", found
 

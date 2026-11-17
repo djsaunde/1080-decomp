@@ -210,6 +210,15 @@ def main():
         if not src.endswith(".cpp"):
             raise SystemExit("unexpected C rename kept: %s %s" % (func, note))
         cands, sti = resolve_rename(src, old, cxx_flags)
+        cls, meth = cfront_split(old)
+        if cls is not None and cls == meth:
+            # a ctor the ROM calls with this == 0: the donor's extern "C" port_ctor_<func>
+            # (CF_CTOR_NEW, port/include/port_cfront.h) allocates and returns this; the gcc
+            # ctor does neither (plan 18.11)
+            entry = [s for s, d in gcc_symbols(src, cxx_flags) if s == "port_ctor_" + func]
+            if not entry:
+                raise SystemExit("ctor rename %s -> %s in %s: no port_ctor_%s entry" % (old, func, src, func))
+            cands = [entry[0] + " " + c for c in cands]   # the ctor body keeps func's binds
         if len(cands) != 1:
             raise SystemExit("rename %s -> %s in %s: %d candidates %s" % (old, func, src, len(cands), cands))
         aliases[src].append((func, cands[0]))
