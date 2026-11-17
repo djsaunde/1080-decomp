@@ -1,6 +1,6 @@
-nonmatching viewrec_uso_func_00000000, 0x84
+nonmatching vr_backToMainMenu, 0x84
 
-glabel viewrec_uso_func_00000000
+glabel vr_backToMainMenu
     /* 64288A 00000000 27BDFFE8 */  .word 0x27BDFFE8
     /* 64288E 00000004 AFBF0014 */  .word 0xAFBF0014
     /* 642892 00000008 3C040000 */  .word 0x3C040000
@@ -34,4 +34,4 @@ glabel viewrec_uso_func_00000000
     /* 642902 00000078 27BD0018 */  .word 0x27BD0018
     /* 642906 0000007C 03E00008 */  .word 0x03E00008
     /* 64290A 00000080 AC2B0878 */  .word 0xAC2B0878
-endlabel viewrec_uso_func_00000000
+endlabel vr_backToMainMenu

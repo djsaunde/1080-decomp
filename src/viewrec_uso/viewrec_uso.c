@@ -72,7 +72,7 @@ extern InputMgr gInputMgr_vr4698;
 
 /* back to the main menu. EXACT via the NCC (C++) donor src/viewrec_uso/viewrec_uso_ncc.cpp (a
  * second code-free test of sVrScreen after the 0x1A08 call puts &sVrScreen in a1). */
-void viewrec_uso_func_00000000(void) {
+void vr_backToMainMenu(void) {
 }
 
 void vr_showRecordOptions(void) {
@@ -255,7 +255,7 @@ void vr_menuBackInput(GENNewRecordsProcess *proc) {
         CALL(snd_postEvent)(0x802);
         if (proc->menuDepth == 0) {
             if (proc->flags & 0x10000) {
-                CALL(viewrec_uso_func_00000000)();
+                CALL(vr_backToMainMenu)();
             } else {
                 gInputMgr_vr.procState = gInputMgr_vr.nextProcState;
                 CALL(Backup_sessionClearNew)(proc->session);
@@ -1207,7 +1207,7 @@ void EraseOptions_selectInput(EraseOptions *self) {
             if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
                 CALL(snd_postEvent)(0x802);
                 if (self->proc->flags & 0x10000) {
-                    CALL(viewrec_uso_func_00000000)();
+                    CALL(vr_backToMainMenu)();
                 }
             }
             break;
@@ -1384,7 +1384,7 @@ void ReplayOptions_input(ReplayOptions *self) {
     }
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
         CALL(snd_postEvent)(0x802);
-        CALL(viewrec_uso_func_00000000)();
+        CALL(vr_backToMainMenu)();
     }
 }
 
@@ -1584,7 +1584,7 @@ void LanguageOptions_update(LanguageOptions *self) {
         }
         CALL(settings_save_00012150)(&gInputMgr_vr);
         if (self->proc->flags & 0x10000) {
-            CALL(viewrec_uso_func_00000000)();
+            CALL(vr_backToMainMenu)();
         } else {
             gInputMgr_vr.procState = gInputMgr_vr.nextProcState;
             CALL(Process_fadeOut_0000F954)(self->proc, -1, 0);

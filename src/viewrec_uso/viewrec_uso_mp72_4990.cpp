@@ -8,7 +8,7 @@
  * `self->mode--;` as its own statement (not `--self->mode` as the call arg) burns the ugen temp the target
  * skips in the sound-mode arms. */
 extern "C" int gl_func_00000000(...);
-extern "C" void viewrec_uso_func_00000000(...);
+extern "C" void vr_backToMainMenu(...);
 struct VrNode { char node[0x28]; int vptr; };
 /* GameFlow (include/game/input.h InputMgr, bootup Bss 0xF8): the settings record at +0x154 */
 struct VrGameFlow { char pad[0x154]; char *options; };
@@ -122,7 +122,7 @@ extern "C" void SoundOptions_update(VrSoundOptions *self) {
     if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x300)) {
         CALL(snd_postEvent)(0x802);
         CALL(settings_save_00012150)(&gInputMgr_vr);
-        CALL(viewrec_uso_func_00000000)();
+        CALL(vr_backToMainMenu)();
     }
     CALL(Node_update)(self);
 }

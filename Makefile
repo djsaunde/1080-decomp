@@ -220,7 +220,7 @@ VIEWREC_NCC_DONOR := build/src/viewrec_uso/viewrec_uso_ncc.cpp.o
 $(VIEWREC_NCC_DONOR): src/viewrec_uso/viewrec_uso_ncc.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/src/viewrec_uso/viewrec_uso.c.o build/non_matching/src/viewrec_uso/viewrec_uso.c.o: private REPLACE_FUNC_BODY += GENNewRecordsProcess_update=$(VIEWREC_NCC_DONOR) vr_resetColours=$(VIEWREC_NCC_DONOR) RecordOptions_coursePageInput=$(VIEWREC_NCC_DONOR) RecordOptions_menuInput=$(VIEWREC_NCC_DONOR) vr_drawCenteredLabel=$(VIEWREC_NCC_DONOR) viewrec_uso_func_00000000=$(VIEWREC_NCC_DONOR)
+build/src/viewrec_uso/viewrec_uso.c.o build/non_matching/src/viewrec_uso/viewrec_uso.c.o: private REPLACE_FUNC_BODY += GENNewRecordsProcess_update=$(VIEWREC_NCC_DONOR) vr_resetColours=$(VIEWREC_NCC_DONOR) RecordOptions_coursePageInput=$(VIEWREC_NCC_DONOR) RecordOptions_menuInput=$(VIEWREC_NCC_DONOR) vr_drawCenteredLabel=$(VIEWREC_NCC_DONOR) vr_backToMainMenu=$(VIEWREC_NCC_DONOR)
 build/src/viewrec_uso/viewrec_uso.c.o build/non_matching/src/viewrec_uso/viewrec_uso.c.o: $(VIEWREC_NCC_DONOR)
 # viewrec 4990 (sound options pad handling): EXACT MIPSpro 7.2.1 donor (two native 4-entry tables; agent-g
 # run 652). Donor .rodata = the two tables (+0x0 / +0x10); SoundOptions_update_rodata pinned to 0x38.

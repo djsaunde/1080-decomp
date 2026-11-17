@@ -190,7 +190,7 @@ extern "C" void RecordOptions_menuInput(VrScreen60 *self) {
         if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x200)) {
             CALL(snd_postEvent)(0x802);
             if (self->proc->flags & 0x10000) {
-                CALL(viewrec_uso_func_00000000)();
+                CALL(vr_backToMainMenu)();
             }
         }
         break;
@@ -242,7 +242,7 @@ extern "C" void vr_drawCenteredLabel(VrProc *proc, int i, int y) {
  * the v1 copy with the vptr in v0, the second (after the 0x1A08 call) stretches the &sVrScreen range
  * over the virtual call's `this` temp, so it takes a1 (target) instead of a0. The reference local
  * gives the tail's `lui v0; addiu v0,0x87C` CSE of &sVrProc. */
-extern "C" void viewrec_uso_func_00000000() {
+extern "C" void vr_backToMainMenu() {
     CALL(Process_stop)(sVrScreen);
     {
         VrNode *s = sVrProc->mainMenu;
