@@ -3554,7 +3554,8 @@ extern char D_38108_d;
  * called on a successful open) and 0 (+0x8 / 0xC, after the HostIO dialog load). */
 void Node_Load(char *o, int a1, char *a2) {
     char *r;
-    CALL(sys_setWord4_00061D80)(&XDATA(D_00000000, port_bootup_bss, 0x3C740));
+    /* the file kind (1 = local) is Node_Load's own a1, riding through in $a1 (KR_ARG, plan 18.9) */
+    CALL(sys_setWord4_00061D80)(&XDATA(D_00000000, port_bootup_bss, 0x3C740) KR_ARG(a1));
     if (a1 == 0) {
         if (CALL(hostio_fileDialog)(&XDATA(D_00000000, port_bootup_bss, 0x3C768), GL_DATA_STR(0x1EBF8, "Load"),
                              (char *)&XDATA(D_00000000, port_bootup_data, 0x0) + 0x0001EC00, &D_38108_d, 0) == 0) {
@@ -11586,7 +11587,13 @@ void FogParms_set_00043EF0(struct game_libs_func_00043EF0_Four *a0, struct game_
 extern int gl_func_00000000();
 
 void FogParms_emit_00043F1C(short *a0) {
+#ifdef PORT
+    /* min / max are the int words at +0x10 / +0x14 (FogParms_set_00043EF0); the ROM reads their
+     * low halves as shorts at +0x12 / +0x16, big-endian offsets (byte order, plan 18.9) */
+    CALL(gfx_emitFog)((((int *)gGfx->curWindow))[0x56], (short)((int *)a0)[0x10 / 4], (short)((int *)a0)[0x14 / 4], a0);
+#else
     CALL(gfx_emitFog)((((int *)gGfx->curWindow))[0x56], a0[9], a0[0xB], a0);
+#endif
 }
 
 void FogParms_hostioParms(FogParms *a0) {

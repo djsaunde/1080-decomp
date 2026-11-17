@@ -38,11 +38,19 @@ typedef struct { int a, b, c; } PortSeqEnd188;
 void Process_update(char *a0) {
     register char *m;
     if (PROCESS(a0)->fadingOut == 0) {
+#ifdef PORT
+        m = NODE(a0)->vptr; /* the callee is read through m: gcc evaluates the function designator before the
+         * arguments that assign it (IDO the other way round; plan 18.9) */
+#endif
         VT_SLOT(m, 12).fn(VT_SLOT(m = NODE(a0)->vptr, 12).delta + a0);
     }
     FCALL(Node_update)(a0);
     if (PROCESS(a0)->fadingOut != 0) {
         if (FCALL(Fader_checkDone_00013924)(snd_seqEndDbg_00000188.c)) {
+#ifdef PORT
+            m = NODE(a0)->vptr; /* the callee is read through m: gcc evaluates the function designator before the
+             * arguments that assign it (IDO the other way round; plan 18.9) */
+#endif
             VT_SLOT(m, 11).fn(VT_SLOT(m = NODE(a0)->vptr, 11).delta + a0);
         }
     }

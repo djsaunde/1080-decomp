@@ -333,6 +333,10 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
     }
 
     /* <pfx>_procMain(flowProc, arg2): vtable entry 0 of the flow object */
+#ifdef PORT
+    p = FLOWPROC(GAMEFLOW(arg0)->flowProc)->vptr; /* the callee is read through p: gcc evaluates the function designator before the
+     * arguments that assign it (IDO the other way round; plan 18.9) */
+#endif
     VT_SLOT(p, 0).fn(
         (int)GAMEFLOW(arg0)->flowProc +
             VT_SLOT(p = FLOWPROC(GAMEFLOW(arg0)->flowProc)->vptr, 0).delta,

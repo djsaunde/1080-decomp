@@ -4326,8 +4326,10 @@ void BinFileMgr_check_000685C0(int *a0, unsigned int a1) {
 
 extern int gl_func_00000000();
 
-int BinFileMgr_getAcquire(void) {
-    int r = CALL(BinFileMgr_get_00068730)();
+/* getAcquire / getRelease / checkVoid: (mgr, key) ride through to the callee in $a0 / $a1;
+ * KR_PARAM0 / KR_ARG pass them on the port (uso_call.h, plan 18.9). */
+int BinFileMgr_getAcquire(KR_PARAM0(int *a0) KR_PARAM(int a1)) {
+    int r = CALL(BinFileMgr_get_00068730)(KR_ARG0(a0) KR_ARG(a1));
     char *p = ((BinFile *)r)->vptr;
     ((int(*)(int))VT_SLOT(p, 1).fn)(VT_SLOT(p, 1).delta + r);
     return r;
@@ -4335,15 +4337,19 @@ int BinFileMgr_getAcquire(void) {
 
 extern int gl_func_00000000();
 
-void BinFileMgr_getRelease(void) {
-    char *r = (char*)CALL(BinFileMgr_get_00068730)();
+void BinFileMgr_getRelease(KR_PARAM0(int *a0) KR_PARAM(int a1)) {
+    char *r = (char*)CALL(BinFileMgr_get_00068730)(KR_ARG0(a0) KR_ARG(a1));
     char *p = ((BinFile *)r)->vptr;
     ((int(*)(char*))VT_SLOT(p, 2).fn)(r + VT_SLOT(p, 2).delta);
 }
 
 extern int gl_func_00000000();
+#ifdef PORT
+int BinFileMgr_checkVoid(int *a0, int a1) {
+#else
 int BinFileMgr_checkVoid() {
-    CALL(BinFileMgr_check_000685C0)();
+#endif
+    CALL(BinFileMgr_check_000685C0)(KR_ARG0(a0) KR_ARG(a1));
     return 0;
 }
 

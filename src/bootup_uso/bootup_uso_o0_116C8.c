@@ -58,12 +58,20 @@ void GameFlow_restart_000116C8(void) {
     FCALL(heap_printStats)();
     FCALL(dbg_printf)(&sStr_starLine_C65C);
     FCALL(GameFlow_startMode)(&XDATA(gInputMgr, port_bootup_bss, 0xF8), gInputMgr_bu_116C8_34, gInputMgr_bu_116C8_40);
+#ifdef PORT
+    p = NODE(&XDATA(gSnowBoard, port_bootup_bss, 0x58))->vptr; /* the callee is read through p: gcc evaluates the function designator before the
+     * arguments that assign it (IDO the other way round; plan 18.9) */
+#endif
     ((FN116C8)VT_SLOT(p, 1).fn)(
         (char *)&XDATA(gSnowBoard, port_bootup_bss, 0x58) + VT_SLOT(p = NODE(&XDATA(gSnowBoard, port_bootup_bss, 0x58))->vptr, 1).delta);
     p = (char *)&local;
     if (p != 0 || (p = (char *)FCALL(mem_new)(0xC)) != 0) {
         *(int *)p = 8;
     }
+#ifdef PORT
+    p = NODE(&XDATA(gSnowBoard, port_bootup_bss, 0x58))->vptr; /* the callee is read through p: gcc evaluates the function designator before the
+     * arguments that assign it (IDO the other way round; plan 18.9) */
+#endif
     ((FN116C8)VT_SLOT(p, 5).fn)(
         (char *)&XDATA(gSnowBoard, port_bootup_bss, 0x58) + VT_SLOT(p = NODE(&XDATA(gSnowBoard, port_bootup_bss, 0x58))->vptr, 5).delta,
         &local);

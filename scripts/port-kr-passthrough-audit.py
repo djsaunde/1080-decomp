@@ -86,7 +86,7 @@ def nargs(s, i):
             depth -= 1
         elif c == "," and depth == 1:
             n += 1
-        elif not c.isspace() and depth == 1:
+        if not c.isspace() and depth >= 1 and not (c == ")" and depth == 0):
             empty = False
         i += 1
     return 0 if empty and n == 1 else n

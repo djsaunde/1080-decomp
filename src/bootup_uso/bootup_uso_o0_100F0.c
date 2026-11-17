@@ -43,6 +43,10 @@ void gui_initRows_000100F0(int *a0, int a1) {
     GUIMENU(a0)->arg = a1;
     GUIMENU(a0)->cursor = 0;
     FCALL(gui_clearRows_00010A9C)(a0);
+#ifdef PORT
+    p = (int*)NODE(a0)->vptr; /* the callee is read through p: gcc evaluates the function designator before the
+     * arguments that assign it (IDO the other way round; plan 18.9) */
+#endif
     VT_SLOT(p, 11).fn(
         VT_SLOT(p = (int*)NODE(a0)->vptr, 11).delta + (int)a0);
     GUIMENU(a0)->rowHeight = 17.0f;
