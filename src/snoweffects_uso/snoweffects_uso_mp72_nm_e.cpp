@@ -18,6 +18,9 @@ struct SV {
     static void ct3(SV *p, float a, float b, float c) { if (p != 0) { p->x = a; p->y = b; p->z = c; } }
     SV &operator=(SV o) { x = o.x; y = o.y; z = o.z; return *this; }
     void set(float a, float b, float c) { x = a; y = b; z = c; }
+    /* run 727 (0x718C's pos / vel stores): c as a named local gets a fresh word of its own. Through the pooled
+     * parameter it shared the operator* y-product word, whose priority then beat the |a| word in uopt's colouring. */
+    void setC(float a, float b, float c) { float cc = c; x = a; y = b; z = cc; }
     SV operator*(float s) const { SV r; ct3(&r, x * s, y * s, z * s); return r; }
     SV &operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
     SV &operator+=(const SV &v) { x += v.x; y += v.y; z += v.z; return *this; }
@@ -29,6 +32,9 @@ struct SVb {
     SVb &operator=(SVb o) { x = o.x; y = o.y; z = o.z; return *this; }
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     SVb operator*(float s) const { SVb r; ct0(&r); r.set(x * s, y * s, z * s); return r; }
+    /* run 727: operator* with a code-free block end after set(), so the next scalar load (0x718C's f210) starts a new
+     * uopt block and stops interfering with this product's scalar */
+    SVb mulS(float s) const { SVb r; ct0(&r); r.set(x * s, y * s, z * s); if (1) {} return r; }
     SVb &operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
     SVb &operator+=(const SVb &v) { x += v.x; y += v.y; z += v.z; return *this; }
     /* lerp toward a by r (0x64B8 / 0x6B28): the components pass as parameters, so they load up front into the
@@ -37,7 +43,8 @@ struct SVb {
     void lerpComp(float r, float px, float py, float pz, const SVb &a) { x = (a.x - px) * r + px; y = (a.y - py) * r + py; z = (a.z - pz) * r + pz; }
     /* per-component lerp (0x718C): one materialised parameter p per statement, so each component loads into the
      * same pool word (f2) right before its use. */
-    static float lerpF(float p, float q, float r) { ; return (q - p) * r + p; }
+    /* run 727: p by const reference takes a pointer word, so the w statement's set() gets three new float words */
+    static float lerpF(float p, float q, float r) { float d = q - p; return d * r + p; }  /* run 727: named d */
     void lerpEach(const SVb &a, float r) { x = lerpF(x, a.x, r); y = lerpF(y, a.y, r); z = lerpF(z, a.z, r); }
 };
 /* run 723: the code-free `if (1) {}` ends uopt's block after set(), so the op+ return copy's &temp (0x6B28 sp+52)
@@ -248,8 +255,9 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
  * +0x1FC / +0x204 timer, then (a != 0) one pool +0xA0 spawn: pos = lerp(+0x138, +0xF0, randf), vel =
  * v318 * f208 + v114 * (1 + randf * RoData+0xB0) * f210 * |a| * (a > 0 ? -1 : 1) + v3B0 * f20C * |a|, fields
  * from +0x1DC..+0x1F8, alpha 128 + randf * 127, colour lerped from the camera colour to +0x224 by +0x220.
- * NM (96.9 %, 471 words = target, frame 368 = target): the operator* scalars colour f12 where the target has
- * f16 (the |speed| temp too), the u copy materialises &t->pos, and the inner edg temps sit 4..8 bytes off. */
+ * NM (run 727: 471 words = target, frame 376 vs 368). Since run 727 the |speed| / op* scalar LR is f16, |a| f0 and
+ * the op* products f2 / f12 / f14 as in the target (setC, mulS, no `int sc[2]` pad). Left: the frame is 8 high
+ * (setC's two named words), the early ramp r / lo colours, the lerp and colour-section FP ring. */
 extern "C" float snow_ro_B0;  /* RoData+0xB0: the 0x718C spin scale */
 struct SnowCamC {
     char pad000[0x318];
@@ -343,19 +351,18 @@ extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
             SVb u = t->pos;
             r = gl_func_00000000_snow_randf();
             u.lerpEach(t->vF0, r);
-            { int sc[2]; sc[0] = 0; }
             w = t->cam->v318 * t->f208;
             if (0) w *= t->f20C; /* run 698: one more edg float temporary (objdiff 96.99 -> 97.07) */
             SVb a1 = t->cam->v3B0 * t->f20C * (a < 0.0f ? -a : a);
-            SVb a2 = t->v114 * (1.0f + gl_func_00000000_snow_randf() * snow_ro_B0) * t->f210;
+            SVb a2 = t->v114.mulS(1.0f + gl_func_00000000_snow_randf() * snow_ro_B0) * t->f210;
             a2 *= (a < 0.0f ? -a : a);
             if (0.0f < a) {
                 a2 *= -1.0f;
             }
             w += a2;
             w += a1;
-            p->pos.set(u.x, u.y, u.z);
-            p->vel.set(w.x, w.y, w.z);
+            p->pos.setC(u.x, u.y, u.z);
+            p->vel.setC(w.x, w.y, w.z);
             p->size = t->f1F8;
             p->unk3C = 1.0f;
             p->fadeAt = 256.0f;
