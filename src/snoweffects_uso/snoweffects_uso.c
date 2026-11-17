@@ -1060,7 +1060,7 @@ void snoweffects_uso_func_00007F60(char *this, int a1, int a2, int a3, int a4, i
 }
 
 #ifdef NON_MATCHING
-/* trail emitter update (800 / 800 words, objdiff 93.5 %): NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp
+/* trail emitter update (800 / 800 words, objdiff 97.7 %): NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp
  * (agent-a runs 661-681), REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
 void snoweffects_uso_func_00007FE0(void) {
 }

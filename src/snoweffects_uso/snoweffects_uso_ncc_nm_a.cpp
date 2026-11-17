@@ -1,6 +1,6 @@
 /* IDO 7.1 NCC (C++) NON_MATCHING donor for snoweffects.uso 0x7FE0 (agent-a runs 661 / 665 / 669 / 677 / 681),
  * spliced over the placeholder on the non_matching build only (Makefile SNOW_NM_A_FUNCS): 800 / 800 words,
- * objdiff 93.5 %. A donor body has to be exactly the target's length (a size change shifts the later
+ * objdiff 97.7 %. A donor body has to be exactly the target's length (a size change shifts the later
  * functions of the non_matching object). 0xA10C moved to the exact donor snoweffects_uso_ncc_a.cpp (run 677).
  */
 #include "snoweffects_ncc.h"
@@ -42,9 +42,14 @@ int snoweffects_uso_func_000046BC(...);
  *   coloured f0 and partly copy-propagated: x uses it twice (the sp+48 reload into f0), y copies p.y into
  *   it (the target's mov.s f0,f10) and reads p.y in place for the subtraction, z is fully propagated.
  *   The fraction passed as an expression is pool word 1 (shared with the |x| / op* scalar words).
+ * Run 681 (93.5 -> 97.7 %): the side terms are op* CHAINS, `a = cam->up * f180 * |s|` and
+ *   `d(*v114 * k * f184, |s|)`, not named intermediates (up, b, c). The target's operator* words in those
+ *   statements are s = word 2, ctor params = words 3 / 1 / 4 (fabs_(s) * f184 reads f0). k is a named
+ *   float between a and d (the target's one-word gap there). i / s / v / w declared in that order puts the
+ *   s and w spill homes at vfp-8 / vfp-16 as in the target.
  * Left: pool word 1 colours f2 where the target has f12 (it wins the f2 race against the TV ctor's second
- *   parameter word; a forcing-uopt probe puts it on f12), the register numbering, the frame (352 vs 384)
- *   and the hoisted sp addresses. ---- */
+ *   parameter word; a forcing-uopt probe puts it on f12 for 97.9 %), the frame (368 vs 384: one TV pool
+ *   word too many at the loop-body top and one word too many above it) and the hoisted sp addresses. ---- */
 extern "C" void SnowRing_setSlotState_00004714(void *, int, int, float);
 
 struct TV {
@@ -141,9 +146,10 @@ inline void lerp3(TV &p, const TV &b, float f) {
 
 inline float fabs_(float x) { return x < 0.0f ? -x : x; }
 extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
-    float s;
-    float w;
     int i;
+    float s;
+    float v;
+    float w;
     if (t->cam->flags & 0x80) {
         t->speed = -t->cam->lean;
     } else {
@@ -153,7 +159,7 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
     t->f3C = t->f34;
     t->f40 = t->f38;
     snoweffects_uso_func_00004374(t);
-    float v = t->speed;
+    v = t->speed;
     if (t->cam->speed < 60.0f || fabs_(v) < t->lo) {
         s = 0.0f;
     } else if (t->hi < fabs_(v)) {
@@ -207,11 +213,9 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
             t->points[t->writeOfs + i].f28 = 0;
             t->points[t->writeOfs + i].w[2] = w;
             t->points[t->writeOfs + i].w[3] = t->f16C;
-            TV up = t->cam->up * t->f180;
-            TV a = up * fabs_(s);
-            TV b = *v114 * ((float)(0.0f < s ? t->stride - i - 1 : i) / (float)t->stride);
-            TV c = b * t->f184;
-            TV d(c, fabs_(s));
+            TV a = t->cam->up * t->f180 * fabs_(s);
+            float k = (float)(0.0f < s ? t->stride - i - 1 : i) / (float)t->stride;
+            TV d(*v114 * k * t->f184, fabs_(s));
             TV e = *vFC * -1.0f;
             if (0.0f < s) {
                 d *= -1.0f;
