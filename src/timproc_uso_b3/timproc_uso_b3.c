@@ -66,82 +66,82 @@ trk_main(int *a0, int a1) {
     do {
         switch (a1) {
         case 0:
-            gl_func_00000000(a0, 1, 7, 1);
+            CALL(app_launchGenProc)(a0, 1, 7, 1);
             GAMEFLOW(d)->nextProcState = 4; GAMEFLOW(d)->thenProcState = 13; done = 1;
             break;
         case 1:
-            gl_func_00000000(a0, 1, 7, 1);
+            CALL(app_launchGenProc)(a0, 1, 7, 1);
             GAMEFLOW(d)->nextProcState = 4; GAMEFLOW(d)->thenProcState = 13; done = 1;
             break;
         case 2:
-            gl_func_00000000(a0, 1, 7, 2);
+            CALL(app_launchGenProc)(a0, 1, 7, 2);
             GAMEFLOW(d)->nextProcState = 4; GAMEFLOW(d)->thenProcState = 13; done = 1;
             break;
         case 3:
-            gl_func_00000000(a0, 1, 7, 4);
+            CALL(app_launchGenProc)(a0, 1, 7, 4);
             GAMEFLOW(d)->nextProcState = 4; GAMEFLOW(d)->thenProcState = 13; done = 1;
             break;
         case 4:
-            gl_func_00000000(a0, 1, GAMEFLOW(d)->course);
+            CALL(trk_openSession_000005A4)(a0, 1, GAMEFLOW(d)->course);
             GAMEFLOW(d)->procState = 5;
             break;
         case 5:
-            gl_func_00000000(d, ((char **)D_00000000_raw)[1]); /* stand-in; the donor's game_loadUso(&GameFlow, gProcUsoPaths[1] = "rom/nameent.uso"): D_00000000_raw is the bootup Data+0xC510 import */
-            gl_func_00000000(d, 4, GAMEFLOW(d)->course, 2);
-            v = gl_func_00000000(a0, *a0, 1);
-            s0v = gl_func_00000000(0, 0x410000, v, *a0);
-            gl_func_00000000(a0, 0, s0v);
+            CALL(game_loadUso)(d, ((char **)D_00000000_raw)[1]); /* stand-in; the donor's game_loadUso(&GameFlow, gProcUsoPaths[1] = "rom/nameent.uso"): D_00000000_raw is the bootup Data+0xC510 import */
+            CALL(snd_playSeq_000120A8)(d, 4, GAMEFLOW(d)->course, 2);
+            v = CALL(app_createGame_00008E48)(a0, *a0, 1);
+            s0v = CALL(TrkRace_ctor)(0, 0x410000, v, *a0);
+            CALL(app_runProcess)(a0, 0, s0v);
             done = 1;
             break;
         case 6:
-            gl_func_00000000(a0, 0, GAMEFLOW(d)->recCourse);
+            CALL(trk_openSession_000005A4)(a0, 0, GAMEFLOW(d)->recCourse);
             GAMEFLOW(d)->procState = 7;
             break;
         case 7:
-            gl_func_00000000(d, 10, GAMEFLOW(d)->course, 2);
-            v = gl_func_00000000(a0, *a0, 1);
-            s0v = gl_func_00000000(0, GAMEFLOW(d)->replayLen[0] + 0x1A000F, v, *a0);
-            gl_func_00000000(a0, 0, s0v);
+            CALL(snd_playSeq_000120A8)(d, 10, GAMEFLOW(d)->course, 2);
+            v = CALL(app_createGame_00009100)(a0, *a0, 1);
+            s0v = CALL(TrkRace_ctor)(0, GAMEFLOW(d)->replayLen[0] + 0x1A000F, v, *a0);
+            CALL(app_runProcess)(a0, 0, s0v);
             done = 1;
             break;
         case 8:
-            gl_func_00000000(a0);
+            CALL(trk_closeSession_0000065C)(a0);
             GAMEFLOW(d)->procState = GAMEFLOW(d)->nextProcState;
             break;
         case 9:
-            gl_func_00000000(a0);
+            CALL(trk_closeSession_0000065C)(a0);
             GAMEFLOW(d)->procState = 10;
             break;
         case 10:
-            gl_func_00000000(d, 7, 0, 0);
-            s0v = gl_func_00000000(0);
-            gl_func_00000000(a0, 1, s0v);
+            CALL(snd_playSeq_000120A8)(d, 7, 0, 0);
+            s0v = CALL(TrkMenu_ctor)(0);
+            CALL(app_runProcess)(a0, 1, s0v);
             done = 1;
             break;
         case 11:
-            v = gl_func_00000000(a0, *a0, 4);
-            s0v = gl_func_00000000(0, GAMEFLOW(d)->replayLen[0] + 0x20000, v, *a0);
+            v = CALL(app_createGame_00009100)(a0, *a0, 4);
+            s0v = CALL(TrkRace_ctor)(0, GAMEFLOW(d)->replayLen[0] + 0x20000, v, *a0);
             r = (char *)s0v;
             children = (char *)&NODE(d)->children;
-            gl_func_00000000(children, r);
+            CALL(list_append)(children, r);
             if (NODE(r)->parent != 0) {
                 NODE(r)->unk04 = 1;
             }
             parent = (Node *)d;
             NODE(r)->parent = parent;
-            gl_func_00000000(a0, *a0);
+            CALL(app_launchNameEnt)(a0, *a0);
             done = 1;
             break;
         case 12:
-            s0v = gl_func_00000000(GAMEFLOW(d)->course);
-            gl_func_00000000(a0, (GAMEFLOW(d)->course | 0x4000) | s0v, 0x4000, *a0);
+            s0v = CALL(app_flowModeBit)(GAMEFLOW(d)->course);
+            CALL(app_launchViewRec)(a0, (GAMEFLOW(d)->course | 0x4000) | s0v, 0x4000, *a0);
             done = 1;
             break;
         case 13:
-            s0v = gl_func_00000000(0, 1, 0);
+            s0v = CALL(QuitProcess_ctor)(0, 1, 0);
             r = (char *)s0v;
             children = (char *)&NODE(d)->children;
-            gl_func_00000000(children, r);
+            CALL(list_append)(children, r);
             if (NODE(r)->parent != 0) {
                 NODE(r)->unk04 = 1;
             }
