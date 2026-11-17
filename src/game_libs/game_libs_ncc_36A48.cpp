@@ -13,6 +13,9 @@ struct V3 {
     V3 &operator=(V3 v) { x = v.x; y = v.y; z = v.z; return *this; }
 };
 extern "C" {
+#ifdef PORT /* the C callee takes the MIPS sret out-pointer and does not pop it (include/uso_call.h PORT_SRET_NOPOP) */
+__attribute__((callee_pop_aggregate_return(0)))
+#endif
 V3 gl_36A48_cb(void *, V3, V3);
 }
 extern "C" int math_bestAlignedIndex_00036A48(void *o, V3 dir, V3 *arr, int n) {

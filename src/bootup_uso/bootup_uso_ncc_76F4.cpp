@@ -29,7 +29,7 @@ struct G { char pad[0xA0]; Cam cam; char padDC[0x128 - 0xDC]; V3 scale; char pad
 inline void Cam::mul(G &g) { v.x *= g.scale.x; v.y *= g.scale.y; v.z *= g.scale.z; }
 extern "C" G gGfxLib_76f4_g;
 extern "C" void Tv1_display(Tv1 *self) {
-    if (XCALL(func_00000000_76f4_q, cam_isSphereInView)(gGfxLib_76f4_g.root, 3, *(int *)&self->pos[0], *(int *)&self->pos[1],
+    if (XCALL(func_00000000_76f4_q, cam_isSphereInView)(gGfxLib_76f4_g.root, 3, PORT_FBITS(*(int *)&self->pos[0]), PORT_FBITS(*(int *)&self->pos[1]),
                     self->pos[2], 0, self->radius * self->scale) != 0) {
         XCALL(func_00000000_76f4_v, gfx_loadMatrix_00047DD8)(&gGfxLib_76f4_g, self->mtx);
         {

@@ -168,7 +168,7 @@ void SnowBoarder_updateOrient(SnowBoarder *rider) {
         }
         rider->shake = (s32) (20.0f + (30.0f * var_f0));
         if (rider->groundFlags & 1) {
-            FCALL(snd_soundObjSetPan_00000B2C)((char *)&rider->sound, *(s32 *)&rider->dnode.vqs.trans[0]);
+            FCALL(snd_soundObjSetPan_00000B2C)((char *)&rider->sound, PORT_FBITS(*(s32 *)&rider->dnode.vqs.trans[0]));
             if (rider->slowdown == 0) {
                 if (rider->dnode.axes[2][0] < 0.0f) {
                     var_f0 = -rider->dnode.axes[2][0];

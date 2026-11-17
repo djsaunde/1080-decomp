@@ -46,7 +46,7 @@ struct Self { char pad[0x14]; Out *body; char pad18[0x38 - 0x18]; Body *target; 
               char padb0[0xDC - 0xB0]; float toy; char pade0[0xF4 - 0xE0]; float ty2;
               char padf8[0x10C - 0xF8]; float chy; };
 extern "C" {
-V3 cam_toTargetLocal_000023D4(Self *a1);
+PORT_SRET_NOPOP V3 cam_toTargetLocal_000023D4(Self *a1);
 void game_uso_func_071028(V3 *);
 }
 struct Ctx { Out *out; Ctx(Self *s) { out = s->body; }

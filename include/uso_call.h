@@ -107,12 +107,23 @@
 #define KR_PARAM(decl) , decl
 #define KR_PARAM0(decl) decl
 #define PORT_REFARG(x) ((const void *)&(x)) /* a C++ reference argument, passed as cfront passes it (a pointer) */
+/* an int literal holding f32 bits, passed where the callee takes a float (on MIPS both ride in
+ * an integer register after an int argument; on the port a prototyped float parameter would
+ * convert the int's value): the float with those bits */
+#define PORT_FBITS(x) (__extension__({ union { int i_; float f_; } u_; u_.i_ = (x); u_.f_; }))
+/* a C++ donor's struct-by-value return across the C boundary: the C side spells the MIPS sret
+ * protocol as an explicit out-pointer parameter (and a plain return), while i386 g++ has the callee
+ * pop the hidden pointer (`ret $4`) and the caller expect it: the stack drifts 4 bytes per call.
+ * On the declaration (a C callee) or the definition (a C caller): the caller pops it, as in C. */
+#define PORT_SRET_NOPOP __attribute__((callee_pop_aggregate_return(0)))
 #else
 #define KR_ARG(x)
 #define KR_ARG0(x)
 #define KR_PARAM(decl)
 #define KR_PARAM0(decl) void
 #define PORT_REFARG(x) x
+#define PORT_FBITS(x) x
+#define PORT_SRET_NOPOP
 #endif
 
 #endif

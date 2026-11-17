@@ -25,6 +25,35 @@ extern char D_00000000[];
 }
 inline void *operator new(unsigned n) { return (void *)CALL(mem_new)(n); }
 
+#ifdef PORT /* cfront layout (port_cfront.h, plan 17.8): explicit vptr at +0x28, the virtual slot 11 call
+ * through the ROM vtable, the NCC vtable stores written out (the snowb_vtbl_* binds: snoweffects Data
+ * 0x60 / 0x1C8 / 0x158 / 0x238); the Node ctor is the C Node_ctor (stores the Node vtable itself). */
+#include "../../port/include/port_cfront.h"
+extern "C" char snowb_vtbl_SnowNode_60[], snowb_vtbl_SnowChild0_1C8[], snowb_vtbl_SnowChildA_158[],
+    snowb_vtbl_SnowChildB_238[];
+CF_EXT(void *, snowb_Node_ctor, Node_ctor, (void *, char *));
+struct Node {
+    char pad00[4];
+    /* 0x04 */ int flag;
+    char pad08[0xC - 8];
+    /* 0x0C */ char *name;
+    /* 0x10 */ int list;      /* child list */
+    /* 0x14 */ Node *parent;
+    char pad18[0x28 - 0x18];
+    /* 0x28 */ char *vptr;
+    CF_INL Node(char *name) { snowb_Node_ctor(this, name); }
+    CF_V1(void, v11, 10, int)
+};
+inline void lnk(Node *q, Node *s) {
+    XCALL(gl_func_00000000_snowb_v, list_append)(&s->list, q);
+    if (q->parent) q->flag = 1;
+    q->parent = s;
+}
+struct SnowNode : Node { char pad2c[0x48 - 0x2C]; CF_INL SnowNode(char *name) : Node(name) { vptr = snowb_vtbl_SnowNode_60; } };
+struct SnowChild0 : SnowNode { CF_INL SnowChild0() : SnowNode(D_00000000 + 0x648) { vptr = snowb_vtbl_SnowChild0_1C8; } };
+struct SnowChildA : SnowNode { CF_INL SnowChildA() : SnowNode(D_00000000 + 0x650) { vptr = snowb_vtbl_SnowChildA_158; } };
+struct SnowChildB : SnowNode { CF_INL SnowChildB() : SnowNode(D_00000000 + 0x658) { vptr = snowb_vtbl_SnowChildB_238; } };
+#else
 /* bootup Node (0x28 data bytes, vptr at +0x28; virtual slot 11 takes an int) */
 struct Node {
     char pad00[4];
@@ -52,6 +81,7 @@ struct SnowChild0 : SnowNode { SnowChild0() : SnowNode(D_00000000 + 0x648) {} vi
 struct SnowChildA : SnowNode { SnowChildA() : SnowNode(D_00000000 + 0x650) {} virtual void v1(); };
 struct SnowChildB : SnowNode { SnowChildB() : SnowNode(D_00000000 + 0x658) {} virtual void v1(); };
 
+#endif
 struct SnowEffect : Node {
     char pad2c[0x98 - 0x2C];
     /* 0x098 */ SnowChildA *childA;
@@ -120,6 +150,16 @@ void SnowEffect::createB() {
 #define V2P(x) CALL(gl_osVirtualToPhysical)(x)
 struct M8B { int a, b; M8B() { b = 0; a = 0; } };
 struct M4B { int a; M4B() { a = 0; } };
+#ifdef PORT /* cfront layout: the BaseMat vptr at +0x5C (bootup Data 0x20640), then the Mat one (0x1FBEC) */
+extern "C" char snowb_vtbl_BaseMat_559C[], snowb_vtbl_Mat_559C[];
+struct SnowBaseMatB {
+    float c[4];
+    char p10[0x34 - 0x10]; M8B m; char p3c[0x58 - 0x3C]; M4B n;
+    char *vptr;
+    CF_INL SnowBaseMatB() { vptr = snowb_vtbl_BaseMat_559C; CALL(BaseMat_init_000517E4)(this); }
+};
+struct SnowMatB : SnowBaseMatB { char p60[0x90 - 0x60]; CF_INL SnowMatB() { vptr = snowb_vtbl_Mat_559C; } };
+#else
 struct SnowBaseMatB {
     float c[4];
     char p10[0x34 - 0x10]; M8B m; char p3c[0x58 - 0x3C]; M4B n;
@@ -127,6 +167,7 @@ struct SnowBaseMatB {
     virtual void v1();
 };
 struct SnowMatB : SnowBaseMatB { char p60[0x90 - 0x60]; SnowMatB() {} virtual void v1(); };
+#endif
 struct SnowDLB { Gfx *buf; int count; };
 struct SnowCtxB { char pad0[0xC]; SnowDLB *dl; Gfx *next() { return &dl->buf[dl->count++]; } Gfx *n1() { return (this + 0)->next(); } Gfx *nx() { return (this + 0)->n1(); }
     void put(unsigned int w0, unsigned int w1) { Gfx *g = next(); g->words.w0 = w0; g->words.w1 = w1; } };

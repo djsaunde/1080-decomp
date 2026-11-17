@@ -5390,6 +5390,9 @@ void RiderAnim_init_0000D458(s32 arg0) {
     }
     XCALL(game_uso_func_049280, sys_writebackDCacheAll)();
     XCALL(game_uso_func_048020, dma_read)(&sp30, 0xF10, 0x10);
+#ifdef PORT /* the boot-code check reads raw big-endian ROM words (IPL3 at 0xF10): compare them as the N64 does */
+    PORT_BE_SWAP32S(sp30, 0x10);
+#endif
     if (sp30[0] != 0x04080040) {
         var_v0 = 0;
     } else if (sp30[1] != 0x02081040) {
@@ -7966,6 +7969,10 @@ static int port_trace_raceLive(void) {
     return sGameUsoId >= 0 && port_uso_isLoaded(sGameUsoId);
 }
 
+/* The title demo's dataMgr leaves owner (and other links) at -1 / small sentinels: read only
+ * links that look like host pointers. */
+#define PORT_TRACE_PTR(p) ((unsigned long)(p) >= 0x10000UL && (unsigned long)(p) < 0xFFFF0000UL)
+
 void port_trace_collect(PortTraceFrame *f) {
     InputMgr *flow = (InputMgr *)PORT_GAMEFLOW;
     RaceTracker *dm;
@@ -7974,6 +7981,7 @@ void port_trace_collect(PortTraceFrame *f) {
 
     f->flowState = flow->procState;
     f->flowNext = flow->nextFlowMode;
+    f->flowMode = flow->flowMode;
     f->randState = *(u32 *)PORT_RANDSTATE;
     f->retraceCount = port_game_retrace_count();
     f->have |= PORT_TRACE_HAVE_FLOW | PORT_TRACE_HAVE_RAND | PORT_TRACE_HAVE_RETRACE;
@@ -7981,19 +7989,19 @@ void port_trace_collect(PortTraceFrame *f) {
         return;
     }
     dm = flow->dataMgr;
-    if (dm != NULL) {
+    if (PORT_TRACE_PTR(dm)) {
         f->elapsed = dm->elapsed;
         f->have |= PORT_TRACE_HAVE_ELAPSED;
-        if (dm->owner != NULL) {
+        if (PORT_TRACE_PTR(dm->owner)) {
             f->raceState = dm->owner->raceState;
             f->raceFlags = (u32)dm->owner->flags;
             f->have |= PORT_TRACE_HAVE_RACE;
         }
-        if (dm->entries != NULL) {
+        if (PORT_TRACE_PTR(dm->entries)) {
             for (i = 0; i < dm->numEntries && f->numRiders < PORT_TRACE_MAX_RIDERS; i++) {
                 SnowBoarder *r = (SnowBoarder *)dm->entries[i].rider;
                 PortTraceRider *o = &f->riders[f->numRiders];
-                if (r == NULL) {
+                if (!PORT_TRACE_PTR(r)) {
                     continue;
                 }
                 o->pos[0] = r->dnode.vqs.trans[0];
@@ -8004,21 +8012,21 @@ void port_trace_collect(PortTraceFrame *f) {
                 o->quat[2] = r->dnode.vqs.quat[2];
                 o->quat[3] = r->dnode.vqs.quat[3];
                 o->speed = r->dnode.speed;
-                o->animState = r->anim != NULL ? r->anim->state.b : -1;
+                o->animState = PORT_TRACE_PTR(r->anim) ? r->anim->state.b : -1;
                 f->numRiders++;
             }
             f->have |= PORT_TRACE_HAVE_RIDERS;
         }
     }
     game = flow->game;
-    if (game != NULL) {
+    if (PORT_TRACE_PTR(game)) {
         CamWindow *w = (CamWindow *)WORLDREG(game)->windows[0];   /* the race camera window */
-        MCamera *cam = w != NULL ? w->cam : NULL;
-        if (cam != NULL) {
+        MCamera *cam = PORT_TRACE_PTR(w) ? w->cam : NULL;
+        if (PORT_TRACE_PTR(cam)) {
             for (i = 0; i < 3; i++) {
                 f->camEye[i] = cam->mnode.world[3][i];
             }
-            if (cam->target != NULL) {
+            if (PORT_TRACE_PTR(cam->target)) {
                 for (i = 0; i < 3; i++) {
                     f->camTarget[i] = cam->target->world[3][i];
                 }

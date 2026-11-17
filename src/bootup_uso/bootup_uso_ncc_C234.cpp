@@ -131,7 +131,7 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
     /* agent-g run 235: sp3C is a frozen-home named pointer (saved at its own home across the call, not in the
      * temp area): the folded read of *rider stops uopt copy-propagating it; defined in the argument list after
      * argument 0 so its addiu follows the D_00000000 lui (99.84 -> 99.85, spill slot = target) */
-    if ((var_v0 = FCALL(CollShape_nearestHit)((sp3Ck = *(s32 *)&gCourseColl), sp3C = (char *)rider->dnode.cvqs.trans + 0 * (int)(*(char *)rider), 0x457A0000, &spCC)) != 0) {
+    if ((var_v0 = FCALL(CollShape_nearestHit)((sp3Ck = *(s32 *)&gCourseColl), sp3C = (char *)rider->dnode.cvqs.trans + 0 * (int)(*(char *)rider), PORT_FBITS(0x457A0000), &spCC)) != 0) {
         rider->groundSurface = FCALL(BasePolyShape_getMatCodeChar_00052A4C)(COURSE_COLL->shape, spCC.dc);
         if (spCC.d8 < D_bu_ro_pool[0x924 / 4]) {
             rider->surface = rider->groundSurface;
@@ -257,7 +257,7 @@ cend:
     if (C234_FLOW.nextFlowMode != 2) {
         temp_f0 = rider->unk91C;
         rider->unk91C = (f32) ((f64) temp_f0 + ((f64) (var_f2 - temp_f0) * D_bu_ro_dpool[0x950 / 8]));
-        FCALL(light_setF124_000550A0)(rider->light, *(s32 *)&rider->unk91C);
+        FCALL(light_setF124_000550A0)(rider->light, PORT_FBITS(*(s32 *)&rider->unk91C));
     }
     temp_v0_4 = rider->contactCount;
     if (temp_v0_4 != 0) {

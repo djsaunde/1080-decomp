@@ -196,7 +196,7 @@ extern "C" void game_uso_func_00008CD8_lay(volatile float *o) {
     v = v * 8.10f; v = v * 8.20f; v = v * 8.30f; v = v * 8.40f; v = v * 8.60f; v = v * 8.70f; v = v * 8.80f; v = v * 8.90f;
     *o = v;
 }
-extern "C" XZ SnowAI_aimWeave(Self *s, Node *a, Node *b, int flag) {
+extern "C" XZ PORT_SRET_NOPOP SnowAI_aimWeave(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
         XZ dir(subp2((int)a, (int)a, XZ((int)a, (int)a, b->pos), a->pos));
         XCALL(game_uso_func_071028, math_vec3Normalize)(&dir);

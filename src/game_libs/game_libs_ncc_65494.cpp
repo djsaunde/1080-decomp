@@ -132,7 +132,7 @@ extern "C" void DNode_solveContacts(Self *self) {
         XCALL(gl_func_00062F64_65494, math_quatRotateVec3)(self->f2FC, &d, &node->v114);
         node->v114 -= d;
         node->v114 += self->v318;
-        if (XCALL(gl_func_00062F64_b, CollShape_nearestHit)(D_00000000[0], &node->v120, 0x43C80000, &hit) != 0) {
+        if (XCALL(gl_func_00062F64_b, CollShape_nearestHit)(D_00000000[0], &node->v120, PORT_FBITS(0x43C80000), &hit) != 0) {
             node->idx = hit.idx;
             n = *(Vec3 *)&hit.v;
             h = hit.d;

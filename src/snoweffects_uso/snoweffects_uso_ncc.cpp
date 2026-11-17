@@ -6,6 +6,9 @@
 /* 0x40B4 (0xD4): the emitter draw. Reset its display list, let 0x4188 fill it, then append
  * ClearGeometryMode(0x33000), SetGeometryMode(0x2204) and EndDL through the c->next() packets
  * (the gfx_initRDPState family, game_libs_ncc_59E80.cpp). */
+#ifdef PORT /* the definition below is the only declaration (decls_cpp.h skips the name here) */
+extern "C" void SnowRing_setupDL_00004188(SnowRing *t, DLCtx *c);
+#endif
 extern "C" void SnowRing_draw_000040B4(SnowRing *t) {
     CALL(gfx_resetDLContext)(t->dl);
     CALL(SnowRing_setupDL_00004188)(t, t->dl);

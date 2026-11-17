@@ -56,6 +56,9 @@ struct Src;
 struct Self { char pad[0x14]; Out *body; char pad18[0x38 - 0x18]; Body *anchor; Src *cam; int mode; char pad44[0x5C - 0x44]; float ch0; };
 struct Src { char pad[0x38]; Body *target; };
 extern "C" {
+#ifdef PORT /* the C callee takes the MIPS sret out-pointer and does not pop it (include/uso_call.h PORT_SRET_NOPOP) */
+__attribute__((callee_pop_aggregate_return(0)))
+#endif
 P3 cam_toTargetLocal_000023D4(Src *a1);
 }
 struct Ctx {

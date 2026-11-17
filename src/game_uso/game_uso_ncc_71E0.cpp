@@ -49,7 +49,7 @@ struct W {
 struct Self;
 extern "C" {
 int SnowAI_updateMarker(Self *, int *, Vec3 *, int);
-Vec3 SnowAI_aimAlongSegment(Self *, int, int, Vec3 *, int);
+PORT_SRET_NOPOP Vec3 SnowAI_aimAlongSegment(Self *, int, int, Vec3 *, int);
 float math_signedAngleXZ_00003ED4(Vec3 *, Vec3 *, int);
 void RiderAnim_startFinish_000110A4(int);
 void SnowAI_applyStickInput(Self *, int);
