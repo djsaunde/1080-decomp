@@ -48,9 +48,10 @@ typedef struct SnowParticle {
 /* a Node-derived particle pool: items[max] from mem_new, count in use */
 typedef struct SnowPool {
     /* 0x00 */ Node node;
-    /* 0x2C */ s32 unk2C;
+    /* 0x2C */ void *tex;           /* sprite texture holder (its +0x60 display list; SnowPool_display) */
     /* 0x30 */ SnowParticle *items;
-    /* 0x34 */ s32 unk34[2];
+    /* 0x34 */ s32 texW;            /* sprite texture size (SnowPool_display) */
+    /* 0x38 */ s32 texH;
     /* 0x3C */ s32 count;
     /* 0x40 */ s32 max;
 } SnowPool;
@@ -79,12 +80,12 @@ typedef struct BoardTrail {
      * BoardTrail_enableA). Names from what spawnA does with each word. */
     /* 0x174 */ f32 powderGravity;   /* particle gravity (x 1.5 in a burst) */
     /* 0x178 */ f32 powderRiseY;     /* added to the spawn point's y */
-    /* 0x17C */ f32 powderSizeVel;   /* particle sizeVel, times the |speed| term */
-    /* 0x180 */ f32 powderDirScale;  /* trail-direction velocity, times speed */
-    /* 0x184 */ f32 powderSpeedBias; /* (bias + |speed|) multiplies the owner-velocity term */
+    /* 0x17C */ f32 powderSizeVel;   /* particle sizeVel, times the |cosA| term */
+    /* 0x180 */ f32 powderDirScale;  /* velocity from origin toward the +endZ point, times cosA */
+    /* 0x184 */ f32 powderCosBias;   /* (bias + |cosA|) multiplies the owner-velocity term */
     /* 0x188 */ f32 powderAlphaVel;  /* particle alphaVel */
     /* 0x18C */ f32 powderDecay;     /* particle decay */
-    /* 0x190 */ f32 powderMinSpeed;  /* no spawn below this |speed| */
+    /* 0x190 */ f32 powderMinCos;    /* no spawn below this |cosA| (SnowRing +0x148) */
     /* 0x194 */ f32 powderBurstVelScale; /* owner vel (+0x318) scale during a burst */
     /* 0x198 */ f32 powderVelScale;  /* owner vel (+0x318) scale otherwise */
     /* 0x19C */ s32 powderPeriod;    /* frames between spawns (timer reload) */
@@ -119,25 +120,27 @@ typedef struct BoardTrail {
     /* 0x200 */ s32 unk200;
     /* 0x204 */ s32 specPeriod;      /* frames between spawns (timer reload) */
     /* 0x208 */ f32 specVelScale;    /* owner vel (+0x318) scale */
-    /* 0x20C */ f32 specUpScale;     /* owner up axis (+0x3B0) scale, times the side strength */
-    /* 0x210 */ f32 specDirScale;    /* trail direction (+0x114) scale, times the side strength */
-    /* 0x214 */ f32 specMinLean;     /* side strength 0 below this |lean| (+0x4C) */
-    /* 0x218 */ f32 specMaxLean;     /* side strength 1 above it */
-    /* 0x21C */ f32 specRampBase;    /* side strength at specMinLean (ramps to 1) */
+    /* 0x20C */ f32 specUpScale;     /* owner up axis (+0x3B0) scale, times the lean strength */
+    /* 0x210 */ f32 specPerpScale;   /* perp (+0x114) scale, times the lean strength */
+    /* 0x214 */ f32 specMinLean;     /* lean strength 0 below this |lean| (+0x4C) */
+    /* 0x218 */ f32 specMaxLean;     /* lean strength 1 above it */
+    /* 0x21C */ f32 specRampBase;    /* lean strength at specMinLean (ramps to 1) */
     /* 0x220 */ f32 specTintMix;     /* lerp from the owner colour (+0xA30) to specTint */
     /* 0x224 */ Vec3 specTint;       /* r, g, b in 0..1 (enableC: white) */
     /* 0x230 */ f32 unk230;          /* enableC clears it; spawnC does not read it */
 } BoardTrail;
 
-/* the 0x50-byte link node (ctor 0x9E88, update 0x9F44): couples a source object to an SNode-subclass
- * target it creates (0x9328) */
+/* the 0x50-byte map lighter (ctor 0x9E88, syncLight 0x9F44; both called by bootup game_createMap under
+ * memtrack "MapLighter"): lights the map shape from light0 / light1 through the LocalLight it creates (0x9328) */
 typedef struct MapLighter {
     /* 0x00 */ Node node;
-    /* 0x2C */ s32 unk2C;
-    /* 0x30 */ void *src;
-    /* 0x34 */ s32 unk34;
-    /* 0x38 */ Node *tgt;
-    /* 0x3C */ char unk3C[0x50 - 0x3C];
+    /* 0x2C */ s32 shape;           /* the map MorphPoly (bootup game_createMap's ctor arg) */
+    /* 0x30 */ void *light0;        /* WorldRegistry light0 (+0x90): its +0x114 position parm feeds syncLight */
+    /* 0x34 */ s32 light1;          /* WorldRegistry light1 (+0x94) */
+    /* 0x38 */ Node *tgt;           /* the LocalLight (0x9328), a child node */
+    /* 0x3C */ char unk3C[0x40 - 0x3C];
+    /* 0x40 */ Vec3 pos;            /* light0's position, copied by syncLight */
+    /* 0x4C */ char unk4C[0x50 - 0x4C];
 } MapLighter;
 
 /* one 0x2C-byte emitter point (3EE4 allocates count of them at +0x90 and clears each with 0x3EB0) */
@@ -151,7 +154,8 @@ typedef struct SnowPoint {
 /* one 12-byte ring slot (state 2 = live, 0 = cleared; 0x4714) */
 typedef struct SnowSlot {
     /* 0x00 */ s32 state;
-    /* 0x04 */ s32 unk04[2];
+    /* 0x04 */ s32 tex;             /* ring texture index (Data+0x588 table; 2 = no reload): SnowRing_display */
+    /* 0x08 */ s32 unk08;
 } SnowSlot;
 
 /* the trail emitter (a Node subclass, set up by 0x3EE4): a ring of `count` slots of `stride`
@@ -159,15 +163,16 @@ typedef struct SnowSlot {
 typedef struct SnowRing {
     /* 0x00 */ Node node;
     /* 0x2C */ struct SnowOwner *cam;
-    /* 0x30 */ s32 unk30;
-    /* 0x34 */ f32 unk34;
-    /* 0x38 */ f32 unk38;
-    /* 0x3C */ char unk3C[8];
-    /* 0x44 */ f32 unk44;
-    /* 0x48 */ f32 unk48;
-    /* 0x4C */ f32 unk4C;
+    /* 0x30 */ s32 mtx;             /* world matrix (float (*)[4]; init arg 4): end points / origin go through it */
+    /* 0x34 */ f32 endXInit;        /* init args, copied to endX / endZ at every emit */
+    /* 0x38 */ f32 endZInit;
+    /* 0x3C */ f32 endX;            /* end points at (+-endX cos a, 0, +-endZ * width * sin a) (placeEnds) */
+    /* 0x40 */ f32 endZ;
+    /* 0x44 */ f32 drag;            /* point velocity factor per update (SnowRing_update) */
+    /* 0x48 */ f32 pointGravity;    /* added to each point's w[0] (which adds to vel.y) per update */
+    /* 0x4C */ f32 lean;            /* owner lean (+0x970), negated for owner flag 0x80 (emit) */
     /* 0x50 */ f32 width;           /* end-point spread scale (virtual slot 13, SnowRing_calcWidth) */
-    /* 0x54 */ s32 unk54;
+    /* 0x54 */ s32 flags;           /* cleared by init; BoardTrail's effect bits */
     /* 0x58 */ s32 readOfs;
     /* 0x5C */ s32 writeOfs;
     /* 0x60 */ s32 read;
@@ -175,41 +180,59 @@ typedef struct SnowRing {
     /* 0x68 */ s32 size;            /* stride * count points */
     /* 0x6C */ s32 stride;
     /* 0x70 */ s32 count;
-    /* 0x74 */ s32 unk74;
-    /* 0x78 */ s32 unk78;
-    /* 0x7C */ s32 unk7C;
-    /* 0x80 */ s32 unk80;
+    /* 0x74 */ s32 on;              /* SnowRing_emitTick result this emit */
+    /* 0x78 */ s32 prevOn;
+    /* 0x7C */ s32 prevState;       /* owner state at the last emit (-1 at init) */
+    /* 0x80 */ s32 noGround;        /* 1 when the last placeEnds pushed no end point back (hits <= 0) */
     /* 0x84 */ s32 emitTimer;       /* frames to the next ring advance (SnowRing_emitTick) */
     /* 0x88 */ s32 emitPeriod;
     /* 0x8C */ void *vtx;           /* size Vtx (16-byte aligned) */
     /* 0x90 */ SnowPoint *points;   /* size points */
     /* 0x94 */ SnowSlot *slots;     /* count slots */
-    /* 0x98 */ char unk98[0x18];
+    /* 0x98 */ char unk98[0xA8 - 0x98];
+    /* 0xA8 */ s32 texW;            /* ring texture size (SnowRing_display's texture loads; emit's s coordinate) */
+    /* 0xAC */ s32 texH;
     /* 0xB0 */ void *dl;            /* gfx_newDLContext(0, .., 0x18, ..) */
-    /* 0xB4 */ char unkB4[0x120 - 0xB4];
-    /* 0x120 */ Vec3 unk120;
-    /* 0x12C */ Vec3 unk12C;
-    /* 0x138 */ char unk138[0x144 - 0x138];
+    /* 0xB4 */ char unkB4[0xE4 - 0xB4]; /* SnowRing_probe out-params of the endP / endQ probes, a copy */
+    /* 0xE4 */ Vec3 endA;           /* (+endX, 0, 0) through mtx (SnowRing_updateBasis) */
+    /* 0xF0 */ Vec3 endB;           /* (-endX, 0, 0) through mtx */
+    /* 0xFC */ Vec3 across;         /* endA - endB, normalized */
+    /* 0x108 */ Vec3 velDir;        /* owner vel (+0x318), normalized */
+    /* 0x114 */ Vec3 perp;          /* across x owner up axis (+0x3B0) */
+    /* 0x120 */ Vec3 endP;          /* the probed end points (placeEnds) */
+    /* 0x12C */ Vec3 endQ;
+    /* 0x138 */ Vec3 origin;        /* (0, 0, 0) through mtx */
     /* 0x144 */ s32 hits;           /* end points pushed back by the probe (placeEnds); >= 2 emits */
-    /* 0x148 */ char unk148[0x154 - 0x148];
-    /* 0x154 */ f32 unk154[8];
+    /* 0x148 */ f32 cosA;           /* -(perp . velDir): cos of placeEnds' end-point angle */
+    /* 0x14C */ f32 hitDistP;       /* probe distances of endP / endQ */
+    /* 0x150 */ f32 hitDistQ;
+    /* 0x154 */ f32 velOfs;         /* stride-4 trails in owner state 98: inner points move by velDir * this */
+    /* 0x158 */ f32 dropY;          /* ... and drop by this */
+    /* 0x15C */ f32 maxDist;        /* a probe hit nearer than this pushes the end point back */
+    /* 0x160 */ f32 alphaSpeed;     /* below this owner speed the trail alpha ramps up from speed 5 */
+    /* 0x164 */ f32 alpha;          /* new points' alpha (point fade) */
+    /* 0x168 */ f32 alphaLean;      /* |lean| * this blends the alpha toward 255 */
+    /* 0x16C */ f32 alphaDecay;     /* point fade per update (BoardSpray), alpha / (size / this) on trails */
+    /* 0x170 */ f32 unk170;         /* init 1.0; no reader */
+    /* BoardSpray fields from here (BoardSpray_init / _setDefaults take a SnowRing *; BoardTrail has its own
+     * parameters at these offsets) */
     /* 0x174 */ f32 unk174;
-    /* 0x178 */ f32 unk178;
-    /* 0x17C */ f32 unk17C;
-    /* 0x180 */ f32 unk180;
-    /* 0x184 */ f32 unk184;
-    /* 0x188 */ f32 unk188;
+    /* 0x178 */ f32 sprayFade;      /* points 1 / 2 colour faded toward white by this (0 in owner state 98) */
+    /* 0x17C */ f32 sprayLiftY;     /* new points' w[0] (inner; outer x sprayOuterLift) */
+    /* 0x180 */ f32 sprayUpScale;   /* owner up axis (+0x3B0) velocity, times |strength| (inner points) */
+    /* 0x184 */ f32 sprayPerpScale; /* perp (+0x114) velocity, times the point's ramp and |strength| */
+    /* 0x188 */ f32 sprayVelScale;  /* owner vel (+0x318) scale */
     /* 0x18C */ f32 unk18C;
     /* 0x190 */ f32 unk190;
-    /* 0x194 */ f32 unk194;
-    /* 0x198 */ f32 unk198;
-    /* 0x19C */ f32 unk19C;
-    /* 0x1A0 */ f32 unk1A0;
-    /* 0x1A4 */ f32 unk1A4;
-    /* 0x1A8 */ f32 unk1A8;
-    /* 0x1AC */ f32 unk1AC;
+    /* 0x194 */ f32 unk194;         /* BoardSpray_init 0; no spray reader */
+    /* 0x198 */ f32 unk198;         /* BoardSpray_init 100; no spray reader */
+    /* 0x19C */ f32 sprayOuterLift; /* sprayLiftY factor of points 0 / 3 */
+    /* 0x1A0 */ f32 sprayStrength;  /* last lean strength (-1..1); a sign flip clears hits */
+    /* 0x1A4 */ f32 sprayMinLean;   /* strength 0 below this |lean| */
+    /* 0x1A8 */ f32 sprayMaxLean;   /* strength 1 above it */
+    /* 0x1AC */ f32 sprayRampBase;  /* strength at sprayMinLean (ramps to 1) */
     /* 0x1B0 */ char unk1B0[0x1EC - 0x1B0];
-    /* 0x1EC */ s32 unk1EC;
+    /* 0x1EC */ s32 sprayTex;       /* SnowSlot tex of new rows; 2: every point at origin */
     /* 0x1F0 */ f32 unk1F0;
 } SnowRing;
 
@@ -228,17 +251,26 @@ typedef struct SnowHit {
  * view rotation copied in both orientations, and six view-frustum planes built from it */
 typedef struct SnowFall {
     /* 0x000 */ Node node;
-    /* 0x02C */ s32 unk2C;
+    /* 0x02C */ void *tex;          /* flake texture holder (its +0x60 display list; SnowFall_display) */
     /* 0x030 */ SnowParticle *items;
-    /* 0x034 */ char unk34[0x50 - 0x34];
+    /* 0x034 */ s32 texW;           /* flake texture size */
+    /* 0x038 */ s32 texH;
+    /* 0x03C */ char unk3C[0x40 - 0x3C];
+    /* 0x040 */ s32 fillCount;      /* flakes SnowFall_fill spawns */
+    /* 0x044 */ s32 drawn;          /* texture rectangles emitted this frame */
+    /* 0x048 */ s32 fadeIn;         /* a flake wrapped in y restarts at alpha 1 (set) or 0 ... */
+    /* 0x04C */ f32 fadeChance;     /* ... when sys_randf() > this (SnowFall_display) */
     /* 0x050 */ f32 camRotT[3][3];  /* camera +0xB4 matrix, transposed */
     /* 0x074 */ f32 camRot[3][3];   /* camera +0xB4 matrix rows (0x3544 rotates by these) */
-    /* 0x098 */ char unk98[0xAC - 0x98];
+    /* 0x098 */ Vec3 lastCam;       /* camera position * world scale (SnowFall_fill / _display) */
+    /* 0x0A4 */ f32 follow;         /* flakes move by (camera - lastCam) * this (SnowFall_display) */
+    /* 0x0A8 */ char unkA8[0xAC - 0xA8];
     /* 0x0AC */ f32 nearDist;
     /* 0x0B0 */ f32 farDist;
-    /* 0x0B4 */ s32 unkB4;
+    /* 0x0B4 */ s32 filled;         /* 0 until the first display has run SnowFall_fill */
     /* 0x0B8 */ s32 count;
-    /* 0x0BC */ char unkBC[0xD0 - 0xBC];
+    /* 0x0BC */ s32 visible;        /* flakes with alpha > 0 drawn this frame */
+    /* 0x0C0 */ f32 rgba[4];        /* flake colour, 0..1 (SnowFall_display's SetPrimColor) */
     /* 0x0D0 */ f32 planes[6][4];    /* normal + distance (0x3544 / 0x35B0) */
     /* 0x130 */ s32 nPlanes;
 } SnowFall;
@@ -644,16 +676,16 @@ void SnowRing_init_00003EE4(SnowRing *this, int a1, int stride, int count, int a
     int i;
     int n;
     this->cam = (SnowOwner *)a1;
-    this->unk30 = a4;
-    this->unk34 = f5;
-    this->unk38 = f6;
+    this->mtx = a4;
+    this->endXInit = f5;
+    this->endZInit = f6;
     this->stride = stride;
     this->count = count;
     this->size = count * stride;
-    this->unk54 = 0;
-    this->unk78 = 0;
-    this->unk80 = 0;
-    this->unk7C = -1;
+    this->flags = 0;
+    this->prevOn = 0;
+    this->noGround = 0;
+    this->prevState = -1;
     this->read = 0;
     this->readOfs = 0;
     this->write = 0;
@@ -668,17 +700,17 @@ void SnowRing_init_00003EE4(SnowRing *this, int a1, int stride, int count, int a
     this->dl = (void *)CALL(gfx_newDLContext)(0, (char *)&D_00000000 + 0x634, 0x18, 0, 0, 0, 0);
     ((void (*)(void *))VT_SLOT(this->node.vptr, 11).fn)((char *)this + VT_SLOT(this->node.vptr, 11).delta);
     this->emitTimer = this->emitPeriod = 4;
-    this->unk48 = this->unk154[0] = 0.0f;
-    this->unk44 = 1.0f;
-    this->unk154[1] = 100.0f;
-    this->unk154[2] = 184.0f;
-    this->unk154[3] = 130.0f;
-    this->unk154[5] = snow_ro_20;
-    this->unk154[4] = 182.0f;
-    this->unk154[6] = snow_ro_24;
-    this->unk154[7] = 1.0f;
-    this->unk120.z = this->unk120.y = this->unk120.x = 0;
-    this->unk12C.z = this->unk12C.y = this->unk12C.x = 0;
+    this->pointGravity = this->velOfs = 0.0f;
+    this->drag = 1.0f;
+    this->dropY = 100.0f;
+    this->maxDist = 184.0f;
+    this->alphaSpeed = 130.0f;
+    this->alphaLean = snow_ro_20;
+    this->alpha = 182.0f;
+    this->alphaDecay = snow_ro_24;
+    this->unk170 = 1.0f;
+    this->endP.z = this->endP.y = this->endP.x = 0;
+    this->endQ.z = this->endQ.y = this->endQ.x = 0;
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc.cpp (agent-h run 628),
@@ -809,11 +841,11 @@ void SnowRing_update_0000544C(SnowRing *this) {
             j = 0;
             k++; /* counted here: the addiu sits between the j = 0 and the index mflo */
             for (; j < this->stride; j++, pt++) {
-                f32 drag = this->unk44;
+                f32 drag = this->drag;
                 pt->vel.x *= drag;
                 pt->vel.y *= drag;
                 pt->vel.z *= drag;
-                pt->w[0] += this->unk48;
+                pt->w[0] += this->pointGravity;
                 pt->vel.y += pt->w[0];
                 pt->pos.x += pt->vel.x;
                 pt->pos.y += pt->vel.y;
@@ -887,10 +919,10 @@ void BoardTrail_enableA_00006420(BoardTrail *this) {
     this->powderGravity = snow_ro_2C;
     this->powderRiseY = snow_ro_30;
     this->powderDirScale = snow_ro_34;
-    this->powderSpeedBias = 0.0f;
+    this->powderCosBias = 0.0f;
     this->powderVelScale = snow_ro_38;
     this->powderBurstVelScale = snow_ro_3C;
-    this->powderMinSpeed = snow_ro_40;
+    this->powderMinCos = snow_ro_40;
     this->powderSizeVel = snow_ro_44;
     this->powderAlphaVel = snow_ro_48;
     this->powderDecay = snow_ro_4C;
@@ -938,7 +970,7 @@ void BoardTrail_enableC_000070C0(BoardTrail *this) {
     this->specTimer = 0;
     this->specPeriod = 0;
     this->specUpScale = snow_ro_94;
-    this->specDirScale = snow_ro_98;
+    this->specPerpScale = snow_ro_98;
     this->specVelScale = snow_ro_9C;
     this->specMinLean = snow_ro_A0;
     this->specMaxLean = snow_ro_A4;
@@ -961,8 +993,8 @@ void HandTrail_init_000078E8(SnowRing *this, int a1, int a2, int a3, int a4, int
     (void)&a3;
     this->node.name = (char *)&D_00000000 + 0x660; /* "hand trail" */
     XCALL(gl_func_00000000_snow_3ee4, SnowRing_init_00003EE4)(this, a3, 2, a4, a5, f6, f7);
-    this->unk154[2] = 24.0f;
-    this->unk154[4] = 140.0f;
+    this->maxDist = 24.0f;
+    this->alpha = 140.0f;
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 673),
@@ -1085,26 +1117,26 @@ extern f32 snow_ro_C0, snow_ro_C4, snow_ro_C8, snow_ro_CC, snow_ro_D0, snow_ro_D
 void BoardSpray_setDefaults_00009010(SnowRing *this, int a1) {
     (void)&a1;
     this->unk1F0 = 0.0f;
-    this->unk178 = snow_ro_C0;
-    this->unk17C = snow_ro_C4;
-    this->unk48 = 0.0f;
-    this->unk19C = 0.0f;
-    this->unk180 = snow_ro_C8;
-    this->unk184 = snow_ro_CC;
-    this->unk44 = snow_ro_D0;
-    this->unk188 = 1.0f;
-    this->unk1A4 = snow_ro_D4;
-    this->unk1A8 = snow_ro_D8;
-    this->unk1AC = snow_ro_DC;
-    this->unk154[1] = 0.0f;
+    this->sprayFade = snow_ro_C0;
+    this->sprayLiftY = snow_ro_C4;
+    this->pointGravity = 0.0f;
+    this->sprayOuterLift = 0.0f;
+    this->sprayUpScale = snow_ro_C8;
+    this->sprayPerpScale = snow_ro_CC;
+    this->drag = snow_ro_D0;
+    this->sprayVelScale = 1.0f;
+    this->sprayMinLean = snow_ro_D4;
+    this->sprayMaxLean = snow_ro_D8;
+    this->sprayRampBase = snow_ro_DC;
+    this->dropY = 0.0f;
     this->emitPeriod = 3;
-    this->unk154[2] = 184.0f;
-    this->unk154[3] = 130.0f;
-    this->unk154[5] = snow_ro_E0;
-    this->unk154[4] = 255.0f;
-    this->unk154[6] = 8.5f;
-    this->unk154[7] = snow_ro_E4;
-    this->unk1EC = 2;
+    this->maxDist = 184.0f;
+    this->alphaSpeed = 130.0f;
+    this->alphaLean = snow_ro_E0;
+    this->alpha = 255.0f;
+    this->alphaDecay = 8.5f;
+    this->unk170 = snow_ro_E4;
+    this->sprayTex = 2;
 }
 
 /* UNNAMED: unknown-role empty two-argument virtual (board spray slot 16, SnowRing_vslot16 override) */
@@ -1317,9 +1349,9 @@ MapLighter *MapLighter_ctor_00009E88(MapLighter *this, int a1, void *src, int a3
         CALL(Node_ctor)(this, (char *)&D_00000000 + 0xA64);
         this->node.vptr = (char *)&snowLink_vtbl_9C4;
         this->node.name = (char *)&D_00000000 + 0xA6C;
-        this->unk2C = a1;
-        this->src = src;
-        this->unk34 = a3;
+        this->shape = a1;
+        this->light0 = src;
+        this->light1 = a3;
         this->tgt = c = (Node *)CALL(LocalLight_ctor_00009328)(0);
         CALL(list_append)(&this->node.children, c);
         if (c->parent != 0) {

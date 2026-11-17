@@ -34,7 +34,7 @@ struct SnowTarget {
 struct SnowSource { char pad[0x114]; /* 0x114 */ Parm<Vec3> posParm; };
 struct MapLighter {
     char pad00[0x30];
-    /* 0x30 */ SnowSource *src;
+    /* 0x30 */ SnowSource *light0;
     char pad34[4];
     /* 0x38 */ SnowTarget *tgt;
     char pad3C[4];
@@ -42,8 +42,8 @@ struct MapLighter {
 };
 
 extern "C" void MapLighter_syncLight_00009F44(MapLighter *self) {
-    if (self->src) {
-        const Vec3 &v = self->src->posParm.get();
+    if (self->light0) {
+        const Vec3 &v = self->light0->posParm.get();
         self->pos.x = v.x;
         self->pos.y = v.y;
         self->pos.z = v.z;

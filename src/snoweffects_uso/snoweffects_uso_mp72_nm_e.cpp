@@ -102,28 +102,28 @@ struct SnowEm {
     /* 0x2C */ SnowCamE *cam;
     /* 0x30 */ M44 *mtx;
     char pad34[0x3C - 0x34];
-    /* 0x3C */ float f3C;
-    /* 0x40 */ float f40;
+    /* 0x3C */ float endX;
+    /* 0x40 */ float endZ;
     char pad44[0x7C - 0x44];
-    /* 0x7C */ int state7C;
+    /* 0x7C */ int prevState;
     char pad80[0x98 - 0x80];
     /* 0x98 */ void *pool;
     char pad9C[0xF0 - 0x9C];
-    /* 0xF0 */ SVb vF0;
-    /* 0xFC */ SVb vFC;
+    /* 0xF0 */ SVb endB;
+    /* 0xFC */ SVb across;
     char pad108[0x138 - 0x108];
-    /* 0x138 */ SV pos;
+    /* 0x138 */ SV origin;
     /* 0x144 */ int on;
-    /* 0x148 */ float speed;
+    /* 0x148 */ float cosA;
     char pad14C[0x174 - 0x14C];
     /* 0x174 */ float powderGravity;
     /* 0x178 */ float powderRiseY;
     /* 0x17C */ float powderSizeVel;
     /* 0x180 */ float powderDirScale;
-    /* 0x184 */ float powderSpeedBias;
+    /* 0x184 */ float powderCosBias;
     /* 0x188 */ float powderAlphaVel;
     /* 0x18C */ float powderDecay;
-    /* 0x190 */ float powderMinSpeed;
+    /* 0x190 */ float powderMinCos;
     /* 0x194 */ float powderBurstVelScale;
     /* 0x198 */ float powderVelScale;
     /* 0x19C */ int period;
@@ -142,7 +142,7 @@ extern "C" void BoardTrail_spawnA_000064B8(SnowEm *t) {
     t->count = 1;
     if (t->cam->state == 98) {
         t->s1A4 = 5;
-        if (t->state7C != 98) {
+        if (t->prevState != 98) {
             t->burst = 4;
         }
     }
@@ -153,7 +153,7 @@ extern "C" void BoardTrail_spawnA_000064B8(SnowEm *t) {
             t->timer = t->period;
             i = 1;
         }
-        spd = t->speed < 0.0f ? -t->speed : t->speed;
+        spd = t->cosA < 0.0f ? -t->cosA : t->cosA;
         if (t->s1A4 >= 5 && t->cam->state == 98) {
             t->burst = 2;
         }
@@ -163,16 +163,16 @@ extern "C" void BoardTrail_spawnA_000064B8(SnowEm *t) {
             spd = XCALL(gl_func_00000000_snow_randf, sys_randf)() * snow_ro_50 + snow_ro_54;
             k = t->powderBurstVelScale;
         }
-        if (t->cam->state == 98 && (t->burst != 0 || 20.0f < t->cam->f348) && i && t->powderMinSpeed < spd) {
+        if (t->cam->state == 98 && (t->burst != 0 || 20.0f < t->cam->f348) && i && t->powderMinCos < spd) {
             SV v;
             v.x = 0.0f;
             v.y = 0.0f;
-            v.z = t->f40;
+            v.z = t->endZ;
             xformB(v, *t->mtx);
-            SV n = v - t->pos;
+            SV n = v - t->origin;
             XCALL(gl_func_00000000_snow_norm, math_vec3Normalize)(&n);
-            n *= t->powderDirScale * t->speed;
-            n += t->cam->v318.scaled(k) * (t->powderSpeedBias + spd);
+            n *= t->powderDirScale * t->cosA;
+            n += t->cam->v318.scaled(k) * (t->powderCosBias + spd);
             if (n.y > 0.0f) {
                 n.y = 0.0f;
             }
@@ -184,9 +184,9 @@ extern "C" void BoardTrail_spawnA_000064B8(SnowEm *t) {
                         p = XCALL(gl_func_00000000_snow_pool, SnowPool_oldest_00000680)(t->pool);
                     }
                     if (p != 0) {
-                        SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f);
+                        SVb u = t->endB + t->across * (t->endX * 2.0f);
                         r = XCALL(gl_func_00000000_snow_randf, sys_randf)();
-                        u.lerpTo(t->vF0, r);
+                        u.lerpTo(t->endB, r);
                         x = u.x; y = u.y; z = u.z;
                         p->pos.set(x, y + t->powderRiseY, z);
                         p->vel.set(n.x, n.y, n.z);
@@ -237,17 +237,17 @@ struct SnowEmB {
     char pad00[0x2C];
     /* 0x2C */ SnowCamB *cam;
     char pad30[0x3C - 0x30];
-    /* 0x3C */ float f3C;
+    /* 0x3C */ float endX;
     char pad40[0x80 - 0x40];
-    /* 0x80 */ int i80;
+    /* 0x80 */ int noGround;
     char pad84[0x9C - 0x84];
     /* 0x9C */ void *pool;
     char padA0[0xF0 - 0xA0];
-    /* 0xF0 */ SVb vF0;
-    /* 0xFC */ SVb vFC;
+    /* 0xF0 */ SVb endB;
+    /* 0xFC */ SVb across;
     char pad108[0x144 - 0x108];
     /* 0x144 */ int on;
-    /* 0x148 */ float speed;
+    /* 0x148 */ float cosA;
     char pad14C[0x1B0 - 0x14C];
     /* 0x1B0 */ float normSizeVel;
     /* 0x1B4 */ float normGravity;
@@ -279,7 +279,7 @@ extern "C" void BoardTrail_spawnB_00006B28(SnowEmB *t) {
         t->normAlphaVel = snow_ro_78;
         t->normDecay = snow_ro_7C;
     }
-    if (20.0f < t->cam->f348 && t->i80 != 0 && t->on != 1) {
+    if (20.0f < t->cam->f348 && t->noGround != 0 && t->on != 1) {
         t->c1C8++;
     }
     if ((snow_game_6B28.flags & 0x820000) && t->cam->s9A0 == 97) {
@@ -313,13 +313,13 @@ extern "C" void BoardTrail_spawnB_00006B28(SnowEmB *t) {
                 { /* run 692: the spawn statements in a nested block put the op+ temporary below x / y / z, as in the target */
                     float z; /* run 723: edg allocates a block's statement temporaries before its named locals, so z
                               * declared here sits between the op+ temporary (sp+96) and u (sp+80), as in the target */
-                    s = t->speed < 0.0f ? -t->speed : t->speed;
+                    s = t->cosA < 0.0f ? -t->cosA : t->cosA;
                     if (s < 0.5) {
                         s = 0.5f;
                     }
-                    SVb u = t->vF0 + t->vFC * (t->f3C * 2.0f * s);
+                    SVb u = t->endB + t->across * (t->endX * 2.0f * s);
                     s = XCALL(gl_func_00000000_snow_randf, sys_randf)();
-                    u.lerpTo(t->vF0, s);
+                    u.lerpTo(t->endB, s);
                     x = u.x; y = u.y; z = u.z;
                     p->pos.set(x, y, z);
                     p->vel.set(n.x, n.y, n.z);
@@ -337,7 +337,7 @@ extern "C" void BoardTrail_spawnB_00006B28(SnowEmB *t) {
             }
         }
     }
-    if (t->i80 == 0) {
+    if (t->noGround == 0) {
         t->normLastState = t->cam->state;
     }
 }
@@ -367,17 +367,17 @@ struct SnowEmC {
     char pad00[0x2C];
     /* 0x2C */ SnowCamC *cam;
     char pad30[0x4C - 0x30];
-    /* 0x4C */ float speed;
+    /* 0x4C */ float lean;
     char pad50[0x80 - 0x50];
-    /* 0x80 */ int i80;
+    /* 0x80 */ int noGround;
     char pad84[0xA0 - 0x84];
     /* 0xA0 */ void *pool;
     char padA4[0xF0 - 0xA4];
-    /* 0xF0 */ SVb vF0;
+    /* 0xF0 */ SVb endB;
     char padFC[0x114 - 0xFC];
-    /* 0x114 */ SVb v114;
+    /* 0x114 */ SVb perp;
     char pad120[0x138 - 0x120];
-    /* 0x138 */ SVb pos;
+    /* 0x138 */ SVb origin;
     char pad144[0x1DC - 0x144];
     /* 0x1DC */ float specSizeVel;
     /* 0x1E0 */ float specGravity;
@@ -392,7 +392,7 @@ struct SnowEmC {
     /* 0x204 */ int period;
     /* 0x208 */ float specVelScale;
     /* 0x20C */ float specUpScale;
-    /* 0x210 */ float specDirScale;
+    /* 0x210 */ float specPerpScale;
     /* 0x214 */ float specMinLean;
     /* 0x218 */ float specMaxLean;
     /* 0x21C */ float specRampBase;
@@ -413,10 +413,10 @@ static inline void colB(float q0, float f, float m0, float c0, SPart *p, SnowEmC
 extern "C" void BoardTrail_spawnC_0000718C(SnowEmC *t) {
     float a, sp, r;
     int i, go;
-    if (t->cam->state != 99 || t->i80 != 0) {
+    if (t->cam->state != 99 || t->noGround != 0) {
         return;
     }
-    sp = t->speed;
+    sp = t->lean;
     if (t->cam->f348 < 60.0f || (sp < 0.0f ? -sp : sp) < t->specMinLean) {
         a = 0.0f;
     } else if (t->specMaxLean < (sp < 0.0f ? -sp : sp)) {
@@ -452,13 +452,13 @@ extern "C" void BoardTrail_spawnC_0000718C(SnowEmC *t) {
         }
         if (p != 0) {
             SVb w;
-            SVb u = t->pos;
+            SVb u = t->origin;
             r = XCALL(gl_func_00000000_snow_randf, sys_randf)();
-            u.lerpEach(t->vF0, r);
+            u.lerpEach(t->endB, r);
             w.asg(t, t, t->cam->v318 * t->specVelScale, t, t);
             if (0) w *= t->specUpScale; /* run 698: one more edg float temporary (objdiff 96.99 -> 97.07) */
             SVb a1 = t->cam->v3B0 * t->specUpScale * (a < 0.0f ? -a : a);
-            SVb a2 = t->v114.mulS(1.0f + XCALL(gl_func_00000000_snow_randf, sys_randf)() * snow_ro_B0) * t->specDirScale;
+            SVb a2 = t->perp.mulS(1.0f + XCALL(gl_func_00000000_snow_randf, sys_randf)() * snow_ro_B0) * t->specPerpScale;
             a2 *= (a < 0.0f ? -a : a);
             if (0.0f < a) {
                 a2 *= -1.0f;

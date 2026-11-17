@@ -30,7 +30,7 @@ void gl_func_00000000_snow_4714(void *, int, int, float);
  * the cam colour bytes (+0xA30..; points 1 and 2 faded towards 255 by +0x178, 0 in state 98).
  * Edg temp chains: op* result -> return temp (sp+244) -> by-value operator= param (sp+188). Next:
  * the frame (target named Vec3 locals at 336 / 324 / 312 / 300 / 284 / 272 / 100) and in-loop
- * 64.0f. Run 669: t->speed read once into v before the cam-speed test (target f0 at 0x8064): 85.49 -> 85.74.
+ * 64.0f. Run 669: t->lean read once into v before the cam-speed test (target f0 at 0x8064): 85.49 -> 85.74.
  * Left at the |speed| compare: the target's zero for the +0x120 clears is a ugen f0 constant and the
  * ramp's 0.0f is rematerialised per arm into f24 (bc1tl + two mtc1 zero); here one 0.0f LR spans the
  * 0x4374 call in f20.
@@ -41,7 +41,7 @@ void gl_func_00000000_snow_4714(void *, int, int, float);
  * - s = +-1 as an if / else, not a ternary (the target assigns f16 in each arm).
  * - d = c * |s| through a TV(const TV &, float) constructor: computed straight into d (-13 words of
  *   op* return-temp / param-temp copy chain).
- * - &t->v114 / &t->vFC as pointer locals before the loop (the target hoists a0+276 / a0+252).
+ * - &t->perp / &t->across as pointer locals before the loop (the target hoists a0+276 / a0+252).
  * - the vtx t value computed before the s store (writeOfs loaded once for both).
  * - the reversed-index test is `0 < s`.
  * Run 681 (93.1 -> 93.5 %, 799 -> 800 words): the lerp is a nested inline, lerp3(p, b, f) calling
@@ -76,7 +76,7 @@ void gl_func_00000000_snow_4714(void *, int, int, float);
  * Run 701 (52 -> 40 words differ; frame now word-for-word the target's): up * f180 is assigned into `ua`, a
  *   ctor-less vector declared in the if (on) block (sp+336), inside the a statement through a comma expression,
  *   so the second op* still copies through the t1 temp (a statement split in two copies through a3). That leaves
- *   one loop-body __V (d's, sp+324) where we had two in the wrong order. idw2(t->f180) with two dead int locals
+ *   one loop-body __V (d's, sp+324) where we had two in the wrong order. idw2(t->sprayUpScale) with two dead int locals
  *   gives the two words ahead of up * f180's r, and |s| is a plain ?: (one word after the r, as in the target).
  *   Still left: the fwd / up op* y / z colours (f14 / f2 vs f2 / f14), the |s| / v114 * k / *f184 / d / e
  *   colour rotation, the vel statement's cam pointer (v1 vs v0) and the or a1 / addiu t3 order.
@@ -84,7 +84,7 @@ void gl_func_00000000_snow_4714(void *, int, int, float);
  *   d ctor's |s| written back into its parameter (no named local), and `if (1) {}` at the top of TV::operator*.
  *   Left: the or a1 / addiu t3 preheader order, the vel statement's cam pointer (v1 vs v0) and the d ctor's |s|
  *   (f0 vs f12).
- * Run 715 (13 -> 10 words): no &v114 / &vFC pointer locals (t->v114 / t->vFC read in place, LICM hoists the
+ * Run 715 (13 -> 10 words): no &v114 / &vFC pointer locals (t->perp / t->across read in place, LICM hoists the
  *   addresses after the IV init: the or a1 / addiu t3 / addiu t4 order is fixed), two dead ints keep the frame.
  *   Left: the vel statement's cam pointer (v1 vs v0) and the d ctor's |s| (f0 vs f12).
  * Run 720 (10 -> 5 words): the vel op*'s `this` is its own LR (`if (1) {}` after the pos store, idv through a
@@ -117,7 +117,7 @@ struct TV {
     /* run 708: the leading `if (1) {}` (a unit split ahead of the products) moves the s / y / z words onto the
      * target's colours in every op* (s f12, y f2, z f14) and the pre-loop |v| words with them */
     TV operator*(float s) const { if (1) {} TV r(x * s, y * s, z * s); return r; }
-    /* by value: `p = t->mid` copies the source into the param temp as words (lw / sw through a3),
+    /* by value: `p = t->origin` copies the source into the param temp as words (lw / sw through a3),
      * then member-wise as floats, as in the target (run 665: 79.0 -> 85.5 %) */
     TV &operator=(TV o) { x = o.x; y = o.y; z = o.z; return *this; }
     TV &operator+=(const TV &o) { x += o.x; y += o.y; z += o.z; return *this; }
@@ -146,12 +146,12 @@ struct TTrail {
     char pad00[0x2C];
     /* 0x2C */ TCam *cam;
     char pad30[0x34 - 0x30];
-    /* 0x34 */ float f34;
-    /* 0x38 */ float f38;
-    /* 0x3C */ float f3C;
-    /* 0x40 */ float f40;
+    /* 0x34 */ float endXInit;
+    /* 0x38 */ float endZInit;
+    /* 0x3C */ float endX;
+    /* 0x40 */ float endZ;
     char pad44[0x4C - 0x44];
-    /* 0x4C */ float speed;
+    /* 0x4C */ float lean;
     char pad50[0x5C - 0x50];
     /* 0x5C */ int writeOfs;
     /* 0x60 */ int read;
@@ -167,33 +167,33 @@ struct TTrail {
     /* 0x90 */ TPoint *points;
     /* 0x94 */ TSlot *slots;
     char pad98[0xA8 - 0x98];
-    /* 0xA8 */ int texStep;
+    /* 0xA8 */ int texW;
     char padAC[0xFC - 0xAC];
-    /* 0xFC */ TV vFC;
+    /* 0xFC */ TV across;
     char pad108[0x114 - 0x108];
-    /* 0x114 */ TV v114;
-    /* 0x120 */ TV a;
-    /* 0x12C */ TV b;
-    /* 0x138 */ TV mid;
+    /* 0x114 */ TV perp;
+    /* 0x120 */ TV endP;
+    /* 0x12C */ TV endQ;
+    /* 0x138 */ TV origin;
     /* 0x144 */ int hits;
     char pad148[0x164 - 0x148];
-    /* 0x164 */ float f164;
+    /* 0x164 */ float alpha;
     char pad168[0x16C - 0x168];
-    /* 0x16C */ float f16C;
+    /* 0x16C */ float alphaDecay;
     char pad170[0x178 - 0x170];
-    /* 0x178 */ float fade;
-    /* 0x17C */ float f17C;
-    /* 0x180 */ float f180;
-    /* 0x184 */ float f184;
-    /* 0x188 */ float f188;
+    /* 0x178 */ float sprayFade;
+    /* 0x17C */ float sprayLiftY;
+    /* 0x180 */ float sprayUpScale;
+    /* 0x184 */ float sprayPerpScale;
+    /* 0x188 */ float sprayVelScale;
     char pad18C[0x19C - 0x18C];
-    /* 0x19C */ float f19C;
-    /* 0x1A0 */ float s;
-    /* 0x1A4 */ float lo;
-    /* 0x1A8 */ float hi;
-    /* 0x1AC */ float base;
+    /* 0x19C */ float sprayOuterLift;
+    /* 0x1A0 */ float sprayStrength;
+    /* 0x1A4 */ float sprayMinLean;
+    /* 0x1A8 */ float sprayMaxLean;
+    /* 0x1AC */ float sprayRampBase;
     char pad1B0[0x1EC - 0x1B0];
-    /* 0x1EC */ int mode;
+    /* 0x1EC */ int sprayTex;
 };
 
 /* identity inlines (run 696): a non-trivial argument gets an edg pool word, which shifts the pool-word
@@ -227,51 +227,51 @@ extern "C" void BoardSpray_emit_00007FE0(TTrail *t) {
     float v;
     float w;
     if (t->cam->flags & 0x80) {
-        t->speed = -t->cam->lean;
+        t->lean = -t->cam->lean;
     } else {
-        t->speed = t->cam->lean;
+        t->lean = t->cam->lean;
     }
-    t->a.x = i = 0; t->a.y = i; t->a.z = i; t->b.x = i; t->b.y = i; t->b.z = i;
-    t->f3C = t->f34;
-    t->f40 = t->f38;
+    t->endP.x = i = 0; t->endP.y = i; t->endP.z = i; t->endQ.x = i; t->endQ.y = i; t->endQ.z = i;
+    t->endX = t->endXInit;
+    t->endZ = t->endZInit;
     XCALL(gl_func_00000000_snowa_v, SnowRing_updateBasis_00004374)(t); /* 0x4374 */
-    v = t->speed;
-    if (t->cam->speed < 60.0f || fabs_(v) < t->lo) {
+    v = t->lean;
+    if (t->cam->speed < 60.0f || fabs_(v) < t->sprayMinLean) {
         s = 0.0f;
-    } else if (t->hi < fabs_(v)) {
+    } else if (t->sprayMaxLean < fabs_(v)) {
         if (v < 0.0f) {
             s = -1.0f;
         } else {
             s = 1.0f;
         }
     } else {
-        w = t->hi - t->lo; /* the range, a uopt LR across the |v| arms (target f16) */
-        float f = (fabs_(v) - t->lo) / w;
+        w = t->sprayMaxLean - t->sprayMinLean; /* the range, a uopt LR across the |v| arms (target f16) */
+        float f = (fabs_(v) - t->sprayMinLean) / w;
         if (v < 0.0f) {
-            s = -((1.0f - t->base) * f + t->base);
+            s = -((1.0f - t->sprayRampBase) * f + t->sprayRampBase);
         } else {
-            s = (1.0f - t->base) * f + t->base;
+            s = (1.0f - t->sprayRampBase) * f + t->sprayRampBase;
         }
     }
-    if (s < 0.0f && 0.0f < t->s) {
+    if (s < 0.0f && 0.0f < t->sprayStrength) {
         t->hits = 0;
     }
-    if (0.0f < s && t->s < 0.0f) {
+    if (0.0f < s && t->sprayStrength < 0.0f) {
         t->hits = 0;
     }
-    t->s = s;
+    t->sprayStrength = s;
     if (st0(t->cam) != 97 || spd1(t->cam) < 60.0f || fabs_(s) == 0.0f) {
         t->hits = 0;
     }
     t->on = XCALL(gl_func_00000000_snow_46bc, SnowRing_emitTick_000046BC)(t); /* 0x46BC */
-    t->slots[t->write].unk04[0] = t->mode;
-    w = t->f164;
+    t->slots[t->write].unk04[0] = t->sprayTex;
+    w = t->alpha;
     XCALL(gl_func_00000000_snow_4714, SnowRing_setSlotState_00004714)(t, t->on, t->prevOn, w); /* SnowRing_setSlotState_00004714 */
     if (t->slots[t->write].state == 2) {
         s *= 0.25f;
     }
     if (t->on != 0) {
-        float fade = t->fade;
+        float fade = t->sprayFade;
         if (st0(t->cam) == 98) {
             fade = 0.0f;
         }
@@ -281,42 +281,42 @@ extern "C" void BoardSpray_emit_00007FE0(TTrail *t) {
         TQ0 ua; /* run 701: up * f180 lives here (sp+336, the first word below vFC), not in a loop-body __V */
         for (i = 0; i < t->stride; i++) {
             TV p;
-            if (t->mode == 2) {
-                p = t->mid;
+            if (t->sprayTex == 2) {
+                p = t->origin;
             } else {
-                p = t->a;
-                lerp3(p, t->b, (float)i / (float)(t->stride - 1));
+                p = t->endP;
+                lerp3(p, t->endQ, (float)i / (float)(t->stride - 1));
             }
             t->points[t->writeOfs + i].pos = p;
             if (1) {} /* run 720: splits the vel statement from the pos store */
-            t->points[t->writeOfs + i].vel = idv(t->cam->fwd) * t->f188;
+            t->points[t->writeOfs + i].vel = idv(t->cam->fwd) * t->sprayVelScale;
             t->points[t->writeOfs + i].f28 = 0;
             t->points[t->writeOfs + i].w[1] = w;
-            t->points[t->writeOfs + i].w[2] = t->f16C;
-            TV a = ((TQ &)ua = t->cam->up * idw2(t->f180), (TV &)ua) * (s < 0.0f ? -s : s);
+            t->points[t->writeOfs + i].w[2] = t->alphaDecay;
+            TV a = ((TQ &)ua = t->cam->up * idw2(t->sprayUpScale), (TV &)ua) * (s < 0.0f ? -s : s);
             float k = (float)(0.0f < s ? t->stride - i - 1 : i) / (float)t->stride;
-            TV d(t->v114 * (0, k) * t->f184, s); /* run 708: (0, k) gives op*'s s its own pool word */
-            TV e = t->vFC * -1.0f;
+            TV d(t->perp * (0, k) * t->sprayPerpScale, s); /* run 708: (0, k) gives op*'s s its own pool word */
+            TV e = t->across * -1.0f;
             if (0.0f < s) {
                 d *= -1.0f;
             }
             t->points[t->writeOfs + i].vel += d;
             if (i == 3) {
-                t->points[t->writeOfs + i].w[0] = t->f17C * t->f19C;
+                t->points[t->writeOfs + i].w[0] = t->sprayLiftY * t->sprayOuterLift;
             }
             if (i == 2) {
                 t->points[t->writeOfs + i].vel += a;
-                t->points[t->writeOfs + i].w[0] = t->f17C;
+                t->points[t->writeOfs + i].w[0] = t->sprayLiftY;
             }
             if (i == 1) {
                 t->points[t->writeOfs + i].vel += a;
-                t->points[t->writeOfs + i].w[0] = t->f17C;
+                t->points[t->writeOfs + i].w[0] = t->sprayLiftY;
             }
             if (i == 0) {
-                t->points[t->writeOfs + i].w[0] = t->f17C * t->f19C;
+                t->points[t->writeOfs + i].w[0] = t->sprayLiftY * t->sprayOuterLift;
             }
-            float u = i * t->texStep - 0.5;
-            if (t->mode != 2) {
+            float u = i * t->texW - 0.5;
+            if (t->sprayTex != 2) {
                 u *= 3.0f;
             }
             float tv = ((t->writeOfs & t->stride) >> 2) * 31;

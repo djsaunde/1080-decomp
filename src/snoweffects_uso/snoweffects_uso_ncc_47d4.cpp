@@ -46,10 +46,10 @@ struct SnowEm {
     SnowVEnt *vptr;     /* 28 */
     SnowECam *cam;      /* 2C */
     char pad30[0x34 - 0x30];
-    float u34, u38;
-    float len, u40;     /* 3C 40 */
+    float endXInit, endZInit;
+    float endX, endZ;     /* 3C 40 */
     char pad44[0x4C - 0x44];
-    float u4C;
+    float lean;
     char pad50[0x5C - 0x50];
     int writeOfs;       /* 5C */
     int read;           /* 60 */
@@ -58,24 +58,24 @@ struct SnowEm {
     int stride;         /* 6C */
     int count;          /* 70 */
     int on;             /* 74 */
-    int prev;           /* 78 */
-    int prevMode;       /* 7C */
-    int u80;            /* 80 */
+    int prevOn;           /* 78 */
+    int prevState;       /* 7C */
+    int noGround;            /* 80 */
     char pad84[0x8C - 0x84];
     SnowEVtx *vtx;      /* 8C */
     SnowEPoint *points; /* 90 */
     SnowESlot *slots;   /* 94 */
     char pad98[0xA8 - 0x98];
-    int uA8;
+    int texW;
     char padAC[0x120 - 0xAC];
     SnowBV3 p;          /* 120 */
     SnowBV3 q;          /* 12C */
     char pad138[0x144 - 0x138];
     int hits;           /* 144 */
     char pad148[0x154 - 0x148];
-    float u154, u158;
+    float velOfs, dropY;
     char pad15C[0x160 - 0x15C];
-    float u160, u164, u168, u16C;
+    float alphaSpeed, alpha, alphaLean, alphaDecay;
 };
 extern "C" int gl_func_00000000_snow_46bc(SnowEm *);  /* 0x46BC, typed blank jal */
 extern "C" void gl_func_00000000_snow_4714(SnowEm *, int, int, float);
@@ -91,19 +91,19 @@ extern "C" void SnowRing_emit_000047D4(SnowEm *t) {
     float a, f, ab;
     cam = t->cam;
     if (cam->flags & 0x80) {
-        t->u4C = -cam->f970;
+        t->lean = -cam->f970;
     } else {
-        t->u4C = cam->f970;
+        t->lean = cam->f970;
     }
     i = 0; t->p.x = i; t->p.y = i; t->p.z = i;
     t->q.x = i; t->q.y = i; t->q.z = i;
-    t->len = t->u34;
-    t->u40 = t->u38;
+    t->endX = t->endXInit;
+    t->endZ = t->endZInit;
     CALL(SnowRing_updateBasis_00004374)(t);  /* 0x4374 */
     if (t->hits <= 0) {
-        t->u80 = 1;
+        t->noGround = 1;
     } else {
-        t->u80 = 0;
+        t->noGround = 0;
     }
     cam = t->cam;
     if ((cam->mode != 98 && cam->mode != 97) || cam->speed < 5.0f) {
@@ -111,17 +111,17 @@ extern "C" void SnowRing_emit_000047D4(SnowEm *t) {
     }
     t->on = XCALL(gl_func_00000000_snow_46bc, SnowRing_emitTick_000046BC)(t);
     cam = t->cam;
-    if (cam->speed < t->u160) {
-        ab = t->u160 - 5.0f; a = t->u164 / ab * (cam->speed - 5.0f);
+    if (cam->speed < t->alphaSpeed) {
+        ab = t->alphaSpeed - 5.0f; a = t->alpha / ab * (cam->speed - 5.0f);
     } else {
-        a = t->u164;
+        a = t->alpha;
     }
-    if (t->u4C < 0.0f) {
-        f = -t->u4C;
+    if (t->lean < 0.0f) {
+        f = -t->lean;
     } else {
-        f = t->u4C;
+        f = t->lean;
     }
-    ab = f * t->u168; alpha = ab * (255.0f - a) + a;
+    ab = f * t->alphaLean; alpha = ab * (255.0f - a) + a;
     if (cam->mode == 98) {
         t->slots[t->write].u4 = 1;
     } else {
@@ -129,15 +129,15 @@ extern "C" void SnowRing_emit_000047D4(SnowEm *t) {
     }
     P = t->p;
     Q = t->q;
-    XCALL(gl_func_00000000_snow_4714, SnowRing_setSlotState_00004714)(t, t->on, t->prev, alpha);
+    XCALL(gl_func_00000000_snow_4714, SnowRing_setSlotState_00004714)(t, t->on, t->prevOn, alpha);
     if (t->slots[t->write].state == 2) {
         alpha = 0.0f;
     }
     if (t->stride == 4 && (cam = t->cam)->mode == 98) {
-        lim = t->u158;
+        lim = t->dropY;
         dv = cam->v318;
         CALL(math_vec3Normalize)(&dv);  /* math_vec3Normalize */
-        f = t->u154; dv.scale(f);
+        f = t->velOfs; dv.scale(f);
     } else {
         lim = 0.0f;
         i = 0; dv.set(i, i, i);
@@ -157,8 +157,8 @@ extern "C" void SnowRing_emit_000047D4(SnowEm *t) {
             t->points[t->writeOfs + i].vel.set(0.0f, 0.0f, 0.0f);
             t->points[t->writeOfs + i].u28 = 0;
             t->points[t->writeOfs + i].w1C = alpha;
-            t->points[t->writeOfs + i].w20 = t->points[t->writeOfs + i].w1C / ((float)t->size / t->u16C);
-            t->vtx[t->writeOfs + i].tc[0] = (int)(((float)t->uA8 - 1.0f) * ((float)i / (float)(t->stride - 1))) << 6;
+            t->points[t->writeOfs + i].w20 = t->points[t->writeOfs + i].w1C / ((float)t->size / t->alphaDecay);
+            t->vtx[t->writeOfs + i].tc[0] = (int)(((float)t->texW - 1.0f) * ((float)i / (float)(t->stride - 1))) << 6;
             t->vtx[t->writeOfs + i].tc[1] = ((t->writeOfs & t->stride) >> 1) * 31U << 6;
             t->vtx[t->writeOfs + i].cn[0] = t->cam->col[0];
             t->vtx[t->writeOfs + i].cn[1] = t->cam->col[1];
@@ -166,6 +166,6 @@ extern "C" void SnowRing_emit_000047D4(SnowEm *t) {
         }
     }
     t->vptr[16].fn((void *)((int)t->vptr[16].d + (int)t));
-    t->prev = t->on;
-    t->prevMode = t->cam->mode;
+    t->prevOn = t->on;
+    t->prevState = t->cam->mode;
 }

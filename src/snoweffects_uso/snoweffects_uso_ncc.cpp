@@ -112,19 +112,19 @@ extern "C" void SnowFall_fill_000039C4(SnowFall *t) {
     int i;
     float d, a, b;
     SnowGfxLib *gl = (SnowGfxLib *)D_00000000;
-    t->unk98[0] = gl->curWindow->camera->pos[0] * gl->worldScale[0];
-    t->unk98[1] = gl->curWindow->camera->pos[1] * gl->worldScale[1];
-    t->unk98[2] = gl->curWindow->camera->pos[2] * gl->worldScale[2];
-    for (i = 0; i < t->unk40; i++) {
+    t->lastCam[0] = gl->curWindow->camera->pos[0] * gl->worldScale[0];
+    t->lastCam[1] = gl->curWindow->camera->pos[1] * gl->worldScale[1];
+    t->lastCam[2] = gl->curWindow->camera->pos[2] * gl->worldScale[2];
+    for (i = 0; i < t->fillCount; i++) {
         p = (SnowParticle *)CALL(SnowPool_alloc_000006D0)(t);
         if (p != 0) {
             d = XCALL(gl_func_00000000_snow_randf, sys_randf)() * 100.0f;
             a = (XCALL(gl_func_00000000_snow_randf, sys_randf)() - 0.5f) * 60.0f;
             b = (XCALL(gl_func_00000000_snow_randf, sys_randf)() - 0.5f) * 60.0f;
             if (1) {}
-            p->pos.x = t->unk98[0] - t->camRotT[2][0] * d;
-            p->pos.y = t->unk98[1] - t->camRotT[2][1] * d;
-            p->pos.z = t->unk98[2] - t->camRotT[2][2] * d;
+            p->pos.x = t->lastCam[0] - t->camRotT[2][0] * d;
+            p->pos.y = t->lastCam[1] - t->camRotT[2][1] * d;
+            p->pos.z = t->lastCam[2] - t->camRotT[2][2] * d;
             p->pos.x = p->pos.x + t->camRotT[1][0] * b;
             p->pos.y = p->pos.y + t->camRotT[1][1] * b;
             p->pos.z = p->pos.z + t->camRotT[1][2] * b;
@@ -206,26 +206,26 @@ struct SnowBasis {
     SnowBCam *cam;   /* 2C */
     float (*m)[4];   /* 30: world matrix */
     char pad34[0x3C - 0x34];
-    float len;       /* 3C */
-    float u40;
+    float endX;       /* 3C */
+    float endZ;
     char pad44[0x50 - 0x44];
-    float u50;
+    float width;
     char pad54[0xB4 - 0x54];
     SnowQuad uB4;    /* B4: 0x52D4 out-param of the p probe */
     SnowQuad uC4;    /* C4: 0x52D4 out-param of the q probe */
     SnowQuad uD4;    /* D4: copy of uC4 */
-    SnowBV3 a;       /* E4: +len end point */
-    SnowBV3 b;       /* F0: -len end point */
-    SnowBV3 fwd;     /* FC: normalized a - b */
-    SnowBV3 v108;    /* 108 */
-    SnowBV3 dir;     /* 114 */
-    SnowBV3 p;       /* 120 */
-    SnowBV3 q;       /* 12C */
-    SnowBV3 c;       /* 138: origin */
+    SnowBV3 endA;       /* E4: +len end point */
+    SnowBV3 endB;       /* F0: -len end point */
+    SnowBV3 across;  /* FC: normalized a - b */
+    SnowBV3 velDir;    /* 108 */
+    SnowBV3 perp;     /* 114 */
+    SnowBV3 endP;       /* 120 */
+    SnowBV3 endQ;       /* 12C */
+    SnowBV3 origin;       /* 138: origin */
     int hits;        /* 144 */
     float cosA;      /* 148 */
-    float d1;        /* 14C */
-    float d2;        /* 150 */
+    float hitDistP;        /* 14C */
+    float hitDistQ;        /* 150 */
     char pad154[0x15C - 0x154];
     float maxDist;   /* 15C */
 };
@@ -236,19 +236,19 @@ struct SnowBasis {
  * puts the result-temp address in v0 right before the copy (as the target), and one dead two-word scratch
  * block after the first normalize gives the 8 bytes under the temps (run 671 placement search). */
 extern "C" void SnowRing_updateBasis_00004374(SnowBasis *t) {
-    t->a.x = t->len; t->a.y = 0.0f; t->a.z = 0.0f;
-    xf(&t->a, t->m);
-    t->b.x = -t->len; t->b.z = 0.0f; t->b.y = 0.0f;
-    xf(&t->b, t->m);
-    t->dir = t->a - t->b;
-    CALL(math_vec3Normalize)(&t->dir);
+    t->endA.x = t->endX; t->endA.y = 0.0f; t->endA.z = 0.0f;
+    xf(&t->endA, t->m);
+    t->endB.x = -t->endX; t->endB.z = 0.0f; t->endB.y = 0.0f;
+    xf(&t->endB, t->m);
+    t->perp = t->endA - t->endB;
+    CALL(math_vec3Normalize)(&t->perp);
     { int sc[2]; sc[0] = 0; }
-    t->fwd = t->dir;
-    CALL(math_vec3Cross)(&t->dir, &t->cam->up, &t->dir);
-    t->v108 = t->cam->v318;
-    CALL(math_vec3Normalize)(&t->v108);
-    t->c.x = 0.0f; t->c.y = 0.0f; t->c.z = 0.0f;
-    xf(&t->c, t->m);
+    t->across = t->perp;
+    CALL(math_vec3Cross)(&t->perp, &t->cam->up, &t->perp);
+    t->velDir = t->cam->v318;
+    CALL(math_vec3Normalize)(&t->velDir);
+    t->origin.x = 0.0f; t->origin.y = 0.0f; t->origin.z = 0.0f;
+    xf(&t->origin, t->m);
     t->vptr[14].fn((void *)((int)t->vptr[14].d + (int)t));
     t->vptr[15].fn((void *)((int)t->vptr[15].d + (int)t));
 }
@@ -257,7 +257,7 @@ extern "C" float gl_func_00000000_snow_hitf(SnowBasis *, SnowBV3 *, SnowBV3 *, S
 extern "C" void SnowRing_placeEnds_00004E5C(SnowBasis *t) {
     float ang;
     SnowBV3 hit;
-    t->cosA = -(t->dir.x * t->v108.x + t->dir.y * t->v108.y + t->dir.z * t->v108.z);
+    t->cosA = -(t->perp.x * t->velDir.x + t->perp.y * t->velDir.y + t->perp.z * t->velDir.z);
     ang = XCALL(gl_func_00000000_snow_ff, math_acosf)(t->cosA);
     if (dot(t->cam->v318, t->cam->v3C8) < 0.0f) {
         ang = -ang;
@@ -266,25 +266,25 @@ extern "C" void SnowRing_placeEnds_00004E5C(SnowBasis *t) {
         ang = -ang;
     }
     t->hits = 0;
-    t->p.x = XCALL(gl_func_00000000_snow_ff, fcos)(ang) * -t->len;
-    t->p.y = 0.0f;
-    t->p.z = XCALL(gl_func_00000000_snow_ff, fsin)(ang) * (-t->u40 * t->u50);
-    xf(&t->p, t->m);
-    t->q.x = XCALL(gl_func_00000000_snow_ff, fcos)(ang) * t->len;
-    t->q.y = 0.0f;
-    t->q.z = XCALL(gl_func_00000000_snow_ff, fsin)(ang) * (t->u40 * t->u50);
-    xf(&t->q, t->m);
-    t->d1 = XCALL(gl_func_00000000_snow_hitf, SnowRing_probe_000052D4)(t, &t->p, &hit, &t->uB4);
-    if (t->d1 != 0.0f && t->d1 < t->maxDist) {
-        SnowBV3 push = hit * -t->d1;
+    t->endP.x = XCALL(gl_func_00000000_snow_ff, fcos)(ang) * -t->endX;
+    t->endP.y = 0.0f;
+    t->endP.z = XCALL(gl_func_00000000_snow_ff, fsin)(ang) * (-t->endZ * t->width);
+    xf(&t->endP, t->m);
+    t->endQ.x = XCALL(gl_func_00000000_snow_ff, fcos)(ang) * t->endX;
+    t->endQ.y = 0.0f;
+    t->endQ.z = XCALL(gl_func_00000000_snow_ff, fsin)(ang) * (t->endZ * t->width);
+    xf(&t->endQ, t->m);
+    t->hitDistP = XCALL(gl_func_00000000_snow_hitf, SnowRing_probe_000052D4)(t, &t->endP, &hit, &t->uB4);
+    if (t->hitDistP != 0.0f && t->hitDistP < t->maxDist) {
+        SnowBV3 push = hit * -t->hitDistP;
         { int sc[4]; sc[0] = 0; }
-        t->p += push;
+        t->endP += push;
         t->hits++;
     }
-    t->d2 = XCALL(gl_func_00000000_snow_hitf, SnowRing_probe_000052D4)(t, &t->q, &hit, &t->uC4);
-    if (t->d2 != 0.0f && t->d2 < t->maxDist) {
-        SnowBV3 push = hit * -t->d2;
-        t->q += push;
+    t->hitDistQ = XCALL(gl_func_00000000_snow_hitf, SnowRing_probe_000052D4)(t, &t->endQ, &hit, &t->uC4);
+    if (t->hitDistQ != 0.0f && t->hitDistQ < t->maxDist) {
+        SnowBV3 push = hit * -t->hitDistQ;
+        t->endQ += push;
         t->hits++;
     }
     t->uD4 = t->uC4;

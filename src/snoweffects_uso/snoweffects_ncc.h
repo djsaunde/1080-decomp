@@ -72,11 +72,11 @@ struct SnowFall {
     char pad00[0x30];
     /* 0x30 */ SnowParticle *items;
     char pad34[0x40 - 0x34];
-    /* 0x40 */ int unk40;            /* flakes to spawn in 0x39C4 */
+    /* 0x40 */ int fillCount;        /* flakes to spawn in 0x39C4 */
     char pad44[0x50 - 0x44];
     /* 0x50 */ float camRotT[3][3];  /* camera rotation, transposed (0x3620) */
     /* 0x74 */ float camRot[3][3];
-    /* 0x98 */ float unk98[3];       /* camera position * world scale (0x39C4) */
+    /* 0x98 */ float lastCam[3];     /* camera position * world scale (0x39C4) */
     char padA4[0xB8 - 0xA4];
     /* 0xB8 */ int count;
 };
