@@ -51,8 +51,13 @@ void PointsGadget_display_FFFFFFE0(PointsPopup *p) {
     CALL(gui_setupRenderMode_0000055C)((char *)p->arg);
     CALL(gui_setPrimColor_000006B8)((char *)p->arg, (int)((f32)p->alpha * D_00000000), col, 255);
     /* scaleX goes in a3 as its raw bits (the callee is K&R here: lw, not lwc1 + mfc1) */
+#ifdef PORT64 /* plan 21.8: scaleX is a float parameter (xmm0 on x86-64), not its bits */
+    PORT64_CALLP(void (char *, int, int, f32, f32, char *), gui_drawStringScaled_00000F04)((char *)p->arg,
+                      (int)(p->parms.xps.value + 2.0f), (int)p->parms.yps.value, p->scaleX, p->scaleY, p->text);
+#else
     XCALL(gl_func_00000000f, gui_drawStringScaled_00000F04)((char *)p->arg, (int)(p->parms.xps.value + 2.0f), (int)p->parms.yps.value,
                       *(int *)&p->scaleX, p->scaleY, p->text);
+#endif
     if (p->font != 0) {
         CALL(gui_spriteRefresh)(p->font);
         CALL(gui_setColorEnvPrim_000017DC)(p->font, (int)((f32)p->alpha * D_00000000), col, 255);

@@ -1,5 +1,10 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post0b.c. Target bytes unchanged. */
 #include "context_game_libs_post0b.h"
+#ifdef PORT64 /* plan 21.8: absrot_matrix4 takes the angle as a float (xmm0 on x86-64), not its bits */
+extern void port64_rotate(void *, s32, float, s32) __asm__("absrot_matrix4");
+#define gl_39B58_rotate_bits(m, axis, bits, flag) \
+    port64_rotate(m, axis, (__extension__({ union { u32 i_; float f_; } u_; u_.i_ = (bits); u_.f_; })), flag)
+#endif
 void SNode_handleMsg(GLTransformCommandObject *a0, GLCommandHeader *a1) {
     float translation[3];
     union { float values[3]; u32 words[3]; } rotations;

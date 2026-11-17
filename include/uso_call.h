@@ -145,8 +145,15 @@
  *   PORT64_F(x)     an int holding f32 bits, passed to a PORT64_FT parameter: the float with those bits
  *   PORT64_I(x)     a PORT64_FT parameter used as the bits (an int): the inverse
  * port/tools/abi-scan.py --x64 lists the remaining int / float class mismatches.
+ *   PORT64_CALLP(T, f)  f called through the prototype T (a function type, `void (char *, float)`):
+ *                   for a K&R `CALL(f)` site whose callee takes a float (abi-scan X64KR; a K&R call cannot
+ *                   pass a float on x86-64).  Used only under `#ifdef PORT64`, with the ROM's CALL in the
+ *                   `#else`; a C++ site calls f directly.
  */
 #ifdef PORT64
+#define PORT64_CALLP(T, f) PORT64_CALLP_(T, f, __COUNTER__)
+#define PORT64_CALLP_(T, f, n) PORT64_CALLP__(T, f, n)
+#define PORT64_CALLP__(T, f, n) (*({ extern __typeof__(T) __port64_call_##n __asm__(#f); &__port64_call_##n; }))
 #define PORT64_FT float
 #define PORT64_F(x) PORT_FBITS(x)
 #define PORT64_I(x) (__extension__({ union { int i_; float f_; } u_; u_.f_ = (x); u_.i_; }))

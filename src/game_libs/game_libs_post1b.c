@@ -1752,8 +1752,13 @@ extern int gl_func_00000000();
 
 void DNode_applyAccums_00065448(char *a0) {
     /* tsc.value passed as its raw word (K&R int arg = the float bits in $a3) */
+#ifdef PORT64 /* plan 21.8: the callee (the NCC donor) takes a float: xmm0 on x86-64, not the bits */
+    PORT64_CALLP(void (void *, void *, void *, float), DNodeAccum_apply_00064388)(&DNODE(a0)->impulseAcc, DNODE(a0)->angVel, DNODE(a0)->vel, DNODE(a0)->parms.tsc.value);
+    PORT64_CALLP(void (void *, void *, void *, float), DNodeAccum_apply_00064388)(&DNODE(a0)->moveAcc, DNODE(a0)->vqs.quat, DNODE(a0)->vqs.trans, DNODE(a0)->parms.tsc.value);
+#else
     CALL(DNodeAccum_apply_00064388)(&DNODE(a0)->impulseAcc, DNODE(a0)->angVel, DNODE(a0)->vel, *(int *)&DNODE(a0)->parms.tsc.value);
     CALL(DNodeAccum_apply_00064388)(&DNODE(a0)->moveAcc, DNODE(a0)->vqs.quat, DNODE(a0)->vqs.trans, *(int *)&DNODE(a0)->parms.tsc.value);
+#endif
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_65494.cpp (child-list contact

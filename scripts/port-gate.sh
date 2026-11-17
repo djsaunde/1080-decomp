@@ -25,9 +25,6 @@
 #              With >= 2000 frames the attract demo's CPU rider (SnowAI) must reach 60 % of the course
 #              (trace e0 pct; ~75 % at 2000 when it steers, ~35 % against the rock wall when it cannot
 #              find its course markers: plan 18.24, run 854).
-#   build64    (report-only, plan 21.7) the x86-64 build: configure + build, test_*, the smoke, its state.log
-#              against the i386 smoke's, abi-scan --x64; prints INFO and never fails until M6's exit check
-#              holds (PORT_GATE_BUILD64=0 skips it)
 #   race       port/tools/race-check.py (~10 s): port/host/race_crystal_lake.input from a fresh dir
 #              reaches "Goal!" at its `# GOAL` step; View Replay and the saved ghost (reloaded in a
 #              new process) give the race's rider positions bit for bit.  The script is tied to the
@@ -39,9 +36,9 @@
 #              Match Race reaches the goal (before the CPU when the script says `# WIN`), and an
 #              options change survives a reload in a new process.  Physics-tied like the race step:
 #              the failure prints the regenerate command for each script
-#   soak       port/tools/soak.py --gate (~8 s, plan 20.7): 12 fixed fuzz seeds x 5000 steps and every
-#              port/host/repro/*.input (soak-found crash repros) run clean: no signal / sys_fatal / trap /
-#              hang / NaN rider fields / stuck retrace / audio badAddr; a failure prints its class and step
+#   build64    (plan 21.7 / 21.8, M6) the x86-64 build: configure + build, test_*, then the smoke, the race and
+#              the modes scripts 64-bit: every state.log equal to the i386 run's, the 64-bit race / modes
+#              checks pass; abi-scan --x64 count printed (PORT_GATE_BUILD64=0 skips it)
 #   saves      test_backup + 4 short boots: the SRAM file is the N64 image (port/include/port_backup.h,
 #              plan 20): blank-SRAM save = the ROM defaults' big-endian image, reloads unchanged,
 #              a synthetic .sra loads, damaged primaries are restored from the mirrors
@@ -270,45 +267,6 @@ PY
   else line smoke FAIL "$txt${why:+; $why}"; fi
 fi
 
-# ---- build64 (plan 21.7, M6): the x86-64 build (-DPORT_64=ON, the game in the x32 data model) from a fresh
-# dir, its unit tests, the same smoke run, and its state.log against the i386 smoke's (the `/N` after r0's
-# fields is a host address, dropped).  REPORT-ONLY until the M6 exit check holds: it prints how far the
-# 64-bit build gets (build / tests / frames / first divergent frame / abi-scan --x64 count) as INFO and
-# never fails the gate.  PORT_GATE_BUILD64=0 skips it.
-if [ "${PORT_GATE_BUILD64:-1}" = 1 ]; then
-  start; B64="$LOG/build64"; S64="$LOG/smoke64"; rm -rf "$B64" "$S64"; mkdir -p "$S64"; why=""
-  if ! cmake -S port -B "$B64" -G Ninja -DPORT_64=ON -DPORT_LINK=ON -DPORT_ROM="$ROM" >"$LOG/configure64.log" 2>&1; then why="configure failed"
-  elif ! cmake --build "$B64" -j"$JOBS" -- -k 0 >"$LOG/build64.log" 2>&1; then
-    why="build: $(grep -c 'error:' "$LOG/build64.log") errors ($(grep -m1 'error:' "$LOG/build64.log" | cut -c1-80))"; fi
-  if [ -z "$why" ]; then
-    t=""; for u in test_ultra test_fs test_backup; do
-      case $u in test_ultra) a="$S64/test.sram";; test_fs) a="$ROM";; *) a="";; esac
-      "$B64/$u" $a >"$S64/$u.log" 2>&1 && t="$t $u ok" || t="$t $u FAIL"; done
-    ( cd "$S64" && timeout 300 "$B64/tenshoe" --rom "$ROM" --sram "$S64/1080.sram" --frames "$FRAMES" \
-        --trace "$S64/state.log" >"$S64/out.log" 2>&1 ); rc=$?
-    nf=$(grep -c '^F ' "$S64/state.log" 2>/dev/null); nf=${nf:-0}
-    stop=$(grep -a -m1 -E 'sys_fatal|PORT: signal' "$S64/out.log" | cut -c1-70)
-    cmpr=$(python3 - "$LOG/smoke/state.log" "$S64/state.log" <<'PY'
-import re, sys
-def rows(p):
-    try: return [re.sub(r'/\d+ e0=', ' e0=', l) for l in open(p, errors='replace')]
-    except OSError: return None
-a, b = rows(sys.argv[1]), rows(sys.argv[2])
-if a is None or b is None: print('no i386 smoke trace to compare'); sys.exit()
-for i, (x, y) in enumerate(zip(a, b)):
-    if x != y:
-        f = x.split()[1] if x.startswith('F ') else 'header'
-        print('first divergence at frame %s (line %d)' % (f, i + 1)); break
-else:
-    print('identical over %d lines' % min(len(a), len(b)) + ('' if len(a) == len(b) else ' (lengths %d / %d)' % (len(a), len(b))))
-PY
-)
-    abi=$(python3 port/tools/abi-scan.py --x64 "$B64/tenshoe" 2>/dev/null | cut -f1 | sed 's/X64P[0-9]*/X64P/' | sort | uniq -c | awk '{printf "%s %s ", $2, $1}')
-    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; state.log vs i386: $cmpr; abi-scan --x64: ${abi:-0}"
-  fi
-  line build64 INFO "$why"
-fi
-
 # ---- race (plan 20.3): the scripted Crystal Lake run to the goal, its replay and its ghost
 start; if have tenshoe; then
   RC="$(mktemp -d "$LOG/race.XXXXXX")"  # a fresh dir per run (no rm of a variable path)
@@ -327,16 +285,62 @@ start; if have tenshoe; then
   else line modes FAIL "${txt:-$(tail -1 "$MC/check.log")}"; grep -E 'FAIL|regenerate' "$MC/check.log" | sed 's/^/           /'; fi
 fi
 
-# ---- soak (plan 20.7, run 864): port/tools/soak.py --gate: fixed fuzz seeds (random menus, rides, pauses,
-# 2 / 4 pads; blank, saved and all-unlocked SRAM) and every port/host/repro/*.input (minimised crash
-# repros) must run clean: no signal, sys_fatal, trap, hang, NaN / Inf rider fields, stuck retrace or
-# audio badAddr / unknown op.  ~8 s
-start; if have tenshoe; then
-  SK="$(mktemp -d "$LOG/soak.XXXXXX")"  # a fresh dir per run (no rm of a variable path)
-  python3 port/tools/soak.py -b "$B" -r "$ROM" -o "$SK" -j "$JOBS" --gate >"$SK/soak.log" 2>&1; rc=$?
-  txt="$(head -1 "$SK/soak.log" | sed 's/^soak: //')"
-  if [ $rc = 0 ]; then line soak PASS "$txt"
-  else line soak FAIL "${txt:-$(tail -1 "$SK/soak.log")}"; grep -E '^  (FAIL|min)|first:' "$SK/soak.log" | cut -c1-200 | sed 's/^/           /'; fi
+# ---- build64 (plan 21.7 / 21.8, M6): the x86-64 build (-DPORT_64=ON, the game in the x32 data model) from a
+# fresh dir, its unit tests, then the smoke, the race and the modes scripts run 64-bit: each run's state.log must
+# equal the i386 run's line for line (M6's exit check; the `/N` after each r<i>'s fields, the RiderAnim state
+# method's host address, is dropped), and the 64-bit race / modes checks must pass.  The abi-scan --x64 count is
+# printed (INFO: its X64KR / X64P / X64REG list is the remaining float-class work, plan 21.8).
+# PORT_GATE_BUILD64=0 skips it (a full build: ~15 s with a warm compiler cache, a few minutes cold).
+if [ "${PORT_GATE_BUILD64:-1}" = 1 ]; then
+  start; B64="$LOG/build64"; S64="$LOG/smoke64"; rm -rf "$B64" "$S64"; mkdir -p "$S64"; why=""; ok=1
+  if ! cmake -S port -B "$B64" -G Ninja -DPORT_64=ON -DPORT_LINK=ON -DPORT_ROM="$ROM" >"$LOG/configure64.log" 2>&1; then why="configure failed"
+  elif ! cmake --build "$B64" -j"$JOBS" -- -k 0 >"$LOG/build64.log" 2>&1; then
+    why="build: $(grep -c 'error:' "$LOG/build64.log") errors ($(grep -m1 'error:' "$LOG/build64.log" | cut -c1-80))"; fi
+  if [ -z "$why" ]; then
+    t=""; for u in test_ultra test_fs test_backup; do
+      case $u in test_ultra) a="$S64/test.sram";; test_fs) a="$ROM";; *) a="";; esac
+      "$B64/$u" $a >"$S64/$u.log" 2>&1 && t="$t $u ok" || { t="$t $u FAIL"; ok=0; }; done
+    ( cd "$S64" && timeout 300 "$B64/tenshoe" --rom "$ROM" --sram "$S64/1080.sram" --frames "$FRAMES" \
+        --trace "$S64/state.log" >"$S64/out.log" 2>&1 ); rc=$?
+    nf=$(grep -c '^F ' "$S64/state.log" 2>/dev/null); nf=${nf:-0}
+    stop=$(grep -a -m1 -E 'sys_fatal|PORT: signal' "$S64/out.log" | cut -c1-70)
+    { [ $rc = 0 ] && [ "$nf" -ge "$FRAMES" ]; } || ok=0
+    # the race and the modes scripts, 64-bit (RUN32=env: no i386 loader), next to the i386 runs' dirs
+    R64=""; M64=""
+    if [ -n "${RC:-}" ]; then R64="$(mktemp -d "$LOG/race64.XXXXXX")"
+      RUN32=env python3 port/tools/race-check.py -b "$B64" -r "$ROM" -o "$R64" >"$R64/check.log" 2>&1 || ok=0; fi
+    if [ -n "${MC:-}" ]; then M64="$(mktemp -d "$LOG/modes64.XXXXXX")"
+      RUN32=env python3 port/tools/modes-check.py -b "$B64" -r "$ROM" -o "$M64" >"$M64/check.log" 2>&1 || ok=0; fi
+    cmpr=$(python3 - "$LOG/smoke/state.log" "$S64/state.log" "${RC:-}" "$R64" "${MC:-}" "$M64" <<'PY'
+import os, re, sys
+def rows(p):
+    try: return [re.sub(r'/-?\d+(?= |$)', '', l.rstrip('\n')) for l in open(p, errors='replace')]
+    except OSError: return None
+def cmp(a, b):
+    x, y = rows(a), rows(b)
+    if x is None or y is None: return 'missing'
+    for i, (u, v) in enumerate(zip(x, y)):
+        if u != v: return 'frame %s' % (u.split()[1] if u.startswith('F ') else 'header')
+    return None if len(x) == len(y) else 'lengths %d / %d' % (len(x), len(y))
+pairs = [('smoke', sys.argv[1], sys.argv[2])]
+for d32, d64 in ((sys.argv[3], sys.argv[4]), (sys.argv[5], sys.argv[6])):
+    if not d32 or not d64: continue
+    for root, _, fs in sorted(os.walk(d32)):
+        if 'state.log' in fs:
+            rel = os.path.relpath(root, d32)
+            pairs.append((rel, os.path.join(root, 'state.log'), os.path.join(d64, rel, 'state.log')))
+bad = [(n, r) for n, a, b in pairs for r in [cmp(a, b)] if r]
+print('%d/%d state.logs identical to i386%s' % (len(pairs) - len(bad), len(pairs),
+      '' if not bad else '; differ: ' + ', '.join('%s (%s)' % nb for nb in bad[:6])))
+sys.exit(1 if bad else 0)
+PY
+) || ok=0
+    abi=$(python3 port/tools/abi-scan.py --x64 "$B64/tenshoe" 2>/dev/null | cut -f1 | sed 's/X64P[0-9]*/X64P/' | sort | uniq -c | awk '{printf "%s %s ", $2, $1}')
+    rr=$( [ -n "$R64" ] && { grep -qE ' FAIL ' "$R64/check.log" && echo "race64 FAIL" || echo "race64 ok"; } )
+    mm=$( [ -n "$M64" ] && { grep -qE ' FAIL ' "$M64/check.log" && echo "modes64 FAIL" || echo "modes64 ok"; } )
+    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; $rr; $mm; $cmpr; abi-scan --x64 (INFO): ${abi:-0}"
+  else ok=0; fi
+  [ $ok = 1 ] && line build64 PASS "$why" || line build64 FAIL "$why"
 fi
 
 # ---- saves (plan 20): the SRAM file is the N64 image (port/include/port_backup.h).  test_backup's unit

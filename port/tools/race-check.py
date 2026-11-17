@@ -23,7 +23,7 @@ import argparse, os, re, shutil, struct, subprocess, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 GAME = os.path.dirname(os.path.dirname(HERE))
 MONO = os.path.dirname(os.path.dirname(GAME))
-RUN32 = os.path.join(MONO, 'tools/i386-sysroot/run32')
+RUN32 = os.environ.get('RUN32', os.path.join(MONO, 'tools/i386-sysroot/run32'))  # `env`: a 64-bit build
 def load(path):
     """{step: (flow, raceState, r0 xyz hex, r1 xyz hex, pct hex)}"""
     out = {}

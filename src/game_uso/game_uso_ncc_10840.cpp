@@ -30,7 +30,14 @@ extern "C" {
 extern char game_uso_D_807FFB78;
 extern char game_uso_D_807FF400;
 void import_0010DB28(void *, int, int, int, int, int);
+#ifdef PORT64 /* plan 21.8: AnimPlayer_setBlend takes the weight's f32 bits under PORT64 (its C callers pass them) */
+void import_0010DB78(void *, int, int, int, int, int);
+static inline int setblend_bits(float f) { union { float f; int i; } u; u.f = f; return u.i; }
+#define SETBLEND_ARG(f) setblend_bits(f)
+#else
 void import_0010DB78(void *, int, int, float, int, int);
+#define SETBLEND_ARG(f) f
+#endif
 void RiderAnim_checkBrake_0000D8A8(void *);
 void RiderAnim_checkJump_0000D8EC(void *);
 void RiderAnim_checkRow_0000E1FC(void *);
@@ -45,7 +52,7 @@ extern "C" void RiderAnim_stateRideDeep(int *a0) {
     RiderAnim_checkJump_0000D8EC(a0);
     f0 = RA(a0)->rider->edge;
     if ((double)(f0 < 0.0f ? -f0 : f0) > AT(double, &game_uso_D_807FFB78, kRoD_0p06_258)) {
-        import_0010DB78(a0, RANIM_ID(2, RANIM_TURN_B), RANIM_ID(2, RANIM_TURN_F), f0, 0, 1);
+        import_0010DB78(a0, RANIM_ID(2, RANIM_TURN_B), RANIM_ID(2, RANIM_TURN_F), SETBLEND_ARG(f0), 0, 1);
     } else {
         import_0010DB28(a0, RANIM_ID(2, RANIM_UP_DOWN), 0, 1, 6, 1);
     }

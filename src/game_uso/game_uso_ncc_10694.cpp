@@ -31,7 +31,14 @@ extern char game_uso_D_807FF3B8;
 void RiderAnim_checkRow_0000E1FC(void *);
 void RiderAnim_checkBrake_0000D8A8(void *);
 void RiderAnim_checkJump_0000D8EC(void *);
+#ifdef PORT64 /* plan 21.8: AnimPlayer_setBlend takes the weight's f32 bits under PORT64 (its C callers pass them) */
+void import_0010DB78(void *, int, int, int, int, int);
+static inline int setblend_bits(float f) { union { float f; int i; } u; u.f = f; return u.i; }
+#define SETBLEND_ARG(f) setblend_bits(f)
+#else
 void import_0010DB78(void *, int, int, float, int, int);
+#define SETBLEND_ARG(f) f
+#endif
 void import_0010DB28(void *, int, int, int, int, int);
 void RiderAnim_checkGroundSpin_0000E91C(void *);
 void RiderAnim_checkBackwardSwitch_00011750(void *);
@@ -54,7 +61,7 @@ extern "C" void RiderAnim_stateRide(A *a0) {
     ar = (r < 0.0f) ? -r : r;
     if ((double)ar > AT(double, &game_uso_D_807FFB70, kRoD_0p06_250)) {
         int v = RA(a0)->animSet;
-        import_0010DB78(a0, v | RANIM_TURN_B, v | RANIM_TURN_F, r, 0, 1);
+        import_0010DB78(a0, v | RANIM_TURN_B, v | RANIM_TURN_F, SETBLEND_ARG(r), 0, 1);
     } else {
         import_0010DB28(a0, RA(a0)->animSet | RANIM_UP_DOWN, 0, 1, 6, 1);
     }
