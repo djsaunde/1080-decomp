@@ -1149,7 +1149,7 @@ void ArcNameEntry_update_00001B04(int *arg) {
     int v0;
     v0 = gl_func_00000000(&D_arc1B04_a, 0x40100); /* input_checkPressed_00011E00 */
     if (v0 == 0) return;
-    v0 = gl_func_00000000((int *)MODENAMEENT(arg)->base.entry); /* Backup_sessionHasNew */
+    v0 = gl_func_00000000((int *)MODENAMEENT(arg)->base.session); /* Backup_sessionHasNew */
     if (v0 != 0) {
         MODENAMEENT(arg)->base.phase = 1;
         GAMEFLOW(D_arc1B04_state)->procState = 8;
@@ -1223,7 +1223,7 @@ void ArcNameEntry_drawBlinkBanner_00001C74(int *a0) {
     buf[2] = 1.0f;
     buf[3] = 1.0f;
     MODENAMEENT(a0)->base.frame += 1;
-    if (CALL(Backup_sessionCountNew)(MODENAMEENT(a0)->base.entry) != 0) {
+    if (CALL(Backup_sessionCountNew)(MODENAMEENT(a0)->base.session) != 0) {
         CALL(gui_setColor_00001A5C)(&D_00000000,
             (int)(MODENAMEENT(a0)->alpha * (scale = 255.0f)), buf);
         tgt = MODENAMEENT(a0)->banner;

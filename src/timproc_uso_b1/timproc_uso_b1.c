@@ -805,7 +805,7 @@ char *TimNameEntry_ctor_000016F8(char *arg0, char *arg1, int arg2) {
 void TimNameEntry_update_00001860(int *a0) {
     if (CALL(Fader_isDone_00013980)(*(int*)(&D_00000000 + 0x190)) == 0) return;
     if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x40100) == 0) return;
-    if (CALL(Backup_sessionHasNew)(MODENAMEENT(a0)->base.entry) != 0) {
+    if (CALL(Backup_sessionHasNew)(MODENAMEENT(a0)->base.session) != 0) {
         MODENAMEENT(a0)->base.phase = 1;
     } else {
         CALL(Process_fadeOut_0000F954)(a0, -1, 0);
@@ -874,7 +874,7 @@ void TimNameEntry_drawTitle_000019C0(int *a0) {
     buf[2] = 1.0f;
     buf[3] = 1.0f;
     MODENAMEENT(a0)->base.frame += 1;
-    if (CALL(Backup_sessionCountNew)(MODENAMEENT(a0)->base.entry) != 0) {
+    if (CALL(Backup_sessionCountNew)(MODENAMEENT(a0)->base.session) != 0) {
         CALL(gui_setColor_00001A5C)(&D_00000000,
             (int)(MODENAMEENT(a0)->alpha * (scale = 255.0f)), buf);
         tgt = MODENAMEENT(a0)->banner;

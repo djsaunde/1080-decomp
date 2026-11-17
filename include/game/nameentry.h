@@ -3,27 +3,54 @@
 
 #include "../gdl/node.h" /* relative: NCC donors include this header without -I include */
 
-/* The record name-entry overlay (agent-h run 509). The base class lives in nameent.uso
- * (module 33, export 69, vtable Data 0x80; docs/1080_MODES.md) and is 0xD4: each mode's
- * <Cls>NameEntry_ctor runs a 4-level in-place cascade (0x2C Node, 0x50 Process, 0xD4 NameEntry,
- * then its own size) and stores the vptr at +0x28 on each level. Only the fields the mode
- * modules touch are named. */
+struct BackupSession;    /* include/gdl/backup.h */
+struct GuiMenu;          /* include/game/guimenu.h */
+struct NameEnterMessage; /* include/game/nameent.h: the letter wheel */
+
+/* The record name entry: nameent.uso's "NameEnter Process" (module 33, export 69 = vtable
+ * Data+0x80, 0xD4 bytes). One class, two views merged here (agent-h run 805):
+ *   - nameent.uso builds and runs it (NameEntry_init / _handleInput / _drawGui ...,
+ *     src/nameent_uso/nameent_uso.c; include/game/nameent.h adds the NameEnterMessage);
+ *   - the mode modules derive Tim / Trk / Arc / MgrNameEntry from it: each
+ *     <Cls>NameEntry_ctor runs a 4-level in-place cascade (0x2C Node, 0x50 Process, 0xD4
+ *     NameEntry, then its own size), storing the vptr at +0x28 on each level; the 0xD4 level's
+ *     vptr is the import nameent:Data+0x80 (scripts/uso-imports.py sites timproc), the same
+ *     vtable NameEntry_init's object carries. The mode's onRaceOver then calls
+ *     NameEntry_init(nameEntry, race.session). */
 typedef struct NameEntry {
-    /* 0x00 */ char process[0x50];  /* Node + Process head (vptr 0x28) */
-    /* 0x50 */ s32 entry;           /* the name-entry widget: its state query returns 0 (none),
-                                     * 1 (Mgr: the 0x120 banner) or other (0x138); <Cls>NameEntry_update
-                                     * switches to phase 1 once it reports nonzero */
-    /* 0x54 */ char unk54[0x60 - 0x54];
-    /* 0x60 */ s32 phase;           /* the ctor's mode argument; display (slot 13) switches on it:
-                                     * 0 slot 17 drawEntryOverlay, 1 slot 18 drawExitOverlay, 2 slot 19 */
+    /* 0x00 */ char node[0x28];         /* Node; name (+0xC) = "NameEnter Process" (Data+0x140) */
+    /* 0x28 */ char *vptr;
+    /* 0x2C */ s32 fadingOut;           /* Process head (include/game/modeproc.h ProcessHead) */
+    /* 0x30 */ s32 paused;              /* Process head; NameEntry_init sets 1 */
+    /* 0x34 */ char unk34[0x48 - 0x34];
+    /* 0x48 */ struct GuiMenu *pauseMenu; /* Process head; none (0) */
+    /* 0x4C */ s32 unk4C;
+    /* 0x50 */ struct BackupSession *session; /* NameEntry_init arg 1 (the race's record session,
+                                         * 0 = none): the name is written to it; the modes'
+                                         * <Cls>NameEntry_update pass it to Backup_sessionHasNew
+                                         * (switch to phase 1 once a new record is pending) and
+                                         * drawTitle to Backup_sessionCountNew */
+    /* 0x54 */ struct NameEnterMessage *message; /* the letter wheel (NameEnterMessage_ctor) */
+    /* 0x58 */ s32 cursorX;             /* 160: the name board is centred on it */
+    /* 0x5C */ s32 cursorY;             /* 85 */
+    /* 0x60 */ s32 phase;               /* the ctor's mode argument: 0 result, 1 entry, 2;
+                                         * handleInput runs vslot 14 + phase, drawGui vslot 17 +
+                                         * phase (17 drawEntryOverlay, 18 drawExitOverlay) */
     /* 0x64 */ s32 unk64;
-    /* 0x68 */ s32 frame;           /* +1 per banner draw; bit 3 blinks the banner */
-    /* 0x6C */ char unk6C[0xD4 - 0x6C];
+    /* 0x68 */ s32 frame;               /* +1 per banner draw; bit 3 blinks the banner */
+    /* 0x6C */ s32 entered;             /* set by NameEnterMessage_update on END: commit the name */
+    /* 0x70 */ s32 showBoard;           /* 1: phases 0 / 1 draw the name board, else a cleared screen */
+    /* 0x74 */ char unk74[0x8C - 0x74];
+    /* 0x8C */ char frameTop[0x18];     /* gui sprite 0x280000: the board's top piece */
+    /* 0xA4 */ char frameLeft[0x18];    /* 0x280001: the left column */
+    /* 0xBC */ char frameRight[0x18];   /* 0x280002: the right column */
 } NameEntry;
 
 typedef char NameEntry_size_check[sizeof(NameEntry) == 0xD4 ? 1 : -1];
 #ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
+typedef char NameEntry_session_check[(int)&((NameEntry *)0)->session == 0x50 ? 1 : -1];
 typedef char NameEntry_phase_check[(int)&((NameEntry *)0)->phase == 0x60 ? 1 : -1];
+typedef char NameEntry_frameTop_check[(int)&((NameEntry *)0)->frameTop == 0x8C ? 1 : -1];
 #endif
 
 /* The Tim / Trk / Arc overlay (0x10C: TimNameEntry_ctor_000016F8, TrkNameEntry_ctor_00001660,
