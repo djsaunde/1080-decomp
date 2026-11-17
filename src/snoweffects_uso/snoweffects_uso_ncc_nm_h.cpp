@@ -2,10 +2,8 @@
  * snoweffects_uso_ncc_c.cpp in agent-h run 699), spliced over the empty NON_MATCHING placeholder in
  * snoweffects_uso.c on the non_matching build only (the matching build keeps INCLUDE_ASM). 0x47D4 went
  * EXACT in run 709 and moved to snoweffects_uso_ncc_47d4.cpp. */
-/* agent-h run 757: typed as returning long long (98.01 -> 98.05). The (int) conversion of the first call's
- * result takes one ugen temp, which moves the t-register rotation after that call onto the target's
- * (count + 1 in t6, dl in t9, ...). Side effect: d is then the low word (v1; the target stores v0). */
-extern "C" long long gl_func_00000000(...);
+/* agent-h run 762: back to an int return (run 757's long long typing is gone). */
+extern "C" int gl_func_00000000(...);
 
 /* ---- snoweffects_uso_func_00000C90 (moved from agent-c's snoweffects_uso_ncc_c.cpp, agent-h run 699) ---- */
 #include "../game_libs/ncc_drafts/gbi_subset.h"
@@ -77,7 +75,13 @@ struct GCtx {
  * dum3(0, 0, 0) fills the third pre-loop word, so the loop count's word is no longer live in the prologue and
  * takes v0 as in the target; EE appends through c->me()->nextI_3(0, 0, 0), FB / B4 / B3 through nextBI_1(0) /
  * c->me()->nextBI_1(0) / nextN_1(0); scratch[] is gone; the tail packets append through
- * c->me_1(0)->me()->me()->next() (tail dl / count v1 / v0 as in the target). */
+ * c->me_1(0)->me()->me()->next() (tail dl / count v1 / v0 as in the target).
+ * agent-h run 762 (-> 98.60): the prim depth word is the stock gDPSetPrimDepth body,
+ * _SHIFTL(z & 0x7FFF, 16, 16) | _SHIFTL(0, 0, 16). ugen gives the redundant & 0xFFFF a t-register temp that as1
+ * deletes. ugen's t-register rotation depends on the temps that come AFTER a point, so this one hidden temp in
+ * the loop puts every block before it (prologue, both post-call blocks, the loop head) on the target's
+ * registers. The texture's display-list call also passes the texture (self->tex) as a second argument: the
+ * target loads it into a1 before the call (lw a1,44(a0)). */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -157,7 +161,7 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
     int i;
     SnowPartC *p;
 
-    d = gl_func_00000000(self->tex->dl);
+    d = gl_func_00000000(self->tex->dl, self->tex);
     g = c->next();
     dum3(0, 0, 0);
     g->words.w0 = 0x06000000;
@@ -181,7 +185,7 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 x0 = (int)(sx + halfW - (float)(wid / 2) + (float)SNOW_CAM->offX);
                 y0 = (int)(sy + halfH - (float)(hgt / 2) + (float)SNOW_CAM->offY);
                 z = (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4);
-                ge = c->me()->nextI_3(0, 0, 0); gW(ge, 0xEE000000, (z & 0x7FFF) << 16);
+                ge = c->me()->nextI_3(0, 0, 0); gW(ge, 0xEE000000, _SHIFTL(z & 0x7FFF, 16, 16) | _SHIFTL(0, 0, 16));
                 if (c) {}
                 if (c) {}
                 if (y0) {}
