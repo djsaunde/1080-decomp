@@ -133,6 +133,11 @@ extern "C" char snow_gGfxLib;   /* gGfxLib (blank import): the camera pointer at
  * `tex` declared last puts m / rot at sp+404 / 340 (agent-e run 767); a zf4(cz) fold in the EE word moves 1 / w
  * to f14 as in the target.
  * EE goes through gDPWord (w0 stored before the depth, the target's order) and B4 through snowW (keeps frame 520).
+ * agent-c run 778 (97.96 -> 98.45 %): agent-e's run 775 frame set (tex through lp, B4 / BB through gDPWord, the
+ * `p->pos += (t = ..)` temp in a block around the loop with `assign`, op* as `r.set(..); return r;`), and the
+ * draw block's screen x / y as one statement each (`cx = row * w * halfW`; the row sums are ugen temps as in the
+ * target) with the cx / cy / depth rows reading `p->pos.x` (an ilod: uopt's copypropagate does not rewrite the
+ * compare uses of cy, so cy stays one register computed before the first compare; the load CSEs with x's).
  * Needs `snow_ro_10 = 0x10` (RoData+0x10 depth scale); keep the body at <= 793 words, or 0xA8D0 moves past
  * TRUNCATE_TEXT and the gate fails. */
 extern "C" float gl_func_00000000_snow_randf(...);   /* sys_randf (typed blank jal: float return) */
@@ -143,10 +148,10 @@ struct SnowV3d {
     SnowV3d(float a, float b, float c) { set(a, b, c); }
     SnowV3d &operator+=(const SnowV3d &v) { x += v.x; y += v.y; z += v.z; return *this; }
 
-    SnowV3d &operator=(SnowV3d o) { x = o.x; y = o.y; z = o.z; return *this; }
+    SnowV3d &assign(SnowV3d o) { x = o.x; y = o.y; z = o.z; return *this; }
 };
 inline SnowV3d operator-(const SnowV3d &a, const SnowV3d &b) { return SnowV3d(a.x - b.x, a.y - b.y, a.z - b.z); }
-inline SnowV3d operator*(const SnowV3d &a, float s) { SnowV3d r; return (r.set(a.x * s, a.y * s, a.z * s), r); }
+inline SnowV3d operator*(const SnowV3d &a, float s) { SnowV3d r; r.set(a.x * s, a.y * s, a.z * s); return r; }
 struct SnowFlake {
     SnowV3d pos;            /* 0x00 */
     char pad0C[0x38 - 0x0C];
@@ -225,7 +230,6 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
     float wz;
     float wy;
     float wx;
-    SnowDLHolder2 *tex;
 
     gl_func_00000000(self);
     cam.x = SNOW_CAM2->obj->pos.x * SNOW_SCALE(0);
@@ -236,8 +240,8 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
         self->filled = 1;
     }
     c = SNOW_CAM2->dl;
-    tex = self->tex;
-    d = gl_func_00000000(tex->dl);
+    lp = (SnowV3d *)self->tex;
+    d = gl_func_00000000(((SnowDLHolder2 *)lp)->dl);
     snowW(c->nextR(), 0x06000000, d);
     gl_func_00000000(SNOW_CAM2->view, m);
     gl_func_00000000(SNOW_CAM2->obj->rot, rot);
@@ -247,8 +251,10 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
             (((unsigned int)(self->r * 255.0f) & 0xFF) << 24) | (((unsigned int)(self->g * 255.0f) & 0xFF) << 16) |
             (((unsigned int)(self->b * 255.0f) & 0xFF) << 8) | ((unsigned int)(self->a * 255.0f) & 0xFF));
     self->visible = 0;
+    {
+    SnowV3d t;
     for (i = 0, p = self->items, lp = &self->lastCam; i < self->count; i++, p++) {
-        p->pos += (cam - *lp) * self->follow;
+        p->pos += (t = (cam - *lp) * self->follow);
         x = p->pos.x; y = p->pos.y; z = p->pos.z;
         wz = 0.0f; wy = 0.0f; wx = 0.0f;
         cx = rot[0][0] * x + rot[1][0] * y + rot[2][0] * z + rot[3][0];
@@ -297,22 +303,20 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
             if (SNOW_CAM2->nearZ < w && w < SNOW_CAM2->farZ) {
                 w = 1.0f / w;
                 sw = (int)(p[zf2(w, 0)].size * (halfH * 2.0f * w) + 1.0f);
+                cx = (m[0][0] * p->pos.x + m[1][0] * y + m[2][0] * z + m[3][0]) * w * halfW;
+                cy = (m[0][1] * p->pos.x + m[1][1] * y + m[2][1] * z + m[3][1]) * w * -halfH;
                 sz = (int)(p[zf2(w, 0)].size * (halfH * 2.0f * w) + 1.0f);
-                cx = (m[0][0] * x + m[1][0] * y + m[2][0] * z + m[3][0]);
-                cy = (m[0][1] * x + m[1][1] * y + m[2][1] * z + m[3][1]);
-                cx = cx * w * halfW;
-                cy = cy * w * -halfH;
                 if (-halfW < cx && cx < halfW && -halfH < cy && cy < halfH) {
                     x0 = (int)(cx + halfW - (float)(sw / 2) + (float)(&SNOW_CAM2->offX)[zf2(cy, 0)]);
                     y0 = (int)(cy + halfH - (float)(sz / 2) + (float)(&SNOW_CAM2->offY)[zf4(cx, 0)]);
-                    cz = m[0][2] * x + m[1][2] * y + m[2][2] * z + m[3][2];
+                    cz = m[0][2] * p->pos.x + m[1][2] * y + m[2][2] * z + m[3][2];
                     gDPWord(c->next(), 0xEE000000,
                             ((int)((cz * w + (float)snowOne()) * snow_ro_10) + zf4(cz, 0) & 0x7FFF) << 16);
                     self->drawn++;
                     if (1) {}
                     gDPWord(c->nextM(), 0xE4000000 | ((((x0 + sw) << 2) & 0xFFF) << 12) | (((y0 + sz) << 2) & 0xFFF),
                             (((x0 << 2) & 0xFFF) << 12) | ((y0 << 2) & 0xFFF));
-                    snowW(c->next(), 0xB4000000, 0);
+                    gDPWord(c->next(), 0xB4000000, 0);
                     gDPWord(c->next(), 0xB3000000,
                             ((((self->texW << 10) - 1024) / sw) << 16) | ((((self->texH << 10) - 1024) / sz) & 0xFFFF));
                 }
@@ -320,9 +324,10 @@ extern "C" void snoweffects_uso_func_000028E0(SnowFallD *self) {
             self->visible++;
         }
     }
-    self->lastCam = cam;
+    }
+    self->lastCam.assign(cam);
     gDPWord(c->next(), 0xE7000000, 0);
     gDPWord(c->next(), 0xB9000201, 0);
     snowW(c->next(), 0xBA001301, 0x80000);
-    snowW(c->next(), 0xBB000000, 0);
+    gDPWord(c->next(), 0xBB000000, 0);
 }
