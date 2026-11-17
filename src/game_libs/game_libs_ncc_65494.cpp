@@ -160,7 +160,7 @@ extern "C" void DNode_solveContacts(Self *self) {
             if (1) {} /* run 214: BB split before the impulse: k colours f14 ahead of w (f16) */
             Vec3 imp = n.sc(k = -h * self->f290 + self->f28C * -dt); /* run 214: named impulse = the target's sp+0x9C home */
             const Vec3 &ri = imp; /* its pointer home is the target's sp+0x98 */
-            XCALL(gl_func_00062F64_d, DNode_addImpulseAt_00065250)(self, &node->v120, ri);
+            XCALL(gl_func_00062F64_d, DNode_addImpulseAt_00065250)(self, &node->v120, PORT_REFARG(ri));
         }
     }
     if (count != 0) {

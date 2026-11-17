@@ -1628,7 +1628,7 @@ typedef struct Vec3_f { float x, y, z; } Vec3_f;
  * undefined_syms_auto.txt) -- a direct in-unit call bakes 0x0C018BD9.
  */
 extern int gl_func_00062F64_65250();
-void DNode_addImpulseAt_00065250(int a0, Vec3_f *a1 KR_PARAM(int kr_a2)) {
+void DNode_addImpulseAt_00065250(int a0, Vec3_f *a1 KR_PARAM(const void *kr_a2)) {
     Vec3_f f;
     volatile int pad2;
     Vec3_f e;
@@ -1668,7 +1668,7 @@ void DNode_addImpulseAt_00065250(int a0, Vec3_f *a1 KR_PARAM(int kr_a2)) {
  * blank alias gl_func_00062F64_652D8 (= 0 in undefined_syms_auto.txt): the USO word
  * is a load-time reloc, a direct in-unit call would bake the jal target. */
 extern int gl_func_00062F64_652D8();
-void DNode_addMoveAt_000652D8(int a0, Vec3_f *a1 KR_PARAM(int kr_a2)) {
+void DNode_addMoveAt_000652D8(int a0, Vec3_f *a1 KR_PARAM(const void *kr_a2)) {
     Vec3_f f;
     volatile int pad2;
     Vec3_f e;

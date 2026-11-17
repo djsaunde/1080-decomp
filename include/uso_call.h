@@ -106,11 +106,13 @@
 #define KR_ARG0(x) x
 #define KR_PARAM(decl) , decl
 #define KR_PARAM0(decl) decl
+#define PORT_REFARG(x) ((const void *)&(x)) /* a C++ reference argument, passed as cfront passes it (a pointer) */
 #else
 #define KR_ARG(x)
 #define KR_ARG0(x)
 #define KR_PARAM(decl)
 #define KR_PARAM0(decl) void
+#define PORT_REFARG(x) x
 #endif
 
 #endif
