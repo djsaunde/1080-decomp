@@ -49,7 +49,10 @@ struct GCtx {
  * EE / FB / E4 / B4 / B3, and x1 = x0 + wid / y1 = y0 + hgt) and the packets go through them (gW / gTR /
  * gImmpV take the pointer, so no `_g` block words); the BB and the last BA tail packets reuse the
  * function-scope g. That puts v / __V / r at the target's sp+220 / 204 / 192 with frame 400 (the whole frame
- * map now matches); the texrect's E4 packet appends through nextN(). */
+ * map now matches); the texrect's E4 packet appends through nextN().
+ * agent-h run 740 (-> 96.17): the env colour word is the stock gDPSetEnvColor body, _SHIFTL(col[0], 24, 8) |
+ * .. | _SHIFTL((int)alpha, 0, 8) in r, g, b, a order: the unsigned (u32) terms keep the target's load order
+ * col[0], col[1], alpha, col[2] (no plain-int order of the four terms gives it). */
 typedef short s16;
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
@@ -155,7 +158,8 @@ extern "C" void snoweffects_uso_func_00000C90(SnowSprites *self) {
                 z = (int)(((m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2]) * inv + 1.0f) * snow_ro_4);
                 ge = c->next(); gW(ge, 0xEE000000, (z & 0x7FFF) << 16);
                 if (y0) {}
-                gf = c->next(); gW(gf, 0xFB000000, ((int)p->alpha & 0xFF) | (p->col[2] << 8) | (p->col[1] << 16) | (p->col[0] << 24));
+                gf = c->next(); gW(gf, 0xFB000000, _SHIFTL(p->col[0], 24, 8) | _SHIFTL(p->col[1], 16, 8) | _SHIFTL(p->col[2], 8, 8) |
+                                                 _SHIFTL((int)p->alpha, 0, 8));
                 x1 = x0 + wid;
                 y1 = y0 + hgt;
                 if (y0) {}
