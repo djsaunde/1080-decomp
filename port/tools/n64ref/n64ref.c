@@ -378,7 +378,8 @@ static unsigned long grab_fb(const struct px **pix, uint32_t *w, uint32_t *h, ui
             } else if (type == 2) {
                 uint32_t a = (origin + (y * width + x) * 2) & 0x7FFFFE;
                 uint16_t c = ram[a ^ 2] | ram[(a ^ 2) + 1] << 8; /* host-order words: halfword index ^ 1 */
-                d->r = ((c >> 11) & 31) * 255 / 31, d->g = ((c >> 6) & 31) * 255 / 31, d->b = ((c >> 1) & 31) * 255 / 31;
+                /* as the VI fetches it (angrylion RGBA16_R/G/B): the 5 bits on top, the low 3 zero (plan 23.5) */
+                d->r = ((c >> 11) & 31) << 3, d->g = ((c >> 6) & 31) << 3, d->b = ((c >> 1) & 31) << 3;
             } else {
                 uint32_t c = gRam[((origin + (y * width + x) * 4) & 0x7FFFFC) >> 2];
                 d->r = c >> 24, d->g = c >> 16, d->b = c >> 8;
