@@ -1131,6 +1131,26 @@ static void fader_draw(void *t0, void *t1) {
     cmd(0xBA001301u, 0x80000u);
 }
 
+/* plan 26 (patch 0017): two frame-sized colour images, as the game's double buffer. Each keeps what was drawn
+ * into it: the frame (image A) ends dark blue with the red and white rectangles; the green half went into B.
+ * Without persistent colour images Fast3D draws both into one target and the green covers the left half. */
+static void scene_persist(void) {
+    unsigned short *other = alloc(320 * 240 * 2);
+    frame_begin(FILL2(rgba5551(0, 0, 96, 1)));
+    dp_cycle(CYC_FILL);
+    dp_fillcolor(FILL2(rgba5551(255, 0, 0, 1)));
+    dp_fillrect(20, 20, 139, 119);
+    dp_pipesync();
+    cmd(0xFF100000u | 319, ga(other));         /* B, first use: black (the first frames, plan 26) */
+    dp_fillcolor(FILL2(rgba5551(0, 255, 0, 1)));
+    dp_fillrect(0, 0, 159, 239);
+    dp_pipesync();
+    cmd(0xFF100000u | 319, ga(sCimg));         /* back to A: still blue and red */
+    dp_fillcolor(FILL2(rgba5551(255, 255, 255, 1)));
+    dp_fillrect(100, 140, 219, 199);
+    dp_pipesync();
+}
+
 typedef struct {
     const char *name;
     void (*build)(void);
@@ -1147,6 +1167,8 @@ static const Scene kScenes[] = {
     { "fader", scene_fader },
     /* run 834 */
     { "fader_cpu", scene_fader_cpu },
+    /* plan 26 */
+    { "persist", scene_persist },
 };
 
 int main(int argc, char **argv) {

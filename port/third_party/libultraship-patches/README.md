@@ -39,10 +39,12 @@ rebases easily when the pin moves.
 | 14 | `0014-fast-sample-scaled-TEXRECTs-at-the-RDP-s-texel-posit.patch` | **Scaled TEXRECT texel positions.** The RDP samples a rectangle's pixel at its corner (s = uls + x * dsdx) with texel centres on whole s; GL samples pixel centres with centres on halves. With a filtering texture a TEXRECT's coordinates are offset by 0.5 - 0.5 * step (dsdx / dtdy after the tile shift): 0 for 1:1 rectangles (patch 9's strips unchanged). 1080's Fader stretches a 32x32 mask over the screen (dsdx 0.097): it sat ~5 px right and wrapped its first column into its last (title demo 4838). |
 | 15 | `0015-fast-2-cycle-blender-that-alpha-blends-in-both-cycle.patch` | **Double alpha blend.** In 2-cycle mode a render mode whose two blender cycles are both IN * IN_A + MEM * (1 - IN_A) (other_mode_l top half 0x0050) blends IN * a^2 + MEM * (1 - a^2). New shader option `ALPHA_SQUARE` squares the output alpha; `SHADER_ID_SHIFT` 17 -> 18. 1080's Fader: fades were too dark at partial coverage (title demo 4837-4842). |
 | 16 | `0016-fast-optional-RDP-dither-when-reading-the-framebuffe.patch` | **Dithered read-back (opt-in, `GfxRenderingAPIOGL::SetFramebufferDither(true)`).** `ReadFramebufferToCPU` truncated to RGBA5551; the RDP writes a 16-bit image through its magic-square dither (a channel rounds up when its low 3 bits exceed the pixel's dither value), and the texture unit expands 5 -> 8 bits with the top bits replicated, so a frame fed back as a texture brightens by 255/248 a pass. 1080's 2P VS results fade samples the frame into its Fader texture every step and bleaches to white on the N64 (VS 7420-7470); with truncation the port only blurred. |
+| 17 | `0017-fast-optional-persistent-colour-images-one-target-pe.patch` | **Persistent colour images (opt-in, `gfx_set_persistent_color_images(true)`).** The N64 never clears a colour image by itself: a pixel a frame leaves undrawn keeps what that framebuffer held when the game last drew into it. `Run()` cleared to black. Now each frame-sized `G_SETCIMG` address (the native width, not the Z image) has its own colour target: `G_SETCIMG` loads it into the frame (scaled if the view size changed; black on first use), and the frame is stored back into it when the address changes and at the end of `Run()`. Drawing, depth (still cleared every `Run`), read-backs and presenting are unchanged; skipped with MSAA and inside a `G_SETFB` framebuffer. 1080 double-buffers (two images): where the F3DEX clipper (patch 12) cuts ground right in front of the camera, Trick Attack showed black holes (2728-2730, 3223-3226) where the N64 shows the frame of two steps before. |
 
-The patches add 571 lines and remove 31 (patch 1: +93 / -6; patch 2: +5 / -2; patch 3: +129 / -2; patch 4:
+The patches add 656 lines and remove 31 (patch 1: +93 / -6; patch 2: +5 / -2; patch 3: +129 / -2; patch 4:
 +33 / -0; patch 5: +15 / -1; patch 6: +4 / -1; patch 7: +6 / -1; patch 8: +4 / -0; patch 9: +39 / -0; patch 10: +37 / -0; patch 11: +11 / -0;
-patch 12: +124 / -10; patch 13: +21 / -7; patch 14: +18 / -0; patch 15: +13 / -1; patch 16: +19 / -0).
+patch 12: +124 / -10; patch 13: +21 / -7; patch 14: +18 / -0; patch 15: +13 / -1; patch 16: +19 / -0;
+patch 17: +85 / -0).
 
 ## How the port uses them
 
@@ -57,6 +59,7 @@ patch 12: +124 / -10; patch 13: +21 / -7; patch 14: +18 / -0; patch 15: +13 / -1
 - After `Init` and the ucode, `port/gfx/fast3d/port_fast3d_n64.h` turns on the N64 behaviour of patches 12, 13 and 16
   and picks the texture filter (3-point by default); `PORT_GFX_CLIP=0`, `PORT_GFX_SHADE=persp`,
   `PORT_GFX_FILTER=linear|nearest` select the LUS behaviour instead (docs/1080_PC_PORT_PLAN.md section 25).
+  It also turns on patch 17's persistent framebuffers; `PORT_GFX_CLEAR=1` clears every frame instead (plan 26).
 - The results of `gfx_readback_rgba5551` are written into game memory at the end of `Run()`. Call `Run()` on
   the simulation thread (decision 5), or keep `dst` from being read while the frame renders.
 
@@ -75,6 +78,10 @@ grid hashed).
 Run 877 (plan 25): patches 12-16 were made with `format-patch --start-number 12` on a scratch clone holding 1-11;
 `setup-lus.sh` on the series gives that clone's tree byte for byte. Golden scenes: fader, fader_cpu and sprite
 change (patches 14 / 15), every `.rb` changes (patch 16's dither); the rest are identical.
+
+Plan 26: patch 17 was made with `format-patch -n --start-number 17` on the same clone (1-16 unchanged);
+`setup-lus.sh` on the series gives its tree byte for byte. A new golden scene, `persist` (two frame images
+within one list), checks it; the other 19 scenes are identical.
 
 What was checked (run 611):
 - The series applies cleanly with `git am` to a fresh clone at 759b134. The resulting tree is identical to the

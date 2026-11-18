@@ -9,6 +9,10 @@
  *                            patch 0013).
  *   PORT_GFX_FILTER=linear   GL bilinear for the game's bilinear textures; =nearest; default (n64): the RDP's
  *                            3-point filter (LUS FILTER_THREE_POINT, the shader's filter3point).
+ *   PORT_GFX_CLEAR=1         clear the frame to black before every frame (LUS). Default 0: the N64 framebuffers
+ *                            persist (patch 0017): each frame-sized colour image (G_SETCIMG address) keeps its
+ *                            own target, and a frame is drawn over what that framebuffer last held, as the RDP
+ *                            draws into RDRAM that nothing clears (plan 26).
  *
  * Always on: the framebuffer read-back's RDP dither (the 2P VS results fade bleaches as on the N64).
  *
@@ -42,6 +46,8 @@ static inline void port_fast3d_n64_rapi(Fast::GfxRenderingAPIOGL* rapi) {
 static inline void port_fast3d_n64_interp() {
     const char* clip = std::getenv("PORT_GFX_CLIP");
     gfx_set_rsp_clipping(clip == nullptr || std::strcmp(clip, "0") != 0);
+    const char* clear = std::getenv("PORT_GFX_CLEAR");
+    gfx_set_persistent_color_images(clear == nullptr || std::strcmp(clear, "1") != 0);
 }
 
 #endif

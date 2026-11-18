@@ -1,0 +1,162 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Wed, 18 Nov 2026 13:52:41 -0500
+Subject: [PATCH 17/17] fast: optional persistent colour images, one target per
+ N64 framebuffer
+
+The N64 never clears a colour image by itself: the RDP draws into RDRAM, and a pixel a frame leaves undrawn
+keeps what that framebuffer held the last time the game drew into it (two frames ago when the game
+double-buffers). Run() cleared the frame to black, so wherever the RSP's clipper leaves nothing (geometry cut
+by the near plane right in front of the camera) the port showed black holes where the console shows the
+older picture.
+
+gfx_set_persistent_color_images(true) keeps one colour target per frame-sized G_SETCIMG address (the native
+width, not the Z image). G_SETCIMG loads the address's target into the frame (scaled if the view size changed;
+black the first time, as an emulator's zeroed RDRAM), and the frame is stored back into it when the address
+changes and at the end of Run(). Drawing, depth, read-backs and presenting are unchanged: the frame is still
+drawn into the window or the game framebuffer and Z is still cleared every Run (games clear their Z image
+every frame). Not with MSAA (a multisampled frame cannot be a blit destination) nor inside a G_SETFB
+framebuffer. Off by default.
+---
+ include/fast/interpreter.h | 16 +++++++++
+ src/fast/interpreter.cpp   | 69 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 85 insertions(+)
+
+diff --git a/include/fast/interpreter.h b/include/fast/interpreter.h
+index 0ce9902..e05004e 100644
+--- a/include/fast/interpreter.h
++++ b/include/fast/interpreter.h
+@@ -486,6 +486,21 @@ class Interpreter {
+     int ClipPolygon(const struct LoadedVertex* const in[3], struct LoadedVertex* buf, const struct LoadedVertex** out);
+     bool mRspClipping = false;
+     int16_t mClipRatio = 2; // G_MW_CLIP (gSPClipRatio), the side planes are at +-ratio * w
++    // Persistent colour images (gfx_set_persistent_color_images): the N64 never clears a colour image by itself, so a
++    // pixel a frame leaves undrawn keeps what that framebuffer held when the game last drew into it (several frames
++    // ago with double / triple buffering). One colour target per frame-sized G_SETCIMG address keeps that: G_SETCIMG
++    // loads the address's target into the frame, and the frame is stored back into it when the address changes and
++    // at the end of Run(). Depth is not kept (the game clears its Z image every frame).
++    struct PersistentColorImage {
++        int fb = -1;
++        uint32_t width = 0, height = 0;
++    };
++    void PersistentColorRegion(int* x, int* y, int* width, int* height, int* glY);
++    void PersistentColorSelect(const void* address);
++    void PersistentColorStore();
++    bool mPersistentColor = false;
++    const void* mPersistentColorCur = nullptr; // the frame's colour image while Run() draws into it
++    std::unordered_map<uintptr_t, PersistentColorImage> mPersistentColorImages;
+     void GfxSpGeometryMode(uint32_t clear, uint32_t set);
+     void GfxSpExtraGeometryMode(uint32_t clear, uint32_t set);
+     void GfxSpMovememF3dex2(uint8_t index, uint8_t offset, const void* data);
+@@ -630,6 +645,7 @@ extern "C" void gfx_texture_cache_delete(const void* addr);
+ extern "C" void gfx_texture_cache_invalidate_range(const void* addr, size_t size);
+ extern "C" void gfx_register_raw_address_range(const void* start, size_t size);
+ extern "C" void gfx_set_rsp_clipping(bool enabled);
++extern "C" void gfx_set_persistent_color_images(bool enabled);
+ extern "C" void gfx_readback_rgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
+                                       bool bswap);
+ extern "C" void gfx_readback_depth_request(uint32_t x, uint32_t y);
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index c57126f..781ee04 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -3413,9 +3413,69 @@ void Interpreter::GfxDpSetZImage(void* zBufAddr) {
+ }
+ 
+ void Interpreter::GfxDpSetColorImage(uint32_t format, uint32_t size, uint32_t width, void* address) {
++    // width is the command's field, the image width - 1. A frame-sized image that is not the Z image (the game
++    // points the colour image at Z to clear it) is a framebuffer: draw on what it held (gfx_set_persistent_color_images)
++    if (mPersistentColor && width + 1 == (uint32_t)mNativeDimensions.width && address != mRdp->z_buf_address) {
++        PersistentColorSelect(address);
++    }
+     mRdp->color_image_address = address;
+ }
+ 
++// The frame's region of the target Run() draws into, as CopyFramebuffer takes it for a source (x, y from the top) and
++// the y of its bottom edge in the target's own GL rows (a destination is not converted)
++void Interpreter::PersistentColorRegion(int* x, int* y, int* width, int* height, int* glY) {
++    if (mRendersToFb) {
++        *x = 0;
++        *y = 0;
++        *width = (int)mCurDimensions.width;
++        *height = (int)mCurDimensions.height;
++        *glY = 0;
++    } else {
++        *x = mGameWindowViewport.x;
++        *y = mGameWindowViewport.y;
++        *width = (int)mGameWindowViewport.width;
++        *height = (int)mGameWindowViewport.height;
++        *glY = (int)mGfxCurrentWindowDimensions.height - (mGameWindowViewport.y + (int)mGameWindowViewport.height);
++    }
++}
++
++void Interpreter::PersistentColorSelect(const void* address) {
++    // not into LUS's own framebuffers (G_SETFB), and a multisampled frame cannot be a blit's destination
++    if (address == mPersistentColorCur || mFbActive || mMsaaLevel > 1) {
++        return;
++    }
++    Flush();
++    if (mPersistentColorCur != nullptr) {
++        PersistentColorStore();
++    }
++    mPersistentColorCur = address;
++    auto it = mPersistentColorImages.find((uintptr_t)address);
++    if (it == mPersistentColorImages.end()) {
++        // First use: black, the zeroed RDRAM of an emulator (the console's is undefined until written)
++        mRapi->ClearFramebuffer(true, false);
++        return;
++    }
++    int x, y, w, h, glY;
++    PersistentColorRegion(&x, &y, &w, &h, &glY);
++    // scaled when the window or the internal resolution changed since it was stored
++    mRapi->CopyFramebuffer(mRendersToFb ? mGameFb : 0, it->second.fb, 0, 0, (int)it->second.width,
++                           (int)it->second.height, x, glY, x + w, glY + h);
++}
++
++void Interpreter::PersistentColorStore() {
++    int x, y, w, h, glY;
++    PersistentColorRegion(&x, &y, &w, &h, &glY);
++    PersistentColorImage& img = mPersistentColorImages[(uintptr_t)mPersistentColorCur];
++    if (img.fb < 0) {
++        img.fb = mRapi->CreateFramebuffer();
++    }
++    // the rows run as in the frame's target (CopyFramebuffer flips between differently oriented targets)
++    mRapi->UpdateFramebufferParameters(img.fb, (uint32_t)w, (uint32_t)h, 1, mRendersToFb, true, false, false);
++    img.width = (uint32_t)w;
++    img.height = (uint32_t)h;
++    mRapi->CopyFramebuffer(img.fb, mRendersToFb ? mGameFb : 0, x, y, x + w, y + h, 0, 0, w, h);
++}
++
+ void Interpreter::GfxSpSetOtherMode(uint32_t shift, uint32_t num_bits, uint64_t mode) {
+     uint64_t mask = (((uint64_t)1 << num_bits) - 1) << shift;
+     uint64_t om = mRdp->other_mode_l | ((uint64_t)mRdp->other_mode_h << 32);
+@@ -5540,6 +5600,7 @@ void Interpreter::Run(Gfx* commands, const std::unordered_map<Mtx*, MtxF>& mtx_r
+     mRapi->StartFrame();
+     mRapi->StartDrawToFramebuffer(mRendersToFb ? mGameFb : 0, (float)mCurDimensions.height / mNativeDimensions.height);
+     mRapi->ClearFramebuffer(true, true);
++    mPersistentColorCur = nullptr;
+     mRdp->viewport_or_scissor_changed = true;
+     mRenderingState.viewport = {};
+     mRenderingState.scissor = {};
+@@ -5567,6 +5628,10 @@ void Interpreter::Run(Gfx* commands, const std::unordered_map<Mtx*, MtxF>& mtx_r
+     }
+ 
+     Flush();
++    if (mPersistentColorCur != nullptr && !mFbActive) {
++        PersistentColorStore();
++    }
++    mPersistentColorCur = nullptr;
+     if (!mFbActive) {
+         ServiceReadbacks();
+     }
+@@ -6006,6 +6071,10 @@ extern "C" void gfx_set_rsp_clipping(bool enabled) {
+     Fast::mInstance.lock().get()->mRspClipping = enabled;
+ }
+ 
++extern "C" void gfx_set_persistent_color_images(bool enabled) {
++    Fast::mInstance.lock().get()->mPersistentColor = enabled;
++}
++
+ extern "C" void gfx_readback_rgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
+                                       bool bswap) {
+     Fast::mInstance.lock().get()->ReadbackRequestRgba5551(x, y, width, height, dst, bswap);
