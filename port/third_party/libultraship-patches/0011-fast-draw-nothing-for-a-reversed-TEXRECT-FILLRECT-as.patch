@@ -1,0 +1,52 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Wed, 18 Nov 2026 12:00:00 -0500
+Subject: [PATCH] fast: draw nothing for a reversed TEXRECT / FILLRECT, as the
+ RDP does
+
+The RDP's rectangle commands carry their corners as unsigned 12-bit
+U10.2 fields. When the lower-right corner lies above or left of the
+upper-left one, the edge walker finds no scanline (y) or marks every
+span as crossed (x), and nothing is drawn. Games rely on this: 1080
+Snowboarding's snowfall writes each flake's corners with `(x << 2) &
+0xFFF`, so a flake whose corner went one pixel off the left or top edge
+wraps to ~1023 and is dropped by the hardware.
+
+Fast3D drew such a rectangle as a quad between the two corners, so the
+dropped flake became a rectangle over the whole screen with its 8x8
+texture repeating across it: a regular grid of soft dots (found against n64ref).
+Return early from GfxDpTextureRectangle and GfxDpFillRectangle when
+lrx < ulx or lry < uly. Ordered rectangles are unchanged.
+---
+ src/fast/interpreter.cpp | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index 5af3872..9469d6c 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -3083,6 +3083,13 @@ void Interpreter::GfxDrawRectangle(int32_t ulx, int32_t uly, int32_t lrx, int32_
+ void Interpreter::GfxDpTextureRectangle(int32_t ulx, int32_t uly, int32_t lrx, int32_t lry, uint8_t tile, int16_t uls,
+                                         int16_t ult, int16_t dsdx, int16_t dtdy, bool flip) {
+     // printf("render %d at %d\n", tile, lrx);
++    // The RDP draws nothing when the lower-right corner is above or left of the upper-left one
++    // (its edge walker finds no scanline, or every span crosses). Games rely on that: a sprite
++    // whose corner went negative is wrapped by the 12-bit U10.2 fields to ~1023 and so dropped.
++    // Drawn as a quad it would span the whole screen, its texture repeating across it.
++    if (lrx < ulx || lry < uly) {
++        return;
++    }
+     uint64_t saved_combine_mode = mRdp->combine_mode;
+     if ((mRdp->other_mode_h & (3U << G_MDSFT_CYCLETYPE)) == G_CYC_COPY) {
+         // Per RDP Command Summary Set Tile's shift s and this dsdx should be set to 4 texels
+@@ -3199,6 +3206,10 @@ void Interpreter::GfxDpImageRectangle(int32_t tile, int32_t w, int32_t h, int32_
+ }
+ 
+ void Interpreter::GfxDpFillRectangle(int32_t ulx, int32_t uly, int32_t lrx, int32_t lry) {
++    // A reversed rectangle is empty on the RDP (see GfxDpTextureRectangle).
++    if (lrx < ulx || lry < uly) {
++        return;
++    }
+     if (mRdp->color_image_address == mRdp->z_buf_address) {
+         // Fullscreen Z clears are redundant — already done by glClear at frame start.
+         bool isFullScreen = (ulx <= 0 && uly <= 0 && lrx >= (int32_t)(mNativeDimensions.width - 1) * 4 &&

@@ -944,6 +944,18 @@ static void scene_sprite(void) { /* billboard sprites: TEXRECT + G_ZS_PRIM + G_S
     sprite_rect(130, 90, 64, 0x6000);                  /* far: hidden where the quad is */
     sprite_rect(210, 150, 48, 0x6000);                 /* far, off the quad: visible */
     sprite_rect(200, 30, 32, 0x2000);                  /* near, 2x magnified */
+    /* SnowFall_display's flake one pixel past the top-left corner: its fields are `(v << 2) & 0xFFF`, so the
+     * upper-left corner wraps to ~(1023, 1023) and the RDP draws nothing (LUS patch 0011); drawn as a quad
+     * it covered the screen with the texture repeating (the flake tile wraps: mask 16 here) */
+    dp_pipesync();
+    sMask = 4;
+    dp_settile(FMT_RGBA, SIZ_16, 4, 0, 0, 0);
+    sMask = 0;
+    cmd(0xEE000000u, (0x2000u & 0x7FFFu) << 16);
+    cmd(0xE4000000u | (((unsigned)(-1 + 12) << 2 & 0xFFFu) << 12) | ((unsigned)(-1 + 12) << 2 & 0xFFFu),
+        (((unsigned)-1 << 2 & 0xFFFu) << 12) | ((unsigned)-1 << 2 & 0xFFFu));
+    cmd(0xB4000000u, 0);
+    cmd(0xB3000000u, (512u << 16) | 512u);
     /* "SS EndDL" */
     cmd(0xBA001301u, 0x80000u);
     cmd(0xB9000201u, 0);
