@@ -66,6 +66,7 @@ extern "C" {
 #include "../dlump.h"
 }
 #include "../replay/egl_png.h"
+#include "port_fast3d_n64.h"
 #include "egl_window.h"
 
 namespace Fast {
@@ -506,8 +507,11 @@ struct Readback {
                 const uint8_t* b = (const uint8_t*)&px[(size_t)y * W + x];
                 uint32_t v = ((uint32_t)b[0] << 8) | b[1]; /* big-endian in memory */
                 const uint8_t* f = frame + ((size_t)(H - 1 - y) * W + x) * 4;
-                if (((v >> 11) & 31) != (uint32_t)(f[0] >> 3) || ((v >> 6) & 31) != (uint32_t)(f[1] >> 3) ||
-                    ((v >> 1) & 31) != (uint32_t)(f[2] >> 3)) {
+                /* the read-back quantizes with the RDP's magic-square dither (patch 0016, plan 25) */
+                static const uint8_t magic[16] = { 0, 6, 1, 7, 4, 2, 5, 3, 3, 5, 2, 4, 7, 1, 6, 0 };
+                const uint32_t d = magic[(y & 3) * 4 + (x & 3)];
+                auto q = [d](uint8_t c) { return (uint32_t)(c >> 3) + ((c & 7) > d && (c >> 3) < 31 ? 1 : 0); };
+                if (((v >> 11) & 31) != q(f[0]) || ((v >> 6) & 31) != q(f[1]) || ((v >> 1) & 31) != q(f[2])) {
                     bad++;
                 }
             }
@@ -658,6 +662,8 @@ int main(int argc, char** argv) {
     Fast::GfxSetInstance(gfx);
     gfx->Init(&window, &rapi, "1080", false, w, h, 0, 0, cvars, resources);
     Fast::gfx_set_target_ucode(ucode); /* after Init, which resets it to F3DEX2 */
+    port_fast3d_n64_rapi(&rapi); /* plan 25: N64 clipping, shading, filtering */
+    port_fast3d_n64_interp();
     gfx->SetGfxDebugger(std::make_shared<Fast::GfxDebugger>());
     gfx->SetNativeDimensions(320.0f, 240.0f);
 

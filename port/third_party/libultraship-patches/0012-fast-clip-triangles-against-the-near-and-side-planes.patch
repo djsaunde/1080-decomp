@@ -1,0 +1,286 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Wed, 18 Nov 2026 11:59:53 -0500
+Subject: [PATCH 12/16] fast: clip triangles against the near and side planes
+ as F3DEX does
+
+LUS draws with GL_DEPTH_CLAMP and no near-plane clipping, the behaviour of
+the NoN ("no near clip") microcodes. F3DEX and F3DLP clip: a triangle that
+crosses the near plane (z = -w) or a side plane at the clip ratio
+(x, y = +-ratio * w, G_MW_CLIP / gSPClipRatio) is cut there by the RSP,
+and only the part in front reaches the RDP. Fast3D drew the whole
+polygon, so a camera passing through a model showed big slabs of it
+where the N64 shows thin slivers (1080's title demo: the rider's body at
+steps 258, 2677, 3140, 4870).
+
+With gfx_set_rsp_clipping(true), GfxSpTri1 clips such a triangle in clip
+space (Sutherland-Hodgman over the five planes; no far plane, as on the
+RSP: depth clamp still handles z > w) and draws the polygon as a fan.
+A new vertex takes position, texture coordinates and colour linearly in
+clip space, as the RSP's clipper does; its fog factor is computed again
+from its own z / w. The clip ratio is read from G_MW_CLIP (RNX) in the
+F3D moveword handler; default 2. Rectangles are not clipped. Off by
+default: nothing changes until a port turns it on.
+
+The polygon is drawn as a fan around its last vertex. Compared with the
+N64's RDP command stream (n64ref, 1080's title demo step 4382) the RSP's
+fan of a clipped ground triangle pivots there; with screen-space linear
+shading (next patch) the pivot decides the colours, and the first vertex
+as pivot was up to 16 levels off on near-camera slopes.
+
+This matters beyond the near plane once shading is screen-space linear
+(the next patch): the attributes at the clip edges are the RSP's, not
+the GPU's.
+---
+ include/fast/interpreter.h |   6 ++
+ src/fast/interpreter.cpp   | 131 ++++++++++++++++++++++++++++++++++---
+ 2 files changed, 127 insertions(+), 10 deletions(-)
+
+diff --git a/include/fast/interpreter.h b/include/fast/interpreter.h
+index 103cd2d..3e8440b 100644
+--- a/include/fast/interpreter.h
++++ b/include/fast/interpreter.h
+@@ -478,6 +478,11 @@ class Interpreter {
+     bool RectInsideTexture(struct LoadedVertex* const vArr[3], uint32_t tile, uint32_t size, bool s);
+     bool mRectUnitTexel[2] = { false, false }; // the TEXRECT being drawn maps 1:1 from a whole texel in s / t
+     void GfxSpLine3D(uint8_t vtx1Idx, uint8_t vtx2Idx, uint8_t width);
++    // RSP-style clipping (gfx_set_rsp_clipping): a triangle crossing the near plane or the side planes at the clip
++    // ratio is clipped here in clip space, as the F3DEX microcodes do, instead of being left to the GPU.
++    int ClipPolygon(const struct LoadedVertex* const in[3], struct LoadedVertex* buf, const struct LoadedVertex** out);
++    bool mRspClipping = false;
++    int16_t mClipRatio = 2; // G_MW_CLIP (gSPClipRatio), the side planes are at +-ratio * w
+     void GfxSpGeometryMode(uint32_t clear, uint32_t set);
+     void GfxSpExtraGeometryMode(uint32_t clear, uint32_t set);
+     void GfxSpMovememF3dex2(uint8_t index, uint8_t offset, const void* data);
+@@ -621,6 +626,7 @@ extern "C" void gfx_texture_cache_clear();
+ extern "C" void gfx_texture_cache_delete(const void* addr);
+ extern "C" void gfx_texture_cache_invalidate_range(const void* addr, size_t size);
+ extern "C" void gfx_register_raw_address_range(const void* start, size_t size);
++extern "C" void gfx_set_rsp_clipping(bool enabled);
+ extern "C" void gfx_readback_rgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
+                                       bool bswap);
+ extern "C" void gfx_readback_depth_request(uint32_t x, uint32_t y);
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index 9469d6c..c2b4591 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -1842,6 +1842,83 @@ bool Interpreter::RectInsideTexture(struct LoadedVertex* const v_arr[3], uint32_
+     return size > 0;
+ }
+ 
++// Clips a triangle the way the F3DEX microcodes do: in clip space, against the near plane (z = -w) and the four
++// side planes at the clip ratio (x, y = +-ratio * w); there is no far plane. A new vertex takes the position, texture
++// coordinates and colour of its edge at the crossing, linearly in clip space; its fog factor is computed again from
++// its own z / w, as for a loaded vertex. Returns the polygon's vertex count (0 if nothing is left) in out[].
++int Interpreter::ClipPolygon(const LoadedVertex* const in[3], LoadedVertex* buf, const LoadedVertex** out) {
++    const LoadedVertex* poly[2][10];
++    int n = 3;
++    int cur = 0;
++    int used = 0;
++    const float r = (float)mClipRatio;
++    for (int i = 0; i < 3; i++) {
++        poly[0][i] = in[i];
++    }
++    for (int plane = 0; plane < 5; plane++) {
++        auto dist = [&](const LoadedVertex* v) {
++            switch (plane) {
++                case 0:
++                    return v->z + v->w; // near
++                case 1:
++                    return r * v->w + v->x;
++                case 2:
++                    return r * v->w - v->x;
++                case 3:
++                    return r * v->w + v->y;
++                default:
++                    return r * v->w - v->y;
++            }
++        };
++        const LoadedVertex** src = poly[cur];
++        const LoadedVertex** dst = poly[cur ^ 1];
++        int m = 0;
++        for (int i = 0; i < n; i++) {
++            const LoadedVertex* a = src[i];
++            const LoadedVertex* b = src[(i + 1) % n];
++            float da = dist(a), db = dist(b);
++            if (da >= 0) {
++                dst[m++] = a;
++            }
++            if ((da >= 0) != (db >= 0) && m < 10 && used < 16) {
++                float t = da / (da - db);
++                LoadedVertex* c = &buf[used++];
++                c->x = a->x + (b->x - a->x) * t;
++                c->y = a->y + (b->y - a->y) * t;
++                c->z = a->z + (b->z - a->z) * t;
++                c->w = a->w + (b->w - a->w) * t;
++                c->u = a->u + (b->u - a->u) * t;
++                c->v = a->v + (b->v - a->v) * t;
++                c->color.r = (uint8_t)lroundf(a->color.r + (b->color.r - a->color.r) * t);
++                c->color.g = (uint8_t)lroundf(a->color.g + (b->color.g - a->color.g) * t);
++                c->color.b = (uint8_t)lroundf(a->color.b + (b->color.b - a->color.b) * t);
++                c->color.a = (uint8_t)lroundf(a->color.a + (b->color.a - a->color.a) * t);
++                if ((mRsp->geometry_mode & G_FOG) && c->w > 0.0f) {
++                    float fog_z = c->z / c->w * mRsp->fog_mul + mRsp->fog_offset;
++                    c->color.a = (uint8_t)Ship::Math::clamp(fog_z, 0.0f, 255.0f);
++                }
++                c->clip_rej = 0;
++                dst[m++] = c;
++            }
++            if (m >= 10) {
++                break;
++            }
++        }
++        n = m;
++        cur ^= 1;
++        if (n < 3) {
++            return 0;
++        }
++    }
++    // The RSP draws the clipped polygon as a fan around its last vertex. With screen-space linear shading the
++    // pivot matters (each fan triangle interpolates only its own corners); the first vertex as pivot measured
++    // up to 16 levels off the N64 on 1080's near-camera slopes (title demo 4372-4391), the last one matches.
++    for (int i = 0; i < n; i++) {
++        out[i] = poly[cur][(i + n - 1) % n];
++    }
++    return n;
++}
++
+ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bool is_rect) {
+     struct LoadedVertex* v1 = &mRsp->loaded_vertices[vtx1_idx];
+     struct LoadedVertex* v2 = &mRsp->loaded_vertices[vtx2_idx];
+@@ -1894,6 +1971,27 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+         }
+     }
+ 
++    // RSP clipping: the polygon left of the triangle, drawn as a fan below
++    LoadedVertex clip_buf[16];
++    const LoadedVertex* clip_poly[10] = { v1, v2, v3 };
++    int clip_n = 3;
++    if (mRspClipping && !is_rect) {
++        const float r = (float)mClipRatio;
++        bool inside = true;
++        for (int i = 0; i < 3; i++) {
++            const LoadedVertex* v = v_arr[i];
++            if (v->z < -v->w || v->x < -r * v->w || v->x > r * v->w || v->y < -r * v->w || v->y > r * v->w) {
++                inside = false;
++            }
++        }
++        if (!inside) {
++            clip_n = ClipPolygon(v_arr, clip_buf, clip_poly);
++            if (clip_n < 3) {
++                return;
++            }
++        }
++    }
++
+     // depth_test is set when the fragment has a depth value to compare (either from vertex Z via
+     // RSP G_ZBUFFER, or from the prim-depth register via G_ZS_PRIM) and Z_CMP is requested.
+     bool zbuffer_enabled = (mRsp->geometry_mode & G_ZBUFFER) == G_ZBUFFER;
+@@ -2177,14 +2275,17 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+ 
+     struct GfxClipParameters clip_parameters = mRapi->GetClipParameters();
+ 
++    for (int fan = 0; fan < clip_n - 2; fan++) {
++    const LoadedVertex* const tri[3] = { clip_poly[0], clip_poly[fan + 1], clip_poly[fan + 2] };
+     for (int i = 0; i < 3; i++) {
+-        float z = v_arr[i]->z, w = v_arr[i]->w;
++        const LoadedVertex* cv = tri[i];
++        float z = cv->z, w = cv->w;
+         if (clip_parameters.z_is_from_0_to_1) {
+             z = (z + w) / 2.0f;
+         }
+ 
+-        mBufVbo[mBufVboLen++] = v_arr[i]->x;
+-        mBufVbo[mBufVboLen++] = clip_parameters.invertY ? -v_arr[i]->y : v_arr[i]->y;
++        mBufVbo[mBufVboLen++] = cv->x;
++        mBufVbo[mBufVboLen++] = clip_parameters.invertY ? -cv->y : cv->y;
+         mBufVbo[mBufVboLen++] = z;
+         mBufVbo[mBufVboLen++] = w;
+ 
+@@ -2192,8 +2293,8 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+             if (!usedTextures[t]) {
+                 continue;
+             }
+-            float u = v_arr[i]->u / 32.0f;
+-            float v = v_arr[i]->v / 32.0f;
++            float u = cv->u / 32.0f;
++            float v = cv->v / 32.0f;
+ 
+             uint32_t uv_tile = effective_tile[t];
+             int shifts = mRdp->texture_tile[uv_tile].shifts;
+@@ -2250,7 +2351,7 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+                 mBufVbo[mBufVboLen++] = mRdp->fog_color.r / 255.0f;
+                 mBufVbo[mBufVboLen++] = mRdp->fog_color.g / 255.0f;
+                 mBufVbo[mBufVboLen++] = mRdp->fog_color.b / 255.0f;
+-                mBufVbo[mBufVboLen++] = v_arr[i]->color.a / 255.0f; // fog factor (not alpha)
++                mBufVbo[mBufVboLen++] = cv->color.a / 255.0f; // fog factor (not alpha)
+             }
+         }
+ 
+@@ -2262,7 +2363,7 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+         }
+ 
+         for (int j = 0; j < numInputs; j++) {
+-            RGBA* color;
++            const RGBA* color;
+             RGBA tmp;
+             for (int k = 0; k < 1 + (use_alpha ? 1 : 0); k++) {
+                 switch (comb->shader_input_mapping[k][j]) {
+@@ -2272,7 +2373,7 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+                         color = &mRdp->prim_color;
+                         break;
+                     case G_CCMUX_SHADE:
+-                        color = &v_arr[i]->color;
++                        color = &cv->color;
+                         break;
+                     case G_CCMUX_ENVIRONMENT:
+                         color = &mRdp->env_color;
+@@ -2339,7 +2440,7 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+                     mBufVbo[mBufVboLen++] = color->g / 255.0f;
+                     mBufVbo[mBufVboLen++] = color->b / 255.0f;
+                 } else {
+-                    if (use_fog && !use_blend_color && color == &v_arr[i]->color) {
++                    if (use_fog && !use_blend_color && color == &cv->color) {
+                         // Shade alpha is 100% for standard fog, blend color mode preserves
+                         // it since fog alpha is the blend factor
+                         mBufVbo[mBufVboLen++] = 1.0f;
+@@ -2350,7 +2451,7 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+             }
+         }
+ 
+-        // struct RGBA *color = &v_arr[i]->color;
++        // struct RGBA *color = &cv->color;
+         // mBufVbo[mBufVboLen++] = color->r / 255.0f;
+         // mBufVbo[mBufVboLen++] = color->g / 255.0f;
+         // mBufVbo[mBufVboLen++] = color->b / 255.0f;
+@@ -2361,6 +2462,7 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+         // if (++mBufVbo_num_tris == 1) {
+         Flush();
+     }
++    }
+ }
+ 
+ // Draws a G_LINE3D as a quad between two loaded vertices, extruded perpendicular to the line on screen.
+@@ -2566,6 +2668,11 @@ void Interpreter::GfxSpMovewordF3dex2(uint8_t index, uint16_t offset, uintptr_t
+ 
+ void Interpreter::GfxSpMovewordF3d(uint8_t index, uint16_t offset, uintptr_t data) {
+     switch (index) {
++        case G_MW_CLIP:
++            if (offset == G_MWO_CLIP_RNX && (int16_t)data > 0) {
++                mClipRatio = (int16_t)data;
++            }
++            break;
+         case G_MW_NUMLIGHT:
+             // Ambient light is included
+             // The 31st bit is a flag that lights should be recalculated
+@@ -5872,6 +5979,10 @@ extern "C" void gfx_register_raw_address_range(const void* start, size_t size) {
+     Fast::sRawAddressRanges.emplace_back((uintptr_t)start, size);
+ }
+ 
++extern "C" void gfx_set_rsp_clipping(bool enabled) {
++    Fast::mInstance.lock().get()->mRspClipping = enabled;
++}
++
+ extern "C" void gfx_readback_rgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
+                                       bool bswap) {
+     Fast::mInstance.lock().get()->ReadbackRequestRgba5551(x, y, width, height, dst, bswap);

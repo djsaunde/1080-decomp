@@ -56,6 +56,7 @@
 #include "ship/resource/ResourceManager.h"
 
 #include "../replay/egl_png.h"
+#include "port_fast3d_n64.h"
 #include "egl_window.h"
 #include "live_backend.h" /* live_depth_now */
 #include "port_fast3d.h"
@@ -215,6 +216,8 @@ static void init_interpreter(State* s, uint32_t width, uint32_t height) {
     Fast::GfxSetInstance(s->gfx);
     s->gfx->Init(s->wapi, s->rapi.get(), "1080", false, width, height, 0, 0, s->cvars, s->resources);
     Fast::gfx_set_target_ucode(ucode_f3dex_line3d); /* gap 2: after Init */
+    port_fast3d_n64_rapi(s->rapi.get()); /* plan 25: N64 clipping, shading, filtering */
+    port_fast3d_n64_interp();
     s->gfx->SetGfxDebugger(std::make_shared<Fast::GfxDebugger>());
     s->gfx->SetNativeDimensions(320.0f, 240.0f);
     const char* png = std::getenv("PORT_GFX_PNG");

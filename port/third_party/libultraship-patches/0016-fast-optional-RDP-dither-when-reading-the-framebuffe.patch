@@ -1,0 +1,84 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Wed, 18 Nov 2026 12:56:44 -0500
+Subject: [PATCH 16/16] fast: optional RDP dither when reading the framebuffer
+ back as RGBA5551
+
+ReadFramebufferToCPU truncated each channel to 5 bits. The RDP writes a
+16-bit colour image through its dither: a channel rounds up when its low
+three bits exceed the pixel's dither value, so the stored image keeps
+the 8-bit level on average, and the texture unit expands it back with
+the top bits replicated (5 -> 8 bits, x 255 / 248). A game that feeds its
+frame back as a texture compounds that gain every frame: 1080's 2P VS
+results fade samples the frame into its Fader texture each step and on
+the N64 bleaches to white over ~40 steps (steps 7420-7470). With plain
+truncation the port's fade only blurred (blurred-score diff up to 30).
+
+GfxRenderingAPIOGL::SetFramebufferDither(true) applies the magic-square
+matrix (G_CD_MAGICSQ, the RDP's default) per pixel, y counted from the
+top. Off by default.
+---
+ include/fast/backends/gfx_opengl.h |  4 ++++
+ src/fast/backends/gfx_opengl.cpp   | 16 ++++++++++++++++
+ 2 files changed, 20 insertions(+)
+
+diff --git a/include/fast/backends/gfx_opengl.h b/include/fast/backends/gfx_opengl.h
+index 2f5a3d3..f6588be 100644
+--- a/include/fast/backends/gfx_opengl.h
++++ b/include/fast/backends/gfx_opengl.h
+@@ -132,6 +132,9 @@ class GfxRenderingAPIOGL final : public GfxRenderingAPI {
+     // Interpolate the shade colour and fog factor without perspective correction (noperspective), as the RDP does.
+     // Set before the first shader is built; the shader cache is not cleared.
+     void SetAffineShading(bool affine);
++    // ReadFramebufferToCPU quantizes to RGBA5551 with the RDP's magic-square dither, as the RDP writes a 16-bit
++    // colour image (default: truncation).
++    void SetFramebufferDither(bool dither);
+     void SetSrgbMode() override;
+     ImTextureID GetTextureById(int id) override;
+     /** @} */
+@@ -166,6 +169,7 @@ class GfxRenderingAPIOGL final : public GfxRenderingAPI {
+     size_t mCurrentFrameBuffer = 0;
+     float mCurrentNoiseScale = 0.0f;
+     FilteringMode mCurrentFilterMode = FILTER_THREE_POINT;
++    bool mFramebufferDither = false;
+ 
+     GLint mMaxMsaaLevel = 1;
+     GLuint mPixelDepthRb = 0;
+diff --git a/src/fast/backends/gfx_opengl.cpp b/src/fast/backends/gfx_opengl.cpp
+index 2baec9e..5b5ef75 100644
+--- a/src/fast/backends/gfx_opengl.cpp
++++ b/src/fast/backends/gfx_opengl.cpp
+@@ -251,6 +251,10 @@ void GfxRenderingAPIOGL::SetAffineShading(bool affine) {
+     sAffineShading = affine;
+ }
+ 
++void GfxRenderingAPIOGL::SetFramebufferDither(bool dither) {
++    mFramebufferDither = dither;
++}
++
+ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+     prism::Processor processor;
+     prism::ContextItems mContext = {
+@@ -1031,10 +1035,22 @@ void GfxRenderingAPIOGL::ReadFramebufferToCPU(int fb_id, uint32_t width, uint32_
+     std::vector<uint8_t> rgba8(width * height * 4);
+     glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgba8.data());
+ 
++    // The RDP's magic-square dither matrix (G_CD_MAGICSQ), indexed [y & 3][x & 3]
++    static const uint8_t magic[16] = { 0, 6, 1, 7, 4, 2, 5, 3, 3, 5, 2, 4, 7, 1, 6, 0 };
+     for (uint32_t i = 0; i < width * height; i++) {
+         uint8_t r = (rgba8[i * 4 + 0] >> 3) & 0x1F;
+         uint8_t g = (rgba8[i * 4 + 1] >> 3) & 0x1F;
+         uint8_t b = (rgba8[i * 4 + 2] >> 3) & 0x1F;
++        if (mFramebufferDither) {
++            // As the RDP writes a 16-bit colour image: a channel rounds up when its low 3 bits exceed the
++            // pixel's dither value, so the image keeps the 8-bit level on average. Plain truncation darkens
++            // it by 3.5 levels, which a game that feeds the frame back as a texture compounds every frame.
++            uint32_t x = i % width, y = i / width; // the read-back rows run top-down (patch 0003)
++            int d = magic[(y & 3) * 4 + (x & 3)];
++            if ((rgba8[i * 4 + 0] & 7) > d && r < 31) r++;
++            if ((rgba8[i * 4 + 1] & 7) > d && g < 31) g++;
++            if ((rgba8[i * 4 + 2] & 7) > d && b < 31) b++;
++        }
+         uint8_t a = rgba8[i * 4 + 3] ? 1 : 0;
+         rgba16_buf[i] = (r << 11) | (g << 6) | (b << 1) | a;
+     }

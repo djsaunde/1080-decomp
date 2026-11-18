@@ -1,0 +1,149 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Wed, 18 Nov 2026 11:59:53 -0500
+Subject: [PATCH 13/16] fast: optional screen-space linear shade and fog, as
+ the RDP interpolates
+
+The RDP steps shade colour (and the fog factor in shade alpha) linearly
+in screen space; only texture coordinates are perspective-corrected.
+GL interpolates every varying perspective-correctly, which on a large
+ground triangle reaching toward the camera keeps the near vertex's colour
+over far more of the screen. 1080's lit snow near the camera came out
+15-45 levels darker than on the N64 (title demo 705-753, the main-menu
+shot, Trick Attack).
+
+GfxRenderingAPIOGL::SetAffineShading(true), before the first shader is
+built, declares the shade inputs (vInput*) and vFog `noperspective` in
+both stages (desktop GL; GLES has no noperspective and is unchanged).
+The desktop vertex shader moves from GLSL 1.10 to 1.30 for the
+qualifier; its `attribute` / `varying` declarations still compile there.
+Only correct with clipped geometry (the previous patch): a noperspective
+varying across a vertex behind the eye is meaningless. Off by default.
+---
+ include/fast/backends/gfx_opengl.h          |  3 +++
+ src/fast/backends/gfx_opengl.cpp            | 15 ++++++++++++++-
+ src/fast/shaders/opengl/default.shader.glsl | 12 ++++++------
+ 3 files changed, 23 insertions(+), 7 deletions(-)
+
+diff --git a/include/fast/backends/gfx_opengl.h b/include/fast/backends/gfx_opengl.h
+index b00ea01..2f5a3d3 100644
+--- a/include/fast/backends/gfx_opengl.h
++++ b/include/fast/backends/gfx_opengl.h
+@@ -129,6 +129,9 @@ class GfxRenderingAPIOGL final : public GfxRenderingAPI {
+     void DeleteTexture(uint32_t texId) override;
+     void SetTextureFilter(FilteringMode mode) override;
+     FilteringMode GetTextureFilter() override;
++    // Interpolate the shade colour and fog factor without perspective correction (noperspective), as the RDP does.
++    // Set before the first shader is built; the shader cache is not cleared.
++    void SetAffineShading(bool affine);
+     void SetSrgbMode() override;
+     ImTextureID GetTextureById(int id) override;
+     /** @} */
+diff --git a/src/fast/backends/gfx_opengl.cpp b/src/fast/backends/gfx_opengl.cpp
+index 6c4dfc8..676b4bb 100644
+--- a/src/fast/backends/gfx_opengl.cpp
++++ b/src/fast/backends/gfx_opengl.cpp
+@@ -244,6 +244,13 @@ std::optional<std::string> opengl_include_fs(const std::string& path) {
+     return *inc;
+ }
+ 
++// N64 shading (SetAffineShading): the RDP interpolates shade colour and the fog factor linearly in screen space
++static bool sAffineShading = false;
++
++void GfxRenderingAPIOGL::SetAffineShading(bool affine) {
++    sAffineShading = affine;
++}
++
+ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+     prism::Processor processor;
+     prism::ContextItems mContext = {
+@@ -291,6 +298,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+ #ifdef __APPLE__
+         { "GLSL_VERSION", "#version 410 core" },
+         { "attr", "in" },
++        { "np_in", sAffineShading ? "noperspective in" : "in" },
+         { "opengles", false },
+         { "core_opengl", true },
+         { "texture", "texture" },
+@@ -298,6 +306,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+ #elif defined(USE_OPENGLES)
+         { "GLSL_VERSION", "#version 300 es\nprecision mediump float;" },
+         { "attr", "in" },
++        { "np_in", "in" },
+         { "opengles", true },
+         { "core_opengl", false },
+         { "texture", "texture" },
+@@ -305,6 +314,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+ #else
+         { "GLSL_VERSION", "#version 130" },
+         { "attr", "varying" },
++        { "np_in", sAffineShading ? "noperspective in" : "in" },
+         { "opengles", false },
+         { "core_opengl", false },
+         { "texture", "texture2D" },
+@@ -362,16 +372,19 @@ static std::string BuildVsShader(const CCFeatures& cc_features) {
+                                      { "GLSL_VERSION", "#version 410 core" },
+                                      { "attr", "in" },
+                                      { "out", "out" },
++                                     { "np_out", sAffineShading ? "noperspective out" : "out" },
+                                      { "opengles", false }
+ #elif defined(USE_OPENGLES)
+                                      { "GLSL_VERSION", "#version 300 es" },
+                                      { "attr", "in" },
+                                      { "out", "out" },
++                                     { "np_out", "out" },
+                                      { "opengles", true }
+ #else
+-                                     { "GLSL_VERSION", "#version 110" },
++                                     { "GLSL_VERSION", "#version 130" },
+                                      { "attr", "attribute" },
+                                      { "out", "varying" },
++                                     { "np_out", sAffineShading ? "noperspective out" : "out" },
+                                      { "opengles", false }
+ #endif
+     };
+diff --git a/src/fast/shaders/opengl/default.shader.glsl b/src/fast/shaders/opengl/default.shader.glsl
+index 3693c79..fd40dbf 100644
+--- a/src/fast/shaders/opengl/default.shader.glsl
++++ b/src/fast/shaders/opengl/default.shader.glsl
+@@ -27,7 +27,7 @@
+ 
+     @if(o_fog)
+         @{attr} vec4 aFog;
+-        @{out} vec4 vFog;
++        @{np_out} vec4 vFog;
+         @{update_floats(4)}
+     @end
+ 
+@@ -40,11 +40,11 @@
+     @for(i in 0..o_inputs)
+         @if(o_alpha)
+             @{attr} vec4 aInput@{i + 1};
+-            @{out} vec4 vInput@{i + 1};
++            @{np_out} vec4 vInput@{i + 1};
+             @{update_floats(4)}
+         @else
+             @{attr} vec3 aInput@{i + 1};
+-            @{out} vec3 vInput@{i + 1};
++            @{np_out} vec3 vInput@{i + 1};
+             @{update_floats(3)}
+         @end
+     @end
+@@ -98,14 +98,14 @@
+         @end
+     @end
+ 
+-    @if(o_fog) @{attr} vec4 vFog;
++    @if(o_fog) @{np_in} vec4 vFog;
+     @if(o_grayscale) @{attr} vec4 vGrayscaleColor;
+ 
+     @for(i in 0..o_inputs)
+         @if(o_alpha)
+-            @{attr} vec4 vInput@{i + 1};
++            @{np_in} vec4 vInput@{i + 1};
+         @else
+-            @{attr} vec3 vInput@{i + 1};
++            @{np_in} vec3 vInput@{i + 1};
+         @end
+     @end
+ 

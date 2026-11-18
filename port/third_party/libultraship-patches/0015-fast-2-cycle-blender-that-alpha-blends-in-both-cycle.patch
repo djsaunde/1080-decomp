@@ -1,0 +1,103 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Wed, 18 Nov 2026 12:00:01 -0500
+Subject: [PATCH 15/16] fast: 2-cycle blender that alpha-blends in both cycles
+ blends with a^2
+
+In 2-cycle mode the second blender cycle's IN is the first cycle's
+result. A render mode whose two cycles are both
+IN * IN_ALPHA + MEM * (1 - IN_ALPHA) (0x0050 in other_mode_l's top half)
+therefore gives IN * a^2 + MEM * (1 - a^2), not one alpha blend. 1080's
+Fader draws its fade masks that way: on the N64 a fade is lighter at
+every partial coverage, the port's was darker (title demo 4837-4842 up
+to 19 levels of the blurred score).
+
+Detect exactly that mode and set a new shader option, ALPHA_SQUARE, that
+squares the output alpha. ShaderOpts gains one bit, so SHADER_ID_SHIFT
+moves from 17 to 18.
+---
+ include/fast/interpreter.h                  | 4 +++-
+ src/fast/backends/gfx_opengl.cpp            | 1 +
+ src/fast/interpreter.cpp                    | 6 ++++++
+ src/fast/shaders/opengl/default.shader.glsl | 3 +++
+ 4 files changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/include/fast/interpreter.h b/include/fast/interpreter.h
+index 5631992..0ce9902 100644
+--- a/include/fast/interpreter.h
++++ b/include/fast/interpreter.h
+@@ -85,6 +85,7 @@ enum class ShaderOpts {
+     TEXEL0_BLEND,
+     TEXEL1_BLEND,
+     PRIM_DEPTH,
++    ALPHA_SQUARE, // 2-cycle blender blending with the combined alpha in both cycles: a * a
+     PRISM_SHADER, // 16-bit width
+     MAX
+ };
+@@ -118,6 +119,7 @@ struct CCFeatures {
+     bool opt_invisible;
+     bool opt_grayscale;
+     bool opt_prim_depth;
++    bool opt_alpha_square;
+     bool usedTextures[2];
+     bool used_masks[2];
+     bool used_blend[2];
+@@ -141,7 +143,7 @@ class GfxWindowBackend;
+ class Fast3dWindow;
+ 
+ constexpr size_t MAX_SEGMENT_POINTERS = 16;
+-constexpr size_t SHADER_ID_SHIFT = 17;
++constexpr size_t SHADER_ID_SHIFT = 18;
+ constexpr int16_t ShaderIdUnmask(int id) {
+     return (id >> SHADER_ID_SHIFT) & 0xFFFF;
+ }
+diff --git a/src/fast/backends/gfx_opengl.cpp b/src/fast/backends/gfx_opengl.cpp
+index 676b4bb..2baec9e 100644
+--- a/src/fast/backends/gfx_opengl.cpp
++++ b/src/fast/backends/gfx_opengl.cpp
+@@ -263,6 +263,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+         { "o_2cyc", cc_features.opt_2cyc },
+         { "o_alpha_threshold", cc_features.opt_alpha_threshold },
+         { "o_invisible", cc_features.opt_invisible },
++        { "o_alpha_square", cc_features.opt_alpha_square },
+         { "o_grayscale", cc_features.opt_grayscale },
+         { "o_prim_depth", cc_features.opt_prim_depth },
+         { "o_textures", M_ARRAY(cc_features.usedTextures, bool, 2) },
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index 3fbec68..c57126f 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -2082,6 +2082,11 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
+     if (use_prim_depth) {
+         cc_options |= SHADER_OPT(PRIM_DEPTH);
+     }
++    // 2-cycle with both blender cycles IN * IN_ALPHA + MEM * (1 - IN_ALPHA) (1080's Fader: 0x0050 in the top
++    // half): the second cycle blends the first cycle's blend with memory again, IN * a^2 + MEM * (1 - a^2).
++    if (use_2cyc && use_alpha && (mRdp->other_mode_l >> 16) == 0x0050) {
++        cc_options |= SHADER_OPT(ALPHA_SQUARE);
++    }
+ 
+     if (!mShaderStack.empty()) {
+         cc_options |= (mShaderStack.top() << SHADER_ID_SHIFT);
+@@ -5909,6 +5914,7 @@ void gfx_cc_get_features(uint64_t shader_id0, uint64_t shader_id1, struct CCFeat
+     cc_features->opt_invisible = (shader_id1 & SHADER_OPT(INVISIBLE)) != 0;
+     cc_features->opt_grayscale = (shader_id1 & SHADER_OPT(GRAYSCALE)) != 0;
+     cc_features->opt_prim_depth = (shader_id1 & SHADER_OPT(PRIM_DEPTH)) != 0;
++    cc_features->opt_alpha_square = (shader_id1 & SHADER_OPT(ALPHA_SQUARE)) != 0;
+ 
+     cc_features->clamp[0][0] = shader_id1 & SHADER_OPT(TEXEL0_CLAMP_S);
+     cc_features->clamp[0][1] = shader_id1 & SHADER_OPT(TEXEL0_CLAMP_T);
+diff --git a/src/fast/shaders/opengl/default.shader.glsl b/src/fast/shaders/opengl/default.shader.glsl
+index fd40dbf..22505ef 100644
+--- a/src/fast/shaders/opengl/default.shader.glsl
++++ b/src/fast/shaders/opengl/default.shader.glsl
+@@ -278,6 +278,9 @@
+             @if(o_alpha_threshold)
+                 if (texel.a < 8.0 / 256.0) discard;
+             @end
++            @if(o_alpha_square)
++                texel.a *= texel.a;
++            @end
+             @if(o_invisible)
+                 texel.a = 0.0;
+             @end
