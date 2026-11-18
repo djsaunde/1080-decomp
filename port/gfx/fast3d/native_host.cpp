@@ -40,6 +40,7 @@
 #include "live_audio.h"
 #include "live_backend.h"
 #include "live_window.h"
+#include "port_fast3d.h"
 #include "port_fast3d_native.h"
 extern "C" {
 #include "../port_fb_impl.h"
@@ -70,6 +71,7 @@ struct Inject {
 };
 
 struct Host {
+    bool black = false; /* osViBlack (port_native_black) */
     uint8_t* block = nullptr;
     size_t blockBytes = 0;
     LiveShmHeader* H = nullptr;
@@ -264,6 +266,26 @@ extern "C" int port_native_task(unsigned root, unsigned rq, unsigned imgs, int m
     return port_fast3d_queue(root, (uint32_t*)(uintptr_t)imgs, maxImgs);
 }
 
+extern "C" void port_native_invalidate(unsigned addr, unsigned size) {
+    if (sHost == nullptr || size == 0) {
+        return;
+    }
+    /* as the presenter (presenter.cpp): the cache key is the G_SETTIMG address, which can precede a
+     * LOADTILE's first byte */
+    const unsigned lo = addr > 0x8000 ? addr - 0x8000 : 0;
+    port_fast3d_invalidate((const void*)(uintptr_t)lo, (size_t)(addr + size - lo));
+}
+
+extern "C" void port_native_black(int black) {
+    if (sHost != nullptr) {
+        sHost->black = black != 0;
+    }
+}
+
+extern "C" int port_native_depth(unsigned img, unsigned idx) {
+    return sHost == nullptr ? -1 : port_fast3d_depth_now(img, idx);
+}
+
 extern "C" void port_native_frame(unsigned step) {
     Host* h = sHost;
     if (h == nullptr) {
@@ -278,6 +300,15 @@ extern "C" void port_native_frame(unsigned step) {
         h->empty++;
         pump(*h);
         return;
+    }
+    if (h->black) {
+        /* osViBlack (plan 22.5): the VI outputs black while the RDP goes on drawing, so the frame is drawn
+         * (its read-backs answered) and the window cleared over it. The faders blank the screen between
+         * a fade-out and the next scene's fade-in; the port showed the stale frame there. */
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDisable(GL_SCISSOR_TEST);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
     }
     if (png_wanted(*h, step)) {
         write_window_png(*h, step);

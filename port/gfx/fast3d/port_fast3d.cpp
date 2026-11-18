@@ -414,6 +414,7 @@ struct Native {
     std::set<std::pair<uint32_t, uint32_t>> depthSet, asked;
     std::vector<Fast::F3DGfx> frameList, prologue, offList, offPrologue;
     std::vector<std::vector<uint16_t>> rttPixels, readPixels;
+    uint32_t lastZimg = 0; /* the last frame's Z image (low 24 bits): port_fast3d_depth_now */
 };
 Native sNative;
 
@@ -641,6 +642,7 @@ bool port_fast3d_step(uint32_t vx, uint32_t vy, uint32_t vw, uint32_t vh, LiveFb
         }
         s->gfx->StartFrame();
         s->gfx->Run((Gfx*)root, noReplacements);
+        N.lastZimg = (uint32_t)(uintptr_t)s->gfx->mRdp->z_buf_address & 0xFFFFFF;
         if (reply != nullptr) {
             /* presenter.cpp Renderer::answer: the same reply, under the same seqlock */
             const uint32_t cimg = (uint32_t)(uintptr_t)s->gfx->mRdp->color_image_address & 0xFFFFFF;
@@ -687,6 +689,23 @@ bool port_fast3d_step(uint32_t vx, uint32_t vy, uint32_t vw, uint32_t vh, LiveFb
     N.depthSet.clear();
     N.asked.clear();
     return drawn;
+}
+
+int port_fast3d_depth_now(uint32_t img, uint32_t idx) {
+    State* s = sState;
+    if (s == nullptr || idx >= LIVE_FB_W * LIVE_FB_H || sNative.lastZimg == 0 ||
+        (img & 0xFFFFFFu) != sNative.lastZimg) {
+        return -1;
+    }
+    uint16_t z = 0;
+    const uint32_t x = idx % LIVE_FB_W, y = idx / LIVE_FB_W;
+    /* two pixels: Fast3D's one-pixel path (GfxRenderingAPIOGL::GetPixelDepth) reads GL_DEPTH_STENCIL straight
+     * from the framebuffer, which fails here (GL_INVALID_OPERATION, the value left uninitialised: 0x15xx); the
+     * blit path of two or more pixels reads right */
+    s->gfx->ReadbackRequestDepth(x, y);
+    s->gfx->ReadbackRequestDepth(x == 0 ? 1 : x - 1, y);
+    s->gfx->ServiceReadbacks();
+    return s->gfx->ReadbackGetDepth(x, y, &z) ? (int)z : -1;
 }
 
 void port_fast3d_end_frame() {

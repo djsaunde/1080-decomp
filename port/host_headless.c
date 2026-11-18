@@ -12,6 +12,10 @@
 
 #include "port_libc.h"
 #include "host.h"
+#ifdef PORT_GFX_NATIVE
+#include "gfx/port_live.h"
+#include "gfx/port_native.h"
+#endif
 
 /* PORT_LIVE (port/gfx/port_live.c, plan 19.11): the live presenter's keyboard / gamepad */
 extern int port_live_read_pads(HostPad pads[HOST_MAX_PADS]) __attribute__((weak));
@@ -74,7 +78,14 @@ void host_video_mode(host_u32 width, host_u32 height, int interlaced) {
 }
 
 void host_video_black(int black) {
+#ifdef PORT_GFX_NATIVE
+    /* plan 22.5: the native window blanks as the VI does (the presenter / f3dreplay paths do not) */
+    if (port_live_native()) {
+        port_native_black(black);
+    }
+#else
     (void)black;
+#endif
 }
 
 void host_frame_ready(void *framebuffer) {

@@ -26,6 +26,14 @@ unsigned port_native_open(void);
 /* one gfx task: root = its data_ptr, rq = the game's PortFbRequests (x32 layout), imgs = a u32[maxImgs]
  * that receives the low 24 bits of its G_SETCIMG / G_SETZIMG. Returns the number of images. */
 int port_native_task(unsigned root, unsigned rq, unsigned imgs, int maxImgs);
+/* the CPU rewrote [addr, addr + size) (texels, a palette): drop the textures Fast3D cached there
+ * (port_fb_texture_written; plan 22.3) */
+void port_native_invalidate(unsigned addr, unsigned size);
+/* osViBlack: the window shows black from the next frame on while black is set (plan 22.5) */
+void port_native_black(int black);
+/* the N64 Z (0..0xFFFC) of pixel idx (y * 320 + x) of the last frame drawn, if its Z image is img (full
+ * pointer); -1 if no frame drew into img (port_fb_read_depth; plan 22.4) */
+int port_native_depth(unsigned img, unsigned idx);
 /* the step's end: draw its tasks as one frame, answer the read requests, present, pump the window */
 void port_native_frame(unsigned step);
 /* pump the window's events into the pads; 1 = quit (Esc, the window closed) */

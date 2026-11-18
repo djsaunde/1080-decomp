@@ -30,6 +30,10 @@ int port_fast3d_queue(uint32_t root, uint32_t* imgs, int maxImgs);
 void port_fast3d_ask_color(uint32_t img);
 void port_fast3d_ask_depth(uint32_t img, uint32_t idx);
 
+/* the last drawn frame's N64 Z at pixel idx of image img (its full pointer), read now; -1 if the last
+ * frame's Z image is not img */
+int port_fast3d_depth_now(uint32_t img, uint32_t idx);
+
 struct PortFast3dStep {
     uint32_t tasks = 0, rttTasks = 0, unresolved = 0;
     uint32_t depthFar = 0, depthNear = 0, depthOther = 0, colorServed = 0;

@@ -54,6 +54,7 @@ extern char snd_setPlayer0VolumeLevel_0000023C[];
  * global, K = 0x254), so snd_setPlayer0VolumeLevel_0000023C stands for &gGfxLib + 0x23C; the same reloc as the target. */
 #ifdef PORT /* &gGfxLib is bootup Bss 0x3C168; the code symbol is a function on the port (plan 17.8) */
 #include "port_game.h"
+#include "port_fb.h" /* the framebuffer model (plan 19.10) */
 #define GFX_1304C GFXLIB(PORT_GFXLIB)
 #else
 #define GFX_1304C GFXLIB(snd_setPlayer0VolumeLevel_0000023C - 0x23C)
@@ -108,6 +109,9 @@ extern "C" void Fader_display(Fire *f) {
             i++;
         }
     }
+#ifdef PORT /* plan 22.3: tex1, the I8 coverage mask, is rewritten every frame; the in-process Fast3D caches by address */
+    port_fb_texture_written(f->tex1, 32 * 32);
+#endif
     if (f->state == 3 && count > 1024) f->f48 = 1.0f;
     if (count == 1024) {
         f->f48 = 1.0f;
