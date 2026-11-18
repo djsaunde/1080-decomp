@@ -161,7 +161,10 @@ extern char port_bootup_bss[];
 #define heli_polyFlags_ld (*(__typeof__(heli_polyFlags_ld) *)(port_bootup_bss + 0x3EEC4))
 #define heli_polyFlags_st (*(__typeof__(heli_polyFlags_st) *)(port_bootup_bss + 0x3EEC4))
 #endif
-void HeliItemType_create(char *self) {
+/* PORT_V0_TYPE / PORT_V0_RET (plan 21.12, icall-scan ICALL32/64): ItemType_load calls this as the type's slot-10
+ * create and uses $v0 -- Heli_ctor's new Heli -- as the item it adds and names; void on the host, the item reached
+ * it only through the tail call's leftover eax. */
+PORT_V0_TYPE(int) HeliItemType_create(char *self) {
     if (HELIITEMTYPE(self)->bodyShape == 0) {
         heli_polyFlags_st = heli_polyFlags_ld | 8; if (1) {}
         heli_polyGeomMode.geomMode = 0x2A003;
@@ -181,7 +184,7 @@ void HeliItemType_create(char *self) {
         void *blades = HELIITEMTYPE(self)->bladeShape;
         void *body = HELIITEMTYPE(self)->bodyShape;
         void *sprite = HELIITEMTYPE(self)->sprite;
-        CALL(Heli_ctor)(0, body, blades, sprite);
+        PORT_V0_RET CALL(Heli_ctor)(0, body, blades, sprite);
     }
 }
 #ifdef PORT

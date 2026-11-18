@@ -56,6 +56,13 @@
 #              a synthetic .sra loads, damaged primaries are restored from the mirrors
 #   abi        port/tools/abi-scan.py (DWARF call sites vs definitions) against
 #              port/tools/abi-baseline.tsv: no new float / int / double / struct-return mismatch
+#   icall      (plan 21.12) what abi-scan cannot see: indirect calls (vtable slots, callback tables), cast calls,
+#              by-value structs fed other classes (the reverb ring halves, 15.11), &param home-slot reads and scalar
+#              type punning.  A GCC plugin (port/tools/icall/callscan.cc; headers via setup-plugin-dev.sh) gives
+#              the caller's view of every call in build64 and in an i386 probe build, which records each indirect
+#              call's targets on every port/host script + soak seeds (port/tools/icall-trace.py, ~1 min);
+#              port/tools/icall-scan.py judges the edges / calls against the definitions' DWARF: no finding beyond
+#              port/tools/icall-baseline.tsv (PORT_GATE_ICALL=0 skips it)
 # --regen             keep the regenerated port/gen + sourcemap (default: restore, report stale)
 #                     and rebuild from them before the checks
 # --update-baselines  rewrite the warning and ABI baselines from this run (review the diff!)
@@ -346,9 +353,18 @@ fi
 # method's host address, is dropped), and the 64-bit race / modes checks must pass.  The abi-scan --x64 count is
 # printed (INFO: its X64KR / X64P / X64REG list is the remaining float-class work, plan 21.8).
 # PORT_GATE_BUILD64=0 skips it (a full build: ~15 s with a warm compiler cache, a few minutes cold).
+# the icall step's GCC plugin (plan 21.12): built here so build64 can carry it (it only writes the
+# <unit>.calls / .pun files into $IC64; no code change)
+ICSO=""; IC64=""
+if [ "${PORT_GATE_ICALL:-1}" = 1 ]; then
+  mkdir -p "$LOG/icall-plugin"  # the file name is the plugin's name: callscan.so (-fplugin-arg-callscan-*)
+  ICSO=$(port/tools/icall/setup-plugin-dev.sh "$LOG/icall-plugin/callscan.so" 2>"$LOG/icall-plugin.log") || ICSO=""
+fi
 if [ "${PORT_GATE_BUILD64:-1}" = 1 ]; then
   start; B64="$LOG/build64"; S64="$LOG/smoke64"; rm -rf "$B64" "$S64"; mkdir -p "$S64"; why=""; ok=1
-  if ! cmake -S port -B "$B64" -G Ninja -DPORT_64=ON -DPORT_LINK=ON -DPORT_ROM="$ROM" >"$LOG/configure64.log" 2>&1; then why="configure failed"
+  P64=""; if [ -n "$ICSO" ]; then IC64="$(mktemp -d "$LOG/icall64.XXXXXX")"; P64="-fplugin=$ICSO -fplugin-arg-callscan-out=$IC64"; fi
+  if ! cmake -S port -B "$B64" -G Ninja -DPORT_64=ON -DPORT_LINK=ON -DPORT_ROM="$ROM" "-DCMAKE_C_FLAGS=$P64" "-DCMAKE_CXX_FLAGS=$P64" \
+      >"$LOG/configure64.log" 2>&1; then why="configure failed"
   elif ! cmake --build "$B64" -j"$JOBS" -- -k 0 >"$LOG/build64.log" 2>&1; then
     why="build: $(grep -c 'error:' "$LOG/build64.log") errors ($(grep -m1 'error:' "$LOG/build64.log" | cut -c1-80))"; fi
   if [ -z "$why" ]; then
@@ -477,6 +493,35 @@ start; if have tenshoe; then
 fi
 
 [ $REGEN = 1 ] && [ -n "$(git status --short -- port/gen port/sourcemap.tsv port/sourcemap-placeholders.tsv)" ] && echo "   --regen: port/gen / sourcemap changed in $WT (commit as tool output)"
-[ $UPDATE = 1 ] && echo "   --update-baselines: review git diff port/tools/port-gate-warnings.tsv port/tools/abi-baseline.tsv"
+# ---- icall (plan 21.12): indirect / cast calls, by-value structs, home-slot reads, punning (port/tools/icall-scan.py)
+if [ "${PORT_GATE_ICALL:-1}" = 1 ]; then
+  start; IC="$(mktemp -d "$LOG/icall.XXXXXX")"; why=""
+  if [ -z "$ICSO" ]; then why="no GCC plugin: $(tail -1 "$LOG/icall-plugin.log") (port/tools/icall/setup-plugin-dev.sh)"
+  else
+    mkdir -p "$IC/calls32"
+    P32="-fplugin=$ICSO -fplugin-arg-callscan-out=$IC/calls32 -fplugin-arg-callscan-probe"
+    "$MONO/tools/i386-sysroot/gcc32" -O2 -c port/tools/icall/probe.c -o "$IC/probe32.o" 2>"$IC/probe.log" || why="probe.c: $(tail -1 "$IC/probe.log")"
+    if [ -z "$why" ] && ! cmake -S port -B "$IC/build" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$TC" -DPORT_LINK=ON -DPORT_ROM="$ROM" \
+        "-DCMAKE_C_FLAGS=$P32" "-DCMAKE_CXX_FLAGS=$P32" "-DCMAKE_EXE_LINKER_FLAGS=$IC/probe32.o" >"$IC/configure.log" 2>&1; then
+      why="probe build: configure failed"
+    elif [ -z "$why" ] && ! cmake --build "$IC/build" -j"$JOBS" >"$IC/build.log" 2>&1; then
+      why="probe build: $(grep -m1 'error' "$IC/build.log" | cut -c1-100)"
+    elif [ -z "$why" ] && ! python3 port/tools/icall-trace.py -b "$IC/build" -r "$ROM" -o "$IC/trace" -j "$JOBS" >"$IC/trace.log" 2>&1; then
+      why="trace: $(tail -1 "$IC/trace.log")"
+    fi
+  fi
+  if [ -z "$why" ]; then
+    X64=(); [ -n "$IC64" ] && [ -x "${B64:-}/tenshoe" ] && X64=(--calls64 "$IC64" --elf64 "$B64/tenshoe")
+    BL=(--baseline port/tools/icall-baseline.tsv); [ $UPDATE = 1 ] && BL+=(--update)
+    python3 port/tools/icall-scan.py --calls32 "$IC/calls32" --elf32 "$IC/build/tenshoe" --edges "$IC/trace/edges.txt" \
+      "${X64[@]}" "${BL[@]}" >"$IC/scan.log" 2>&1; rc=$?
+    txt="$(tail -1 "$IC/scan.log" | sed 's/^icall-scan: //'); trace: $(tail -1 "$IC/trace.log" | sed 's/^icall-trace: //')"
+    [ ${#X64[@]} = 0 ] && txt="$txt; x86-64 not judged (no build64)"
+    if [ $rc = 0 ]; then line icall PASS "$txt"
+    else line icall FAIL "$txt"; grep -E '^NEW' "$IC/scan.log" | head -5 | cut -c1-200 | sed 's/^/             /'; fi
+  else line icall FAIL "$why"; fi
+fi
+
+[ $UPDATE = 1 ] && echo "   --update-baselines: review git diff port/tools/port-gate-warnings.tsv port/tools/abi-baseline.tsv port/tools/icall-baseline.tsv"
 if [ $FAILS = 0 ]; then echo "== port gate: PASS"; else echo "== port gate: FAIL ($FAILS step(s))"; fi
 exit $FAILS

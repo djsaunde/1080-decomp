@@ -2838,9 +2838,12 @@ void stream_readS32_0000502C(int *dst) {
  * #feedback-ido-struct-by-value-homes-arg-pair. */
 extern char gStrHeliUso_7D94;
 struct OneI { int x; };
-void item_createHel(int a0) {
+/* PORT_V0_TYPE / PORT_V0_RET (plan 21.12, icall-scan ICALL32/64): ItemMgr_registerTemplate calls this through the
+ * template table's fn and adds its $v0 -- HeliItemType_ctor's new type -- to the manager; void on the host, the
+ * type reached it only through the tail call's leftover eax. Same in item_createCfr. */
+PORT_V0_TYPE(int) item_createHel(int a0) {
     FCALL(game_loadUsoOnce)(&gStrHeliUso_7D94);
-    FCALL(HeliItemType_ctor)(0, *(struct OneI*)&a0); /* jal -> heli.uso Text+0x1D4 = heli.uso HeliItemType_ctor (TextReloc import, proven by name-placeholder-calls) */
+    PORT_V0_RET FCALL(HeliItemType_ctor)(0, *(struct OneI*)&a0); /* jal -> heli.uso Text+0x1D4 = heli.uso HeliItemType_ctor (TextReloc import, proven by name-placeholder-calls) */
 }
 
 /* 33-insn / 0x84 init+alloc+populate.
@@ -3241,9 +3244,9 @@ void *item_createGtl(Box53E8 arg) {
  * value to the outgoing a1 slot and reproduces the target's dead
  * `sw a1, 0x4(sp)` without instruction patching. */
 extern char sStr_rom_fire_uso_7E10;
-void item_createCfr(int a0) {
+PORT_V0_TYPE(int) item_createCfr(int a0) {
     FCALL(game_loadUsoOnce)(&sStr_rom_fire_uso_7E10);
-    FCALL(FireTmpl_ctor)(0, *(struct OneI*)&a0); /* jal -> fire.uso Text+0x0 = fire.uso FireTmpl_ctor (TextReloc import, proven by name-placeholder-calls) */
+    PORT_V0_RET FCALL(FireTmpl_ctor)(0, *(struct OneI*)&a0); /* jal -> fire.uso Text+0x0 = fire.uso FireTmpl_ctor (TextReloc import, proven by name-placeholder-calls) */
 }
 
 extern char FogTmpl_vtbl_78D8;

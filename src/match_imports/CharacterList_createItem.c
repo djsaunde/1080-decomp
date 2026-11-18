@@ -16,8 +16,8 @@ extern char port_bootup_bss[];
 #define d14c_ee6c_s2 (*(__typeof__(d14c_ee6c_s2) *)(port_bootup_bss + 0x3EEC8))
 #define d14c_ee6c_s3 (*(__typeof__(d14c_ee6c_s3) *)(port_bootup_bss + 0x3EEC8))
 #endif
-SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, u32 arg3,
-                                 u32 arg4, u32 arg5, float arg6,
+SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, CharItemPosArg arg3,
+                                 CharItemPosArg arg4, CharItemPosArg arg5, float arg6,
                                  float arg7, float arg8) {
     char *volatile r;
     int n2;

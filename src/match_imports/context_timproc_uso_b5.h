@@ -1340,8 +1340,18 @@ struct TimB5UiMethod24 { char pad[0x20]; s16 adjustment; s16 reserved; void (*me
 extern void *timproc_uso_b5_d14c_alloc(s32);
 extern char *SelItemParms_ctor(char *);
 extern char *SelItemInfo_ctor(char *);
-SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, u32 arg3,
-                                 u32 arg4, u32 arg5, float arg6,
+#ifdef PORT64
+/* plan 21.12 (icall-scan ICALL64): the only caller, SelItemsMgr_ctor, calls the list's slot-10 createItem through
+ * AddFn (void *, s32, s32, f32 x 6). arg3..arg5 (the position, unused here) are O32 float bits; as u32 they would
+ * be read from rcx / r8 / r9 while the caller passes them in xmm0..2, and arg6..arg8 (the rotation) would read
+ * xmm0..2: the position (latent: each frame's update rewrites view[] before the first draw).  The Board / Course /
+ * LevelList createItems take f32 there already. */
+typedef f32 CharItemPosArg;
+#else
+typedef u32 CharItemPosArg;
+#endif
+SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, CharItemPosArg arg3,
+                                 CharItemPosArg arg4, CharItemPosArg arg5, float arg6,
                                  float arg7, float arg8);
 extern char timproc_uso_b5_D_807FDB64;
 extern char import_80807FB8;

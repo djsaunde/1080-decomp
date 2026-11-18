@@ -25822,8 +25822,10 @@ void TextWin_clear(int *a0) {
 extern int gl_func_00000000();
 extern int gl_data_00000000;
 
-void TextWin_puts_00060D08(int a0, int a1, int a2) {
-    CALL(TextWin_write)(gl_data_00000000, 0, a1, a2);
+/* PORT_V0_TYPE / PORT_V0_RET (plan 21.12, icall-scan ICALL32/64): the text window's _Printf output function;
+ * _Printf tests its result against NULL (and libultra's passes it back as the next call's arg). */
+PORT_V0_TYPE(int) TextWin_puts_00060D08(int a0, int a1, int a2) {
+    PORT_V0_RET CALL(TextWin_write)(gl_data_00000000, 0, a1, a2);
 }
 
 /* ConsoleMgr_ctor: 31-insn alloc-or-given constructor. Alloc 0x3C if a0
