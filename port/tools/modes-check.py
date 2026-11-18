@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The port gate's `modes` step (plan 20.5, run 857): every game mode headless, in a few seconds.
 
-    port/tools/modes-check.py -b <port build dir> -o <new scratch dir> [-r ROM] [-j JOBS]
+    port/tools/modes-check.py -b <port build dir> -o <new scratch dir> [-r ROM] [-j JOBS] [--gfx-steps STEPS]
 
 Each check runs tenshoe headless from a fresh directory (blank SRAM unless stated) on a committed
 input script (port/host/*.input) and reads the --trace state.log (port/trace.h):
@@ -58,8 +58,11 @@ def run(a, name, script, frames, sram=None):
     args = ['timeout', '120', RUN32, os.path.join(a.build, 'tenshoe'), '--rom', a.rom, '--input',
             os.path.join(HOST, script), '--frames', str(frames), '--trace', os.path.join(d, 'state.log'),
             '--sram', sram]
+    env = dict(os.environ)
+    if name == 'match' and a.gfx_steps:  # the build64 gate compares the Select Level screen's gfx (run 872)
+        env.update(PORT_GFX_DUMP=os.path.join(d, 'gfx'), PORT_GFX_DUMP_STEPS=a.gfx_steps)
     with open(os.path.join(d, 'run.log'), 'w') as fh:
-        rc = subprocess.run(args, cwd=d, stdout=fh, stderr=subprocess.STDOUT).returncode
+        rc = subprocess.run(args, cwd=d, stdout=fh, stderr=subprocess.STDOUT, env=env).returncode
     return rc, os.path.join(d, 'state.log')
 
 
@@ -232,6 +235,8 @@ def main():
     ap.add_argument('-o', '--outdir', required=True, help='a new scratch directory')
     ap.add_argument('-r', '--rom', default=os.path.join(GAME, 'baserom.z64'))
     ap.add_argument('-j', '--jobs', type=int, default=6)
+    ap.add_argument('--gfx-steps', help='PORT_GFX_DUMP these steps of the match run (match/gfx; the build64 gate '
+                    'compares them i386 against x86-64: Select Level, plan 21.11)')
     a = ap.parse_args()
     os.makedirs(a.outdir, exist_ok=True)
     checks = [('trick', check_trick), ('contest', check_contest), ('training', check_training),

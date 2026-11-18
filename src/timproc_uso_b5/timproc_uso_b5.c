@@ -6515,10 +6515,13 @@ void CharacterItem_update_0000BB88(int *a0) {
 }
 
 /* 5-insn float store: stores a1 to a0->_2A0 and (a0->_2B8)->_120.
- * Float arg passed in $a1 (int reg), so IDO emits mtc1 to FPU first. */
-void CharacterItem_setAlpha_0000BBC8(SelCharacterItem *it, float a1) {
-    it->base.alpha = a1;
-    it->model->alpha = a1;
+ * Float arg passed in $a1 (int reg), so IDO emits mtc1 to FPU first.
+ * PORT64_BITS (all five item setAlphas, plan 21.11): the only caller, SelectWin_update, calls slot 22
+ * through an unprototyped pointer with the BITS (*(int *)&fade); on x86-64 a float parameter would read
+ * xmm0 (garbage: the Select Level camera / cards, run 872). ROM / i386: plain float. */
+void CharacterItem_setAlpha_0000BBC8(SelCharacterItem *it, PORT64_BITS(float) a1) {
+    it->base.alpha = PORT64_BV(a1);
+    it->model->alpha = PORT64_BV(a1);
 }
 
 #ifdef NON_MATCHING
@@ -6855,9 +6858,9 @@ void BoardItem_update_0000C1B4(int *a0) {
  * from the Yay0 gap (no .s, missing from build; bytes from block_5). o32
  * float-after-int arg arrives in $a1 -> mtc1; inline-deref of a0->0x2B8
  * keeps the dest pointer in $t6 (byte-exact). */
-void BoardItem_setAlpha_0000C1F4(SelBoardItem *it, float val) {
-    it->base.alpha = val;
-    it->model->alpha = val;
+void BoardItem_setAlpha_0000C1F4(SelBoardItem *it, PORT64_BITS(float) val) {
+    it->base.alpha = PORT64_BV(val);
+    it->model->alpha = PORT64_BV(val);
 }
 
 extern char D_b5_C208_table0;
@@ -7171,9 +7174,9 @@ void CourseItem_update_0000C8AC(int *a0) {
 }
 
 
-void CourseItem_setAlpha_0000C978(SelCourseItem *it, float a1) {
-    it->base.alpha = a1;
-    it->model->alpha = a1;
+void CourseItem_setAlpha_0000C978(SelCourseItem *it, PORT64_BITS(float) a1) {
+    it->base.alpha = PORT64_BV(a1);
+    it->model->alpha = PORT64_BV(a1);
 }
 
 // CourseItem_drawLabel_0000C98C — STRUCTURAL PASS (0x1B4 / 109 words,
@@ -7378,9 +7381,9 @@ void TesuriItem_update_0000CC74(int *a0) {
 
 /* TesuriItem_setAlpha_0000CCB4: sibling of 0000C1F4 (last store at 0x11C
  * instead of 0x120), RECOVERED 2026-05-28 from the Yay0 gap. */
-void TesuriItem_setAlpha_0000CCB4(SelTesuriItem *it, float val) {
-    it->base.alpha = val;
-    it->model->alpha = val;
+void TesuriItem_setAlpha_0000CCB4(SelTesuriItem *it, PORT64_BITS(float) val) {
+    it->base.alpha = PORT64_BV(val);
+    it->model->alpha = PORT64_BV(val);
 }
 
 /* TesuriItem_drawLabel_0000CCC8: 23-insn (0x5C) 6-arg cross-USO call
@@ -7556,9 +7559,9 @@ void LevelItem_update_0000CE6C(int *a0) {
 void LevelItem_drawStats_0000CEB4(char *a0, int a1) {
 }
 
-void LevelItem_setAlpha_0000D058(SelLevelItem *it, float a1) {
-    it->base.alpha = a1;
-    it->model->alpha = a1;
+void LevelItem_setAlpha_0000D058(SelLevelItem *it, PORT64_BITS(float) a1) {
+    it->base.alpha = PORT64_BV(a1);
+    it->model->alpha = PORT64_BV(a1);
 }
 
 /* MATCHED (byte-exact, 28/28). Sibling of the A97C/A9EC family — the prior

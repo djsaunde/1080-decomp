@@ -66,9 +66,13 @@ WT="$(cd "${LAND_WT:-$SELF_DIR/..}" && pwd)" || exit 99
 LOG="${PORT_GATE_TMP:-${TMPDIR:-/tmp}/port-gate-$(basename "$WT")}"
 FRAMES="${PORT_GATE_FRAMES:-2000}"; JOBS="${PORT_GATE_JOBS:-8}"
 GFX_STEPS="${PORT_GATE_GFX_STEPS:-300,1000,1500,1900}" # the smoke steps whose gfx build64 compares (plan 21.9)
-# the race script's steps whose gfx build64 compares (plan 21.10): racing with the HUD (course gadget, time),
-# the goal, the View Replay
-RACE_GFX_STEPS="${PORT_GATE_RACE_GFX_STEPS:-1800,3000,4700,7000}"
+# the race script's steps whose gfx build64 compares (plan 21.10): Select Course, racing with the HUD (course
+# gadget, time), the goal, the View Replay
+RACE_GFX_STEPS="${PORT_GATE_RACE_GFX_STEPS:-1300,1800,3000,4700,7000}"
+# the match script's steps whose gfx build64 compares (plan 21.11, run 872): Select Level (and 1300 above, Time
+# Attack's Select Course): the item setAlphas took a float the caller passes as bits, so x86-64 drew the select
+# screens with a garbage alpha (a wrong camera, no cards) while every state.log matched
+MODES_GFX_STEPS="${PORT_GATE_MODES_GFX_STEPS:-850}"
 REGEN=0; UPDATE=0
 for a in "$@"; do case "$a" in
   --regen) REGEN=1 ;; --update-baselines) UPDATE=1 ;;
@@ -294,7 +298,7 @@ fi
 # ---- modes (plan 20.5): every game mode's script, its checks in port/tools/modes-check.py
 start; if have tenshoe; then
   MC="$(mktemp -d "$LOG/modes.XXXXXX")"  # a fresh dir per run (no rm of a variable path)
-  python3 port/tools/modes-check.py -b "$B" -r "$ROM" -o "$MC" >"$MC/check.log" 2>&1; rc=$?
+  python3 port/tools/modes-check.py -b "$B" -r "$ROM" -o "$MC" --gfx-steps "$MODES_GFX_STEPS" >"$MC/check.log" 2>&1; rc=$?
   txt=$(grep -E '^  [a-z0-9]+ +(ok|FAIL)' "$MC/check.log" | awk '{printf "%s %s; ", $1, $2}' | sed 's/; $//')
   if [ $rc = 0 ]; then line modes PASS "$txt"
   else line modes FAIL "${txt:-$(tail -1 "$MC/check.log")}"; grep -E 'FAIL|regenerate' "$MC/check.log" | sed 's/^/           /'; fi
@@ -382,7 +386,13 @@ PY
 ) || ok=0
     fi
     if [ -n "${MC:-}" ]; then M64="$(mktemp -d "$LOG/modes64.XXXXXX")"
-      RUN32=env python3 port/tools/modes-check.py -b "$B64" -r "$ROM" -o "$M64" >"$M64/check.log" 2>&1 || ok=0; fi
+      RUN32=env python3 port/tools/modes-check.py -b "$B64" -r "$ROM" -o "$M64" --gfx-steps "$MODES_GFX_STEPS" \
+        >"$M64/check.log" 2>&1 || ok=0
+      if [ -d "$MC/match/gfx" ] && [ -d "$M64/match/gfx" ]; then
+        mgfx=$(python3 port/tools/dlump-cmp.py "$MC/match/gfx" "$M64/match/gfx" 2>&1) || ok=0
+        mgfx="select gfx: $(printf '%s' "$mgfx" | tail -1 | cut -c1-120)"
+      else ok=0; mgfx="select gfx: missing"; fi
+    fi
     # two soak seeds (port/tools/soak.py GATE64_SEEDS, run 869) on both builds: no failure, and the state.logs,
     # saves and audio (--audio64, hard since run 870) equal (scr=, the screen hash, stays soft: plan 21.10)
     SK64="$(mktemp -d "$LOG/soak64.XXXXXX")"
@@ -416,7 +426,7 @@ PY
     abi=$(python3 port/tools/abi-scan.py --x64 "$B64/tenshoe" 2>/dev/null | cut -f1 | sed 's/X64P[0-9]*/X64P/' | sort | uniq -c | awk '{printf "%s %s ", $2, $1}')
     rr=$( [ -n "$R64" ] && { grep -qE ' FAIL ' "$R64/check.log" && echo "race64 FAIL" || echo "race64 ok"; } )
     mm=$( [ -n "$M64" ] && { grep -qE ' FAIL ' "$M64/check.log" && echo "modes64 FAIL" || echo "modes64 ok"; } )
-    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; $rr; $mm; $cmpr; gfx: $gfx; $rgfx; $raud; $sk64; abi-scan --x64 (INFO): ${abi:-0}"
+    why="tests:$t; smoke rc $rc, $nf frames${stop:+ ($stop)}; $rr; $mm; $cmpr; gfx: $gfx; $rgfx; ${mgfx:-select gfx: not run}; $raud; $sk64; abi-scan --x64 (INFO): ${abi:-0}"
   else ok=0; fi
   [ $ok = 1 ] && line build64 PASS "$why" || line build64 FAIL "$why"
 fi
