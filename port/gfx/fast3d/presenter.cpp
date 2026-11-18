@@ -120,6 +120,7 @@ extern "C" {
 #include "live_gamepad.h"
 #include "live_window.h"
 #include "live_backend.h"
+#include "port_fast3d_n64.h"
 
 namespace Fast {
 void GfxSetInstance(std::shared_ptr<Interpreter> gfx);
@@ -280,6 +281,8 @@ struct Renderer {
         Fast::GfxSetInstance(gfx);
         gfx->Init(&window, rapi.get(), "1080", false, w, h, 0, 0, cvars, resources);
         Fast::gfx_set_target_ucode(ucode_f3dex_line3d); /* after Init, which resets it to F3DEX2 */
+        port_fast3d_n64_rapi(rapi.get()); /* plan 25: N64 clipping, shading, filtering */
+        port_fast3d_n64_interp();
         gfx->SetGfxDebugger(std::make_shared<Fast::GfxDebugger>());
         gfx->SetNativeDimensions(320.0f, 240.0f);
     }

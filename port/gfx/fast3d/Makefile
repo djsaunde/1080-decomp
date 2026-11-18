@@ -48,7 +48,7 @@ $(OUT)/test_inproc: $(OBJ)/test_inproc.o $(OBJ)/port_fast3d.o $(OBJS)
 # (+ plan 19.12: the audio thread, libpulse-simple dlopen'd, headers from setup-pulse-dev.sh; an evdev gamepad)
 $(OUT)/presenter: $(OBJ)/presenter.o $(OBJ)/live_window.o $(OBJ)/live_audio.o $(OBJ)/live_gamepad.o $(OBJ)/input_script.o $(OBJS)
 	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 $(LIBDIR)/libX11.so.6 -lm -ldl -lpthread
-$(OBJ)/presenter.o: presenter.cpp ../dlump.h ../live_shm.h ../../host.h ../replay/egl_png.h live_audio.h live_gamepad.h \
+$(OBJ)/presenter.o: presenter.cpp port_fast3d_n64.h ../dlump.h ../live_shm.h ../../host.h ../replay/egl_png.h live_audio.h live_gamepad.h \
                live_window.h live_backend.h $(SHIM_H) | $(OBJ)
 	$(XX) -I$(X11_DEV)/usr/include -Wall -Wextra -Wno-unused-parameter -c $< -o $@
 # the window (X11 + EGL) and its input, shared by the presenter and the native host (plan 21.9)
