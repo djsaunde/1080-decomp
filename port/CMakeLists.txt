@@ -71,8 +71,12 @@ target_include_directories(game PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${GA
 # FUNC and its .part / .isra / .constprop clones); a body gcc inlined into its caller would
 # keep the unbound placeholder (plan 18.6).  C only: a C++ donor's inline members are
 # not ROM functions (NCC inlined them), so their sites belong to the caller's binds.
+# -fno-ipa-icf: for the same reason, two functions whose C is identical but whose placeholder
+# tokens bind to different callees must stay two bodies; gcc's identical code folding made
+# h2h_winByRetire a jump to h2h_winByFinish, so a 2P VS retire ran the finish path ("You Lose"
+# for "Retire", plan 24).
 target_compile_options(game PRIVATE ${PORT_ARCH_FLAGS} -include ${CMAKE_CURRENT_SOURCE_DIR}/include/port.h
-    $<$<COMPILE_LANGUAGE:C>:-std=gnu89 -fcommon -fno-inline>
+    $<$<COMPILE_LANGUAGE:C>:-std=gnu89 -fcommon -fno-inline -fno-ipa-icf>
     $<$<COMPILE_LANGUAGE:CXX>:-std=gnu++98 -fpermissive -fno-exceptions -fno-rtti>
     -Wno-int-conversion -Wno-incompatible-pointer-types -Wno-builtin-declaration-mismatch)
 

@@ -231,6 +231,31 @@ __attribute__((weak)) void port_trace_collect(PortTraceFrame *f) {
 void *port_trace_fn_obj;
 unsigned port_trace_fn_objSize;
 
+void port_trace_rider_bin(u32 step, s32 idx, const void *obj, unsigned size) {
+    static FILE *sOut;
+    static int sInit;
+    const u32 *w = (const u32 *)obj;
+    u32 i, hdr[2];
+    if (!sInit) {
+        const char *p = getenv("PORT_TRACE_RIDERBIN");
+        sInit = 1;
+        sOut = p != NULL ? fopen(p, "wb") : NULL;
+    }
+    if (sOut == NULL) {
+        return;
+    }
+    hdr[0] = step;
+    hdr[1] = (u32)idx;
+    fwrite(hdr, 4, 2, sOut);
+    for (i = 0; i < size / 4; i++) {
+        u32 v = w[i];
+        u8 b[4];
+        b[0] = (u8)(v >> 24), b[1] = (u8)(v >> 16), b[2] = (u8)(v >> 8), b[3] = (u8)v;
+        fwrite(b, 1, 4, sOut);
+    }
+    fflush(sOut);
+}
+
 #ifdef PORT_TRACE_FN
 static FILE *sFn;
 static int sFnOn;

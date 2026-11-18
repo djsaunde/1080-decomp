@@ -1,8 +1,12 @@
 # tenshoe --input script: two pads, boot -> title -> main menu -> 2P VS -> selects -> race -> result.
 # Steps are SysLib.frameCount (state.log F). Run 846 (agent-a); run 853 (agent-c): P2 needs its own
-# board confirm (1500) before P1 picks the course; the race starts at ~1792 (flow 5,2,2). Both ride
-# straight; on agent-a's tag-convention physics P2 retires at 3679 (health -2: P1 wins), the A presses
-# go through the result to the next round (race state 1 again at ~4238).
+# board confirm (1500) before P1 picks the course; the race starts at ~1792 (flow 5,2,2).
+# Plan 24 (agent-a): with the catch-up speed fixed (SnowBoarder_limitSpeed's pool constants) the port
+# matches the N64 (n64ref) rider for rider over the whole script. Both ride straight with the stick up
+# to 8000; P2 crashes out at ~6930 (health -2: P1 wins, race state 2 at 6933), the result times out and
+# the next round starts at ~7638 (race state 1 again). port/tools/n64ref/vs2p-golden.tsv holds the
+# N64's per-step rider positions for this script (modes-check.py compares them).
+# END 7800
 PADS 2
 F 480:3 START          # title
 F 560:3 A
@@ -19,6 +23,4 @@ F 1500:3 P2 A
 F 1600:3 P1 A
 F 1700:3 P1 A
 F 1800:3 P1 A
-F 1900-3700 P1 STICK 0,80 P2 STICK 0,80
-F 3900:3 P1 A
-F 4050:3 P1 A
+F 1900-8000 P1 STICK 0,80 P2 STICK 0,80

@@ -143,4 +143,10 @@ void port_trace_collect(PortTraceFrame *f);
 extern void *port_trace_fn_obj;
 extern unsigned port_trace_fn_objSize;
 
+/* PORT_TRACE_RIDERBIN=<file> (plan 24): the collector hands every rider of every traced step here;
+ * written as u32 step, u32 entry index (host order), then the object's words big-endian, to diff field by
+ * field with the N64's RDRAM (n64ref --watch, port/tools/n64ref/rider-diff.py). Only the i386 build has
+ * the N64 layout. */
+void port_trace_rider_bin(u32 step, s32 idx, const void *obj, unsigned size);
+
 #endif /* PORT_TRACE_H */

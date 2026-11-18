@@ -173,21 +173,24 @@ def load_pins():
         if m:
             pins[m.group(1)] = int(m.group(2), 0)
             continue
-        m = re.match(r"\s*(\w+)\s*=\s*([A-Za-z_]\w*)\s*;", line)
+        m = re.match(r"\s*(\w+)\s*=\s*([A-Za-z_]\w*)\s*(?:([+-])\s*(0x[0-9A-Fa-f]+|\d+)\s*)?;", line)
         if m:
-            alias[m.group(1)] = m.group(2)
+            k = int(m.group(4), 0) if m.group(4) else 0
+            alias[m.group(1)] = (m.group(2), -k if m.group(3) == "-" else k)
     # `tok = sym;` (a symbol alias, e.g. bu_63b4_c57c = snd_soundObjCreate_0000057C): the token's
     # value is sym's in the matching link (plan 18.21: read as 0 before, MapProp_display's
-    # degrees-per-radian constant came from RoData+0x34 instead of +0x5B0)
+    # degrees-per-radian constant came from RoData+0x34 instead of +0x5B0).  `tok = sym + K;` the
+    # same plus K (plan 24: SnowBoarder_limitSpeed's pool reads bu_b520_k48 = FogTmpl_create + 0x48
+    # were read as 0: every token was the blob's word 0, and 2P VS lost its catch-up speed)
     if alias:
         with open("build/tenshoe.elf", "rb") as f:
             st = npc.ELFFile(f).get_section_by_name(".symtab")
             val = {s.name: s["st_value"] for s in st.iter_symbols() if s.name in alias}
-        for tok, sym in alias.items():
+        for tok, (sym, k) in alias.items():
             if tok in val:
                 pins[tok] = val[tok]
             elif sym in pins:
-                pins[tok] = pins[sym]
+                pins[tok] = pins[sym] + k
     return pins
 
 

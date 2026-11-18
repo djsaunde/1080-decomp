@@ -38,6 +38,12 @@
  *                         the PIF read of step S feeds pad_update of step S + 1; the port's
  *                         host_read_pads timing, measured on the menus, plan 22.2)
  *   --memsize 4|8         RDRAM MiB (default 4: a stock console without the Expansion Pak)
+ *   --watch A:N[,A:N..]   every VI from step --watch-from on, append a record to DIR/watch.bin:
+ *                         u32 vi, u32 step (little-endian), then the N bytes at each KSEG0 address A
+ *                         (big-endian, as the N64 sees them). The last record of a step holds that step's
+ *                         results (the game finishes its update within the step's 2 VIs); used for the
+ *                         per-step rider state of plan 24 (port/tools/n64ref/vs2p-golden.py)
+ *   --watch-from S        the first step --watch records (default 0)
  *
  * The ROM is only read (into memory). Saves go to DIR.
  */
@@ -94,6 +100,10 @@ static int gScan, gLogSteps, gMemSize = 4, gInterp, gViMode, gRawFb;
 static uint32_t *gViRegs;
 static const char *gOut = ".";
 static FILE *gStepLog;
+static Range gWatch[16];
+static int gNWatch;
+static uint32_t gWatchFrom;
+static FILE *gWatchFile;
 
 static int parse_ranges(const char *s, Range *r, int max) {
     int n = 0;
@@ -453,6 +463,16 @@ static void vi_hook(void) {
             gHeldW = w, gHeldH = h, gHeldHout = ho, gHeldStep = s - gStepLag, gHeldVi = gVi;
         }
     }
+    if (gWatchFile && s >= gWatchFrom && s != 0xFFFFFFFF) { /* --watch */
+        uint32_t hdr[2] = { gVi, s };
+        fwrite(hdr, 4, 2, gWatchFile);
+        for (int i = 0; i < gNWatch; i++)
+            for (uint32_t a = gWatch[i].a; a < gWatch[i].a + gWatch[i].b; a += 4) {
+                uint32_t w = ram32(a);
+                uint8_t b[4] = { w >> 24, w >> 16, w >> 8, w };
+                fwrite(b, 1, 4, gWatchFile);
+            }
+    }
     if (in_ranges(gDumps, gNDumps, gVi)) { /* big-endian RDRAM image, as the N64 sees it */
         char path[4096];
         uint32_t words = ((uint32_t)gMemSize << 20) / 4;
@@ -543,6 +563,17 @@ int main(int argc, char **argv) {
         else if (OPT("--input-shift")) gInputShift = atoi(v);
         else if (!strcmp(a, "--fb")) gRawFb = 1;
         else if (OPT("--sram")) sram = v;
+        else if (OPT("--watch")) {
+            /* A:N pairs: reuse Range as (address, length) */
+            const char *q = v;
+            while (*q && gNWatch < 16) {
+                char *e;
+                gWatch[gNWatch].a = strtoul(q, &e, 0);
+                gWatch[gNWatch].b = *e == ':' ? strtoul(e + 1, &e, 0) : 4;
+                gNWatch++;
+                q = *e == ',' ? e + 1 : e;
+            }
+        } else if (OPT("--watch-from")) gWatchFrom = strtoul(v, NULL, 0);
         else if (!strcmp(a, "--scan")) gScan = 1;
         else if (!strcmp(a, "--log-steps")) gLogSteps = 1;
         else if (!strcmp(a, "--interp")) gInterp = 1;
@@ -569,6 +600,10 @@ int main(int argc, char **argv) {
     mkdir(gOut, 0777);
     snprintf(path, sizeof path, "%s/steps.txt", gOut);
     gStepLog = fopen(path, "w");
+    if (gNWatch) {
+        snprintf(path, sizeof path, "%s/watch.bin", gOut);
+        gWatchFile = fopen(path, "wb");
+    }
 
     ssize_t n = readlink("/proc/self/exe", bindir, sizeof bindir - 1);
     bindir[n > 0 ? n : 0] = 0;
@@ -670,6 +705,7 @@ int main(int argc, char **argv) {
     }
     fprintf(stderr, "n64ref: stopped at VI %u, step %u\n", gVi, cur_step());
     if (gStepLog) fclose(gStepLog);
+    if (gWatchFile) fclose(gWatchFile);
     pCoreDoCommand(M64CMD_ROM_CLOSE, 0, NULL);
     pCoreShutdown();
     return 0;

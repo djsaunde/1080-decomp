@@ -8121,6 +8121,7 @@ void port_trace_collect(PortTraceFrame *f) {
                     f->trickCur = ra->curTrick != NULL ? ((char *)ra->curTrick - tbl) / 0x40 : -1;
                     f->have |= PORT_TRACE_HAVE_TRICK;
                 }
+                port_trace_rider_bin(f->frameCount, i, r, sizeof(SnowBoarder));
                 f->numRiders++;
             }
             f->have |= PORT_TRACE_HAVE_RIDERS;

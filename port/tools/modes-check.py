@@ -13,7 +13,8 @@ input script (port/host/*.input) and reads the --trace state.log (port/trace.h):
             slalom gate adds 2 s)
   training  training.input (Training): the lesson (trn=) advances past the first one
   vs2p      vs2p.input (2P VS, two pads): the race ends (race state 2) and the next round starts
-            (race state 1 again)
+            (race state 1 again), and both riders' positions equal the real game's (the N64 on n64ref,
+            port/tools/n64ref/vs2p-golden.tsv, every 8th step of the round; plan 24)
   match     match_race.input (Match Race): the player reaches the goal; when the script says
             `# WIN`, before the CPU rider (entries[0] finished while entries[1] has not).  With
             `# RECORD m'ss"hh` (run 860: Round 2 paused -> Quit closes the session, name "AAA"):
@@ -42,7 +43,8 @@ REGEN = {
     'contest': 'port/tools/steer-search.py -b <port build> --mode contest',
     'match': 'port/tools/steer-search.py -b <port build> --mode match',
     'training': 'edit port/host/training.input (hop + grab windows; header comment)',
-    'vs2p': 'edit port/host/vs2p.input (both pads ride straight; header comment)',
+    'vs2p': 'edit port/host/vs2p.input (both pads ride straight; header comment); a golden mismatch is a port '
+            'bug (plan 24) unless the script changed: then re-record port/tools/n64ref/vs2p-golden.py',
     'options': 'edit port/host/options_save.input / options_reload.input (menu steps; header comments)',
 }
 
@@ -139,12 +141,43 @@ def check_training(a):
     return rc == 0 and len(seq) >= 2, 'rc %d, lessons %s' % (rc, seq or 'none (no trn= in the trace)')
 
 
+VS2P_GOLDEN = os.path.join(HERE, 'n64ref', 'vs2p-golden.tsv')
+
+
+def vs2p_vs_n64(log):
+    """(steps compared, first step whose r0= / r1= position differs from the N64's, or None) against
+    port/tools/n64ref/vs2p-golden.tsv (plan 24: the real game on n64ref, every 8th step of the round)"""
+    want = {}
+    for ln in lines(VS2P_GOLDEN):
+        if ln and not ln.startswith('#'):
+            f = ln.split()
+            want[int(f[0])] = f[1:]
+    n = 0
+    for ln in lines(log):
+        m = re.match(r'F (\d+) ', ln)
+        if not m or int(m.group(1)) not in want:
+            continue
+        st = int(m.group(1))
+        got = []
+        for i in (0, 1):
+            r = re.search(r' r%d=([0-9a-f]{8}),([0-9a-f]{8}),([0-9a-f]{8}),' % i, ln)
+            got += list(r.groups()) if r else ['-'] * 3
+        if got != want[st]:
+            return n, st
+        n += 1
+    return n, None
+
+
 def check_vs2p(a):
-    rc, log = run(a, 'vs2p', 'vs2p.input', 4300)
+    rc, log = run(a, 'vs2p', 'vs2p.input', end_of('vs2p.input', 7800))
     r = races(log)
     end = next((s for s, x in r if x == 2), None)
     nxt = next((s for s, x in r if end is not None and s > end and x == 1), None)
-    return rc == 0 and end is not None and nxt is not None, 'rc %d, race end %s, next round %s' % (rc, end, nxt)
+    n, bad = vs2p_vs_n64(log)
+    total = sum(1 for ln in lines(VS2P_GOLDEN) if ln and not ln.startswith('#'))
+    ok = rc == 0 and end is not None and nxt is not None and bad is None and n == total
+    return ok, 'rc %d, race end %s, next round %s; N64 rider positions %d/%d steps%s' % (
+        rc, end, nxt, n, total, '' if bad is None else ', first differs at step %d' % bad)
 
 
 def aaa_record(b):
