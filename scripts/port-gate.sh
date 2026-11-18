@@ -17,6 +17,8 @@
 #              -> committed port/gen unchanged
 #   test_ultra, test_fs, gfx (make -C port/gfx test: golden scenes, software GL),
 #   audio      (make -C port/audio regress)
+#   usf        INFO (plan 15.12): port/audio/tools/usf-compare --gate, the 18 tracks of the 1080 USF rip (the real
+#              game on lazyusf2) against seqrender, sample for sample; SKIP when tools/usf is not set up
 #   smoke      tenshoe headless for PORT_GATE_FRAMES (default 2000) frames from a clean dir:
 #              rc 0, state.log has every frame, no NaN / Inf in the rider fields (r<N>= pos, quat,
 #              speed; the camera's NaN / Inf count is printed, not gated: camTarget goes NaN at
@@ -246,6 +248,12 @@ start; if have seqrender; then
   nc=$(grep -cE ' (PASS|FAIL)' "$LOG/audio.log")
   if [ $rc = 0 ]; then line audio PASS "$nc cases"
   else line audio FAIL "$(grep -m1 'case(s) failed' "$LOG/audio.log"): $(grep -E ' FAIL' "$LOG/audio.log" | awk '{print $1}' | tr '\n' ' ')"; fi
+  # the real game as reference (plan 15.12): every track of the USF rip on lazyusf2 against seqrender, sample
+  # for sample.  INFO only, never fails the gate; SKIP without tools/usf (port/audio/tools/usf/build-lazyusf2.sh
+  # + fetch-usf.sh)
+  start; u=$(timeout 300 python3 port/audio/tools/usf-compare --seqrender "$B/seqrender" --run32 "$RUN32" --rom "$ROM" \
+      --seconds 20 --gate 2>"$LOG/usf.log" | tail -1)
+  line usf INFO "${u:-usf-compare failed (see $LOG/usf.log)}"
 fi
 
 # ---- smoke: the game itself, headless, from a clean directory

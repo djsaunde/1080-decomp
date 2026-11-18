@@ -1,0 +1,344 @@
+#!/usr/bin/env python3
+"""Compare port/audio with the real game: every track of the public 1080 USF rip (docs/1080_PC_PORT_PLAN.md
+15.11, 15.12).
+
+The reference is the rip played by lazyusf2 with the RSP on (usfrender, built by usf/build-lazyusf2.sh;
+the rip fetched by usf/fetch-usf.sh): 1080's own CPU code and aspMain from the ripper's save states.  Ours is
+seqrender --seq N for the same sequence, with SEQRENDER_NODAC=1 (fixed 560-frame AI buffers, what the
+emulator's AI does: with the DAC model on, the buffer sizes follow the hardware's clock and the output is
+the same music at a different number of samples per update).
+
+Per track: the two renders are aligned (the reference starts 2 AI buffers = 1120 frames later for most
+tracks), then compared sample for sample (identical %, first differing time), by RMS and by the energy in
+9 bands (ours - reference, dB).  With --voices, a track that is not identical also gets a per-voice comparison of
+the two command streams over the first 20 s (per ADPCM book: note count, mean volumes, reverb send, pitch;
+ours from an SEQRENDER_LLE render, slow).
+
+  usf-compare --seqrender <build>/seqrender [--run32 <sysroot>/run32] [--rom baserom.z64]
+              [--seconds 30] [--tracks 01,03,...] [--keep DIR] [--voices] [--sfx] [--gate]
+
+--sfx: the sound effects too.  The rip cannot play them (a USF is trimmed to what its music touched:
+snd_PostEvent / snd_dispatchEvent and seq 0's effect scripts are zeros in its RAM, the effect samples are not
+in its ROM), so they are checked one level down: every event id the game code posts literally (SFX_EVENTS),
+rendered by seqrender with SEQRENDER_LLE=cmp, i.e. each audio task also run on 1080's aspMain under
+rsp_lle.c (bit-exact with the emulator's RSP on the real game's tasks, plan 15.11) and compared with the CPU
+mixer per DRAM write.  Printed per event: peak, the features its command lists use (2-bit ADPCM, loops,
+FILTER, S8DEC, HILOGAIN), and the differing s16 (RESAMPLE's state words 5..15 apart: the mixer carries
+them, the ucode overwrites them, nothing reads them back).
+
+--gate: one summary line; exit 0 whatever the result (the port gate's INFO step), and a SKIP line when
+the tools / rip / numpy are not there.  Without --gate the exit status is the number of tracks that are
+not identical.  USF_TOOLS (default <monorepo>/tools/usf) is where the tools live.
+"""
+import argparse
+import os
+import shutil
+import struct
+import subprocess
+import sys
+import tempfile
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+MONO = os.path.abspath(os.path.join(HERE, "../../../../.."))
+TOOLS = os.environ.get("USF_TOOLS", os.path.join(MONO, "tools/usf"))
+
+# rip track -> sequence.  From the save states: the ripper patched a0 at snd_PlayPlayer1SeqDefault + 0x20
+# (game_libs loaded at 0x800AA4BC), and each state's RAM holds that sequence's ROM bytes in full
+# (plan 15.12).  Sequences 7, 9 and 19 (courses 3 and 5, mode 11) are not in the rip: they are bigger
+# than the boot spec's sequence cache the ripper's states were in (the rip notes: "0x06 and 0x13 will
+# not rip, 0x09 will generate TLB errors").  11, 24, 25 are table aliases of 8, 21, 22.
+TRACKS = [
+    ("01", "Vacant Lives", 2, "title (mode 0)"),
+    ("02", "Work Your Body", 3, ""),
+    ("03", "Dance!", 6, "course 2, Crystal Lake"),
+    ("04", "This is a Test", 21, "2P course 3"),
+    ("05", "Golden Forest", 8, "course 4 (and 7)"),
+    ("06", "Grasp Power!", 23, "2P course 5"),
+    ("07", "Blue Flame", 10, "course 6"),
+    ("08", "Call Me", 12, ""),
+    ("09", "Half Pipe", 5, "course 1"),
+    ("10", "db", 13, ""),
+    ("11", "Lost", 14, "mode 5"),
+    ("12", "Give it to Me", 16, "modes 2 / 8"),
+    ("13", "Review", 17, "mode 9"),
+    ("14", "Winner", 18, "mode 10"),
+    ("16", "White Out", 15, ""),
+    ("91", "Cheering", 4, "course 0 (crowd loop)"),
+    ("92", "Dance! (Alt)", 20, "2P course 2"),
+    ("93", "Golden Forest (Alt)", 22, "2P course 4"),
+]
+# every literal id the game passes to snd_PostEvent / snd_sendEvent / snd_dispatchEvent (grep of src/, plan 15.12)
+SFX_EVENTS = [0x01, 0x05, 0x07, 0x09, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C,
+              0x1D, 0x1E, 0x1F, 0x20, 0x22, 0x24, 0x27, 0x2C, 0x2F, 0x30, 0x31, 0x32, 0x33, 0x90, 0x91, 0x95, 0x9D,
+              0xA0, 0xA3, 0xA5, 0xA7, 0xA8, 0xBC, 0x101, 0x135, 0x195, 0x200, 0x802,
+              # not literal in src/, from a sweep of 0..0xFF: the sounds that use FILTER (0x30 above, 0x34, 0x51)
+              0x34, 0x51]
+BANDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000, 12000, 16000]
+
+
+def reexec_with_numpy():
+    try:
+        import numpy  # noqa: F401
+        return True
+    except ImportError:
+        py = os.path.join(TOOLS, "venv/bin/python")
+        if os.path.exists(py) and not os.environ.get("USF_COMPARE_REEXEC"):
+            os.environ["USF_COMPARE_REEXEC"] = "1"  # once (a venv's python is a symlink to the same binary)
+            os.execv(py, [py] + sys.argv)
+        return False
+
+
+def load_wav(path):
+    import numpy as np
+    with open(path, "rb") as f:
+        d = f.read()
+    i = 12
+    while i + 8 <= len(d):
+        tag, size = d[i:i + 4], struct.unpack_from("<I", d, i + 4)[0]
+        if tag == b"data":
+            return np.frombuffer(d[i + 8:i + 8 + size], dtype="<i2").reshape(-1, 2).astype(np.int32)
+        i += 8 + size
+    raise SystemExit("%s: no data chunk" % path)
+
+
+def align(ours, ref, at=5 * 32000, win=32000, maxlag=2 * 32000):
+    """lag L with ref[t + L] == ours[t]: FFT cross-correlation of one second of ours against the reference."""
+    import numpy as np
+    x = ours[at:at + win].mean(1)
+    lo = at - maxlag
+    span = ref[lo: at + win + maxlag].mean(1)
+    n = 1
+    while n < len(span) + len(x):
+        n *= 2
+    c = np.fft.irfft(np.fft.rfft(span, n) * np.conj(np.fft.rfft(x, n)), n)[: len(span) - len(x) + 1]
+    cs = np.concatenate([[0.0], np.cumsum(span * span)])
+    e = cs[len(x):] - cs[:-len(x)]
+    score = c / np.sqrt(e * np.dot(x, x) + 1e-9)
+    return int(np.argmax(score)) + lo - at, float(np.max(score))
+
+
+def compare(ours, ref):
+    import numpy as np
+    lag, corr = align(ours, ref)
+    a = ours[max(0, -lag):]
+    b = ref[max(0, lag):]
+    n = min(len(a), len(b))
+    a, b = a[:n], b[:n]
+    diff = np.any(a != b, axis=1)
+    nz = np.nonzero(diff)[0]
+    skip = 2 * 32000  # the spectra and RMS from 2 s on (both start from silence at slightly different times)
+    A, B = a[skip:].astype(float), b[skip:].astype(float)
+    rms = 20 * np.log10((A.std() + 1e-9) / (B.std() + 1e-9))
+
+    def ltas(x, N=4096):
+        P = np.zeros(N // 2 + 1)
+        w = np.hanning(N)
+        for ch in (0, 1):
+            fr = np.lib.stride_tricks.sliding_window_view(x[:, ch], N)[:: N // 2]
+            P += (np.abs(np.fft.rfft(fr * w, axis=1)) ** 2).sum(0)
+        return P
+    PA, PB = ltas(A), ltas(B)
+    f = np.fft.rfftfreq(4096, 1 / 32000)
+    bands = []
+    for lo, hi in zip(BANDS[:-1], BANDS[1:]):
+        m = (f >= lo) & (f < hi)
+        bands.append(10 * np.log10((PA[m].sum() + 1e-9) / (PB[m].sum() + 1e-9)))
+    return {"lag": lag, "corr": corr, "frames": n, "identical": 1 - diff.mean() if n else 0,
+            "first": nz[0] / 32006.0 if len(nz) else None, "maxd": int(np.abs(a - b).max()) if n else 0,
+            "rms": rms, "bands": bands}
+
+
+def load_alist(path):
+    with open(path, "rb") as f:
+        d = f.read()
+    i, tasks = 0, []
+    while i + 4 <= len(d):
+        n = struct.unpack_from("<I", d, i)[0]
+        i += 4
+        if i + 4 * n > len(d):
+            break
+        tasks.append(struct.unpack_from("<%dI" % n, d, i))
+        i += 4 * n
+    return tasks
+
+
+def voices(tasks):
+    """per ADPCM book (relative to the lowest book address of the run): notes and their parameters"""
+    import collections
+    books = [w[k + 1] & 0xFFFFFF for w in tasks for k in range(0, len(w) - 1, 2) if w[k] >> 24 == 11]
+    base = min(books) if books else 0
+    st = collections.defaultdict(lambda: collections.defaultdict(list))
+    for w in tasks:
+        book = None
+        for k in range(0, len(w) - 1, 2):
+            w0, w1 = w[k], w[k + 1]
+            op = w0 >> 24
+            if op == 11:
+                book = ((w1 & 0xFFFFFF) - base) & 0xFFFFFF
+            elif book is None:
+                continue
+            elif op == 5:
+                st[book]["pitch"].append(w0 & 0xFFFF)
+            elif op == 18:
+                st[book]["wet"].append((w0 >> 16) & 0xFF)
+            elif op == 22:
+                st[book]["vl"].append(w1 >> 16)
+                st[book]["vr"].append(w1 & 0xFFFF)
+            elif op == 19:
+                book = None
+    return st
+
+
+def per_voice(ref_alist, our_alist):
+    R, O = voices(load_alist(ref_alist)), voices(load_alist(our_alist))
+    out = []
+
+    def mean(d, k):
+        v = d.get(k, [])
+        return sum(v) / len(v) if v else -1
+    for b in sorted(set(R) | set(O)):
+        r, o = R.get(b, {}), O.get(b, {})
+        nr, no = len(r.get("vl", [])), len(o.get("vl", []))
+        line = "    book +%05X  ref n=%5d vl %6.0f vr %6.0f wet %4.0f pitch %6.0f | ours n=%5d vl %6.0f vr %6.0f wet %4.0f pitch %6.0f" % (
+            b, nr, mean(r, "vl"), mean(r, "vr"), mean(r, "wet"), mean(r, "pitch"),
+            no, mean(o, "vl"), mean(o, "vr"), mean(o, "wet"), mean(o, "pitch"))
+        out.append(line)
+    return out
+
+
+def features(tasks):
+    import collections
+    c = collections.Counter()
+    for w in tasks:
+        for k in range(0, len(w) - 1, 2):
+            op, f = w[k] >> 24, (w[k] >> 16) & 0xFF
+            if op == 1:
+                c["adpcm2" if f & 4 else "adpcm4"] += 1
+                if f & 2:
+                    c["loop"] += 1
+            c[{7: "filter", 23: "s8dec", 14: "hilogain", 3: "unk3", 6: "zoh"}.get(op, "")] += 1
+    del c[""]
+    return c
+
+
+def sfx_sweep(args, work):
+    import re
+    rows = []
+    print("\n%-6s %6s %6s  %-44s %8s %9s  %s" % ("event", "peak", "rms", "features (commands)", "differ", "op5 state", "note"))
+    for k in SFX_EVENTS:
+        al = os.path.join(work, "sfx_%X.alist" % k)
+        env = dict(os.environ, SEQRENDER_LLE="cmp", LLE_ALIST_DUMP=al)
+        cmd = ([args.run32] if args.run32 else []) + [args.seqrender, "--rom", args.rom, "--summary", "--sfx", str(k),
+                                                       "--sfx-at", "0.2", "--seconds", "6", "--out", os.devnull]
+        p = subprocess.run(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        out = p.stdout.decode(errors="replace")
+        res = {}
+        for line in out.splitlines():
+            if line.startswith("RESULT "):
+                res = dict(kv.split("=", 1) for kv in line[7:].split())
+        diff = op5 = 0
+        for m in re.finditer(r"lle cmp: op +(\d+) wrote +\d+ s16, +(\d+) differ", out):
+            if m.group(1) == "5":
+                op5 += int(m.group(2))
+            else:
+                diff += int(m.group(2))
+        feat = features(load_alist(al)) if os.path.exists(al) else {}
+        note = "" if res else "CRASH: " + (re.findall(r"SIGSEGV.*", out) or ["exit %d" % p.returncode])[-1]
+        if res and float(res.get("peak", 0)) == 0:
+            note = "silent (a control event)"
+        rows.append((k, res, diff, note))
+        print("0x%03X  %6s %6s  %-44s %8d %9d  %s" % (k, res.get("peak", "-"), res.get("rms", "-"),
+              " ".join("%s %d" % kv for kv in sorted(feat.items()))[:44], diff, op5, note))
+    sound = sum(1 for r in rows if r[1] and float(r[1].get("peak", 0)) > 0)
+    bad = sum(1 for r in rows if r[2] or not r[1])
+    print("usf-compare: sfx: %d events, %d sounding, %d with mixer != aspMain or a crash" % (len(rows), sound, bad))
+    return bad
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--seqrender", required=True)
+    ap.add_argument("--run32", default=os.path.join(MONO, "tools/i386-sysroot/run32"))
+    ap.add_argument("--rom", default=os.path.abspath(os.path.join(HERE, "../../../baserom.z64")))
+    ap.add_argument("--seconds", type=float, default=30.0)
+    ap.add_argument("--tracks", default="")
+    ap.add_argument("--keep", default="", help="keep the WAVs (ref_<track>.wav, ours_<track>.wav) in this directory")
+    ap.add_argument("--gate", action="store_true")
+    ap.add_argument("--voices", action="store_true", help="per-voice command-stream comparison of tracks that differ")
+    ap.add_argument("--sfx", action="store_true", help="also the sound-effect sweep against rsp_lle (see above)")
+    args = ap.parse_args()
+    if args.seconds < 10:
+        ap.error("--seconds must be at least 10 (the alignment uses 5..6 s of ours)")
+
+    usfrender = os.path.join(TOOLS, "bin/usfrender")
+    rip = os.path.join(TOOLS, "rip/1080")
+    missing = [p for p in (usfrender, os.path.join(rip, ".complete")) if not os.path.exists(p)]
+    if missing or not reexec_with_numpy():
+        msg = "SKIP: no %s (port/audio/tools/usf/build-lazyusf2.sh + fetch-usf.sh)" % (
+            " / ".join(missing) if missing else "numpy")
+        print("usf-compare: " + msg)
+        return 0 if args.gate else 2
+    if not os.path.exists(args.seqrender):
+        print("usf-compare: no seqrender at %s" % args.seqrender)
+        return 0 if args.gate else 2
+
+    want = set(t for t in args.tracks.split(",") if t)
+    tracks = [t for t in TRACKS if not want or t[0] in want]
+    cache = os.path.join(TOOLS, "cache")
+    os.makedirs(cache, exist_ok=True)
+    work = args.keep or tempfile.mkdtemp(prefix="usf-compare-")
+    os.makedirs(work, exist_ok=True)
+    names = {f[:2]: f for f in os.listdir(rip) if f.endswith(".miniusf")}
+    rows, bad = [], 0
+    if not args.gate:
+        print("%-3s %-20s %-4s %-24s %7s %8s %9s %6s %7s %7s  %s" % (
+            "trk", "title", "seq", "use", "lag", "ident%", "1st diff", "maxd", "rms dB", "band dB",
+            "bands ours - ref (dB): " + " ".join("%d" % (b // 1000 if b >= 1000 else b) for b in BANDS[1:])))
+    for trk, title, seq, use in tracks:
+        ref = os.path.join(cache, "ref_%s_%g.wav" % (trk, args.seconds + 1))
+        if not os.path.exists(ref):
+            subprocess.run([usfrender, "-t", str(args.seconds + 1), os.path.join(rip, names[trk]), ref + ".part"],
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            os.replace(ref + ".part", ref)
+        ours = os.path.join(work, "ours_%s.wav" % trk)
+        env = dict(os.environ, SEQRENDER_NODAC="1")
+        cmd = ([args.run32] if args.run32 else []) + [args.seqrender, "--rom", args.rom, "--quiet", "--seq", str(seq),
+                                                       "--seconds", str(args.seconds), "--out", ours]
+        subprocess.run(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+        if args.keep:
+            shutil.copy(ref, os.path.join(work, "ref_%s.wav" % trk))
+        r = compare(load_wav(ours), load_wav(ref))
+        same = r["first"] is None and r["frames"] > 0
+        bad += not same
+        worst = max(r["bands"], key=abs)
+        rows.append((trk, seq, r, same))
+        if not args.gate:
+            print("%-3s %-20s %-4d %-24s %7d %8.3f %9s %6d %+7.2f %+7.2f  %s" % (
+                trk, title[:20], seq, use[:24], r["lag"], 100 * r["identical"],
+                "-" if r["first"] is None else "%.2f s" % r["first"], r["maxd"], r["rms"], worst,
+                " ".join("%+.2f" % v for v in r["bands"])))
+            if not same and args.voices:
+                vs = str(min(args.seconds, 20.0))
+                ra, oa = os.path.join(work, "ref_%s.alist" % trk), os.path.join(work, "ours_%s.alist" % trk)
+                subprocess.run([usfrender, "-t", vs, "--alist", ra, os.path.join(rip, names[trk]),
+                                os.devnull], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+                env2 = dict(env, SEQRENDER_LLE="1", LLE_ALIST_DUMP=oa)
+                subprocess.run(cmd[:-3] + [vs, "--out", os.devnull], env=env2, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                print("  per voice (command streams, %s vs %s):" % (os.path.basename(ra), os.path.basename(oa)))
+                for line in per_voice(ra, oa):
+                    print(line)
+    ident = sum(1 for row in rows if row[3])
+    worst = max((abs(v) for row in rows for v in row[2]["bands"] + [row[2]["rms"]]), default=0)
+    summary = "%d/%d USF tracks bit-identical to the real game over %g s (worst band / RMS %.2f dB)%s" % (
+        ident, len(rows), args.seconds, worst,
+        "" if ident == len(rows) else "; differ: " + " ".join("%s(seq %d)" % (r[0], r[1]) for r in rows if not r[3]))
+    print(summary if args.gate else "usf-compare: " + summary)
+    if args.sfx and not args.gate:
+        bad += sfx_sweep(args, work)
+    if not args.keep:
+        shutil.rmtree(work, ignore_errors=True)
+    return 0 if args.gate else bad
+
+
+if __name__ == "__main__":
+    sys.exit(main())

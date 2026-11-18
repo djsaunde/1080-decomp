@@ -1,0 +1,25 @@
+--- a/rsp/rsp_core.c
++++ b/rsp/rsp_core.c
+@@ -296,6 +296,10 @@ int write_rsp_regs2(void* opaque, uint32_t address, uint32_t value, uint32_t mas
+     return 0;
+ }
+ 
++/* 1080 port (port/audio/tools/usf): called around every audio task (RDRAM, its size, SP DMEM + IMEM),
++   for the command-list dump and the rsp_lle cross-check of port/audio/tools/usf/usfrender.c */
++void (*g_alist_pre)(void *rdram, size_t size, void *spmem);
++void (*g_alist_post)(void *rdram, size_t size, void *spmem);
+ void do_SP_Task(struct rsp_core* sp)
+ {
+ #ifdef DEBUG_INFO
+@@ -344,9 +348,11 @@ void do_SP_Task(struct rsp_core* sp)
+           fprintf(sp->r4300->state->debug_log, " - AList");
+ #endif
+         //audio.processAList();
++        if (g_alist_pre) g_alist_pre(sp->ri->rdram.dram, sp->ri->rdram.dram_size, sp->mem);
+         sp->regs2[SP_PC_REG] &= 0xfff;
+         real_run_rsp(sp->r4300->state, 0xffffffff);
+         sp->regs2[SP_PC_REG] |= save_pc;
++        if (g_alist_post) g_alist_post(sp->ri->rdram.dram, sp->ri->rdram.dram_size, sp->mem);
+ 
+         update_count(sp->r4300->state);
+         if (sp->r4300->mi.regs[MI_INTR_REG] & MI_INTR_SP)

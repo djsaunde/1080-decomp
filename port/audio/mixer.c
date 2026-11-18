@@ -416,17 +416,18 @@ void mix_resample_zoh(Mixer *m, uint16_t pitch, uint16_t pitch_accu) {
     } while (n > 0);
 }
 
-/* 7: 8-tap FIR low/high-pass (OoT AudioSynth_LoadFilterSize / Buffer).
- * flags > 1: set the byte count (rounded up to 16) and load 8 coefficients
- *            from addr.
- * flags 0/1: filter count bytes at dmem in place. addr = 32-byte state:
- *            [0..7] the last 8 input samples, [8..15] the coefficients used
- *            last time. The coefficients used are the average of the
- *            previous and the new ones (a one-update crossfade); flag 1
- *            zeroes the state first. y[i] = clamp((sum_j x[i-7+j] *
- *            c[7-j] + 0x4000) >> 15).
- * NOT yet checked against the 1080 ucode (handler 0x1CAC): rounding and
- * the averaging are from the public behaviour description (PC_PORT_PLAN "M1: audio mixer"). */
+/* 7, ucode 0x1CAC: 8-tap FIR (OoT AudioSynth_LoadFilterSize / LoadFilterBuffer).
+ * flags > 1: the byte count (the ucode keeps it in t7; a do-while of 8 samples, so it rounds up to
+ *            16) and 8 coefficients DMA'd from addr into DMEM, where every later filter of the task
+ *            (and of later tasks, DMEM persists) uses them.
+ * flags 0/1: filter count bytes at dmem in place.  addr = the 16-byte state: the last 8 input
+ *            samples (flag 1: zero, not read).  Per 8 samples one VMULF (acc = 0x8000) and 15 VMACFs
+ *            over a Toeplitz matrix of the coefficients: y[i] = clamp((sum_k c[k] x[i-k] * 2 + 0x8000)
+ *            >> 16), x[-k] the state's samples (state[0] is never used).  The last 8 input samples go
+ *            back to addr (16 bytes).
+ * Verified against the ucode (plan 15.12): the coefficients are used as loaded (the averaging with
+ * the previous ones from the public description is not in 1080's aspMain), and only 16 bytes of
+ * state are written. */
 void mix_filter(Mixer *m, uint8_t flags, uint16_t count_or_dmem, uint32_t addr) {
     if (flags > 1) {
         const void *src = dram(m, addr);
@@ -435,42 +436,34 @@ void mix_filter(Mixer *m, uint8_t flags, uint16_t count_or_dmem, uint32_t addr) 
             memcpy(m->filter_coef, src, sizeof(m->filter_coef));
         }
     } else {
-        int16_t st[16];
-        int16_t c[8];
         int16_t x[16];
         uint32_t buf = count_or_dmem;
         int32_t n = m->filter_count;
         void *state = dram(m, addr);
-        int i, j;
+        int i, k;
 
         if (!(flags & MIX_F_INIT) && state != NULL) {
-            memcpy(st, state, sizeof(st));
+            memcpy(x, state, 8 * sizeof(int16_t));
         } else {
-            memset(st, 0, sizeof(st));
+            memset(x, 0, 8 * sizeof(int16_t));
         }
-        for (i = 0; i < 8; i++) {
-            c[i] = (int16_t)(((int32_t)st[8 + i] + m->filter_coef[i]) >> 1);
-        }
-        memcpy(x, st, 8 * sizeof(int16_t));
         do {
             for (i = 0; i < 8; i++) {
                 x[8 + i] = mixer_get16(m, buf + i * 2);
             }
             for (i = 0; i < 8; i++) {
-                int64_t acc = 0x4000;
-                for (j = 0; j < 8; j++) {
-                    acc += (int64_t)x[i + 1 + j] * c[7 - j];
+                int64_t acc = 0x8000;
+                for (k = 0; k < 8; k++) {
+                    acc += 2 * (int64_t)m->filter_coef[k] * x[8 + i - k];
                 }
-                mixer_set16(m, buf + i * 2, clamp16(acc >> 15));
+                mixer_set16(m, buf + i * 2, clamp16(acc >> 16));
             }
             memcpy(x, x + 8, 8 * sizeof(int16_t));
             buf += 16;
             n -= 16;
         } while (n > 0);
-        memcpy(st, x, 8 * sizeof(int16_t));
-        memcpy(st + 8, c, 8 * sizeof(int16_t));
         if (state != NULL) {
-            memcpy(state, st, sizeof(st));
+            memcpy(state, x, 8 * sizeof(int16_t));
         }
     }
 }

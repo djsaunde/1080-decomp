@@ -321,21 +321,27 @@ static void test_s8_filter_dma(void) {
     CHECK_EQ(G(0x5A0), 256);
     CHECK_EQ(G(0x5A2), -256);
 
-    /* filter: c[0] = 0x4000; init averages with zero -> 0x2000:
-     * (1000 * 0x2000 + 0x4000) >> 15 = 250; next update 0x3000 -> 375 */
+    /* filter (ucode 0x1CAC, plan 15.12): c[0] = 0x4000, c[1] = 0x2000, used as loaded (no averaging):
+     * y = (2 * (0x4000 * x[i] + 0x2000 * x[i-1]) + 0x8000) >> 16; init: x[-1] = 0 -> 500, then 750;
+     * the 16-byte state is the last 8 inputs (the next 16 bytes are not written) */
     m = fresh();
     ((int16_t *)&g_rdram[0x100])[0] = 0x4000;
+    ((int16_t *)&g_rdram[0x100])[1] = 0x2000;
+    ((int16_t *)&g_rdram[0x210])[0] = 0x1234;
     for (i = 0; i < 16; i++) {
         S(0x3C0 + i * 2, 1000);
     }
     mix_filter(m, 2, 32, 0x100);
     mix_filter(m, MIX_F_INIT, 0x3C0, 0x200);
-    CHECK_EQ(G(0x3C0), 250);
+    CHECK_EQ(G(0x3C0), 500);
+    CHECK_EQ(G(0x3C2), 750);
+    CHECK_EQ(((int16_t *)&g_rdram[0x200])[7], 1000);
+    CHECK_EQ(((int16_t *)&g_rdram[0x210])[0], 0x1234);
     for (i = 0; i < 16; i++) {
         S(0x3C0 + i * 2, 1000);
     }
     mix_filter(m, 0, 0x3C0, 0x200);
-    CHECK_EQ(G(0x3C0), 375);
+    CHECK_EQ(G(0x3C0), 750);
 
     /* load / save */
     m = fresh();
