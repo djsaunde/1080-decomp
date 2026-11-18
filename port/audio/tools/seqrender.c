@@ -149,6 +149,12 @@ static void sink(const void *samples, host_u32 bytes) {
     memcpy(sPcm + (size_t)sFrames * 2, samples, (size_t)n * 4);
     sFrames += n;
     sBuffers++;
+    if (getenv("SEQRENDER_AILOG") != NULL) {
+        static FILE *af;
+        if (af == NULL) af = fopen(getenv("SEQRENDER_AILOG"), "w");
+        fprintf(af, "%u\n", n);
+        fflush(af);
+    }
     sAiLevel += n;
 }
 
@@ -442,7 +448,7 @@ int main(int argc, char **argv) {
     hc.headless = 1;
     host_init(&hc);
     host_headless_set_audio_sink(sink);
-    host_headless_set_audio_clock(ai_buffered);
+    host_headless_set_audio_clock(getenv("SEQRENDER_NODAC") != NULL ? NULL : ai_buffered);
     if (host_file_read_all(romPath, &rom, &romSize) != 0 || romSize < 0x1000 || ((u8 *)rom)[0] != 0x80) {
         host_fatal("seqrender: cannot read the .z64 ROM %s", romPath);
     }
@@ -456,6 +462,12 @@ int main(int argc, char **argv) {
 
     port_uso_init();
     port_sysapi_install();
+    {
+        extern int lle_check_install(const unsigned char *rom, unsigned int romSize);
+        if (lle_check_install((const unsigned char *)rom, romSize)) {
+            host_log("seqrender: SEQRENDER_LLE=%s: audio tasks run on 1080's aspMain (rsp_lle)", getenv("SEQRENDER_LLE"));
+        }
+    }
     if (getenv("SEQRENDER_NOTES") != NULL) {
         port_audio_premix_hook = check_notes;
     }

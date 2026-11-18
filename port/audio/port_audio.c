@@ -142,6 +142,12 @@ int port_audio_is_ptr(unsigned int p) {
     return host_mapped(p);
 }
 
+void *port_audio_translate(unsigned int addr) {
+    return translate_k0(addr, NULL);
+}
+
+int (*port_audio_run_hook)(const void *cmds, unsigned int bytes);
+
 static void mixer_ready(void) {
     if (!sMixerReady) {
         mixer_init(&sMixer, translate_k0, NULL);
@@ -152,6 +158,10 @@ static void mixer_ready(void) {
 void port_audio_run_list(const void *cmds, unsigned int bytes) {
     uint32_t n0;
     mixer_ready();
+    if (port_audio_run_hook != NULL && port_audio_run_hook(cmds, bytes)) {
+        port_audio_stats.tasks++;
+        return;
+    }
     n0 = sMixer.n_cmds;
     audio_abi_run(&sMixer, (const uint32_t *)cmds, (int)(bytes / 8));
     port_audio_stats.tasks++;

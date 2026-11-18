@@ -294,7 +294,7 @@ if(PORT_LINK)
   # renders a sequence to a WAV.  The host sources minus main.c (it has its own main).
   set(PORT_SEQRENDER_HOST ${PORT_HOST_SOURCES})
   list(REMOVE_ITEM PORT_SEQRENDER_HOST main.c)
-  add_executable(seqrender audio/tools/seqrender.c ${PORT_SEQRENDER_HOST} ${PORT_ENTRY64})
+  add_executable(seqrender audio/tools/seqrender.c audio/tools/rsp_lle.c audio/tools/lle_check.c ${PORT_SEQRENDER_HOST} ${PORT_ENTRY64})
   target_compile_definitions(seqrender PRIVATE ${PORT_HOST_DEFS} $<$<BOOL:${PORT_64}>:main=port_main>)
   target_include_directories(seqrender PRIVATE ${GAME_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
   target_compile_options(seqrender PRIVATE ${PORT_HOST_FLAGS})

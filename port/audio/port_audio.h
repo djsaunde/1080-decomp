@@ -24,6 +24,11 @@ int port_audio_is_ptr(unsigned int p);
 /* debug: called by port_audio_frame after the driver's update, before the mixer runs its list */
 extern void (*port_audio_premix_hook)(const void *cmds, unsigned int bytes);
 
+/* debug (seqrender SEQRENDER_LLE): runs a list in place of the mixer when it returns 1 */
+extern int (*port_audio_run_hook)(const void *cmds, unsigned int bytes);
+/* a command word's DRAM address -> host pointer (the mixer's translate), NULL if unmapped */
+void *port_audio_translate(unsigned int addr);
+
 /* PortUltraConfig.rcpTask helper: returns 1 for an audio task (counted and
  * dropped, port_audio_frame ran it), 0 for anything else. */
 int port_audio_rcp_task_is_audio(const void *task);

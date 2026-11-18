@@ -326,10 +326,29 @@ void AudioSynth_DisableSampleStates(int a0, int a1) {
  * and the blit is the baked in-unit jal 0x31FB0 (gl_ref_00031FB0 pin). */
 extern int gl_ref_00031FB0(); /* baked in-unit jal 0x31FB0 (blit) */
 typedef struct { short h0, h1, h2, h3; } Spec8_1CFDC;
+#ifdef PORT /* w = the low half of ReverbRingBufferItem.startPos (s32 at +0xC): +0xE big-endian, +0xC on the host */
+typedef struct { char p[0xC]; unsigned short w; short wHi; short h; short n; } Ent_1CFDC;
+#else
 typedef struct { char p[0xE]; unsigned short w; short h; short n; } Ent_1CFDC;
+#endif
 typedef struct { Ent_1CFDC ent[5]; } Grp_1CFDC;
 typedef struct { char p[0x1B]; unsigned char attr; char p2[0x50 - 0x1C]; Grp_1CFDC grp[2]; char p3[0x40]; } Rec_1CFDC;
-int AudioSynth_LoadRingBuffer1AtTemp(int code, Spec8_1CFDC spec) {
+#ifdef PORT
+/* The callers pass ints in a1..a3 (K&R calls) and these three helpers read them as one struct of
+ * s16 by value: on the big-endian MIPS the struct's halves at +2 / +6 / +10 are the LOW halves of
+ * a1 / a2 / a3. On the host the struct is laid out differently (i386: the low half comes first;
+ * x86-64: a 12-byte struct is not three int registers), so the fields read 0: every reverb ring
+ * load used reverb 0's ring at item 0 (plan 15.11, the "harsh" music). Under PORT the helpers take
+ * the ints and rebuild the struct the MIPS callee saw. */
+#define PORT_SPEC2(sp, a, b) ((sp).h0 = (short)((a) >> 16), (sp).h1 = (short)(a), (sp).h2 = (short)((b) >> 16), (sp).h3 = (short)(b))
+#define PORT_SPEC_PARAMS8 int port_a1, int port_a2
+#define PORT_SPEC_INIT8 Spec8_1CFDC spec; PORT_SPEC2(spec, port_a1, port_a2);
+#else
+#define PORT_SPEC_PARAMS8 Spec8_1CFDC spec
+#define PORT_SPEC_INIT8
+#endif
+int AudioSynth_LoadRingBuffer1AtTemp(int code, PORT_SPEC_PARAMS8) {
+    PORT_SPEC_INIT8
     Ent_1CFDC *e;
     Rec_1CFDC *rec;
     int r;
@@ -378,7 +397,8 @@ int AudioSynth_LoadRingBuffer1AtTemp(int code, Spec8_1CFDC spec) {
 /* EXACT 2026-10-17 agent-c run 106 (87.3 -> 100): AudioSynth_LoadRingBuffer1AtTemp twin
  * (same typed view and by-value spec); blit = baked jal 0x3204C. */
 extern int gl_ref_0003204C(); /* baked in-unit jal 0x3204C (blit) */
-int AudioSynth_SaveRingBuffer1AtTemp(int code, Spec8_1CFDC spec) {
+int AudioSynth_SaveRingBuffer1AtTemp(int code, PORT_SPEC_PARAMS8) {
+    PORT_SPEC_INIT8
     Ent_1CFDC *e;
     Rec_1CFDC *rec;
     int r;
@@ -797,7 +817,16 @@ typedef struct { short h0, h1, h2, h3, h4, h5; } Spec12_1D870;
  * target. The callee is the baked jal 0x31FB0 (word 0x0C00C7EC, same as
  * 1CFDC), not game_libs_func_0003443C: gl_ref_00031FB0 pin. */
 extern int gl_ref_00031FB0();
+#ifdef PORT /* see AudioSynth_LoadRingBuffer1AtTemp: the struct the MIPS callee saw in a1..a3 */
+int AudioSynth_LoadRingBuffer1(int code, int port_a1, int port_a2, int port_a3) {
+    Spec12_1D870 spec;
+    spec.h0 = (short)(port_a1 >> 16); spec.h1 = (short)port_a1;
+    spec.h2 = (short)(port_a2 >> 16); spec.h3 = (short)port_a2;
+    spec.h4 = (short)(port_a3 >> 16); spec.h5 = (short)port_a3;
+    {
+#else
 int AudioSynth_LoadRingBuffer1(int code, Spec12_1D870 spec) {
+#endif
     Ent_1CFDC *e;
     Rec_1CFDC *rec;
     int r;
@@ -808,6 +837,9 @@ int AudioSynth_LoadRingBuffer1(int code, Spec12_1D870 spec) {
         r = gl_ref_00031FB0(r, (e->h + 0xC80) & 0xFFFF, 0, e->n, spec.h3);
     }
     return r;
+#ifdef PORT
+    }
+#endif
 }
 
 /* Double F3D/GBI command builder (sibling of the AudioSynth_LoadRingBuffer1 family).
