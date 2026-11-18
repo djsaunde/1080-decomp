@@ -70,6 +70,17 @@ static unsigned sQuitPolls;    /* port_live_quit calls, for the presenter livene
 static int sPresenterGone;
 static char sShmPath[256]; /* /dev/shm/<name>: removed here when the presenter died without doing it */
 static int sNative;        /* plan 21.9: the in-process host's block, not a presenter's files */
+static int sBlack;         /* osViBlack (port_live_black): LIVE_FRAME_BLACK on the frames published */
+/* depth reads now (plan 22.10, live_shm.h LiveDepthAsk): the presenter's last answer, kept for the
+ * step's other reads in its window */
+static LiveDepthAsk *sDepth;
+static struct {
+    int valid, ok;
+    live_u32 frames, img, x0, y0, w, h;
+    unsigned short z[LIVE_DEPTH_SIDE * LIVE_DEPTH_SIDE];
+} sDepthCache;
+static unsigned sDepthAsks, sDepthHits, sDepthTimeouts, sDepthOther, sDepthPolls, sDepthMaxPolls;
+static int live_presenter_alive(void);
 
 static void live_sleep_ms(int ms) {
     struct timespec ts;
@@ -155,6 +166,10 @@ static void live_open(void) {
     } else {
         sAudioData = (unsigned char *)sShm + sAudio->dataOffset;
     }
+    sDepth = (LiveDepthAsk *)((unsigned char *)sShm + LIVE_DEPTH_HDR);
+    if (sDepth->magic != LIVE_DEPTH_MAGIC) {
+        sDepth = NULL; /* an older presenter: the asynchronous answers only */
+    }
     live_log("attached to %s: %u slots of %u MB, %s%s", path, sShm->slotCount, sShm->slotBytes >> 20,
              sAudio != NULL ? "audio ring" : "no audio",
              sShm->padScripted ? ", scripted pads (lockstep)" : "");
@@ -235,6 +250,7 @@ void port_live_frame_end(unsigned step) {
     head = sShm->head;
     tail = __atomic_load_n(&sShm->tail, __ATOMIC_ACQUIRE);
     f->seq = head;
+    f->flags = sBlack ? LIVE_FRAME_BLACK : 0;
     if (sFrameBytes > sShm->slotBytes) {
         sShm->tooBig++;
         if (sShm->tooBig < 10) {
@@ -320,6 +336,101 @@ void port_live_fb_apply(const PortFbRequests *rq) {
             }
         }
     }
+}
+
+void port_live_black(int black) {
+    if (!port_live_active()) {
+        return;
+    }
+    sBlack = black != 0;
+#ifdef PORT_GFX_NATIVE
+    if (sNative) {
+        port_native_black(black);
+    }
+#endif
+}
+
+/* plan 22.10: the presenter's depth now. One request per step and Z image: the presenter answers the
+ * pixel's window from the last frame it drew (the frame this game published last, rendered first if
+ * it was not yet), and the other reads of the step (a sun's 9 pixels) come from that window. */
+int port_live_depth(const void *zimg, int idx) {
+    live_u32 img = (live_u32)(size_t)zimg, frames, ask, x, y;
+    unsigned n;
+
+    if (!port_live_active() || idx < 0 || idx >= LIVE_FB_W * LIVE_FB_H) {
+        return -1;
+    }
+#ifdef PORT_GFX_NATIVE
+    if (sNative) {
+        return port_native_depth(img, (unsigned)idx); /* in process: at once (plan 22.4) */
+    }
+#endif
+    if (sDepth == NULL || sPresenterGone) {
+        return -1;
+    }
+    frames = __atomic_load_n(&sShm->head, __ATOMIC_ACQUIRE);
+    x = (live_u32)idx % LIVE_FB_W;
+    y = (live_u32)idx / LIVE_FB_W;
+    if (!(sDepthCache.valid && sDepthCache.frames == frames && sDepthCache.img == img && x >= sDepthCache.x0 &&
+          x < sDepthCache.x0 + sDepthCache.w && y >= sDepthCache.y0 && y < sDepthCache.y0 + sDepthCache.h)) {
+        if (sDepthCache.valid && sDepthCache.frames == frames && sDepthCache.img == img && !sDepthCache.ok) {
+            return -1; /* the presenter has said this frame has no such Z image, or did not answer */
+        }
+        sDepth->img = img;
+        sDepth->idx = (live_u32)idx;
+        sDepth->frames = frames;
+        ask = sDepth->ask + 1;
+        __atomic_store_n(&sDepth->ask, ask, __ATOMIC_RELEASE);
+        sDepthAsks++;
+        /* the presenter renders the frame first if it is behind: wait up to ~0.5 s, then keep the
+         * asynchronous answers (a stalled or slow presenter must not stop the game) */
+        for (n = 1; __atomic_load_n(&sDepth->done, __ATOMIC_ACQUIRE) != ask; n++) {
+            if (n > 5000 || __atomic_load_n(&sShm->quit, __ATOMIC_ACQUIRE) ||
+                (n % 2000 == 0 && !live_presenter_alive())) {
+                sDepthTimeouts++;
+                if (sDepthTimeouts <= 5) {
+                    live_log("depth read: no answer from the presenter in time (frame %u)", frames);
+                }
+                sDepthCache.valid = 1;
+                sDepthCache.ok = 0;
+                sDepthCache.frames = frames;
+                sDepthCache.img = img;
+                return -1;
+            }
+            {
+                struct timespec ts = { 0, 100000 }; /* 0.1 ms */
+                nanosleep(&ts, NULL);
+            }
+        }
+        sDepthPolls += n - 1;
+        if (n - 1 > sDepthMaxPolls) {
+            sDepthMaxPolls = n - 1;
+        }
+        sDepthCache.valid = 1;
+        sDepthCache.ok = sDepth->ok != 0;
+        sDepthCache.frames = frames;
+        sDepthCache.img = img;
+        sDepthCache.x0 = sDepth->x0;
+        sDepthCache.y0 = sDepth->y0;
+        sDepthCache.w = sDepth->w;
+        sDepthCache.h = sDepth->h;
+        if (sDepthCache.w * sDepthCache.h > LIVE_DEPTH_SIDE * LIVE_DEPTH_SIDE) {
+            sDepthCache.ok = 0;
+        }
+        if (sDepthCache.ok) {
+            memcpy(sDepthCache.z, (const void *)sDepth->z, sDepthCache.w * sDepthCache.h * sizeof(sDepthCache.z[0]));
+        } else {
+            sDepthOther++;
+            return -1;
+        }
+        if (!(x >= sDepthCache.x0 && x < sDepthCache.x0 + sDepthCache.w && y >= sDepthCache.y0 &&
+              y < sDepthCache.y0 + sDepthCache.h)) {
+            return -1;
+        }
+    } else {
+        sDepthHits++;
+    }
+    return sDepthCache.z[(y - sDepthCache.y0) * sDepthCache.w + (x - sDepthCache.x0)];
 }
 
 int port_live_audio_active(void) {
@@ -432,6 +543,11 @@ void port_live_close(void) {
         if (sFb != NULL) {
             live_log("framebuffer replies: %u taken (%u torn), %u depth pixels and %u colour images stored",
                      sFbTaken, sFbTorn, sFbDepthStored, sFbColorStored);
+        }
+        if (sDepth != NULL) {
+            live_log("depth reads now: %u asked (%u waits of 0.1 ms, at most %u), %u from the window, %u not in "
+                     "the frame, %u timed out", sDepthAsks, sDepthPolls, sDepthMaxPolls, sDepthHits, sDepthOther,
+                     sDepthTimeouts);
         }
         if (sAudio != NULL) {
             live_log("audio: %llu bytes (%.2f s) sent, fnv1a64 %016llx, %u overruns", sAudioBytes,

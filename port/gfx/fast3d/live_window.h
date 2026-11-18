@@ -34,6 +34,9 @@ struct LiveX11 {
      * display / GL driver. vsync: the swap interval (0 = frames shown as they come) */
     bool open(uint32_t width, uint32_t height, const char* title, int vsync = 0);
     void swap();
+    /* osViBlack (plan 22.5 / 22.10): clear the window's back buffer to black over the frame drawn (the frame is
+     * still drawn: its read-backs need it); the next swap shows black */
+    void black();
     void setTitle(const char* title);
     /* the largest centred 4:3 rectangle of the window (x, y from the top-left) */
     void viewport(uint32_t* x, uint32_t* y, uint32_t* vw, uint32_t* vh) const;

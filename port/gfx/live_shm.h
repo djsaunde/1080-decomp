@@ -39,6 +39,15 @@
  * DLUMP_FB_READ / DLUMP_FB_DEPTH chunks travel in the frame; the answers come
  * back in a second file, /dev/shm/<name>-fb (LiveFbReply below), so this
  * header's layout is untouched.
+ *
+ * Depth reads now (plan 22.10): the LiveDepthAsk block at LIVE_DEPTH_HDR in the header page. The
+ * game asks for one Z pixel of the last frame it published and waits; the presenter renders that
+ * frame if it has not yet, and answers the pixel's +-LIVE_FB_DEPTH_R window from its depth buffer,
+ * which the game keeps for the other reads of the same step. This is the native game's
+ * port_fast3d_depth_now (plan 22.4) across the process boundary.
+ *
+ * osViBlack (plan 22.10): LiveFrame.flags LIVE_FRAME_BLACK; the presenter draws the frame (its
+ * read-backs are answered) and shows black over it.
  */
 #ifndef PORT_GFX_LIVE_SHM_H
 #define PORT_GFX_LIVE_SHM_H
@@ -49,7 +58,7 @@ typedef signed char live_s8;
 typedef unsigned char live_u8;
 
 #define LIVE_MAGIC 0x4556494Cu /* "LIVE" */
-#define LIVE_VERSION 1u
+#define LIVE_VERSION 2u /* 2: LiveFrame.flags (plan 22.10) */
 #define LIVE_HEADER_BYTES 4096u
 #define LIVE_DEFAULT_SLOTS 3u
 #define LIVE_DEFAULT_SLOT_BYTES (48u << 20)
@@ -96,7 +105,11 @@ typedef struct LiveFrame {
     live_u32 nTasks; /* DLMP images that follow */
     live_u32 step;   /* SysLib.frameCount of the step (state.log's F) */
     live_u32 seq;    /* the frame's number since boot (head at publish) */
+    live_u32 flags;  /* LIVE_FRAME_* (version 2) */
+    live_u32 reserved[3];
 } LiveFrame;
+
+#define LIVE_FRAME_BLACK 1u /* osViBlack was on at the step's end: the VI shows black (plan 22.10) */
 
 /* ---------------- the framebuffer replies (run 859) ----------------
  *
@@ -169,6 +182,32 @@ typedef struct LiveAudio {
 #define LIVE_AUDIO_OFF 0u   /* not started / failed: drained, not played */
 #define LIVE_AUDIO_PULSE 1u /* playing through PulseAudio */
 #define LIVE_AUDIO_MUTED 2u /* --mute: drained, not played */
+
+/* ---------------- depth reads now (plan 22.10) ----------------
+ * game: img / idx / frames, then ask + 1 (release), and waits for done == ask (a bounded wait; on
+ * a timeout it keeps the asynchronous answers). presenter: once it has rendered frame frames - 1
+ * (LiveShmHeader.tail >= frames), it fills x0 / y0 / w / h / z (the window of idx clipped to the
+ * image), ok (0: its last frame drew no Z into img) and done = ask (release). The presenter writes
+ * magic before LIVE_MAGIC; a game finding no magic never asks. */
+#define LIVE_DEPTH_MAGIC 0x4854504Cu /* "LPTH" */
+#define LIVE_DEPTH_HDR 3072u         /* offset of LiveDepthAsk in the header page */
+#define LIVE_DEPTH_SIDE (2 * LIVE_FB_DEPTH_R + 1)
+
+typedef struct LiveDepthAsk {
+    live_u32 magic;          /* LIVE_DEPTH_MAGIC */
+    volatile live_u32 ask;   /* game: the request number (free-running) */
+    volatile live_u32 done;  /* presenter: the request answered */
+    live_u32 img;            /* game: the Z image (its full pointer) */
+    live_u32 idx;            /* game: y * 320 + x */
+    live_u32 frames;         /* game: LiveShmHeader.head when it asked (the frames it had published) */
+    live_u32 ok;             /* presenter: 1 = z holds the image's values */
+    live_u32 x0, y0, w, h;   /* presenter: the window answered */
+    live_u32 step;           /* presenter: LiveFrame.step of the frame read */
+    live_u16 z[LIVE_DEPTH_SIDE * LIVE_DEPTH_SIDE]; /* host order; row-major w x h */
+} LiveDepthAsk;
+
+typedef char live_depth_fits_[(LIVE_AUDIO_HDR + sizeof(LiveAudio) <= LIVE_DEPTH_HDR &&
+                               LIVE_DEPTH_HDR + sizeof(LiveDepthAsk) <= LIVE_HEADER_BYTES) ? 1 : -1];
 
 typedef char live_audio_fits_[(sizeof(LiveShmHeader) <= LIVE_AUDIO_HDR &&
                                LIVE_AUDIO_HDR + sizeof(LiveAudio) <= LIVE_HEADER_BYTES) ? 1 : -1];

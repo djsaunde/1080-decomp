@@ -55,8 +55,11 @@
  * any game can attach. At exit the frame times are summarised (render ms mean / p50 / p95 / p99 /
  * max, frames over one 30 Hz step, frames skipped because the presenter was behind).
  *
- * Not yet: the framebuffer model's read-backs (DLUMP_FB_READ / FB_DEPTH) are not answered and
- * CPU writes (FB_WRITE, debug paths only) are not composited; see live_shm.h. */
+ * Read-backs: the frame's DLUMP_FB_READ / FB_DEPTH requests are answered after its Run (the -fb reply
+ * file, run 859); a depth read the game makes now (LiveDepthAsk, plan 22.10) is answered from the last
+ * frame drawn while the game waits, as the native game reads it (plan 22.4). A frame published while
+ * osViBlack is on (LiveFrame.flags) is drawn and shown black (plan 22.10). CPU writes (FB_WRITE, debug
+ * paths only) are not composited; see live_shm.h. */
 
 #include <fcntl.h>
 #include <linux/joystick.h>
@@ -267,6 +270,7 @@ struct Renderer {
     std::set<std::pair<uint32_t, uint32_t>> fbDepthSet, fbAsked; /* all answered / the ones the game asked */
     std::vector<std::vector<uint16_t>> rttPixels, readPixels;
     LiveFbReply* reply = nullptr;                          /* /dev/shm/NAME-fb */
+    uint32_t lastZimg = 0, lastStep = 0; /* the Z image (low 24 bits) and step of the last frame drawn (plan 22.10) */
 
     void init(uint32_t w, uint32_t h) {
         cvars = std::make_shared<Ship::ConsoleVariable>();
@@ -567,10 +571,31 @@ struct Renderer {
         }
         gfx->StartFrame();
         gfx->Run((Gfx*)root, noReplacements);
+        lastZimg = (uint32_t)(uintptr_t)gfx->mRdp->z_buf_address & 0xFFFFFF;
+        lastStep = lf->step;
         if (reply != nullptr) {
             answer(lf, st);
         }
         return true;
+    }
+
+    /* plan 22.10: a LiveDepthAsk, from the frame drawn last (still in Fast3D's framebuffer; the game asked
+     * after publishing it): the asked pixel's +-LIVE_FB_DEPTH_R window, clipped to the image */
+    void depth_now(LiveDepthAsk* a) {
+        const uint32_t idx = a->idx < LIVE_FB_W * LIVE_FB_H ? a->idx : 0;
+        const int px = (int)(idx % LIVE_FB_W), py = (int)(idx / LIVE_FB_W), R = LIVE_FB_DEPTH_R;
+        const int x0 = std::max(0, px - R), y0 = std::max(0, py - R);
+        const int x1 = std::min(LIVE_FB_W - 1, px + R), y1 = std::min(LIVE_FB_H - 1, py + R);
+        a->x0 = (uint32_t)x0;
+        a->y0 = (uint32_t)y0;
+        a->w = (uint32_t)(x1 - x0 + 1);
+        a->h = (uint32_t)(y1 - y0 + 1);
+        a->step = lastStep;
+        uint16_t z[LIVE_DEPTH_SIDE * LIVE_DEPTH_SIDE];
+        a->ok = lastZimg != 0 && (a->img & 0xFFFFFF) == lastZimg && live_depth_now(*gfx, a->x0, a->y0, a->w, a->h, z);
+        if (a->ok) {
+            std::memcpy((void*)a->z, z, a->w * a->h * sizeof(z[0]));
+        }
     }
 
     /* the replies (live_shm.h LiveFbReply): what this frame's Run read back, for the images it drew */
@@ -849,6 +874,10 @@ int main(int argc, char** argv) {
     H->presenterPid = (live_u32)getpid();
     H->pads[0].connected = 1;
     live_audio_layout((LiveAudio*)(shm + LIVE_AUDIO_HDR), (uint32_t)audioOffset, LIVE_AUDIO_DEFAULT_BYTES);
+    /* depth reads now (plan 22.10): announced before the magic */
+    LiveDepthAsk* depthAsk = (LiveDepthAsk*)(shm + LIVE_DEPTH_HDR);
+    std::memset(depthAsk, 0, sizeof(*depthAsk));
+    depthAsk->magic = LIVE_DEPTH_MAGIC;
     /* the read-back replies (run 859): a file of their own, ready before the magic */
     std::string fbPath = path + "-fb";
     LiveFbReply* reply = nullptr;
@@ -898,7 +927,7 @@ int main(int argc, char** argv) {
     bool quit = false;
     LivePad lastPad = {};
     std::vector<float> frameMs; /* every rendered frame's render time (the exit summary) */
-    uint32_t skipped = 0, lastGamePid = 0, games = 0;
+    uint32_t skipped = 0, lastGamePid = 0, games = 0, blackFrames = 0, depthAnswered = 0, depthOk = 0;
     bool endedNoted = false;
     while (!quit && !sStop) {
         /* events */
@@ -925,6 +954,11 @@ int main(int argc, char** argv) {
             double t0 = now_s();
             bool ok = lf->bytes >= sizeof(LiveFrame) && lf->bytes <= slotBytes && R.frame(slot, st);
             lastStep = lf->step;
+            if (ok && (lf->flags & LIVE_FRAME_BLACK) != 0) {
+                /* osViBlack (plan 22.10, as native 22.5): drawn, its read-backs answered, shown black */
+                sWin.black();
+                blackFrames++;
+            }
             if (ok) {
                 char png[1024];
                 const char* pp = nullptr;
@@ -986,6 +1020,15 @@ int main(int argc, char** argv) {
             if (maxFrames != 0 && rendered >= maxFrames) {
                 quit = true;
             }
+        } else if (const live_u32 ask = __atomic_load_n(&depthAsk->ask, __ATOMIC_ACQUIRE); ask != depthAsk->done) {
+            /* a depth read (plan 22.10): every frame the game had published when it asked is in (tail), so the
+             * framebuffer holds the newest of them */
+            if ((int32_t)(H->tail - depthAsk->frames) >= 0) {
+                R.depth_now(depthAsk);
+                depthAnswered++;
+                depthOk += depthAsk->ok;
+                __atomic_store_n(&depthAsk->done, ask, __ATOMIC_RELEASE);
+            }
         } else {
             if (__atomic_load_n(&H->gameExited, __ATOMIC_ACQUIRE)) {
                 if (!stay) {
@@ -999,7 +1042,7 @@ int main(int argc, char** argv) {
                 }
             }
             struct pollfd pf = { ConnectionNumber(sWin.dpy), POLLIN, 0 };
-            poll(&pf, 1, 2); /* X events or 2 ms, whichever first */
+            poll(&pf, 1, 1); /* X events or 1 ms, whichever first (a depth read waits for this loop) */
         }
         double t = now_s();
         if (t - secStart >= 1.0) {
@@ -1049,6 +1092,8 @@ int main(int argc, char** argv) {
     }
     std::printf("presenter: %u frames rendered, %u skipped (presenter behind), %u dropped by the game, %u too big%s\n",
                 rendered, skipped, H->dropped, H->tooBig, audioEnd.c_str());
+    std::printf("presenter: %u frames shown black (osViBlack), %u depth reads answered now (%u from the image)\n",
+                blackFrames, depthAnswered, depthOk);
     if (!frameMs.empty()) {
         std::vector<float> v = frameMs;
         std::sort(v.begin(), v.end());

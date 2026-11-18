@@ -57,6 +57,7 @@
 
 #include "../replay/egl_png.h"
 #include "egl_window.h"
+#include "live_backend.h" /* live_depth_now */
 #include "port_fast3d.h"
 #include "port_fast3d_native.h"
 #include "../port_fb_impl.h"
@@ -698,14 +699,8 @@ int port_fast3d_depth_now(uint32_t img, uint32_t idx) {
         return -1;
     }
     uint16_t z = 0;
-    const uint32_t x = idx % LIVE_FB_W, y = idx / LIVE_FB_W;
-    /* two pixels: Fast3D's one-pixel path (GfxRenderingAPIOGL::GetPixelDepth) reads GL_DEPTH_STENCIL straight
-     * from the framebuffer, which fails here (GL_INVALID_OPERATION, the value left uninitialised: 0x15xx); the
-     * blit path of two or more pixels reads right */
-    s->gfx->ReadbackRequestDepth(x, y);
-    s->gfx->ReadbackRequestDepth(x == 0 ? 1 : x - 1, y);
-    s->gfx->ServiceReadbacks();
-    return s->gfx->ReadbackGetDepth(x, y, &z) ? (int)z : -1;
+    /* live_backend.h: the read the presenter's LiveDepthAsk answers make too (plan 22.10) */
+    return live_depth_now(*s->gfx, idx % LIVE_FB_W, idx / LIVE_FB_W, 1, 1, &z) ? (int)z : -1;
 }
 
 void port_fast3d_end_frame() {

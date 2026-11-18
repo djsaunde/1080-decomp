@@ -3,7 +3,10 @@
  * native 64-bit host (plan 21.9). */
 #pragma once
 
+#include <cstdint>
+
 #include "fast/backends/gfx_window_manager_api.h"
+#include "fast/interpreter.h"
 #include "live_window.h"
 
 class LiveWindow final : public Fast::GfxWindowBackend {
@@ -54,3 +57,28 @@ class LiveWindow final : public Fast::GfxWindowBackend {
   private:
     LiveX11* mWin;
 };
+
+/* the N64 Z (0..0xFFFC) of the w x h pixels from (x0, y0) of the frame Fast3D drew last, read now into z
+ * (row-major); false if any pixel did not read. Shared by the native host (port_fast3d_depth_now, plan
+ * 22.4) and the presenter (LiveDepthAsk, plan 22.10). Always two or more pixels: Fast3D's one-pixel path
+ * (GfxRenderingAPIOGL::GetPixelDepth) reads GL_DEPTH_STENCIL straight from the framebuffer, which fails
+ * here (GL_INVALID_OPERATION, the value left uninitialised: 0x15xx); the blit path of two or more reads
+ * right. */
+inline bool live_depth_now(Fast::Interpreter& gfx, uint32_t x0, uint32_t y0, uint32_t w, uint32_t h, uint16_t* z) {
+    for (uint32_t y = y0; y < y0 + h; y++) {
+        for (uint32_t x = x0; x < x0 + w; x++) {
+            gfx.ReadbackRequestDepth(x, y);
+        }
+    }
+    if (w * h == 1) {
+        gfx.ReadbackRequestDepth(x0 == 0 ? 1 : x0 - 1, y0);
+    }
+    gfx.ServiceReadbacks();
+    bool ok = true;
+    for (uint32_t y = y0; y < y0 + h; y++) {
+        for (uint32_t x = x0; x < x0 + w; x++) {
+            ok &= gfx.ReadbackGetDepth(x, y, &z[(y - y0) * w + (x - x0)]);
+        }
+    }
+    return ok;
+}

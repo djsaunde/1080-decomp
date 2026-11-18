@@ -305,10 +305,7 @@ extern "C" void port_native_frame(unsigned step) {
         /* osViBlack (plan 22.5): the VI outputs black while the RDP goes on drawing, so the frame is drawn
          * (its read-backs answered) and the window cleared over it. The faders blank the screen between
          * a fade-out and the next scene's fade-in; the port showed the stale frame there. */
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_SCISSOR_TEST);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        h->win.black();
     }
     if (png_wanted(*h, step)) {
         write_window_png(*h, step);

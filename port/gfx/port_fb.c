@@ -9,8 +9,8 @@
 #ifdef PORT_GFX_FAST3D
 #include "fast3d/port_fast3d.h"
 #endif
-#ifdef PORT_GFX_NATIVE
 #include "port_live.h"
+#ifdef PORT_GFX_NATIVE
 #include "port_native.h"
 #endif
 
@@ -62,13 +62,14 @@ void port_fb_read_depth(const void *zimg, int idx) {
         sReq.depthIdx[sReq.nDepth] = idx;
         sReq.nDepth++;
     }
-#ifdef PORT_GFX_NATIVE
-    /* plan 22.4: the native game answers at once from the last frame's depth, still in Fast3D's
-     * framebuffer, as the N64 reads the Z image the RDP finished. The asynchronous reply (a step
-     * later, +-LIVE_FB_DEPTH_R around the pixel) missed a fast sun, whose pixels then read the
-     * clear model's far value: the title demo's sun and flare showed behind the slope. */
-    if (port_live_native()) {
-        int z = port_native_depth((unsigned)(unsigned long)zimg, (unsigned)idx);
+#ifndef PORT_GFX_FAST3D
+    /* plan 22.4 / 22.10: the live window answers at once from the last frame's depth (the native
+     * game from Fast3D's framebuffer in process, the presenter through LiveDepthAsk), as the N64
+     * reads the Z image the RDP finished. The asynchronous reply (a step later, +-LIVE_FB_DEPTH_R
+     * around the pixel) missed a fast sun, whose pixels then read the clear model's far value: the
+     * title demo's sun and flare showed behind the slope. */
+    {
+        int z = port_live_depth(zimg, idx);
         if (z >= 0) {
             unsigned char *px = (unsigned char *)zimg + (unsigned)idx * 2;
             px[0] = (unsigned char)(z >> 8); /* big-endian, as the RDP writes it */

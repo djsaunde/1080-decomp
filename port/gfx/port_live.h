@@ -18,6 +18,12 @@ void port_live_close(void);                       /* the game is ending */
 /* after a gfx task's depth-clear model: store the presenter's newest depth / colour answers into
  * the images rq asks about (run 859; no-op without PORT_LIVE or a reply file) */
 struct PortFbRequests;
+/* osViBlack (plan 22.5 / 22.10): the native window or the presenter shows black while black is set */
+void port_live_black(int black);
+/* the N64 Z (0..0xFFFC) of pixel idx of Z image zimg in the last frame drawn, read now (plan 22.4 /
+ * 22.10): the native host directly, the presenter through LiveDepthAsk. -1: no answer (no live
+ * window, the last frame drew no Z into zimg, the presenter did not answer in time) */
+int port_live_depth(const void *zimg, int idx);
 void port_live_fb_apply(const struct PortFbRequests *rq);
 
 #endif

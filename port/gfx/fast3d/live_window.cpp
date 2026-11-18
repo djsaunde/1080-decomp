@@ -22,7 +22,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
+#define GL_GLEXT_PROTOTYPES 1
 #include <GL/gl.h>
+#include <GL/glext.h>
 
 double live_now_s() {
     struct timespec ts;
@@ -132,6 +134,13 @@ bool LiveX11::open(uint32_t width, uint32_t height, const char* title, int vsync
 
 void LiveX11::swap() {
     eglSwapBuffers(ED, (EGLSurface)surf);
+}
+
+void LiveX11::black() {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDisable(GL_SCISSOR_TEST);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void LiveX11::setTitle(const char* title) {
