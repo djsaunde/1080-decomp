@@ -25,7 +25,8 @@
  *                         0 = none, steps read 0; --scan finds it again)
  *   --dump-ram LIST       write ram_vNNNNNN.bin (big-endian RDRAM) at these VIs
  *   --scan                print RDRAM words that count like frameCount (VIs 600 / 700 / 800)
- *   --log-steps           print "S step vi" whenever the step changes (steps.txt in DIR)
+ *   --log-steps           print "S step vi origin" whenever the step changes (steps.txt in DIR; origin =
+ *                         VI_ORIGIN, the framebuffer scanned out)
  *   --sram FILE           start from this SRAM image (copied into DIR; the port's .sram is
  *                         the same 32 KiB big-endian image)
  *   --vi-mode 0|1         angrylion VI mode: 0 = filtered, the TV picture (VI AA / divot / dither filter,
@@ -443,7 +444,7 @@ static void vi_hook(void) {
         return;
     }
     if (s != gPrevStep) {
-        if (gLogSteps && gStepLog) fprintf(gStepLog, "S %u %u\n", s, gVi);
+        if (gLogSteps && gStepLog) fprintf(gStepLog, "S %u %u 0x%06x\n", s, gVi, gViRegs[1] & 0xFFFFFF);
         /* the held frame of a wanted step is final once the step passes S + lag */
         if (gHeld && gHeldStep != 0xFFFFFFFF && s > gHeldStep + gStepLag) {
             char path[4096];
