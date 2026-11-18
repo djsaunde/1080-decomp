@@ -22,7 +22,17 @@ void gen_imp_gfx_setPrimColour(void *arg, void *vec4);
 void gen_imp_light_setF124_000550A0(void *obj, f32 val);
 void gen_imp_QNode_display(void *obj);
 }
+#ifdef PORT
+/* plan 22.6: the ROM's x / y / z here are relocated to genproc Bss+0x730 (uso-data-sites: sym41, the
+ * camera look axis DispItems_display_0000E5D8 stores every frame), which the port names
+ * timproc_uso_b5_D_807FFBB0. File statics read 0: Select Course's photo never zoomed toward the camera
+ * (B368's pos += look * gscale * f128), and the board / rider / tesuri facing used pos, not pos - look. */
+extern "C" char timproc_uso_b5_D_807FFBB0;
+#define sXY ((float *)&timproc_uso_b5_D_807FFBB0)
+#define sZ (((float *)&timproc_uso_b5_D_807FFBB0)[2])
+#else
 static float sXY[2]; static float sZ;
+#endif
 struct V3 { f32 x, y, z; V3() {} void all(f32 v) { f32 s = v; x = s; y = s; z = s; } V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } };
 struct V4 { f32 x, y, z, w; V4() {} void set(f32 a, f32 b, f32 c, f32 d) { w = d; x = a; y = b; z = c; } };
 inline V3 rel(const V3 &a, f32 *g, f32 *z) { if (0) { g[0] = a.x; } return V3(a.x - g[0], a.y - g[1], a.z - *z); }

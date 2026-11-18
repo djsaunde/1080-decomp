@@ -33,7 +33,17 @@ void timproc_uso_b5_func_06970C_i(...);
 void port64_light_setF124(void *obj, f32 val) __asm__("light_setF124_000550A0");
 #endif
 }
+#ifdef PORT
+/* plan 22.6: the ROM's x / y / z here are relocated to genproc Bss+0x730 (uso-data-sites: sym41, the
+ * camera look axis DispItems_display_0000E5D8 stores every frame), which the port names
+ * timproc_uso_b5_D_807FFBB0. File statics read 0: Select Course's photo never zoomed toward the camera
+ * (B368's pos += look * gscale * f128), and the board / rider / tesuri facing used pos, not pos - look. */
+extern "C" char timproc_uso_b5_D_807FFBB0;
+#define sXY ((float *)&timproc_uso_b5_D_807FFBB0)
+#define sZ (((float *)&timproc_uso_b5_D_807FFBB0)[2])
+#else
 static float sXY[2]; static float sZ;
+#endif
 struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } };
 inline f32 dot(const V3 &a, const V3 &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 inline V3 rel(const V3 &a, f32 *g) { if (0) { g[1] = a.y; } return V3(a.x - g[0], a.y - g[1], a.z - sZ); }
