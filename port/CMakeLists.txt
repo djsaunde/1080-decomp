@@ -202,8 +202,10 @@ if(PORT_NATIVE)
   set(_lus "${PORT_LUS}/libultraship")
   file(GLOB _prism_cpp "${PORT_LUS}/prism/src/prism/*.cpp" "${PORT_LUS}/prism/src/prism/utils/*.cpp")
   file(GLOB _prism_c "${PORT_LUS}/prism/src/prism/utils/*.c")
+  # plan 27 (M7): the settings file, the portable input mapping, the settings menu and its GL overlay
   add_library(port_native STATIC gfx/fast3d/native_host.cpp gfx/fast3d/live_window.cpp gfx/fast3d/live_audio.cpp
-              gfx/fast3d/live_gamepad.cpp gfx/fast3d/port_fast3d.cpp gfx/fast3d/ship_shim.cpp gfx/replay/egl_png.c
+              gfx/fast3d/live_gamepad.cpp settings.c input_map.c gfx/fast3d/settings_menu.cpp
+              gfx/fast3d/menu_overlay_gl.cpp gfx/fast3d/port_fast3d.cpp gfx/fast3d/ship_shim.cpp gfx/replay/egl_png.c
               ${_lus}/src/fast/interpreter.cpp ${_lus}/src/fast/backends/gfx_opengl.cpp
               ${_lus}/src/fast/debug/GfxDebugger.cpp ${_lus}/src/fast/resource/type/Texture.cpp
               ${_prism_cpp} ${_prism_c})

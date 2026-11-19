@@ -48,6 +48,11 @@
  * presenter -> shm -> host_read_pads path as live input, and a race script plays out exactly as
  * headless. --inject keys still go through the window (F11, Esc), not into the pads.
  *
+ * Settings (plan 27): the settings file (port/settings.h: $PORT_SETTINGS, else ./1080.ini; play.sh points it at
+ * the run directory) gives the window scale, the render settings, the audio buffer / mute / volume and the
+ * key / gamepad bindings; --scale / --audio-latency / --mute and the PORT_* variables win over it. F1 opens
+ * the settings menu.
+ *
  * Lifetime: the game ending (or dying: checked every second) closes the presenter (unless --stay);
  * Esc / the window's close button / SIGINT / SIGTERM / SIGHUP / a lost X display tell the game to
  * quit (shm quit flag), and a game whose presenter was killed ends by itself (port_live.c checks the
@@ -121,6 +126,8 @@ extern "C" {
 #include "live_window.h"
 #include "live_backend.h"
 #include "port_fast3d_n64.h"
+#include "menu_overlay_gl.h"
+#include "settings_menu.h"
 
 namespace Fast {
 void GfxSetInstance(std::shared_ptr<Interpreter> gfx);
@@ -752,6 +759,15 @@ int main(int argc, char** argv) {
     uint32_t scale = 3, pngEvery = 0, maxFrames = 0, slots = LIVE_DEFAULT_SLOTS, slotBytes = LIVE_DEFAULT_SLOT_BYTES;
     bool stay = false, fbLog = false, fbReply = true;
     LiveAudioOptions audio;
+    /* the settings file first: the options below win over it (plan 27) */
+    PortSettings* cfg = port_settings();
+    const bool haveSettings = port_settings_load(cfg, nullptr) != 0;
+    scale = (uint32_t)std::max(1, cfg->scale);
+    audio.latencyMs = (uint32_t)std::max(20, cfg->latency_ms);
+    audio.mute = cfg->mute != 0;
+    static PortN64Render render;
+    render = { cfg->gfx_clip, cfg->gfx_shade, cfg->gfx_filter, cfg->gfx_clear };
+    gPortN64Render = &render;
     std::vector<Inject> injects;
     std::vector<std::pair<uint32_t, uint32_t>> pngSteps; /* --png-steps ranges (empty: every step) */
     for (int i = 1; i < argc; i++) {
@@ -911,12 +927,29 @@ int main(int argc, char** argv) {
     }
     __atomic_store_n(&H->magic, LIVE_MAGIC, __ATOMIC_RELEASE);
 
+    live_audio_set_volume(cfg->volume);
     live_audio_start(shm, audio);
     Renderer R;
     R.init(w, h);
     R.reply = reply;
     Input in;
     in.openJoystick(jsPath.c_str());
+    SettingsMenu menu;
+    in.menu = &menu;
+    menu.onApply = [&audio](const char* field) {
+        const PortSettings* c = port_settings();
+        if (std::strcmp(field, "window.vsync") == 0) {
+            sWin.setVsync(c->vsync);
+        } else if (std::strcmp(field, "window.fullscreen") == 0 && (c->fullscreen != 0) != sWin.fullscreen) {
+            live_audio_suspend(2500);
+            sWin.toggleFullscreen();
+        } else if (std::strcmp(field, "audio.volume") == 0 || std::strcmp(field, "audio.mute") == 0) {
+            live_audio_set_volume(c->mute ? 0 : c->volume);
+        }
+        (void)audio;
+    };
+    std::printf("presenter: settings %s (%s); F1 = settings menu\n", port_settings_path(),
+                haveSettings ? "read" : "none: the defaults");
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
     sWin.swap();
@@ -928,7 +961,7 @@ int main(int argc, char** argv) {
     uint64_t secBytes = 0;
     double secStart = now_s(), secRender = 0;
     bool quit = false;
-    LivePad lastPad = {};
+    LivePad lastPads[LIVE_PADS] = {};
     std::vector<float> frameMs; /* every rendered frame's render time (the exit summary) */
     uint32_t skipped = 0, lastGamePid = 0, games = 0, blackFrames = 0, depthAnswered = 0, depthOk = 0;
     bool endedNoted = false;
@@ -939,11 +972,12 @@ int main(int argc, char** argv) {
         if (in.quit) {
             quit = true;
         }
-        LivePad pad = in.pad();
-        if (inputScript.empty() && std::memcmp(&pad, &lastPad, sizeof(pad)) != 0) {
-            H->pads[0] = pad;
+        LivePad pads[LIVE_PADS];
+        in.allPads(pads);
+        if (inputScript.empty() && std::memcmp(pads, lastPads, sizeof(pads)) != 0) {
+            std::memcpy(H->pads, pads, sizeof(pads));
             __atomic_fetch_add(&H->padSeq, 1, __ATOMIC_RELEASE);
-            lastPad = pad;
+            std::memcpy(lastPads, pads, sizeof(pads));
         }
         /* frames */
         uint32_t head = __atomic_load_n(&H->head, __ATOMIC_ACQUIRE), tail = H->tail;
@@ -972,6 +1006,9 @@ int main(int argc, char** argv) {
                 if (!pngDir.empty() && pngEvery != 0 && rendered % pngEvery == 0 && inSteps) {
                     std::snprintf(png, sizeof(png), "%s/live_%06u_s%06u.png", pngDir.c_str(), rendered, lf->step);
                     pp = png;
+                }
+                if (menu.isOpen()) {
+                    menu_overlay_draw(menu.image(), SettingsMenu::kW, SettingsMenu::kH, sWin.w, sWin.h);
                 }
                 R.present(pp);
                 rendered++;
@@ -1052,7 +1089,7 @@ int main(int argc, char** argv) {
             char title[160];
             std::snprintf(title, sizeof(title), "1080 Snowboarding (live) - step %u - %u fps", lastStep, secFrames);
             XStoreName(sWin.dpy, sWin.win, title);
-            const LivePad shown = inputScript.empty() ? lastPad : H->pads[0];
+            const LivePad shown = inputScript.empty() ? lastPads[0] : H->pads[0];
             std::printf("presenter: %u frames/s, %.1f MB/frame, render %.1f ms/frame, step %u, dropped %u, skipped %u, "
                         "pads %04x %d,%d%s\n",
                         secFrames, secFrames ? secBytes / 1048576.0 / secFrames : 0.0,

@@ -17,18 +17,20 @@
 #   -b   a built PORT_LINK=ON port tree holding tenshoe (default: configured and built on first
 #        use in <monorepo>/tools/play/<worktree>/build-native, or build with --presenter: a few minutes)
 #   -r   the ROM (default <game repo>/baserom.z64)
-#   -s   window scale over 320x240 (default 3: 960x720)
+#   -s   window scale over 320x240 (default 3: 960x720, or the settings file's)
 #   -S   software GL (LIBGL_ALWAYS_SOFTWARE=1, llvmpipe) instead of the GPU: the fallback when the GPU
 #        path fails (no EGL config, "D3D12: Removing Device", a black or frozen window); slower
 #   -m   mute (no sound; the game's audio is still produced and drained)
-#   -l   audio buffer in ms (default 80; raise it if the sound crackles)
+#   -l   audio buffer in ms (default 80, or the settings file's; raise it if the sound crackles)
 #   -n   (--presenter) the shared-memory name (default 1080live-<pid>)
 #   -p   (--presenter) more presenter arguments (--png DIR --png-every N, --inject STEP:KEY:d|u,..., --frames N, --stay,
 #        --audio-dump FILE, --audio-stats, --input SCRIPT: pads from a port/host/*.input script, in lockstep)
 #   --   more tenshoe arguments (--frames N, --input SCRIPT, --record LOG, --trace LOG, --audio-out WAV, ...)
 #
-# The save (1080.sram) is kept in <monorepo>/tools/play/<worktree>/run between sessions.
-# Keys: arrows / WASD stick (Shift = half), X or Space = A, Z = B, C = Z, Enter = START, Q = L,
+# The save (1080.sram) and the settings (1080.ini, port/settings.h; PORT_SETTINGS) are kept in
+# <monorepo>/tools/play/<worktree>/run between sessions. -s / -l / -m / -V override the settings file.
+# Keys (the defaults; F1 = the settings menu: rebinding, graphics, audio, window, a second controller):
+# arrows / WASD stick (Shift = half), X or Space = A, Z = B, C = Z, Enter = START, Q = L,
 # E = R, I / J / K / L = C buttons, T / F / G / H = D-pad, F11 = fullscreen (the window also resizes;
 # the frame is letterboxed at 4:3), Esc = quit. A Linux joystick
 # (/dev/input/js0, else the first evdev gamepad /dev/input/event*) is used when present. Needs an
@@ -45,7 +47,7 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 GAME="$(cd "$HERE/../.." && pwd)"
 MONO="$(cd "$GAME/../.." && pwd)"
 WORK="$MONO/tools/play/$(basename "$GAME")"
-BUILD= ROM="$GAME/baserom.z64" SCALE=3 SOFT=0 NAME="1080live-$$" PARGS= MUTE= LAT=80 NATIVE=1 VSYNC=0
+BUILD= ROM="$GAME/baserom.z64" SCALE= SOFT=0 NAME="1080live-$$" PARGS= MUTE= LAT= NATIVE=1 VSYNC=
 case "${1:-}" in --native) shift ;; --presenter) NATIVE=0; shift ;; esac
 while getopts "b:r:s:Sml:n:p:Vh" o; do
     case $o in
@@ -59,6 +61,8 @@ shift $((OPTIND - 1))
 ROM="$(cd "$(dirname "$ROM")" && pwd)/$(basename "$ROM")"
 [ -n "${DISPLAY:-}" ] || { echo "play: DISPLAY is not set: an X server is needed (WSL2: WSLg provides one; export DISPLAY=:0)"; exit 2; }
 mkdir -p "$WORK/run"
+# the settings file next to the save (port/settings.h); the options above, when given, win over it
+export PORT_SETTINGS="${PORT_SETTINGS:-$WORK/run/1080.ini}"
 
 if [ $NATIVE = 1 ]; then
     for s in "$MONO/tools/lus:$GAME/port/gfx/fast3d/setup-lus.sh" "$MONO/tools/gl-dev:$GAME/port/gfx/replay/setup-gl-dev.sh" \
@@ -84,9 +88,10 @@ if [ $NATIVE = 1 ]; then
     [ $SOFT = 1 ] && export LIBGL_ALWAYS_SOFTWARE=1
     PLIB="$PULSE/root/usr/lib/x86_64-linux-gnu"
     echo "play: native 64-bit game (PORT_NATIVE=1)"
+    NMUTE="${PORT_NATIVE_MUTE:-}"; [ -n "$MUTE" ] && NMUTE=1
     cd "$WORK/run" && LD_LIBRARY_PATH="$PLIB:$PLIB/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
-        PORT_NATIVE=1 PORT_NATIVE_SCALE="$SCALE" PORT_NATIVE_LATENCY="$LAT" PORT_NATIVE_MUTE="${MUTE:+1}" \
-        PORT_NATIVE_VSYNC="$VSYNC" "$BUILD/tenshoe" --rom "$ROM" --sram "$WORK/run/1080.sram" --realtime "$@"
+        PORT_NATIVE=1 PORT_NATIVE_SCALE="${SCALE:-${PORT_NATIVE_SCALE:-}}" PORT_NATIVE_LATENCY="${LAT:-${PORT_NATIVE_LATENCY:-}}" \
+        PORT_NATIVE_MUTE="$NMUTE" PORT_NATIVE_VSYNC="${VSYNC:-${PORT_NATIVE_VSYNC:-}}" "$BUILD/tenshoe" --rom "$ROM" --sram "$WORK/run/1080.sram" --realtime "$@"
     rc=$?
     echo "play: game exited $rc"
     exit $rc
@@ -125,7 +130,7 @@ fi
 PLIB="$PULSE/root/usr/lib/x86_64-linux-gnu"
 # shellcheck disable=SC2086  # PARGS / MUTE are split on purpose
 LD_LIBRARY_PATH="$PLIB:$PLIB/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
-    "$WORK/gfx/presenter" --shm "$NAME" --scale "$SCALE" --audio-latency "$LAT" $MUTE $PARGS &
+    "$WORK/gfx/presenter" --shm "$NAME" ${SCALE:+--scale "$SCALE"} ${LAT:+--audio-latency "$LAT"} $MUTE $PARGS &
 PRES=$!
 trap 'kill $PRES 2>/dev/null' INT TERM
 # the presenter makes /dev/shm/$NAME only once its window is open: if it dies first (no display,

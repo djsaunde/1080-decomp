@@ -21,6 +21,10 @@ OUT ?= .
 $(OUT)/test_dlump: test_dlump.c dlump.c synth.c dlump.h synth.h
 	$(CC) $(CFLAGS) -o $@ test_dlump.c dlump.c synth.c
 
+# the M7 input mapping and settings file (port/input_map.c, port/settings.c, plan 27): defaults = the pre-M7 keys
+$(OUT)/test_input_map: test_input_map.c ../input_map.c ../input_map.h ../settings.c ../settings.h
+	$(CC) $(CFLAGS) -o $@ test_input_map.c ../input_map.c ../settings.c
+
 # the real hook (port_gfx.c + mincore); meaningful on the -m32 target only
 $(OUT)/test_port_gfx: test_port_gfx.c port_gfx.c port_fb.c port_live.c dlump.c synth.c dlump.h synth.h port_fb_impl.h ../include/port_fb.h port_live.h live_shm.h
 	$(CC) $(CFLAGS) -malign-double -DPORT -isystem $(REPO_GAME)/include -o $@ test_port_gfx.c port_gfx.c port_fb.c port_live.c dlump.c synth.c
@@ -30,8 +34,9 @@ $(OUT)/gold: gold.c dlump.c dlump.h
 
 HAVE_GOLDEN := $(and $(wildcard $(REPO)/tools/lus/.complete),$(wildcard $(REPO)/tools/gl-dev/.complete))
 
-test: $(OUT)/test_dlump $(if $(M32),test-hook,golden)
+test: $(OUT)/test_dlump $(OUT)/test_input_map $(if $(M32),test-hook,golden)
 	$(RUN) $(OUT)/test_dlump $(OUT)/synth.dlmp
+	$(RUN) $(OUT)/test_input_map $(OUT)
 	python3 tools/dlump.py --check $(OUT)/synth.dlmp
 
 ifneq ($(HAVE_GOLDEN),)

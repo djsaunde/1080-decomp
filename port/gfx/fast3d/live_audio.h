@@ -35,6 +35,9 @@ void live_audio_stop();
 /* close the PulseAudio stream now and reopen it ms later (the ring is drained meanwhile): call it
  * before the window is mapped again (F11 fullscreen), which would otherwise stall WSLg's server */
 void live_audio_suspend(uint32_t ms);
+/* the output gain, 0..100 percent (the settings menu, plan 27): 100 (the default) writes the game's samples
+ * unchanged; the dump (dumpPath) and the counters see the samples before it */
+void live_audio_set_volume(int percent);
 /* the counters, in seconds of audio (32000 Hz stereo s16) */
 struct LiveAudioStats {
     double received;   /* everything taken from the ring */

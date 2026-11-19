@@ -46,21 +46,31 @@ $(OUT)/test_inproc: $(OBJ)/test_inproc.o $(OBJ)/port_fast3d.o $(OBJS)
 
 # the live presenter (plan 19.11): X11 + EGL window, the game's frames over shared memory
 # (+ plan 19.12: the audio thread, libpulse-simple dlopen'd, headers from setup-pulse-dev.sh; an evdev gamepad)
-$(OUT)/presenter: $(OBJ)/presenter.o $(OBJ)/live_window.o $(OBJ)/live_audio.o $(OBJ)/live_gamepad.o $(OBJ)/input_script.o $(OBJS)
+# (+ plan 27: the settings file, the input mapping, the settings menu)
+M7_OBJS := $(OBJ)/settings.o $(OBJ)/input_map.o $(OBJ)/settings_menu.o $(OBJ)/menu_overlay_gl.o
+$(OUT)/presenter: $(OBJ)/presenter.o $(OBJ)/live_window.o $(OBJ)/live_audio.o $(OBJ)/live_gamepad.o $(OBJ)/input_script.o $(M7_OBJS) $(OBJS)
 	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 $(LIBDIR)/libX11.so.6 -lm -ldl -lpthread
 $(OBJ)/presenter.o: presenter.cpp port_fast3d_n64.h ../dlump.h ../live_shm.h ../../host.h ../replay/egl_png.h live_audio.h live_gamepad.h \
                live_window.h live_backend.h $(SHIM_H) | $(OBJ)
 	$(XX) -I$(X11_DEV)/usr/include -Wall -Wextra -Wno-unused-parameter -c $< -o $@
 # the window (X11 + EGL) and its input, shared by the presenter and the native host (plan 21.9)
-$(OBJ)/live_window.o: live_window.cpp live_window.h live_audio.h live_gamepad.h ../live_shm.h | $(OBJ)
+$(OBJ)/live_window.o: live_window.cpp live_window.h live_audio.h live_gamepad.h settings_menu.h ../live_shm.h ../../input_map.h ../../settings.h | $(OBJ)
 	$(CXX) -std=c++20 $(CXXFLAGS) -I$(X11_DEV)/usr/include -I$(GL_DEV)/usr/include -Wall -Wextra -c $< -o $@
 $(OBJ)/live_audio.o: live_audio.cpp live_audio.h ../live_shm.h | $(OBJ)
 	$(CXX) -std=c++20 $(CXXFLAGS) -I$(PULSE_DEV)/usr/include -Wall -Wextra -c $< -o $@
 # --input (run 865): the game's own script reader (port/host/input_script.c); presenter.cpp supplies its host calls
 $(OBJ)/input_script.o: ../../host/input_script.c ../../host.h ../../port_libc.h | $(OBJ)
 	$(CC) -O2 -I../.. -Wall -c $< -o $@
-$(OBJ)/live_gamepad.o: live_gamepad.cpp live_gamepad.h | $(OBJ)
+$(OBJ)/live_gamepad.o: live_gamepad.cpp live_gamepad.h ../../input_map.h | $(OBJ)
 	$(CXX) -std=c++20 $(CXXFLAGS) -Wall -Wextra -c $< -o $@
+$(OBJ)/settings.o: ../../settings.c ../../settings.h | $(OBJ)
+	$(CC) -std=gnu99 -O2 -Wall -Wextra -c $< -o $@
+$(OBJ)/input_map.o: ../../input_map.c ../../input_map.h ../../settings.h | $(OBJ)
+	$(CC) -std=gnu99 -O2 -Wall -Wextra -c $< -o $@
+$(OBJ)/settings_menu.o: settings_menu.cpp settings_menu.h menu_font.h ../../input_map.h ../../settings.h | $(OBJ)
+	$(CXX) -std=c++20 $(CXXFLAGS) -Wall -Wextra -c $< -o $@
+$(OBJ)/menu_overlay_gl.o: menu_overlay_gl.cpp menu_overlay_gl.h | $(OBJ)
+	$(CXX) -std=c++20 $(CXXFLAGS) -I$(GL_DEV)/usr/include -Wall -Wextra -c $< -o $@
 
 $(OBJ)/lus/%.o: $(LUS)/src/fast/%.cpp $(SHIM_H) | $(OBJ)/lus
 	$(XX) -w -c $< -o $@

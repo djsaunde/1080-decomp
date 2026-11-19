@@ -34,6 +34,7 @@ struct LiveX11 {
      * display / GL driver. vsync: the swap interval (0 = frames shown as they come) */
     bool open(uint32_t width, uint32_t height, const char* title, int vsync = 0);
     void swap();
+    void setVsync(int interval); /* the swap interval now (the settings menu) */
     /* osViBlack (plan 22.5 / 22.10): clear the window's back buffer to black over the frame drawn (the frame is
      * still drawn: its read-backs need it); the next swap shows black */
     void black();
@@ -49,23 +50,24 @@ struct LiveX11 {
     int fd() const;
 };
 
-/* the keyboard and a gamepad -> N64 pad 1.
+/* the keyboard and the gamepads -> the N64 controllers, through the portable mapping (port/input_map.h) and
+ * the settings' bindings (port/settings.h; plan 27). The default bindings are the pre-M7 layout:
  * Keys: arrows / WASD = stick (Shift = half), X or Space = A, Z = B, C = Z, Enter = START, Q = L, E = R,
- * I / J / K / L = C-up / left / down / right, T / F / G / H = D-pad, Esc = quit, F11 = fullscreen.
- * A Linux joystick (/dev/input/js0, else the first evdev gamepad): Xbox layout. */
+ * I / J / K / L = C-up / left / down / right, T / F / G / H = D-pad, controller 1.
+ * Fixed: Esc = quit, F11 = fullscreen, F1 = the settings menu (when the host gives one).
+ * Gamepads (live_gamepad.h; /dev/input/js0.., else the evdev gamepads): Xbox layout, gamepad 0 -> controller 1. */
+class SettingsMenu;
 struct LiveInput {
-    bool left = false, right = false, up = false, down = false, shift = false, quit = false;
-    uint16_t keys = 0;
-    int js = -1;
-    EvdevPad ev; /* when there is no js device */
-    int axis[8] = {};
-    uint16_t jsButtons = 0;
+    bool quit = false;
+    LivePads pads;
+    SettingsMenu* menu = nullptr; /* F1 (null: no menu) */
 
-    void key(unsigned long keysym, bool down);
-    void releaseAll(); /* focus lost: nothing sticks (the joystick keeps its state) */
+    void key(const char* name, bool down); /* an X keysym name (input_map.h) */
+    void releaseAll(); /* focus lost: no key sticks (the gamepads keep their state) */
     void openJoystick(const char* path);
     void pollJoystick();
-    LivePad pad() const;
+    LivePad pad() const; /* controller 1 */
+    void allPads(LivePad out[LIVE_PADS]) const;
 };
 
 /* drain the window's X events into the input (keys, F11, resize, close -> in.quit). step: printed with

@@ -17,9 +17,14 @@
  *   PORT_NATIVE_AUDIO_OPEN_DELAY=MS  open PulseAudio this long after the window (default 2500; WSLg, run 867)
  *   PORT_NATIVE_PNG=DIR       DIR/native_sSTEP.png after each frame (PORT_NATIVE_PNG_STEPS=A-B,C,... limits it)
  *   PORT_NATIVE_INJECT=STEP:KEY:d|u,...   synthetic X keys (tests), as presenter --inject
+ *   PORT_NATIVE_PAD_INJECT=STEP:PAD:INPUT:VALUE,...  virtual gamepads (tests, plan 27): from STEP, gamepad PAD
+ *                             (0..3) is a virtual one with INPUT (a button name of port/input_map.h: a, start,
+ *                             lb ... = VALUE 1 / 0; or an axis: lx ly lt rx ry rt hatx haty = VALUE -32767..32767)
+ *   PORT_SETTINGS=FILE        the settings file (port/settings.h; default ./1080.ini); the variables above win
+ *   PORT_NATIVE_MENU=0        no settings menu (F1)
  *   PORT_NATIVE_JS=PATH       the joystick (default /dev/input/js0, else the first evdev gamepad)
  *   PORT_NATIVE_FB_LOG=1      the read-back answers per frame
- * Keys: live_window.h. At exit: frames, render ms mean / p50 / p95 / p99 / max, frames over 33 ms, the
+ * Keys: live_window.h, rebindable in the settings file / menu (plan 27). At exit: frames, render ms mean / p50 / p95 / p99 / max, frames over 33 ms, the
  * step interval, audio. */
 #include <sys/mman.h>
 #include <unistd.h>
@@ -40,7 +45,10 @@
 #include "live_audio.h"
 #include "live_backend.h"
 #include "live_window.h"
+#include "menu_overlay_gl.h"
 #include "port_fast3d.h"
+#include "port_fast3d_n64.h"
+#include "settings_menu.h"
 #include "port_fast3d_native.h"
 extern "C" {
 #include "../port_fb_impl.h"
@@ -70,6 +78,15 @@ struct Inject {
     bool down, sent;
 };
 
+/* PORT_NATIVE_PAD_INJECT: a virtual gamepad's input from a step on */
+struct PadInject {
+    uint32_t step;
+    int pad;
+    std::string input;
+    int value;
+    bool sent;
+};
+
 struct Host {
     bool black = false; /* osViBlack (port_native_black) */
     uint8_t* block = nullptr;
@@ -79,7 +96,9 @@ struct Host {
     LiveX11 win;
     LiveWindow* wapi = nullptr;
     LiveInput in;
-    LivePad lastPad = {};
+    LivePad lastPads[LIVE_PADS] = {};
+    SettingsMenu menu;
+    std::vector<PadInject> padInjects;
     std::string pngDir;
     std::vector<std::pair<uint32_t, uint32_t>> pngSteps;
     std::vector<Inject> injects;
@@ -129,11 +148,12 @@ void pump(Host& h) {
     if (h.in.quit) {
         __atomic_store_n(&h.H->quit, 1, __ATOMIC_RELEASE);
     }
-    LivePad pad = h.in.pad();
-    if (std::memcmp(&pad, &h.lastPad, sizeof(pad)) != 0) {
-        h.H->pads[0] = pad;
+    LivePad pads[LIVE_PADS];
+    h.in.allPads(pads);
+    if (std::memcmp(pads, h.lastPads, sizeof(pads)) != 0) {
+        std::memcpy(h.H->pads, pads, sizeof(pads));
         __atomic_fetch_add(&h.H->padSeq, 1, __ATOMIC_RELEASE);
-        h.lastPad = pad;
+        std::memcpy(h.lastPads, pads, sizeof(pads));
     }
 }
 
@@ -160,6 +180,50 @@ std::string summary(const std::vector<float>& v, float over) {
     return b;
 }
 
+/* a setting the menu changed that applies now (settings_menu.h onApply) */
+void apply_setting(Host& h, const char* field) {
+    const PortSettings* s = port_settings();
+    if (std::strcmp(field, "window.vsync") == 0) {
+        h.win.setVsync(s->vsync);
+    } else if (std::strcmp(field, "window.fullscreen") == 0) {
+        if ((s->fullscreen != 0) != h.win.fullscreen) {
+            live_audio_suspend(2500); /* WSLg maps the window again (live_window.cpp, F11) */
+            h.win.toggleFullscreen();
+        }
+    } else if (std::strcmp(field, "audio.volume") == 0 || std::strcmp(field, "audio.mute") == 0) {
+        live_audio_set_volume(s->mute ? 0 : s->volume);
+    }
+}
+
+void pad_inject(Host& h, const PadInject& j) {
+    static const char* const kButtons[] = { "a", "b", "x", "y", "lb", "rb", "back", "start", "guide", "ls", "rs",
+                                            "dpad_up", "dpad_down", "dpad_left", "dpad_right" };
+    static const char* const kAxes[] = { "lx", "ly", "lt", "rx", "ry", "rt", "hatx", "haty" };
+    if (j.pad < 0 || j.pad >= PORT_MAX_GAMEPADS) {
+        return;
+    }
+    PortGamepad& g = h.in.pads.virt[j.pad];
+    if (!h.in.pads.virtOn[j.pad]) {
+        g = PortGamepad{};
+        g.axis[2] = g.axis[5] = -32767; /* the triggers at rest */
+        h.in.pads.virtOn[j.pad] = true;
+    }
+    g.connected = 1;
+    for (int i = 0; i < 15; i++) {
+        if (j.input == kButtons[i]) {
+            g.buttons = j.value ? (g.buttons | (1u << i)) : (g.buttons & ~(1u << i));
+            return;
+        }
+    }
+    for (int i = 0; i < 8; i++) {
+        if (j.input == kAxes[i]) {
+            g.axis[i] = std::clamp(j.value, -32767, 32767);
+            return;
+        }
+    }
+    std::fprintf(stderr, "native: PORT_NATIVE_PAD_INJECT: unknown input %s\n", j.input.c_str());
+}
+
 } // namespace
 
 extern "C" unsigned port_native_open(void) {
@@ -168,10 +232,16 @@ extern "C" unsigned port_native_open(void) {
     }
     Host* h = new Host();
     h->win.tag = "native";
-    const int scale = env("PORT_NATIVE_SCALE") ? std::max(1, std::atoi(env("PORT_NATIVE_SCALE"))) : 3;
-    const int vsync = env("PORT_NATIVE_VSYNC") ? std::atoi(env("PORT_NATIVE_VSYNC")) : 0;
+    /* the settings file, then PORT_NATIVE_SCALE / VSYNC / MUTE / LATENCY / PORT_GFX_* over it (plan 27) */
+    PortSettings* cfg = port_settings();
+    const bool haveFile = port_settings_load(cfg, nullptr) != 0;
+    const int scale = std::max(1, cfg->scale);
+    const int vsync = cfg->vsync;
     if (!h->win.open(320u * scale, 240u * scale, "1080 Snowboarding (native)", vsync)) {
         return 0;
+    }
+    if (cfg->fullscreen) {
+        h->win.toggleFullscreen(); /* before the audio opens (WSLg) */
     }
     /* the block the game reads (live_shm.h layout): low, as every address the x32 code holds must be */
     h->blockBytes = PORT_NATIVE_FB_REPLY + sizeof(LiveFbReply);
@@ -183,14 +253,18 @@ extern "C" unsigned port_native_open(void) {
     h->block = (uint8_t*)m;
     h->H = (LiveShmHeader*)m;
     h->H->version = LIVE_VERSION;
-    h->H->pads[0].connected = 1;
-    h->lastPad = h->H->pads[0];
+    h->in.allPads(h->H->pads); /* controller 1 connected (the defaults); more if the settings plug them in */
+    std::memcpy(h->lastPads, h->H->pads, sizeof(h->lastPads));
     live_audio_layout((LiveAudio*)(h->block + LIVE_AUDIO_HDR), PORT_NATIVE_AUDIO_DATA, LIVE_AUDIO_DEFAULT_BYTES);
     h->reply = (LiveFbReply*)(h->block + PORT_NATIVE_FB_REPLY);
     h->reply->magic = LIVE_FB_MAGIC;
     h->reply->version = LIVE_FB_VERSION;
     h->H->magic = LIVE_MAGIC;
 
+    /* plan 25's render settings from the file (+ PORT_GFX_* over it): read once, at Fast3D's init */
+    static PortN64Render render;
+    render = { cfg->gfx_clip, cfg->gfx_shade, cfg->gfx_filter, cfg->gfx_clear };
+    gPortN64Render = &render;
     h->wapi = new LiveWindow(&h->win);
     h->wapi->mSwap = true;
     port_fast3d_init_window(h->wapi, h->win.w, h->win.h);
@@ -200,8 +274,9 @@ extern "C" unsigned port_native_open(void) {
     h->in.openJoystick(env("PORT_NATIVE_JS") ? env("PORT_NATIVE_JS") : "/dev/input/js0");
 
     LiveAudioOptions ao;
-    ao.mute = env("PORT_NATIVE_MUTE") != nullptr && std::strcmp(env("PORT_NATIVE_MUTE"), "0") != 0;
-    ao.latencyMs = env("PORT_NATIVE_LATENCY") ? (uint32_t)std::max(20, std::atoi(env("PORT_NATIVE_LATENCY"))) : 80;
+    ao.mute = cfg->mute != 0;
+    ao.latencyMs = (uint32_t)std::max(20, cfg->latency_ms);
+    live_audio_set_volume(cfg->volume);
     if (env("PORT_NATIVE_AUDIO_DUMP")) {
         ao.dumpPath = env("PORT_NATIVE_AUDIO_DUMP");
     }
@@ -241,11 +316,31 @@ extern "C" unsigned port_native_open(void) {
             p = e == std::string::npos ? spec.size() : e + 1;
         }
     }
+    if (env("PORT_NATIVE_PAD_INJECT")) {
+        std::string spec = env("PORT_NATIVE_PAD_INJECT");
+        for (size_t p = 0; p < spec.size();) {
+            size_t e = spec.find(',', p);
+            std::string item = spec.substr(p, e == std::string::npos ? std::string::npos : e - p);
+            size_t c1 = item.find(':'), c2 = item.find(':', c1 + 1), c3 = item.rfind(':');
+            if (c1 != std::string::npos && c2 != std::string::npos && c3 > c2) {
+                h->padInjects.push_back({ (uint32_t)std::strtoul(item.c_str(), nullptr, 10),
+                                          std::atoi(item.c_str() + c1 + 1), item.substr(c2 + 1, c3 - c2 - 1),
+                                          std::atoi(item.c_str() + c3 + 1), false });
+            }
+            p = e == std::string::npos ? spec.size() : e + 1;
+        }
+    }
+    if (!(env("PORT_NATIVE_MENU") && std::strcmp(env("PORT_NATIVE_MENU"), "0") == 0)) {
+        h->in.menu = &h->menu;
+        h->menu.onApply = [h](const char* field) { apply_setting(*h, field); };
+    }
     h->fbLog = env("PORT_NATIVE_FB_LOG") != nullptr;
     h->secStart = live_now_s();
     sHost = h;
     std::printf("native: in-process host: window %ux%u, audio %s, block at %p\n", h->win.w, h->win.h,
                 ao.mute ? "muted" : "on", (void*)h->block);
+    std::printf("native: settings %s (%s)%s\n", port_settings_path(), haveFile ? "read" : "none: the defaults",
+                h->in.menu ? "; F1 = settings menu" : "");
     std::fflush(stdout);
     return (unsigned)(uintptr_t)h->block;
 }
@@ -307,6 +402,9 @@ extern "C" void port_native_frame(unsigned step) {
          * a fade-out and the next scene's fade-in; the port showed the stale frame there. */
         h->win.black();
     }
+    if (h->menu.isOpen()) {
+        menu_overlay_draw(h->menu.image(), SettingsMenu::kW, SettingsMenu::kH, h->win.w, h->win.h);
+    }
     if (png_wanted(*h, step)) {
         write_window_png(*h, step);
     }
@@ -333,6 +431,13 @@ extern "C" void port_native_frame(unsigned step) {
             if (!h->win.sendKey(j.key.c_str(), j.down)) {
                 std::fprintf(stderr, "native: unknown key %s\n", j.key.c_str());
             }
+            j.sent = true;
+        }
+    }
+    for (PadInject& j : h->padInjects) {
+        if (!j.sent && step >= j.step) {
+            pad_inject(*h, j);
+            std::printf("native: virtual gamepad %d %s = %d (step %u)\n", j.pad, j.input.c_str(), j.value, step);
             j.sent = true;
         }
     }

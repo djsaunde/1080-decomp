@@ -3,6 +3,7 @@
  * same code. */
 #include "live_window.h"
 #include "live_audio.h"
+#include "settings_menu.h"
 
 #include <fcntl.h>
 #include <linux/joystick.h>
@@ -136,6 +137,10 @@ void LiveX11::swap() {
     eglSwapBuffers(ED, (EGLSurface)surf);
 }
 
+void LiveX11::setVsync(int interval) {
+    eglSwapInterval(ED, interval);
+}
+
 void LiveX11::black() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDisable(GL_SCISSOR_TEST);
@@ -195,107 +200,43 @@ bool LiveX11::sendKey(const char* keysymName, bool down) {
 
 /* ---------------- input ---------------- */
 
-enum : uint16_t {
-    B_A = 0x8000, B_B = 0x4000, B_Z = 0x2000, B_START = 0x1000, D_U = 0x0800, D_D = 0x0400, D_L = 0x0200,
-    D_R = 0x0100, B_L = 0x0020, B_R = 0x0010, C_U = 0x0008, C_D = 0x0004, C_L = 0x0002, C_R = 0x0001
-};
-
-void LiveInput::key(unsigned long ks, bool isDown) {
-    uint16_t bit = 0;
-    switch (ks) {
-        case XK_Left: case XK_a: case XK_A: left = isDown; return;
-        case XK_Right: case XK_d: case XK_D: right = isDown; return;
-        case XK_Up: case XK_w: case XK_W: up = isDown; return;
-        case XK_Down: case XK_s: case XK_S: down = isDown; return;
-        case XK_Shift_L: case XK_Shift_R: shift = isDown; return;
-        case XK_Escape: if (isDown) quit = true; return;
-        case XK_x: case XK_X: case XK_space: bit = B_A; break;
-        case XK_z: case XK_Z: bit = B_B; break;
-        case XK_c: case XK_C: bit = B_Z; break;
-        case XK_Return: case XK_KP_Enter: bit = B_START; break;
-        case XK_q: case XK_Q: bit = B_L; break;
-        case XK_e: case XK_E: bit = B_R; break;
-        case XK_i: case XK_I: bit = C_U; break;
-        case XK_k: case XK_K: bit = C_D; break;
-        case XK_j: case XK_J: bit = C_L; break;
-        case XK_l: case XK_L: bit = C_R; break;
-        case XK_t: case XK_T: bit = D_U; break;
-        case XK_g: case XK_G: bit = D_D; break;
-        case XK_f: case XK_F: bit = D_L; break;
-        case XK_h: case XK_H: bit = D_R; break;
-        default: return;
-    }
-    keys = isDown ? (uint16_t)(keys | bit) : (uint16_t)(keys & ~bit);
+void LiveInput::key(const char* name, bool isDown) {
+    port_input_key(name, isDown ? 1 : 0);
 }
 
 void LiveInput::releaseAll() {
-    left = right = up = down = shift = false;
-    keys = 0;
+    port_input_release_keys();
 }
 
 void LiveInput::openJoystick(const char* path) {
-    js = ::open(path, O_RDONLY | O_NONBLOCK);
-    if (js >= 0) {
-        char name[128] = "?";
-        ioctl(js, JSIOCGNAME(sizeof(name)), name);
-        std::printf("gamepad %s: %s\n", path, name);
-    } else {
-        ev.open();
+    pads.open(path);
+}
+
+void LiveInput::pollJoystick() {
+    pads.poll();
+    if (menu != nullptr) {
+        menu->tick();
     }
 }
 
-/* an Xbox-style layout: A = A, B / X = B, LB / left trigger = Z, RB / right trigger = R, Back = L,
- * Start = START, right stick = C buttons, hat = D-pad */
-void LiveInput::pollJoystick() {
-    static const uint16_t map[] = { B_A, B_B, B_B, C_U, B_Z, B_R, B_L, B_START };
-    if (js < 0) {
-        uint16_t bits = 0;
-        if (ev.fd >= 0) {
-            ev.poll(axis, &bits);
-            jsButtons = 0;
-            for (int i = 0; i < 8; i++) {
-                jsButtons |= (bits >> i) & 1 ? map[i] : 0;
-            }
-        }
-        return;
-    }
-    js_event e;
-    while (::read(js, &e, sizeof(e)) == (ssize_t)sizeof(e)) {
-        uint8_t t = e.type & ~JS_EVENT_INIT;
-        if (t == JS_EVENT_AXIS && e.number < 8) {
-            axis[e.number] = e.value;
-        } else if (t == JS_EVENT_BUTTON && e.number < 8) {
-            jsButtons = e.value ? (uint16_t)(jsButtons | map[e.number]) : (uint16_t)(jsButtons & ~map[e.number]);
+void LiveInput::allPads(LivePad out[LIVE_PADS]) const {
+    PortN64Pad p[PORT_SETTINGS_PLAYERS];
+    port_input_pads(port_settings(), p);
+    for (int i = 0; i < LIVE_PADS; i++) {
+        out[i] = LivePad{};
+        if (i < PORT_SETTINGS_PLAYERS) {
+            out[i].button = p[i].button;
+            out[i].stick_x = p[i].stick_x;
+            out[i].stick_y = p[i].stick_y;
+            out[i].connected = p[i].connected;
         }
     }
 }
 
 LivePad LiveInput::pad() const {
-    LivePad p = {};
-    int sx = (right ? 80 : 0) - (left ? 80 : 0), sy = (up ? 80 : 0) - (down ? 80 : 0);
-    if (shift) {
-        sx /= 2;
-        sy /= 2;
-    }
-    uint16_t b = keys | jsButtons;
-    if (js >= 0 || ev.fd >= 0) {
-        if (std::abs(axis[0]) > 3000 || std::abs(axis[1]) > 3000) {
-            sx = axis[0] * 80 / 32767;
-            sy = -axis[1] * 80 / 32767;
-        }
-        const int T = 16000;
-        b |= axis[2] > T ? B_Z : 0;
-        b |= axis[5] > T ? B_R : 0;
-        b |= axis[3] < -T ? C_L : axis[3] > T ? C_R : 0;
-        b |= axis[4] < -T ? C_U : axis[4] > T ? C_D : 0;
-        b |= axis[6] < -T ? D_L : axis[6] > T ? D_R : 0;
-        b |= axis[7] < -T ? D_U : axis[7] > T ? D_D : 0;
-    }
-    p.button = b;
-    p.stick_x = (live_s8)std::clamp(sx, -80, 80);
-    p.stick_y = (live_s8)std::clamp(sy, -80, 80);
-    p.connected = 1;
-    return p;
+    LivePad p[LIVE_PADS];
+    allPads(p);
+    return p[0];
 }
 
 int live_pump(LiveX11& w, LiveInput& in, uint32_t step) {
@@ -306,7 +247,21 @@ int live_pump(LiveX11& w, LiveInput& in, uint32_t step) {
         n++;
         if (ev.type == KeyPress || ev.type == KeyRelease) {
             KeySym ks = XLookupKeysym(&ev.xkey, 0);
-            in.key(ks, ev.type == KeyPress);
+            const char* name = XKeysymToString(ks);
+            bool down = ev.type == KeyPress;
+            if (name == nullptr) {
+                /* no name: nothing is bound to it */
+            } else if (in.menu != nullptr && (in.menu->isOpen() || (down && ks == XK_F1)) && ks != XK_F11) {
+                if (!in.menu->isOpen()) {
+                    in.menu->toggle();
+                } else {
+                    in.menu->key(name, down);
+                }
+            } else if (down && ks == XK_Escape) {
+                in.quit = true;
+            } else {
+                in.key(name, down);
+            }
             if (ev.xkey.send_event) {
                 std::printf("%s: synthetic %s %s (step %u)\n", w.tag, XKeysymToString(ks),
                             ev.type == KeyPress ? "down" : "up", step);

@@ -51,6 +51,7 @@ std::atomic<const char*> sOutput{ "none" };
 std::atomic<double> sReopenAt{ 0 };
 std::atomic<bool> sSuspendReq{ false }, sSuspended{ false };
 std::atomic<uint32_t> sSuspends{ 0 };
+std::atomic<int> sVolume{ 100 }; /* live_audio_set_volume */
 
 #if LIVE_HAVE_PULSE
 struct Pulse {
@@ -290,6 +291,13 @@ void run() {
             continue;
         }
         take(tail, n, buf.data());
+        const int vol = sVolume.load(std::memory_order_relaxed);
+        if (vol != 100) { /* the settings menu's volume (plan 27); 100 leaves the samples as they are */
+            int16_t* sm = (int16_t*)buf.data();
+            for (uint32_t k = 0; k < n / 2; k++) {
+                sm[k] = (int16_t)((int)sm[k] * vol / 100);
+            }
+        }
         if (pa.put(buf.data(), n)) {
             sPlayed += n;
         } else {
@@ -402,4 +410,8 @@ std::string live_audio_status() {
                   sOutput.load(), sReceived.load() / (4.0 * 32000.0), sPlayed.load() / (4.0 * 32000.0), backlog / 128,
                   sA->underruns, sA->trimmed);
     return s;
+}
+
+void live_audio_set_volume(int percent) {
+    sVolume.store(std::clamp(percent, 0, 100), std::memory_order_relaxed);
 }
