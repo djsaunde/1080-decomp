@@ -55,6 +55,9 @@
 #ifdef PORT_WIN32
 #include "win32/win32_host.h"
 #endif
+#ifdef PORT_WASM
+#include <unistd.h> /* chdir (plan 30) */
+#endif
 
 /* port/uso/uso_rom.c (PORT_RUNTIME_BLOBS, plan 29): the USO blobs from the ROM read at run time */
 extern int port_uso_blobs_load(const unsigned char *rom, unsigned int romSize, const char **why, const char **file)
@@ -268,7 +271,7 @@ static int done(const Options *o) {
     return 0;
 }
 
-#if !defined(PORT_LIBC_DECLS_ONLY) && !defined(PORT_WIN32)
+#if !defined(PORT_LIBC_DECLS_ONLY) && !defined(PORT_WIN32) && !defined(PORT_WASM) /* plan 30: wasm has no fork */
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -482,6 +485,20 @@ int main(int argc, char **argv) {
     if (parse(argc, argv, &o) != 0) {
         return 2;
     }
+#ifdef PORT_WASM
+    {
+        /* plan 30: wasi-libc resolves a relative path from its own current directory ("/"); the native host
+         * passes the real one, so --rom baserom.z64 / --trace x.log mean what they mean on Linux */
+        const char *cwd = getenv("PORT_WASM_CWD");
+        if (cwd != NULL && chdir(cwd) != 0) {
+            host_fatal("main: cannot chdir to %s", cwd);
+        }
+        if (getenv("PORT_WASM_SELFTEST") != NULL) {
+            host_log("selftest %d %p %s|", 1, (void *)&o, "x");
+            port_ultra_log("selftest2 %d %d %p %s|", 1, 2, (void *)&o, "x");
+        }
+    }
+#endif
 #ifdef PORT_WIN32
     {
         int i, romGiven = 0, sramGiven = 0;

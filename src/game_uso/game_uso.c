@@ -74,6 +74,14 @@ void game_uso_func_00000000(out, t)
 {
     out[0] = 0.16666667f;
 }
+#ifdef PORT_WASM
+/* plan 30: clang types a K&R definition's own name as prototyped (float *, double), so the GCALL sites
+ * below (the token's other uses, with other arities) would not compile; they call through an unprototyped
+ * void token instead, as the K&R `extern void game_uso_func_00000000();` lines mean */
+extern void game_uso_kr_00000000();
+#undef GCALL
+#define GCALL(f) PORT_CALL_AS(game_uso_kr_00000000, f)
+#endif
 
 /* 4-element dot product. CRACKED 2026-06-11 to 100.0 via fully right-nested
  * grouping `a[3]*b[3] + (a[2]*b[2] + (a[1]*b[1] + b[0]*a[0]))` (exhaustive
@@ -3527,6 +3535,11 @@ int a0, a1, a2;
     if (r == 0) return 0;
     return (int)CourseMarker_findNearestZ_000043D8((int **)r, (int *)a2, 0);
 }
+#ifdef PORT_WASM
+/* plan 30: clang checks calls against a K&R definition's parameters; the callers below pass a one-int struct
+ * as a1 (the same word on every ABI the port has), so they call through the unprototyped type */
+#define SnowAI_findNearestMarker_0000A374 ((int (*)())SnowAI_findNearestMarker_0000A374)
+#endif
 
 /* SnowAI_pickFork - MATCHED 2026-07-08 (144/144 words + ROM byte-exact;
  * prior "sub-80 table-dispatch ceiling" note was FALSE). Picks the nearer of the

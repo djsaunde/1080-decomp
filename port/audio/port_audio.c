@@ -47,6 +47,14 @@ static int host_mapped(uint32_t p) {
     return p >= 0x10000u && p < 0x80000000u && VirtualQuery((const void *)(uintptr_t)p, &mi, sizeof(mi)) == sizeof(mi) &&
            mi.State == MEM_COMMIT && (mi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) == 0;
 }
+#elif defined(PORT_WASM)
+/* plan 30: a wasm32 address is an offset in the linear memory. The module is linked with --global-base=16 MB
+ * (port/wasm/CMakeLists.txt), so a host pointer is a value from 16 MB to the memory's current size (well under
+ * 2 GB): a font offset (a few KB, the test RelocateSample makes) is below it, OS_K0_TO_PHYSICAL(p) + 0x80000000
+ * above */
+static int host_mapped(uint32_t p) {
+    return p >= 0x1000000u && p < (uint32_t)__builtin_wasm_memory_size(0) * 65536u;
+}
 #else
 extern char __executable_start[];
 extern char _end[];

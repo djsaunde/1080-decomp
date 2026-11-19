@@ -32,7 +32,10 @@
 #ifdef PORT_LIBC_DECLS_ONLY
 void *realloc(void *p, size_t n);
 #endif
-#ifndef PORT_WIN32 /* the Windows build (plan 29) has only the in-process host: no presenter, no /dev/shm */
+#if defined(PORT_WIN32) || defined(PORT_WASM)
+#define PORT_LIVE_NO_PRESENTER 1 /* plan 29 / 30: only the in-process host; no presenter, no /dev/shm */
+#endif
+#ifndef PORT_LIVE_NO_PRESENTER /* the Windows build (plan 29) has only the in-process host: no presenter, no /dev/shm */
 int open(const char *path, int flags, ...);
 int close(int fd);
 void *mmap(void *addr, size_t len, int prot, int flags, int fd, long off);
@@ -122,9 +125,9 @@ static void live_open(void) {
     if (name == NULL || *name == '\0') {
         return;
     }
-#ifdef PORT_WIN32
+#ifdef PORT_LIVE_NO_PRESENTER
     (void)path, (void)fd, (void)tries, (void)h, (void)total;
-    live_fatal("PORT_LIVE: the Windows build has no presenter (the game opens its own window)");
+    live_fatal("PORT_LIVE: this build has no presenter (the game opens its own window)");
 #else
     snprintf(path, sizeof(path), "/dev/shm/%s", name);
     /* the presenter creates the file and writes the magic last: wait for it (10 s) */
@@ -476,7 +479,7 @@ void port_live_audio_write(const void *samples, size_t bytes) {
 
 /* the presenter process still exists (checked about every 0.2 s by the callers) */
 static int live_presenter_alive(void) {
-#ifdef PORT_WIN32
+#ifdef PORT_LIVE_NO_PRESENTER
     return !sPresenterGone;
 #else
     live_u32 pid = sShm->presenterPid;

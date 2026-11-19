@@ -30,7 +30,11 @@ struct PortCfVtEnt {
  * (`BGBox_ctor(0, name, ..)`).  A gcc ctor neither allocates nor returns anything, so each donor
  * whose ctor the ROM calls by name defines an extern "C" port_ctor_<name> entry with
  * CF_CTOR_NEW, and port/sourcemap.tsv renames that entry (not the mangled ctor) to <name>. */
+#ifdef PORT_WASM
+inline void *operator new(__SIZE_TYPE__, void *p) { return p; } /* plan 30: wasm32's size_t is unsigned long */
+#else
 inline void *operator new(unsigned, void *p) { return p; }
+#endif
 #define CF_CTOR_NEW(self, Cls, args) ((self) != 0 ? ::new ((void *)(self)) Cls args : new Cls args)
 
 #define CF_SLOT(vt, n) (((PortCfVtEnt *)((char *)(vt) + 8))[n])

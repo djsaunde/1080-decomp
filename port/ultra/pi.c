@@ -84,12 +84,20 @@ static u8 *device_ptr(u32 phys, u32 size, int *writable) {
     return NULL;
 }
 
+static int sPiLog = -1;
+
 static s32 transfer(u32 addr, void *dram, u32 size, s32 direction) {
     u32 phys = addr & 0x1FFFFFFF;
     int writable;
     u8 *dev = device_ptr(phys, size, &writable);
 
     port_ultra_activity++;
+    if (sPiLog < 0) {
+        sPiLog = getenv("PORT_PI_LOG") != NULL; /* debugging: one line per PI transfer */
+    }
+    if (sPiLog) {
+        port_ultra_log("PI %c 0x%08X 0x%X", direction == OS_READ ? 'r' : 'w', (unsigned)addr, (unsigned)size);
+    }
     if (direction == OS_READ) {
         port_ultra_st.piBytes += size;
         if (dev != NULL) {

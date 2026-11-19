@@ -20,29 +20,37 @@
 extern "C" {
 #endif
 
+/* plan 30: in the wasm32 build these are the module's imports (module "port"); the native host that runs the
+ * wasm2c translation provides them, and a game address is an offset in the linear memory */
+#if defined(PORT_WASM) && defined(__wasm__)
+#define PORT_NATIVE_FN(name) __attribute__((import_module("port"), import_name(#name)))
+#else
+#define PORT_NATIVE_FN(name)
+#endif
+
 /* open the window (env: PORT_NATIVE_SCALE, _VSYNC, _MUTE, _LATENCY, ...; native_host.cpp), start the audio
  * thread; returns the block's address, 0 when there is no window (the message says why) */
-unsigned port_native_open(void);
+PORT_NATIVE_FN(port_native_open) unsigned port_native_open(void);
 /* one gfx task: root = its data_ptr, rq = the game's PortFbRequests (x32 layout), imgs = a u32[maxImgs]
  * that receives the low 24 bits of its G_SETCIMG / G_SETZIMG. Returns the number of images. */
-int port_native_task(unsigned root, unsigned rq, unsigned imgs, int maxImgs);
+PORT_NATIVE_FN(port_native_task) int port_native_task(unsigned root, unsigned rq, unsigned imgs, int maxImgs);
 /* the CPU rewrote [addr, addr + size) (texels, a palette): drop the textures Fast3D cached there
  * (port_fb_texture_written; plan 22.3) */
-void port_native_invalidate(unsigned addr, unsigned size);
+PORT_NATIVE_FN(port_native_invalidate) void port_native_invalidate(unsigned addr, unsigned size);
 /* osViBlack: the window shows black from the next frame on while black is set (plan 22.5) */
-void port_native_black(int black);
+PORT_NATIVE_FN(port_native_black) void port_native_black(int black);
 /* the N64 Z (0..0xFFFC) of pixel idx (y * 320 + x) of the last frame drawn, if its Z image is img (full
  * pointer); -1 if no frame drew into img (port_fb_read_depth; plan 22.4) */
-int port_native_depth(unsigned img, unsigned idx);
+PORT_NATIVE_FN(port_native_depth) int port_native_depth(unsigned img, unsigned idx);
 /* the step's end: draw its tasks as one frame, answer the read requests, present, pump the window */
-void port_native_frame(unsigned step);
+PORT_NATIVE_FN(port_native_frame) void port_native_frame(unsigned step);
 /* the main loop's wait until the next step (us): with PORT_FPS the interpolated frames are presented in it
  * (plan 27.3); returns 1 if it waited, 0 if the caller should sleep */
-int port_native_idle(unsigned us);
+PORT_NATIVE_FN(port_native_idle) int port_native_idle(unsigned us);
 /* pump the window's events into the pads; 1 = quit (Esc, the window closed) */
-int port_native_poll(void);
+PORT_NATIVE_FN(port_native_poll) int port_native_poll(void);
 /* the game is ending: stop the audio, print the frame-time summary */
-void port_native_close(void);
+PORT_NATIVE_FN(port_native_close) void port_native_close(void);
 
 #ifdef __cplusplus
 }

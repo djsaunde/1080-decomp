@@ -137,6 +137,12 @@ static int mapped(const void *p, size_t n) {
     return 1;
 }
 #endif
+#elif defined(__wasm__)
+/* plan 30: the wasm32 build's whole address space is the linear memory */
+static int mapped(const void *p, size_t n) {
+    size_t a = (size_t)p, top = __builtin_wasm_memory_size(0) * 65536u;
+    return a >= 0x1000000u && a <= top && n <= top - a; /* nothing below the 16 MB global base */
+}
 #else
 static int mapped(const void *p, size_t n) {
     (void)n;

@@ -154,7 +154,7 @@ s32 osStopTimer(OSTimer *t);
 /* boot / misc */
 void osInitialize(void);
 void osSyncPrintf(const char *fmt, ...);
-#ifdef PORT64 /* the game's IDO-layout cursor (plan 21.5) */
+#if defined(PORT64) && !defined(PORT_WASM) /* the game's IDO-layout cursor (plan 21.5; a wasm32 va_list is one) */
 int _Printf(void *(*prout)(void *, const char *, u32), void *arg, const char *fmt, const char *cursor);
 #else
 int _Printf(void *(*prout)(void *, const char *, u32), void *arg, const char *fmt, va_list ap);

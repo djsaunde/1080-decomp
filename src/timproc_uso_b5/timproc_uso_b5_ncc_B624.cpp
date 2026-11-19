@@ -80,7 +80,7 @@ extern "C" void SelCharacter_display_0000B624(Obj *o) {
         { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang3); }
 #ifdef PORT64
         /* x86-64 (plan 21.9): light_setF124 takes the float in xmm0; a variadic call passes the bits in rsi */
-        port64_light_setF124(o->inner, o->highlight);
+        port64_light_setF124((void *)o->inner, o->highlight);
 #else
         timproc_uso_b5_func_06970C_i(o->inner, *(s32 *)&o->highlight);
 #endif
