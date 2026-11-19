@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Wed, 18 Nov 2026 23:14:34 -0500
+Subject: [PATCH 19/19] fast: include <array> and <algorithm> in
+ interpreter.cpp
+
+interpreter.cpp uses std::array (class template argument deduction) and std::clamp without including
+<array> or <algorithm>; it built only while another standard header pulled them in. GCC 13's libstdc++
+(Ubuntu 24.04's g++-mingw-w64-i686-posix, the Windows CI job) no longer does: "class template argument
+deduction failed" at the std::array tables and "'clamp' is not a member of 'std'".
+---
+ src/fast/interpreter.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index f540c20..1a90618 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -18,6 +18,8 @@
+ #include <vector>
+ #include <list>
+ #include <stack>
++#include <array>
++#include <algorithm>
+ #include "fast/resource/type/Light.h"
+ 
+ #ifndef _LANGUAGE_C
