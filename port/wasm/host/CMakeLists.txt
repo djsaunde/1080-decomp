@@ -35,6 +35,8 @@ if(ANDROID)
   # and the call depth counted instead of a stack-exhaustion signal. Every unit including wasm-rt.h must agree.
   add_compile_definitions(WASM_RT_MEMCHECK_BOUNDS_CHECK=1)
 endif()
+option(WASM_HOST_SDL_GLES "Linux: the Android host's path (SDL2 + OpenGL ES 3.0, LUS USE_OPENGLES) instead of X11 + GL, \
+for checking it without a device (SDL2_DIR: a static SDL2 with the offscreen driver; port/android/linux-gles-check.sh)" OFF)
 option(WASM_HOST_NULLCHECK "debug: report every load / store below the 16 MB global base (a null pointer)" OFF)
 
 set(_game)

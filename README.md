@@ -132,6 +132,32 @@ cmake --build build-host
 port/wasm/macos/make-app.sh build-host/tenshoe dist        # macOS: dist/1080-pc-macos.zip
 ```
 
+## PC port: Android (arm64)
+
+The Android build reuses the macOS route: the same wasm2c translation of the game, compiled for arm64 with the NDK,
+inside an SDLActivity app whose host is the SDL2 one with OpenGL ES 3.0 (libultraship patches 20 / 21) and SDL's
+AAudio / OpenSL ES audio (plan section 31). Built for handhelds with gamepad controls (the AYN Thor): Select + Start
+or Android's Back opens the settings menu, which the gamepad drives. The `Android port` workflow builds the APK on
+ubuntu-24.04 (`1080-snowboarding-android-arm64`, signed with a throwaway CI key); it contains no ROM data.
+
+To play: install `1080-snowboarding.apk` (allow unknown apps, or `adb install -r`), start it and pick your US 1.0
+ROM in the file picker it shows (it is copied into the app), or put it at
+`Android/data/dev.djsaunde.tenshoe/files/baserom.z64` first. Saves, `1080.ini` and `1080.log` live in the app's
+private files; `adb logcat -s tenshoe` shows the log. `port/android/README-android.txt` is the player's README.
+
+Building it (Linux, no sudo; tools/wasm and the patched LUS as for macOS):
+
+```bash
+port/android/setup-android.sh        # JDK 17, SDK 34, NDK r27c, SDL2 source into tools/android
+port/gfx/fast3d/setup-lus.sh         # libultraship with the whole patch series (20 / 21: OpenGL ES)
+port/android/build-apk.sh            # -> build/android/1080-snowboarding.apk (release key: tools/android/*.jks)
+```
+
+The OpenGL ES renderer can be checked on Linux without a device: `make -C port/gfx test OUT=<dir>`, then
+`make -C port/gfx/fast3d OUT=<dir> <dir>/f3dreplay-gles <dir>/f3dreplay-fb` and `port/gfx/fast3d/golden-gles.sh
+<dir>` (the golden scenes through GLES on Mesa llvmpipe), or the whole game with
+`port/android/linux-gles-check.sh`.
+
 ## References
 
 - **[libreultra](https://github.com/n64decomp/libreultra)** — libultra decomp reference; matching functions, structs, `register` keyword usage
