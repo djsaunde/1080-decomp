@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Mon, 16 Nov 2026 14:19:49 -0500
-Subject: [PATCH 4/4] fast: texture cache invalidation hooks for CPU-written
+Subject: [PATCH 04/21] fast: texture cache invalidation hooks for CPU-written
  textures
 
 The texture cache is keyed by address, so a game that rewrites texels or a

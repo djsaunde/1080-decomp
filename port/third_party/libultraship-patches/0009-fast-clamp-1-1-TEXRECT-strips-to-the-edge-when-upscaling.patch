@@ -1,7 +1,8 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Tue, 17 Nov 2026 12:00:00 -0500
-Subject: [PATCH 9/9] fast: clamp 1:1 TEXRECT strips to the edge when upscaling
+Subject: [PATCH 09/21] fast: clamp 1:1 TEXRECT strips to the edge when
+ upscaling
 
 N64 games draw large 2D images (logos, title screens) as many narrow
 TEXRECT strips, each a LoadTile of a few columns with a wide wrap mask.
@@ -21,6 +22,10 @@ stretched 32x32 colour texture).
 Found on the 1080 port's first real frames (plan 19.8): the N64 logo and
 the trademark screen, 8-texel strips, at --scale 3.
 ---
+ include/fast/interpreter.h |  2 ++
+ src/fast/interpreter.cpp   | 37 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+)
+
 diff --git a/include/fast/interpreter.h b/include/fast/interpreter.h
 index 6582c94..103cd2d 100644
 --- a/include/fast/interpreter.h
@@ -35,7 +40,7 @@ index 6582c94..103cd2d 100644
      void GfxSpGeometryMode(uint32_t clear, uint32_t set);
      void GfxSpExtraGeometryMode(uint32_t clear, uint32_t set);
 diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
-index f7a0b54..2a1b266 100644
+index 57ddc3b..8dec4ff 100644
 --- a/src/fast/interpreter.cpp
 +++ b/src/fast/interpreter.cpp
 @@ -1824,6 +1824,24 @@ void Interpreter::GfxSpModifyVertex(uint16_t vtx_idx, uint8_t where, uint32_t va
@@ -97,5 +102,3 @@ index f7a0b54..2a1b266 100644
      if (saved_tile != tile) {
          mRdp->textures_changed[0] = true;
          mRdp->textures_changed[1] = true;
--- 
-2.34.1

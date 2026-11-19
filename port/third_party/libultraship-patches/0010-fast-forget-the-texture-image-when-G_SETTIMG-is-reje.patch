@@ -1,7 +1,8 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Tue, 17 Nov 2026 15:51:57 -0500
-Subject: [PATCH] fast: forget the texture image when G_SETTIMG is rejected
+Subject: [PATCH 10/21] fast: forget the texture image when G_SETTIMG is
+ rejected
 
 gfx_set_timg_handler_rdp drops a G_SETTIMG whose address fails
 IsValidResolvedAddress, but it left texture_to_load as it was. The next
@@ -24,7 +25,7 @@ by ports as identifiers), so they cannot go stale this way.
  1 file changed, 37 insertions(+)
 
 diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
-index 2a1b266..5af3872 100644
+index 8dec4ff..4078a5c 100644
 --- a/src/fast/interpreter.cpp
 +++ b/src/fast/interpreter.cpp
 @@ -2672,8 +2672,30 @@ void Interpreter::GfxDpSetTileSize(uint8_t tile, uint16_t uls, uint16_t ult, uin

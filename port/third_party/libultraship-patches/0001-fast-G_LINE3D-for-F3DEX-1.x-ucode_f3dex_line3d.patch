@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Mon, 16 Nov 2026 14:17:33 -0500
-Subject: [PATCH 1/4] fast: G_LINE3D for F3DEX 1.x (ucode_f3dex_line3d)
+Subject: [PATCH 01/21] fast: G_LINE3D for F3DEX 1.x (ucode_f3dex_line3d)
 
 F3DEX 1.x shares opcode 0xB5 between G_QUAD (F3DEX) and G_LINE3D (L3DEX).
 Add a ucode_f3dex_line3d entry, the F3DEX table with 0xB5 decoded as

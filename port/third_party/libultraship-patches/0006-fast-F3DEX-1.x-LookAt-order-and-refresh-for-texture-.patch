@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Tue, 17 Nov 2026 10:17:22 -0500
-Subject: [PATCH 6/8] fast: F3DEX 1.x LookAt order and refresh for texture
+Subject: [PATCH 06/21] fast: F3DEX 1.x LookAt order and refresh for texture
  generation
 
 G_TEXTURE_GEN takes S from the LookAt X light and T from the Y light. The

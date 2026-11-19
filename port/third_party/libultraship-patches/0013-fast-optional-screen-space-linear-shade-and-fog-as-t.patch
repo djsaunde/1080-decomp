@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Wed, 18 Nov 2026 11:59:53 -0500
-Subject: [PATCH 13/16] fast: optional screen-space linear shade and fog, as
+Subject: [PATCH 13/21] fast: optional screen-space linear shade and fog, as
  the RDP interpolates
 
 The RDP steps shade colour (and the fog factor in shade alpha) linearly
@@ -13,41 +13,58 @@ over far more of the screen. 1080's lit snow near the camera came out
 shot, Trick Attack).
 
 GfxRenderingAPIOGL::SetAffineShading(true), before the first shader is
-built, declares the shade inputs (vInput*) and vFog `noperspective` in
-both stages (desktop GL; GLES has no noperspective and is unchanged).
-The desktop vertex shader moves from GLSL 1.10 to 1.30 for the
-qualifier; its `attribute` / `varying` declarations still compile there.
-Only correct with clipped geometry (the previous patch): a noperspective
+built, makes the shade inputs (vInput*) and vFog screen-linear on every
+GL path (desktop, core profile, ES; no extension): the vertex shader
+outputs each one times w, and w itself, all interpolated
+perspective-correctly, and the fragment shader divides them, which is
+the screen-linear value (the varyings are renamed ...Np by #define).
+
+Not the `noperspective` qualifier: Mesa's clipper (llvmpipe, softpipe;
+desktop GL and GL_NV_shader_noperspective_interpolation on ES) gives a
+noperspective varying at a clipped vertex the screen-space ratio along x
+whenever the clip-space x differ. For an edge lying on a side plane
+(both ends made by clipping against x = +-w) the screen x are equal:
+0 / 0, NaN shade, and the whole clipped triangle came out black (1080's
+attract demo: black wedges where a background triangle covers a screen
+corner). Perspective-correct varyings are clipped in clip space, which
+every clipper does right.
+
+Only correct with clipped geometry (the previous patch): a screen-linear
 varying across a vertex behind the eye is meaningless. Off by default.
 ---
- include/fast/backends/gfx_opengl.h          |  3 +++
- src/fast/backends/gfx_opengl.cpp            | 15 ++++++++++++++-
- src/fast/shaders/opengl/default.shader.glsl | 12 ++++++------
- 3 files changed, 23 insertions(+), 7 deletions(-)
+ include/fast/backends/gfx_opengl.h          |  3 ++
+ src/fast/backends/gfx_opengl.cpp            | 14 ++++++
+ src/fast/shaders/opengl/default.shader.glsl | 51 +++++++++++++++++++++
+ 3 files changed, 68 insertions(+)
 
 diff --git a/include/fast/backends/gfx_opengl.h b/include/fast/backends/gfx_opengl.h
-index b00ea01..2f5a3d3 100644
+index b00ea01..db2e895 100644
 --- a/include/fast/backends/gfx_opengl.h
 +++ b/include/fast/backends/gfx_opengl.h
 @@ -129,6 +129,9 @@ class GfxRenderingAPIOGL final : public GfxRenderingAPI {
      void DeleteTexture(uint32_t texId) override;
      void SetTextureFilter(FilteringMode mode) override;
      FilteringMode GetTextureFilter() override;
-+    // Interpolate the shade colour and fog factor without perspective correction (noperspective), as the RDP does.
-+    // Set before the first shader is built; the shader cache is not cleared.
++    // Interpolate the shade colour and fog factor linearly in screen space, as the RDP does, instead of
++    // perspective-correctly. Set before the first shader is built; the shader cache is not cleared.
 +    void SetAffineShading(bool affine);
      void SetSrgbMode() override;
      ImTextureID GetTextureById(int id) override;
      /** @} */
 diff --git a/src/fast/backends/gfx_opengl.cpp b/src/fast/backends/gfx_opengl.cpp
-index 6c4dfc8..676b4bb 100644
+index 6c4dfc8..55b5842 100644
 --- a/src/fast/backends/gfx_opengl.cpp
 +++ b/src/fast/backends/gfx_opengl.cpp
-@@ -244,6 +244,13 @@ std::optional<std::string> opengl_include_fs(const std::string& path) {
+@@ -244,6 +244,18 @@ std::optional<std::string> opengl_include_fs(const std::string& path) {
      return *inc;
  }
  
-+// N64 shading (SetAffineShading): the RDP interpolates shade colour and the fog factor linearly in screen space
++// N64 shading (SetAffineShading): the RDP steps shade colour and the fog factor linearly in screen space. The shaders
++// do not use the `noperspective` qualifier for it: the vertex shader outputs each such varying times w, and w itself,
++// both interpolated perspective-correctly, and the fragment shader divides them, which is the screen-linear value.
++// The driver's clipper then treats them as ordinary varyings. Mesa's (llvmpipe, softpipe; desktop GL and ES) computes
++// a noperspective varying at a clipped vertex from the screen-space ratio along x whenever the clip-space x differ,
++// which is 0 / 0 for an edge lying on a side plane: NaN shade, the whole clipped triangle black.
 +static bool sAffineShading = false;
 +
 +void GfxRenderingAPIOGL::SetAffineShading(bool affine) {
@@ -57,93 +74,116 @@ index 6c4dfc8..676b4bb 100644
  std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
      prism::Processor processor;
      prism::ContextItems mContext = {
-@@ -291,6 +298,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+@@ -287,6 +299,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+         { "SHADER_COMBINED", SHADER_COMBINED },
+         { "SHADER_NOISE", SHADER_NOISE },
+         { "o_three_point_filtering", mCurrentFilterMode == FILTER_THREE_POINT },
++        { "screen_linear", sAffineShading },
+         { "append_formula", (InvokeFunc)append_formula },
  #ifdef __APPLE__
          { "GLSL_VERSION", "#version 410 core" },
-         { "attr", "in" },
-+        { "np_in", sAffineShading ? "noperspective in" : "in" },
-         { "opengles", false },
-         { "core_opengl", true },
-         { "texture", "texture" },
-@@ -298,6 +306,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
- #elif defined(USE_OPENGLES)
-         { "GLSL_VERSION", "#version 300 es\nprecision mediump float;" },
-         { "attr", "in" },
-+        { "np_in", "in" },
-         { "opengles", true },
-         { "core_opengl", false },
-         { "texture", "texture" },
-@@ -305,6 +314,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
- #else
-         { "GLSL_VERSION", "#version 130" },
-         { "attr", "varying" },
-+        { "np_in", sAffineShading ? "noperspective in" : "in" },
-         { "opengles", false },
-         { "core_opengl", false },
-         { "texture", "texture2D" },
-@@ -362,16 +372,19 @@ static std::string BuildVsShader(const CCFeatures& cc_features) {
+@@ -358,6 +371,7 @@ static std::string BuildVsShader(const CCFeatures& cc_features) {
+                                      { "o_alpha", cc_features.opt_alpha },
+                                      { "o_inputs", cc_features.numInputs },
+                                      { "update_floats", (InvokeFunc)UpdateFloats },
++                                     { "screen_linear", sAffineShading },
+ #ifdef __APPLE__
                                       { "GLSL_VERSION", "#version 410 core" },
                                       { "attr", "in" },
-                                      { "out", "out" },
-+                                     { "np_out", sAffineShading ? "noperspective out" : "out" },
-                                      { "opengles", false }
- #elif defined(USE_OPENGLES)
-                                      { "GLSL_VERSION", "#version 300 es" },
-                                      { "attr", "in" },
-                                      { "out", "out" },
-+                                     { "np_out", "out" },
-                                      { "opengles", true }
- #else
--                                     { "GLSL_VERSION", "#version 110" },
-+                                     { "GLSL_VERSION", "#version 130" },
-                                      { "attr", "attribute" },
-                                      { "out", "varying" },
-+                                     { "np_out", sAffineShading ? "noperspective out" : "out" },
-                                      { "opengles", false }
- #endif
-     };
 diff --git a/src/fast/shaders/opengl/default.shader.glsl b/src/fast/shaders/opengl/default.shader.glsl
-index 3693c79..fd40dbf 100644
+index 3693c79..8098552 100644
 --- a/src/fast/shaders/opengl/default.shader.glsl
 +++ b/src/fast/shaders/opengl/default.shader.glsl
-@@ -27,7 +27,7 @@
+@@ -3,6 +3,14 @@
+ @{GLSL_VERSION}
  
-     @if(o_fog)
-         @{attr} vec4 aFog;
--        @{out} vec4 vFog;
-+        @{np_out} vec4 vFog;
-         @{update_floats(4)}
-     @end
+ @if(VERTEX_SHADER)
++    @if(screen_linear)
++        @if(o_fog)
++            #define vFog vFogNp
++        @end
++        @for(i in 0..o_inputs)
++            #define vInput@{i + 1} vInput@{i + 1}Np
++        @end
++    @end
+     @{attr} vec4 aVtxPos;
  
-@@ -40,11 +40,11 @@
-     @for(i in 0..o_inputs)
-         @if(o_alpha)
-             @{attr} vec4 aInput@{i + 1};
--            @{out} vec4 vInput@{i + 1};
-+            @{np_out} vec4 vInput@{i + 1};
-             @{update_floats(4)}
-         @else
-             @{attr} vec3 aInput@{i + 1};
--            @{out} vec3 vInput@{i + 1};
-+            @{np_out} vec3 vInput@{i + 1};
-             @{update_floats(3)}
-         @end
-     @end
-@@ -98,14 +98,14 @@
+     @for(i in 0..2)
+@@ -49,6 +57,10 @@
          @end
      @end
  
--    @if(o_fog) @{attr} vec4 vFog;
-+    @if(o_fog) @{np_in} vec4 vFog;
++    @if(screen_linear)
++        @{out} float vNpW;
++    @end
++
+     void main() {
+         @for(i in 0..2)
+             @if(o_textures[i])
+@@ -74,6 +86,15 @@
+             vInput@{i + 1} = aInput@{i + 1};
+         @end
+         gl_Position = aVtxPos;
++        @if(screen_linear)
++            vNpW = aVtxPos.w;
++            @if(o_fog)
++                vFog *= aVtxPos.w;
++            @end
++            @for(i in 0..o_inputs)
++                vInput@{i + 1} *= aVtxPos.w;
++            @end
++        @end
+         @if(opengles)
+             gl_Position.z *= 0.3f;
+         @end
+@@ -98,6 +119,14 @@
+         @end
+     @end
+ 
++    @if(screen_linear)
++        @if(o_fog)
++            #define vFog vFogNp
++        @end
++        @for(i in 0..o_inputs)
++            #define vInput@{i + 1} vInput@{i + 1}Np
++        @end
++    @end
+     @if(o_fog) @{attr} vec4 vFog;
      @if(o_grayscale) @{attr} vec4 vGrayscaleColor;
  
-     @for(i in 0..o_inputs)
-         @if(o_alpha)
--            @{attr} vec4 vInput@{i + 1};
-+            @{np_in} vec4 vInput@{i + 1};
-         @else
--            @{attr} vec3 vInput@{i + 1};
-+            @{np_in} vec3 vInput@{i + 1};
+@@ -109,6 +138,16 @@
          @end
      @end
  
++    @if(screen_linear)
++        @{attr} float vNpW;
++        @if(o_fog)
++            #undef vFog
++        @end
++        @for(i in 0..o_inputs)
++            #undef vInput@{i + 1}
++        @end
++    @end
++
+     @if(o_textures[0]) uniform sampler2D uTex0;
+     @if(o_textures[1]) uniform sampler2D uTex1;
+ 
+@@ -165,6 +204,18 @@
+     #define TEX_SIZE(tex) vec2(texture_width[tex], texture_height[tex])
+ 
+     void main() {
++        @if(screen_linear)
++            @if(o_fog)
++                vec4 vFog = vFogNp / vNpW;
++            @end
++            @for(i in 0..o_inputs)
++                @if(o_alpha)
++                    vec4 vInput@{i + 1} = vInput@{i + 1}Np / vNpW;
++                @else
++                    vec3 vInput@{i + 1} = vInput@{i + 1}Np / vNpW;
++                @end
++            @end
++        @end
+         @for(i in 0..2)
+             @if(o_textures[i])
+                 @{s = o_clamp[i][0]}

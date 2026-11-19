@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Wed, 18 Nov 2026 12:00:01 -0500
-Subject: [PATCH 15/16] fast: 2-cycle blender that alpha-blends in both cycles
+Subject: [PATCH 15/21] fast: 2-cycle blender that alpha-blends in both cycles
  blends with a^2
 
 In 2-cycle mode the second blender cycle's IN is the first cycle's
@@ -52,10 +52,10 @@ index 5631992..0ce9902 100644
      return (id >> SHADER_ID_SHIFT) & 0xFFFF;
  }
 diff --git a/src/fast/backends/gfx_opengl.cpp b/src/fast/backends/gfx_opengl.cpp
-index 676b4bb..2baec9e 100644
+index 55b5842..6081357 100644
 --- a/src/fast/backends/gfx_opengl.cpp
 +++ b/src/fast/backends/gfx_opengl.cpp
-@@ -263,6 +263,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+@@ -268,6 +268,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
          { "o_2cyc", cc_features.opt_2cyc },
          { "o_alpha_threshold", cc_features.opt_alpha_threshold },
          { "o_invisible", cc_features.opt_invisible },
@@ -64,7 +64,7 @@ index 676b4bb..2baec9e 100644
          { "o_prim_depth", cc_features.opt_prim_depth },
          { "o_textures", M_ARRAY(cc_features.usedTextures, bool, 2) },
 diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
-index 3fbec68..c57126f 100644
+index 50215aa..565f8eb 100644
 --- a/src/fast/interpreter.cpp
 +++ b/src/fast/interpreter.cpp
 @@ -2082,6 +2082,11 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx
@@ -79,7 +79,7 @@ index 3fbec68..c57126f 100644
  
      if (!mShaderStack.empty()) {
          cc_options |= (mShaderStack.top() << SHADER_ID_SHIFT);
-@@ -5909,6 +5914,7 @@ void gfx_cc_get_features(uint64_t shader_id0, uint64_t shader_id1, struct CCFeat
+@@ -5915,6 +5920,7 @@ void gfx_cc_get_features(uint64_t shader_id0, uint64_t shader_id1, struct CCFeat
      cc_features->opt_invisible = (shader_id1 & SHADER_OPT(INVISIBLE)) != 0;
      cc_features->opt_grayscale = (shader_id1 & SHADER_OPT(GRAYSCALE)) != 0;
      cc_features->opt_prim_depth = (shader_id1 & SHADER_OPT(PRIM_DEPTH)) != 0;
@@ -88,10 +88,10 @@ index 3fbec68..c57126f 100644
      cc_features->clamp[0][0] = shader_id1 & SHADER_OPT(TEXEL0_CLAMP_S);
      cc_features->clamp[0][1] = shader_id1 & SHADER_OPT(TEXEL0_CLAMP_T);
 diff --git a/src/fast/shaders/opengl/default.shader.glsl b/src/fast/shaders/opengl/default.shader.glsl
-index fd40dbf..22505ef 100644
+index 8098552..a121dd8 100644
 --- a/src/fast/shaders/opengl/default.shader.glsl
 +++ b/src/fast/shaders/opengl/default.shader.glsl
-@@ -278,6 +278,9 @@
+@@ -329,6 +329,9 @@
              @if(o_alpha_threshold)
                  if (texel.a < 8.0 / 256.0) discard;
              @end

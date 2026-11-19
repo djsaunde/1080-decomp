@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Wed, 18 Nov 2026 12:56:44 -0500
-Subject: [PATCH 16/16] fast: optional RDP dither when reading the framebuffer
+Subject: [PATCH 16/21] fast: optional RDP dither when reading the framebuffer
  back as RGBA5551
 
 ReadFramebufferToCPU truncated each channel to 5 bits. The RDP writes a
@@ -23,12 +23,12 @@ top. Off by default.
  2 files changed, 20 insertions(+)
 
 diff --git a/include/fast/backends/gfx_opengl.h b/include/fast/backends/gfx_opengl.h
-index 2f5a3d3..f6588be 100644
+index db2e895..1596d60 100644
 --- a/include/fast/backends/gfx_opengl.h
 +++ b/include/fast/backends/gfx_opengl.h
 @@ -132,6 +132,9 @@ class GfxRenderingAPIOGL final : public GfxRenderingAPI {
-     // Interpolate the shade colour and fog factor without perspective correction (noperspective), as the RDP does.
-     // Set before the first shader is built; the shader cache is not cleared.
+     // Interpolate the shade colour and fog factor linearly in screen space, as the RDP does, instead of
+     // perspective-correctly. Set before the first shader is built; the shader cache is not cleared.
      void SetAffineShading(bool affine);
 +    // ReadFramebufferToCPU quantizes to RGBA5551 with the RDP's magic-square dither, as the RDP writes a 16-bit
 +    // colour image (default: truncation).
@@ -45,10 +45,10 @@ index 2f5a3d3..f6588be 100644
      GLint mMaxMsaaLevel = 1;
      GLuint mPixelDepthRb = 0;
 diff --git a/src/fast/backends/gfx_opengl.cpp b/src/fast/backends/gfx_opengl.cpp
-index 2baec9e..5b5ef75 100644
+index 6081357..5a39e89 100644
 --- a/src/fast/backends/gfx_opengl.cpp
 +++ b/src/fast/backends/gfx_opengl.cpp
-@@ -251,6 +251,10 @@ void GfxRenderingAPIOGL::SetAffineShading(bool affine) {
+@@ -256,6 +256,10 @@ void GfxRenderingAPIOGL::SetAffineShading(bool affine) {
      sAffineShading = affine;
  }
  
@@ -59,7 +59,7 @@ index 2baec9e..5b5ef75 100644
  std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
      prism::Processor processor;
      prism::ContextItems mContext = {
-@@ -1031,10 +1035,22 @@ void GfxRenderingAPIOGL::ReadFramebufferToCPU(int fb_id, uint32_t width, uint32_
+@@ -1032,10 +1036,22 @@ void GfxRenderingAPIOGL::ReadFramebufferToCPU(int fb_id, uint32_t width, uint32_
      std::vector<uint8_t> rgba8(width * height * 4);
      glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgba8.data());
  

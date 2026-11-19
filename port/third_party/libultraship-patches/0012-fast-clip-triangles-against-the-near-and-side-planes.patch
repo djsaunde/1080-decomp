@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Wed, 18 Nov 2026 11:59:53 -0500
-Subject: [PATCH 12/16] fast: clip triangles against the near and side planes
+Subject: [PATCH 12/21] fast: clip triangles against the near and side planes
  as F3DEX does
 
 LUS draws with GL_DEPTH_CLAMP and no near-plane clipping, the behaviour of
@@ -61,7 +61,7 @@ index 103cd2d..3e8440b 100644
                                        bool bswap);
  extern "C" void gfx_readback_depth_request(uint32_t x, uint32_t y);
 diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
-index 9469d6c..c2b4591 100644
+index 24fc3c5..ae95122 100644
 --- a/src/fast/interpreter.cpp
 +++ b/src/fast/interpreter.cpp
 @@ -1842,6 +1842,83 @@ bool Interpreter::RectInsideTexture(struct LoadedVertex* const v_arr[3], uint32_
@@ -273,7 +273,7 @@ index 9469d6c..c2b4591 100644
          case G_MW_NUMLIGHT:
              // Ambient light is included
              // The 31st bit is a flag that lights should be recalculated
-@@ -5872,6 +5979,10 @@ extern "C" void gfx_register_raw_address_range(const void* start, size_t size) {
+@@ -5878,6 +5985,10 @@ extern "C" void gfx_register_raw_address_range(const void* start, size_t size) {
      Fast::sRawAddressRanges.emplace_back((uintptr_t)start, size);
  }
  

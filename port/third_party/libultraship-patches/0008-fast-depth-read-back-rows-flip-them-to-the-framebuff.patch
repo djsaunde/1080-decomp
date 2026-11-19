@@ -1,0 +1,48 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Tue, 17 Nov 2026 10:18:56 -0500
+Subject: [PATCH 08/21] fast: depth read-back rows: flip them to the
+ framebuffer's row order
+
+GetPixelDepth takes top-down game coordinates. Fast3D draws in two row
+orders, and the lookup must match the target it reads:
+- straight into the window (mRendersToFb false: a port without the LUS
+  GUI), or with MSAA into a window-sized framebuffer drawn the same way
+  up: the rows run bottom-up, and the lookup read the vertically
+  mirrored pixel. y is flipped there.
+- into the game framebuffer at a render size other than the view's (an
+  internal resolution; macOS always): the framebuffer is drawn flipped
+  (invertY), so its rows run top-down, but GetPixelDepth flips an
+  invertY framebuffer's rows (height - y), so it read the mirrored row
+  too. y is pre-flipped there, cancelling GetPixelDepth's flip.
+
+Found by the 1080 port's golden tests (patch 3's depth read-back on the
+split-screen scene read the bottom window's depth for the top window),
+and against real hardware: with an internal resolution or MSAA the sun
+visibility test (9 depth reads) answered for the mirrored pixels, so the
+sun and lens flare of 1080's Round 1 intro were drawn differently.
+---
+ src/fast/interpreter.cpp | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index a410c20..57ddc3b 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -5475,6 +5475,16 @@ void Interpreter::AdjustPixelDepthCoordinates(float& x, float& y) {
+     x = x * RATIO_X(mActiveFrameBuffer, mCurDimensions) -
+         (mNativeDimensions.width * RATIO_X(mActiveFrameBuffer, mCurDimensions) - mCurDimensions.width) / 2;
+     y *= RATIO_Y(mActiveFrameBuffer, mCurDimensions);
++    if (!mRendersToFb || ViewportMatchesRendererResolution()) {
++        // the game drew into the window, or (MSAA) into a window-sized framebuffer drawn the same way up: rows run
++        // bottom-up
++        y = mGameWindowViewport.height - 1 - y;
++    } else {
++        // the game framebuffer (a render size other than the view's; macOS / OpenGL ES always) is drawn flipped
++        // (invertY), so its rows run top-down, and GetPixelDepth flips an invertY framebuffer's rows (height - y):
++        // cancel that, so the pixel read is the one the window path reads
++        y = mCurDimensions.height - y;
++    }
+     if (!mRendersToFb || (mMsaaLevel > 1 && mCurDimensions.width == mGameWindowViewport.width &&
+                           mCurDimensions.height == mGameWindowViewport.height)) {
+         x += mGameWindowViewport.x;

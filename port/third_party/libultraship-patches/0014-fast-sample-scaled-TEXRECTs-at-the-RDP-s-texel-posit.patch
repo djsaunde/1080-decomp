@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Wed, 18 Nov 2026 12:00:01 -0500
-Subject: [PATCH 14/16] fast: sample scaled TEXRECTs at the RDP's texel
+Subject: [PATCH 14/21] fast: sample scaled TEXRECTs at the RDP's texel
  positions
 
 The RDP evaluates a texture rectangle's s at a pixel's corner,
@@ -36,7 +36,7 @@ index 3e8440b..5631992 100644
      // RSP-style clipping (gfx_set_rsp_clipping): a triangle crossing the near plane or the side planes at the clip
      // ratio is clipped here in clip space, as the F3DEX microcodes do, instead of being left to the GPU.
 diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
-index c2b4591..3fbec68 100644
+index ae95122..50215aa 100644
 --- a/src/fast/interpreter.cpp
 +++ b/src/fast/interpreter.cpp
 @@ -2322,6 +2322,20 @@ void Interpreter::GfxSpTri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx

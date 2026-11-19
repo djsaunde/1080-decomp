@@ -2,9 +2,8 @@
 # port/gfx/fast3d/golden-gles.sh OUT (plan 31): the golden scenes through Fast3D's OpenGL ES 3 path (f3dreplay-gles:
 # LUS built USE_OPENGLES in an EGL GLES 3.0 context on Mesa llvmpipe, the Android renderer) against the desktop GL
 # renders of the same dumps (golden.sh's OUT/golden-out/*.png / *.rb, made by `make -C port/gfx test OUT=OUT`).
-#   Noperspective shading is emulated by default (LUS patch 20); FAST_GLES_NV_NOPERSPECTIVE=1 uses the extension.
-#   FAST_GLES_NO_EXT=1 (or a list: noperspective,depth_clamp,mirror_clamp,read_depth) checks the fallbacks: emulated
-#   noperspective, vertex-shader far clamp, mirrored repeat, depth read through a depth texture (llvmpipe blits no depth
+#   FAST_GLES_NO_EXT=1 (or a list: depth_clamp,mirror_clamp,read_depth) checks the fallbacks: vertex-shader far clamp,
+#   mirrored repeat, depth read through a depth texture (llvmpipe blits no depth
 #   from its window surface, so that one reads the far plane here).
 # Per scene: identical, or the number of differing pixels / the largest channel difference, and whether the
 # read-back (colour + depth grid, .rb) is identical. Not a gate: llvmpipe's GLES and GL paths may round differently.

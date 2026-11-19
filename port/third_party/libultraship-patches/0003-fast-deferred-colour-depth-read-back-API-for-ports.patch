@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Mon, 16 Nov 2026 14:19:19 -0500
-Subject: [PATCH 3/4] fast: deferred colour / depth read-back API for ports
+Subject: [PATCH 03/21] fast: deferred colour / depth read-back API for ports
 
 Ports of code that reads the N64 colour or depth buffer from the CPU queue
 requests before Run(); ServiceReadbacks() fulfils them at the end of Run(),

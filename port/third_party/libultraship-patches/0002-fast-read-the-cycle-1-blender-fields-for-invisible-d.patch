@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Mon, 16 Nov 2026 14:18:07 -0500
-Subject: [PATCH 2/4] fast: read the cycle 1 blender fields for invisible
+Subject: [PATCH 02/21] fast: read the cycle 1 blender fields for invisible
  detection in 1-cycle mode
 
 In 1-cycle mode the RDP blender runs only its first cycle. Games that build

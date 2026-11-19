@@ -1,0 +1,29 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Thu, 19 Nov 2026 15:09:36 -0500
+Subject: [PATCH 21/21] fast: on OpenGL ES draw into the game framebuffer
+
+USE_OPENGLES (and the FAST_FORCE_FB test define) treat the view as never matching the render size, as __APPLE__
+does: Fast3D always draws into its game framebuffer and the port presents it. ES reads depth by blitting it into
+a depth texture, and drivers differ in whether the window surface's depth blits (Mesa's llvmpipe gives 0); a
+DEPTH24_STENCIL8 renderbuffer's always does. The depth read-back rows of that framebuffer are patch 8's.
+---
+ src/fast/interpreter.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index f440c91..243b8f6 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -5537,6 +5537,11 @@ bool Interpreter::ViewportMatchesRendererResolution() {
+     // Always treat the viewport as not matching the render resolution on mac
+     // to avoid issues with retina scaling.
+     return false;
++#elif defined(USE_OPENGLES) || defined(FAST_FORCE_FB)
++    // OpenGL ES: always draw into the game framebuffer (a DEPTH24_STENCIL8 renderbuffer), which the port presents. ES
++    // reads depth only by blitting it into a depth texture, and drivers differ in whether the window's depth blits
++    // (Mesa's llvmpipe gives 0); the framebuffer's always does. (FAST_FORCE_FB: the same on desktop GL, for tests.)
++    return false;
+ #else
+     if (mCurDimensions.width == mGameWindowViewport.width && mCurDimensions.height == mGameWindowViewport.height) {
+         return true;

@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Tue, 17 Nov 2026 09:55:05 -0500
-Subject: [PATCH 5/5] fast: let a port register low address ranges as real
+Subject: [PATCH 05/21] fast: let a port register low address ranges as real
  memory
 
 gfx_set_timg_handler_rdp drops a G_SETTIMG whose resolved address is at or

@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Tue, 17 Nov 2026 10:17:22 -0500
-Subject: [PATCH 7/8] fast: flush the batch when G_SETPRIMDEPTH changes the
+Subject: [PATCH 07/21] fast: flush the batch when G_SETPRIMDEPTH changes the
  depth
 
 The prim depth reaches the shader as a per-draw uniform, set in Flush(),

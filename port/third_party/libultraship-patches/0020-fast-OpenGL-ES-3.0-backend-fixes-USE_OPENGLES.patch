@@ -6,10 +6,6 @@ Subject: [PATCH 20/21] fast: OpenGL ES 3.0 backend fixes (USE_OPENGLES)
 LUS's GLES path compiled but lacked what the port's N64 rendering uses. Only USE_OPENGLES builds change:
 - the fragment shader is highp (float, int, sampler2D: a lowp sampler gave texels 1 level off on Mesa, and
   Adreno runs mediump / lowp at half precision);
-- noperspective shade and fog (patch 13) emulated: the vertex shader outputs the varying times w and w itself,
-  and the fragment shader divides their perspective-correct values (the quotient is the screen-linear value; the
-  varyings are renamed ...Np). GL_NV_shader_noperspective_interpolation only with FAST_GLES_NV_NOPERSPECTIVE=1:
-  on Mesa it leaves some of 1080's background triangles undrawn, as desktop GL's noperspective does there;
 - GL_DEPTH_CLAMP through GL_EXT_depth_clamp, else the far plane clamped in the vertex shader (near is patch 12's
   clipping); the old `gl_Position.z *= 0.3` hack is gone (it changed every depth value);
 - G_TX_MIRROR | G_TX_CLAMP: GL_MIRROR_CLAMP_TO_EDGE only with GL_EXT_texture_mirror_clamp_to_edge, else
@@ -18,14 +14,15 @@ LUS's GLES path compiled but lacked what the port's N64 rendering uses. Only USE
   into a DEPTH24_STENCIL8 texture and drawn as a 24-bit integer into RGBA8; same values as the desktop path;
 - no MSAA (ES 3.0 resolves only to the same size and format, and Fast3D resolves scaled);
 - shader compile errors print the log and the source.
-FAST_GLES_NO_EXT=1 (or a list: noperspective, depth_clamp, mirror_clamp, read_depth) takes the fallbacks.
+FAST_GLES_NO_EXT=1 (or a list: depth_clamp, mirror_clamp, read_depth) takes the fallbacks. Patch 13's
+screen-linear shading needs no extension (it does not use noperspective).
 ---
- src/fast/backends/gfx_opengl.cpp            | 322 +++++++++++++++++++-
- src/fast/shaders/opengl/default.shader.glsl |  55 +++-
- 2 files changed, 371 insertions(+), 6 deletions(-)
+ src/fast/backends/gfx_opengl.cpp            | 287 +++++++++++++++++++-
+ src/fast/shaders/opengl/default.shader.glsl |   4 +-
+ 2 files changed, 288 insertions(+), 3 deletions(-)
 
 diff --git a/src/fast/backends/gfx_opengl.cpp b/src/fast/backends/gfx_opengl.cpp
-index 5b5ef75..f5734b6 100644
+index 5a39e89..eca53b3 100644
 --- a/src/fast/backends/gfx_opengl.cpp
 +++ b/src/fast/backends/gfx_opengl.cpp
 @@ -4,6 +4,10 @@
@@ -39,17 +36,15 @@ index 5b5ef75..f5734b6 100644
  
  #include <map>
  #include <unordered_map>
-@@ -255,6 +259,74 @@ void GfxRenderingAPIOGL::SetFramebufferDither(bool dither) {
+@@ -260,6 +264,47 @@ void GfxRenderingAPIOGL::SetFramebufferDither(bool dither) {
      mFramebufferDither = dither;
  }
  
 +#ifdef USE_OPENGLES
-+// OpenGL ES 3.0: four desktop features Fast3D relies on are extensions there. Without them (and by default, for
-+// noperspective) noperspective varyings are emulated (the vertex shader outputs the varying times w and w itself;
-+// their perspective-correct quotient is the screen-linear value), the far plane is clamped in the vertex shader instead of by GL_DEPTH_CLAMP, mirror-clamp
-+// falls back to mirrored repeat, and depth is read through a depth texture (GetPixelDepth). FAST_GLES_NO_EXT=1 takes
-+// the fallbacks even when the extensions exist (tests).
-+static bool sGlesNoperspective = false; // GL_NV_shader_noperspective_interpolation
++// OpenGL ES 3.0: three desktop features Fast3D relies on are extensions there. Without them the far plane is clamped in
++// the vertex shader instead of by GL_DEPTH_CLAMP, mirror-clamp falls back to mirrored repeat, and depth is read through
++// a depth texture (GetPixelDepth). FAST_GLES_NO_EXT=1 takes the fallbacks even when the extensions exist (tests).
++// (Screen-linear shading, SetAffineShading, needs no extension: the shaders interpolate it without noperspective.)
 +static bool sGlesDepthClamp = false;    // GL_EXT_depth_clamp
 +static bool sGlesMirrorClamp = false;   // GL_EXT_texture_mirror_clamp_to_edge
 +static bool sGlesReadDepth = false;     // GL_NV_read_depth (GetPixelDepth; else a blit into a depth texture)
@@ -70,76 +65,39 @@ index 5b5ef75..f5734b6 100644
 +}
 +
 +static void GlesDetectExtensions() {
-+    // FAST_GLES_NO_EXT: 1 = every fallback, or a list of noperspective / depth_clamp / mirror_clamp / read_depth
++    // FAST_GLES_NO_EXT: 1 = every fallback, or a list of depth_clamp / mirror_clamp / read_depth
 +    const char* off = getenv("FAST_GLES_NO_EXT");
 +    auto no = [off](const char* what) {
 +        return off != nullptr && (strcmp(off, "1") == 0 || strstr(off, what) != nullptr);
 +    };
-+    // the emulation by default: on Mesa (llvmpipe) the extension's noperspective, like desktop GL's, leaves some of
-+    // 1080's background triangles undrawn where the emulation draws them (the same as perspective shading there);
-+    // FAST_GLES_NV_NOPERSPECTIVE=1 uses the extension when the driver has it
-+    const char* nv = getenv("FAST_GLES_NV_NOPERSPECTIVE");
-+    sGlesNoperspective = nv != nullptr && strcmp(nv, "1") == 0 && !no("noperspective") &&
-+                         GlesHasExtension("GL_NV_shader_noperspective_interpolation");
 +    sGlesDepthClamp = !no("depth_clamp") && GlesHasExtension("GL_EXT_depth_clamp");
 +    sGlesMirrorClamp = !no("mirror_clamp") && GlesHasExtension("GL_EXT_texture_mirror_clamp_to_edge");
 +    sGlesReadDepth = !no("read_depth") &&
 +                     (GlesHasExtension("GL_NV_read_depth") || GlesHasExtension("GL_NV_read_depth_stencil"));
-+    fprintf(stderr, "fast: %s: noperspective %s, depth clamp %s, mirror clamp %s, depth read %s\n",
-+            (const char*)glGetString(GL_VERSION), sGlesNoperspective ? "yes" : "emulated",
++    fprintf(stderr, "fast: %s: depth clamp %s, mirror clamp %s, depth read %s\n", (const char*)glGetString(GL_VERSION),
 +            sGlesDepthClamp ? "yes" : "vertex shader", sGlesMirrorClamp ? "yes" : "mirrored repeat",
 +            sGlesReadDepth ? "NV_read_depth" : "depth texture");
 +}
 +
-+// the shader's noperspective handling: "in"/"out" qualifiers, or the emulation (np_emul, the varyings named ...Np)
-+static const char* GlesFsVersion() {
-+    if (sAffineShading && sGlesNoperspective) {
-+        return "#version 300 es\n#extension GL_NV_shader_noperspective_interpolation : require\n"
-+               "precision highp float;\nprecision highp int;\nprecision highp sampler2D;";
-+    }
-+    return "#version 300 es\nprecision highp float;\nprecision highp int;\nprecision highp sampler2D;";
-+}
-+
-+static const char* GlesVsVersion() {
-+    if (sAffineShading && sGlesNoperspective) {
-+        return "#version 300 es\n#extension GL_NV_shader_noperspective_interpolation : require";
-+    }
-+    return "#version 300 es";
-+}
-+#define GLES_NP_EMUL (sAffineShading && !sGlesNoperspective)
-+#else
-+#define GLES_NP_EMUL false
 +#endif
 +
  std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
      prism::Processor processor;
      prism::ContextItems mContext = {
-@@ -300,6 +372,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
-         { "SHADER_NOISE", SHADER_NOISE },
-         { "o_three_point_filtering", mCurrentFilterMode == FILTER_THREE_POINT },
-         { "append_formula", (InvokeFunc)append_formula },
-+        { "np_emul", GLES_NP_EMUL },
- #ifdef __APPLE__
-         { "GLSL_VERSION", "#version 410 core" },
-         { "attr", "in" },
-@@ -309,9 +382,9 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+@@ -314,7 +359,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
          { "texture", "texture" },
          { "vOutColor", "vOutColor" },
  #elif defined(USE_OPENGLES)
 -        { "GLSL_VERSION", "#version 300 es\nprecision mediump float;" },
-+        { "GLSL_VERSION", GlesFsVersion() },
++        { "GLSL_VERSION", "#version 300 es\nprecision highp float;\nprecision highp int;\nprecision highp sampler2D;" },
          { "attr", "in" },
--        { "np_in", "in" },
-+        { "np_in", sAffineShading && sGlesNoperspective ? "noperspective in" : "in" },
          { "opengles", true },
          { "core_opengl", false },
-         { "texture", "texture" },
-@@ -373,6 +446,12 @@ static std::string BuildVsShader(const CCFeatures& cc_features) {
-                                      { "o_alpha", cc_features.opt_alpha },
+@@ -377,6 +422,11 @@ static std::string BuildVsShader(const CCFeatures& cc_features) {
                                       { "o_inputs", cc_features.numInputs },
                                       { "update_floats", (InvokeFunc)UpdateFloats },
-+                                     { "np_emul", GLES_NP_EMUL },
-+                             #ifdef USE_OPENGLES
+                                      { "screen_linear", sAffineShading },
++#ifdef USE_OPENGLES
 +                                     { "far_clamp", !sGlesDepthClamp },
 +#else
 +                                     { "far_clamp", false },
@@ -147,20 +105,7 @@ index 5b5ef75..f5734b6 100644
  #ifdef __APPLE__
                                       { "GLSL_VERSION", "#version 410 core" },
                                       { "attr", "in" },
-@@ -380,10 +459,10 @@ static std::string BuildVsShader(const CCFeatures& cc_features) {
-                                      { "np_out", sAffineShading ? "noperspective out" : "out" },
-                                      { "opengles", false }
- #elif defined(USE_OPENGLES)
--                                     { "GLSL_VERSION", "#version 300 es" },
-+                                     { "GLSL_VERSION", GlesVsVersion() },
-                                      { "attr", "in" },
-                                      { "out", "out" },
--                                     { "np_out", "out" },
-+                                     { "np_out", sAffineShading && sGlesNoperspective ? "noperspective out" : "out" },
-                                      { "opengles", true }
- #else
-                                      { "GLSL_VERSION", "#version 130" },
-@@ -445,7 +524,13 @@ ShaderProgram* GfxRenderingAPIOGL::CreateAndLoadNewShader(uint64_t shader_id0, u
+@@ -446,7 +496,13 @@ ShaderProgram* GfxRenderingAPIOGL::CreateAndLoadNewShader(uint64_t shader_id0, u
          glGetShaderiv(vertex_shader, GL_INFO_LOG_LENGTH, &max_length);
          char error_log[1024];
          // fprintf(stderr, "Vertex shader compilation failed\n");
@@ -174,7 +119,7 @@ index 5b5ef75..f5734b6 100644
          // fprintf(stderr, "%s\n", &error_log[0]);
          abort();
      }
-@@ -459,8 +544,14 @@ ShaderProgram* GfxRenderingAPIOGL::CreateAndLoadNewShader(uint64_t shader_id0, u
+@@ -460,8 +516,14 @@ ShaderProgram* GfxRenderingAPIOGL::CreateAndLoadNewShader(uint64_t shader_id0, u
          glGetShaderiv(fragment_shader, GL_INFO_LOG_LENGTH, &max_length);
          char error_log[1024];
          fprintf(stderr, "Fragment shader compilation failed\n");
@@ -189,7 +134,7 @@ index 5b5ef75..f5734b6 100644
          abort();
      }
  
-@@ -618,6 +709,11 @@ static uint32_t gfx_cm_to_opengl(uint32_t val) {
+@@ -619,6 +681,11 @@ static uint32_t gfx_cm_to_opengl(uint32_t val) {
          case G_TX_MIRROR | G_TX_WRAP:
              return GL_MIRRORED_REPEAT;
          case G_TX_MIRROR | G_TX_CLAMP:
@@ -201,7 +146,7 @@ index 5b5ef75..f5734b6 100644
              return GL_MIRROR_CLAMP_TO_EDGE;
          case G_TX_NOMIRROR | G_TX_WRAP:
              return GL_REPEAT;
-@@ -746,6 +842,11 @@ void GfxRenderingAPIOGL::Init() {
+@@ -747,6 +814,11 @@ void GfxRenderingAPIOGL::Init() {
  
  #ifndef USE_OPENGLES // not supported on gles
      glEnable(GL_DEPTH_CLAMP);
@@ -213,7 +158,7 @@ index 5b5ef75..f5734b6 100644
  #endif
      glDepthFunc(GL_LEQUAL);
      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-@@ -765,6 +866,11 @@ void GfxRenderingAPIOGL::Init() {
+@@ -766,6 +838,11 @@ void GfxRenderingAPIOGL::Init() {
      mPixelDepthRbSize = 1;
  
      glGetIntegerv(GL_MAX_SAMPLES, &mMaxMsaaLevel);
@@ -225,7 +170,7 @@ index 5b5ef75..f5734b6 100644
  
      sOGLResourceManager = mResourceManager;
  }
-@@ -1058,12 +1164,220 @@ void GfxRenderingAPIOGL::ReadFramebufferToCPU(int fb_id, uint32_t width, uint32_
+@@ -1059,12 +1136,220 @@ void GfxRenderingAPIOGL::ReadFramebufferToCPU(int fb_id, uint32_t width, uint32_
      glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffers[mCurrentFrameBuffer].fbo);
  }
  
@@ -447,103 +392,17 @@ index 5b5ef75..f5734b6 100644
      // Otherwise we need to blit first to a new buffer then read it
      if (coordinates.size() == 1 && fb.msaa_level <= 1) {
 diff --git a/src/fast/shaders/opengl/default.shader.glsl b/src/fast/shaders/opengl/default.shader.glsl
-index 22505ef..8598497 100644
+index a121dd8..c444ecc 100644
 --- a/src/fast/shaders/opengl/default.shader.glsl
 +++ b/src/fast/shaders/opengl/default.shader.glsl
-@@ -3,6 +3,14 @@
- @{GLSL_VERSION}
- 
- @if(VERTEX_SHADER)
-+    @if(np_emul)
-+        @if(o_fog)
-+            #define vFog vFogNp
-+        @end
-+        @for(i in 0..o_inputs)
-+            #define vInput@{i + 1} vInput@{i + 1}Np
-+        @end
-+    @end
-     @{attr} vec4 aVtxPos;
- 
-     @for(i in 0..2)
-@@ -49,6 +57,10 @@
+@@ -95,8 +95,8 @@
+                 vInput@{i + 1} *= aVtxPos.w;
+             @end
          @end
-     @end
- 
-+    @if(np_emul)
-+        out float vNpW;
-+    @end
-+
-     void main() {
-         @for(i in 0..2)
-             @if(o_textures[i])
-@@ -74,8 +86,17 @@
-             vInput@{i + 1} = aInput@{i + 1};
-         @end
-         gl_Position = aVtxPos;
 -        @if(opengles)
 -            gl_Position.z *= 0.3f;
-+        @if(np_emul)
-+            vNpW = aVtxPos.w;
-+            @if(o_fog)
-+                vFog *= aVtxPos.w;
-+            @end
-+            @for(i in 0..o_inputs)
-+                vInput@{i + 1} *= aVtxPos.w;
-+            @end
-+        @end
 +        @if(far_clamp)
 +            gl_Position.z = min(gl_Position.z, gl_Position.w);
          @end
      }
  @else
-@@ -98,6 +119,14 @@
-         @end
-     @end
- 
-+    @if(np_emul)
-+        @if(o_fog)
-+            #define vFog vFogNp
-+        @end
-+        @for(i in 0..o_inputs)
-+            #define vInput@{i + 1} vInput@{i + 1}Np
-+        @end
-+    @end
-     @if(o_fog) @{np_in} vec4 vFog;
-     @if(o_grayscale) @{attr} vec4 vGrayscaleColor;
- 
-@@ -109,6 +138,16 @@
-         @end
-     @end
- 
-+    @if(np_emul)
-+        in float vNpW;
-+        @if(o_fog)
-+            #undef vFog
-+        @end
-+        @for(i in 0..o_inputs)
-+            #undef vInput@{i + 1}
-+        @end
-+    @end
-+
-     @if(o_textures[0]) uniform sampler2D uTex0;
-     @if(o_textures[1]) uniform sampler2D uTex1;
- 
-@@ -165,6 +204,18 @@
-     #define TEX_SIZE(tex) vec2(texture_width[tex], texture_height[tex])
- 
-     void main() {
-+        @if(np_emul)
-+            @if(o_fog)
-+                vec4 vFog = vFogNp / vNpW;
-+            @end
-+            @for(i in 0..o_inputs)
-+                @if(o_alpha)
-+                    vec4 vInput@{i + 1} = vInput@{i + 1}Np / vNpW;
-+                @else
-+                    vec3 vInput@{i + 1} = vInput@{i + 1}Np / vNpW;
-+                @end
-+            @end
-+        @end
-         @for(i in 0..2)
-             @if(o_textures[i])
-                 @{s = o_clamp[i][0]}

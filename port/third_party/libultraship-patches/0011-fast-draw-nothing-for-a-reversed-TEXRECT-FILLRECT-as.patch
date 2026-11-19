@@ -1,8 +1,8 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Wed, 18 Nov 2026 12:00:00 -0500
-Subject: [PATCH] fast: draw nothing for a reversed TEXRECT / FILLRECT, as the
- RDP does
+Subject: [PATCH 11/21] fast: draw nothing for a reversed TEXRECT / FILLRECT,
+ as the RDP does
 
 The RDP's rectangle commands carry their corners as unsigned 12-bit
 U10.2 fields. When the lower-right corner lies above or left of the
@@ -22,7 +22,7 @@ lrx < ulx or lry < uly. Ordered rectangles are unchanged.
  1 file changed, 11 insertions(+)
 
 diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
-index 5af3872..9469d6c 100644
+index 4078a5c..24fc3c5 100644
 --- a/src/fast/interpreter.cpp
 +++ b/src/fast/interpreter.cpp
 @@ -3083,6 +3083,13 @@ void Interpreter::GfxDrawRectangle(int32_t ulx, int32_t uly, int32_t lrx, int32_

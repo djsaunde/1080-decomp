@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: djsaunde <1245942+djsaunde@users.noreply.github.com>
 Date: Wed, 18 Nov 2026 13:52:41 -0500
-Subject: [PATCH 17/17] fast: optional persistent colour images, one target per
+Subject: [PATCH 17/21] fast: optional persistent colour images, one target per
  N64 framebuffer
 
 The N64 never clears a colour image by itself: the RDP draws into RDRAM, and a pixel a frame leaves undrawn
@@ -57,7 +57,7 @@ index 0ce9902..e05004e 100644
                                        bool bswap);
  extern "C" void gfx_readback_depth_request(uint32_t x, uint32_t y);
 diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
-index c57126f..781ee04 100644
+index 565f8eb..f207071 100644
 --- a/src/fast/interpreter.cpp
 +++ b/src/fast/interpreter.cpp
 @@ -3413,9 +3413,69 @@ void Interpreter::GfxDpSetZImage(void* zBufAddr) {
@@ -149,7 +149,7 @@ index c57126f..781ee04 100644
      if (!mFbActive) {
          ServiceReadbacks();
      }
-@@ -6006,6 +6071,10 @@ extern "C" void gfx_set_rsp_clipping(bool enabled) {
+@@ -6012,6 +6077,10 @@ extern "C" void gfx_set_rsp_clipping(bool enabled) {
      Fast::mInstance.lock().get()->mRspClipping = enabled;
  }
  
