@@ -1,5 +1,7 @@
 /* port/gfx/fast3d: the live window and its input over SDL2, for the Windows build (live_window.h, plan
- * section 29) and the macOS one (plan 30). The interface and the key / pad mapping are the X11 build's (live_window.cpp). */
+ * section 29), the macOS one (plan 30) and Android (plan 31: an OpenGL ES 3.0 context, fullscreen landscape, the
+ * Back key opens / closes the settings menu). The interface and the key / pad mapping are the X11 build's
+ * (live_window.cpp). */
 #include "live_window.h"
 #include "live_audio.h"
 #include "settings_menu.h"
@@ -31,6 +33,10 @@ bool LiveSDL::open(uint32_t width, uint32_t height, const char* title, int vsync
     h = height;
     SDL_SetMainReady();
     SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
+#ifdef __ANDROID__
+    SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
+    SDL_SetHint(SDL_HINT_ANDROID_TRAP_BACK_BUTTON, "1"); /* Back: the settings menu, not "leave the app" */
+#endif
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_EVENTS) != 0) {
         std::fprintf(stderr, "%s: SDL_Init failed: %s\n", tag, SDL_GetError());
         return false;
@@ -48,9 +54,18 @@ bool LiveSDL::open(uint32_t width, uint32_t height, const char* title, int vsync
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+#elif defined(USE_OPENGLES)
+    /* Android: OpenGL ES 3.0 (LUS built USE_OPENGLES, patches 20 / 21); Fast3D draws into its own framebuffer */
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 #endif
     const char* hidden = std::getenv("PORT_NATIVE_HIDDEN");
     Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
+#ifdef __ANDROID__
+    flags |= SDL_WINDOW_FULLSCREEN; /* the whole screen, immersive (SDLActivity hides the system bars) */
+#endif
     if (hidden != nullptr && *hidden != '\0' && std::strcmp(hidden, "0") != 0) {
         flags |= SDL_WINDOW_HIDDEN;
     }
@@ -59,7 +74,9 @@ bool LiveSDL::open(uint32_t width, uint32_t height, const char* title, int vsync
         std::fprintf(stderr, "%s: SDL_CreateWindow failed: %s\n", tag, SDL_GetError());
         return false;
     }
+#ifndef __ANDROID__
     SDL_SetWindowMinimumSize(W, 320, 240);
+#endif
     if (fullscreen) { /* the settings asked for it before the window existed (native_host.cpp) */
         SDL_SetWindowFullscreen(W, SDL_WINDOW_FULLSCREEN_DESKTOP);
     }
@@ -119,6 +136,9 @@ void LiveSDL::viewport(uint32_t* x, uint32_t* y, uint32_t* vw, uint32_t* vh) con
 }
 
 void LiveSDL::toggleFullscreen() {
+#ifdef __ANDROID__
+    return; /* always fullscreen */
+#endif
     fullscreen = !fullscreen;
     if (win == nullptr) {
         return;
@@ -352,6 +372,18 @@ int live_pump(LiveSDL& w, LiveInput& in, uint32_t step) {
                 if (ev.key.padding2 == 1) {
                     std::printf("%s: synthetic %s %s (step %u)\n", w.tag, name ? name : "?", down ? "down" : "up", step);
                 }
+#ifdef __ANDROID__
+                if (k == SDLK_AC_BACK) { /* Back (the system key or gesture): opens / closes the settings menu */
+                    if (down && ev.key.repeat == 0 && in.menu != nullptr) {
+                        if (in.menu->isOpen()) {
+                            in.menu->key("Escape", true);
+                        } else {
+                            in.menu->toggle();
+                        }
+                    }
+                    break;
+                }
+#endif
                 if (down && ev.key.repeat == 0 && (k == SDLK_F11 || (k == SDLK_RETURN && (ev.key.keysym.mod & KMOD_ALT)))) {
                     w.toggleFullscreen();
                     break;
@@ -387,6 +419,14 @@ int live_pump(LiveSDL& w, LiveInput& in, uint32_t step) {
             case SDL_QUIT:
                 in.quit = true;
                 break;
+#ifdef __ANDROID__
+            case SDL_APP_WILLENTERBACKGROUND: /* SDL then blocks in SDL_PollEvent until the app is back */
+                in.releaseAll();
+                break;
+            case SDL_APP_TERMINATING:
+                in.quit = true;
+                break;
+#endif
             case SDL_CONTROLLERDEVICEADDED:
             case SDL_JOYDEVICEADDED:
                 in.openJoystick(nullptr);

@@ -1,0 +1,93 @@
+// port/android/project/app (plan 31). Properties (build-apk.sh sets them):
+//   tenshoeOut        the output directory (Gradle's build dirs and the native build go under it)
+//   tenshoeW2c        the PORT_WASM build's w2c/ directory (the game translated to C by wasm2c)
+//   tenshoeWasm2cRt   WABT's wasm2c/ runtime directory (wasm-rt-impl.c)
+//   tenshoeSdl2       SDL2's release source (its Java classes are compiled in from there; libSDL2.so is built from it)
+//   tenshoeLus        libultraship + prism with the port's patch series (port/gfx/fast3d/setup-lus.sh)
+//   tenshoeAbis       ABIs, comma-separated (default arm64-v8a; x86_64 for the emulator)
+//   tenshoeJobs       parallel native compiles (default 4)
+//   tenshoeKeystore / tenshoeStorePass / tenshoeKeyAlias / tenshoeKeyPass   the release signing key
+//   tenshoeVersionCode / tenshoeVersionName
+plugins {
+    id 'com.android.application'
+}
+
+def prop = { String name, String dflt = null ->
+    def v = project.findProperty(name)
+    if (v == null && dflt == null) {
+        throw new GradleException("missing -P${name} (port/android/build-apk.sh sets it)")
+    }
+    return v != null ? v.toString() : dflt
+}
+def jniDir = new File(rootProject.projectDir, '../jni').canonicalPath
+
+android {
+    namespace 'dev.djsaunde.tenshoe'
+    compileSdk 34
+    ndkVersion '27.2.12479018'
+
+    defaultConfig {
+        applicationId 'dev.djsaunde.tenshoe'
+        minSdk 26
+        targetSdk 34
+        versionCode prop('tenshoeVersionCode', '1').toInteger()
+        versionName prop('tenshoeVersionName', '0.1')
+        ndk {
+            abiFilters(*prop('tenshoeAbis', 'arm64-v8a').split(','))
+        }
+        externalNativeBuild {
+            cmake {
+                arguments "-DW2C_DIR=${prop('tenshoeW2c')}", "-DWASM2C_RT_DIR=${prop('tenshoeWasm2cRt')}",
+                          "-DSDL2_SRC=${prop('tenshoeSdl2')}", "-DPORT_LUS=${prop('tenshoeLus')}",
+                          "-DPORT_ANDROID_JOBS=${prop('tenshoeJobs', '4')}", '-DANDROID_STL=c++_shared'
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "${jniDir}/CMakeLists.txt"
+            version '3.22.1'
+            if (project.hasProperty('tenshoeOut')) {
+                buildStagingDirectory "${project.property('tenshoeOut')}/cxx"
+            }
+        }
+    }
+
+    sourceSets {
+        main {
+            // SDLActivity and the rest of SDL2's Java side, from its source
+            java.srcDirs += ["${prop('tenshoeSdl2', '')}/android-project/app/src/main/java"]
+        }
+    }
+
+    signingConfigs {
+        release {
+            if (project.hasProperty('tenshoeKeystore')) {
+                storeFile file(prop('tenshoeKeystore'))
+                storePassword prop('tenshoeStorePass')
+                keyAlias prop('tenshoeKeyAlias')
+                keyPassword prop('tenshoeKeyPass')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            debuggable false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true // libraries extracted at install: the game's libmain.so is large
+        }
+    }
+}

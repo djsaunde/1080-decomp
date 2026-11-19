@@ -1,6 +1,8 @@
 # port/wasm/host/native.cmake (plan 30): the window / audio / input / Fast3D host around the wasm2c game, from the
 # plan 21.9 sources (port/gfx/fast3d) built with PORT_WASM_HOST (game addresses = memory base + offset).
 #   macOS: SDL2 (window, keyboard, game controllers, CoreAudio output) and the OpenGL framework (4.1 core);
+#   Android (plan 31): SDL2 (built from source by port/android's Gradle project: SDL2::SDL2), OpenGL ES 3.0 (LUS built
+#            USE_OPENGLES, patches 20 / 21), AAudio / OpenSL ES through SDL;
 #   Linux: X11 + EGL + PulseAudio, as the x86-64 PORT_NATIVE build (tools/x11-dev, tools/pulse-dev, tools/gl-dev).
 set(PORT_LUS "${GAME_ROOT}/../../tools/lus" CACHE PATH "libultraship + prism (port/gfx/fast3d/setup-lus.sh)")
 if(NOT EXISTS "${PORT_LUS}/.complete")
@@ -44,6 +46,13 @@ if(APPLE)
       list(APPEND _native_inc ${_d} ${_p})
     endforeach()
   endif()
+elseif(ANDROID)
+  if(NOT TARGET SDL2::SDL2)
+    message(FATAL_ERROR "Android: add SDL2's source (add_subdirectory) before port/wasm/host (port/android)")
+  endif()
+  list(APPEND _native_src ${_fd}/live_window_sdl.cpp)
+  list(APPEND _native_defs PORT_SDL USE_OPENGLES)
+  set(_native_libs SDL2::SDL2 GLESv3 EGL log android)
 else()
   set(PORT_GL_DEV "${GAME_ROOT}/../../tools/gl-dev/root/usr/include" CACHE PATH "EGL / GL headers")
   set(PORT_NATIVE_X11_DEV "${GAME_ROOT}/../../tools/x11-dev/root/usr/include" CACHE PATH "Xlib headers")
@@ -56,7 +65,7 @@ else()
 endif()
 add_library(port_native STATIC ${_native_src})
 target_include_directories(port_native PRIVATE ${_native_inc})
-if(APPLE)
+if(APPLE OR ANDROID)
   target_link_libraries(port_native PUBLIC ${_native_libs})
 endif()
 target_compile_definitions(port_native PRIVATE ${_native_defs})

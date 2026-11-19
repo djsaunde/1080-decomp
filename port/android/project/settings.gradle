@@ -1,0 +1,4 @@
+// port/android/project (plan 31): the APK. Built by port/android/build-apk.sh with SDL2's Gradle wrapper
+// (tools/android/src/SDL2-*/android-project/gradlew -p port/android/project ...); outputs go to -PtenshoeOut.
+rootProject.name = 'tenshoe'
+include ':app'

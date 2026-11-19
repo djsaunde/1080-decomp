@@ -15,6 +15,15 @@
 
 #include "wasm_host.h"
 #include "posix_launch.h"
+
+/* <execinfo.h>: glibc and macOS; Android's bionic has it only from API 33 (the APK runs from 26) */
+#if (defined(__linux__) && !defined(__ANDROID__)) || defined(__APPLE__)
+#define PORT_HAVE_EXECINFO 1
+#include <execinfo.h>
+#endif
+#if defined(__linux__) || defined(__APPLE__)
+#include <signal.h>
+#endif
 #include "wasm-rt.h"
 #include "wasm-rt-exceptions.h"
 #include "wasm-rt-impl.h"
@@ -68,10 +77,6 @@ static void fpu_setup(void) {
 #endif
 }
 
-#if defined(__linux__) || defined(__APPLE__)
-#include <execinfo.h>
-#endif
-
 /* WASM_RT_TRAP_HANDLER (wasm-rt-impl.c is compiled with -DWASM_RT_TRAP_HANDLER=port_wasm_trap): the trap,
  * then the native return addresses (the wasm2c functions are w2c_game_<name>; addr2line -f -e <exe>) */
 void port_wasm_trap(wasm_rt_trap_t code) {
@@ -85,7 +90,7 @@ void port_wasm_trap(wasm_rt_trap_t code) {
         }
         fprintf(stderr, "  table size %u\n", (unsigned)sGame.w2c_T0.size);
     }
-#if defined(__linux__) || defined(__APPLE__)
+#ifdef PORT_HAVE_EXECINFO
     {
         void *frames[48];
         int n = backtrace(frames, 48);
@@ -95,8 +100,7 @@ void port_wasm_trap(wasm_rt_trap_t code) {
     port_wasm_exit(134);
 }
 
-#if defined(__linux__) || defined(__APPLE__)
-#include <signal.h>
+#ifdef PORT_HAVE_EXECINFO
 /* PORT_WASM_STACK_SIGNAL: kill -USR1 prints where the game is (a hang) */
 static void on_usr1(int sig) {
     void *frames[48];
@@ -119,7 +123,7 @@ void port_wasm_watch_hit(uint64_t a, unsigned n) {
     static int count;
     if (count++ < 20000) {
         fprintf(stderr, "PORT: watch: access at 0x%llx (%u bytes)\n", (unsigned long long)a, n);
-#if defined(__linux__) || defined(__APPLE__)
+#ifdef PORT_HAVE_EXECINFO
         {
             void *frames[16];
             int k = backtrace(frames, 16);
@@ -135,7 +139,7 @@ void port_wasm_bad_icall(uint32_t x, uint32_t size) {
     wasm_rt_trap(WASM_RT_TRAP_CALL_INDIRECT);
 }
 
-#if defined(__linux__) || defined(__APPLE__)
+#if (defined(__linux__) || defined(__APPLE__)) && !defined(__ANDROID__) /* Android: the system's crash report */
 /* a native fault that is not a guard-page trap (wasm-rt's handler passes those on): where, then the default */
 static struct sigaction sPrevSegv;
 static void on_segv(int sig, siginfo_t *si, void *uc) {
@@ -148,16 +152,25 @@ static void on_segv(int sig, siginfo_t *si, void *uc) {
         return;
     }
     fprintf(stderr, "PORT: native fault at %p (signal %d)\n", si->si_addr, sig);
+#ifdef PORT_HAVE_EXECINFO
     {
         void *frames[48];
         int n = backtrace(frames, 48);
         backtrace_symbols_fd(frames, n, 2);
     }
+#endif
     signal(sig, SIG_DFL);
 }
 #endif
 
 extern char **environ;
+
+/* Android (plan 31): SDL's Java side calls SDL_main in libmain.so (port/android/android_main.c), which finds the ROM
+ * and the data directory and calls this */
+#ifdef __ANDROID__
+#define main port_wasm_main
+int port_wasm_main(int argc, char **argv);
+#endif
 
 int main(int argc, char **argv) {
     char cwd[4096], *cwdEnv;
@@ -179,7 +192,7 @@ int main(int argc, char **argv) {
     env[n] = cwdEnv;
     port_wasi_init(argc, argv, env);
 
-#if defined(__linux__) || defined(__APPLE__)
+#ifdef PORT_HAVE_EXECINFO
     signal(SIGUSR1, on_usr1);
 #endif
     if (getenv("PORT_WASM_WATCH") != NULL) {
@@ -189,7 +202,7 @@ int main(int argc, char **argv) {
     }
     fpu_setup();
     wasm_rt_init();
-#if defined(__linux__) || defined(__APPLE__)
+#if (defined(__linux__) || defined(__APPLE__)) && !defined(__ANDROID__)
     {
         struct sigaction sa;
         memset(&sa, 0, sizeof(sa));

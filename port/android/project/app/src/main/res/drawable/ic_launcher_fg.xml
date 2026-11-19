@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- a snowy peak and a slope (no game artwork) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#FFFFFF" android:pathData="M18,78 L46,34 L58,52 L66,42 L90,78 Z" />
+    <path android:fillColor="#9CC7E8" android:pathData="M46,34 L52,44 L46,48 L40,44 Z" />
+    <path android:fillColor="#E8541E" android:pathData="M30,70 L78,58 L79,62 L31,74 Z" />
+</vector>

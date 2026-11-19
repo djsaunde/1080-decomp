@@ -31,6 +31,13 @@
 static char sData[PATH_MAX];
 static char sRom[PATH_MAX];
 static int sGui;
+static void (*sAlertHook)(const char *text);
+
+void port_posix_set_gui(const char *dataDir, void (*alertHook)(const char *text)) {
+    sGui = 1;
+    snprintf(sData, sizeof(sData), "%s", dataDir);
+    sAlertHook = alertHook;
+}
 
 static int file_exists(const char *p) {
     struct stat st;
@@ -158,6 +165,10 @@ static int dialog(char *out, size_t n) {
 }
 
 void port_posix_alert(const char *text) {
+    if (sAlertHook != NULL) {
+        sAlertHook(text);
+        return;
+    }
 #ifdef __APPLE__
     if (sGui) {
         char cmd[2048], esc[1024];

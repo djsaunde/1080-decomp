@@ -44,3 +44,8 @@ uoptlist
 # PC port: assets extracted from the user's ROM by port/tools/extract/extract.py (never commit).
 port/assets/extracted/
 port/gfx/fast3d/presenter
+
+# Android (plan 31): Gradle caches if the project is built in place
+port/android/project/.gradle/
+port/android/project/**/.cxx/
+port/android/project/local.properties

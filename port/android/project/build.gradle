@@ -1,0 +1,21 @@
+// the Android Gradle plugin of SDL2 2.30's android-project template (Gradle 8.1.1 through its wrapper)
+buildscript {
+    repositories {
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.1'
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        google()
+    }
+    // every output outside the source tree (build-apk.sh passes -PtenshoeOut)
+    if (project.hasProperty('tenshoeOut')) {
+        buildDir = new File(project.property('tenshoeOut'), "gradle/${project.name}")
+    }
+}
