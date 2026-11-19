@@ -516,6 +516,25 @@ def apply_aliases(mod, aliases):
         substitute(mod, 0, len(mod.lines), tok, lambda n, b=base, o=off: (b, o), mod.is_function(tok))
 
 
+def trace_entries(mod):
+    """debugging (CC_WASM_TRACE=1 at build time): every function of the unit calls port_wasm_fn("<name>") first
+    (port/ultra/misc.c logs it between two retraces, PORT_WASM_FNTRACE=lo:hi), before any inlining"""
+    out = []
+    n = 0
+    for ln in mod.lines:
+        out.append(ln)
+        if ln.startswith("define ") and ln.rstrip().endswith("{"):
+            m = re.search(r"@(" + NAME + r"|\"[^\"]*\")\(", ln)
+            name = m.group(1).strip('"')
+            n += 1
+            out.append("  call void @port_wasm_fn(ptr @.port_trn.%d)" % n)
+            mod.extra.append(("", "@.port_trn.%d = private unnamed_addr constant [%d x i8] c\"%s\\00\"" % (
+                n, len(name) + 1, name)))
+    if n:
+        mod.extra.append(("port_wasm_fn", "declare void @port_wasm_fn(ptr)"))
+    mod.lines = out
+
+
 def no_common(text):
     # -fcommon tentative definitions (several match_imports units define gl_storage_66B64_threadRegion): wasm has no
     # common symbols, so they become weak definitions (the copies are the same size)
@@ -613,6 +632,9 @@ def main():
     # so GlobalOpt cannot evaluate them into the data.
     with open(ll) as fh:
         mod = Module(fh.read())
+    if os.environ.get("CC_WASM_TRACE") and hdr:
+        trace_entries(mod)
+        mod = Module(mod.text()) # the line indices moved
     if hdr:
         apply_directives(mod, *parse_header(hdr), phase="pre")
     with open(ll, "w") as fh:

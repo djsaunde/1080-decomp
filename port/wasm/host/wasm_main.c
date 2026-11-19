@@ -14,6 +14,7 @@
 #endif
 
 #include "wasm_host.h"
+#include "posix_launch.h"
 #include "wasm-rt.h"
 #include "wasm-rt-exceptions.h"
 #include "wasm-rt-impl.h"
@@ -46,6 +47,12 @@ void port_wasm_exit(int code) {
     fflush(stderr);
     if (port_wasm_host_exit != NULL) {
         port_wasm_host_exit();
+    }
+    if (code != 0 && port_posix_gui()) {
+        char msg[512];
+        snprintf(msg, sizeof(msg), "The game stopped (exit %d). The reason is in %s/1080.log.", code,
+                 port_posix_data_dir());
+        port_posix_alert(msg);
     }
     exit(code);
 }
@@ -145,6 +152,7 @@ int main(int argc, char **argv) {
     char **env;
     int n, i, trap;
 
+    argv = port_posix_launch(argc, argv, &argc); /* no arguments: the double-click set-up (data dir, ROM) */
     if (getcwd(cwd, sizeof(cwd)) == NULL) {
         strcpy(cwd, "/");
     }

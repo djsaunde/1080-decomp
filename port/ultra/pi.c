@@ -96,7 +96,8 @@ static s32 transfer(u32 addr, void *dram, u32 size, s32 direction) {
         sPiLog = getenv("PORT_PI_LOG") != NULL; /* debugging: one line per PI transfer */
     }
     if (sPiLog) {
-        port_ultra_log("PI %c 0x%08X 0x%X", direction == OS_READ ? 'r' : 'w', (unsigned)addr, (unsigned)size);
+        port_ultra_log("PI %c 0x%08X 0x%X retrace %u", direction == OS_READ ? 'r' : 'w', (unsigned)addr, (unsigned)size,
+                       (unsigned)port_ultra_st.retraces);
     }
     if (direction == OS_READ) {
         port_ultra_st.piBytes += size;

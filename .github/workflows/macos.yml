@@ -1,0 +1,79 @@
+name: macOS port
+
+# plan section 30: the macOS build (Apple Silicon). The game is built as wasm32 with wasi-sdk, translated to C by
+# wasm2c (WABT, built here from its release source), and compiled natively with the SDL2 / OpenGL host; the
+# artifact is a zipped 1080.app + README.txt. No ROM in CI: the checks are the build, the wasm2c module running
+# on the runner (a run without a ROM must end with the "cannot read the ROM" message), and the app bundle.
+on:
+  push:
+    branches: [port-macos-ci, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: macos-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  WASI_SDK_VERSION: "25"
+  WABT_VERSION: "1.0.36"
+
+jobs:
+  macos-port:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install ninja and SDL2
+        run: brew install ninja sdl2
+
+      - name: Fetch wasi-sdk, build wasm2c, fetch libultraship
+        run: |
+          T="${{ runner.temp }}/wasm"; mkdir -p "$T"; cd "$T"
+          curl -sSfL -o wasi-sdk.tgz "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_SDK_VERSION}/wasi-sdk-${WASI_SDK_VERSION}.0-arm64-macos.tar.gz"
+          tar xzf wasi-sdk.tgz
+          echo "WASI_SDK=$T/$(ls -d wasi-sdk-*-macos | head -1)" >> "$GITHUB_ENV"
+          curl -sSfL -o wabt.tar.xz "https://github.com/WebAssembly/wabt/releases/download/${WABT_VERSION}/wabt-${WABT_VERSION}.tar.xz"
+          tar xJf wabt.tar.xz
+          cmake -S "wabt-${WABT_VERSION}" -B wabt-build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF \
+                -DBUILD_LIBWASM=OFF -DUSE_INTERNAL_SHA256=ON > wabt-cfg.log
+          cmake --build wabt-build --target wasm2c
+          echo "WASM2C=$T/wabt-build/wasm2c" >> "$GITHUB_ENV"
+          echo "WASM2C_RT=$T/wabt-${WABT_VERSION}/wasm2c" >> "$GITHUB_ENV"
+          cd "${{ github.workspace }}" && bash port/gfx/fast3d/setup-lus.sh
+
+      - name: Build the game (wasm32) and translate it (wasm2c)
+        run: |
+          cmake -S port -B build-wasm -G Ninja -DPORT_WASM=ON -DCMAKE_TOOLCHAIN_FILE="$WASI_SDK/share/cmake/wasi-sdk.cmake" \
+                -DWASI_SDK_PREFIX="$WASI_SDK" -DWASM2C="$WASM2C"
+          cmake --build build-wasm -j3
+
+      - name: Build the native host (arm64, SDL2 + OpenGL)
+        run: |
+          cmake -S port/wasm/host -B build-host -G Ninja -DW2C_DIR="$PWD/build-wasm/w2c" -DWASM2C_RT_DIR="$WASM2C_RT" \
+                -DWASM_HOST_NATIVE=ON -DSDL2_DIR="$(brew --prefix sdl2)/lib/cmake/SDL2"
+          cmake --build build-host -j3
+          file build-host/tenshoe
+          otool -L build-host/tenshoe
+
+      - name: Run check (no ROM in CI)
+        run: |
+          set +e
+          ./build-host/tenshoe --rom /nonexistent.z64 --frames 1 > run.log 2>&1; rc=$?
+          cat run.log
+          set -e
+          test $rc -ne 0
+          grep -q "cannot read the ROM" run.log
+
+      - name: Package 1080.app
+        run: |
+          bash port/wasm/macos/make-app.sh build-host/tenshoe dist "0.$(date -u +%Y%m%d).${GITHUB_RUN_NUMBER}"
+          ls -la dist
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: 1080-pc-macos-arm64
+          path: dist/1080-pc-macos.zip

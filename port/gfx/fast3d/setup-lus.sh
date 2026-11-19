@@ -18,7 +18,8 @@ LUS_URL="${LUS_URL:-https://github.com/Kenix3/libultraship}"
 PRISM_URL="${PRISM_URL:-https://github.com/KiritoDv/prism-processor.git}"
 PATCHES=("$GAME"/port/third_party/libultraship-patches/*.patch)
 # the stamp names the pin and the patch contents, so a changed series re-applies
-STAMP="$LUS_PIN $PRISM_PIN $(cat "${PATCHES[@]}" | sha1sum | cut -c1-12)"
+SHA1SUM=sha1sum; command -v sha1sum >/dev/null || SHA1SUM="shasum -a 1" # macOS (plan 30) has shasum only
+STAMP="$LUS_PIN $PRISM_PIN $(cat "${PATCHES[@]}" | $SHA1SUM | cut -c1-12)"
 if [[ -f "$DEST/.complete" && "$(cat "$DEST/.complete")" == "$STAMP" ]]; then
     echo "setup-lus: $DEST present ($STAMP)"
     exit 0

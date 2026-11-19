@@ -47,7 +47,8 @@ if(WASM_HOST_NULLCHECK)
   target_compile_definitions(w2cgame PRIVATE PORT_WASM_NULLCHECK)
 endif()
 
-set(_host ${CMAKE_CURRENT_SOURCE_DIR}/wasm_main.c ${CMAKE_CURRENT_SOURCE_DIR}/wasi_host.c)
+set(_host ${CMAKE_CURRENT_SOURCE_DIR}/wasm_main.c ${CMAKE_CURRENT_SOURCE_DIR}/wasi_host.c
+          ${CMAKE_CURRENT_SOURCE_DIR}/posix_launch.c)
 if(WASM_HOST_NATIVE)
   include(${CMAKE_CURRENT_SOURCE_DIR}/native.cmake)
 else()

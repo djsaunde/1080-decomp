@@ -259,3 +259,19 @@ void port_ultra_shutdown(void) {
 const PortUltraStats *port_ultra_stats(void) {
     return &port_ultra_st;
 }
+
+#ifdef PORT_WASM
+/* debugging (plan 30): a build with CC_WASM_TRACE=1 calls this at every game function's entry;
+ * PORT_WASM_FNTRACE=<first retrace>:<last retrace> logs the names in that window */
+void port_wasm_fn(const char *name) {
+    static int on = -1;
+    static unsigned lo, hi;
+    if (on < 0) {
+        const char *e = getenv("PORT_WASM_FNTRACE");
+        on = e != NULL && sscanf(e, "%u:%u", &lo, &hi) == 2;
+    }
+    if (on && port_ultra_st.retraces >= lo && port_ultra_st.retraces <= hi) {
+        fprintf(stderr, "FN %s\n", name);
+    }
+}
+#endif
