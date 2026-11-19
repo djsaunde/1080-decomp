@@ -222,10 +222,51 @@ def widen_calls(text, counter):
     return "\n".join(out), n
 
 
+ZERO = {"ptr": "null", "float": "0.0", "double": "0.0"}
+
+
+def extend_params(text, maxargs):
+    out, n = [], 0
+    for line in text.split("\n"):
+        if line.startswith("define ") and ".narrow" not in line:
+            d = parse_def(line)
+            if d and not d[4] and d[1] != "" and len(d[3]) < 4 and maxargs.get(d[0], 0) > len(d[3]) and \
+                    all(t in ("i32", "ptr") for t, _ in d[3]):
+                want = min(4, maxargs[d[0]])
+                m = re.match(r"(define\s+.*?@(?:" + NAME + r")\()(.*)(\)[^()]*\{\s*)$", line)
+                if m:
+                    extra = ", ".join("i32 %%pt.%d" % k for k in range(len(d[3]), want))
+                    ps = m.group(2).strip()
+                    line = m.group(1) + (ps + ", " + extra if ps else extra) + m.group(3)
+                    n += 1
+        out.append(line)
+    return "\n".join(out), n
+
+
+def caller_params(line):
+    """the parameters of a `define` line: [(type, value name)] (None for a variadic or unparsable one)"""
+    m = re.match(r"define\s+.*?@(?:" + NAME + r")\((.*)\)[^()]*\{\s*$", line)
+    if not m:
+        return None
+    out = []
+    for p in split_top(m.group(1)):
+        if p == "...":
+            return out
+        t = type_prefix(p)
+        if t is None:
+            return None
+        v = t[2].split()[-1] if t[2].split() else ""
+        out.append((t[0], v if v.startswith("%") else None))
+    return out
+
+
 def adapt_calls(text, defs, counter):
     out = []
     changed = 0
+    params = None
     for line in text.split("\n"):
+        if line.startswith("define "):
+            params = caller_params(line)
         m = CALL.match(line) if " call " in line else None
         if not m or m.group(7).strip('"') not in defs:
             out.append(line)
@@ -255,6 +296,28 @@ def adapt_calls(text, defs, counter):
                     any_change = True
                     continue
             newargs.append("%s %s%s" % (ty, attrs, val))
+        # Fewer arguments than the definition takes, the IDO K&R pass-through (plan 18.9): on the N64 the
+        # missing ones are whatever the caller's $a1..$a3 hold, usually its own incoming arguments, which the
+        # x86-64 build's registers and the i386 build's tail calls also hand on. wasm has no registers to
+        # inherit: the caller's own parameter at that position is passed (zero when it has none).
+        if not dvar and len(parsed) < len(dtypes) and len(dtypes) <= 8 and fnty is None:
+            for k in range(len(parsed), len(dtypes)):
+                to = dtypes[k][0]
+                if params is not None and k < len(params) and params[k][1] is not None:
+                    pty, pval = params[k]
+                    counter[0] += 1
+                    tmp = "%%cw.%d" % counter[0]
+                    c = conv(pty, to, "signext", pval, tmp)
+                    if c is not None:
+                        pre.append(ind + c)
+                        newargs.append("%s %s" % (to, tmp))
+                    elif pty == to:
+                        newargs.append("%s %s" % (to, pval))
+                    else:
+                        newargs.append("%s %s" % (to, ZERO.get(to, "0")))
+                else:
+                    newargs.append("%s %s" % (to, ZERO.get(to, "0")))
+            any_change = True
         want_var = dvar and (fnty is None or "..." not in fnty)
         if not dvar and fnty is not None and "..." in fnty:
             any_change = True   # a variadic-typed call (a donor's `f(...)` declaration) of a fixed definition
@@ -333,6 +396,24 @@ def main():
     for o in list(texts):
         t2, nw = widen_defs(texts[o])
         if nw:
+            texts[o] = t2
+            with open(o + ".ll", "w") as fh:
+                fh.write(t2)
+            widened.add(o)
+    # the MIPS argument registers (plan 30): a definition with fewer than four parameters that some call passes more
+    # to takes them (i32, up to four), so that a pass-through inside it (a call with fewer arguments than its
+    # callee takes, see adapt_calls) can hand them on, as $a1..$a3 do (AudioLoad_SyncInitSeqPlayer(a0) is called
+    # with (player, seq, arg) and passes them on to SyncInitSeqPlayerInternal through a one-argument call)
+    maxargs = {}
+    for t in texts.values():
+        for m in re.finditer(r"\bcall [^@\n]*?@(" + NAME + r")\((.*)\)", t):
+            n = len(split_top(m.group(2)))
+            nm = m.group(1).strip('"')
+            if n > maxargs.get(nm, 0):
+                maxargs[nm] = n
+    for o in list(texts):
+        t2, ne = extend_params(texts[o], maxargs)
+        if ne:
             texts[o] = t2
             with open(o + ".ll", "w") as fh:
                 fh.write(t2)
