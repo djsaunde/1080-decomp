@@ -11,6 +11,9 @@
 #endif
 #include <OpenGL/gl3.h>
 #include <OpenGL/gl3ext.h>
+#ifndef GL_MIRROR_CLAMP_TO_EDGE
+#define GL_MIRROR_CLAMP_TO_EDGE 0x8743 /* GL 4.4 / ARB_texture_mirror_clamp_to_edge (the ATI / EXT enum on 4.1) */
+#endif
 #else
 #ifndef GL_GLEXT_PROTOTYPES
 #define GL_GLEXT_PROTOTYPES 1
