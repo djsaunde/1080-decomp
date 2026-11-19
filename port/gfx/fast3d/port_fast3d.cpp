@@ -47,13 +47,7 @@
 #include <unordered_map>
 #include <vector>
 
-#ifdef PORT_WIN32
-#include "../../win32/win32_gl.h" /* plan 29: the GL entry points past 1.1 */
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/gl.h>
-#include <GL/glext.h>
-#endif
+#include "port_gl.h"
 
 #include "fast/interpreter.h"
 #include "fast/backends/gfx_opengl.h"
@@ -93,6 +87,16 @@ State* sState;
 
 /* gap 1: vouch for every writable low mapping (heap, .bss, USO images, anonymous mmaps) */
 void register_low_mappings(State& s) {
+#ifdef PORT_WASM_HOST
+    /* plan 30: the wasm game's memory, from the 16 MB global base to its current size */
+    {
+        const uintptr_t lo = (uintptr_t)port_gptr(0x1000000u), hi = (uintptr_t)port_wasm_mem_base() + port_wasm_mem_size();
+        if (hi > lo && s.registered.insert({ lo, hi }).second) {
+            gfx_register_raw_address_range((const void*)lo, (size_t)(hi - lo));
+        }
+        return;
+    }
+#endif
 #ifdef PORT_WIN32
     /* Windows (plan 29): the committed writable regions below 0x10000000 (the exe's .data / .bss, the CRT heap,
      * VirtualAlloc blocks), from VirtualQuery instead of /proc/self/maps */
@@ -147,7 +151,7 @@ Offscreen offscreen_target(uint32_t root) {
     std::vector<std::pair<uint32_t, uint32_t>> cimgs; /* (w0, w1) */
     uint32_t stack[32], pc = root, sp = 0, lry = 0;
     for (uint32_t n = 0; n < (1u << 20) && pc != 0 && (pc & 7) == 0; n++) {
-        const uint32_t* g = (const uint32_t*)(uintptr_t)pc;
+        const uint32_t* g = (const uint32_t*)port_gptr(pc);
         const uint32_t w0 = g[0], w1 = g[1];
         pc += 8;
         switch (w0 >> 24) {
@@ -210,7 +214,7 @@ struct Widener {
             return nullptr;
         }
         auto v = std::make_unique<std::vector<Fast::F3DGfx>>();
-        const uint32_t* g = (const uint32_t*)(uintptr_t)addr;
+        const uint32_t* g = (const uint32_t*)port_gptr(addr);
         for (size_t i = 0; i < (1u << 20); i++) {
             Fast::F3DGfx c;
             c.words.w0 = g[i * 2];
@@ -224,12 +228,20 @@ struct Widener {
         std::vector<Fast::F3DGfx>* list = v.get();
         lists.emplace(addr, std::move(v));
         for (size_t i = 0; i < list->size(); i++) {
-            if (((*list)[i].words.w0 >> 24) == 0x06) {
+            const uint32_t op = (uint32_t)(*list)[i].words.w0 >> 24;
+            if (op == 0x06) {
                 Fast::F3DGfx* t = widen((uint32_t)(*list)[i].words.w1, depth + 1);
                 if (t != nullptr) {
                     (*list)[i].words.w1 = (uintptr_t)t;
                 }
             }
+#ifdef PORT_WASM_HOST
+            /* plan 30: the operands Fast3D dereferences become host pointers (G_MTX, G_MOVEMEM, G_VTX, G_SETTIMG).
+             * G_SETCIMG / G_SETZIMG stay game addresses: they are only compared with the game's own (24 bits) */
+            else if (op == 0x01 || op == 0x03 || op == 0x04 || op == 0xFD) {
+                (*list)[i].words.w1 = (uintptr_t)port_gptr((uint32_t)(*list)[i].words.w1);
+            }
+#endif
         }
         return list->data();
     }
@@ -501,7 +513,7 @@ void walk_task(uint32_t root, NativeTask& t, uint32_t* imgs, int maxImgs, int* n
     uint32_t stack[32], pc = root, sp = 0;
     *nImgs = 0;
     for (uint32_t n = 0; n < (1u << 20) && pc != 0 && (pc & 7) == 0; n++) {
-        const uint32_t* g = (const uint32_t*)(uintptr_t)pc;
+        const uint32_t* g = (const uint32_t*)port_gptr(pc);
         const uint32_t w0 = g[0], w1 = g[1];
         pc += 8;
         switch (w0 >> 24) {
@@ -582,6 +594,12 @@ uint32_t native_store_rtt(State& s, const Offscreen& o, const std::vector<uint16
     if (cands.empty()) {
         for (uintptr_t hi = 0; hi < 128; hi++) {
             const uintptr_t a = (hi << 24) | o.img24;
+#ifdef PORT_WASM_HOST
+            if (port_gmem_ok((uint32_t)a, bytes)) {
+                cands.insert(a);
+            }
+            continue;
+#endif
             for (const auto& r : s.registered) {
                 if (a >= r.first && a + bytes <= r.second) {
                     cands.insert(a);
@@ -599,9 +617,9 @@ uint32_t native_store_rtt(State& s, const Offscreen& o, const std::vector<uint16
         return 0;
     }
     const uintptr_t img = *cands.begin();
-    std::memcpy((void*)img, px.data(), bytes);
+    std::memcpy(port_gptr(img), px.data(), bytes);
     const uintptr_t lo = img > 0x8000 ? img - 0x8000 : 0;
-    gfx_texture_cache_invalidate_range((const void*)lo, img + bytes - lo);
+    gfx_texture_cache_invalidate_range(port_gptr(lo), img + bytes - lo);
     return bytes;
 }
 
@@ -638,9 +656,6 @@ template <typename Fn> void walk_chain(Fast::F3DGfx* root, Fn&& fn) {
     }
 }
 
-bool low_ptr(uintptr_t a, size_t n) {
-    return a >= 0x10000 && a + n <= 0x80000000u;
-}
 
 /* the view's width over the native 4:3 at its height: 1 = 4:3 */
 float wide_factor(uint32_t vw, uint32_t vh) {
@@ -673,17 +688,17 @@ void plan_frame(Fast::F3DGfx* root, uint32_t step, float A, bool edges) {
         const uintptr_t w1 = cmd->words.w1;
         switch (w0 >> 24) {
             case 0x01: /* G_MTX */
-                if (low_ptr(w1, 64)) {
+                if (port_gmem_ok(port_gaddr((const void*)w1), 64)) {
                     std::array<int32_t, 16> m;
                     std::memcpy(m.data(), (const void*)w1, 64);
-                    S.mtx[(uint32_t)w1] = m;
-                    S.mtxOrder.push_back({ (uint32_t)w1, (uint8_t)(w0 >> 16) });
+                    S.mtx[port_gaddr((const void*)w1)] = m;
+                    S.mtxOrder.push_back({ port_gaddr((const void*)w1), (uint8_t)(w0 >> 16) });
                 }
                 break;
             case 0x04: { /* G_VTX (F3DEX 1): n = bits 10..15 */
                 const size_t bytes = (size_t)((w0 >> 10) & 0x3F) * 16;
-                if (bytes != 0 && low_ptr(w1, bytes)) {
-                    auto& v = S.vtx[(uint32_t)w1];
+                if (bytes != 0 && port_gmem_ok(port_gaddr((const void*)w1), bytes)) {
+                    auto& v = S.vtx[port_gaddr((const void*)w1)];
                     if (v.size() < bytes) {
                         v.assign((const uint8_t*)w1, (const uint8_t*)w1 + bytes);
                     }
@@ -901,7 +916,7 @@ bool build_interp(float alpha) {
                 f.mf[i][j] = x + (y - x) * alpha;
             }
         }
-        I.mtxRep[(Mtx*)(uintptr_t)e.first] = f;
+        I.mtxRep[(Mtx*)port_gptr(e.first)] = f;
     }
     /* vertices written on the CPU (the riders' skinned bodies, in world space) at the same address both steps */
     I.vtxStore.reserve(I.cur.vtx.size());
@@ -929,7 +944,7 @@ bool build_interp(float alpha) {
             continue;
         }
         I.vtxStore.push_back(std::move(out));
-        I.vtxRep[(const void*)(uintptr_t)e.first] = I.vtxStore.back().data();
+        I.vtxRep[(const void*)port_gptr(e.first)] = I.vtxStore.back().data();
     }
     return true;
 }

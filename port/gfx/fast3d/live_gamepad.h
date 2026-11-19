@@ -15,7 +15,7 @@ extern "C" {
 #include "../../input_map.h"
 }
 
-#ifdef PORT_WIN32
+#ifdef PORT_SDL
 /* The Windows build (plan 29): SDL2's game controllers (XInput pads, the DirectInput / HID pads SDL has a
  * mapping for; any other joystick read raw in the js layout), in the order SDL found them, up to 4
  * (live_window_sdl.cpp). The same PortGamepad states and virtual pads as below. */

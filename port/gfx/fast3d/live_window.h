@@ -17,7 +17,7 @@ extern "C" {
 /* CLOCK_MONOTONIC seconds */
 double live_now_s();
 
-#ifdef PORT_WIN32
+#ifdef PORT_SDL
 /* The Windows build (plan 29): the same interface over SDL2 (live_window_sdl.cpp): an SDL window with a
  * desktop GL context, the keyboard and an SDL game controller (XInput / DirectInput / HID). */
 struct LiveSDL {

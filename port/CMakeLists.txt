@@ -296,7 +296,7 @@ if(PORT_WIN32)
               ${_prism_cpp} ${_prism_c})
   target_include_directories(port_native PRIVATE gfx/fast3d/shim ${_lus}/include ${_lus}/include/fast ${_lus}/src
                              ${PORT_LUS}/prism/src ${SDL2_MINGW}/include ${CMAKE_CURRENT_BINARY_DIR}/win32gen)
-  target_compile_definitions(port_native PRIVATE PORT_WIN32 PORT_EMBED_SHADERS ENABLE_OPENGL SDL_MAIN_HANDLED
+  target_compile_definitions(port_native PRIVATE PORT_WIN32 PORT_SDL PORT_EMBED_SHADERS ENABLE_OPENGL SDL_MAIN_HANDLED
                              CVAR_MSAA_VALUE="gMSAAValue" CVAR_INTERNAL_RESOLUTION="gInternalResolution"
                              CVAR_Z_FIGHTING_MODE="gZFightingMode" LUS_FAST_DIR="${_lus}/src/fast")
   target_compile_options(port_native PRIVATE -O2 -msse2 -mfpmath=sse -w $<$<COMPILE_LANGUAGE:CXX>:-std=c++20>)

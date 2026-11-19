@@ -2,7 +2,7 @@
  * dlreplay (the bring-up interpreter) and f3dreplay (libultraship's Fast3D).
  * PC port plan section 19. Taken out of dlreplay.c unchanged. */
 
-#ifndef PORT_WIN32
+#ifndef PORT_SDL
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <GL/gl.h>
@@ -108,8 +108,8 @@ int write_png(const char *path, const uint8_t *rgba, int w, int h) {
 
 /* ---------------- EGL ---------------- */
 
-#ifdef PORT_WIN32
-/* the Windows build (plan 29) renders into its SDL window's context only: no offscreen EGL */
+#ifdef PORT_SDL
+/* the SDL hosts (Windows, plan 29; macOS, plan 30) render into its SDL window's context only: no offscreen EGL */
 int gl_init(int w, int h) {
     (void)w;
     (void)h;

@@ -52,10 +52,7 @@
 #include <string>
 #include <vector>
 
-#ifndef PORT_WIN32
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/gl.h>
-#endif
+#include "port_gl.h"
 
 #include "live_audio.h"
 #include "live_backend.h"
@@ -267,9 +264,13 @@ void pad_inject(Host& h, const PadInject& j) {
 
 } // namespace
 
+#ifdef PORT_WASM_HOST
+extern "C" uint32_t port_wasm_malloc(uint32_t size); /* the game's malloc (port/wasm/host/wasm_main.c) */
+#endif
+
 extern "C" unsigned port_native_open(void) {
     if (sHost != nullptr) {
-        return (unsigned)(uintptr_t)sHost->block;
+        return port_gaddr(sHost->block);
     }
     Host* h = new Host();
     h->win.tag = "native";
@@ -294,7 +295,15 @@ extern "C" unsigned port_native_open(void) {
     }
     /* the block the game reads (live_shm.h layout): low, as every address the x32 code holds must be */
     h->blockBytes = PORT_NATIVE_FB_REPLY + sizeof(LiveFbReply);
-#ifdef PORT_WIN32
+#if defined(PORT_WASM_HOST)
+    /* plan 30: in the game's linear memory (its malloc), as every address the wasm game holds must be */
+    const uint32_t ga = port_wasm_malloc((uint32_t)h->blockBytes);
+    void* m = ga != 0 ? port_gptr(ga) : (void*)-1;
+    if (ga != 0) {
+        std::memset(m, 0, h->blockBytes);
+    }
+    const void* const kFailed = (void*)-1;
+#elif defined(PORT_WIN32)
     /* a 32-bit process without /LARGEADDRESSAWARE: every address is below 2 GB (plan 29) */
     void* m = VirtualAlloc(nullptr, h->blockBytes, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
     if (m == nullptr) {
@@ -305,7 +314,7 @@ extern "C" unsigned port_native_open(void) {
     void* m = mmap(nullptr, h->blockBytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
     const void* const kFailed = MAP_FAILED;
 #endif
-    if (m == kFailed || (uintptr_t)m + h->blockBytes > 0x80000000u) {
+    if (m == kFailed || !port_gmem_ok(port_gaddr(m), h->blockBytes)) {
         std::fprintf(stderr, "native: no low memory for the host block\n");
         return 0;
     }
@@ -340,7 +349,7 @@ extern "C" unsigned port_native_open(void) {
         ao.dumpPath = env("PORT_NATIVE_AUDIO_DUMP");
     }
     ao.stats = env("PORT_NATIVE_AUDIO_STATS") != nullptr && std::strcmp(env("PORT_NATIVE_AUDIO_STATS"), "0") != 0;
-#ifdef PORT_WIN32
+#ifdef PORT_SDL
     ao.openDelayMs = 0; /* the 2.5 s wait is for WSLg's PulseAudio (run 867); Windows' audio opens at once */
 #endif
     if (env("PORT_NATIVE_AUDIO_OPEN_DELAY")) {
@@ -406,14 +415,14 @@ extern "C" unsigned port_native_open(void) {
     std::printf("native: settings %s (%s)%s\n", port_settings_path(), haveFile ? "read" : "none: the defaults",
                 h->in.menu ? "; F1 = settings menu" : "");
     std::fflush(stdout);
-    return (unsigned)(uintptr_t)h->block;
+    return port_gaddr(h->block);
 }
 
 extern "C" int port_native_task(unsigned root, unsigned rq, unsigned imgs, int maxImgs) {
     if (sHost == nullptr) {
         return 0;
     }
-    const FbRequestsX32* r = (const FbRequestsX32*)(uintptr_t)rq;
+    const FbRequestsX32* r = (const FbRequestsX32*)port_gptr(rq);
     if (r != nullptr) {
         for (int i = 0; i < r->nColor && i < PORT_FB_MAX_COLOR; i++) {
             port_fast3d_ask_color(r->color[i]);
@@ -422,7 +431,7 @@ extern "C" int port_native_task(unsigned root, unsigned rq, unsigned imgs, int m
             port_fast3d_ask_depth(r->depthImg[i], (uint32_t)r->depthIdx[i]);
         }
     }
-    return port_fast3d_queue(root, (uint32_t*)(uintptr_t)imgs, maxImgs);
+    return port_fast3d_queue(root, (uint32_t*)port_gptr(imgs), maxImgs);
 }
 
 extern "C" void port_native_invalidate(unsigned addr, unsigned size) {
@@ -432,7 +441,7 @@ extern "C" void port_native_invalidate(unsigned addr, unsigned size) {
     /* as the presenter (presenter.cpp): the cache key is the G_SETTIMG address, which can precede a
      * LOADTILE's first byte */
     const unsigned lo = addr > 0x8000 ? addr - 0x8000 : 0;
-    port_fast3d_invalidate((const void*)(uintptr_t)lo, (size_t)(addr + size - lo));
+    port_fast3d_invalidate(port_gptr(lo), (size_t)(addr + size - lo));
 }
 
 extern "C" void port_native_black(int black) {

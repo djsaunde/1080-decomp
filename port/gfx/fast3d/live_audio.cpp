@@ -17,7 +17,7 @@
  * exactly the game's PCM. */
 #include "live_audio.h"
 
-#ifdef PORT_WIN32
+#ifdef PORT_SDL
 #include <chrono>
 #include <string>
 #define SDL_MAIN_HANDLED 1
@@ -35,7 +35,7 @@
 #include <thread>
 #include <vector>
 
-#if defined(PORT_WIN32)
+#if defined(PORT_SDL)
 #define LIVE_HAVE_PULSE 0
 #elif __has_include(<pulse/simple.h>)
 #include <pulse/error.h>
@@ -147,7 +147,7 @@ struct Pulse {
         }
     }
 };
-#elif defined(PORT_WIN32)
+#elif defined(PORT_SDL)
 /* The Windows build (plan 29): SDL2's audio device (WASAPI, else DirectSound / winmm) in its push mode.
  * put() queues and then blocks while more than latencyMs is queued, as pa_simple_write blocks on
  * PulseAudio's tlength, so the loop above runs at the sound card's pace unchanged. */
@@ -215,7 +215,7 @@ struct Pulse {
 };
 #endif
 
-#ifdef PORT_WIN32
+#ifdef PORT_SDL
 void sleep_ms(int ms) {
     SDL_Delay((Uint32)ms);
 }

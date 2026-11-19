@@ -1,5 +1,5 @@
 /* port/gfx/fast3d: the live window and its input over SDL2, for the Windows build (live_window.h, plan
- * section 29). The interface and the key / pad mapping are the X11 build's (live_window.cpp). */
+ * section 29) and the macOS one (plan 30). The interface and the key / pad mapping are the X11 build's (live_window.cpp). */
 #include "live_window.h"
 #include "live_audio.h"
 #include "settings_menu.h"
@@ -13,7 +13,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "../../win32/win32_gl.h"
+#include "port_gl.h"
 
 double live_now_s() {
     using namespace std::chrono;
@@ -41,7 +41,14 @@ bool LiveSDL::open(uint32_t width, uint32_t height, const char* title, int vsync
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     /* a compatibility context, as EGL's default desktop-GL context on Linux: gfx_opengl's GLSL 1.30 / 4.x
-     * shaders and its client-side state work in it */
+     * shaders and its client-side state work in it. macOS (plan 30) has no compatibility profile past 2.1: a 4.1
+     * core context, for which gfx_opengl uses GLSL 4.10 and a vertex array object (its __APPLE__ paths) */
+#ifdef __APPLE__
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+#endif
     const char* hidden = std::getenv("PORT_NATIVE_HIDDEN");
     Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
     if (hidden != nullptr && *hidden != '\0' && std::strcmp(hidden, "0") != 0) {
@@ -62,10 +69,14 @@ bool LiveSDL::open(uint32_t width, uint32_t height, const char* title, int vsync
         return false;
     }
     SDL_GL_MakeCurrent(W, (SDL_GLContext)ctx);
+#ifdef PORT_WIN32
     if (port_gl_load(gl_getproc) != 0) {
         std::fprintf(stderr, "%s: the OpenGL driver lacks entry points the renderer needs (above)\n", tag);
         return false;
     }
+#else
+    (void)gl_getproc;
+#endif
     SDL_GL_SetSwapInterval(vsync);
     int dw = 0, dh = 0;
     SDL_GL_GetDrawableSize(W, &dw, &dh);

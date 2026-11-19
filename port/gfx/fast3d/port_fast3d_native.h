@@ -11,6 +11,7 @@
  * a LiveFbReply, which the game takes like the presenter's (port_live_fb_apply). */
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 
 namespace Fast {
@@ -19,6 +20,25 @@ class GfxWindowBackend;
 extern "C" {
 #include "../live_shm.h"
 }
+
+/* Game addresses (plan 30). The x32 / i386 game's addresses ARE host addresses; the wasm32 game's are offsets in
+ * its linear memory (PORT_WASM_HOST: the wasm2c host, port/wasm/host). port_gptr turns a game address into a
+ * host pointer, port_gaddr the reverse; port_gmem_ok says [a, a + n) is game memory. */
+#ifdef PORT_WASM_HOST
+extern "C" uint8_t* port_wasm_mem_base(void);
+extern "C" uint64_t port_wasm_mem_size(void);
+static inline void* port_gptr(uint64_t a) { return a == 0 ? nullptr : (void*)(port_wasm_mem_base() + (uint32_t)a); }
+static inline uint32_t port_gaddr(const void* p) {
+    return p == nullptr ? 0 : (uint32_t)((const uint8_t*)p - port_wasm_mem_base());
+}
+static inline bool port_gmem_ok(uint32_t a, size_t n) {
+    return a >= 0x1000000u && (uint64_t)a + n <= port_wasm_mem_size(); /* the 16 MB global base */
+}
+#else
+static inline void* port_gptr(uint64_t a) { return (void*)(uintptr_t)a; }
+static inline uint32_t port_gaddr(const void* p) { return (uint32_t)(uintptr_t)p; }
+static inline bool port_gmem_ok(uint32_t a, size_t n) { return a >= 0x10000 && (uint64_t)a + n <= 0x80000000u; }
+#endif
 
 /* the interpreter on an existing window backend whose GL context is current (no pbuffer) */
 int port_fast3d_init_window(Fast::GfxWindowBackend* wapi, uint32_t width, uint32_t height);
