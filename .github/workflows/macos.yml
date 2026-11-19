@@ -56,7 +56,9 @@ jobs:
           cmake -S port/wasm/host -B build-host -G Ninja -DW2C_DIR="$PWD/build-wasm/w2c" -DWASM2C_RT_DIR="$WASM2C_RT" \
                 -DWASM_HOST_NATIVE=ON -DSDL2_DIR="$(brew --prefix sdl2)/lib/cmake/SDL2" > host-cfg.log 2>&1 \
             || { grep -m20 -iE 'error' host-cfg.log | sed 's/^/::error::/'; cat host-cfg.log; exit 1; }
-          cmake --build build-host -j3 -- -k 0 > host-build.log 2>&1 || { grep -m60 -iE 'error:|FAILED|undefined|ld:|"_|referenced from' host-build.log | sed 's/^/::error::/'; tail -40 host-build.log; exit 1; }
+          cmake --build build-host -j3 -- -k 0 > host-build.log 2>&1 || {
+            echo "::error::undefined: $(grep -o '"_[A-Za-z0-9_]*"' host-build.log | sort -u | tr '\n' ' ' | cut -c1-900)"
+            grep -m8 -E 'error:|FAILED' host-build.log | sed 's/^/::error::/'; tail -60 host-build.log; exit 1; }
           tail -3 host-build.log
           file build-host/tenshoe
           otool -L build-host/tenshoe
