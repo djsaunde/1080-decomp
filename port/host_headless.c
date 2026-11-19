@@ -17,6 +17,7 @@
 extern int port_live_read_pads(HostPad pads[HOST_MAX_PADS]) __attribute__((weak));
 extern void port_live_black(int black) __attribute__((weak));
 extern int port_live_quit(void) __attribute__((weak));
+extern int port_live_idle(double seconds) __attribute__((weak)); /* PORT_FPS (plan 27.3) */
 
 static HostPad sPads[HOST_MAX_PADS] = { { 0, 0, 0, 1, 0 } };
 static host_u32 sAudioRate;
@@ -124,7 +125,7 @@ double host_time_seconds(void) {
 
 void host_sleep_seconds(double s) {
     struct timespec ts;
-    if (s <= 0.0) {
+    if (s <= 0.0 || (port_live_idle != NULL && port_live_idle(s))) {
         return;
     }
     ts.tv_sec = (time_t)s;

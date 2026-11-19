@@ -1,0 +1,238 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Wed, 18 Nov 2026 22:31:35 -0500
+Subject: [PATCH 18/18] fast: widescreen mapping, a rectangle hook and vertex
+ replacements for ports
+
+Three opt-in hooks for a port's rendering enhancements (the 1080 port's widescreen and high-fps
+interpolation). Nothing changes until a port turns them on.
+
+gfx_set_widescreen(true): the game view is wider than the native 4:3 and the picture is centred in it
+(AdjXForAspectRatio). Partial viewports keep their centre where the picture has it (their width is the
+full view's, the vertices inside are narrowed back), partial scissors take the picture's edges, depth
+read-back coordinates follow the same mapping, and a persistent colour image (patch 17) is loaded into
+the centred 4:3 only, the sides cleared to black (a 2D screen would show a wide 3D frame's leftovers
+there). Full-width scissors and viewports still cover the whole view.
+
+gfx_set_rect_hook(hook): called for every G_TEXRECT / G_TEXRECTFLIP / G_FILLRECT with the command and its
+U10.2 corners, which the port may move (also beyond the native screen: anchoring a HUD to the view's
+edges, lerping a sprite between two frames); *stretch draws it over the view's full width.
+
+gfx_set_vertex_replacements(map): a G_VTX whose source address is a key loads the mapped vertices instead,
+the vertex counterpart of Run()'s matrix replacements.
+---
+ include/fast/interpreter.h | 19 ++++++++-
+ src/fast/interpreter.cpp   | 82 ++++++++++++++++++++++++++++++++++----
+ 2 files changed, 92 insertions(+), 9 deletions(-)
+
+diff --git a/include/fast/interpreter.h b/include/fast/interpreter.h
+index e05004e..cd29b95 100644
+--- a/include/fast/interpreter.h
++++ b/include/fast/interpreter.h
+@@ -501,6 +501,18 @@ class Interpreter {
+     bool mPersistentColor = false;
+     const void* mPersistentColorCur = nullptr; // the frame's colour image while Run() draws into it
+     std::unordered_map<uintptr_t, PersistentColorImage> mPersistentColorImages;
++    // Widescreen (gfx_set_widescreen): the game view is wider than the native 4:3 and the native picture is centred in
++    // it at the view's height (AdjXForAspectRatio). Partial viewports and scissors, the depth read-back coordinates
++    // and the persistent colour images follow that mapping instead of stretching the native width over the view.
++    bool mWidescreen = false;
++    float WidescreenX(float x) const; // a native x to the view's pixels
++    // A port's hook on the RDP rectangles (gfx_set_rect_hook): called for every G_TEXRECT / G_TEXRECTFLIP /
++    // G_FILLRECT with the command and its U10.2 corners, which it may move (beyond the native screen too); setting
++    // *stretch draws the rectangle over the view's full width instead of the centred native picture.
++    void (*mRectHook)(const void* cmd, int32_t* ulx, int32_t* uly, int32_t* lrx, int32_t* lry, bool* stretch) = nullptr;
++    bool mRectStretch = false;
++    // Vertex replacements (SetVertexReplacements): a G_VTX whose source address is a key loads the mapped vertices.
++    const std::unordered_map<const void*, const void*>* mVtxReplacements = nullptr;
+     void GfxSpGeometryMode(uint32_t clear, uint32_t set);
+     void GfxSpExtraGeometryMode(uint32_t clear, uint32_t set);
+     void GfxSpMovememF3dex2(uint8_t index, uint8_t offset, const void* data);
+@@ -542,7 +554,8 @@ class Interpreter {
+     void AdjustWidthHeightForScale(uint32_t& width, uint32_t& height, uint32_t nativeWidth,
+                                    uint32_t nativeHeight) const;
+     float AdjXForAspectRatio(float x) const;
+-    void AdjustVIewportOrScissor(XYWidthHeight* area);
++    // kind: 0 a rectangle's or a fill's area, 1 a viewport, 2 a scissor (they differ only with mWidescreen)
++    void AdjustVIewportOrScissor(XYWidthHeight* area, int kind = 0);
+     void CalcAndSetViewport(const F3DVp_t* viewport);
+ 
+     void SpReset();
+@@ -646,6 +659,10 @@ extern "C" void gfx_texture_cache_invalidate_range(const void* addr, size_t size
+ extern "C" void gfx_register_raw_address_range(const void* start, size_t size);
+ extern "C" void gfx_set_rsp_clipping(bool enabled);
+ extern "C" void gfx_set_persistent_color_images(bool enabled);
++extern "C" void gfx_set_widescreen(bool enabled);
++extern "C" void gfx_set_rect_hook(void (*hook)(const void* cmd, int32_t* ulx, int32_t* uly, int32_t* lrx, int32_t* lry,
++                                               bool* stretch));
++extern "C" void gfx_set_vertex_replacements(const std::unordered_map<const void*, const void*>* replacements);
+ extern "C" void gfx_readback_rgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
+                                       bool bswap);
+ extern "C" void gfx_readback_depth_request(uint32_t x, uint32_t y);
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index 781ee04..f540c20 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -1600,7 +1600,15 @@ void Interpreter::GfxSpPopMatrix(uint32_t count) {
+     mRsp->lights_changed = true;
+ }
+ 
++float Interpreter::WidescreenX(float x) const {
++    const float ry = mCurDimensions.height / (float)mNativeDimensions.height;
++    return (x - mNativeDimensions.width * 0.5f) * ry + mCurDimensions.width * 0.5f;
++}
++
+ float Interpreter::AdjXForAspectRatio(float x) const {
++    if (mRectStretch) {
++        return x; // a port's full-width rectangle (gfx_set_rect_hook)
++    }
+     // Skip widescreen adjustment for fixed-size off-screen FBs (HUD elements,
+     // small capture buffers), or those which specify a fixed aspect ratio.
+     if (mFbActive && mActiveFrameBuffer != mFrameBuffers.end() &&
+@@ -1626,6 +1634,11 @@ void Interpreter::AdjustWidthHeightForScale(uint32_t& width, uint32_t& height, u
+ }
+ 
+ void Interpreter::GfxSpVertex(size_t n_vertices, size_t dest_index, const F3DVtx* vertices) {
++    if (mVtxReplacements != nullptr) {
++        if (auto it = mVtxReplacements->find(vertices); it != mVtxReplacements->end()) {
++            vertices = (const F3DVtx*)it->second;
++        }
++    }
+     for (size_t i = 0; i < n_vertices; i++, dest_index++) {
+         const F3DVtx_t* v = &vertices[i].v;
+         const F3DVtx_tn* vn = &vertices[i].n;
+@@ -2553,7 +2566,7 @@ void Interpreter::GfxSpExtraGeometryMode(uint32_t clear, uint32_t set) {
+     mRsp->extra_geometry_mode |= set;
+ }
+ 
+-void Interpreter::AdjustVIewportOrScissor(XYWidthHeight* area) {
++void Interpreter::AdjustVIewportOrScissor(XYWidthHeight* area, int kind) {
+     if (!mFbActive) {
+         // Adjust the y origin based on the y-inversion for the active framebuffer
+         GfxClipParameters clipParameters = mRapi->GetClipParameters();
+@@ -2572,9 +2585,24 @@ void Interpreter::AdjustVIewportOrScissor(XYWidthHeight* area) {
+             const float ry = RATIO_Y(mActiveFrameBuffer, mCurDimensions);
+             const float x2 = (area->x + (float)area->width) * rx;
+             const float y2 = (area->y + (float)area->height) * ry;
+-            area->x = (int16_t)floorf(area->x * rx);
++            float x1 = area->x * rx, xr = x2;
++            if (mWidescreen && kind != 0 &&
++                !(area->x <= 0 && area->x + (float)area->width >= (float)mNativeDimensions.width)) {
++                if (kind == 2) {
++                    // a partial scissor: its edges where the centred picture has them
++                    x1 = WidescreenX(area->x);
++                    xr = WidescreenX(area->x + (float)area->width);
++                } else {
++                    // a partial viewport: its centre where the picture has it, its width stretched as the full
++                    // view's (AdjXForAspectRatio narrows the vertices inside it back to the native aspect)
++                    const float c = WidescreenX(area->x + area->width * 0.5f), half = area->width * 0.5f * rx;
++                    x1 = c - half;
++                    xr = c + half;
++                }
++            }
++            area->x = (int16_t)floorf(x1);
+             area->y = (int16_t)floorf(area->y * ry);
+-            area->width = (uint32_t)(ceilf(x2) - area->x);
++            area->width = (uint32_t)(ceilf(xr) - area->x);
+             area->height = (uint32_t)(ceilf(y2) - area->y);
+         }
+ 
+@@ -2612,7 +2640,7 @@ void Interpreter::CalcAndSetViewport(const F3DVp_t* viewport) {
+     mRdp->viewport.width = width;
+     mRdp->viewport.height = height;
+ 
+-    AdjustVIewportOrScissor(&mRdp->viewport);
++    AdjustVIewportOrScissor(&mRdp->viewport, 1);
+ 
+     mRdp->viewport_or_scissor_changed = true;
+ }
+@@ -2738,7 +2766,7 @@ void Interpreter::GfxDpSetScissor(uint32_t mode, uint32_t ulx, uint32_t uly, uin
+     mRdp->scissor.width = width;
+     mRdp->scissor.height = height;
+ 
+-    AdjustVIewportOrScissor(&mRdp->scissor);
++    AdjustVIewportOrScissor(&mRdp->scissor, 2);
+ 
+     mRdp->viewport_or_scissor_changed = true;
+ }
+@@ -3457,6 +3485,18 @@ void Interpreter::PersistentColorSelect(const void* address) {
+     }
+     int x, y, w, h, glY;
+     PersistentColorRegion(&x, &y, &w, &h, &glY);
++    if (mWidescreen) {
++        // only the centred native picture: the sides are black, as a 2D screen that covers only the native 4:3
++        // would otherwise show whatever a wide 3D frame left there
++        const float aspect = (float)mNativeDimensions.width / mNativeDimensions.height;
++        const int sw = std::min((int)it->second.width, (int)lroundf(it->second.height * aspect));
++        const int dw = std::min(w, (int)lroundf(h * aspect));
++        const int sx = ((int)it->second.width - sw) / 2, dx = x + (w - dw) / 2;
++        mRapi->ClearFramebuffer(true, false);
++        mRapi->CopyFramebuffer(mRendersToFb ? mGameFb : 0, it->second.fb, sx, 0, sx + sw, (int)it->second.height, dx,
++                               glY, dx + dw, glY + h);
++        return;
++    }
+     // scaled when the window or the internal resolution changed since it was stored
+     mRapi->CopyFramebuffer(mRendersToFb ? mGameFb : 0, it->second.fb, 0, 0, (int)it->second.width,
+                            (int)it->second.height, x, glY, x + w, glY + h);
+@@ -4895,7 +4935,11 @@ bool gfx_tex_rect_and_flip_handler_rdp(F3DGfx** cmd0) {
+     dsdx = C1(16, 16);
+     dtdy = C1(0, 16);
+ 
++    if (gfx->mRectHook != nullptr && lrx >= ulx && lry >= uly) {
++        gfx->mRectHook(*cmd0 - 2, &ulx, &uly, &lrx, &lry, &gfx->mRectStretch);
++    }
+     gfx->GfxDpTextureRectangle(ulx, uly, lrx, lry, tile, uls, ult, dsdx, dtdy, opcode == RDP_G_TEXRECTFLIP);
++    gfx->mRectStretch = false;
+     return false;
+ }
+ 
+@@ -4950,8 +4994,13 @@ bool gfx_image_rect_handler_custom(F3DGfx** cmd0) {
+ bool gfx_fill_rect_handler_rdp(F3DGfx** cmd0) {
+     Interpreter* gfx = mInstance.lock().get();
+     F3DGfx* cmd = *(cmd0);
++    int32_t ulx = C1(12, 12), uly = C1(0, 12), lrx = C0(12, 12), lry = C0(0, 12);
+ 
+-    gfx->GfxDpFillRectangle(C1(12, 12), C1(0, 12), C0(12, 12), C0(0, 12));
++    if (gfx->mRectHook != nullptr && lrx >= ulx && lry >= uly) {
++        gfx->mRectHook(cmd, &ulx, &uly, &lrx, &lry, &gfx->mRectStretch);
++    }
++    gfx->GfxDpFillRectangle(ulx, uly, lrx, lry);
++    gfx->mRectStretch = false;
+     return false;
+ }
+ 
+@@ -5751,8 +5800,12 @@ void Interpreter::ResetFrameBuffer() {
+ }
+ 
+ void Interpreter::AdjustPixelDepthCoordinates(float& x, float& y) {
+-    x = x * RATIO_X(mActiveFrameBuffer, mCurDimensions) -
+-        (mNativeDimensions.width * RATIO_X(mActiveFrameBuffer, mCurDimensions) - mCurDimensions.width) / 2;
++    if (mWidescreen && !mFbActive) {
++        x = WidescreenX(x);
++    } else {
++        x = x * RATIO_X(mActiveFrameBuffer, mCurDimensions) -
++            (mNativeDimensions.width * RATIO_X(mActiveFrameBuffer, mCurDimensions) - mCurDimensions.width) / 2;
++    }
+     y *= RATIO_Y(mActiveFrameBuffer, mCurDimensions);
+     if (!mRendersToFb) {
+         // the game drew straight into the window, whose rows run bottom-up (game framebuffers are drawn flipped)
+@@ -6075,6 +6128,19 @@ extern "C" void gfx_set_persistent_color_images(bool enabled) {
+     Fast::mInstance.lock().get()->mPersistentColor = enabled;
+ }
+ 
++extern "C" void gfx_set_widescreen(bool enabled) {
++    Fast::mInstance.lock().get()->mWidescreen = enabled;
++}
++
++extern "C" void gfx_set_rect_hook(void (*hook)(const void* cmd, int32_t* ulx, int32_t* uly, int32_t* lrx, int32_t* lry,
++                                               bool* stretch)) {
++    Fast::mInstance.lock().get()->mRectHook = hook;
++}
++
++extern "C" void gfx_set_vertex_replacements(const std::unordered_map<const void*, const void*>* replacements) {
++    Fast::mInstance.lock().get()->mVtxReplacements = replacements;
++}
++
+ extern "C" void gfx_readback_rgba5551(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t* dst,
+                                       bool bswap) {
+     Fast::mInstance.lock().get()->ReadbackRequestRgba5551(x, y, width, height, dst, bswap);

@@ -105,16 +105,27 @@ void SettingsMenu::build(std::vector<Item>& v) {
                "The RDP's 3-point filter, GL bilinear, or none.");
             en("Clear each frame", "graphics.clear", &s->gfx_clear, { "No (N64)", "Yes" }, true,
                "No: the N64 framebuffers persist between frames.");
-            en("Widescreen", "graphics.widescreen", &s->widescreen, { "Off (4:3)", "On" }, true,
-               "Rendering extra (agent-c's branch): stored, not used by this build yet.");
-            num("Internal resolution", "graphics.resolution", &s->resolution, 0, 8, 1, true,
-                "Rendering extra (agent-c's branch): stored, not used by this build yet.")
+            en("Widescreen", "graphics.widescreen", &s->widescreen, { "Off (4:3)", "On" }, false,
+               "On: the picture fills the window's width (wider view); 2D screens stay 4:3 in the middle.");
+            en("HUD at the edges", "graphics.hud_edges", &s->hud_edges, { "No (centred 4:3)", "Yes" }, false,
+               "Widescreen: the race HUD panels move to the window's left / right edges.");
+            num("Internal resolution", "graphics.resolution", &s->resolution, 0, 8, 1, false,
+                "Window: draw at the window's size. Nx: N x 240 lines, scaled to the window.")
                 ->fmt = [](int x) { return x == 0 ? std::string("Window") : std::to_string(x) + "x (" +
-                                                       std::to_string(320 * x) + "x" + std::to_string(240 * x) + ")"; };
+                                                       std::to_string(240 * x) + " lines)"; };
+            en("Scaling filter", "graphics.scale_filter", &s->scale_filter, { "Nearest", "Linear" }, false,
+               "How an internal resolution other than the window's is scaled to it.");
             {
-                Item* it = en("Frame rate", "graphics.fps", &s->fps, { "30 (N64)", "60 (interpolated)" }, true,
-                              "Rendering extra (agent-c's branch): stored, not used by this build yet.");
-                it->vals = { 30, 60 };
+                Item* it = en("Anti-aliasing", "graphics.msaa", &s->msaa, { "Off", "2x MSAA", "4x MSAA", "8x MSAA" },
+                              false, "Multisampling. With it on, undrawn pixels are black (no N64 framebuffer reuse).");
+                it->vals = { 1, 2, 4, 8 };
+            }
+            {
+                Item* it = en("Frame rate", "graphics.fps", &s->fps,
+                              { "30 (N64)", "60 (interpolated)", "120 (interpolated)", "144 (interpolated)",
+                                "240 (interpolated)" },
+                              false, "Above 30: frames between the game's 30 Hz steps are interpolated.");
+                it->vals = { 30, 60, 120, 144, 240 };
             }
             break;
         case 1:

@@ -12,7 +12,8 @@
  * Format (written by port_settings_save; unknown keys are kept by nobody: they are ignored on load):
  *
  *   [graphics]          clip = 1, shade = n64|persp, filter = n64|linear|nearest, clear = 0,
- *                       widescreen = 0, resolution = 0, fps = 30      (the last three: agent-c's extras)
+ *                       widescreen = 0, hud_edges = 1, resolution = 0, msaa = 1, fps = 30, scale_filter = 1
+ *                       (the rendering extras, plan 28)
  *   [window]            scale = 3, vsync = 0, fullscreen = 0
  *   [audio]             latency_ms = 80, mute = 0, volume = 100
  *   [input.p1] .. [input.p4]
@@ -67,10 +68,17 @@ typedef struct PortSettings {
     int gfx_shade;  /* 0 n64 (screen-space linear, default), 1 persp */
     int gfx_filter; /* 0 n64 (3-point, default), 1 linear, 2 nearest */
     int gfx_clear;  /* 0: the N64 framebuffers persist (default); 1: clear each frame */
-    /* [graphics]: agent-c's rendering extras (placeholders until that branch lands; all off) */
-    int widescreen; /* 0: 4:3 (default) */
-    int resolution; /* internal resolution: 0 = the window's (default), N = N x 320x240 */
-    int fps;        /* 30 (default: the game's step); 60 = interpolated */
+    /* [graphics]: the rendering extras (plan 28; all off by default, read every frame by the native renderer) */
+    int widescreen;   /* 0: the 4:3 picture letterboxed (default); 1: fill the window's aspect (Hor+ field of view,
+                       * 2D screens pillarboxed) (PORT_WIDESCREEN) */
+    int hud_edges;    /* widescreen: 1 = HUD panels at the screen's left / right edge move to the window's edges
+                       * (default); 0 = all 2D stays in the centred 4:3 (PORT_HUD_EDGES) */
+    int resolution;   /* internal resolution: 0 = the window's (default), N = N x 240 lines (1 = the N64's), scaled
+                       * to the window (PORT_INTERNAL_RES) */
+    int msaa;         /* 1 (default: off), 2, 4, 8 samples (PORT_MSAA) */
+    int fps;          /* 30 (default: one frame per game step); 60, 120, 144 ... = frames presented per second, the
+                       * ones between two 30 Hz steps interpolated (the game still steps at 30 Hz) (PORT_FPS) */
+    int scale_filter; /* resolution != window: 1 = linear (default), 0 = nearest (PORT_SCALE_FILTER) */
     /* [window] */
     int scale;      /* window = scale x 320x240: 3 (PORT_NATIVE_SCALE) */
     int vsync;      /* 0 (PORT_NATIVE_VSYNC) */

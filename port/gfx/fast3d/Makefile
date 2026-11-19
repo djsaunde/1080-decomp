@@ -41,7 +41,7 @@ $(OUT)/f3dreplay: $(OBJ)/f3dreplay.o $(OBJS)
 	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 -lm
 
 # the in-process renderer (port_fast3d.cpp, plan 19.7) driven by test_inproc on the 64-bit host
-$(OUT)/test_inproc: $(OBJ)/test_inproc.o $(OBJ)/port_fast3d.o $(OBJS)
+$(OUT)/test_inproc: $(OBJ)/test_inproc.o $(OBJ)/port_fast3d.o $(OBJ)/settings.o $(OBJS)
 	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 -lm
 
 # the live presenter (plan 19.11): X11 + EGL window, the game's frames over shared memory
@@ -90,7 +90,7 @@ $(OBJ)/ship_shim.o: ship_shim.cpp $(SHIM_H) | $(OBJ)
 	$(XX) -Wall -Wextra -Wno-unused-parameter -c $< -o $@
 $(OBJ)/f3dreplay.o: f3dreplay.cpp egl_window.h ../dlump.h ../replay/egl_png.h $(SHIM_H) | $(OBJ)
 	$(XX) -Wall -Wextra -Wno-unused-parameter -c $< -o $@
-$(OBJ)/port_fast3d.o: port_fast3d.cpp port_fast3d.h egl_window.h ../replay/egl_png.h $(SHIM_H) | $(OBJ)
+$(OBJ)/port_fast3d.o: port_fast3d.cpp port_fast3d.h egl_window.h ../replay/egl_png.h ../../settings.h $(SHIM_H) | $(OBJ)
 	$(XX) -Wall -Wextra -Wno-unused-parameter -c $< -o $@
 $(OBJ)/test_inproc.o: test_inproc.c port_fast3d.h ../dlump.h | $(OBJ)
 	$(CC) -std=gnu99 -O2 -Wall -Wextra -c $< -o $@

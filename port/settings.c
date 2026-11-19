@@ -46,9 +46,12 @@ static const IntField kFields[] = {
     { "graphics", "shade", F(gfx_shade), kShade, "PORT_GFX_SHADE", ENV_SHADE, "n64 (screen-space linear) | persp (restart)" },
     { "graphics", "filter", F(gfx_filter), kFilter, "PORT_GFX_FILTER", ENV_FILTER, "n64 (3-point) | linear | nearest (restart)" },
     { "graphics", "clear", F(gfx_clear), NULL, "PORT_GFX_CLEAR", ENV_EQ1, "0: the N64 framebuffers persist; 1: clear each frame (restart)" },
-    { "graphics", "widescreen", F(widescreen), NULL, NULL, ENV_NONE, "rendering extra (agent-c): 0 = 4:3" },
-    { "graphics", "resolution", F(resolution), NULL, NULL, ENV_NONE, "rendering extra (agent-c): 0 = the window's, N = N x 320x240" },
-    { "graphics", "fps", F(fps), NULL, NULL, ENV_NONE, "rendering extra (agent-c): 30 = the game's step" },
+    { "graphics", "widescreen", F(widescreen), NULL, "PORT_WIDESCREEN", ENV_INT, "1: fill the window's aspect ratio (wider view); 0: 4:3" },
+    { "graphics", "hud_edges", F(hud_edges), NULL, "PORT_HUD_EDGES", ENV_INT, "widescreen: 1 = HUD panels at the window's edges" },
+    { "graphics", "resolution", F(resolution), NULL, "PORT_INTERNAL_RES", ENV_INT, "0 = the window's, N = N x 240 lines" },
+    { "graphics", "msaa", F(msaa), NULL, "PORT_MSAA", ENV_INT, "anti-aliasing samples: 1 (off), 2, 4, 8" },
+    { "graphics", "fps", F(fps), NULL, "PORT_FPS", ENV_INT, "30 = the game's step; 60, 120, ... = interpolated frames" },
+    { "graphics", "scale_filter", F(scale_filter), NULL, "PORT_SCALE_FILTER", ENV_INT, "resolution scaling: 1 linear, 0 nearest" },
     { "window", "scale", F(scale), NULL, "PORT_NATIVE_SCALE", ENV_SCALE, "window = scale x 320x240 (restart)" },
     { "window", "vsync", F(vsync), NULL, "PORT_NATIVE_VSYNC", ENV_INT, "0: the game's 30 Hz step paces the frames" },
     { "window", "fullscreen", F(fullscreen), NULL, NULL, ENV_NONE, "1: start fullscreen (F11 toggles)" },
@@ -117,8 +120,11 @@ void port_settings_defaults(PortSettings* s) {
     s->gfx_filter = 0;
     s->gfx_clear = 0;
     s->widescreen = 0;
+    s->hud_edges = 1;
     s->resolution = 0;
+    s->msaa = 1;
     s->fps = 30;
+    s->scale_filter = 1;
     s->scale = 3;
     s->vsync = 0;
     s->fullscreen = 0;

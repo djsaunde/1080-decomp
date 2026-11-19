@@ -24,6 +24,13 @@
  *   PORT_NATIVE_MENU=0        no settings menu (F1)
  *   PORT_NATIVE_JS=PATH       the joystick (default /dev/input/js0, else the first evdev gamepad)
  *   PORT_NATIVE_FB_LOG=1      the read-back answers per frame
+ *   PORT_NATIVE_SIZE=WxH      the window's size (default 320x240 x scale), e.g. 1280x720
+ *   PORT_NATIVE_PNG_INTERP=1  with PORT_NATIVE_PNG and an fps above 30: also DIR/native_sSTEP_fK.png, the
+ *                             step's interpolated frames (K = 1 .. frames per step - 1)
+ *   PORT_INTERP_LOG=1         the camera change per step (cut detection of the fps interpolation)
+ * The M7 rendering extras (port/settings.h [graphics]: widescreen, hud_edges, resolution, msaa, fps,
+ * scale_filter; PORT_WIDESCREEN, PORT_HUD_EDGES, PORT_INTERNAL_RES, PORT_MSAA, PORT_FPS, PORT_SCALE_FILTER) are
+ * read every frame (plan 28).
  * Keys: live_window.h, rebindable in the settings file / menu (plan 27). At exit: frames, render ms mean / p50 / p95 / p99 / max, frames over 33 ms, the
  * step interval, audio. */
 #include <sys/mman.h>
@@ -31,6 +38,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <cmath>
 #include <thread>
 #include <cstdint>
 #include <cstdio>
@@ -54,6 +62,7 @@ extern "C" {
 #include "../port_fb_impl.h"
 #include "../port_native.h"
 #include "../replay/egl_png.h"
+#include "../../settings.h"
 }
 
 namespace {
@@ -108,6 +117,11 @@ struct Host {
     std::vector<float> renderMs, stepMs;
     double lastFrameT = 0, secStart = 0;
     uint32_t secFrames = 0;
+    /* PORT_FPS (plan 27.3) */
+    bool pngInterp = false;
+    bool paced = false;   /* the main loop calls port_native_idle (real-time play): frames are spread over it */
+    bool pending = false; /* the step's frame is drawn (read-backs answered) but not presented yet */
+    uint32_t interpFrames = 0, presented = 0;
 };
 Host* sHost;
 
@@ -131,15 +145,35 @@ bool png_wanted(const Host& h, uint32_t step) {
     return false;
 }
 
-void write_window_png(const Host& h, uint32_t step) {
+void write_window_png(const Host& h, uint32_t step, int sub = 0) {
     std::vector<uint8_t> px((size_t)h.win.w * h.win.h * 4);
     char path[1024];
     glFinish();
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     glReadPixels(0, 0, (GLsizei)h.win.w, (GLsizei)h.win.h, GL_RGBA, GL_UNSIGNED_BYTE, px.data());
-    std::snprintf(path, sizeof(path), "%s/native_s%06u.png", h.pngDir.c_str(), step);
+    if (sub > 0) {
+        std::snprintf(path, sizeof(path), "%s/native_s%06u_f%d.png", h.pngDir.c_str(), step, sub);
+    } else {
+        std::snprintf(path, sizeof(path), "%s/native_s%06u.png", h.pngDir.c_str(), step);
+    }
     write_png(path, px.data(), (int)h.win.w, (int)h.win.h);
+}
+
+/* the frame's viewport: the 4:3 picture letterboxed, or the whole window (PORT_WIDESCREEN) */
+void view(const Host& h, uint32_t* vx, uint32_t* vy, uint32_t* vw, uint32_t* vh) {
+    if (port_settings()->widescreen) {
+        *vx = *vy = 0;
+        *vw = h.win.w;
+        *vh = h.win.h;
+        return;
+    }
+    h.win.viewport(vx, vy, vw, vh);
+}
+
+int frames_per_step() {
+    const int fps = port_settings()->fps;
+    return fps > 30 ? std::max(1, (int)lround(fps / 30.0)) : 1;
 }
 
 void pump(Host& h) {
@@ -237,7 +271,15 @@ extern "C" unsigned port_native_open(void) {
     const bool haveFile = port_settings_load(cfg, nullptr) != 0;
     const int scale = std::max(1, cfg->scale);
     const int vsync = cfg->vsync;
-    if (!h->win.open(320u * scale, 240u * scale, "1080 Snowboarding (native)", vsync)) {
+    uint32_t ww = 320u * scale, wh = 240u * scale;
+    if (env("PORT_NATIVE_SIZE")) {
+        unsigned a = 0, b = 0;
+        if (std::sscanf(env("PORT_NATIVE_SIZE"), "%ux%u", &a, &b) == 2 && a >= 160 && b >= 120) {
+            ww = a;
+            wh = b;
+        }
+    }
+    if (!h->win.open(ww, wh, "1080 Snowboarding (native)", vsync)) {
         return 0;
     }
     if (cfg->fullscreen) {
@@ -335,6 +377,8 @@ extern "C" unsigned port_native_open(void) {
         h->menu.onApply = [h](const char* field) { apply_setting(*h, field); };
     }
     h->fbLog = env("PORT_NATIVE_FB_LOG") != nullptr;
+    h->pngInterp = env("PORT_NATIVE_PNG_INTERP") != nullptr && std::strcmp(env("PORT_NATIVE_PNG_INTERP"), "0") != 0;
+    port_fast3d_interp_log(env("PORT_INTERP_LOG") != nullptr);
     h->secStart = live_now_s();
     sHost = h;
     std::printf("native: in-process host: window %ux%u, audio %s, block at %p\n", h->win.w, h->win.h,
@@ -381,6 +425,40 @@ extern "C" int port_native_depth(unsigned img, unsigned idx) {
     return sHost == nullptr ? -1 : port_fast3d_depth_now(img, idx);
 }
 
+namespace {
+
+/* show the frame drawn last: osViBlack, the PNG, present */
+void present(Host& h, uint32_t step, int sub) {
+    if (h.black) {
+        /* osViBlack (plan 22.5): the VI outputs black while the RDP goes on drawing, so the frame is drawn
+         * (its read-backs answered) and the window cleared over it. The faders blank the screen between
+         * a fade-out and the next scene's fade-in; the port showed the stale frame there. */
+        h.win.black();
+    }
+    if (h.menu.isOpen()) {
+        menu_overlay_draw(h.menu.image(), SettingsMenu::kW, SettingsMenu::kH, h.win.w, h.win.h);
+    }
+    if ((sub == 0 || h.pngInterp) && png_wanted(h, step)) {
+        write_window_png(h, step, sub);
+    }
+    port_fast3d_end_frame(); /* -> LiveWindow::SwapBuffersEnd -> eglSwapBuffers */
+    h.presented++;
+    h.secFrames++;
+}
+
+/* PORT_FPS: draw and present the frames between the previous step and this one (sub 1 .. k - 1 of k) */
+void present_interp(Host& h, uint32_t step, int sub, int k) {
+    uint32_t vx, vy, vw, vh;
+    bool lerped = false;
+    view(h, &vx, &vy, &vw, &vh);
+    if (port_fast3d_redraw(vx, vy, vw, vh, sub < k ? (float)sub / (float)k : 1.0f, &lerped)) {
+        h.interpFrames += lerped;
+        present(h, step, sub < k ? sub : 0);
+    }
+}
+
+} // namespace
+
 extern "C" void port_native_frame(unsigned step) {
     Host* h = sHost;
     if (h == nullptr) {
@@ -388,27 +466,29 @@ extern "C" void port_native_frame(unsigned step) {
     }
     const double t0 = live_now_s();
     uint32_t vx, vy, vw, vh;
-    h->win.viewport(&vx, &vy, &vw, &vh);
+    view(*h, &vx, &vy, &vw, &vh);
     PortFast3dStep st;
     h->lastStep = step;
+    h->pending = false;
     if (!port_fast3d_step(vx, vy, vw, vh, h->reply, step, h->seq++, &st)) {
         h->empty++;
         pump(*h);
         return;
     }
-    if (h->black) {
-        /* osViBlack (plan 22.5): the VI outputs black while the RDP goes on drawing, so the frame is drawn
-         * (its read-backs answered) and the window cleared over it. The faders blank the screen between
-         * a fade-out and the next scene's fade-in; the port showed the stale frame there. */
-        h->win.black();
+    const int k = frames_per_step();
+    if (k > 1 && h->paced) {
+        /* real-time play: port_native_idle presents this step's frames over the wait for the next step */
+        h->pending = true;
+    } else {
+        if (k > 1) {
+            /* no pacing (a headless run, the first step): the interpolated frames at once, then the step's */
+            for (int i = 1; i <= k; i++) {
+                present_interp(*h, step, i, k);
+            }
+        } else {
+            present(*h, step, 0);
+        }
     }
-    if (h->menu.isOpen()) {
-        menu_overlay_draw(h->menu.image(), SettingsMenu::kW, SettingsMenu::kH, h->win.w, h->win.h);
-    }
-    if (png_wanted(*h, step)) {
-        write_window_png(*h, step);
-    }
-    port_fast3d_end_frame(); /* -> LiveWindow::SwapBuffersEnd -> eglSwapBuffers */
     const double t1 = live_now_s();
     h->renderMs.push_back((float)((t1 - t0) * 1000.0));
     if (h->lastFrameT != 0) {
@@ -416,7 +496,6 @@ extern "C" void port_native_frame(unsigned step) {
     }
     h->lastFrameT = t1;
     h->frames++;
-    h->secFrames++;
     h->rtt += st.rttTasks;
     h->depthFar += st.depthFar;
     h->depthNear += st.depthNear;
@@ -449,6 +528,45 @@ extern "C" void port_native_frame(unsigned step) {
         h->secFrames = 0;
         h->secStart = t1;
     }
+}
+
+extern "C" int port_native_idle(unsigned us) {
+    Host* h = sHost;
+    const int k = frames_per_step();
+    if (h == nullptr || k <= 1) {
+        return 0;
+    }
+    h->paced = true;
+    if (!h->pending) {
+        return 0;
+    }
+    /* the wait until the next step holds n frames at the display rate; the last is the step's own frame (its
+     * depth image is what the next step's reads see, plan 22.4) */
+    const double t0 = live_now_s(), wait = us * 1e-6, dt = 1.0 / std::max(31, port_settings()->fps);
+    const int n = std::max(1, (int)std::floor(wait / dt + 0.5));
+    for (int i = 0; i < n; i++) {
+        const double at = t0 + i * dt;
+        const double now = live_now_s();
+        if (at > now) {
+            usleep((useconds_t)((at - now) * 1e6));
+        }
+        /* sub i + 1 of n: alpha (i + 1) / n */
+        uint32_t vx, vy, vw, vh;
+        bool lerped = false;
+        view(*h, &vx, &vy, &vw, &vh);
+        const float alpha = i + 1 < n ? (float)(i + 1) / (float)n : 1.0f;
+        if (port_fast3d_redraw(vx, vy, vw, vh, alpha, &lerped)) {
+            h->interpFrames += lerped;
+            present(*h, h->lastStep, i + 1 < n ? i + 1 : 0);
+        }
+        pump(*h);
+    }
+    h->pending = false;
+    const double left = t0 + wait - live_now_s();
+    if (left > 0) {
+        usleep((useconds_t)(left * 1e6));
+    }
+    return 1;
 }
 
 extern "C" int port_native_poll(void) {
@@ -496,6 +614,13 @@ extern "C" void port_native_close(void) {
                 h->depthNear, h->colorServed);
     std::printf("native: render %s\n", summary(h->renderMs, 33.3f).c_str());
     std::printf("native: frame interval %s\n", summary(h->stepMs, 50.0f).c_str());
+    if (frames_per_step() > 1) {
+        uint32_t f, c, sm, sv, lr;
+        port_fast3d_interp_stats(&f, &c, &sm, &sv, &lr);
+        std::printf("native: PORT_FPS %d: %u frames presented, %u interpolated (%u camera cuts drawn as the step, "
+                    "%u matrices / %u vertex buffers snapped, %u rectangles lerped)\n",
+                    port_settings()->fps, h->presented, f, c, sm, sv, lr);
+    }
     std::printf("native: audio %s\n", a.c_str());
     std::fflush(stdout);
 }

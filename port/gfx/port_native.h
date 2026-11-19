@@ -36,6 +36,9 @@ void port_native_black(int black);
 int port_native_depth(unsigned img, unsigned idx);
 /* the step's end: draw its tasks as one frame, answer the read requests, present, pump the window */
 void port_native_frame(unsigned step);
+/* the main loop's wait until the next step (us): with PORT_FPS the interpolated frames are presented in it
+ * (plan 27.3); returns 1 if it waited, 0 if the caller should sleep */
+int port_native_idle(unsigned us);
 /* pump the window's events into the pads; 1 = quit (Esc, the window closed) */
 int port_native_poll(void);
 /* the game is ending: stop the audio, print the frame-time summary */

@@ -518,6 +518,18 @@ int port_live_read_pads(HostPad pads[HOST_MAX_PADS]) {
     return 1;
 }
 
+/* the main loop's wait for the next step (host_sleep_seconds): 1 if the native host spent it presenting
+ * interpolated frames (PORT_FPS, plan 27.3), 0 to sleep as usual */
+int port_live_idle(double seconds) {
+#ifdef PORT_GFX_NATIVE
+    if (sNative && seconds > 0.0) {
+        return port_native_idle((unsigned)(seconds * 1e6));
+    }
+#endif
+    (void)seconds;
+    return 0;
+}
+
 int port_live_quit(void) {
     if (!port_live_active()) {
         return 0;

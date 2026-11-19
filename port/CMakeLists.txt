@@ -167,7 +167,7 @@ if(PORT_GFX_FAST3D)
   set(_lus "${PORT_LUS}/libultraship")
   file(GLOB _prism_cpp "${PORT_LUS}/prism/src/prism/*.cpp" "${PORT_LUS}/prism/src/prism/utils/*.cpp")
   file(GLOB _prism_c "${PORT_LUS}/prism/src/prism/utils/*.c")
-  add_library(port_fast3d STATIC gfx/fast3d/port_fast3d.cpp gfx/fast3d/ship_shim.cpp gfx/replay/egl_png.c
+  add_library(port_fast3d STATIC gfx/fast3d/port_fast3d.cpp gfx/fast3d/ship_shim.cpp gfx/replay/egl_png.c settings.c
               ${_lus}/src/fast/interpreter.cpp ${_lus}/src/fast/backends/gfx_opengl.cpp
               ${_lus}/src/fast/debug/GfxDebugger.cpp ${_lus}/src/fast/resource/type/Texture.cpp
               ${_prism_cpp} ${_prism_c})

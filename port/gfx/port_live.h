@@ -13,6 +13,7 @@ void port_live_frame_end(unsigned step);          /* publish the frame (end of a
 int port_live_read_pads(HostPad pads[HOST_MAX_PADS]); /* 1 = pads filled from the presenter */
 int port_live_audio_active(void);                 /* the presenter has an audio ring (plan 19.12) */
 void port_live_audio_write(const void *samples, size_t bytes); /* one AI buffer into the ring */
+int port_live_idle(double seconds);                 /* the step wait: interpolated frames (plan 27.3) */
 int port_live_quit(void);                         /* the presenter asked the game to end */
 void port_live_close(void);                       /* the game is ending */
 /* after a gfx task's depth-clear model: store the presenter's newest depth / colour answers into

@@ -42,5 +42,12 @@ struct PortFast3dStep {
  * requests into reply (may be null, stamped with step / seq). false: nothing was queued */
 bool port_fast3d_step(uint32_t vx, uint32_t vy, uint32_t vw, uint32_t vh, LiveFbReply* reply, uint32_t step,
                       uint32_t seq, PortFast3dStep* st);
+/* draw the last step's frame again (plan 27.3): alpha < 1 interpolates between the step before it and it
+ * (*interpolated = false when it could not: no previous step, a camera cut), alpha >= 1 draws it as it was. No
+ * read-backs are answered. false: nothing was drawn yet */
+bool port_fast3d_redraw(uint32_t vx, uint32_t vy, uint32_t vw, uint32_t vh, float alpha, bool* interpolated);
+void port_fast3d_interp_stats(uint32_t* frames, uint32_t* cuts, uint32_t* snappedMtx, uint32_t* snappedVtx,
+                              uint32_t* lerpedRects);
+void port_fast3d_interp_log(bool on);
 /* EndFrame: the window backend presents */
 void port_fast3d_end_frame();
