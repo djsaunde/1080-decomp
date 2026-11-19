@@ -199,6 +199,32 @@ static void capture_retrace(void);
 
 static void outputs_setup(void);
 
+/* debugging: PORT_AUDIO_LISTLOG=<file>: one line per audio command list (its update number, its words, and
+ * an FNV hash of them with every word at or above 0x01000000 counted as an address: builds can be compared) */
+static void list_log(const void *cmds, unsigned int bytes) {
+    static FILE *f;
+    static int init;
+    static unsigned n;
+    const uint32_t *w = (const uint32_t *)cmds;
+    uint32_t h = 2166136261u, i;
+    if (!init) {
+        const char *e = getenv("PORT_AUDIO_LISTLOG");
+        init = 1;
+        f = e != NULL ? fopen(e, "w") : NULL;
+    }
+    if (f == NULL) {
+        return;
+    }
+    for (i = 0; i < bytes / 4; i++) {
+        h = (h ^ (w[i] >= 0x01000000u && (i & 1) ? 0xADD7u : w[i])) * 16777619u;
+    }
+    fprintf(f, "%u %u %08x", n++, bytes, (unsigned)h);
+    for (i = 0; i < bytes / 4; i++) {
+        fprintf(f, " %08x", (unsigned)((w[i] >= 0x01000000u && (i & 1)) ? 0xADD7u : w[i]));
+    }
+    fputc('\n', f);
+}
+
 void port_audio_frame(void) {
     OSTask_t *task;
     static int setup;
@@ -214,6 +240,7 @@ void port_audio_frame(void) {
         port_audio_premix_hook(task != NULL ? task->data_ptr : NULL, task != NULL ? task->data_size : 0);
     }
     if (task != NULL && task->data_ptr != NULL && task->data_size != 0) {
+        list_log(task->data_ptr, task->data_size);
         port_audio_run_list(task->data_ptr, task->data_size);
     }
 }

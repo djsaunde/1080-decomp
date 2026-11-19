@@ -117,6 +117,23 @@ void port_wasm_null_access(uint64_t a) {
     wasm_rt_trap(WASM_RT_TRAP_OOB);
 }
 
+/* PORT_WASM_NULLCHECK builds: PORT_WASM_WATCH=<addr>[:<bytes>] reports every load / store that touches it, with
+ * the native stack (debugging a corrupted variable) */
+uint64_t port_wasm_watch_lo = ~0ull, port_wasm_watch_hi = 0;
+void port_wasm_watch_hit(uint64_t a, unsigned n) {
+    static int count;
+    if (count++ < 20000) {
+        fprintf(stderr, "PORT: watch: access at 0x%llx (%u bytes)\n", (unsigned long long)a, n);
+#if defined(__linux__) || defined(__APPLE__)
+        {
+            void *frames[16];
+            int k = backtrace(frames, 16);
+            backtrace_symbols_fd(frames, k, 2);
+        }
+#endif
+    }
+}
+
 /* an indirect call through a null or out-of-range table slot (port/wasm/w2c-post.py) */
 void port_wasm_bad_icall(uint32_t x, uint32_t size) {
     fprintf(stderr, "PORT: indirect call through table slot %u (table size %u)\n", (unsigned)x, (unsigned)size);
@@ -170,6 +187,11 @@ int main(int argc, char **argv) {
 #if defined(__linux__) || defined(__APPLE__)
     signal(SIGUSR1, on_usr1);
 #endif
+    if (getenv("PORT_WASM_WATCH") != NULL) {
+        char *e;
+        port_wasm_watch_lo = strtoull(getenv("PORT_WASM_WATCH"), &e, 0);
+        port_wasm_watch_hi = port_wasm_watch_lo + (*e == ':' ? strtoull(e + 1, NULL, 0) : 1);
+    }
     fpu_setup();
     wasm_rt_init();
 #if defined(__linux__) || defined(__APPLE__)
