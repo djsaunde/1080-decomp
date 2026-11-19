@@ -16,14 +16,31 @@ PRISM := $(LUS_TOOLS)/prism
 LIBDIR ?= /lib/x86_64-linux-gnu
 OUT ?= .
 OBJ := $(OUT)/f3d-obj
+# GLES=1 (plan 31): f3dreplay-gles, Fast3D's OpenGL ES 3 path (the Android renderer: LUS built USE_OPENGLES) in an
+# EGL GLES 3 context on Mesa llvmpipe; headers + glvnd libGLESv2 from ../replay/setup-gles-dev.sh. golden-gles.sh.
+GLES_DEV ?= $(REPO)/tools/gles-dev/root
+ifeq ($(GLES),1)
+OBJ := $(OUT)/f3d-obj-gles
+GLES_DEFS := -DUSE_OPENGLES
+GLES_INC := -I$(GLES_DEV)/usr/include
+GL_LIBS = $(LIBDIR)/libEGL.so.1 $(GLES_DEV)/usr/lib/x86_64-linux-gnu/libGLESv2.so.2
+else ifeq ($(FORCE_FB),1)
+# FORCE_FB=1: f3dreplay-fb, desktop GL drawing into Fast3D's game framebuffer as the GLES path does (LUS patch 21's
+# FAST_FORCE_FB): golden-gles.sh's like-for-like reference
+OBJ := $(OUT)/f3d-obj-fb
+GLES_DEFS := -DFAST_FORCE_FB
+GL_LIBS = $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1
+else
+GL_LIBS = $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1
+endif
 CXX ?= g++
 CC ?= cc
 CXXFLAGS ?= -O2
 LUS_DEFS := -DENABLE_OPENGL -DCVAR_MSAA_VALUE='"gMSAAValue"' -DCVAR_INTERNAL_RESOLUTION='"gInternalResolution"' \
             -DCVAR_Z_FIGHTING_MODE='"gZFightingMode"' -DLUS_FAST_DIR='"$(LUS)/src/fast"'
-INC := -Ishim -I$(LUS)/include -I$(LUS)/include/fast -I$(LUS)/src -I$(PRISM)/src -I$(GL_DEV)/usr/include
+INC := $(GLES_INC) -Ishim -I$(LUS)/include -I$(LUS)/include/fast -I$(LUS)/src -I$(PRISM)/src -I$(GL_DEV)/usr/include
 # -MMD: objects follow the (patched) LUS headers, so a new patch rebuilds what it touches
-XX := $(CXX) -std=c++20 $(CXXFLAGS) $(LUS_DEFS) $(INC) -MMD -MP
+XX := $(CXX) -std=c++20 $(CXXFLAGS) $(LUS_DEFS) $(GLES_DEFS) $(INC) -MMD -MP
 ifeq ($(wildcard $(LUS_TOOLS)/.complete),)
 $(error $(LUS_TOOLS) is missing: run port/gfx/fast3d/setup-lus.sh)
 endif
@@ -39,6 +56,20 @@ SHIM_H := $(shell find shim -name '*.h')
 
 $(OUT)/f3dreplay: $(OBJ)/f3dreplay.o $(OBJS)
 	$(CXX) -o $@ $^ $(LIBDIR)/libEGL.so.1 $(LIBDIR)/libGL.so.1 -lm
+
+ifeq ($(GLES),1)
+$(OUT)/f3dreplay-gles: $(OBJ)/f3dreplay.o $(OBJS)
+	$(CXX) -o $@ $^ $(GL_LIBS) -lm -Wl,-rpath,$(GLES_DEV)/usr/lib/x86_64-linux-gnu
+else ifeq ($(FORCE_FB),1)
+$(OUT)/f3dreplay-fb: $(OBJ)/f3dreplay.o $(OBJS)
+	$(CXX) -o $@ $^ $(GL_LIBS) -lm
+else
+.PHONY: $(OUT)/f3dreplay-gles $(OUT)/f3dreplay-fb
+$(OUT)/f3dreplay-gles:
+	$(MAKE) GLES=1 OUT=$(OUT) $@
+$(OUT)/f3dreplay-fb:
+	$(MAKE) FORCE_FB=1 OUT=$(OUT) $@
+endif
 
 # the in-process renderer (port_fast3d.cpp, plan 19.7) driven by test_inproc on the 64-bit host
 $(OUT)/test_inproc: $(OBJ)/test_inproc.o $(OBJ)/port_fast3d.o $(OBJ)/settings.o $(OBJS)
@@ -95,7 +126,7 @@ $(OBJ)/port_fast3d.o: port_fast3d.cpp port_fast3d.h egl_window.h ../replay/egl_p
 $(OBJ)/test_inproc.o: test_inproc.c port_fast3d.h ../dlump.h | $(OBJ)
 	$(CC) -std=gnu99 -O2 -Wall -Wextra -c $< -o $@
 $(OBJ)/egl_png.o: ../replay/egl_png.c ../replay/egl_png.h | $(OBJ)
-	$(CC) -std=gnu99 -O2 -Wall -Wextra -I$(GL_DEV)/usr/include -c $< -o $@
+	$(CC) -std=gnu99 -O2 -Wall -Wextra $(GLES_DEFS) $(GLES_INC) -I$(GL_DEV)/usr/include -c $< -o $@
 
 $(OBJ) $(OBJ)/lus $(OBJ)/prism:
 	mkdir -p $@

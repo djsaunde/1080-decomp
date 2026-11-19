@@ -5,7 +5,11 @@
 #ifndef PORT_SDL
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+#ifdef USE_OPENGLES
+#include <GLES3/gl3.h>
+#else
 #include <GL/gl.h>
+#endif
 #endif
 
 #include <stdint.h>
@@ -118,8 +122,19 @@ int gl_init(int w, int h) {
 #else
 int gl_init(int w, int h) {
     PFNEGLGETPLATFORMDISPLAYEXTPROC gpd = (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");
+#ifdef USE_OPENGLES
+    /* f3dreplay-gles (plan 31): an OpenGL ES 3 context, depth 24 + stencil 8 as the Android host asks for (Fast3D's
+     * GLES depth read-back blits the depth into a DEPTH24_STENCIL8 texture) */
+    EGLint ca[] = { EGL_SURFACE_TYPE, EGL_PBUFFER_BIT, EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT, EGL_RED_SIZE, 8,
+                    EGL_GREEN_SIZE, 8, EGL_BLUE_SIZE, 8, EGL_DEPTH_SIZE, 24, EGL_STENCIL_SIZE, 8, EGL_NONE };
+    EGLint xa[] = { EGL_CONTEXT_MAJOR_VERSION, 3, EGL_CONTEXT_MINOR_VERSION, 0, EGL_NONE };
+    const EGLenum api = EGL_OPENGL_ES_API;
+#else
     EGLint ca[] = { EGL_SURFACE_TYPE, EGL_PBUFFER_BIT, EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT, EGL_RED_SIZE, 8,
                     EGL_GREEN_SIZE, 8, EGL_BLUE_SIZE, 8, EGL_DEPTH_SIZE, 24, EGL_NONE };
+    const EGLint* xa = NULL;
+    const EGLenum api = EGL_OPENGL_API;
+#endif
     EGLint pa[] = { EGL_WIDTH, w, EGL_HEIGHT, h, EGL_NONE };
     EGLDisplay d = gpd ? gpd(EGL_PLATFORM_SURFACELESS_MESA, EGL_DEFAULT_DISPLAY, NULL) : EGL_NO_DISPLAY;
     EGLConfig c;
@@ -136,8 +151,8 @@ int gl_init(int w, int h) {
         return 0;
     }
     s = eglCreatePbufferSurface(d, c, pa);
-    eglBindAPI(EGL_OPENGL_API);
-    x = eglCreateContext(d, c, EGL_NO_CONTEXT, NULL);
+    eglBindAPI(api);
+    x = eglCreateContext(d, c, EGL_NO_CONTEXT, xa);
     if (s == EGL_NO_SURFACE || x == EGL_NO_CONTEXT || !eglMakeCurrent(d, s, s, x)) {
         return 0;
     }

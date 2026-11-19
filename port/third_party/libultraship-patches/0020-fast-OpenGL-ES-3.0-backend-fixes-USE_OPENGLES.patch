@@ -1,0 +1,543 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Thu, 19 Nov 2026 15:09:36 -0500
+Subject: [PATCH 20/21] fast: OpenGL ES 3.0 backend fixes (USE_OPENGLES)
+
+LUS's GLES path compiled but lacked what the port's N64 rendering uses. Only USE_OPENGLES builds change:
+- the fragment shader is highp (float, int, sampler2D: a lowp sampler gave texels 1 level off on Mesa, and
+  Adreno runs mediump / lowp at half precision);
+- noperspective shade and fog (patch 13) through GL_NV_shader_noperspective_interpolation, else emulated: the
+  vertex shader outputs the varying times w and w itself, and the fragment shader divides their
+  perspective-correct values (the quotient is the screen-linear value; the varyings are renamed ...Np);
+- GL_DEPTH_CLAMP through GL_EXT_depth_clamp, else the far plane clamped in the vertex shader (near is patch 12's
+  clipping); the old `gl_Position.z *= 0.3` hack is gone (it changed every depth value);
+- G_TX_MIRROR | G_TX_CLAMP: GL_MIRROR_CLAMP_TO_EDGE only with GL_EXT_texture_mirror_clamp_to_edge, else
+  mirrored repeat (the enum is not core ES);
+- GetPixelDepth: ES reads no depth with glReadPixels. GL_NV_read_depth when present, else each pixel is blitted
+  into a DEPTH24_STENCIL8 texture and drawn as a 24-bit integer into RGBA8; same values as the desktop path;
+- no MSAA (ES 3.0 resolves only to the same size and format, and Fast3D resolves scaled);
+- shader compile errors print the log and the source.
+FAST_GLES_NO_EXT=1 (or a list: noperspective, depth_clamp, mirror_clamp, read_depth) takes the fallbacks.
+---
+ src/fast/backends/gfx_opengl.cpp            | 317 +++++++++++++++++++-
+ src/fast/shaders/opengl/default.shader.glsl |  55 +++-
+ 2 files changed, 366 insertions(+), 6 deletions(-)
+
+diff --git a/src/fast/backends/gfx_opengl.cpp b/src/fast/backends/gfx_opengl.cpp
+index 5b5ef75..187de96 100644
+--- a/src/fast/backends/gfx_opengl.cpp
++++ b/src/fast/backends/gfx_opengl.cpp
+@@ -4,6 +4,10 @@
+ #include <stdint.h>
+ #include <stdbool.h>
+ #include <stdio.h>
++#ifdef USE_OPENGLES
++#include <stdlib.h>
++#include <string.h>
++#endif
+ 
+ #include <map>
+ #include <unordered_map>
+@@ -255,6 +259,69 @@ void GfxRenderingAPIOGL::SetFramebufferDither(bool dither) {
+     mFramebufferDither = dither;
+ }
+ 
++#ifdef USE_OPENGLES
++// OpenGL ES 3.0: four desktop features Fast3D relies on are extensions there. Without them noperspective varyings
++// are emulated (the vertex shader outputs the varying times w and w itself; their perspective-correct quotient is the
++// screen-linear value), the far plane is clamped in the vertex shader instead of by GL_DEPTH_CLAMP, mirror-clamp
++// falls back to mirrored repeat, and depth is read through a depth texture (GetPixelDepth). FAST_GLES_NO_EXT=1 takes
++// the fallbacks even when the extensions exist (tests).
++static bool sGlesNoperspective = false; // GL_NV_shader_noperspective_interpolation
++static bool sGlesDepthClamp = false;    // GL_EXT_depth_clamp
++static bool sGlesMirrorClamp = false;   // GL_EXT_texture_mirror_clamp_to_edge
++static bool sGlesReadDepth = false;     // GL_NV_read_depth (GetPixelDepth; else a blit into a depth texture)
++#ifndef GL_DEPTH_CLAMP_EXT
++#define GL_DEPTH_CLAMP_EXT 0x864F
++#endif
++
++static bool GlesHasExtension(const char* name) {
++    GLint n = 0;
++    glGetIntegerv(GL_NUM_EXTENSIONS, &n);
++    for (GLint i = 0; i < n; i++) {
++        const char* e = (const char*)glGetStringi(GL_EXTENSIONS, (GLuint)i);
++        if (e != nullptr && strcmp(e, name) == 0) {
++            return true;
++        }
++    }
++    return false;
++}
++
++static void GlesDetectExtensions() {
++    // FAST_GLES_NO_EXT: 1 = every fallback, or a list of noperspective / depth_clamp / mirror_clamp / read_depth
++    const char* off = getenv("FAST_GLES_NO_EXT");
++    auto no = [off](const char* what) {
++        return off != nullptr && (strcmp(off, "1") == 0 || strstr(off, what) != nullptr);
++    };
++    sGlesNoperspective = !no("noperspective") && GlesHasExtension("GL_NV_shader_noperspective_interpolation");
++    sGlesDepthClamp = !no("depth_clamp") && GlesHasExtension("GL_EXT_depth_clamp");
++    sGlesMirrorClamp = !no("mirror_clamp") && GlesHasExtension("GL_EXT_texture_mirror_clamp_to_edge");
++    sGlesReadDepth = !no("read_depth") &&
++                     (GlesHasExtension("GL_NV_read_depth") || GlesHasExtension("GL_NV_read_depth_stencil"));
++    fprintf(stderr, "fast: %s: noperspective %s, depth clamp %s, mirror clamp %s, depth read %s\n",
++            (const char*)glGetString(GL_VERSION), sGlesNoperspective ? "yes" : "emulated",
++            sGlesDepthClamp ? "yes" : "vertex shader", sGlesMirrorClamp ? "yes" : "mirrored repeat",
++            sGlesReadDepth ? "NV_read_depth" : "depth texture");
++}
++
++// the shader's noperspective handling: "in"/"out" qualifiers, or the emulation (np_emul, the varyings named ...Np)
++static const char* GlesFsVersion() {
++    if (sAffineShading && sGlesNoperspective) {
++        return "#version 300 es\n#extension GL_NV_shader_noperspective_interpolation : require\n"
++               "precision highp float;\nprecision highp int;\nprecision highp sampler2D;";
++    }
++    return "#version 300 es\nprecision highp float;\nprecision highp int;\nprecision highp sampler2D;";
++}
++
++static const char* GlesVsVersion() {
++    if (sAffineShading && sGlesNoperspective) {
++        return "#version 300 es\n#extension GL_NV_shader_noperspective_interpolation : require";
++    }
++    return "#version 300 es";
++}
++#define GLES_NP_EMUL (sAffineShading && !sGlesNoperspective)
++#else
++#define GLES_NP_EMUL false
++#endif
++
+ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+     prism::Processor processor;
+     prism::ContextItems mContext = {
+@@ -300,6 +367,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+         { "SHADER_NOISE", SHADER_NOISE },
+         { "o_three_point_filtering", mCurrentFilterMode == FILTER_THREE_POINT },
+         { "append_formula", (InvokeFunc)append_formula },
++        { "np_emul", GLES_NP_EMUL },
+ #ifdef __APPLE__
+         { "GLSL_VERSION", "#version 410 core" },
+         { "attr", "in" },
+@@ -309,9 +377,9 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+         { "texture", "texture" },
+         { "vOutColor", "vOutColor" },
+ #elif defined(USE_OPENGLES)
+-        { "GLSL_VERSION", "#version 300 es\nprecision mediump float;" },
++        { "GLSL_VERSION", GlesFsVersion() },
+         { "attr", "in" },
+-        { "np_in", "in" },
++        { "np_in", sAffineShading && sGlesNoperspective ? "noperspective in" : "in" },
+         { "opengles", true },
+         { "core_opengl", false },
+         { "texture", "texture" },
+@@ -373,6 +441,12 @@ static std::string BuildVsShader(const CCFeatures& cc_features) {
+                                      { "o_alpha", cc_features.opt_alpha },
+                                      { "o_inputs", cc_features.numInputs },
+                                      { "update_floats", (InvokeFunc)UpdateFloats },
++                                     { "np_emul", GLES_NP_EMUL },
++                             #ifdef USE_OPENGLES
++                                     { "far_clamp", !sGlesDepthClamp },
++#else
++                                     { "far_clamp", false },
++#endif
+ #ifdef __APPLE__
+                                      { "GLSL_VERSION", "#version 410 core" },
+                                      { "attr", "in" },
+@@ -380,10 +454,10 @@ static std::string BuildVsShader(const CCFeatures& cc_features) {
+                                      { "np_out", sAffineShading ? "noperspective out" : "out" },
+                                      { "opengles", false }
+ #elif defined(USE_OPENGLES)
+-                                     { "GLSL_VERSION", "#version 300 es" },
++                                     { "GLSL_VERSION", GlesVsVersion() },
+                                      { "attr", "in" },
+                                      { "out", "out" },
+-                                     { "np_out", "out" },
++                                     { "np_out", sAffineShading && sGlesNoperspective ? "noperspective out" : "out" },
+                                      { "opengles", true }
+ #else
+                                      { "GLSL_VERSION", "#version 130" },
+@@ -445,7 +519,13 @@ ShaderProgram* GfxRenderingAPIOGL::CreateAndLoadNewShader(uint64_t shader_id0, u
+         glGetShaderiv(vertex_shader, GL_INFO_LOG_LENGTH, &max_length);
+         char error_log[1024];
+         // fprintf(stderr, "Vertex shader compilation failed\n");
++#ifdef USE_OPENGLES
++        max_length = std::min<GLint>(max_length, (GLint)sizeof(error_log));
++#endif
+         glGetShaderInfoLog(vertex_shader, max_length, &max_length, &error_log[0]);
++#ifdef USE_OPENGLES
++        fprintf(stderr, "Vertex shader compilation failed\n%s\n%s\n", &error_log[0], vs_buf.c_str());
++#endif
+         // fprintf(stderr, "%s\n", &error_log[0]);
+         abort();
+     }
+@@ -459,8 +539,14 @@ ShaderProgram* GfxRenderingAPIOGL::CreateAndLoadNewShader(uint64_t shader_id0, u
+         glGetShaderiv(fragment_shader, GL_INFO_LOG_LENGTH, &max_length);
+         char error_log[1024];
+         fprintf(stderr, "Fragment shader compilation failed\n");
++#ifdef USE_OPENGLES
++        max_length = std::min<GLint>(max_length, (GLint)sizeof(error_log));
++#endif
+         glGetShaderInfoLog(fragment_shader, max_length, &max_length, &error_log[0]);
+         fprintf(stderr, "%s\n", &error_log[0]);
++#ifdef USE_OPENGLES
++        fprintf(stderr, "%s\n", fs_buf.c_str());
++#endif
+         abort();
+     }
+ 
+@@ -618,6 +704,11 @@ static uint32_t gfx_cm_to_opengl(uint32_t val) {
+         case G_TX_MIRROR | G_TX_WRAP:
+             return GL_MIRRORED_REPEAT;
+         case G_TX_MIRROR | G_TX_CLAMP:
++#ifdef USE_OPENGLES
++            if (!sGlesMirrorClamp) {
++                return GL_MIRRORED_REPEAT;
++            }
++#endif
+             return GL_MIRROR_CLAMP_TO_EDGE;
+         case G_TX_NOMIRROR | G_TX_WRAP:
+             return GL_REPEAT;
+@@ -746,6 +837,11 @@ void GfxRenderingAPIOGL::Init() {
+ 
+ #ifndef USE_OPENGLES // not supported on gles
+     glEnable(GL_DEPTH_CLAMP);
++#else
++    GlesDetectExtensions();
++    if (sGlesDepthClamp) {
++        glEnable(GL_DEPTH_CLAMP_EXT);
++    }
+ #endif
+     glDepthFunc(GL_LEQUAL);
+     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+@@ -765,6 +861,11 @@ void GfxRenderingAPIOGL::Init() {
+     mPixelDepthRbSize = 1;
+ 
+     glGetIntegerv(GL_MAX_SAMPLES, &mMaxMsaaLevel);
++#ifdef USE_OPENGLES
++    // ES 3.0 resolves a multisampled framebuffer only into one of the same size and format (no scaled resolve, which
++    // ResolveMSAAColorBuffer / CopyFramebuffer use): no MSAA
++    mMaxMsaaLevel = 1;
++#endif
+ 
+     sOGLResourceManager = mResourceManager;
+ }
+@@ -1058,12 +1159,220 @@ void GfxRenderingAPIOGL::ReadFramebufferToCPU(int fb_id, uint32_t width, uint32_
+     glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffers[mCurrentFrameBuffer].fbo);
+ }
+ 
++#ifdef USE_OPENGLES
++// ES 3.0 reads no depth with glReadPixels. With GL_NV_read_depth it can (GetPixelDepth reads each pixel). Without it,
++// each requested pixel's depth is blitted into a DEPTH24_STENCIL8 texture (one texel per coordinate, as the desktop
++// path blits into mPixelDepthRb), a full-screen triangle writes each texel's 24-bit depth into an RGBA8 target, and
++// that is read back. Either way the values equal the desktop path's ((d24 >> 10) << 2). The blit needs the source's
++// depth to be DEPTH24_STENCIL8 too: Fast3D's framebuffers are, a host drawing into the window asks for a 24-bit depth
++// + 8-bit stencil surface (some drivers still blit no depth from the window: Mesa's llvmpipe reads 0 there). If the
++// blit fails the pixels read as the far plane (0xFFFC), logged once.
++namespace {
++struct GlesDepthRead {
++    GLuint tex = 0, texFb = 0, colorRb = 0, colorFb = 0, prog = 0, vao = 0;
++    size_t size = 0;
++    bool broken = false, warned = false;
++};
++GlesDepthRead sGlesDepth;
++
++GLuint GlesCompile(GLenum type, const char* src) {
++    GLuint sh = glCreateShader(type);
++    glShaderSource(sh, 1, &src, nullptr);
++    glCompileShader(sh);
++    GLint ok = 0;
++    glGetShaderiv(sh, GL_COMPILE_STATUS, &ok);
++    if (!ok) {
++        char log[1024];
++        GLsizei n = 0;
++        glGetShaderInfoLog(sh, sizeof(log), &n, log);
++        fprintf(stderr, "fast: depth read-back shader: %.*s\n", (int)n, log);
++    }
++    return sh;
++}
++
++bool GlesDepthReadInit(GlesDepthRead& d) {
++    if (d.prog != 0 || d.broken) {
++        return !d.broken;
++    }
++    static const char* vs = "#version 300 es\n"
++                            "void main() {\n"
++                            "    gl_Position = vec4(float((gl_VertexID & 1) * 4 - 1), float((gl_VertexID & 2) * 2 - 1), "
++                            "0.0, 1.0);\n"
++                            "}\n";
++    static const char* fs = "#version 300 es\n"
++                            "precision highp float;\n"
++                            "precision highp int;\n"
++                            "uniform highp sampler2D uDepth;\n"
++                            "out vec4 oColor;\n"
++                            "void main() {\n"
++                            "    float z = texelFetch(uDepth, ivec2(gl_FragCoord.xy), 0).r;\n"
++                            "    uint u = uint(clamp(round(z * 16777215.0), 0.0, 16777215.0));\n" // not + 0.5: 2^24 - 0.5 rounds up
++                            "    oColor = vec4(float((u >> 16) & 255u), float((u >> 8) & 255u), float(u & 255u), 255.0) / 255.0;\n"
++                            "}\n";
++    GLuint v = GlesCompile(GL_VERTEX_SHADER, vs), f = GlesCompile(GL_FRAGMENT_SHADER, fs);
++    d.prog = glCreateProgram();
++    glAttachShader(d.prog, v);
++    glAttachShader(d.prog, f);
++    glLinkProgram(d.prog);
++    glDeleteShader(v);
++    glDeleteShader(f);
++    GLint ok = 0;
++    glGetProgramiv(d.prog, GL_LINK_STATUS, &ok);
++    if (!ok) {
++        fprintf(stderr, "fast: depth read-back program failed to link: depth reads as the far plane\n");
++        d.broken = true;
++        return false;
++    }
++    glGenVertexArrays(1, &d.vao);
++    glGenTextures(1, &d.tex);
++    glGenFramebuffers(1, &d.texFb);
++    glGenRenderbuffers(1, &d.colorRb);
++    glGenFramebuffers(1, &d.colorFb);
++    return true;
++}
++
++void GlesDepthReadResize(GlesDepthRead& d, size_t n) {
++    if (d.size >= n) {
++        return;
++    }
++    glBindTexture(GL_TEXTURE_2D, d.tex);
++    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, (GLsizei)n, 1, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8,
++                 nullptr);
++    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
++    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
++    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
++    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
++    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
++    glBindFramebuffer(GL_FRAMEBUFFER, d.texFb);
++    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, d.tex, 0);
++    glBindRenderbuffer(GL_RENDERBUFFER, d.colorRb);
++    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, (GLsizei)n, 1);
++    glBindRenderbuffer(GL_RENDERBUFFER, 0);
++    glBindFramebuffer(GL_FRAMEBUFFER, d.colorFb);
++    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, d.colorRb);
++    d.size = n;
++}
++} // namespace
++#endif
++
+ std::unordered_map<std::pair<float, float>, uint16_t, hash_pair_ff>
+ GfxRenderingAPIOGL::GetPixelDepth(int fb_id, const std::set<std::pair<float, float>>& coordinates) {
+     std::unordered_map<std::pair<float, float>, uint16_t, hash_pair_ff> res;
+ 
+     FramebufferOGL& fb = mFrameBuffers[fb_id];
+ 
++#ifdef USE_OPENGLES
++    {
++        GlesDepthRead& d = sGlesDepth;
++        const size_t n = coordinates.size();
++        std::vector<uint32_t> d24(n, 0xFFFFFFu); // the far plane unless read
++        bool ok = n != 0;
++        for (int e = 0; e < 16 && glGetError() != GL_NO_ERROR; e++) {
++        }
++        GLboolean scissor = glIsEnabled(GL_SCISSOR_TEST);
++        if (ok && sGlesReadDepth) {
++            // GL_NV_read_depth: glReadPixels of GL_DEPTH_COMPONENT as 32-bit unsigned integers, whose top 24 bits are
++            // the 24-bit depth (the window's depth too, which some drivers do not blit)
++            glBindFramebuffer(GL_READ_FRAMEBUFFER, fb.fbo);
++            glPixelStorei(GL_PACK_ALIGNMENT, 4);
++            size_t i = 0;
++            for (const auto& coord : coordinates) {
++                int x = coord.first;
++                int y = coord.second;
++                if (fb.invertY) {
++                    y = fb.height - y;
++                }
++                GLuint v = 0xFFFFFFFFu;
++                glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, &v);
++                d24[i++] = v >> 8;
++            }
++            const GLenum err = glGetError();
++            if (err != GL_NO_ERROR) {
++                if (!d.warned) {
++                    d.warned = true;
++                    fprintf(stderr, "fast: depth read-back (NV_read_depth) failed: GL error 0x%x; trying the blit\n", err);
++                }
++                sGlesReadDepth = false;
++                std::fill(d24.begin(), d24.end(), 0xFFFFFFu);
++            } else {
++                ok = false; // read: no blit
++            }
++        }
++        if (ok && GlesDepthReadInit(d)) {
++            std::vector<uint8_t> rgba(n * 4, 0);
++            GLint prevActive = 0, prevTex0 = 0, prevProg = 0, prevVao = 0, prevVp[4];
++            glGetIntegerv(GL_ACTIVE_TEXTURE, &prevActive);
++            glActiveTexture(GL_TEXTURE0);
++            glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevTex0);
++            glGetIntegerv(GL_CURRENT_PROGRAM, &prevProg);
++            glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &prevVao);
++            glGetIntegerv(GL_VIEWPORT, prevVp);
++            const GLboolean depthTest = glIsEnabled(GL_DEPTH_TEST), blend = glIsEnabled(GL_BLEND),
++                            cull = glIsEnabled(GL_CULL_FACE);
++            GLboolean colorMask[4], depthMask;
++            glGetBooleanv(GL_COLOR_WRITEMASK, colorMask);
++            glGetBooleanv(GL_DEPTH_WRITEMASK, &depthMask);
++            GlesDepthReadResize(d, n);
++            glBindFramebuffer(GL_READ_FRAMEBUFFER, fb.fbo);
++            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d.texFb);
++            glDisable(GL_SCISSOR_TEST);
++            size_t i = 0;
++            for (const auto& coord : coordinates) {
++                int x = coord.first;
++                int y = coord.second;
++                if (fb.invertY) {
++                    y = fb.height - y;
++                }
++                glBlitFramebuffer(x, y, x + 1, y + 1, (GLint)i, 0, (GLint)i + 1, 1,
++                                  GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, GL_NEAREST);
++                ++i;
++            }
++            const GLenum blitErr = glGetError();
++            if (blitErr == GL_NO_ERROR) {
++                glBindFramebuffer(GL_FRAMEBUFFER, d.colorFb);
++                glViewport(0, 0, (GLsizei)n, 1);
++                glDisable(GL_DEPTH_TEST);
++                glDisable(GL_BLEND);
++                glDisable(GL_CULL_FACE);
++                glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
++                glUseProgram(d.prog);
++                glUniform1i(glGetUniformLocation(d.prog, "uDepth"), 0);
++                glBindTexture(GL_TEXTURE_2D, d.tex);
++                glBindVertexArray(d.vao);
++                glDrawArrays(GL_TRIANGLES, 0, 3);
++                glPixelStorei(GL_PACK_ALIGNMENT, 1);
++                glReadPixels(0, 0, (GLsizei)n, 1, GL_RGBA, GL_UNSIGNED_BYTE, rgba.data());
++                for (size_t k = 0; k < n; k++) {
++                    d24[k] = ((uint32_t)rgba[k * 4] << 16) | ((uint32_t)rgba[k * 4 + 1] << 8) | rgba[k * 4 + 2];
++                }
++            } else if (!d.warned) {
++                d.warned = true;
++                fprintf(stderr, "fast: depth read-back blit failed (GL error 0x%x; the framebuffer's depth is not "
++                        "DEPTH24_STENCIL8?): depth reads as the far plane\n", blitErr);
++            }
++            // restore what the draw changed
++            glBindVertexArray((GLuint)prevVao);
++            glUseProgram((GLuint)prevProg);
++            glActiveTexture(GL_TEXTURE0);
++            glBindTexture(GL_TEXTURE_2D, (GLuint)prevTex0);
++            glActiveTexture((GLenum)prevActive);
++            glViewport(prevVp[0], prevVp[1], prevVp[2], prevVp[3]);
++            glColorMask(colorMask[0], colorMask[1], colorMask[2], colorMask[3]);
++            glDepthMask(depthMask);
++            (depthTest ? glEnable : glDisable)(GL_DEPTH_TEST);
++            (blend ? glEnable : glDisable)(GL_BLEND);
++            (cull ? glEnable : glDisable)(GL_CULL_FACE);
++        }
++        (scissor ? glEnable : glDisable)(GL_SCISSOR_TEST);
++        size_t i = 0;
++        for (const auto& coord : coordinates) {
++            res.emplace(coord, (uint16_t)((d24[i++] >> 10) << 2));
++        }
++        glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffers[mCurrentFrameBuffer].fbo);
++        return res;
++    }
++#endif
++
+     // When looking up one value and the framebuffer is single-sampled, we can read pixels directly
+     // Otherwise we need to blit first to a new buffer then read it
+     if (coordinates.size() == 1 && fb.msaa_level <= 1) {
+diff --git a/src/fast/shaders/opengl/default.shader.glsl b/src/fast/shaders/opengl/default.shader.glsl
+index 22505ef..8598497 100644
+--- a/src/fast/shaders/opengl/default.shader.glsl
++++ b/src/fast/shaders/opengl/default.shader.glsl
+@@ -3,6 +3,14 @@
+ @{GLSL_VERSION}
+ 
+ @if(VERTEX_SHADER)
++    @if(np_emul)
++        @if(o_fog)
++            #define vFog vFogNp
++        @end
++        @for(i in 0..o_inputs)
++            #define vInput@{i + 1} vInput@{i + 1}Np
++        @end
++    @end
+     @{attr} vec4 aVtxPos;
+ 
+     @for(i in 0..2)
+@@ -49,6 +57,10 @@
+         @end
+     @end
+ 
++    @if(np_emul)
++        out float vNpW;
++    @end
++
+     void main() {
+         @for(i in 0..2)
+             @if(o_textures[i])
+@@ -74,8 +86,17 @@
+             vInput@{i + 1} = aInput@{i + 1};
+         @end
+         gl_Position = aVtxPos;
+-        @if(opengles)
+-            gl_Position.z *= 0.3f;
++        @if(np_emul)
++            vNpW = aVtxPos.w;
++            @if(o_fog)
++                vFog *= aVtxPos.w;
++            @end
++            @for(i in 0..o_inputs)
++                vInput@{i + 1} *= aVtxPos.w;
++            @end
++        @end
++        @if(far_clamp)
++            gl_Position.z = min(gl_Position.z, gl_Position.w);
+         @end
+     }
+ @else
+@@ -98,6 +119,14 @@
+         @end
+     @end
+ 
++    @if(np_emul)
++        @if(o_fog)
++            #define vFog vFogNp
++        @end
++        @for(i in 0..o_inputs)
++            #define vInput@{i + 1} vInput@{i + 1}Np
++        @end
++    @end
+     @if(o_fog) @{np_in} vec4 vFog;
+     @if(o_grayscale) @{attr} vec4 vGrayscaleColor;
+ 
+@@ -109,6 +138,16 @@
+         @end
+     @end
+ 
++    @if(np_emul)
++        in float vNpW;
++        @if(o_fog)
++            #undef vFog
++        @end
++        @for(i in 0..o_inputs)
++            #undef vInput@{i + 1}
++        @end
++    @end
++
+     @if(o_textures[0]) uniform sampler2D uTex0;
+     @if(o_textures[1]) uniform sampler2D uTex1;
+ 
+@@ -165,6 +204,18 @@
+     #define TEX_SIZE(tex) vec2(texture_width[tex], texture_height[tex])
+ 
+     void main() {
++        @if(np_emul)
++            @if(o_fog)
++                vec4 vFog = vFogNp / vNpW;
++            @end
++            @for(i in 0..o_inputs)
++                @if(o_alpha)
++                    vec4 vInput@{i + 1} = vInput@{i + 1}Np / vNpW;
++                @else
++                    vec3 vInput@{i + 1} = vInput@{i + 1}Np / vNpW;
++                @end
++            @end
++        @end
+         @for(i in 0..2)
+             @if(o_textures[i])
+                 @{s = o_clamp[i][0]}

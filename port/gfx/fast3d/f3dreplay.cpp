@@ -52,8 +52,12 @@
 #include <vector>
 
 #define GL_GLEXT_PROTOTYPES 1
+#ifdef USE_OPENGLES
+#include <GLES3/gl3.h> /* f3dreplay-gles (plan 31) */
+#else
 #include <GL/gl.h>
 #include <GL/glext.h>
+#endif
 
 #include "fast/interpreter.h"
 #include "fast/backends/gfx_opengl.h"
@@ -545,6 +549,32 @@ struct Readback {
     }
 };
 
+#if defined(USE_OPENGLES) || defined(FAST_FORCE_FB)
+/* f3dreplay-gles (plan 31): on OpenGL ES Fast3D always draws into its game framebuffer (LUS patch 20) and the port
+ * presents it (port_fast3d.cpp's finish_view): copy it into the window the same way, rows flipped */
+static void present_game_fb(Fast::Interpreter& gfx) {
+    if (!gfx.mRendersToFb || gfx.mGfxFrameBuffer == 0) {
+        return;
+    }
+    static GLuint fbo;
+    if (fbo == 0) {
+        glGenFramebuffers(1, &fbo);
+    }
+    const auto& vp = gfx.mGameWindowViewport;
+    const GLint y0 = (GLint)gfx.mGfxCurrentWindowDimensions.height - (GLint)(vp.y + vp.height);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+    glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)gfx.mGfxFrameBuffer, 0);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glDisable(GL_SCISSOR_TEST);
+    glBlitFramebuffer(0, (GLint)gfx.mCurDimensions.height, (GLint)gfx.mCurDimensions.width, 0, (GLint)vp.x, y0,
+                      (GLint)(vp.x + vp.width), y0 + (GLint)vp.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+#else
+static void present_game_fb(Fast::Interpreter&) {
+}
+#endif
+
 int main(int argc, char** argv) {
     int scale = 1;
     const char* readbackPath = nullptr;
@@ -705,6 +735,7 @@ int main(int argc, char** argv) {
         }
         gfx->StartFrame();
         gfx->Run((Gfx*)offRoot, noReplacements);
+        present_game_fb(*gfx);
         glFinish();
         std::vector<uint8_t> opx((size_t)w * h * 4);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -720,6 +751,7 @@ int main(int argc, char** argv) {
     fb.request(*gfx);
     gfx->StartFrame();
     gfx->Run((Gfx*)root, noReplacements);
+    present_game_fb(*gfx);
     glFinish();
 
     std::vector<uint8_t> px((size_t)w * h * 4);
