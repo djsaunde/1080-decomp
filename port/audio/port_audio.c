@@ -36,6 +36,18 @@ extern uint8_t port_bootup_data[];
 /* The port binary's image (non-PIE, i386: .text / .data / .bss, where bootup.uso's blobs, the
  * audio heap and every buffer the driver hands the RSP live) up to the current break (anything
  * malloc'd). */
+#ifdef PORT_WIN32
+/* The Windows build (plan 27): a 32-bit process without /LARGEADDRESSAWARE has every host address below
+ * 0x80000000, while OS_K0_TO_PHYSICAL(p) + 0x80000000 is at or above it; so a value is a host pointer when
+ * it is below 2 GB and committed (VirtualQuery), not only inside the image and the brk heap. */
+#define WIN32_LEAN_AND_MEAN 1
+#include <windows.h>
+static int host_mapped(uint32_t p) {
+    MEMORY_BASIC_INFORMATION mi;
+    return p >= 0x10000u && p < 0x80000000u && VirtualQuery((const void *)(uintptr_t)p, &mi, sizeof(mi)) == sizeof(mi) &&
+           mi.State == MEM_COMMIT && (mi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) == 0;
+}
+#else
 extern char __executable_start[];
 extern char _end[];
 extern void *sbrk(intptr_t increment);
@@ -114,6 +126,7 @@ static int host_mapped(uint32_t p) {
     }
     return p >= sHeapLo && p < (uint32_t)(uintptr_t)sbrk(0);
 }
+#endif
 
 /* Most builders store OS_K0_TO_PHYSICAL(p) = p - 0x80000000, but some pass the pointer as it is
  * (the FILTER words of AudioSynth_ProcessNote / AudioSynth_FilterReverb, as OoT's aFilter does):

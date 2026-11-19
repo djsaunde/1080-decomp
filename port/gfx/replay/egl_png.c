@@ -2,9 +2,11 @@
  * dlreplay (the bring-up interpreter) and f3dreplay (libultraship's Fast3D).
  * PC port plan section 19. Taken out of dlreplay.c unchanged. */
 
+#ifndef PORT_WIN32
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <GL/gl.h>
+#endif
 
 #include <stdint.h>
 #include <stdio.h>
@@ -106,6 +108,14 @@ int write_png(const char *path, const uint8_t *rgba, int w, int h) {
 
 /* ---------------- EGL ---------------- */
 
+#ifdef PORT_WIN32
+/* the Windows build (plan 27) renders into its SDL window's context only: no offscreen EGL */
+int gl_init(int w, int h) {
+    (void)w;
+    (void)h;
+    return 0;
+}
+#else
 int gl_init(int w, int h) {
     PFNEGLGETPLATFORMDISPLAYEXTPROC gpd = (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");
     EGLint ca[] = { EGL_SURFACE_TYPE, EGL_PBUFFER_BIT, EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT, EGL_RED_SIZE, 8,
@@ -134,3 +144,4 @@ int gl_init(int w, int h) {
     fprintf(stderr, "replay: GL %s\n", (const char *)glGetString(GL_RENDERER));
     return 1;
 }
+#endif

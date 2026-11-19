@@ -52,6 +52,13 @@
 #include "host.h"
 #include "trace.h"
 #include "ultra/ultra.h"
+#ifdef PORT_WIN32
+#include "win32/win32_host.h"
+#endif
+
+/* port/uso/uso_rom.c (PORT_RUNTIME_BLOBS, plan 27): the USO blobs from the ROM read at run time */
+extern int port_uso_blobs_load(const unsigned char *rom, unsigned int romSize, const char **why, const char **file)
+    __attribute__((weak));
 
 #define CATCH_UP_CAP 4
 
@@ -123,7 +130,13 @@ __attribute__((noreturn)) void port_sys_fatal(const char *fmt, va_list ap) {
  * 128 + signal, so capture.sh / scripted-input runs show where the game died (run 846).
  * signal() is weak: port_libc.h has no <signal.h>; the numbers are Linux's. */
 extern void (*signal(int sig, void (*fn)(int)))(int) __attribute__((weak));
+#ifdef PORT_WIN32
+/* plan 27: the game side cannot reference both exit and _exit (port/win32/gen-win32-bridge.py) */
+#define port_crash_exit(status) exit(status)
+#else
 extern void _exit(int status) __attribute__((noreturn));
+#define port_crash_exit(status) _exit(status)
+#endif
 static void port_crash_signal(int sig) {
     fprintf(stderr, "PORT: signal %d at step %u\n", sig, (unsigned)(port_game_frame_count != 0 ? port_game_frame_count() : 0));
     if (backtrace != 0 && backtrace_symbols_fd != 0) {
@@ -131,7 +144,7 @@ static void port_crash_signal(int sig) {
         int n = backtrace(frames, 64);
         backtrace_symbols_fd(frames, n, 2);
     }
-    _exit(128 + sig);
+    port_crash_exit(128 + sig);
 }
 
 typedef struct Options {
@@ -255,7 +268,7 @@ static int done(const Options *o) {
     return 0;
 }
 
-#if !defined(PORT_LIBC_DECLS_ONLY)
+#if !defined(PORT_LIBC_DECLS_ONLY) && !defined(PORT_WIN32)
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -383,6 +396,27 @@ static void run(const Options *o, int headless) {
     }
 }
 
+/* a byte-swapped (.v64) or little-endian (.n64) dump in big-endian (.z64) order, in place */
+static void rom_to_z64(void *rom, u32 size) {
+    u8 *p = (u8 *)rom;
+    u32 i;
+    if (size >= 4 && p[0] == 0x37 && p[1] == 0x80) {
+        for (i = 0; i + 1 < size; i += 2) {
+            u8 t = p[i];
+            p[i] = p[i + 1];
+            p[i + 1] = t;
+        }
+    } else if (size >= 4 && p[0] == 0x40 && p[1] == 0x12) {
+        for (i = 0; i + 3 < size; i += 4) {
+            u8 a = p[i], b = p[i + 1];
+            p[i] = p[i + 3];
+            p[i + 1] = p[i + 2];
+            p[i + 2] = b;
+            p[i + 3] = a;
+        }
+    }
+}
+
 static void usage(void) {
     host_log("usage: 1080 [--rom PATH] [--sram PATH] [--frames N] [--input SCRIPT] [--record LOG] [--replay LOG]"
              " [--trace LOG] [--audio-out WAV] [--authentic] [--realtime]");
@@ -399,6 +433,10 @@ static int parse(int argc, char **argv, Options *o) {
         const char *v = i + 1 < argc ? argv[i + 1] : NULL;
         if (strcmp(a, "--authentic") == 0) {
             o->authentic = 1;
+#ifdef PORT_WIN32
+        } else if (strcmp(a, "--headless") == 0) {
+            /* port_win32_setup: no window */
+#endif
         } else if (strcmp(a, "--realtime") == 0) {
             o->realtime = 1;
         } else if (v == NULL) {
@@ -444,6 +482,16 @@ int main(int argc, char **argv) {
     if (parse(argc, argv, &o) != 0) {
         return 2;
     }
+#ifdef PORT_WIN32
+    {
+        int i, romGiven = 0, sramGiven = 0;
+        for (i = 1; i < argc; i++) {
+            romGiven |= strcmp(argv[i], "--rom") == 0;
+            sramGiven |= strcmp(argv[i], "--sram") == 0;
+        }
+        port_win32_setup(argc, argv, &o.romPath, romGiven, &o.sramPath, sramGiven, &o.realtime);
+    }
+#endif
     fpu_setup();
     if (signal != 0) {
         signal(11, port_crash_signal); /* SIGSEGV */
@@ -463,8 +511,16 @@ int main(int argc, char **argv) {
     if (host_file_read_all(o.romPath, &rom, &romSize) != 0) {
         host_fatal("main: cannot read the ROM %s", o.romPath);
     }
+    rom_to_z64(rom, romSize);
     if (romSize < 0x1000 || ((u8 *)rom)[0] != 0x80 || ((u8 *)rom)[1] != 0x37) {
-        host_fatal("main: %s is not a big-endian .z64 image", o.romPath);
+        host_fatal("main: %s is not an N64 ROM image (.z64 / .n64 / .v64)", o.romPath);
+    }
+    if (port_uso_blobs_load != NULL) {
+        const char *why = NULL, *file = NULL;
+        if (port_uso_blobs_load((const unsigned char *)rom, romSize, &why, &file) != 0) {
+            host_fatal("main: %s: %s%s%s: this build needs 1080 Snowboarding (US 1.0)", o.romPath, why,
+                       file != NULL ? " in " : "", file != NULL ? file : "");
+        }
     }
 
     memset(&uc, 0, sizeof(uc));

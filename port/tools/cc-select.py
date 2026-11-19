@@ -37,6 +37,10 @@ assembled:
                           (scripts/port-gen-binds.py, plan section 14).
 
 Units without such a header are compiled unchanged.
+
+COFF (the Windows build, plan 27: a *-w64-mingw32-* compiler with -fno-leading-underscore): a function
+starts at the label its `.def NAME; .scl N; .type 32; .endef` names, local labels have no dot (`L5:`,
+`LC0:`), there is no `.type` / `.size`, and constructors are `.ctors` entries.
 """
 import os
 import re
@@ -47,6 +51,8 @@ DIRECTIVE_RE = re.compile(r"/\*\s*port-(dropdata|drop|alias|noinit|local|bind):\
 
 
 BINDS = {}
+COFF = False
+DEF_FN_RE = re.compile(r"^\s*\.def\s+([\w.$]+);.*\.type\s+32;")
 
 
 DROPDATA = set()
@@ -91,10 +97,17 @@ def bind_calls(text, binds):
     if not binds:
         return text
     out, cur = [], None
+    fns = set()
     for line in text.splitlines():
         m = re.match(r"^([\w.$]+):", line)
         if m and m.group(1).isdigit():
             m = None    # a numeric local label (`1:\tcall __fentry__`, PORT_TRACE_FN) is inside the body
+        if COFF:
+            d = DEF_FN_RE.match(line)
+            if d:
+                fns.add(d.group(1))
+            if m and m.group(1) not in fns:
+                m = None    # COFF: only a `.def`'d function label starts a body (local labels have no dot)
         if m:
             base = m.group(1).split(".")[0]
             if m.group(1) in binds or (base in binds and not m.group(1).startswith(".")):
@@ -105,7 +118,7 @@ def bind_calls(text, binds):
             out.append(line)
             cur = None
             continue
-        if cur and not line.lstrip().startswith("."):
+        if cur and not line.lstrip().startswith(".") and not (COFF and m is None and re.match(r"^[\w.$]+:", line)):
             for tok, tgt in cur.items():
                 if isinstance(tgt, dict):       # per addend: {N: target}
                     def sub(m, tgt=tgt):
@@ -137,6 +150,7 @@ def filter_asm(text, drop, alias, noinit, local=()):
     found = set()
     local_targets = {t for _, t in alias if t.startswith("_Z")} | set(local)
     section = ""
+    coff_def = {}
     for line in text.splitlines():
         s = line.strip()
         toks = re.split(r"[\s,]+", s)
@@ -164,6 +178,15 @@ def filter_asm(text, drop, alias, noinit, local=()):
             found.add(dead)
             out.append(line.replace(dead, "__port_dead_" + dead, 1))
             continue
+        if COFF and len(toks) >= 2 and toks[0] == ".def" and toks[1].rstrip(";") in drop:
+            coff_def[toks[1].rstrip(";")] = len(out)    # renamed with its label (an extern's `.def` has none)
+        if COFF and s.endswith(":") and s[:-1] in drop:
+            sym = s[:-1]
+            found.add(sym)
+            if sym in coff_def:
+                out[coff_def[sym]] = out[coff_def[sym]].replace(sym, "__port_dead_" + sym, 1)
+            out.append("__port_dead_%s:" % sym)
+            continue
         if dead is not None:
             if s == dead + ":":
                 out.append("__port_dead_%s:" % dead)
@@ -172,18 +195,31 @@ def filter_asm(text, drop, alias, noinit, local=()):
                 out.append("\t.size\t__port_dead_%s, .-__port_dead_%s" % (dead, dead))
                 dead = None
                 continue
-        if section == ".init_array" and len(toks) == 2 and toks[0] == ".long" and toks[1] in noinit:
+        if (section == ".init_array" or (COFF and section.split(",")[0].strip('"').startswith(".ctors"))) \
+                and len(toks) == 2 and toks[0] == ".long" and toks[1] in noinit:
             continue
         out.append(line)
     if dead is not None:
         raise SystemExit("cc-select: unterminated dropped body %s" % dead)
+    if COFF:
+        # a COFF symbol's binding is its `.def` storage class, not `.globl`: a dropped copy, a made-local `_Z`
+        # target and a port-local symbol get class 3 (static) instead of 2 (external)
+        def scl(m):
+            name = m.group(2)
+            if name.startswith("__port_dead_") or name in local_targets:
+                return m.group(1) + "3"
+            return m.group(0)
+        out = [re.sub(r"^(\s*\.def\s+([\w.$]+);\s*\.scl\s+)2", scl, ln) for ln in out]
     # `.text` before the aliases: gas `.set` needs no section, but keep it tidy.
     done = set()
     for new, target in alias:
         if new in done:
             continue    # the extra (bind-only) targets of a `port-alias: NEW TARGET ALSO..`
         done.add(new)
-        out += ["\t.globl\t%s" % new, "\t.type\t%s, @function" % new, "\t.set\t%s, %s" % (new, target)]
+        if COFF:
+            out += ["\t.globl\t%s" % new, "\t.set\t%s, %s" % (new, target)]
+        else:
+            out += ["\t.globl\t%s" % new, "\t.type\t%s, @function" % new, "\t.set\t%s, %s" % (new, target)]
     return "\n".join(out) + "\n", found
 
 
@@ -212,6 +248,8 @@ def main():
     # PORT_64 (plan 21): -mx32 units (the ILP32 data model in x86-64 code) are compiled to
     # assembly and assembled as ELF64 objects (-m64), so they link into the x86-64 executable
     x32 = "-mx32" in argv
+    global COFF
+    COFF = "mingw32" in os.path.basename(argv[0])
     if (hdr is None and not x32) or "-c" not in argv or "-o" not in argv:
         os.execvp(argv[0], argv)
     drop, alias, noinit, local = parse_header(hdr) if hdr else (set(), [], set(), [])

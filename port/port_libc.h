@@ -19,6 +19,13 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#ifdef PORT_WIN32
+/* mingw's stdlib.h defines errno as a macro, which would rename the libultra OSContPad / OSContStatus field
+ * `errno` (glibc's does only in errno.h). The port reads the C library's errno as PORT_ERRNO (plan 27). */
+#include <errno.h>
+#undef errno
+#define PORT_ERRNO (*_errno())
+#endif
 #else
 typedef struct _IO_FILE FILE;
 extern FILE *stdout;

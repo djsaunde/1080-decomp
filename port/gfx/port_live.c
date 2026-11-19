@@ -32,12 +32,14 @@
 #ifdef PORT_LIBC_DECLS_ONLY
 void *realloc(void *p, size_t n);
 #endif
+#ifndef PORT_WIN32 /* the Windows build (plan 27) has only the in-process host: no presenter, no /dev/shm */
 int open(const char *path, int flags, ...);
 int close(int fd);
 void *mmap(void *addr, size_t len, int prot, int flags, int fd, long off);
 int getpid(void);
 int kill(int pid, int sig);
 int unlink(const char *path);
+#endif
 #define LIVE_O_RDWR 2
 #define LIVE_PROT_RW 3
 #define LIVE_MAP_SHARED 1
@@ -120,6 +122,10 @@ static void live_open(void) {
     if (name == NULL || *name == '\0') {
         return;
     }
+#ifdef PORT_WIN32
+    (void)path, (void)fd, (void)tries, (void)h, (void)total;
+    live_fatal("PORT_LIVE: the Windows build has no presenter (the game opens its own window)");
+#else
     snprintf(path, sizeof(path), "/dev/shm/%s", name);
     /* the presenter creates the file and writes the magic last: wait for it (10 s) */
     for (tries = 0; tries < 1000; tries++) {
@@ -187,6 +193,7 @@ static void live_open(void) {
     if (sFb == NULL) {
         live_log("no framebuffer replies (%s): depth reads keep the clear model", path);
     }
+#endif
 }
 
 int port_live_active(void) {
@@ -469,6 +476,9 @@ void port_live_audio_write(const void *samples, size_t bytes) {
 
 /* the presenter process still exists (checked about every 0.2 s by the callers) */
 static int live_presenter_alive(void) {
+#ifdef PORT_WIN32
+    return !sPresenterGone;
+#else
     live_u32 pid = sShm->presenterPid;
     if (sPresenterGone) {
         return 0;
@@ -484,6 +494,7 @@ static int live_presenter_alive(void) {
         return 0;
     }
     return 1;
+#endif
 }
 
 int port_live_read_pads(HostPad pads[HOST_MAX_PADS]) {

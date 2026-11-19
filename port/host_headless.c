@@ -117,6 +117,26 @@ host_u32 host_audio_buffered_bytes(void) {
     return sAudioBuffered != NULL ? sAudioBuffered() : 0;
 }
 
+#ifdef PORT_WIN32
+/* the Windows build (plan 27): QueryPerformanceCounter, and Sleep at the 1 ms timer period main.c sets */
+#define WIN32_LEAN_AND_MEAN 1
+#include <windows.h>
+double host_time_seconds(void) {
+    static LARGE_INTEGER freq;
+    LARGE_INTEGER t;
+    if (freq.QuadPart == 0) {
+        QueryPerformanceFrequency(&freq);
+    }
+    QueryPerformanceCounter(&t);
+    return (double)t.QuadPart / (double)freq.QuadPart;
+}
+
+void host_sleep_seconds(double s) {
+    if (s > 0.0) {
+        Sleep((DWORD)(s * 1000.0));
+    }
+}
+#else
 double host_time_seconds(void) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -132,6 +152,7 @@ void host_sleep_seconds(double s) {
     ts.tv_nsec = (long)((s - (double)ts.tv_sec) * 1e9);
     nanosleep(&ts, NULL);
 }
+#endif
 
 int host_file_read_all(const char *path, void **data, host_u32 *size) {
     FILE *f = fopen(path, "rb");
@@ -200,11 +221,24 @@ void host_log(const char *fmt, ...) {
     va_end(ap);
 }
 
+#ifdef PORT_WIN32
+extern void port_win32_message(const char *title, const char *text);
+#endif
+
 void host_fatal(const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
     host_vlog(fmt, ap);
     va_end(ap);
+#ifdef PORT_WIN32
+    {
+        char buf[1024];
+        va_start(ap, fmt);
+        vsnprintf(buf, sizeof(buf), fmt, ap);
+        va_end(ap);
+        port_win32_message("1080 Snowboarding", buf); /* no console: a message box (plan 27) */
+    }
+#endif
     host_shutdown();
     exit(1);
 }

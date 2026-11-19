@@ -41,7 +41,27 @@ endif()
 # to 8 already); PORT64 selects the 64-bit spellings under PORT.  -no-pie + the small code model keep
 # the image (text, data, bss, the blobs) below 2 GB, the low-address model of plan 21.
 option(PORT_64 "M6: build for x86-64 (plan section 21); default is the 32-bit i386 build" OFF)
-if(PORT_64)
+# PORT_WIN32 (plan section 27): the 32-bit Windows build (i686-w64-mingw32, toolchain port/win32/mingw-i686.cmake).
+# The game keeps the i386 data model and calling convention of the Linux build:
+#   -mno-ms-bitfields    the GCC (SysV) bitfield layout, not MSVC's (mingw's default)
+#   -fpcc-struct-return  every struct returned in memory, as i386 SysV (mingw returns 1/2/4/8-byte ones in eax:edx)
+#   -mabi=sysv           C++ member functions take `this` on the stack (cdecl), not in ecx (mingw's thiscall): the
+#                        cfront-style game calls methods through C pointers and slot tables; it also makes a callee
+#                        pop the hidden struct-return pointer (`ret $4`), as on Linux
+#   -fno-leading-underscore  the game's symbols keep their ELF spelling (`__asm__("name")` labels, port/gen/aliases.ld,
+#                        the blob objects, cc-select's binds); port/win32/gen-win32-bridge.py links them to the
+#                        underscored CRT / libgcc / host C++ names
+option(PORT_WIN32 "plan 27: the 32-bit Windows build (mingw-w64 i686)" OFF)
+if(PORT_WIN32 AND PORT_64)
+  message(FATAL_ERROR "PORT_WIN32 is the 32-bit build: not with PORT_64")
+endif()
+if(PORT_WIN32)
+  set(PORT_M32)
+  set(PORT_ARCH_FLAGS -malign-double -msse2 -mfpmath=sse -ffp-contract=off -fno-strict-aliasing
+      -fno-stack-protector -ffunction-sections -fdata-sections -fno-leading-underscore -mno-ms-bitfields
+      -fpcc-struct-return -mabi=sysv)
+  set(PORT_DEFS PORT PORT_WIN32 __USE_MINGW_ANSI_STDIO=1)
+elseif(PORT_64)
   # Every game-visible unit (the game, port/uso, port/ultra, the host layer that reads game structs)
   # is compiled with -mx32: x86-64 code with the ILP32 data model, so every struct, blob and cfront
   # layout stays the N64's.  cc-select.py assembles those units as ELF64 objects; they run below 2 GB
@@ -83,9 +103,27 @@ target_compile_options(game PRIVATE ${PORT_ARCH_FLAGS} -include ${CMAKE_CURRENT_
 # port/uso: the module registry and the USO data blobs (plan section 16.5).  The blobs are
 # generated here from the user's ROM (no ROM data in the repository): extract.py writes the
 # per-USO sections, gen-uso-blobs.py turns the ones port/gen/uso_blobs.tsv lists into an object.
+# PORT_RUNTIME_BLOBS (plan 27; on by default in the Windows build): the executable holds no ROM bytes. The blobs
+# are zeroed arrays (gen-uso-blobs.py --runtime) that port/uso/uso_rom.c fills from the --rom file at start-up,
+# so neither the build nor the binary needs the ROM.
+if(PORT_WIN32)
+  set(_rtb_default ON)
+else()
+  set(_rtb_default OFF)
+endif()
+option(PORT_RUNTIME_BLOBS "fill the USO data blobs from the ROM at run time (no ROM data in the binary)" ${_rtb_default})
 set(PORT_ROM "${GAME_ROOT}/baserom.z64" CACHE FILEPATH "the US 1.0 ROM (z64) the data blobs come from")
 set(PORT_EXTRACTED "" CACHE PATH "an existing port/tools/extract output (default: extract PORT_ROM into the build dir)")
-if(PORT_EXTRACTED)
+if(PORT_RUNTIME_BLOBS)
+  add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.c
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen-uso-blobs.py --runtime
+            ${PORT_GEN}/uso_blobs.tsv ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.c
+    DEPENDS ${PORT_GEN}/uso_blobs.tsv ${PORT_GEN}/blob_types.tsv
+            ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen-uso-blobs.py ${CMAKE_CURRENT_SOURCE_DIR}/tools/blob_swap.py
+    COMMENT "Generating the USO blob table (filled from the ROM at run time)"
+    VERBATIM)
+  set(PORT_USO_BLOBS uso/uso_rom.c ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.c)
+elseif(PORT_EXTRACTED)
   set(PORT_EXT_DIR "${PORT_EXTRACTED}")
   set(PORT_EXT_DEP "${PORT_EXTRACTED}/manifest.json")
 else()
@@ -98,14 +136,17 @@ else()
     COMMENT "Extracting the ROM filesystem (port/tools/extract)"
     VERBATIM)
 endif()
-add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.s
-  COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen-uso-blobs.py
-          ${PORT_EXT_DIR} ${PORT_GEN}/uso_blobs.tsv ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.s
-  DEPENDS ${PORT_EXT_DEP} ${PORT_GEN}/uso_blobs.tsv ${PORT_GEN}/blob_types.tsv
-          ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen-uso-blobs.py ${CMAKE_CURRENT_SOURCE_DIR}/tools/blob_swap.py
-  COMMENT "Generating the USO data blobs"
-  VERBATIM)
-add_library(uso STATIC uso/uso.c ${PORT_GEN}/uso_modules.c ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.s)
+if(NOT PORT_RUNTIME_BLOBS)
+  add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.s
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen-uso-blobs.py
+            ${PORT_EXT_DIR} ${PORT_GEN}/uso_blobs.tsv ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.s
+    DEPENDS ${PORT_EXT_DEP} ${PORT_GEN}/uso_blobs.tsv ${PORT_GEN}/blob_types.tsv
+            ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen-uso-blobs.py ${CMAKE_CURRENT_SOURCE_DIR}/tools/blob_swap.py
+    COMMENT "Generating the USO data blobs"
+    VERBATIM)
+  set(PORT_USO_BLOBS ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.s)
+endif()
+add_library(uso STATIC uso/uso.c ${PORT_GEN}/uso_modules.c ${PORT_USO_BLOBS})
 target_include_directories(uso PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/uso)
 target_compile_options(uso PRIVATE ${PORT_ARCH_FLAGS})
 
@@ -116,6 +157,9 @@ target_compile_options(uso PRIVATE ${PORT_ARCH_FLAGS})
 set(PORT_ULTRA_SOURCES ultra/thread.c ultra/message.c ultra/vi.c ultra/pi.c ultra/si.c
     ultra/ai_sp.c ultra/misc.c ultra/va_pack.c)
 set(PORT_HOST_SOURCES main.c host_headless.c host/input_script.c trace.c)
+if(PORT_WIN32)
+  list(APPEND PORT_HOST_SOURCES win32/win32_host.c)
+endif()
 # port/gfx (plan section 19, M2): port_gfx_task (the M_GFXTASK hook) and the PORT_GFX_DUMP writer
 list(APPEND PORT_HOST_SOURCES gfx/port_gfx.c gfx/dlump.c gfx/port_fb.c gfx/port_live.c)
 # plan 19.7: option (a), Fast3D in process (gfx/fast3d/port_fast3d.cpp + libultraship's src/fast, pinned + the
@@ -187,9 +231,45 @@ endif()
 # tools/lus (setup-lus.sh), tools/gl-dev, tools/x11-dev and tools/pulse-dev (headers only; libpulse-simple is
 # dlopen'd). PORT_NATIVE_X11_DEV / _PULSE_DEV / PORT_GL_DEV locate them.
 option(PORT_NATIVE "M6 / plan 21.9: link the in-process window / audio / Fast3D host into the 64-bit tenshoe" OFF)
-if(PORT_NATIVE)
+# PORT_WIN32 (plan 27): the same in-process host, over SDL2 (live_window_sdl.cpp; live_audio.cpp's SDL output) instead
+# of X11 / EGL / PulseAudio. SDL2_MINGW: the i686-w64-mingw32 tree of SDL2's mingw development release
+# (port/win32/setup-mingw.sh). libultraship's shaders are compiled in (PORT_EMBED_SHADERS).
+if(PORT_WIN32)
+  set(PORT_LUS "${GAME_ROOT}/../../tools/lus" CACHE PATH "libultraship + prism (gfx/fast3d/setup-lus.sh)")
+  set(SDL2_MINGW "${GAME_ROOT}/../../tools/sdl2-mingw/x/SDL2-2.30.9/i686-w64-mingw32" CACHE PATH
+      "SDL2's mingw development tree for i686 (include/SDL2, lib/libSDL2.a)")
+  if(NOT EXISTS "${PORT_LUS}/.complete")
+    message(FATAL_ERROR "PORT_WIN32: ${PORT_LUS} missing; run port/gfx/fast3d/setup-lus.sh")
+  endif()
+  if(NOT EXISTS "${SDL2_MINGW}/lib/libSDL2.a")
+    message(FATAL_ERROR "PORT_WIN32: no SDL2 at ${SDL2_MINGW}; run port/win32/setup-mingw.sh")
+  endif()
+  set(_lus "${PORT_LUS}/libultraship")
+  file(GLOB _prism_cpp "${PORT_LUS}/prism/src/prism/*.cpp" "${PORT_LUS}/prism/src/prism/utils/*.cpp")
+  file(GLOB _prism_c "${PORT_LUS}/prism/src/prism/utils/*.c")
+  set(_shaders shaders/opengl/default.shader.glsl)
+  add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/win32gen/fast_shaders.inc
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/win32/embed-files.py ${_lus}/src/fast
+            ${CMAKE_CURRENT_BINARY_DIR}/win32gen/fast_shaders.inc ${_shaders}
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/win32/embed-files.py ${_lus}/src/fast/${_shaders}
+    COMMENT "Embedding libultraship's shaders" VERBATIM)
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/win32gen)
+  add_library(port_native STATIC gfx/fast3d/native_host.cpp gfx/fast3d/live_window_sdl.cpp gfx/fast3d/live_audio.cpp
+              gfx/fast3d/port_fast3d.cpp gfx/fast3d/ship_shim.cpp gfx/replay/egl_png.c win32/win32_gl.c
+              ${CMAKE_CURRENT_BINARY_DIR}/win32gen/fast_shaders.inc
+              ${_lus}/src/fast/interpreter.cpp ${_lus}/src/fast/backends/gfx_opengl.cpp
+              ${_lus}/src/fast/debug/GfxDebugger.cpp ${_lus}/src/fast/resource/type/Texture.cpp
+              ${_prism_cpp} ${_prism_c})
+  target_include_directories(port_native PRIVATE gfx/fast3d/shim ${_lus}/include ${_lus}/include/fast ${_lus}/src
+                             ${PORT_LUS}/prism/src ${SDL2_MINGW}/include ${CMAKE_CURRENT_BINARY_DIR}/win32gen)
+  target_compile_definitions(port_native PRIVATE PORT_WIN32 PORT_EMBED_SHADERS ENABLE_OPENGL SDL_MAIN_HANDLED
+                             CVAR_MSAA_VALUE="gMSAAValue" CVAR_INTERNAL_RESOLUTION="gInternalResolution"
+                             CVAR_Z_FIGHTING_MODE="gZFightingMode" LUS_FAST_DIR="${_lus}/src/fast")
+  target_compile_options(port_native PRIVATE -O2 -msse2 -mfpmath=sse -w $<$<COMPILE_LANGUAGE:CXX>:-std=c++20>)
+  target_compile_definitions(porthost PRIVATE PORT_GFX_NATIVE)
+elseif(PORT_NATIVE)
   if(NOT PORT_64)
-    message(FATAL_ERROR "PORT_NATIVE needs PORT_64")
+    message(FATAL_ERROR "PORT_NATIVE needs PORT_64 (or PORT_WIN32)")
   endif()
   set(PORT_LUS "${GAME_ROOT}/../../tools/lus" CACHE PATH "libultraship + prism (gfx/fast3d/setup-lus.sh)")
   set(PORT_GL_DEV "${GAME_ROOT}/../../tools/gl-dev/root/usr/include" CACHE PATH "EGL / GL headers")
@@ -235,7 +315,36 @@ if(PORT_64)
     list(APPEND PORT64_WRAP -Wl,--wrap=${f})
   endforeach()
 endif()
-if(PORT_LINK)
+if(PORT_LINK AND PORT_WIN32)
+  # plan 27: tenshoe.exe, one self-contained 32-bit Windows executable (static CRT / libstdc++ / winpthread / SDL2;
+  # no ROM bytes). The game side's unprefixed symbols meet the toolchain's through win32_bridge.ld.
+  set(_bridge ${CMAKE_CURRENT_BINARY_DIR}/win32_bridge.ld)
+  set(_nm "${CMAKE_NM}")
+  add_custom_command(OUTPUT ${_bridge} ${CMAKE_CURRENT_BINARY_DIR}/win32_traps.c
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/win32/gen-win32-bridge.py --nm ${_nm} --cc ${CMAKE_C_COMPILER}
+            --aliases ${PORT_GEN}/aliases.ld -o ${_bridge} --traps ${CMAKE_CURRENT_BINARY_DIR}/win32_traps.c
+            $<TARGET_FILE:game> $<TARGET_FILE:uso> $<TARGET_FILE:ultra> $<TARGET_FILE:audio> $<TARGET_OBJECTS:porthost>
+            --host $<TARGET_FILE:port_native>
+    DEPENDS game uso ultra audio porthost port_native $<TARGET_OBJECTS:porthost>
+            ${CMAKE_CURRENT_SOURCE_DIR}/win32/gen-win32-bridge.py ${PORT_GEN}/aliases.ld
+    COMMAND_EXPAND_LISTS
+    COMMENT "Bridging the game's symbols to the mingw toolchain's" VERBATIM)
+  add_custom_target(win32_bridge DEPENDS ${_bridge})
+  add_executable(tenshoe $<TARGET_OBJECTS:porthost> ${CMAKE_CURRENT_BINARY_DIR}/win32_traps.c)
+  add_dependencies(tenshoe win32_bridge)
+  set_target_properties(tenshoe PROPERTIES LINK_DEPENDS ${_bridge})
+  # PORT_WIN32_CONSOLE=ON: a console program (logs in the terminal); default: a GUI program that logs to 1080.log
+  # when started without a console (port/win32/win32_host.c)
+  option(PORT_WIN32_CONSOLE "tenshoe.exe as a console program" OFF)
+  if(NOT PORT_WIN32_CONSOLE)
+    target_link_options(tenshoe PRIVATE -mwindows)
+  endif()
+  target_link_options(tenshoe PRIVATE -static -static-libgcc -static-libstdc++ -Wl,--gc-sections
+                      -Wl,--disable-dynamicbase -Wl,--stack,16777216)
+  target_link_libraries(tenshoe PRIVATE -Wl,--whole-archive game uso ultra audio -Wl,--no-whole-archive
+                        ${PORT_GEN}/aliases.ld ${_bridge} port_native ${SDL2_MINGW}/lib/libSDL2.a
+                        opengl32 winmm imm32 version setupapi cfgmgr32 ole32 oleaut32 uuid gdi32 comdlg32 m)
+elseif(PORT_LINK)
   add_executable(tenshoe $<TARGET_OBJECTS:porthost> ${PORT_ENTRY64})
   target_link_options(tenshoe PRIVATE ${PORT_M32} -no-pie ${PORT64_WRAP} -Wl,--gc-sections)
   # whole-archive: every shipped body is a root; the shim (port/ultra, port/uso)

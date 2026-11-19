@@ -33,8 +33,13 @@
  * read every frame (plan 28).
  * Keys: live_window.h, rebindable in the settings file / menu (plan 27). At exit: frames, render ms mean / p50 / p95 / p99 / max, frames over 33 ms, the
  * step interval, audio. */
+#include <chrono>
+#ifdef PORT_WIN32
+#include "../../win32/win32_gl.h" /* windows.h (VirtualAlloc) and the GL entry points (plan 27) */
+#else
 #include <sys/mman.h>
 #include <unistd.h>
+#endif
 
 #include <algorithm>
 #include <atomic>
@@ -47,8 +52,10 @@
 #include <string>
 #include <vector>
 
+#ifndef PORT_WIN32
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/gl.h>
+#endif
 
 #include "live_audio.h"
 #include "live_backend.h"
@@ -102,7 +109,7 @@ struct Host {
     size_t blockBytes = 0;
     LiveShmHeader* H = nullptr;
     LiveFbReply* reply = nullptr;
-    LiveX11 win;
+    LiveWin win;
     LiveWindow* wapi = nullptr;
     LiveInput in;
     LivePad lastPads[LIVE_PADS] = {};
@@ -287,8 +294,18 @@ extern "C" unsigned port_native_open(void) {
     }
     /* the block the game reads (live_shm.h layout): low, as every address the x32 code holds must be */
     h->blockBytes = PORT_NATIVE_FB_REPLY + sizeof(LiveFbReply);
+#ifdef PORT_WIN32
+    /* a 32-bit process without /LARGEADDRESSAWARE: every address is below 2 GB (plan 27) */
+    void* m = VirtualAlloc(nullptr, h->blockBytes, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+    if (m == nullptr) {
+        m = (void*)-1;
+    }
+    const void* const kFailed = (void*)-1;
+#else
     void* m = mmap(nullptr, h->blockBytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
-    if (m == MAP_FAILED || (uintptr_t)m + h->blockBytes > 0x80000000u) {
+    const void* const kFailed = MAP_FAILED;
+#endif
+    if (m == kFailed || (uintptr_t)m + h->blockBytes > 0x80000000u) {
         std::fprintf(stderr, "native: no low memory for the host block\n");
         return 0;
     }
@@ -323,6 +340,9 @@ extern "C" unsigned port_native_open(void) {
         ao.dumpPath = env("PORT_NATIVE_AUDIO_DUMP");
     }
     ao.stats = env("PORT_NATIVE_AUDIO_STATS") != nullptr && std::strcmp(env("PORT_NATIVE_AUDIO_STATS"), "0") != 0;
+#ifdef PORT_WIN32
+    ao.openDelayMs = 0; /* the 2.5 s wait is for WSLg's PulseAudio (run 867); Windows' audio opens at once */
+#endif
     if (env("PORT_NATIVE_AUDIO_OPEN_DELAY")) {
         ao.openDelayMs = (uint32_t)std::max(0, std::atoi(env("PORT_NATIVE_AUDIO_OPEN_DELAY")));
     }
@@ -597,7 +617,7 @@ extern "C" void port_native_close(void) {
         stopped = true;
     }).detach();
     for (int i = 0; i < 200 && !stopped; i++) {
-        usleep(10000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     if (!stopped) {
         std::printf("native: the audio thread did not stop (blocked in PulseAudio): abandoned at exit\n");

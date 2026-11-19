@@ -17,9 +17,16 @@
  * exactly the game's PCM. */
 #include "live_audio.h"
 
+#ifdef PORT_WIN32
+#include <chrono>
+#include <string>
+#define SDL_MAIN_HANDLED 1
+#include <SDL2/SDL.h>
+#else
 #include <dlfcn.h>
 #include <time.h>
 #include <unistd.h>
+#endif
 
 #include <algorithm>
 #include <atomic>
@@ -28,7 +35,9 @@
 #include <thread>
 #include <vector>
 
-#if __has_include(<pulse/simple.h>)
+#if defined(PORT_WIN32)
+#define LIVE_HAVE_PULSE 0
+#elif __has_include(<pulse/simple.h>)
 #include <pulse/error.h>
 #include <pulse/simple.h>
 #define LIVE_HAVE_PULSE 1
@@ -138,6 +147,61 @@ struct Pulse {
         }
     }
 };
+#elif defined(PORT_WIN32)
+/* The Windows build (plan 27): SDL2's audio device (WASAPI, else DirectSound / winmm) in its push mode.
+ * put() queues and then blocks while more than latencyMs is queued, as pa_simple_write blocks on
+ * PulseAudio's tlength, so the loop above runs at the sound card's pace unchanged. */
+struct Pulse {
+    SDL_AudioDeviceID s = 0;
+    uint32_t bytesPerMs = 0, latencyMs = 0;
+    bool open(uint32_t rate, uint32_t channels, uint32_t latency) {
+        if (SDL_WasInit(SDL_INIT_AUDIO) == 0 && SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
+            std::printf("native: audio: SDL audio init failed: %s; silent\n", SDL_GetError());
+            return false;
+        }
+        SDL_AudioSpec want = {}, have = {};
+        want.freq = (int)rate;
+        want.format = AUDIO_S16LSB;
+        want.channels = (Uint8)channels;
+        want.samples = 512;
+        want.callback = nullptr; /* SDL_QueueAudio */
+        s = SDL_OpenAudioDevice(nullptr, 0, &want, &have, 0);
+        if (s == 0) {
+            std::printf("native: audio: SDL_OpenAudioDevice failed: %s; silent\n", SDL_GetError());
+            return false;
+        }
+        bytesPerMs = rate * channels * 2 / 1000;
+        latencyMs = latency;
+        SDL_PauseAudioDevice(s, 0);
+        std::printf("native: audio: %s, %u Hz x %u, %u ms buffer\n", SDL_GetCurrentAudioDriver(), rate, channels,
+                    latency);
+        return true;
+    }
+    /* microseconds still queued */
+    long queued() {
+        return bytesPerMs == 0 ? -1 : (long)((uint64_t)SDL_GetQueuedAudioSize(s) * 1000 / bytesPerMs);
+    }
+    bool put(const uint8_t* p, size_t n) {
+        if (SDL_QueueAudio(s, p, (Uint32)n) != 0) {
+            std::printf("native: audio: SDL_QueueAudio failed: %s; silent from now on\n", SDL_GetError());
+            close(false);
+            return false;
+        }
+        while (SDL_GetQueuedAudioSize(s) > latencyMs * bytesPerMs) {
+            SDL_Delay(1);
+        }
+        return true;
+    }
+    void close(bool drainFirst = true) {
+        if (s != 0) {
+            for (int i = 0; drainFirst && i < 500 && SDL_GetQueuedAudioSize(s) > 0; i++) {
+                SDL_Delay(1);
+            }
+            SDL_CloseAudioDevice(s);
+            s = 0;
+        }
+    }
+};
 #else
 struct Pulse {
     void* s = nullptr;
@@ -151,6 +215,16 @@ struct Pulse {
 };
 #endif
 
+#ifdef PORT_WIN32
+void sleep_ms(int ms) {
+    SDL_Delay((Uint32)ms);
+}
+
+double now_s() {
+    using namespace std::chrono;
+    return duration<double>(steady_clock::now().time_since_epoch()).count();
+}
+#else
 void sleep_ms(int ms) {
     struct timespec ts = { ms / 1000, (long)(ms % 1000) * 1000000L };
     nanosleep(&ts, nullptr);
@@ -161,6 +235,7 @@ double now_s() {
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return (double)ts.tv_sec + ts.tv_nsec * 1e-9;
 }
+#endif
 
 /* n bytes from the ring at tail into out (or nowhere), hashed and dumped, then released */
 void take(uint32_t tail, uint32_t n, uint8_t* out) {

@@ -96,7 +96,7 @@ static int load_replay(const char *path) {
 
 int port_trace_open(const char *recordPath, const char *replayPath, const char *statePath) {
     if (recordPath != NULL) {
-        sRecord = fopen(recordPath, "w");
+        sRecord = fopen(recordPath, "wb");
         if (sRecord == NULL) {
             host_log("trace: cannot write %s", recordPath);
             return -1;
@@ -104,7 +104,7 @@ int port_trace_open(const char *recordPath, const char *replayPath, const char *
         fprintf(sRecord, "# 1080 port input log v2: I frame pad replayFrame held:hex8 rawX rawY\n");
     }
     if (statePath != NULL) {
-        sState = fopen(statePath, "w");
+        sState = fopen(statePath, "wb");
         if (sState == NULL) {
             host_log("trace: cannot write %s", statePath);
             return -1;
@@ -125,7 +125,7 @@ int port_trace_reopen_state(const char *statePath) {
     if (sState != NULL) {
         fclose(sState);
     }
-    sState = fopen(statePath, "w");
+    sState = fopen(statePath, "wb");
     if (sState == NULL) {
         return -1;
     }
@@ -363,7 +363,7 @@ static NOINST void fn_frame(u32 frameCount) {
             sFnObjSize = *end == ':' ? strtoul(end + 1, NULL, 16) : 0x100;
         }
         if (sFnFrame >= 0) {
-            sFn = fopen(o != NULL ? o : "fn.log", "w");
+            sFn = fopen(o != NULL ? o : "fn.log", "wb");
             if (sFn != NULL) {
                 setvbuf(sFn, NULL, _IOLBF, 0);   /* a crash inside the frame keeps the log */
             }

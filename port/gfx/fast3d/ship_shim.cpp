@@ -33,6 +33,29 @@ std::shared_ptr<IResource> ResourceManager::LoadResource(const std::string& path
     if (initData == nullptr || initData->Type != (uint32_t)ResourceType::Shader) {
         return nullptr;
     }
+#ifdef PORT_EMBED_SHADERS
+    /* the Windows build (plan 27): libultraship's shaders are compiled into the executable (fast_shaders.inc,
+     * port/win32/embed-files.py); LUS_FAST_DIR in the environment still overrides them from disk */
+    if (std::getenv("LUS_FAST_DIR") == nullptr) {
+        static const struct {
+            const char* path;
+            const char* data;
+            size_t size;
+        } kShaders[] = {
+#include "fast_shaders.inc"
+        };
+        for (const auto& e : kShaders) {
+            if (path == e.path) {
+                initData->Identifier.Path = path;
+                auto s = std::make_shared<Shader>(initData);
+                s->Data.assign(e.data, e.size);
+                return s;
+            }
+        }
+        std::fprintf(stderr, "[fast3d shim] no embedded shader %s\n", path.c_str());
+        return nullptr;
+    }
+#endif
     std::ifstream f(fast_dir() + "/" + path, std::ios::binary);
     if (!f) {
         std::fprintf(stderr, "[fast3d shim] no shader %s/%s\n", fast_dir().c_str(), path.c_str());

@@ -14,10 +14,53 @@ extern "C" {
 }
 #include "live_gamepad.h"
 
-struct _XDisplay;
-
 /* CLOCK_MONOTONIC seconds */
 double live_now_s();
+
+#ifdef PORT_WIN32
+/* The Windows build (plan 27): the same interface over SDL2 (live_window_sdl.cpp): an SDL window with a
+ * desktop GL context, the keyboard and an SDL game controller (XInput / DirectInput / HID). */
+struct LiveSDL {
+    void* win = nullptr; /* SDL_Window */
+    void* ctx = nullptr; /* SDL_GLContext */
+    uint32_t w = 0, h = 0;
+    bool fullscreen = false;
+    const char* tag = "native";
+
+    bool open(uint32_t width, uint32_t height, const char* title, int vsync = 0);
+    void swap();
+    void black();
+    void setTitle(const char* title);
+    void viewport(uint32_t* x, uint32_t* y, uint32_t* vw, uint32_t* vh) const;
+    void toggleFullscreen(); /* F11 / Alt+Enter: borderless fullscreen desktop */
+    /* a synthetic key (an X keysym name as on Linux: Return, x, Left, F11, ...) pushed as an SDL event */
+    bool sendKey(const char* keysymName, bool down);
+};
+using LiveWin = LiveSDL;
+
+/* the keyboard and the first game controller -> N64 pad 1: the keys of the Linux build (below), an Xbox
+ * layout on the pad (SDL's game-controller mapping: XInput pads and the DirectInput pads SDL knows; any
+ * other joystick is read raw in the Linux js layout) */
+struct LiveInput {
+    bool left = false, right = false, up = false, down = false, shift = false, quit = false;
+    uint16_t keys = 0;
+    void* ctl = nullptr;  /* SDL_GameController */
+    void* joy = nullptr;  /* SDL_Joystick, when no controller mapping exists */
+    int axis[8] = {};
+    uint16_t jsButtons = 0;
+
+    void key(int sdlKeycode, bool down);
+    void releaseAll();
+    void openJoystick(const char* path); /* path: unused (the first pad SDL finds) */
+    void pollJoystick();
+    LivePad pad() const;
+};
+
+/* drain the SDL events into the input (keys, F11, resize, close -> in.quit) */
+int live_pump(LiveSDL& w, LiveInput& in, uint32_t step);
+
+#else
+struct _XDisplay;
 
 /* an X11 window with an EGL desktop-GL context current on the calling thread */
 struct LiveX11 {
@@ -73,5 +116,7 @@ struct LiveInput {
 /* drain the window's X events into the input (keys, F11, resize, close -> in.quit). step: printed with
  * synthetic keys. Returns the number of events handled. */
 int live_pump(LiveX11& w, LiveInput& in, uint32_t step);
+using LiveWin = LiveX11;
+#endif
 
 #endif

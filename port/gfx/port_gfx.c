@@ -35,6 +35,11 @@
 #if defined(__linux__)
 int mincore(void *addr, size_t len, unsigned char *vec);
 #define HAVE_MINCORE 1
+#elif defined(_WIN32)
+/* the Windows build (plan 27): mapped() asks VirtualQuery */
+#define WIN32_LEAN_AND_MEAN 1
+#include <windows.h>
+#define HAVE_MINCORE 1
 #endif
 
 #if defined(_WIN32)
@@ -45,6 +50,9 @@ int mincore(void *addr, size_t len, unsigned char *vec);
 #define port_mkdir(p) mkdir((p), 0777)
 #endif
 #include <errno.h>
+#ifndef PORT_ERRNO
+#define PORT_ERRNO errno
+#endif
 
 typedef struct DumpCfg {
     int inited;
@@ -93,6 +101,26 @@ static unsigned long env_ul(const char *name, unsigned long def) {
 
 #ifdef HAVE_MINCORE
 /* [p, p + n) is mapped: mincore fails with ENOMEM on an unmapped page. */
+#ifdef _WIN32
+static int mapped(const void *p, size_t n) {
+    size_t a = (size_t)p, e = (size_t)p + n;
+    MEMORY_BASIC_INFORMATION mi;
+    if (e < a) {
+        return 0;
+    }
+    while (a < e || (n == 0 && a == e)) {
+        if (VirtualQuery((const void *)a, &mi, sizeof(mi)) != sizeof(mi) || mi.State != MEM_COMMIT ||
+            (mi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) != 0) {
+            return 0;
+        }
+        a = (size_t)mi.BaseAddress + mi.RegionSize;
+        if (n == 0) {
+            break;
+        }
+    }
+    return 1;
+}
+#else
 static int mapped(const void *p, size_t n) {
     static unsigned char vec[256];
     size_t a = (size_t)p & ~(size_t)4095, e = ((size_t)p + n + 4095) & ~(size_t)4095;
@@ -108,6 +136,7 @@ static int mapped(const void *p, size_t n) {
     }
     return 1;
 }
+#endif
 #else
 static int mapped(const void *p, size_t n) {
     (void)n;
@@ -133,7 +162,7 @@ static void make_dirs(const char *dir) {
         ) {
             char c = tmp[i];
             tmp[i] = '\0';
-            if (port_mkdir(tmp) != 0 && errno != EEXIST) {
+            if (port_mkdir(tmp) != 0 && PORT_ERRNO != EEXIST) {
                 return;
             }
             tmp[i] = c;
@@ -534,7 +563,7 @@ void port_gfx_task(OSTask_t *task) {
         FILE *f;
         dump_task(task, seq);
         snprintf(path, sizeof(path), "%s/steps.txt", sDump.dir);
-        if ((f = fopen(path, "a")) != NULL) {
+        if ((f = fopen(path, "ab")) != NULL) {
             fprintf(f, "%06u %u\n", (unsigned)seq, (unsigned)cur_step());
             fclose(f);
         }

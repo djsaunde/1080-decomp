@@ -11,7 +11,7 @@
 
 class LiveWindow final : public Fast::GfxWindowBackend {
   public:
-    explicit LiveWindow(LiveX11* w) : mWin(w) {}
+    explicit LiveWindow(LiveWin* w) : mWin(w) {}
     void Init(const char*, const char*, bool, uint32_t, uint32_t, int32_t, int32_t) override {}
     void Close() override {}
     void SetKeyboardCallbacks(bool (*)(int), bool (*)(int), void (*)()) override {}
@@ -55,7 +55,7 @@ class LiveWindow final : public Fast::GfxWindowBackend {
     bool mSwap = true; /* false: EndFrame does not present (the owner swaps) */
 
   private:
-    LiveX11* mWin;
+    LiveWin* mWin;
 };
 
 /* the N64 Z (0..0xFFFC) of the w x h pixels from (x0, y0) of the frame Fast3D drew last, read now into z
