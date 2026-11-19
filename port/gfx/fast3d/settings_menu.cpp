@@ -2,6 +2,7 @@
 #include "settings_menu.h"
 
 #include <algorithm>
+#include <chrono>
 #include <cstdio>
 #include <cstring>
 #include <strings.h>
@@ -135,6 +136,8 @@ void SettingsMenu::build(std::vector<Item>& v) {
             en("Vsync", "window.vsync", &s->vsync, { "Off", "On" }, false,
                "Off: the game's 30 Hz step paces the frames.");
             en("Fullscreen", "window.fullscreen", &s->fullscreen, { "Off", "On" }, false, "F11 also toggles it.");
+            en("Gamepad menu", "input.pad_menu", &s->pad_menu, { "Off", "Back + Start" }, false,
+               "Back + Start opens this menu; D-pad, A, B, LB / RB drive it.");
             break;
         case 2:
             num("Volume", "audio.volume", &s->volume, 0, 100, 5, false, "100: the game's samples unchanged.")
@@ -278,7 +281,99 @@ void SettingsMenu::bind(const std::string& name) {
     saved(nullptr, false);
 }
 
+/* input.pad_menu (plan 31): Back + Start on any gamepad opens or closes the menu, and while it is open the gamepads
+ * drive it: D-pad / left stick = the arrows (repeating while held), A = Enter, B / Start = Escape, X = + (add a
+ * binding), Y = Backspace (clear it), LB / RB = the previous / next page. The buttons that open or close it are held
+ * back from the game and the menu until released (port_input_mask_held). */
+void SettingsMenu::padMenu() {
+    static const unsigned kBack = 1u << 6, kStart = 1u << 7;
+    const double now =
+        std::chrono::duration<double>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    PortGamepad cur[PORT_MAX_GAMEPADS];
+    for (int i = 0; i < PORT_MAX_GAMEPADS; i++) {
+        cur[i] = *port_input_gamepad(i);
+    }
+    auto edge = [&](int i, unsigned bit) { return (cur[i].buttons & bit) && !(mNavPrev[i].buttons & bit); };
+    const char* send = nullptr;
+    int dir = -1;
+    for (int i = 0; i < PORT_MAX_GAMEPADS && send == nullptr; i++) {
+        if (!cur[i].connected) {
+            continue;
+        }
+        const bool chord = (cur[i].buttons & kBack) && (cur[i].buttons & kStart);
+        if (chord && (edge(i, kBack) || edge(i, kStart)) && mCapture != 2) {
+            toggle();
+            port_input_mask_held();
+            for (int k = 0; k < PORT_MAX_GAMEPADS; k++) {
+                mNavPrev[k] = *port_input_gamepad(k);
+            }
+            mNavDir = -1;
+            return;
+        }
+        if (!mOpen || mCapture == 2) {
+            continue;
+        }
+        static const struct {
+            unsigned bit;
+            const char* key;
+        } kButtons[] = { { 1u << 0, "Return" }, { 1u << 1, "Escape" }, { 1u << 7, "Escape" }, { 1u << 2, "plus" },
+                         { 1u << 3, "BackSpace" }, { 1u << 4, "Prior" }, { 1u << 5, "Next" } };
+        for (const auto& b : kButtons) {
+            if (edge(i, b.bit) && !(b.bit == kStart && (cur[i].buttons & kBack))) {
+                send = b.key;
+                break;
+            }
+        }
+        if (dir < 0) {
+            const PortGamepad& g = cur[i];
+            const int t = 16000;
+            if ((g.buttons & (1u << 11)) || g.axis[7] < -t || g.axis[1] < -t) {
+                dir = 0;
+            } else if ((g.buttons & (1u << 12)) || g.axis[7] > t || g.axis[1] > t) {
+                dir = 1;
+            } else if ((g.buttons & (1u << 13)) || g.axis[6] < -t || g.axis[0] < -t) {
+                dir = 2;
+            } else if ((g.buttons & (1u << 14)) || g.axis[6] > t || g.axis[0] > t) {
+                dir = 3;
+            }
+        }
+    }
+    for (int i = 0; i < PORT_MAX_GAMEPADS; i++) {
+        mNavPrev[i] = cur[i];
+    }
+    if (!mOpen || mCapture == 2) {
+        mNavDir = -1;
+        return;
+    }
+    static const char* kDir[4] = { "Up", "Down", "Left", "Right" };
+    if (send == nullptr && dir >= 0 && mCapture == 0) {
+        if (dir != mNavDir) {
+            send = kDir[dir];
+            mNavNext = now + 0.4;
+        } else if (now >= mNavNext) {
+            send = kDir[dir];
+            mNavNext = now + 0.12;
+        }
+    }
+    mNavDir = dir;
+    if (send != nullptr && mCapture == 1 && std::strcmp(send, "Escape") != 0 && std::strcmp(send, "BackSpace") != 0) {
+        send = nullptr; /* "press a key": the pad only cancels (B) or clears (Y) */
+    }
+    if (send != nullptr) {
+        key(send, true);
+        if (!mOpen) { /* B / Start closed it: the game must not see that press */
+            port_input_mask_held();
+            for (int k = 0; k < PORT_MAX_GAMEPADS; k++) {
+                mNavPrev[k] = *port_input_gamepad(k);
+            }
+        }
+    }
+}
+
 void SettingsMenu::tick() {
+    if (port_settings()->pad_menu) {
+        padMenu();
+    }
     if (!mOpen || mCapture != 2) {
         return;
     }

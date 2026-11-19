@@ -30,7 +30,7 @@ class SettingsMenu {
     void toggle();
     /* a key while open (the host routes every key here then, except F11); returns true if handled */
     bool key(const char* name, bool down);
-    /* each poll: gamepad capture */
+    /* each poll: gamepad capture; with input.pad_menu, Back + Start on a gamepad and the gamepad navigation */
     void tick();
     /* the RGBA image (kW x kH, top row first) */
     const uint8_t* image();
@@ -47,6 +47,7 @@ class SettingsMenu {
     void saved(const char* field, bool restart);
     void bind(const std::string& name);
     void render();
+    void padMenu();
 
     bool mOpen = false, mDirty = true;
     int mPage = 0, mSel = 0, mCol = 0, mTop = 0;
@@ -54,6 +55,9 @@ class SettingsMenu {
     bool mCaptureAdd = false;
     int mCapPlayer = 0, mCapAction = 0;
     PortGamepad mCapPrev[PORT_MAX_GAMEPADS] = {};
+    PortGamepad mNavPrev[PORT_MAX_GAMEPADS] = {};
+    int mNavDir = -1;        /* the direction held (0 up, 1 down, 2 left, 3 right) for the auto-repeat, or -1 */
+    double mNavNext = 0.0;   /* when it repeats */
     std::string mStatus;
     std::vector<uint8_t> mPix;
 };

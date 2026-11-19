@@ -84,9 +84,12 @@ typedef struct PortSettings {
     int vsync;      /* 0 (PORT_NATIVE_VSYNC) */
     int fullscreen; /* 0: start windowed */
     /* [audio] */
-    int latency_ms; /* 80 (PORT_NATIVE_LATENCY) */
+    int latency_ms; /* 80 (PORT_NATIVE_LATENCY; Android 100) */
     int mute;       /* 0 (PORT_NATIVE_MUTE) */
     int volume;     /* 0..100: 100 = the samples unchanged (default) */
+    /* [input] */
+    int pad_menu; /* 1: a gamepad's Back + Start opens / closes the settings menu and the gamepads drive it (plan 31;
+                   * default 0, Android 1) */
     /* [input.pN] */
     PortPlayerInput player[PORT_SETTINGS_PLAYERS];
 } PortSettings;

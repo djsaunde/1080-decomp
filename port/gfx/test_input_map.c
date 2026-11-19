@@ -322,8 +322,40 @@ static void test_file(const char* dir) {
     remove(path);
 }
 
+/* plan 31: port_input_mask_held hides the buttons held now until each is released; the defaults keep pad_menu off */
+static void test_mask_held(void) {
+    PortSettings s;
+    PortN64Pad p[PORT_SETTINGS_PLAYERS];
+    PortGamepad g;
+    port_settings_defaults(&s);
+    CHECK(s.pad_menu == 0, "pad_menu on by default");
+    port_input_release_keys();
+    memset(&g, 0, sizeof(g));
+    g.connected = 1;
+    g.axis[2] = g.axis[5] = -32767;
+    g.buttons = (1u << 7) | (1u << 0); /* Start + A held */
+    port_input_set_gamepad(0, &g);
+    port_input_mask_held();
+    port_input_pads(&s, p);
+    CHECK(p[0].button == 0, "masked Start + A still pressed: %04x", p[0].button);
+    g.buttons = 1u << 7; /* A released, Start still held */
+    port_input_set_gamepad(0, &g);
+    g.buttons = (1u << 7) | (1u << 0); /* A pressed again: no longer masked */
+    port_input_set_gamepad(0, &g);
+    port_input_pads(&s, p);
+    CHECK(p[0].button == B_A, "A after its release + press: %04x", p[0].button);
+    g.buttons = 0;
+    port_input_set_gamepad(0, &g);
+    g.buttons = 1u << 7;
+    port_input_set_gamepad(0, &g);
+    port_input_pads(&s, p);
+    CHECK(p[0].button == B_START, "Start after its release + press: %04x", p[0].button);
+    port_input_set_gamepad(0, NULL);
+}
+
 int main(int argc, char** argv) {
     test_defaults_equal_old();
+    test_mask_held();
     test_rebind_and_players();
     test_file(argc > 1 ? argv[1] : ".");
     printf("test_input_map: %s (%d failures)\n", sFails ? "FAIL" : "ok", sFails);

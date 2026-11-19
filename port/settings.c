@@ -58,6 +58,7 @@ static const IntField kFields[] = {
     { "audio", "latency_ms", F(latency_ms), NULL, "PORT_NATIVE_LATENCY", ENV_LATENCY, "PulseAudio buffer (restart)" },
     { "audio", "mute", F(mute), NULL, "PORT_NATIVE_MUTE", ENV_NOT0, "1: no sound" },
     { "audio", "volume", F(volume), NULL, NULL, ENV_NONE, "0..100 (100: the game's samples unchanged)" },
+    { "input", "pad_menu", F(pad_menu), NULL, NULL, ENV_NONE, "1: Back + Start on a gamepad opens the settings menu" },
 };
 #undef F
 #define NFIELDS (sizeof(kFields) / sizeof(kFields[0]))
@@ -131,6 +132,12 @@ void port_settings_defaults(PortSettings* s) {
     s->latency_ms = 80;
     s->mute = 0;
     s->volume = 100;
+    s->pad_menu = 0;
+#ifdef __ANDROID__
+    /* plan 31: a handheld (AAudio / OpenSL ES through SDL; Bluetooth audio adds its own delay) has no F1 key */
+    s->latency_ms = 100;
+    s->pad_menu = 1;
+#endif
     for (i = 0; i < PORT_SETTINGS_PLAYERS; i++) {
         port_settings_player_defaults(&s->player[i], i);
     }

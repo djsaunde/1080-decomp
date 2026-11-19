@@ -54,6 +54,9 @@ void port_input_set_gamepad(int i, const PortGamepad* g);
 const PortGamepad* port_input_gamepad(int i);
 /* the menu is open: the game sees every controller released (still connected) */
 void port_input_suspend(int on);
+/* the buttons held on every gamepad now read as released until each is let go (the settings menu, opened or
+ * closed from a gamepad, plan 31: the press that did it reaches neither the game nor the menu) */
+void port_input_mask_held(void);
 /* the four N64 controllers from the keys / gamepads held now and the settings' bindings */
 void port_input_pads(const PortSettings* s, PortN64Pad out[PORT_SETTINGS_PLAYERS]);
 

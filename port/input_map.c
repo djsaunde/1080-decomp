@@ -18,6 +18,7 @@ static const unsigned short kActionBit[PIA_COUNT] = {
 static char sHeld[MAX_HELD][32];
 static int sNHeld;
 static PortGamepad sPads[PORT_MAX_GAMEPADS];
+static unsigned sMask[PORT_MAX_GAMEPADS]; /* port_input_mask_held: buttons hidden until released */
 static int sSuspended;
 
 void port_input_key(const char* name, int down) {
@@ -46,8 +47,19 @@ void port_input_set_gamepad(int i, const PortGamepad* g) {
     }
     if (g == NULL) {
         memset(&sPads[i], 0, sizeof(sPads[i]));
+        sMask[i] = 0;
     } else {
         sPads[i] = *g;
+        sMask[i] &= g->buttons;
+        sPads[i].buttons &= ~sMask[i];
+    }
+}
+
+void port_input_mask_held(void) {
+    int i;
+    for (i = 0; i < PORT_MAX_GAMEPADS; i++) {
+        sMask[i] |= sPads[i].buttons;
+        sPads[i].buttons = 0;
     }
 }
 
