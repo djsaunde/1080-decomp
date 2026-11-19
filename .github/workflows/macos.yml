@@ -22,7 +22,7 @@ env:
 
 jobs:
   macos-port:
-    runs-on: macos-14
+    runs-on: macos-15 # arm64 (macos-14 is retired)
     steps:
       - uses: actions/checkout@v5
 
