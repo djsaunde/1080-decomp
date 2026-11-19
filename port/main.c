@@ -493,10 +493,6 @@ int main(int argc, char **argv) {
         if (cwd != NULL && chdir(cwd) != 0) {
             host_fatal("main: cannot chdir to %s", cwd);
         }
-        if (getenv("PORT_WASM_SELFTEST") != NULL) {
-            host_log("selftest %d %p %s|", 1, (void *)&o, "x");
-            port_ultra_log("selftest2 %d %d %p %s|", 1, 2, (void *)&o, "x");
-        }
     }
 #endif
 #ifdef PORT_WIN32

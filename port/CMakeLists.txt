@@ -52,10 +52,35 @@ option(PORT_64 "M6: build for x86-64 (plan section 21); default is the 32-bit i3
 #                        the blob objects, cc-select's binds); port/win32/gen-win32-bridge.py links them to the
 #                        underscored CRT / libgcc / host C++ names
 option(PORT_WIN32 "plan 29: the 32-bit Windows build (mingw-w64 i686)" OFF)
+# PORT_WASM (plan section 30): the game as wasm32 (wasi-sdk's clang; toolchain file
+# <wasi-sdk>/share/cmake/wasi-sdk.cmake), translated to C by wasm2c (tenshoe.wasm -> w2c/game_*.c) for the
+# native host of port/wasm/host (macOS arm64 / x86-64, Linux). wasm32 is ILP32: every struct, blob, Gfx word and
+# cfront vptr keeps the N64 layout, as on i386 / x32, and a game pointer is an offset in the linear memory.
+# Each unit is compiled by port/wasm/cc-wasm.py (cc-select.py's directives on LLVM IR), the objects are LTO
+# bitcode, port/wasm/wasm-fixtypes.py reconciles symbol kinds and call types across units before the link.
+option(PORT_WASM "plan 30: the game as wasm32 + wasm2c (port/wasm)" OFF)
 if(PORT_WIN32 AND PORT_64)
   message(FATAL_ERROR "PORT_WIN32 is the 32-bit build: not with PORT_64")
 endif()
-if(PORT_WIN32)
+if(PORT_WASM)
+  if(PORT_WIN32 OR PORT_64)
+    message(FATAL_ERROR "PORT_WASM is its own target: not with PORT_WIN32 / PORT_64")
+  endif()
+  set(CMAKE_C_COMPILER_LAUNCHER   ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/wasm/cc-wasm.py)
+  set(CMAKE_CXX_COMPILER_LAUNCHER ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/wasm/cc-wasm.py)
+  set(PORT_M32)
+  # -fno-delete-null-pointer-checks: cfront constructors test `this == 0`; -fno-strict-return: a C++ donor that
+  # falls off its end (an IDO-era $v0 return) must not become `unreachable`; -fwrapv: gcc's leniency, kept
+  set(PORT_ARCH_FLAGS -flto -ffp-contract=off -fno-strict-aliasing -fno-delete-null-pointer-checks -fwrapv
+      -ffunction-sections -fdata-sections -Wno-int-conversion -Wno-incompatible-function-pointer-types
+      -Wno-implicit-function-declaration -Wno-implicit-int -Wno-return-type -w
+      $<$<COMPILE_LANGUAGE:CXX>:-fno-strict-return>)
+  set(PORT_DEFS PORT PORT64 PORT_WASM)
+  set(PORT_LIBKIND OBJECT) # wasm-fixtypes.py rewrites the objects before the link
+  foreach(_l C CXX)         # no -g: cc-wasm.py edits the IR text, and the wasm2c output carries no DWARF anyway
+    set(CMAKE_${_l}_FLAGS_RELWITHDEBINFO "-O2 -DNDEBUG")
+  endforeach()
+elseif(PORT_WIN32)
   set(PORT_M32)
   set(PORT_ARCH_FLAGS -malign-double -msse2 -mfpmath=sse -ffp-contract=off -fno-strict-aliasing
       -fno-stack-protector -ffunction-sections -fdata-sections -fno-leading-underscore -mno-ms-bitfields
@@ -83,8 +108,16 @@ else()
 endif()
 
 include(${PORT_GEN}/sources.cmake)
+if(NOT PORT_LIBKIND)
+  set(PORT_LIBKIND STATIC)
+endif()
+if(PORT_WASM)
+  set(PORT_GCC_ONLY)                    # gcc flags clang does not take
+else()
+  set(PORT_GCC_ONLY -fno-ipa-icf)
+endif()
 
-add_library(game STATIC ${PORT_GAME_SOURCES})
+add_library(game ${PORT_LIBKIND} ${PORT_GAME_SOURCES})
 target_compile_definitions(game PRIVATE ${PORT_DEFS})
 target_include_directories(game PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${GAME_ROOT}/include ${GAME_ROOT}/src)
 # -fno-inline: a port-bind follows the function label (cc-select renames the token inside
@@ -96,8 +129,8 @@ target_include_directories(game PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${GA
 # h2h_winByRetire a jump to h2h_winByFinish, so a 2P VS retire ran the finish path ("You Lose"
 # for "Retire", plan 24).
 target_compile_options(game PRIVATE ${PORT_ARCH_FLAGS} -include ${CMAKE_CURRENT_SOURCE_DIR}/include/port.h
-    $<$<COMPILE_LANGUAGE:C>:-std=gnu89 -fcommon -fno-inline -fno-ipa-icf>
-    $<$<COMPILE_LANGUAGE:CXX>:-std=gnu++98 -fpermissive -fno-exceptions -fno-rtti>
+    $<$<COMPILE_LANGUAGE:C>:-std=gnu89 -fcommon -fno-inline ${PORT_GCC_ONLY}>
+    $<$<COMPILE_LANGUAGE:CXX>:-std=gnu++98 $<$<NOT:$<BOOL:${PORT_WASM}>>:-fpermissive> -fno-exceptions -fno-rtti>
     -Wno-int-conversion -Wno-incompatible-pointer-types -Wno-builtin-declaration-mismatch)
 
 # port/uso: the module registry and the USO data blobs (plan section 16.5).  The blobs are
@@ -106,7 +139,7 @@ target_compile_options(game PRIVATE ${PORT_ARCH_FLAGS} -include ${CMAKE_CURRENT_
 # PORT_RUNTIME_BLOBS (plan 29; on by default in the Windows build): the executable holds no ROM bytes. The blobs
 # are zeroed arrays (gen-uso-blobs.py --runtime) that port/uso/uso_rom.c fills from the --rom file at start-up,
 # so neither the build nor the binary needs the ROM.
-if(PORT_WIN32)
+if(PORT_WIN32 OR PORT_WASM)
   set(_rtb_default ON)
 else()
   set(_rtb_default OFF)
@@ -146,7 +179,7 @@ if(NOT PORT_RUNTIME_BLOBS)
     VERBATIM)
   set(PORT_USO_BLOBS ${CMAKE_CURRENT_BINARY_DIR}/uso_blobs.s)
 endif()
-add_library(uso STATIC uso/uso.c ${PORT_GEN}/uso_modules.c ${PORT_USO_BLOBS})
+add_library(uso ${PORT_LIBKIND} uso/uso.c ${PORT_GEN}/uso_modules.c ${PORT_USO_BLOBS})
 target_include_directories(uso PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/uso)
 target_compile_options(uso PRIVATE ${PORT_ARCH_FLAGS})
 
@@ -177,16 +210,16 @@ foreach(f sysapi.c fs/fs.c fs/backup_sram.c)
 endforeach()
 set(PORT_HOST_FLAGS ${PORT_ARCH_FLAGS} -std=gnu99 -fno-math-errno)
 set(PORT_HOST_DEFS ${PORT_DEFS})
-if(NOT PORT_LINK)
+if(NOT PORT_LINK AND NOT PORT_WASM)
   list(APPEND PORT_HOST_DEFS PORT_LIBC_DECLS_ONLY)
 endif()
-add_library(ultra STATIC ${PORT_ULTRA_SOURCES})
+add_library(ultra ${PORT_LIBKIND} ${PORT_ULTRA_SOURCES})
 add_library(porthost OBJECT ${PORT_HOST_SOURCES})
 # port/audio (plan 15.6): the CPU mixer in place of the RSP's aspMain, the driver glue
 # (port_audio_frame) and the hooks the PORT source calls: port_audio_swap_static /
 # port_audio_swap_font (audio data to host order) and port_audio_noise_base (gWaveSamples[8]).
 set(PORT_AUDIO_SOURCES audio/mixer.c audio/abi_decode.c audio/audio_swap.c audio/port_audio.c)
-add_library(audio STATIC ${PORT_AUDIO_SOURCES})
+add_library(audio ${PORT_LIBKIND} ${PORT_AUDIO_SOURCES})
 # PORT_TRACE_FN (plan 21.8): a diagnostic build whose game library logs every function entry of one
 # frame (port/trace.h; port/tools/fn-trace-diff.py compares two builds' logs).  Off by default.
 # -pg -mfentry: one `call __fentry__` before each prologue and no exit hook (port/trace.c).
@@ -316,7 +349,40 @@ if(PORT_64)
     list(APPEND PORT64_WRAP -Wl,--wrap=${f})
   endforeach()
 endif()
-if(PORT_LINK AND PORT_WIN32)
+if(PORT_WASM)
+  # plan 30: tenshoe.wasm (full LTO; the WebAssembly backend's FixFunctionBitcasts adapts the remaining direct
+  # calls whose type differs from the callee's), then its C translation for port/wasm/host. --global-base=16 MB:
+  # nothing lives below 16 MB, so a null pointer + offset is never data (port_audio / port_gfx treat a value
+  # below it as not a pointer, and the PORT_WASM_NULLCHECK host build reports such accesses).
+  target_compile_definitions(porthost PRIVATE PORT_GFX_NATIVE)
+  find_program(WASM2C wasm2c HINTS "${GAME_ROOT}/../../tools/wasm/wabt-build" DOC "WABT's wasm2c")
+  if(NOT WASM2C)
+    message(FATAL_ERROR "PORT_WASM: no wasm2c (WABT); set -DWASM2C=<path>")
+  endif()
+  set(_wobjs $<TARGET_OBJECTS:game> $<TARGET_OBJECTS:uso> $<TARGET_OBJECTS:ultra> $<TARGET_OBJECTS:audio>
+             $<TARGET_OBJECTS:porthost>)
+  set(_wasm ${CMAKE_CURRENT_BINARY_DIR}/tenshoe.wasm)
+  add_custom_command(OUTPUT ${_wasm}
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/wasm/wasm-fixtypes.py ${CMAKE_C_COMPILER}
+            ${CMAKE_CURRENT_BINARY_DIR}/fixtypes.stamp ${_wobjs}
+    COMMAND ${CMAKE_C_COMPILER} --target=wasm32-wasi -O2 -flto -Wl,--export=malloc -Wl,-z,stack-size=8388608
+            -Wl,--global-base=16777216 -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/tenshoe.wasm.map -o ${_wasm} ${_wobjs} -lm
+    DEPENDS game uso ultra audio porthost ${_wobjs} ${CMAKE_CURRENT_SOURCE_DIR}/wasm/wasm-fixtypes.py
+    COMMAND_EXPAND_LISTS
+    COMMENT "Linking tenshoe.wasm (call types reconciled by wasm-fixtypes.py)" VERBATIM)
+  set(_w2c ${CMAKE_CURRENT_BINARY_DIR}/w2c)
+  set(_w2c_out ${_w2c}/game.h ${_w2c}/game-impl.h)
+  foreach(i RANGE 7)
+    list(APPEND _w2c_out ${_w2c}/game_${i}.c)
+  endforeach()
+  add_custom_command(OUTPUT ${_w2c_out}
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${_w2c}
+    COMMAND ${WASM2C} ${_wasm} -o ${_w2c}/game.c -n game --num-outputs=8
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/wasm/w2c-post.py ${_w2c}
+    DEPENDS ${_wasm} ${CMAKE_CURRENT_SOURCE_DIR}/wasm/w2c-post.py
+    COMMENT "wasm2c: tenshoe.wasm -> w2c/game_*.c" VERBATIM)
+  add_custom_target(tenshoe_wasm ALL DEPENDS ${_w2c_out})
+elseif(PORT_LINK AND PORT_WIN32)
   # plan 29: tenshoe.exe, one self-contained 32-bit Windows executable (static CRT / libstdc++ / winpthread / SDL2;
   # no ROM bytes). The game side's unprefixed symbols meet the toolchain's through win32_bridge.ld.
   set(_bridge ${CMAKE_CURRENT_BINARY_DIR}/win32_bridge.ld)
@@ -445,6 +511,7 @@ elseif(PORT_LINK)
 endif()
 
 # port/undefined.txt: what the library needs from outside (no 32-bit libc needed).
+if(NOT PORT_WASM)
 add_custom_target(undefined
   COMMAND ${Python3_EXECUTABLE} ${GAME_ROOT}/scripts/port-undefined.py $<TARGET_FILE:game>
           --extra $<TARGET_FILE:uso> --extra $<TARGET_FILE:ultra> --extra $<TARGET_FILE:audio>
@@ -453,3 +520,4 @@ add_custom_target(undefined
   COMMAND_EXPAND_LISTS
   WORKING_DIRECTORY ${GAME_ROOT}
   VERBATIM)
+endif()
