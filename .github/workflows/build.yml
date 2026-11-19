@@ -64,3 +64,34 @@ jobs:
         with:
           name: us_report
           path: report.json
+
+  # The 32-bit Windows build of the PC port (port/, plan section 27): cross-compiled, no ROM needed (the
+  # executable reads the user's ROM at run time). Independent of the matching build above.
+  windows-port:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install mingw-w64 (i686, posix threads) and ninja
+        run: sudo apt-get update && sudo apt-get install -y g++-mingw-w64-i686-posix ninja-build
+
+      - name: Fetch SDL2 (mingw) and libultraship
+        run: |
+          SKIP_MINGW=1 bash port/win32/setup-mingw.sh
+          bash port/gfx/fast3d/setup-lus.sh
+
+      - name: Build tenshoe.exe
+        run: |
+          cmake -S port -B build-win -G Ninja -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/port/win32/mingw-i686.cmake \
+                -DMINGW_ROOT=/usr -DPORT_WIN32=ON -DPORT_LINK=ON
+          cmake --build build-win --target tenshoe -j$(nproc)
+          mkdir -p dist
+          i686-w64-mingw32-strip -o dist/tenshoe.exe build-win/tenshoe.exe
+          cp port/win32/README-windows.txt dist/README.txt
+
+      - name: Upload tenshoe.exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: tenshoe-windows-i686
+          path: dist/

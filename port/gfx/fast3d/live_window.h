@@ -29,6 +29,7 @@ struct LiveSDL {
 
     bool open(uint32_t width, uint32_t height, const char* title, int vsync = 0);
     void swap();
+    void setVsync(int interval);
     void black();
     void setTitle(const char* title);
     void viewport(uint32_t* x, uint32_t* y, uint32_t* vw, uint32_t* vh) const;
@@ -38,22 +39,21 @@ struct LiveSDL {
 };
 using LiveWin = LiveSDL;
 
-/* the keyboard and the first game controller -> N64 pad 1: the keys of the Linux build (below), an Xbox
- * layout on the pad (SDL's game-controller mapping: XInput pads and the DirectInput pads SDL knows; any
- * other joystick is read raw in the Linux js layout) */
+/* the keyboard and the gamepads -> the N64 controllers through the portable mapping (port/input_map.h) and
+ * the settings' bindings (port/settings.h), as on Linux (below): the keys go in by X keysym name (an SDL
+ * keycode -> keysym table, live_window_sdl.cpp), the gamepads as PortGamepad states (LivePads). */
+class SettingsMenu;
 struct LiveInput {
-    bool left = false, right = false, up = false, down = false, shift = false, quit = false;
-    uint16_t keys = 0;
-    void* ctl = nullptr;  /* SDL_GameController */
-    void* joy = nullptr;  /* SDL_Joystick, when no controller mapping exists */
-    int axis[8] = {};
-    uint16_t jsButtons = 0;
+    bool quit = false;
+    LivePads pads;
+    SettingsMenu* menu = nullptr; /* F1 (null: no menu) */
 
-    void key(int sdlKeycode, bool down);
+    void key(const char* name, bool down);
     void releaseAll();
-    void openJoystick(const char* path); /* path: unused (the first pad SDL finds) */
+    void openJoystick(const char* path);
     void pollJoystick();
-    LivePad pad() const;
+    LivePad pad() const; /* controller 1 */
+    void allPads(LivePad out[LIVE_PADS]) const;
 };
 
 /* drain the SDL events into the input (keys, F11, resize, close -> in.quit) */

@@ -163,7 +163,10 @@ static void make_dirs(const char *dir) {
             char c = tmp[i];
             tmp[i] = '\0';
             if (port_mkdir(tmp) != 0 && PORT_ERRNO != EEXIST) {
+#if !defined(_WIN32)
                 return;
+#endif
+                /* Windows: a UNC path's \\server and \\server\share cannot be made; go on */
             }
             tmp[i] = c;
         }

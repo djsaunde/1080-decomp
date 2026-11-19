@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compare two PORT_GFX_DUMP directories task by task, independent of host addresses (plan 21.9).
 
-    port/tools/dlump-cmp.py DIR_A DIR_B [-v]
+    port/tools/dlump-cmp.py DIR_A DIR_B [-v] [--unordered]
 
 The i386 and the x86-64 builds lay the game out at different host addresses, so their DLMP files differ
 in every address operand even when the frames are the same. This compares what the renderer is given,
@@ -12,6 +12,9 @@ G_SETZIMG, G_SETCIMG w1, G_RDPHALF_1 = a G_BRANCH_Z target) and the chunk aux wo
 counts). TASK chunks (OSTask_t: pointers) and the framebuffer records' addresses are skipped.
 A float passed the wrong way across a 64-bit call (plan 21.8's abi-scan --x64 list) shows up here as a
 matrix / vertex / light byte difference with state.log still equal. Exit 0 = identical, 1 = differences.
+--unordered (the Windows build against Linux, plan 27): a DLMP lists its chunks in address order, and the
+Windows executable's image lies below its heap where Linux's brk heap lies above the image, so each task's
+chunks are compared as a multiset of their masked contents instead of in sequence.
 """
 import os
 import struct
@@ -64,6 +67,7 @@ def steps(d):
 def main():
     a, b = sys.argv[1], sys.argv[2]
     verbose = '-v' in sys.argv
+    unordered = '--unordered' in sys.argv
     sa, sb = steps(a), steps(b)
     bad, n = [], 0
     if [s for _, s in sa] != [s for _, s in sb]:
@@ -75,6 +79,10 @@ def main():
         why = None
         if len(ca) != len(cb):
             why = '%d / %d chunks' % (len(ca), len(cb))
+        elif unordered:
+            ka, kb = sorted(repr(norm(x)) for x in ca), sorted(repr(norm(y)) for y in cb)
+            if ka != kb:
+                why = '%d chunks differ (unordered)' % sum(1 for x, y in zip(ka, kb) if x != y)
         else:
             for i, (x, y) in enumerate(zip(ca, cb)):
                 if norm(x) != norm(y):

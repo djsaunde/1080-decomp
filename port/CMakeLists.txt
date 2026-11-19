@@ -255,6 +255,7 @@ if(PORT_WIN32)
     COMMENT "Embedding libultraship's shaders" VERBATIM)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/win32gen)
   add_library(port_native STATIC gfx/fast3d/native_host.cpp gfx/fast3d/live_window_sdl.cpp gfx/fast3d/live_audio.cpp
+              settings.c input_map.c gfx/fast3d/settings_menu.cpp gfx/fast3d/menu_overlay_gl.cpp
               gfx/fast3d/port_fast3d.cpp gfx/fast3d/ship_shim.cpp gfx/replay/egl_png.c win32/win32_gl.c
               ${CMAKE_CURRENT_BINARY_DIR}/win32gen/fast_shaders.inc
               ${_lus}/src/fast/interpreter.cpp ${_lus}/src/fast/backends/gfx_opengl.cpp

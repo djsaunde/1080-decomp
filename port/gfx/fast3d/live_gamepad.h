@@ -15,6 +15,21 @@ extern "C" {
 #include "../../input_map.h"
 }
 
+#ifdef PORT_WIN32
+/* The Windows build (plan 27): SDL2's game controllers (XInput pads, the DirectInput / HID pads SDL has a
+ * mapping for; any other joystick read raw in the js layout), in the order SDL found them, up to 4
+ * (live_window_sdl.cpp). The same PortGamepad states and virtual pads as below. */
+struct LivePads {
+    void* ctl[PORT_MAX_GAMEPADS] = {}; /* SDL_GameController */
+    void* joy[PORT_MAX_GAMEPADS] = {}; /* SDL_Joystick, when SDL has no controller mapping */
+    int id[PORT_MAX_GAMEPADS] = { -1, -1, -1, -1 }; /* SDL instance ids */
+    PortGamepad st[PORT_MAX_GAMEPADS] = {};
+    void open(const char* unused); /* every device plugged in now (again on hot-plug) */
+    void poll();
+    PortGamepad virt[PORT_MAX_GAMEPADS] = {};
+    bool virtOn[PORT_MAX_GAMEPADS] = {};
+};
+#else
 struct EvdevPad {
     int fd = -1;
     int lo[8] = {}, hi[8] = {};
@@ -35,5 +50,6 @@ struct LivePads {
     PortGamepad virt[PORT_MAX_GAMEPADS] = {};
     bool virtOn[PORT_MAX_GAMEPADS] = {};
 };
+#endif
 
 #endif

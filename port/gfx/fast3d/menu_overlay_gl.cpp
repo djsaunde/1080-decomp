@@ -7,9 +7,13 @@
 
 #include <algorithm>
 
+#ifdef PORT_WIN32
+#include "../../win32/win32_gl.h" /* plan 27: the GL entry points past 1.1 */
+#else
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/gl.h>
 #include <GL/glext.h>
+#endif
 
 namespace {
 GLuint sTex, sFbo;

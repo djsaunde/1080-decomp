@@ -187,6 +187,17 @@ void port_win32_setup(int argc, char **argv, const char **romPath, int romGiven,
     }
     snprintf(slash != NULL ? slash + 1 : sMemo, sizeof(sMemo) - (size_t)(slash != NULL ? slash + 1 - sMemo : 0),
              "%s", "rom-path.txt");
+    if (getenv("PORT_SETTINGS") == NULL) {
+        /* the settings file (port/settings.h, 1080.ini) next to the save: the exe's folder after a double-click */
+        char ini[MAX_PATH + 16], *sl;
+        snprintf(ini, sizeof(ini), "PORT_SETTINGS=%s", sMemo);
+        sl = strrchr(ini, '\\');
+        if (sl == NULL) {
+            sl = strrchr(ini, '=');
+        }
+        snprintf(sl + 1, sizeof(ini) - (size_t)(sl + 1 - ini), "%s", "1080.ini");
+        _putenv(ini);
+    }
     if (!sConsole) {
         char log[MAX_PATH];
         snprintf(log, sizeof(log), "%s", sMemo);
