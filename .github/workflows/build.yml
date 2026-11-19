@@ -65,7 +65,7 @@ jobs:
           name: us_report
           path: report.json
 
-  # The 32-bit Windows build of the PC port (port/, plan section 27): cross-compiled, no ROM needed (the
+  # The 32-bit Windows build of the PC port (port/, plan section 29): cross-compiled, no ROM needed (the
   # executable reads the user's ROM at run time). Independent of the matching build above.
   windows-port:
     runs-on: ubuntu-24.04

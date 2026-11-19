@@ -1,4 +1,4 @@
-/* port/win32: the Windows build's start-up (win32_host.c; plan section 27). */
+/* port/win32: the Windows build's start-up (win32_host.c; plan section 29). */
 #ifndef PORT_WIN32_HOST_H
 #define PORT_WIN32_HOST_H
 

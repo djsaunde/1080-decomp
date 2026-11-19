@@ -32,7 +32,7 @@
 #ifdef PORT_LIBC_DECLS_ONLY
 void *realloc(void *p, size_t n);
 #endif
-#ifndef PORT_WIN32 /* the Windows build (plan 27) has only the in-process host: no presenter, no /dev/shm */
+#ifndef PORT_WIN32 /* the Windows build (plan 29) has only the in-process host: no presenter, no /dev/shm */
 int open(const char *path, int flags, ...);
 int close(int fd);
 void *mmap(void *addr, size_t len, int prot, int flags, int fd, long off);

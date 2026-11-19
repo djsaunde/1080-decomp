@@ -1,4 +1,4 @@
-/* port/uso: the USO data blobs filled from the user's ROM at run time (plan section 27).
+/* port/uso: the USO data blobs filled from the user's ROM at run time (plan section 29).
  *
  * A build with PORT_RUNTIME_BLOBS (the Windows build; optional elsewhere) holds no cartridge bytes:
  * port/tools/gen-uso-blobs.py --runtime emits every blob and its pristine _init copy as zeroed arrays,

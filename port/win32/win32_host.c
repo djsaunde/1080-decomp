@@ -1,4 +1,4 @@
-/* port/win32: the Windows build's start-up (plan section 27): where the ROM and the save are, the log when
+/* port/win32: the Windows build's start-up (plan section 29): where the ROM and the save are, the log when
  * there is no console, the 1 ms timer period, and a message box for a fatal error. main.c calls
  * port_win32_setup before it reads the ROM.
  *

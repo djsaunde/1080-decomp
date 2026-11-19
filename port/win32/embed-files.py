@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build step of the Windows port (plan section 27): libultraship's shader files as C++ initialisers.
+"""Build step of the Windows port (plan section 29): libultraship's shader files as C++ initialisers.
 
     embed-files.py <base dir> <out.inc> <relative path>...
 

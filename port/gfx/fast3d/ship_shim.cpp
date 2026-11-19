@@ -34,7 +34,7 @@ std::shared_ptr<IResource> ResourceManager::LoadResource(const std::string& path
         return nullptr;
     }
 #ifdef PORT_EMBED_SHADERS
-    /* the Windows build (plan 27): libultraship's shaders are compiled into the executable (fast_shaders.inc,
+    /* the Windows build (plan 29): libultraship's shaders are compiled into the executable (fast_shaders.inc,
      * port/win32/embed-files.py); LUS_FAST_DIR in the environment still overrides them from disk */
     if (std::getenv("LUS_FAST_DIR") == nullptr) {
         static const struct {

@@ -148,7 +148,7 @@ struct Pulse {
     }
 };
 #elif defined(PORT_WIN32)
-/* The Windows build (plan 27): SDL2's audio device (WASAPI, else DirectSound / winmm) in its push mode.
+/* The Windows build (plan 29): SDL2's audio device (WASAPI, else DirectSound / winmm) in its push mode.
  * put() queues and then blocks while more than latencyMs is queued, as pa_simple_write blocks on
  * PulseAudio's tlength, so the loop above runs at the sound card's pace unchanged. */
 struct Pulse {

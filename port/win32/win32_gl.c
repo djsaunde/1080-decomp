@@ -1,4 +1,4 @@
-/* port/win32: the GL entry points past 1.1 (win32_gl.h; plan section 27). */
+/* port/win32: the GL entry points past 1.1 (win32_gl.h; plan section 29). */
 #include <stdio.h>
 #include "win32_gl.h"
 

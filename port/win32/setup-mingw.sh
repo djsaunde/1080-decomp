@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# The Windows (i686, mingw-w64) toolchain of the PC port (plan section 27), without sudo:
+# The Windows (i686, mingw-w64) toolchain of the PC port (plan section 29), without sudo:
 #   - mingw-w64 GCC 10 (posix threads) + binutils + the mingw-w64 v8 headers / CRT: Ubuntu's packages,
 #     apt-get download + dpkg -x into tools/mingw-w64/root (the route of ../gfx/fast3d/setup-x11-dev.sh);
 #     the toolchain is relocatable, nothing is installed;

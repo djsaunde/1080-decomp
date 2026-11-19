@@ -41,7 +41,7 @@ endif()
 # to 8 already); PORT64 selects the 64-bit spellings under PORT.  -no-pie + the small code model keep
 # the image (text, data, bss, the blobs) below 2 GB, the low-address model of plan 21.
 option(PORT_64 "M6: build for x86-64 (plan section 21); default is the 32-bit i386 build" OFF)
-# PORT_WIN32 (plan section 27): the 32-bit Windows build (i686-w64-mingw32, toolchain port/win32/mingw-i686.cmake).
+# PORT_WIN32 (plan section 29): the 32-bit Windows build (i686-w64-mingw32, toolchain port/win32/mingw-i686.cmake).
 # The game keeps the i386 data model and calling convention of the Linux build:
 #   -mno-ms-bitfields    the GCC (SysV) bitfield layout, not MSVC's (mingw's default)
 #   -fpcc-struct-return  every struct returned in memory, as i386 SysV (mingw returns 1/2/4/8-byte ones in eax:edx)
@@ -51,7 +51,7 @@ option(PORT_64 "M6: build for x86-64 (plan section 21); default is the 32-bit i3
 #   -fno-leading-underscore  the game's symbols keep their ELF spelling (`__asm__("name")` labels, port/gen/aliases.ld,
 #                        the blob objects, cc-select's binds); port/win32/gen-win32-bridge.py links them to the
 #                        underscored CRT / libgcc / host C++ names
-option(PORT_WIN32 "plan 27: the 32-bit Windows build (mingw-w64 i686)" OFF)
+option(PORT_WIN32 "plan 29: the 32-bit Windows build (mingw-w64 i686)" OFF)
 if(PORT_WIN32 AND PORT_64)
   message(FATAL_ERROR "PORT_WIN32 is the 32-bit build: not with PORT_64")
 endif()
@@ -103,7 +103,7 @@ target_compile_options(game PRIVATE ${PORT_ARCH_FLAGS} -include ${CMAKE_CURRENT_
 # port/uso: the module registry and the USO data blobs (plan section 16.5).  The blobs are
 # generated here from the user's ROM (no ROM data in the repository): extract.py writes the
 # per-USO sections, gen-uso-blobs.py turns the ones port/gen/uso_blobs.tsv lists into an object.
-# PORT_RUNTIME_BLOBS (plan 27; on by default in the Windows build): the executable holds no ROM bytes. The blobs
+# PORT_RUNTIME_BLOBS (plan 29; on by default in the Windows build): the executable holds no ROM bytes. The blobs
 # are zeroed arrays (gen-uso-blobs.py --runtime) that port/uso/uso_rom.c fills from the --rom file at start-up,
 # so neither the build nor the binary needs the ROM.
 if(PORT_WIN32)
@@ -231,7 +231,7 @@ endif()
 # tools/lus (setup-lus.sh), tools/gl-dev, tools/x11-dev and tools/pulse-dev (headers only; libpulse-simple is
 # dlopen'd). PORT_NATIVE_X11_DEV / _PULSE_DEV / PORT_GL_DEV locate them.
 option(PORT_NATIVE "M6 / plan 21.9: link the in-process window / audio / Fast3D host into the 64-bit tenshoe" OFF)
-# PORT_WIN32 (plan 27): the same in-process host, over SDL2 (live_window_sdl.cpp; live_audio.cpp's SDL output) instead
+# PORT_WIN32 (plan 29): the same in-process host, over SDL2 (live_window_sdl.cpp; live_audio.cpp's SDL output) instead
 # of X11 / EGL / PulseAudio. SDL2_MINGW: the i686-w64-mingw32 tree of SDL2's mingw development release
 # (port/win32/setup-mingw.sh). libultraship's shaders are compiled in (PORT_EMBED_SHADERS).
 if(PORT_WIN32)
@@ -317,7 +317,7 @@ if(PORT_64)
   endforeach()
 endif()
 if(PORT_LINK AND PORT_WIN32)
-  # plan 27: tenshoe.exe, one self-contained 32-bit Windows executable (static CRT / libstdc++ / winpthread / SDL2;
+  # plan 29: tenshoe.exe, one self-contained 32-bit Windows executable (static CRT / libstdc++ / winpthread / SDL2;
   # no ROM bytes). The game side's unprefixed symbols meet the toolchain's through win32_bridge.ld.
   set(_bridge ${CMAKE_CURRENT_BINARY_DIR}/win32_bridge.ld)
   set(_nm "${CMAKE_NM}")

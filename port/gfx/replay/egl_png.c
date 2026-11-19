@@ -109,7 +109,7 @@ int write_png(const char *path, const uint8_t *rgba, int w, int h) {
 /* ---------------- EGL ---------------- */
 
 #ifdef PORT_WIN32
-/* the Windows build (plan 27) renders into its SDL window's context only: no offscreen EGL */
+/* the Windows build (plan 29) renders into its SDL window's context only: no offscreen EGL */
 int gl_init(int w, int h) {
     (void)w;
     (void)h;

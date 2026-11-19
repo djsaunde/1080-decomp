@@ -35,7 +35,7 @@
  * step interval, audio. */
 #include <chrono>
 #ifdef PORT_WIN32
-#include "../../win32/win32_gl.h" /* windows.h (VirtualAlloc) and the GL entry points (plan 27) */
+#include "../../win32/win32_gl.h" /* windows.h (VirtualAlloc) and the GL entry points (plan 29) */
 #else
 #include <sys/mman.h>
 #include <unistd.h>
@@ -295,7 +295,7 @@ extern "C" unsigned port_native_open(void) {
     /* the block the game reads (live_shm.h layout): low, as every address the x32 code holds must be */
     h->blockBytes = PORT_NATIVE_FB_REPLY + sizeof(LiveFbReply);
 #ifdef PORT_WIN32
-    /* a 32-bit process without /LARGEADDRESSAWARE: every address is below 2 GB (plan 27) */
+    /* a 32-bit process without /LARGEADDRESSAWARE: every address is below 2 GB (plan 29) */
     void* m = VirtualAlloc(nullptr, h->blockBytes, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
     if (m == nullptr) {
         m = (void*)-1;
@@ -568,7 +568,7 @@ extern "C" int port_native_idle(unsigned us) {
         const double at = t0 + i * dt;
         const double now = live_now_s();
         if (at > now) {
-            usleep((useconds_t)((at - now) * 1e6));
+            std::this_thread::sleep_for(std::chrono::microseconds((long long)((at - now) * 1e6)));
         }
         /* sub i + 1 of n: alpha (i + 1) / n */
         uint32_t vx, vy, vw, vh;
@@ -584,7 +584,7 @@ extern "C" int port_native_idle(unsigned us) {
     h->pending = false;
     const double left = t0 + wait - live_now_s();
     if (left > 0) {
-        usleep((useconds_t)(left * 1e6));
+        std::this_thread::sleep_for(std::chrono::microseconds((long long)(left * 1e6)));
     }
     return 1;
 }

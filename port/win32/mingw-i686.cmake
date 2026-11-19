@@ -1,4 +1,4 @@
-# CMake toolchain: 32-bit Windows (i686-w64-mingw32), plan section 27.
+# CMake toolchain: 32-bit Windows (i686-w64-mingw32), plan section 29.
 #   cmake -S port -B <b> -G Ninja -DCMAKE_TOOLCHAIN_FILE=port/win32/mingw-i686.cmake -DPORT_WIN32=ON -DPORT_LINK=ON
 # MINGW_ROOT: the prefix holding bin/i686-w64-mingw32-gcc*; default the no-sudo copy of setup-mingw.sh
 # (tools/mingw-w64/root/usr), /usr on a machine (CI) with the distribution's g++-mingw-w64-i686 package.

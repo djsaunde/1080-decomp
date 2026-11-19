@@ -86,6 +86,25 @@ bash scripts/ghidra-decompile-func.sh __rmonClearBreak   # one-shot decomp
 
 Use Ghidra by trigger only (struct shape unknown, function family >3, stuck <50% fuzzy with structural unknowns) — m2c remains the default. See the `/decompile` skill for the trigger list.
 
+## PC port: Windows
+
+`port/` builds the game as a native program (docs in `../docs/1080_PC_PORT_PLAN.md` of the monorepo, section 29).
+The Windows build is one self-contained 32-bit `tenshoe.exe`; it contains no ROM data and reads your own
+ROM at start-up. CI uploads it as the `tenshoe-windows-i686` artifact; to cross-compile it on Linux (no sudo):
+
+```bash
+port/win32/setup-mingw.sh            # mingw-w64 GCC + SDL2 into ../../tools (gitignored)
+port/gfx/fast3d/setup-lus.sh         # libultraship (Fast3D)
+cmake -S port -B build-win -G Ninja -DCMAKE_TOOLCHAIN_FILE=$PWD/port/win32/mingw-i686.cmake -DPORT_WIN32=ON -DPORT_LINK=ON
+cmake --build build-win --target tenshoe
+```
+
+To play: put `tenshoe.exe` and your US 1.0 ROM as `baserom.z64` in one folder and double-click the exe (without
+a ROM it asks with a file dialog). Keys: arrows / WASD stick, X or Space = A, Z = B, C = Z, Q / E = L / R,
+Enter = START, IJKL = C buttons, TFGH = D-pad, F1 settings (rebinding), F11 fullscreen, Esc quit; XInput /
+DirectInput gamepads use the Xbox layout. The save, `1080.ini` and `1080.log` go next to the exe.
+`port/win32/README-windows.txt` is the player's README.
+
 ## References
 
 - **[libreultra](https://github.com/n64decomp/libreultra)** — libultra decomp reference; matching functions, structs, `register` keyword usage

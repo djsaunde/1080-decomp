@@ -1,4 +1,4 @@
-/* port/win32: OpenGL entry points for the Windows build (plan section 27).
+/* port/win32: OpenGL entry points for the Windows build (plan section 29).
  *
  * opengl32.dll exports only GL 1.1; everything newer that Fast3D (libultraship's gfx_opengl.cpp), the
  * in-process compositor (port_fast3d.cpp) and the native host call is a function pointer here, loaded
@@ -15,6 +15,9 @@
 #define NOMINMAX 1
 #endif
 #include <windows.h>
+/* windows.h's 16-bit leftovers collide with ordinary names (port_fast3d.cpp's `near`) */
+#undef near
+#undef far
 #include <GL/gl.h>
 #include <GL/glext.h>
 

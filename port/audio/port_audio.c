@@ -37,7 +37,7 @@ extern uint8_t port_bootup_data[];
  * audio heap and every buffer the driver hands the RSP live) up to the current break (anything
  * malloc'd). */
 #ifdef PORT_WIN32
-/* The Windows build (plan 27): a 32-bit process without /LARGEADDRESSAWARE has every host address below
+/* The Windows build (plan 29): a 32-bit process without /LARGEADDRESSAWARE has every host address below
  * 0x80000000, while OS_K0_TO_PHYSICAL(p) + 0x80000000 is at or above it; so a value is a host pointer when
  * it is below 2 GB and committed (VirtualQuery), not only inside the image and the brk heap. */
 #define WIN32_LEAN_AND_MEAN 1

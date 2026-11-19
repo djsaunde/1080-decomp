@@ -1,5 +1,5 @@
 /* port/gfx/fast3d: the live window and its input over SDL2, for the Windows build (live_window.h, plan
- * section 27). The interface and the key / pad mapping are the X11 build's (live_window.cpp). */
+ * section 29). The interface and the key / pad mapping are the X11 build's (live_window.cpp). */
 #include "live_window.h"
 #include "live_audio.h"
 #include "settings_menu.h"

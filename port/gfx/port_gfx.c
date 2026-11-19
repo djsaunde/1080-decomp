@@ -36,7 +36,7 @@
 int mincore(void *addr, size_t len, unsigned char *vec);
 #define HAVE_MINCORE 1
 #elif defined(_WIN32)
-/* the Windows build (plan 27): mapped() asks VirtualQuery */
+/* the Windows build (plan 29): mapped() asks VirtualQuery */
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #define HAVE_MINCORE 1

@@ -1,4 +1,4 @@
-/* port/uso: the USO data blobs filled from the user's ROM at run time (uso_rom.h; plan section 27). */
+/* port/uso: the USO data blobs filled from the user's ROM at run time (uso_rom.h; plan section 29). */
 #include "uso_rom.h"
 
 /* no libc headers: port/uso builds without a target libc */

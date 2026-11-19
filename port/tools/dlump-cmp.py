@@ -12,7 +12,7 @@ G_SETZIMG, G_SETCIMG w1, G_RDPHALF_1 = a G_BRANCH_Z target) and the chunk aux wo
 counts). TASK chunks (OSTask_t: pointers) and the framebuffer records' addresses are skipped.
 A float passed the wrong way across a 64-bit call (plan 21.8's abi-scan --x64 list) shows up here as a
 matrix / vertex / light byte difference with state.log still equal. Exit 0 = identical, 1 = differences.
---unordered (the Windows build against Linux, plan 27): a DLMP lists its chunks in address order, and the
+--unordered (the Windows build against Linux, plan 29): a DLMP lists its chunks in address order, and the
 Windows executable's image lies below its heap where Linux's brk heap lies above the image, so each task's
 chunks are compared as a multiset of their masked contents instead of in sequence.
 """

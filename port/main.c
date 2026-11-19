@@ -56,7 +56,7 @@
 #include "win32/win32_host.h"
 #endif
 
-/* port/uso/uso_rom.c (PORT_RUNTIME_BLOBS, plan 27): the USO blobs from the ROM read at run time */
+/* port/uso/uso_rom.c (PORT_RUNTIME_BLOBS, plan 29): the USO blobs from the ROM read at run time */
 extern int port_uso_blobs_load(const unsigned char *rom, unsigned int romSize, const char **why, const char **file)
     __attribute__((weak));
 
@@ -131,7 +131,7 @@ __attribute__((noreturn)) void port_sys_fatal(const char *fmt, va_list ap) {
  * signal() is weak: port_libc.h has no <signal.h>; the numbers are Linux's. */
 extern void (*signal(int sig, void (*fn)(int)))(int) __attribute__((weak));
 #ifdef PORT_WIN32
-/* plan 27: the game side cannot reference both exit and _exit (port/win32/gen-win32-bridge.py) */
+/* plan 29: the game side cannot reference both exit and _exit (port/win32/gen-win32-bridge.py) */
 #define port_crash_exit(status) exit(status)
 #else
 extern void _exit(int status) __attribute__((noreturn));

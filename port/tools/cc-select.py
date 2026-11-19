@@ -38,7 +38,7 @@ assembled:
 
 Units without such a header are compiled unchanged.
 
-COFF (the Windows build, plan 27: a *-w64-mingw32-* compiler with -fno-leading-underscore): a function
+COFF (the Windows build, plan 29: a *-w64-mingw32-* compiler with -fno-leading-underscore): a function
 starts at the label its `.def NAME; .scl N; .type 32; .endef` names, local labels have no dot (`L5:`,
 `LC0:`), there is no `.type` / `.size`, and constructors are `.ctors` entries.
 """

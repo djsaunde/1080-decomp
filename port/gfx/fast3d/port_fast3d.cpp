@@ -48,7 +48,7 @@
 #include <vector>
 
 #ifdef PORT_WIN32
-#include "../../win32/win32_gl.h" /* plan 27: the GL entry points past 1.1 */
+#include "../../win32/win32_gl.h" /* plan 29: the GL entry points past 1.1 */
 #else
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/gl.h>
@@ -94,7 +94,7 @@ State* sState;
 /* gap 1: vouch for every writable low mapping (heap, .bss, USO images, anonymous mmaps) */
 void register_low_mappings(State& s) {
 #ifdef PORT_WIN32
-    /* Windows (plan 27): the committed writable regions below 0x10000000 (the exe's .data / .bss, the CRT heap,
+    /* Windows (plan 29): the committed writable regions below 0x10000000 (the exe's .data / .bss, the CRT heap,
      * VirtualAlloc blocks), from VirtualQuery instead of /proc/self/maps */
     uintptr_t a = 0x10000;
     MEMORY_BASIC_INFORMATION mi;
@@ -194,7 +194,7 @@ Offscreen offscreen_target(uint32_t root) {
 
 #if UINTPTR_MAX > 0xFFFFFFFFu || defined(PORT_WIN32)
 /* the 64-bit list widening: one F3DGfx copy per list start, G_DL operands rewritten. The 32-bit Windows build
- * (plan 27) uses it too, as a snapshot: the native host draws a step's tasks at the step's end, after the game
+ * (plan 29) uses it too, as a snapshot: the native host draws a step's tasks at the step's end, after the game
  * may have rewritten a list in place (PolyShape_clipRows); the presenter gets the same snapshot in its DLMP */
 struct Widener {
     std::unordered_map<uint32_t, std::unique_ptr<std::vector<Fast::F3DGfx>>> lists;
@@ -431,7 +431,7 @@ extern "C" int port_fast3d_read_rgba(unsigned char* dst) {
 /* ---------------- the native 64-bit game (plan 21.9, port_fast3d_native.h) ----------------
  * The step's tasks are queued (lists widened at submit time) and drawn at the step's end as one frame:
  * presenter.cpp's Renderer::frame on the game's own memory instead of a DLMP copy. The 32-bit Windows build's
- * native host (plan 27) is the same. */
+ * native host (plan 29) is the same. */
 #if UINTPTR_MAX > 0xFFFFFFFFu || defined(PORT_WIN32)
 namespace {
 

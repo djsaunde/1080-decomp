@@ -118,7 +118,7 @@ host_u32 host_audio_buffered_bytes(void) {
 }
 
 #ifdef PORT_WIN32
-/* the Windows build (plan 27): QueryPerformanceCounter, and Sleep at the 1 ms timer period main.c sets */
+/* the Windows build (plan 29): QueryPerformanceCounter, and Sleep at the 1 ms timer period main.c sets */
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 double host_time_seconds(void) {
@@ -132,9 +132,10 @@ double host_time_seconds(void) {
 }
 
 void host_sleep_seconds(double s) {
-    if (s > 0.0) {
-        Sleep((DWORD)(s * 1000.0));
+    if (s <= 0.0 || (port_live_idle != NULL && port_live_idle(s))) {
+        return;
     }
+    Sleep((DWORD)(s * 1000.0));
 }
 #else
 double host_time_seconds(void) {
@@ -236,7 +237,7 @@ void host_fatal(const char *fmt, ...) {
         va_start(ap, fmt);
         vsnprintf(buf, sizeof(buf), fmt, ap);
         va_end(ap);
-        port_win32_message("1080 Snowboarding", buf); /* no console: a message box (plan 27) */
+        port_win32_message("1080 Snowboarding", buf); /* no console: a message box (plan 29) */
     }
 #endif
     host_shutdown();

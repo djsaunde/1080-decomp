@@ -18,7 +18,7 @@ extern "C" {
 double live_now_s();
 
 #ifdef PORT_WIN32
-/* The Windows build (plan 27): the same interface over SDL2 (live_window_sdl.cpp): an SDL window with a
+/* The Windows build (plan 29): the same interface over SDL2 (live_window_sdl.cpp): an SDL window with a
  * desktop GL context, the keyboard and an SDL game controller (XInput / DirectInput / HID). */
 struct LiveSDL {
     void* win = nullptr; /* SDL_Window */

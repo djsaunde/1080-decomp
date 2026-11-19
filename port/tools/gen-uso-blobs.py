@@ -16,7 +16,7 @@ port/gen/blob_types.tsv, next to uso_blobs.tsv); the swapped copy is written nex
 
     gen-uso-blobs.py --runtime <port/gen/uso_blobs.tsv> <out.c>
 
-(plan 27) needs no ROM: the executable holds no cartridge bytes.  <out.c> defines every blob, the
+(plan 29) needs no ROM: the executable holds no cartridge bytes.  <out.c> defines every blob, the
 _init copies included, as zeroed arrays, plus port_blob_sections[]: for each Data / RoData blob its
 file, section type, size, _init array and blob_types.tsv swap runs.  port/uso/uso_rom.c fills the
 _init copies from the ROM given at run time (port_uso_blobs_load), before the boot.
