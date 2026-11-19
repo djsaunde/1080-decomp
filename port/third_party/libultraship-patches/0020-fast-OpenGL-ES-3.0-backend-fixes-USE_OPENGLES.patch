@@ -6,9 +6,10 @@ Subject: [PATCH 20/21] fast: OpenGL ES 3.0 backend fixes (USE_OPENGLES)
 LUS's GLES path compiled but lacked what the port's N64 rendering uses. Only USE_OPENGLES builds change:
 - the fragment shader is highp (float, int, sampler2D: a lowp sampler gave texels 1 level off on Mesa, and
   Adreno runs mediump / lowp at half precision);
-- noperspective shade and fog (patch 13) through GL_NV_shader_noperspective_interpolation, else emulated: the
-  vertex shader outputs the varying times w and w itself, and the fragment shader divides their
-  perspective-correct values (the quotient is the screen-linear value; the varyings are renamed ...Np);
+- noperspective shade and fog (patch 13) emulated: the vertex shader outputs the varying times w and w itself,
+  and the fragment shader divides their perspective-correct values (the quotient is the screen-linear value; the
+  varyings are renamed ...Np). GL_NV_shader_noperspective_interpolation only with FAST_GLES_NV_NOPERSPECTIVE=1:
+  on Mesa it leaves some of 1080's background triangles undrawn, as desktop GL's noperspective does there;
 - GL_DEPTH_CLAMP through GL_EXT_depth_clamp, else the far plane clamped in the vertex shader (near is patch 12's
   clipping); the old `gl_Position.z *= 0.3` hack is gone (it changed every depth value);
 - G_TX_MIRROR | G_TX_CLAMP: GL_MIRROR_CLAMP_TO_EDGE only with GL_EXT_texture_mirror_clamp_to_edge, else
@@ -19,12 +20,12 @@ LUS's GLES path compiled but lacked what the port's N64 rendering uses. Only USE
 - shader compile errors print the log and the source.
 FAST_GLES_NO_EXT=1 (or a list: noperspective, depth_clamp, mirror_clamp, read_depth) takes the fallbacks.
 ---
- src/fast/backends/gfx_opengl.cpp            | 317 +++++++++++++++++++-
+ src/fast/backends/gfx_opengl.cpp            | 322 +++++++++++++++++++-
  src/fast/shaders/opengl/default.shader.glsl |  55 +++-
- 2 files changed, 366 insertions(+), 6 deletions(-)
+ 2 files changed, 371 insertions(+), 6 deletions(-)
 
 diff --git a/src/fast/backends/gfx_opengl.cpp b/src/fast/backends/gfx_opengl.cpp
-index 5b5ef75..187de96 100644
+index 5b5ef75..f5734b6 100644
 --- a/src/fast/backends/gfx_opengl.cpp
 +++ b/src/fast/backends/gfx_opengl.cpp
 @@ -4,6 +4,10 @@
@@ -38,14 +39,14 @@ index 5b5ef75..187de96 100644
  
  #include <map>
  #include <unordered_map>
-@@ -255,6 +259,69 @@ void GfxRenderingAPIOGL::SetFramebufferDither(bool dither) {
+@@ -255,6 +259,74 @@ void GfxRenderingAPIOGL::SetFramebufferDither(bool dither) {
      mFramebufferDither = dither;
  }
  
 +#ifdef USE_OPENGLES
-+// OpenGL ES 3.0: four desktop features Fast3D relies on are extensions there. Without them noperspective varyings
-+// are emulated (the vertex shader outputs the varying times w and w itself; their perspective-correct quotient is the
-+// screen-linear value), the far plane is clamped in the vertex shader instead of by GL_DEPTH_CLAMP, mirror-clamp
++// OpenGL ES 3.0: four desktop features Fast3D relies on are extensions there. Without them (and by default, for
++// noperspective) noperspective varyings are emulated (the vertex shader outputs the varying times w and w itself;
++// their perspective-correct quotient is the screen-linear value), the far plane is clamped in the vertex shader instead of by GL_DEPTH_CLAMP, mirror-clamp
 +// falls back to mirrored repeat, and depth is read through a depth texture (GetPixelDepth). FAST_GLES_NO_EXT=1 takes
 +// the fallbacks even when the extensions exist (tests).
 +static bool sGlesNoperspective = false; // GL_NV_shader_noperspective_interpolation
@@ -74,7 +75,12 @@ index 5b5ef75..187de96 100644
 +    auto no = [off](const char* what) {
 +        return off != nullptr && (strcmp(off, "1") == 0 || strstr(off, what) != nullptr);
 +    };
-+    sGlesNoperspective = !no("noperspective") && GlesHasExtension("GL_NV_shader_noperspective_interpolation");
++    // the emulation by default: on Mesa (llvmpipe) the extension's noperspective, like desktop GL's, leaves some of
++    // 1080's background triangles undrawn where the emulation draws them (the same as perspective shading there);
++    // FAST_GLES_NV_NOPERSPECTIVE=1 uses the extension when the driver has it
++    const char* nv = getenv("FAST_GLES_NV_NOPERSPECTIVE");
++    sGlesNoperspective = nv != nullptr && strcmp(nv, "1") == 0 && !no("noperspective") &&
++                         GlesHasExtension("GL_NV_shader_noperspective_interpolation");
 +    sGlesDepthClamp = !no("depth_clamp") && GlesHasExtension("GL_EXT_depth_clamp");
 +    sGlesMirrorClamp = !no("mirror_clamp") && GlesHasExtension("GL_EXT_texture_mirror_clamp_to_edge");
 +    sGlesReadDepth = !no("read_depth") &&
@@ -108,7 +114,7 @@ index 5b5ef75..187de96 100644
  std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
      prism::Processor processor;
      prism::ContextItems mContext = {
-@@ -300,6 +367,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+@@ -300,6 +372,7 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
          { "SHADER_NOISE", SHADER_NOISE },
          { "o_three_point_filtering", mCurrentFilterMode == FILTER_THREE_POINT },
          { "append_formula", (InvokeFunc)append_formula },
@@ -116,7 +122,7 @@ index 5b5ef75..187de96 100644
  #ifdef __APPLE__
          { "GLSL_VERSION", "#version 410 core" },
          { "attr", "in" },
-@@ -309,9 +377,9 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
+@@ -309,9 +382,9 @@ std::string GfxRenderingAPIOGL::BuildFsShader(const CCFeatures& cc_features) {
          { "texture", "texture" },
          { "vOutColor", "vOutColor" },
  #elif defined(USE_OPENGLES)
@@ -128,7 +134,7 @@ index 5b5ef75..187de96 100644
          { "opengles", true },
          { "core_opengl", false },
          { "texture", "texture" },
-@@ -373,6 +441,12 @@ static std::string BuildVsShader(const CCFeatures& cc_features) {
+@@ -373,6 +446,12 @@ static std::string BuildVsShader(const CCFeatures& cc_features) {
                                       { "o_alpha", cc_features.opt_alpha },
                                       { "o_inputs", cc_features.numInputs },
                                       { "update_floats", (InvokeFunc)UpdateFloats },
@@ -141,7 +147,7 @@ index 5b5ef75..187de96 100644
  #ifdef __APPLE__
                                       { "GLSL_VERSION", "#version 410 core" },
                                       { "attr", "in" },
-@@ -380,10 +454,10 @@ static std::string BuildVsShader(const CCFeatures& cc_features) {
+@@ -380,10 +459,10 @@ static std::string BuildVsShader(const CCFeatures& cc_features) {
                                       { "np_out", sAffineShading ? "noperspective out" : "out" },
                                       { "opengles", false }
  #elif defined(USE_OPENGLES)
@@ -154,7 +160,7 @@ index 5b5ef75..187de96 100644
                                       { "opengles", true }
  #else
                                       { "GLSL_VERSION", "#version 130" },
-@@ -445,7 +519,13 @@ ShaderProgram* GfxRenderingAPIOGL::CreateAndLoadNewShader(uint64_t shader_id0, u
+@@ -445,7 +524,13 @@ ShaderProgram* GfxRenderingAPIOGL::CreateAndLoadNewShader(uint64_t shader_id0, u
          glGetShaderiv(vertex_shader, GL_INFO_LOG_LENGTH, &max_length);
          char error_log[1024];
          // fprintf(stderr, "Vertex shader compilation failed\n");
@@ -168,7 +174,7 @@ index 5b5ef75..187de96 100644
          // fprintf(stderr, "%s\n", &error_log[0]);
          abort();
      }
-@@ -459,8 +539,14 @@ ShaderProgram* GfxRenderingAPIOGL::CreateAndLoadNewShader(uint64_t shader_id0, u
+@@ -459,8 +544,14 @@ ShaderProgram* GfxRenderingAPIOGL::CreateAndLoadNewShader(uint64_t shader_id0, u
          glGetShaderiv(fragment_shader, GL_INFO_LOG_LENGTH, &max_length);
          char error_log[1024];
          fprintf(stderr, "Fragment shader compilation failed\n");
@@ -183,7 +189,7 @@ index 5b5ef75..187de96 100644
          abort();
      }
  
-@@ -618,6 +704,11 @@ static uint32_t gfx_cm_to_opengl(uint32_t val) {
+@@ -618,6 +709,11 @@ static uint32_t gfx_cm_to_opengl(uint32_t val) {
          case G_TX_MIRROR | G_TX_WRAP:
              return GL_MIRRORED_REPEAT;
          case G_TX_MIRROR | G_TX_CLAMP:
@@ -195,7 +201,7 @@ index 5b5ef75..187de96 100644
              return GL_MIRROR_CLAMP_TO_EDGE;
          case G_TX_NOMIRROR | G_TX_WRAP:
              return GL_REPEAT;
-@@ -746,6 +837,11 @@ void GfxRenderingAPIOGL::Init() {
+@@ -746,6 +842,11 @@ void GfxRenderingAPIOGL::Init() {
  
  #ifndef USE_OPENGLES // not supported on gles
      glEnable(GL_DEPTH_CLAMP);
@@ -207,7 +213,7 @@ index 5b5ef75..187de96 100644
  #endif
      glDepthFunc(GL_LEQUAL);
      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-@@ -765,6 +861,11 @@ void GfxRenderingAPIOGL::Init() {
+@@ -765,6 +866,11 @@ void GfxRenderingAPIOGL::Init() {
      mPixelDepthRbSize = 1;
  
      glGetIntegerv(GL_MAX_SAMPLES, &mMaxMsaaLevel);
@@ -219,7 +225,7 @@ index 5b5ef75..187de96 100644
  
      sOGLResourceManager = mResourceManager;
  }
-@@ -1058,12 +1159,220 @@ void GfxRenderingAPIOGL::ReadFramebufferToCPU(int fb_id, uint32_t width, uint32_
+@@ -1058,12 +1164,220 @@ void GfxRenderingAPIOGL::ReadFramebufferToCPU(int fb_id, uint32_t width, uint32_
      glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffers[mCurrentFrameBuffer].fbo);
  }
  

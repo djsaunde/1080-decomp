@@ -6,8 +6,11 @@
 # Builds SDL2 (static, the offscreen video driver: EGL + Mesa llvmpipe, OpenGL ES 3.2) and two wasm2c hosts of the
 # same w2c output: WASM_HOST_SDL_GLES (live_window_sdl.cpp + LUS USE_OPENGLES: the Android code path) and the
 # desktop X11 / OpenGL one (needs $DISPLAY). Runs the attract demo in each for FRAMES steps (default 2000) with
-# PNGs of the window at five steps: GLES with the extensions llvmpipe has, GLES with every fallback
-# (FAST_GLES_NO_EXT=1: what a driver without them gets), desktop GL. Then a run with the gamepad menu chord
+# PNGs of the window at five steps: GLES as on a device (noperspective emulated; the other extensions llvmpipe has),
+# GLES with every fallback (FAST_GLES_NO_EXT=1: what a driver without them gets), GLES with the NV noperspective
+# extension (FAST_GLES_NV_NOPERSPECTIVE=1: the same shading path as desktop GL), desktop GL. On llvmpipe desktop GL's
+# noperspective (and the extension's) leaves some background triangles undrawn (black wedges) that the emulation
+# draws, so the first two differ from desktop GL there (plan 31). Then a run with the gamepad menu chord
 # (input.pad_menu: virtual gamepad Back + Start at step 500, D-pad down, A, B) to check that the menu opens and the
 # game sees no START. Prints: state.log equality, the depth read-back answers, PNG differences.
 set -euo pipefail
@@ -52,6 +55,7 @@ run() { # name exe env...
 G=(SDL_VIDEO_DRIVER=offscreen SDL_AUDIODRIVER=dummy)
 run gles "$OUT/host-gles/tenshoe" "${G[@]}"
 run gles-noext "$OUT/host-gles/tenshoe" "${G[@]}" FAST_GLES_NO_EXT=1
+run gles-nv "$OUT/host-gles/tenshoe" "${G[@]}" FAST_GLES_NV_NOPERSPECTIVE=1
 run desktop "$OUT/host-desktop/tenshoe" PORT_NATIVE_HIDDEN=1
 # the gamepad menu: pad 0 virtual from step 400; Back + Start at 500 (opens), D-pad down at 520 (the next row), B at
 # 560 (closes); input.pad_menu on through the settings file
@@ -80,7 +84,7 @@ def gl(d):
     m = re.search(r'^fast: (.*)$', open(f'{out}/run-{d}/out.log').read(), re.M)
     return m.group(1) if m else 'desktop GL'
 ref = open(f'{out}/run-desktop/state.log', 'rb').read()
-for d in ('gles', 'gles-noext'):
+for d in ('gles', 'gles-noext', 'gles-nv'):
     same = open(f'{out}/run-{d}/state.log', 'rb').read() == ref
     print(f'{d}: {gl(d)}')
     print(f'  state.log {"identical to" if same else "DIFFERS from"} desktop GL; depth answers far / near {depth(d)} '
@@ -90,7 +94,9 @@ for d in ('gles', 'gles-noext'):
         w, h, bpp, a = png(f'{out}/run-desktop/png/{f}'); _, _, _, b = png(f'{out}/run-{d}/png/{f}')
         px = [i for i in range(w * h) if a[i * bpp:i * bpp + 3] != b[i * bpp:i * bpp + 3]]
         md = max((abs(a[i * bpp + c] - b[i * bpp + c]) for i in px for c in range(3)), default=0)
-        print(f'  step {s}: ' + ('identical' if not px else f'{len(px)} of {w * h} pixels differ, max {md}'))
+        blk = lambda img: sum(1 for i in range(w * h) if img[i * bpp:i * bpp + 3] == b'\0\0\0')
+        print(f'  step {s}: ' + ('identical' if not px else f'{len(px)} of {w * h} pixels differ, max {md}') +
+              f' (black pixels: {blk(b)}, desktop GL {blk(a)})')
 log = open(f'{out}/run-menu/out.log').read()
 st = [l for l in open(f'{out}/run-menu/state.log') if l.startswith('F ')]
 print('menu run: ' + ('ok' if 'PORT_NATIVE_PAD_INJECT: unknown' not in log else 'bad inject') +
