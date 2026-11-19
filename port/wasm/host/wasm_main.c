@@ -40,14 +40,9 @@ uint32_t port_wasm_malloc(uint32_t size) {
     return w2c_game_malloc(&sGame, size);
 }
 
-extern void port_wasm_host_exit(void) __attribute__((weak));
-
 void port_wasm_exit(int code) {
     fflush(stdout);
     fflush(stderr);
-    if (port_wasm_host_exit != NULL) {
-        port_wasm_host_exit();
-    }
     if (code != 0 && port_posix_gui()) {
         char msg[512];
         snprintf(msg, sizeof(msg), "The game stopped (exit %d). The reason is in %s/1080.log.", code,
