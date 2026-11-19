@@ -105,6 +105,33 @@ Enter = START, IJKL = C buttons, TFGH = D-pad, F1 settings (rebinding), F11 full
 DirectInput gamepads use the Xbox layout. The save, `1080.ini` and `1080.log` go next to the exe.
 `port/win32/README-windows.txt` is the player's README.
 
+## PC port: macOS (Apple Silicon)
+
+macOS has no 32-bit processes and arm64 allows no mappings below 4 GB, so the game cannot keep the N64's 4-byte
+pointers as host addresses there. The macOS build compiles the game to WebAssembly (wasm32, an ILP32 target: the
+same struct layouts as the i386 build), translates it to C with WABT's `wasm2c`, and compiles that natively against
+the SDL2 / OpenGL 4.1 host (plan section 30). The `macOS port` workflow builds `1080.app` on a macos-15 runner and
+uploads it (zipped, with a README) as the `1080-pc-macos-arm64` artifact; it contains no ROM data.
+
+To play: unzip, right-click `1080.app` > Open the first time (or `xattr -dr com.apple.quarantine 1080.app`: the app
+is not notarized), and give it your US 1.0 ROM: `baserom.z64` next to the app, or in
+`~/Library/Application Support/1080-pc/`, or pick it in the file dialog it shows. Saves, `1080.ini` and `1080.log`
+live in that folder. Keys and pads as on Windows; `port/wasm/macos/README-macos.txt` is the player's README.
+
+Building it (also on Linux, where the same wasm2c output passes the i386 state.log / gfx / SRAM comparisons):
+
+```bash
+# wasi-sdk 25 and WABT's wasm2c (tools/wasm in the monorepo, or Homebrew / the release tarballs)
+cmake -S port -B build-wasm -G Ninja -DPORT_WASM=ON -DCMAKE_TOOLCHAIN_FILE=<wasi-sdk>/share/cmake/wasi-sdk.cmake \
+      -DWASI_SDK_PREFIX=<wasi-sdk> -DWASM2C=<wabt>/wasm2c
+cmake --build build-wasm                                   # tenshoe.wasm -> build-wasm/w2c/game_*.c
+port/gfx/fast3d/setup-lus.sh
+cmake -S port/wasm/host -B build-host -G Ninja -DW2C_DIR=$PWD/build-wasm/w2c -DWASM2C_RT_DIR=<wabt-src>/wasm2c \
+      -DWASM_HOST_NATIVE=ON                                # OFF: headless (the test runs)
+cmake --build build-host
+port/wasm/macos/make-app.sh build-host/tenshoe dist        # macOS: dist/1080-pc-macos.zip
+```
+
 ## References
 
 - **[libreultra](https://github.com/n64decomp/libreultra)** — libultra decomp reference; matching functions, structs, `register` keyword usage
