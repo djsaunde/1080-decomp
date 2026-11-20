@@ -47,11 +47,19 @@ static int rom_ok(const char *p) {
     struct stat st;
     FILE *f;
     int ok;
-    if (stat(p, &st) != 0 || !S_ISREG(st.st_mode) || st.st_size < 0x100000) {
+    if (stat(p, &st) != 0) {
+        if (errno != ENOENT) { /* EPERM / EACCES: macOS privacy (Documents, Desktop, Downloads) */
+            fprintf(stderr, "PORT: ROM candidate %s: %s\n", p, strerror(errno));
+        }
+        return 0;
+    }
+    if (!S_ISREG(st.st_mode) || st.st_size < 0x100000) {
+        fprintf(stderr, "PORT: ROM candidate %s: not a ROM file (%s)\n", p, S_ISDIR(st.st_mode) ? "a folder or app" : "too small");
         return 0;
     }
     f = fopen(p, "rb");
     if (f == NULL) {
+        fprintf(stderr, "PORT: ROM candidate %s: %s\n", p, strerror(errno));
         return 0;
     }
     ok = fread(h, 1, 4, f) == 4 &&
@@ -59,7 +67,50 @@ static int rom_ok(const char *p) {
           (h[0] == 0x37 && h[1] == 0x80 && h[2] == 0x40 && h[3] == 0x12) ||
           (h[0] == 0x40 && h[1] == 0x12 && h[2] == 0x37 && h[3] == 0x80));
     fclose(f);
+    if (!ok) {
+        fprintf(stderr, "PORT: ROM candidate %s: no N64 ROM header\n", p);
+    }
     return ok;
+}
+
+/* copy a ROM found outside the data folder into it as baserom.z64, so later starts need no access to Documents /
+ * Downloads (macOS privacy) and do not depend on where the app sits (App Translocation runs a quarantined app from
+ * a random read-only copy). Best effort: on failure the found path is still used. */
+static void adopt_rom(char *rom, size_t n) {
+    char dst[PATH_MAX], tmp[PATH_MAX], buf[65536];
+    FILE *in, *out;
+    size_t k;
+    int ok = 1;
+    snprintf(dst, sizeof(dst), "%s/baserom.z64", sData);
+    if (strcmp(rom, dst) == 0) {
+        return;
+    }
+    snprintf(tmp, sizeof(tmp), "%s.part", dst);
+    in = fopen(rom, "rb");
+    if (in == NULL) {
+        return;
+    }
+    out = fopen(tmp, "wb");
+    if (out == NULL) {
+        fclose(in);
+        return;
+    }
+    while ((k = fread(buf, 1, sizeof(buf), in)) > 0) {
+        if (fwrite(buf, 1, k, out) != k) {
+            ok = 0;
+            break;
+        }
+    }
+    fclose(in);
+    if (fclose(out) != 0) {
+        ok = 0;
+    }
+    if (ok && rename(tmp, dst) == 0 && rom_ok(dst)) {
+        fprintf(stderr, "PORT: ROM %s copied to %s\n", rom, dst);
+        snprintf(rom, n, "%s", dst);
+    } else {
+        unlink(tmp);
+    }
 }
 
 static void mkdir_p(const char *dir) {
@@ -283,8 +334,12 @@ char **port_posix_launch(int argc, char **argv, int *argcOut) {
                     sRom[0] = '\0';
                 }
             }
+            if (sRom[0] != '\0') {
+                adopt_rom(sRom, sizeof(sRom));
+            }
             for (i = 0; i < 3 && sRom[0] == '\0'; i++) {
                 if (dialog(sRom, sizeof(sRom))) {
+                    adopt_rom(sRom, sizeof(sRom));
                     remember(sRom);
                 } else if (i < 2) {
                     port_posix_alert("That is not an N64 ROM. Choose your 1080 Snowboarding ROM file (US 1.0; "
@@ -295,8 +350,14 @@ char **port_posix_launch(int argc, char **argv, int *argcOut) {
     }
     if (sRom[0] == '\0') {
         fprintf(stderr, "PORT: no ROM: put baserom.z64 in %s (or next to the app), or start with --rom PATH\n", sData);
-        port_posix_alert("No ROM found. Put your 1080 Snowboarding ROM (US 1.0) named baserom.z64 in "
-                         "~/Library/Application Support/1080-pc or next to the app, and open it again.");
+        if (strstr(appDir, "/AppTranslocation/") != NULL) {
+            fprintf(stderr, "PORT: the app runs from a translocated copy (%s): macOS quarantine; "
+                    "xattr -dr com.apple.quarantine 1080.app, or move it with Finder\n", appDir);
+        }
+        port_posix_alert("No ROM found. Copy your 1080 Snowboarding ROM (US 1.0) as baserom.z64 into "
+                         "~/Library/Application Support/1080-pc (Finder: Go > Go to Folder) and open the app again. "
+                         "A ROM in Documents, Desktop or Downloads needs the app to be allowed in System Settings > "
+                         "Privacy and Security > Files and Folders.");
         exit(1);
     }
     fprintf(stderr, "PORT: ROM %s, data in %s\n", sRom, sData);
