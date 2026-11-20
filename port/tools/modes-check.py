@@ -19,7 +19,9 @@ input script (port/host/*.input) and reads the --trace state.log (port/trace.h):
             `# WIN`, before the CPU rider (entries[0] finished while entries[1] has not).  With
             `# RECORD m'ss"hh` (run 860: Round 2 paused -> Quit closes the session, name "AAA"):
             that time is saved in SRAM under AAA (course records, mirror equal), and
-            records_reload.input in a NEW process on that file leaves it byte-identical
+            records_reload.input in a NEW process on that file leaves it byte-identical; and the course
+            map's marker inputs (the player's and the CPU rider's x / z) equal the real game's
+            (port/tools/n64ref/map-golden.tsv, every 8th step of the race; plan 34)
   options   options_save.input from a blank SRAM: the options record (SRAM 0x1F8, mirror 0x7FC8)
             holds the new settings (flags & 3 = 2 Mono, levels 9 / 7 / 8); options_reload.input in
             a NEW process on that file: BGM read back and stepped once more (levels 10 / 7 / 8)
@@ -41,7 +43,8 @@ REGEN = {
     'trick': 'STEER_TRICK_ACTS=fast STEER_POINTS_W=0.2 STEER_POINTS_CAP=150 STEER_JUMP_UNTIL=1700 '
              'port/tools/steer-search.py -b <port build> --mode trick',
     'contest': 'port/tools/steer-search.py -b <port build> --mode contest',
-    'match': 'port/tools/steer-search.py -b <port build> --mode match',
+    'match': 'port/tools/steer-search.py -b <port build> --mode match (then re-record port/tools/n64ref/map-golden.py; '
+             'with the script unchanged, a map-golden mismatch is a port bug: plan 34)',
     'training': 'edit port/host/training.input (hop + grab windows; header comment)',
     'vs2p': 'edit port/host/vs2p.input (both pads ride straight; header comment); a golden mismatch is a port '
             'bug (plan 24) unless the script changed: then re-record port/tools/n64ref/vs2p-golden.py',
@@ -168,6 +171,34 @@ def vs2p_vs_n64(log):
     return n, None
 
 
+MAP_GOLDEN = os.path.join(HERE, 'n64ref', 'map-golden.tsv')
+
+
+def map_vs_n64(log):
+    """(steps compared, first step whose course-map marker inputs differ from the N64's, or None): the player's
+    and the CPU rider's x / z (r0= / r1=, which CourseGadget_setVec4 takes from RaceEntry.posX / progress each
+    step) against port/tools/n64ref/map-golden.tsv (plan 34: the N64's CourseGadget markers, every 8th step)"""
+    want = {}
+    for ln in lines(MAP_GOLDEN):
+        if ln and not ln.startswith('#'):
+            f = ln.split()
+            want[int(f[0])] = f[1:5]
+    n = 0
+    for ln in lines(log):
+        m = re.match(r'F (\d+) ', ln)
+        if not m or int(m.group(1)) not in want:
+            continue
+        st = int(m.group(1))
+        got = []
+        for i in (0, 1):
+            r = re.search(r' r%d=([0-9a-f]{8}),[0-9a-f]{8},([0-9a-f]{8}),' % i, ln)
+            got += list(r.groups()) if r else ['-'] * 2
+        if got != want[st]:
+            return n, st
+        n += 1
+    return n, None
+
+
 def check_vs2p(a):
     rc, log = run(a, 'vs2p', 'vs2p.input', end_of('vs2p.input', 7800))
     r = races(log)
@@ -215,8 +246,12 @@ def check_match(a):
             goal = step
         if e1 and cpu is None and int(e1.group(2)) > 0:
             cpu = step
-    ok = rc == 0 and goal is not None and (not win or cpu is None or goal < cpu)
-    txt = 'rc %d, player goal %s, CPU finish %s%s' % (rc, goal, cpu, ' (script: # WIN)' if win else '')
+    nmap, badmap = map_vs_n64(log)
+    totalmap = sum(1 for ln in lines(MAP_GOLDEN) if ln and not ln.startswith('#'))
+    ok = rc == 0 and goal is not None and (not win or cpu is None or goal < cpu) and badmap is None and nmap == totalmap
+    txt = 'rc %d, player goal %s, CPU finish %s%s; N64 map markers %d/%d steps%s' % (
+        rc, goal, cpu, ' (script: # WIN)' if win else '', nmap, totalmap,
+        '' if badmap is None else ', first differs at step %d' % badmap)
     if want is None:
         return ok, txt
     # run 860: pause -> Quit closed the session, the record is saved (primary = mirror), and a new
