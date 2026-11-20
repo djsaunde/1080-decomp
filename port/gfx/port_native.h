@@ -49,6 +49,9 @@ PORT_NATIVE_FN(port_native_frame) void port_native_frame(unsigned step);
 PORT_NATIVE_FN(port_native_idle) int port_native_idle(unsigned us);
 /* pump the window's events into the pads; 1 = quit (Esc, the window closed) */
 PORT_NATIVE_FN(port_native_poll) int port_native_poll(void);
+/* the game's flow (InputMgr state << 16 | next << 8 | mode, each & 0xFF), before each port_native_frame: named in the
+ * PORT_PERF lines (plan 33) */
+PORT_NATIVE_FN(port_native_flow) void port_native_flow(unsigned flow);
 /* the game is ending: stop the audio, print the frame-time summary */
 PORT_NATIVE_FN(port_native_close) void port_native_close(void);
 

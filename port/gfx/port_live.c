@@ -237,6 +237,10 @@ void port_live_task(const void *dlmp, size_t size) {
     sFrameTasks++;
 }
 
+#ifdef PORT_GFX_NATIVE
+extern char port_bootup_bss[] __attribute__((weak)); /* the flow for the perf log (port/trace.c's gInputMgr) */
+#endif
+
 void port_live_frame_end(unsigned step) {
     LiveFrame *f;
     live_u32 head, tail;
@@ -245,6 +249,11 @@ void port_live_frame_end(unsigned step) {
     if (port_live_native()) {
         sFrames++;
         sPublished++;
+        if (port_bootup_bss != NULL) { /* the InputMgr (port/trace.c): bootup Bss + 0xF8 */
+            const unsigned char *im = (const unsigned char *)port_bootup_bss + 0xF8;
+            port_native_flow((unsigned)(*(const int *)(im + 0x40) & 0xFF) << 16 |
+                             (unsigned)(*(const int *)(im + 0x34) & 0xFF) << 8 | (unsigned)(*(const int *)(im + 0x38) & 0xFF));
+        }
         port_native_frame(step);
         return;
     }

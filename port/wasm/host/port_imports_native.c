@@ -40,3 +40,7 @@ void w2c_port_port_native_close(struct w2c_port *p) {
     (void)p;
     port_native_close();
 }
+void w2c_port_port_native_flow(struct w2c_port *p, u32 flow) {
+    (void)p;
+    port_native_flow(flow);
+}

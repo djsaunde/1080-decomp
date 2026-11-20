@@ -47,6 +47,7 @@ struct LiveInput {
     bool quit = false;
     LivePads pads;
     SettingsMenu* menu = nullptr; /* F1 (null: no menu) */
+    bool perfToggle = false;      /* F3 pressed: the host toggles its perf log (plan 33) */
 
     void key(const char* name, bool down);
     void releaseAll();
@@ -104,6 +105,7 @@ struct LiveInput {
     bool quit = false;
     LivePads pads;
     SettingsMenu* menu = nullptr; /* F1 (null: no menu) */
+    bool perfToggle = false;      /* F3 pressed: the host toggles its perf log (plan 33) */
 
     void key(const char* name, bool down); /* an X keysym name (input_map.h) */
     void releaseAll(); /* focus lost: no key sticks (the gamepads keep their state) */

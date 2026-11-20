@@ -1,0 +1,743 @@
+From 0a9f3b34541bfa7f63110354dc30cfd64beaf49c Mon Sep 17 00:00:00 2001
+From: djsaunde <1245942+djsaunde@users.noreply.github.com>
+Date: Fri, 20 Nov 2026 09:12:51 -0500
+Subject: [PATCH 22/22] fast: asynchronous colour and depth read-backs,
+ read-back and shader counters
+
+Off by default (Interpreter::mReadbackAsync). With it, Run() only queues the read-backs: the colour requests'
+scaled copy (as before, GPU-side) and, for depth, a grid of every native pixel, made GPU-side: the depth is
+blitted 1:1 into a texture, and a draw fetches each grid pixel's source (the pixel GetPixelDepth reads, its
+coordinates converted the same way) and writes it as the fragment depth into a native-size depth buffer. A fence
+follows. FinishReadbacks() waits for the fence and reads the small copies back (300 KB), then answers the colour
+requests and ReadbackGetDepth as before; ReadbackGridDepth answers any native pixel of that frame, and
+ReadbackDepthGridNow reads the grid of the frame drawn last at once. A port that takes the answers at the game's
+next step, as 1080's native host does, gets the same values at the same step, and the CPU no longer waits for the
+GPU at the frame's end: a glReadPixels while the frame is still being drawn waits for all of it, and on GL over
+D3D12 (Mesa d3d12, WSLg) or Metal it is a full flush each time; even a read into a pixel-pack buffer waits on
+d3d12. The depth grid replaces one blit per requested pixel (169 per sun pixel with the port's window) and one
+synchronous read per depth pixel the game reads at once.
+
+The rendering API gets ReadFramebufferToCPUBegin / Finish and ReadDepthGridBegin / Finish, synchronous by
+default; the OpenGL backend implements them (GL 3.0 / ES 3.0: fences, an integer texture, texelFetch). OpenGL
+ES writes the grid's depth as 24 bits in RGBA8, as its GetPixelDepth does.
+
+Interpreter::mReadbackStats (read-backs that waited, and the time) and mShaderStats (shader programs built, and
+the time) feed a port's perf log.
+---
+ include/fast/backends/gfx_opengl.h        |  27 ++
+ include/fast/backends/gfx_rendering_api.h |  39 +++
+ include/fast/interpreter.h                |  32 +++
+ src/fast/backends/gfx_opengl.cpp          | 329 +++++++++++++++++++++-
+ src/fast/interpreter.cpp                  | 160 +++++++++++
+ 5 files changed, 573 insertions(+), 14 deletions(-)
+
+diff --git a/include/fast/backends/gfx_opengl.h b/include/fast/backends/gfx_opengl.h
+index 1596d60..d03410d 100644
+--- a/include/fast/backends/gfx_opengl.h
++++ b/include/fast/backends/gfx_opengl.h
+@@ -137,6 +137,13 @@ class GfxRenderingAPIOGL final : public GfxRenderingAPI {
+     void SetFramebufferDither(bool dither);
+     void SetSrgbMode() override;
+     ImTextureID GetTextureById(int id) override;
++    // Asynchronous read-backs (gfx_rendering_api.h): a pixel-pack buffer and a fence each; the depth grid is copied
++    // GPU-side (the depth into a texture, a draw that fetches the grid's pixels into a small depth buffer) and only
++    // the grid is read back.
++    void ReadFramebufferToCPUBegin(int fbId, uint32_t width, uint32_t height) override;
++    void ReadFramebufferToCPUFinish(uint16_t* rgba16Buf) override;
++    void ReadDepthGridBegin(int fbId, const std::vector<float>& xs, const std::vector<float>& ys) override;
++    void ReadDepthGridFinish(uint16_t* out) override;
+     /** @} */
+   private:
+     void SetUniforms(ShaderProgram* prg) const;
+@@ -175,6 +182,26 @@ class GfxRenderingAPIOGL final : public GfxRenderingAPI {
+     GLuint mPixelDepthRb = 0;
+     GLuint mPixelDepthFb = 0;
+     size_t mPixelDepthRbSize = 0;
++
++    void Rgba8ToRgba5551(const uint8_t* rgba8, uint32_t width, uint32_t height, uint16_t* rgba16Buf) const;
++    bool DepthGridInit();
++    struct AsyncRead {
++        GLsync fence = nullptr;
++        GLuint fbo = 0; // read from here at Finish
++        uint32_t width = 0, height = 0;
++        bool pending = false;
++    };
++    void AsyncReadFence(AsyncRead& r, GLuint fbo, uint32_t width, uint32_t height);
++    // wait for the copy's fence; false if none is pending
++    bool AsyncReadWait(AsyncRead& r);
++    AsyncRead mAsyncColorRead, mAsyncDepthRead;
++    struct DepthGrid {
++        GLuint copyTex = 0, copyFb = 0, mapTex = 0, depthRb = 0, colorRb = 0, fb = 0, prog = 0, vao = 0;
++        GLint locDepth = -1, locMap = -1, locSize = -1;
++        uint32_t copyW = 0, copyH = 0, w = 0, h = 0, mapW = 0;
++        std::vector<int32_t> map;
++        bool broken = false, warned = false;
++    } mDepthGrid;
+ };
+ 
+ } // namespace Fast
+diff --git a/include/fast/backends/gfx_rendering_api.h b/include/fast/backends/gfx_rendering_api.h
+index 3eb0996..dabc9ce 100644
+--- a/include/fast/backends/gfx_rendering_api.h
++++ b/include/fast/backends/gfx_rendering_api.h
+@@ -4,6 +4,7 @@
+ 
+ #include <unordered_map>
+ #include <set>
++#include <vector>
+ #include "imconfig.h"
+ 
+ namespace Fast {
+@@ -80,7 +81,45 @@ class GfxRenderingAPI {
+     virtual ImTextureID GetTextureById(int id) = 0;
+     virtual void SetCurrentPrimDepth(float depth) = 0;
+ 
++    // Asynchronous read-backs, for a port that reads the frame back while it goes on drawing: Begin queues the copy
++    // and returns; Finish waits for the GPU only if it has not finished the copy yet, then converts. One of each kind
++    // can be pending. The results equal ReadFramebufferToCPU's and GetPixelDepth's. Default: synchronous, at Begin.
++    virtual void ReadFramebufferToCPUBegin(int fbId, uint32_t width, uint32_t height) {
++        mAsyncColor.resize((size_t)width * height);
++        ReadFramebufferToCPU(fbId, width, height, mAsyncColor.data());
++    }
++    virtual void ReadFramebufferToCPUFinish(uint16_t* rgba16Buf) {
++        for (size_t i = 0; i < mAsyncColor.size(); i++) {
++            rgba16Buf[i] = mAsyncColor[i];
++        }
++    }
++    // The depth of a grid of pixels, as GetPixelDepth reads each: out[j * xs.size() + i] is the pixel (xs[i], ys[j]).
++    virtual void ReadDepthGridBegin(int fbId, const std::vector<float>& xs, const std::vector<float>& ys) {
++        std::set<std::pair<float, float>> coords;
++        for (float y : ys) {
++            for (float x : xs) {
++                coords.emplace(x, y);
++            }
++        }
++        auto res = GetPixelDepth(fbId, coords);
++        mAsyncDepth.assign(xs.size() * ys.size(), 0xFFFC);
++        for (size_t j = 0; j < ys.size(); j++) {
++            for (size_t i = 0; i < xs.size(); i++) {
++                auto it = res.find(std::make_pair(xs[i], ys[j]));
++                if (it != res.end()) {
++                    mAsyncDepth[j * xs.size() + i] = it->second;
++                }
++            }
++        }
++    }
++    virtual void ReadDepthGridFinish(uint16_t* out) {
++        for (size_t i = 0; i < mAsyncDepth.size(); i++) {
++            out[i] = mAsyncDepth[i];
++        }
++    }
++
+   protected:
++    std::vector<uint16_t> mAsyncColor, mAsyncDepth;
+     int8_t mCurrentDepthTest = 0;
+     int8_t mCurrentDepthMask = 0;
+     int8_t mCurrentZmodeDecal = 0;
+diff --git a/include/fast/interpreter.h b/include/fast/interpreter.h
+index cd29b95..00a291b 100644
+--- a/include/fast/interpreter.h
++++ b/include/fast/interpreter.h
+@@ -424,6 +424,29 @@ class Interpreter {
+     void ReadbackRequestDepth(uint32_t x, uint32_t y);
+     bool ReadbackGetDepth(uint32_t x, uint32_t y, uint16_t* depth) const;
+     void ServiceReadbacks();
++    // Read-back cost counters (a port's perf log): calls that waited for the GPU and the time spent, in
++    // microseconds. Only ever incremented; the port takes differences.
++    struct ReadbackStats {
++        uint64_t colorReads = 0, colorUs = 0, depthReads = 0, depthUs = 0, depthPixels = 0;
++    } mReadbackStats;
++    // Asynchronous read-backs (off by default). With mReadbackAsync, Run() only queues the copies (the backend's
++    // ReadFramebufferToCPUBegin / ReadDepthGridBegin) and FinishReadbacks() completes them: it writes the colour
++    // requests' dst and makes ReadbackGetDepth answer, waiting for the GPU only if it has not finished the copies.
++    // Call it before using the answers; a Run() with read requests finishes any earlier ones first.
++    // Depth is read as a grid of every native pixel (the same pixels GetPixelDepth reads, the same values), so the
++    // grid also answers ReadbackGridDepth for any native pixel of that frame.
++    // new shader programs built (compile + link) and the time spent, in microseconds (a port's perf log)
++    struct ShaderStats {
++        uint64_t built = 0, us = 0;
++    } mShaderStats;
++    bool mReadbackAsync = false;
++    void FinishReadbacks();
++    // read the whole native depth grid at the end of the next Run() (as if every pixel were requested)
++    void ReadbackRequestDepthGrid();
++    // read it now, from the frame drawn last, and wait for it
++    void ReadbackDepthGridNow();
++    // a pixel of the last depth grid read (finishing it first); false if none was read
++    bool ReadbackGridDepth(uint32_t x, uint32_t y, uint16_t* depth);
+     void RegisterBlendedTexture(const char* name, uint8_t* mask, uint8_t* replacement);
+     void UnregisterBlendedTexture(const char* name);
+ 
+@@ -624,6 +647,15 @@ class Interpreter {
+     std::set<std::pair<uint32_t, uint32_t>> mReadbackDepthRequests;
+     std::map<std::pair<uint32_t, uint32_t>, uint16_t> mReadbackDepthResults;
+     std::vector<uint16_t> mReadbackBuffer;
++    std::vector<ReadbackRequest> mPendingColorReads;
++    uint32_t mPendingColorW = 0, mPendingColorH = 0;
++    std::set<std::pair<uint32_t, uint32_t>> mPendingDepthReads;
++    bool mPendingDepthGrid = false, mDepthGridWanted = false, mDepthGridValid = false;
++    uint32_t mDepthGridW = 0, mDepthGridH = 0;
++    std::vector<uint16_t> mDepthGrid;
++    void ServiceReadbacksAsync();
++    void BeginDepthGrid(int srcFb);
++    void CopyColorReadback(const ReadbackRequest& req, uint32_t width, uint32_t height);
+     int mReadbackFb = -1;
+     uint32_t mReadbackFbWidth = 0;
+     uint32_t mReadbackFbHeight = 0;
+diff --git a/src/fast/backends/gfx_opengl.cpp b/src/fast/backends/gfx_opengl.cpp
+index eca53b3..0bb4bc6 100644
+--- a/src/fast/backends/gfx_opengl.cpp
++++ b/src/fast/backends/gfx_opengl.cpp
+@@ -1099,20 +1099,8 @@ void GfxRenderingAPIOGL::CopyFramebuffer(int fb_dst_id, int fb_src_id, int srcX0
+     }
+ }
+ 
+-void GfxRenderingAPIOGL::ReadFramebufferToCPU(int fb_id, uint32_t width, uint32_t height, uint16_t* rgba16_buf) {
+-    if (fb_id >= (int)mFrameBuffers.size()) {
+-        return;
+-    }
+-
+-    // Read as RGBA8 (GL_UNSIGNED_BYTE) then convert to RGBA16 (5551).
+-    // GL_RGBA + GL_UNSIGNED_SHORT_5_5_5_1 writes 4 separate u16 components per pixel
+-    // (8 bytes) on some drivers (NVIDIA), not the packed 2 bytes the spec implies.
+-    // Reading as RGBA8 and converting matches the DX11 path's approach.
+-    glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffers[fb_id].fbo);
+-
+-    std::vector<uint8_t> rgba8(width * height * 4);
+-    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgba8.data());
+-
++void GfxRenderingAPIOGL::Rgba8ToRgba5551(const uint8_t* rgba8, uint32_t width, uint32_t height,
++                                         uint16_t* rgba16_buf) const {
+     // The RDP's magic-square dither matrix (G_CD_MAGICSQ), indexed [y & 3][x & 3]
+     static const uint8_t magic[16] = { 0, 6, 1, 7, 4, 2, 5, 3, 3, 5, 2, 4, 7, 1, 6, 0 };
+     for (uint32_t i = 0; i < width * height; i++) {
+@@ -1132,7 +1120,320 @@ void GfxRenderingAPIOGL::ReadFramebufferToCPU(int fb_id, uint32_t width, uint32_
+         uint8_t a = rgba8[i * 4 + 3] ? 1 : 0;
+         rgba16_buf[i] = (r << 11) | (g << 6) | (b << 1) | a;
+     }
++}
++
++void GfxRenderingAPIOGL::ReadFramebufferToCPU(int fb_id, uint32_t width, uint32_t height, uint16_t* rgba16_buf) {
++    if (fb_id >= (int)mFrameBuffers.size()) {
++        return;
++    }
++
++    // Read as RGBA8 (GL_UNSIGNED_BYTE) then convert to RGBA16 (5551).
++    // GL_RGBA + GL_UNSIGNED_SHORT_5_5_5_1 writes 4 separate u16 components per pixel
++    // (8 bytes) on some drivers (NVIDIA), not the packed 2 bytes the spec implies.
++    // Reading as RGBA8 and converting matches the DX11 path's approach.
++    glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffers[fb_id].fbo);
++
++    std::vector<uint8_t> rgba8(width * height * 4);
++    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgba8.data());
++    Rgba8ToRgba5551(rgba8.data(), width, height, rgba16_buf);
++
++    glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffers[mCurrentFrameBuffer].fbo);
++}
++
++// ---- asynchronous read-backs ----
++// Begin makes the GPU-side copy (the colour image scaled into the read-back framebuffer; the depth grid) and puts a
++// fence after it; Finish waits for the fence and only then reads the small copy back. A glReadPixels while the GPU is
++// still drawing the frame waits for all of it; on GL over D3D12 (Mesa's d3d12, WSLg) or Metal it is also a full
++// flush, and even a read into a pixel-pack buffer waits there (measured: 7-10 ms on a busy GPU). Read later, once the
++// fence has signalled (the port reads at the game's next step), it is a copy of 300 KB.
++bool GfxRenderingAPIOGL::AsyncReadWait(AsyncRead& r) {
++    if (!r.pending) {
++        return false;
++    }
++    r.pending = false;
++    GLenum w = GL_TIMEOUT_EXPIRED;
++    for (int i = 0; i < 20 && w == GL_TIMEOUT_EXPIRED; i++) { // at most ~2 s
++        w = glClientWaitSync(r.fence, GL_SYNC_FLUSH_COMMANDS_BIT, 100000000ull);
++    }
++    glDeleteSync(r.fence);
++    r.fence = nullptr;
++    if (w == GL_WAIT_FAILED) {
++        fprintf(stderr, "fast: waiting for a read-back's fence failed\n");
++    }
++    return true; // the read below waits for the copy in any case
++}
++
++void GfxRenderingAPIOGL::AsyncReadFence(AsyncRead& r, GLuint fbo, uint32_t width, uint32_t height) {
++    r.fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
++    r.fbo = fbo;
++    r.width = width;
++    r.height = height;
++    r.pending = true;
++}
++
++void GfxRenderingAPIOGL::ReadFramebufferToCPUBegin(int fb_id, uint32_t width, uint32_t height) {
++    AsyncRead& r = mAsyncColorRead;
++    if (fb_id >= (int)mFrameBuffers.size()) {
++        return;
++    }
++    if (r.pending) { // an earlier copy nobody took: its fence goes
++        AsyncReadWait(r);
++    }
++    AsyncReadFence(r, mFrameBuffers[fb_id].fbo, width, height);
++}
++
++void GfxRenderingAPIOGL::ReadFramebufferToCPUFinish(uint16_t* rgba16_buf) {
++    AsyncRead& r = mAsyncColorRead;
++    if (!AsyncReadWait(r)) {
++        return;
++    }
++    std::vector<uint8_t> rgba8((size_t)r.width * r.height * 4);
++    glBindFramebuffer(GL_READ_FRAMEBUFFER, r.fbo);
++    glPixelStorei(GL_PACK_ALIGNMENT, 4);
++    glReadPixels(0, 0, (GLsizei)r.width, (GLsizei)r.height, GL_RGBA, GL_UNSIGNED_BYTE, rgba8.data());
++    glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffers[mCurrentFrameBuffer].fbo);
++    Rgba8ToRgba5551(rgba8.data(), r.width, r.height, rgba16_buf);
++}
++
++static GLuint GridCompile(GLenum type, const char* src) {
++    GLuint sh = glCreateShader(type);
++    glShaderSource(sh, 1, &src, nullptr);
++    glCompileShader(sh);
++    GLint ok = 0;
++    glGetShaderiv(sh, GL_COMPILE_STATUS, &ok);
++    if (!ok) {
++        char log[1024];
++        GLsizei n = 0;
++        glGetShaderInfoLog(sh, sizeof(log), &n, log);
++        fprintf(stderr, "fast: depth grid shader: %.*s\n", (int)n, log);
++    }
++    return sh;
++}
+ 
++bool GfxRenderingAPIOGL::DepthGridInit() {
++    DepthGrid& d = mDepthGrid;
++    if (d.prog != 0 || d.broken) {
++        return !d.broken;
++    }
++#if defined(USE_OPENGLES)
++    const char* head = "#version 300 es\nprecision highp float;\nprecision highp int;\n";
++#elif defined(__APPLE__)
++    const char* head = "#version 410 core\n";
++#else
++    const char* head = "#version 130\n";
++#endif
++    const std::string vs = std::string(head) +
++                           "void main() {\n"
++                           "    gl_Position = vec4(float((gl_VertexID & 1) * 4 - 1), float((gl_VertexID & 2) * 2 - 1), "
++                           "0.0, 1.0);\n"
++                           "}\n";
++    // Each output pixel (i, j) takes the depth of the copy's pixel (map[i, 0], map[j, 1]). The depth goes out as the
++    // fragment's depth into a depth buffer of the same format, which is read back as GetPixelDepth reads it, and as
++    // 24 bits in RGBA8 (OpenGL ES, which reads no depth: as its GetPixelDepth).
++    const std::string fs = std::string(head) +
++                           "uniform highp sampler2D uDepth;\n"
++                           "uniform highp isampler2D uMap;\n"
++                           "uniform ivec2 uSize;\n"
++                           "out vec4 oColor;\n"
++                           "void main() {\n"
++                           "    ivec2 p = ivec2(gl_FragCoord.xy);\n"
++                           "    int sx = texelFetch(uMap, ivec2(p.x, 0), 0).r;\n"
++                           "    int sy = texelFetch(uMap, ivec2(p.y, 1), 0).r;\n"
++                           "    float z = 1.0;\n"
++                           "    if (sx >= 0 && sy >= 0 && sx < uSize.x && sy < uSize.y) {\n"
++                           "        z = texelFetch(uDepth, ivec2(sx, sy), 0).r;\n"
++                           "    }\n"
++                           "    gl_FragDepth = z;\n"
++                           "    uint u = uint(clamp(round(z * 16777215.0), 0.0, 16777215.0));\n"
++                           "    oColor = vec4(float((u >> 16) & 255u), float((u >> 8) & 255u), float(u & 255u), 255.0) / "
++                           "255.0;\n"
++                           "}\n";
++    GLuint v = GridCompile(GL_VERTEX_SHADER, vs.c_str()), f = GridCompile(GL_FRAGMENT_SHADER, fs.c_str());
++    d.prog = glCreateProgram();
++    glAttachShader(d.prog, v);
++    glAttachShader(d.prog, f);
++    glLinkProgram(d.prog);
++    glDeleteShader(v);
++    glDeleteShader(f);
++    GLint ok = 0;
++    glGetProgramiv(d.prog, GL_LINK_STATUS, &ok);
++    if (!ok) {
++        fprintf(stderr, "fast: depth grid program failed to link: depth is read pixel by pixel\n");
++        d.broken = true;
++        return false;
++    }
++    d.locDepth = glGetUniformLocation(d.prog, "uDepth");
++    d.locMap = glGetUniformLocation(d.prog, "uMap");
++    d.locSize = glGetUniformLocation(d.prog, "uSize");
++    glGenVertexArrays(1, &d.vao);
++    glGenTextures(1, &d.copyTex);
++    glGenTextures(1, &d.mapTex);
++    glGenFramebuffers(1, &d.copyFb);
++    glGenFramebuffers(1, &d.fb);
++    glGenRenderbuffers(1, &d.depthRb);
++    glGenRenderbuffers(1, &d.colorRb);
++    return true;
++}
++
++void GfxRenderingAPIOGL::ReadDepthGridBegin(int fb_id, const std::vector<float>& xs, const std::vector<float>& ys) {
++    DepthGrid& d = mDepthGrid;
++    AsyncRead& r = mAsyncDepthRead;
++    if (fb_id >= (int)mFrameBuffers.size() || xs.empty() || ys.empty() || !DepthGridInit()) {
++        GfxRenderingAPI::ReadDepthGridBegin(fb_id, xs, ys); // pixel by pixel, now
++        r.pending = false;
++        r.width = 0;
++        return;
++    }
++    if (r.pending) {
++        AsyncReadWait(r);
++    }
++    const FramebufferOGL& src = mFrameBuffers[fb_id];
++    const uint32_t gw = (uint32_t)xs.size(), gh = (uint32_t)ys.size();
++    for (int e = 0; e < 16 && glGetError() != GL_NO_ERROR; e++) {
++    }
++    // the state this changes, restored below (the backend caches some of it)
++    GLint prevActive = 0, prevTex0 = 0, prevTex1 = 0, prevProg = 0, prevVao = 0, prevVp[4], prevDepthFunc = GL_LESS;
++    glGetIntegerv(GL_ACTIVE_TEXTURE, &prevActive);
++    glActiveTexture(GL_TEXTURE0);
++    glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevTex0);
++    glActiveTexture(GL_TEXTURE1);
++    glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevTex1);
++    glGetIntegerv(GL_CURRENT_PROGRAM, &prevProg);
++    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &prevVao);
++    glGetIntegerv(GL_VIEWPORT, prevVp);
++    glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFunc);
++    const GLboolean depthTest = glIsEnabled(GL_DEPTH_TEST), blend = glIsEnabled(GL_BLEND),
++                    cull = glIsEnabled(GL_CULL_FACE), scissor = glIsEnabled(GL_SCISSOR_TEST);
++    GLboolean colorMask[4], depthMask;
++    glGetBooleanv(GL_COLOR_WRITEMASK, colorMask);
++    glGetBooleanv(GL_DEPTH_WRITEMASK, &depthMask);
++
++    // 1. the source's depth into a texture of its size (a 1:1 blit: the window's depth cannot be sampled)
++    if (d.copyW != src.width || d.copyH != src.height) {
++        glActiveTexture(GL_TEXTURE0);
++        glBindTexture(GL_TEXTURE_2D, d.copyTex);
++        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, (GLsizei)src.width, (GLsizei)src.height, 0,
++                     GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr);
++        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
++        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
++        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
++        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
++        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
++        glBindFramebuffer(GL_FRAMEBUFFER, d.copyFb);
++        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, d.copyTex, 0);
++        d.copyW = src.width;
++        d.copyH = src.height;
++    }
++    glDisable(GL_SCISSOR_TEST);
++    glBindFramebuffer(GL_READ_FRAMEBUFFER, src.fbo);
++    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d.copyFb);
++    glBlitFramebuffer(0, 0, (GLint)src.width, (GLint)src.height, 0, 0, (GLint)src.width, (GLint)src.height,
++                      GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, GL_NEAREST);
++    const GLenum blitErr = glGetError();
++
++    // 2. the grid's source pixels, as GetPixelDepth converts its coordinates: (int)x, (int)y, flipped if invertY
++    const uint32_t mw = std::max(gw, gh);
++    std::vector<int32_t> map((size_t)mw * 2, -1);
++    for (uint32_t i = 0; i < gw; i++) {
++        map[i] = (int)xs[i];
++    }
++    for (uint32_t j = 0; j < gh; j++) {
++        int y = (int)ys[j];
++        map[mw + j] = src.invertY ? (int)src.height - y : y;
++    }
++    glActiveTexture(GL_TEXTURE1);
++    glBindTexture(GL_TEXTURE_2D, d.mapTex);
++    if (map != d.map) { // only when the view changed: rewriting a texture the last grid's draw reads can stall
++        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
++        glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, (GLsizei)mw, 2, 0, GL_RED_INTEGER, GL_INT, map.data());
++        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
++        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
++        d.map = map;
++        d.mapW = mw;
++    }
++
++    // 3. the grid: one fragment per pixel writes its source pixel's depth
++    if (d.w != gw || d.h != gh) {
++        glBindRenderbuffer(GL_RENDERBUFFER, d.depthRb);
++        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, (GLsizei)gw, (GLsizei)gh);
++        glBindRenderbuffer(GL_RENDERBUFFER, d.colorRb);
++        glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, (GLsizei)gw, (GLsizei)gh);
++        glBindRenderbuffer(GL_RENDERBUFFER, 0);
++        glBindFramebuffer(GL_FRAMEBUFFER, d.fb);
++        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, d.depthRb);
++        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, d.colorRb);
++        d.w = gw;
++        d.h = gh;
++    }
++    glBindFramebuffer(GL_FRAMEBUFFER, d.fb);
++    glViewport(0, 0, (GLsizei)gw, (GLsizei)gh);
++    glEnable(GL_DEPTH_TEST); // depth writes need the test on
++    glDepthFunc(GL_ALWAYS);
++    glDepthMask(GL_TRUE);
++    glDisable(GL_BLEND);
++    glDisable(GL_CULL_FACE);
++    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
++    glUseProgram(d.prog);
++    glActiveTexture(GL_TEXTURE0);
++    glBindTexture(GL_TEXTURE_2D, d.copyTex);
++    glUniform1i(d.locDepth, 0);
++    glUniform1i(d.locMap, 1);
++    glUniform2i(d.locSize, (GLint)src.width, (GLint)src.height);
++    glBindVertexArray(d.vao);
++    glDrawArrays(GL_TRIANGLES, 0, 3);
++
++    // 4. the fence: ReadDepthGridFinish reads the grid back once the GPU is past it
++    AsyncReadFence(r, d.fb, gw, gh);
++    const GLenum err = glGetError();
++    if ((blitErr != GL_NO_ERROR || err != GL_NO_ERROR) && !d.warned) {
++        d.warned = true;
++        fprintf(stderr, "fast: depth grid: GL error 0x%x / 0x%x (the source's depth is not DEPTH24_STENCIL8?)\n",
++                blitErr, err);
++    }
++
++    // restore
++    glBindVertexArray((GLuint)prevVao);
++    glUseProgram((GLuint)prevProg);
++    glActiveTexture(GL_TEXTURE1);
++    glBindTexture(GL_TEXTURE_2D, (GLuint)prevTex1);
++    glActiveTexture(GL_TEXTURE0);
++    glBindTexture(GL_TEXTURE_2D, (GLuint)prevTex0);
++    glActiveTexture((GLenum)prevActive);
++    glViewport(prevVp[0], prevVp[1], prevVp[2], prevVp[3]);
++    glColorMask(colorMask[0], colorMask[1], colorMask[2], colorMask[3]);
++    glDepthMask(depthMask);
++    glDepthFunc((GLenum)prevDepthFunc);
++    (depthTest ? glEnable : glDisable)(GL_DEPTH_TEST);
++    (blend ? glEnable : glDisable)(GL_BLEND);
++    (cull ? glEnable : glDisable)(GL_CULL_FACE);
++    (scissor ? glEnable : glDisable)(GL_SCISSOR_TEST);
++    glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffers[mCurrentFrameBuffer].fbo);
++}
++
++void GfxRenderingAPIOGL::ReadDepthGridFinish(uint16_t* out) {
++    AsyncRead& r = mAsyncDepthRead;
++    if (!r.pending) {
++        GfxRenderingAPI::ReadDepthGridFinish(out); // the synchronous fallback's answers
++        return;
++    }
++    AsyncReadWait(r);
++    const uint32_t n = r.width * r.height;
++    std::vector<uint32_t> px(n, 0xFFFFFFFFu);
++    glBindFramebuffer(GL_READ_FRAMEBUFFER, r.fbo);
++    glPixelStorei(GL_PACK_ALIGNMENT, 4);
++#ifdef USE_OPENGLES
++    glReadPixels(0, 0, (GLsizei)r.width, (GLsizei)r.height, GL_RGBA, GL_UNSIGNED_BYTE, px.data());
++    for (uint32_t i = 0; i < n; i++) {
++        const uint8_t* c = (const uint8_t*)&px[i];
++        const uint32_t d24 = ((uint32_t)c[0] << 16) | ((uint32_t)c[1] << 8) | c[2];
++        out[i] = (uint16_t)((d24 >> 10) << 2); // as this backend's ES GetPixelDepth
++    }
++#else
++    glReadPixels(0, 0, (GLsizei)r.width, (GLsizei)r.height, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, px.data());
++    for (uint32_t i = 0; i < n; i++) {
++        out[i] = (uint16_t)((px[i] >> 18) << 2); // as GetPixelDepth: the 24-bit depth's top 14 bits
++    }
++#endif
+     glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffers[mCurrentFrameBuffer].fbo);
+ }
+ 
+diff --git a/src/fast/interpreter.cpp b/src/fast/interpreter.cpp
+index 243b8f6..0abda58 100644
+--- a/src/fast/interpreter.cpp
++++ b/src/fast/interpreter.cpp
+@@ -19,6 +19,7 @@
+ #include <list>
+ #include <stack>
+ #include <array>
++#include <chrono>
+ #include <algorithm>
+ #include "fast/resource/type/Light.h"
+ 
+@@ -151,7 +152,11 @@ ShaderProgram* Interpreter::LookupOrCreateShaderProgram(uint64_t id0, uint64_t i
+     ShaderProgram* prg = mRapi->LookupShader(id0, id1);
+     if (prg == nullptr) {
+         mRapi->UnloadShader(mRenderingState.mShaderProgram);
++        const auto t0 = std::chrono::steady_clock::now();
+         prg = mRapi->CreateAndLoadNewShader(id0, id1);
++        mShaderStats.built++;
++        mShaderStats.us += (uint64_t)std::chrono::duration_cast<std::chrono::microseconds>(
++                               std::chrono::steady_clock::now() - t0).count();
+         mRenderingState.mShaderProgram = prg;
+     }
+     return prg;
+@@ -5849,7 +5854,153 @@ bool Interpreter::ReadbackGetDepth(uint32_t x, uint32_t y, uint16_t* depth) cons
+     return true;
+ }
+ 
++void Interpreter::CopyColorReadback(const ReadbackRequest& req, uint32_t width, uint32_t height) {
++    for (uint32_t row = 0; row < req.height; row++) {
++        for (uint32_t col = 0; col < req.width; col++) {
++            const uint32_t x = req.x + col;
++            const uint32_t y = req.y + row;
++            uint16_t pixel = (x < width && y < height) ? mReadbackBuffer[(size_t)y * width + x] : 0;
++#ifndef IS_BIGENDIAN
++            if (req.bswap) {
++                pixel = BE16SWAP(pixel);
++            }
++#endif
++            req.dst[(size_t)row * req.width + col] = pixel;
++        }
++    }
++}
++
++void Interpreter::ReadbackRequestDepthGrid() {
++    mDepthGridWanted = true;
++}
++
++void Interpreter::BeginDepthGrid(int srcFb) {
++    // every native pixel, its coordinates converted as GetPixelDepth's (AdjustPixelDepthCoordinates: x depends only
++    // on x, y only on y)
++    const uint32_t w = mNativeDimensions.width, h = mNativeDimensions.height;
++    std::vector<float> xs(w), ys(h);
++    for (uint32_t i = 0; i < w; i++) {
++        float x = (float)i, y = 0;
++        AdjustPixelDepthCoordinates(x, y);
++        xs[i] = x;
++    }
++    for (uint32_t j = 0; j < h; j++) {
++        float x = 0, y = (float)j;
++        AdjustPixelDepthCoordinates(x, y);
++        ys[j] = y;
++    }
++    mRapi->ReadDepthGridBegin(srcFb, xs, ys);
++    mPendingDepthGrid = true;
++    mDepthGridW = w;
++    mDepthGridH = h;
++}
++
++void Interpreter::ServiceReadbacksAsync() {
++    const int srcFb = mRendersToFb ? mGameFb : 0;
++    if (mReadbackRequests.empty() && mReadbackDepthRequests.empty() && !mDepthGridWanted) {
++        return;
++    }
++    FinishReadbacks();
++    if (!mReadbackRequests.empty()) {
++        // as ServiceReadbacks: the game view's native-aspect centre, scaled to the native size, GPU-side
++        const uint32_t width = mNativeDimensions.width;
++        const uint32_t height = mNativeDimensions.height;
++        if (mReadbackFb < 0) {
++            mReadbackFb = mRapi->CreateFramebuffer();
++        }
++        if (mReadbackFbWidth != width || mReadbackFbHeight != height) {
++            mRapi->UpdateFramebufferParameters(mReadbackFb, width, height, 1, true, true, false, false);
++            mReadbackFbWidth = width;
++            mReadbackFbHeight = height;
++        }
++        int srcX0, srcY0, srcW, srcH;
++        if (srcFb == 0 || (mMsaaLevel > 1 && mCurDimensions.width == mGameWindowViewport.width &&
++                           mCurDimensions.height == mGameWindowViewport.height)) {
++            srcX0 = mGameWindowViewport.x;
++            srcY0 = mGameWindowViewport.y;
++            srcW = mGameWindowViewport.width;
++            srcH = mGameWindowViewport.height;
++        } else {
++            srcX0 = 0;
++            srcY0 = 0;
++            srcW = mCurDimensions.width;
++            srcH = mCurDimensions.height;
++        }
++        if ((float)srcW / srcH > (float)width / height) {
++            int sliceW = (int)((float)srcH * width / height);
++            srcX0 += (srcW - sliceW) / 2;
++            srcW = sliceW;
++        }
++        mRapi->CopyFramebuffer(mReadbackFb, srcFb, srcX0, srcY0, srcX0 + srcW, srcY0 + srcH, 0, 0, width, height);
++        mRapi->ReadFramebufferToCPUBegin(mReadbackFb, width, height);
++        mPendingColorReads = std::move(mReadbackRequests);
++        mReadbackRequests.clear();
++        mPendingColorW = width;
++        mPendingColorH = height;
++    }
++    mReadbackDepthResults.clear();
++    if (!mReadbackDepthRequests.empty() || mDepthGridWanted) {
++        BeginDepthGrid(srcFb);
++        mPendingDepthReads = std::move(mReadbackDepthRequests);
++        mReadbackDepthRequests.clear();
++    }
++    mDepthGridWanted = false;
++}
++
++void Interpreter::FinishReadbacks() {
++    if (!mPendingColorReads.empty()) {
++        const auto rt0 = std::chrono::steady_clock::now();
++        mReadbackBuffer.resize((size_t)mPendingColorW * mPendingColorH);
++        mRapi->ReadFramebufferToCPUFinish(mReadbackBuffer.data());
++        mReadbackStats.colorReads++;
++        mReadbackStats.colorUs += (uint64_t)std::chrono::duration_cast<std::chrono::microseconds>(
++                                      std::chrono::steady_clock::now() - rt0).count();
++        for (const auto& req : mPendingColorReads) {
++            CopyColorReadback(req, mPendingColorW, mPendingColorH);
++        }
++        mPendingColorReads.clear();
++    }
++    if (mPendingDepthGrid) {
++        const auto rt0 = std::chrono::steady_clock::now();
++        mDepthGrid.assign((size_t)mDepthGridW * mDepthGridH, 0xFFFC);
++        mRapi->ReadDepthGridFinish(mDepthGrid.data());
++        mReadbackStats.depthReads++;
++        mReadbackStats.depthPixels += mDepthGrid.size();
++        mReadbackStats.depthUs += (uint64_t)std::chrono::duration_cast<std::chrono::microseconds>(
++                                      std::chrono::steady_clock::now() - rt0).count();
++        mPendingDepthGrid = false;
++        mDepthGridValid = true;
++        for (const auto& request : mPendingDepthReads) {
++            if (request.first < mDepthGridW && request.second < mDepthGridH) {
++                mReadbackDepthResults.emplace(request, mDepthGrid[(size_t)request.second * mDepthGridW + request.first]);
++            }
++        }
++        mPendingDepthReads.clear();
++    }
++}
++
++void Interpreter::ReadbackDepthGridNow() {
++    FinishReadbacks();
++    BeginDepthGrid(mRendersToFb ? mGameFb : 0);
++    FinishReadbacks();
++}
++
++bool Interpreter::ReadbackGridDepth(uint32_t x, uint32_t y, uint16_t* depth) {
++    if (mPendingDepthGrid) {
++        FinishReadbacks();
++    }
++    if (!mDepthGridValid || x >= mDepthGridW || y >= mDepthGridH) {
++        return false;
++    }
++    *depth = mDepthGrid[(size_t)y * mDepthGridW + x];
++    return true;
++}
++
+ void Interpreter::ServiceReadbacks() {
++    if (mReadbackAsync) {
++        ServiceReadbacksAsync();
++        return;
++    }
+     const int srcFb = mRendersToFb ? mGameFb : 0;
+ 
+     if (!mReadbackRequests.empty()) {
+@@ -5885,9 +6036,13 @@ void Interpreter::ServiceReadbacks() {
+             srcW = sliceW;
+         }
+ 
++        const auto rt0 = std::chrono::steady_clock::now();
+         mRapi->CopyFramebuffer(mReadbackFb, srcFb, srcX0, srcY0, srcX0 + srcW, srcY0 + srcH, 0, 0, width, height);
+         mReadbackBuffer.resize((size_t)width * height);
+         mRapi->ReadFramebufferToCPU(mReadbackFb, width, height, mReadbackBuffer.data());
++        mReadbackStats.colorReads++;
++        mReadbackStats.colorUs += (uint64_t)std::chrono::duration_cast<std::chrono::microseconds>(
++                                      std::chrono::steady_clock::now() - rt0).count();
+ 
+         for (const auto& req : mReadbackRequests) {
+             for (uint32_t row = 0; row < req.height; row++) {
+@@ -5919,8 +6074,13 @@ void Interpreter::ServiceReadbacks() {
+             lookups.emplace_back(request, std::make_pair(x, y));
+         }
+ 
++        const auto rt0 = std::chrono::steady_clock::now();
+         std::unordered_map<std::pair<float, float>, uint16_t, hash_pair_ff> res =
+             mRapi->GetPixelDepth(srcFb, coordinates);
++        mReadbackStats.depthReads++;
++        mReadbackStats.depthPixels += coordinates.size();
++        mReadbackStats.depthUs += (uint64_t)std::chrono::duration_cast<std::chrono::microseconds>(
++                                      std::chrono::steady_clock::now() - rt0).count();
+         for (const auto& [request, coordinate] : lookups) {
+             if (auto it = res.find(coordinate); it != res.end()) {
+                 mReadbackDepthResults.emplace(request, it->second);
+-- 
+2.34.1
+

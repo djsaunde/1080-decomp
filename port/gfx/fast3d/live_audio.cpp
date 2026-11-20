@@ -61,6 +61,10 @@ std::atomic<double> sReopenAt{ 0 };
 std::atomic<bool> sSuspendReq{ false }, sSuspended{ false };
 std::atomic<uint32_t> sSuspends{ 0 };
 std::atomic<int> sVolume{ 100 }; /* live_audio_set_volume */
+/* live_audio_perf (PORT_PERF) */
+std::atomic<bool> sPerf{ false };
+std::atomic<int32_t> sQueuedMs{ -1 };
+std::atomic<uint64_t> sDryUs{ 0 }, sPutMaxUs{ 0 };
 
 #if LIVE_HAVE_PULSE
 struct Pulse {
@@ -332,6 +336,15 @@ void run() {
             sleep_ms(5);
             continue;
         }
+        if (sPerf.load(std::memory_order_relaxed)) {
+            static double nextQ = 0;
+            const double t = now_s();
+            if (t >= nextQ) {
+                const long q = pa.queued();
+                sQueuedMs.store(q < 0 ? -1 : (int32_t)(q / 1000), std::memory_order_relaxed);
+                nextQ = t + 0.25;
+            }
+        }
         if (avail == 0) {
             double t = now_s();
             if (dryStart == 0) {
@@ -348,6 +361,12 @@ void run() {
             }
             sleep_ms(2);
             continue;
+        }
+        if (dryStart != 0) {
+            const uint64_t dry = (uint64_t)((now_s() - dryStart) * 1e6);
+            if (dry > sDryUs.load(std::memory_order_relaxed)) {
+                sDryUs.store(dry, std::memory_order_relaxed);
+            }
         }
         dryStart = 0;
         if (avail > trimAbove) {
@@ -373,7 +392,13 @@ void run() {
                 sm[k] = (int16_t)((int)sm[k] * vol / 100);
             }
         }
-        if (pa.put(buf.data(), n)) {
+        const double p0 = now_s();
+        const bool putOk = pa.put(buf.data(), n);
+        const uint64_t putUs = (uint64_t)((now_s() - p0) * 1e6);
+        if (putUs > sPutMaxUs.load(std::memory_order_relaxed)) {
+            sPutMaxUs.store(putUs, std::memory_order_relaxed);
+        }
+        if (putOk) {
             sPlayed += n;
         } else {
             playing = false;
@@ -489,4 +514,25 @@ std::string live_audio_status() {
 
 void live_audio_set_volume(int percent) {
     sVolume.store(std::clamp(percent, 0, 100), std::memory_order_relaxed);
+}
+
+void live_audio_perf_enable(bool on) {
+    sPerf.store(on, std::memory_order_relaxed);
+}
+
+LiveAudioPerf live_audio_perf(bool reset) {
+    LiveAudioPerf p;
+    if (sA == nullptr) {
+        return p;
+    }
+    const uint32_t bytesPerMs = sA->rate * sA->channels * 2 / 1000;
+    p.ringMs = (__atomic_load_n(&sA->head, __ATOMIC_ACQUIRE) - sA->tail) / std::max(1u, bytesPerMs);
+    p.queuedMs = sQueuedMs.load(std::memory_order_relaxed);
+    p.underruns = sA->underruns;
+    p.trimmedMs = sA->trimmed / std::max(1u, bytesPerMs);
+    p.overruns = sA->overruns;
+    p.dryMaxMs = (reset ? sDryUs.exchange(0) : sDryUs.load()) / 1000.0;
+    p.putMaxMs = (reset ? sPutMaxUs.exchange(0) : sPutMaxUs.load()) / 1000.0;
+    p.output = sOutput.load();
+    return p;
 }

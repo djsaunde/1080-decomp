@@ -59,6 +59,7 @@ static const IntField kFields[] = {
     { "audio", "mute", F(mute), NULL, "PORT_NATIVE_MUTE", ENV_NOT0, "1: no sound" },
     { "audio", "volume", F(volume), NULL, NULL, ENV_NONE, "0..100 (100: the game's samples unchanged)" },
     { "input", "pad_menu", F(pad_menu), NULL, NULL, ENV_NONE, "1: Back + Start on a gamepad opens the settings menu" },
+    { "debug", "perf", F(perf), NULL, "PORT_PERF", ENV_NOT0, "1: a perf line every second on stderr / 1080.log (F3 toggles)" },
 };
 #undef F
 #define NFIELDS (sizeof(kFields) / sizeof(kFields[0]))
@@ -133,6 +134,7 @@ void port_settings_defaults(PortSettings* s) {
     s->mute = 0;
     s->volume = 100;
     s->pad_menu = 0;
+    s->perf = 0;
 #ifdef __ANDROID__
     /* plan 31: a handheld (AAudio / OpenSL ES through SDL; Bluetooth audio adds its own delay) has no F1 key */
     s->latency_ms = 100;

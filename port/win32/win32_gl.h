@@ -32,6 +32,7 @@
     X(glBlitFramebuffer, PFNGLBLITFRAMEBUFFERPROC) \
     X(glBufferData, PFNGLBUFFERDATAPROC) \
     X(glCheckFramebufferStatus, PFNGLCHECKFRAMEBUFFERSTATUSPROC) \
+    X(glClientWaitSync, PFNGLCLIENTWAITSYNCPROC) \
     X(glCompileShader, PFNGLCOMPILESHADERPROC) \
     X(glCreateProgram, PFNGLCREATEPROGRAMPROC) \
     X(glCreateShader, PFNGLCREATESHADERPROC) \
@@ -40,9 +41,11 @@
     X(glDeleteProgram, PFNGLDELETEPROGRAMPROC) \
     X(glDeleteRenderbuffers, PFNGLDELETERENDERBUFFERSPROC) \
     X(glDeleteShader, PFNGLDELETESHADERPROC) \
+    X(glDeleteSync, PFNGLDELETESYNCPROC) \
     X(glDeleteVertexArrays, PFNGLDELETEVERTEXARRAYSPROC) \
     X(glDisableVertexAttribArray, PFNGLDISABLEVERTEXATTRIBARRAYPROC) \
     X(glEnableVertexAttribArray, PFNGLENABLEVERTEXATTRIBARRAYPROC) \
+    X(glFenceSync, PFNGLFENCESYNCPROC) \
     X(glFramebufferRenderbuffer, PFNGLFRAMEBUFFERRENDERBUFFERPROC) \
     X(glFramebufferTexture2D, PFNGLFRAMEBUFFERTEXTURE2DPROC) \
     X(glGenBuffers, PFNGLGENBUFFERSPROC) \
@@ -62,6 +65,7 @@
     X(glUniform1f, PFNGLUNIFORM1FPROC) \
     X(glUniform1i, PFNGLUNIFORM1IPROC) \
     X(glUniform1iv, PFNGLUNIFORM1IVPROC) \
+    X(glUniform2i, PFNGLUNIFORM2IPROC) \
     X(glUseProgram, PFNGLUSEPROGRAMPROC) \
     X(glVertexAttribPointer, PFNGLVERTEXATTRIBPOINTERPROC)
 
@@ -86,6 +90,7 @@ int port_gl_load(void *(*getproc)(const char *name));
 #define glBlitFramebuffer port_glBlitFramebuffer
 #define glBufferData port_glBufferData
 #define glCheckFramebufferStatus port_glCheckFramebufferStatus
+#define glClientWaitSync port_glClientWaitSync
 #define glCompileShader port_glCompileShader
 #define glCreateProgram port_glCreateProgram
 #define glCreateShader port_glCreateShader
@@ -94,9 +99,11 @@ int port_gl_load(void *(*getproc)(const char *name));
 #define glDeleteProgram port_glDeleteProgram
 #define glDeleteRenderbuffers port_glDeleteRenderbuffers
 #define glDeleteShader port_glDeleteShader
+#define glDeleteSync port_glDeleteSync
 #define glDeleteVertexArrays port_glDeleteVertexArrays
 #define glDisableVertexAttribArray port_glDisableVertexAttribArray
 #define glEnableVertexAttribArray port_glEnableVertexAttribArray
+#define glFenceSync port_glFenceSync
 #define glFramebufferRenderbuffer port_glFramebufferRenderbuffer
 #define glFramebufferTexture2D port_glFramebufferTexture2D
 #define glGenBuffers port_glGenBuffers
@@ -116,6 +123,7 @@ int port_gl_load(void *(*getproc)(const char *name));
 #define glUniform1f port_glUniform1f
 #define glUniform1i port_glUniform1i
 #define glUniform1iv port_glUniform1iv
+#define glUniform2i port_glUniform2i
 #define glUseProgram port_glUseProgram
 #define glVertexAttribPointer port_glVertexAttribPointer
 

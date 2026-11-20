@@ -50,5 +50,19 @@ LiveAudioStats live_audio_stats();
 std::string live_audio_stats_line();
 /* one line for the presenter's per-second status */
 std::string live_audio_status();
+/* PORT_PERF (plan 33): the output's state for the per-second perf line. With perf on, the thread also asks
+ * the output how much it holds (PulseAudio: a server round trip) about every 250 ms. dryMaxMs (the longest
+ * time the ring stayed empty while playing; the game fills it every step, so above ~35 ms the game fell
+ * behind the sound card) and putMaxMs (the longest write into the output: the
+ * output stalled) count since the last call with reset. */
+struct LiveAudioPerf {
+    uint32_t ringMs = 0;   /* the game's output not yet taken from the ring */
+    int32_t queuedMs = -1; /* the output's own buffer, -1 unknown */
+    uint32_t underruns = 0, trimmedMs = 0, overruns = 0;
+    double dryMaxMs = 0, putMaxMs = 0;
+    const char* output = "none";
+};
+void live_audio_perf_enable(bool on);
+LiveAudioPerf live_audio_perf(bool reset);
 
 #endif

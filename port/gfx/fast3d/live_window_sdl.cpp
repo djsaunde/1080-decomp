@@ -384,6 +384,9 @@ int live_pump(LiveSDL& w, LiveInput& in, uint32_t step) {
                     break;
                 }
 #endif
+                if (down && ev.key.repeat == 0 && k == SDLK_F3) {
+                    in.perfToggle = true;
+                }
                 if (down && ev.key.repeat == 0 && (k == SDLK_F11 || (k == SDLK_RETURN && (ev.key.keysym.mod & KMOD_ALT)))) {
                     w.toggleFullscreen();
                     break;

@@ -266,6 +266,9 @@ int live_pump(LiveX11& w, LiveInput& in, uint32_t step) {
                 std::printf("%s: synthetic %s %s (step %u)\n", w.tag, XKeysymToString(ks),
                             ev.type == KeyPress ? "down" : "up", step);
             }
+            if (ev.type == KeyPress && ks == XK_F3) {
+                in.perfToggle = true;
+            }
             if (ev.type == KeyPress && ks == XK_F11) {
                 /* WSLg maps the window again: no stream may be playing then (live_audio.h, run 867) */
                 live_audio_suspend(2500);

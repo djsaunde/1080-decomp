@@ -16,6 +16,7 @@
  *                       (the rendering extras, plan 28)
  *   [window]            scale = 3, vsync = 0, fullscreen = 0
  *   [audio]             latency_ms = 80, mute = 0, volume = 100
+ *   [debug]             perf = 0
  *   [input.p1] .. [input.p4]
  *                       enabled = 1 (p1) / 0, pads = 0 (gamepad indices, space-separated, or none),
  *                       stick = left|right, deadzone = 3000, deadzone_rescale = 0, range = 80,
@@ -90,6 +91,8 @@ typedef struct PortSettings {
     /* [input] */
     int pad_menu; /* 1: a gamepad's Back + Start opens / closes the settings menu and the gamepads drive it (plan 31;
                    * default 0, Android 1) */
+    /* [debug] */
+    int perf; /* 1: the once-a-second perf log on stderr / 1080.log (PORT_PERF; F3 toggles it; plan 33) */
     /* [input.pN] */
     PortPlayerInput player[PORT_SETTINGS_PLAYERS];
 } PortSettings;

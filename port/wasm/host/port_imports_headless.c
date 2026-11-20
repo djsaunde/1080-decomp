@@ -35,3 +35,6 @@ u32 w2c_port_port_native_poll(struct w2c_port *p) {
 void w2c_port_port_native_close(struct w2c_port *p) {
     (void)p;
 }
+void w2c_port_port_native_flow(struct w2c_port *p, u32 flow) {
+    (void)p, (void)flow;
+}

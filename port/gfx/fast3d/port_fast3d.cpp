@@ -505,6 +505,20 @@ struct Native {
     std::vector<Fast::F3DGfx> frameList, prologue, offList, offPrologue;
     std::vector<std::vector<uint16_t>> rttPixels, readPixels;
     uint32_t lastZimg = 0; /* the last frame's Z image (low 24 bits): port_fast3d_depth_now */
+    /* plan 33: the frame's read-backs complete later (port_fast3d_complete), not in the step's Run */
+    bool async = false;
+    struct Pending {
+        bool on = false;
+        LiveFbReply* reply = nullptr;
+        uint32_t step = 0, seq = 0, cimg = 0, zimg = 0;
+        std::vector<uint32_t> reads;
+        std::vector<std::pair<uint32_t, uint32_t>> depths;
+        std::set<std::pair<uint32_t, uint32_t>> asked;
+        std::vector<std::vector<uint16_t>> readPixels; /* the colour requests' dst (moved: the buffers stay put) */
+    } pend;
+    uint32_t frameNo = 0;      /* main-pass frames drawn */
+    uint32_t gridFrame = 0;    /* the frame the interpreter's depth grid holds (0: none) */
+    uint32_t depthUntil = 0;   /* capture the depth grid with every frame up to this one (a depth reader is active) */
 };
 Native sNative;
 
@@ -1079,6 +1093,66 @@ void port_fast3d_ask_depth(uint32_t img, uint32_t idx) {
     }
 }
 
+void port_fast3d_async_readbacks(bool on) {
+    sNative.async = on;
+    if (sState != nullptr) {
+        sState->gfx->mReadbackAsync = on;
+    }
+}
+
+bool port_fast3d_complete(PortFast3dStep* st) {
+    State* s = sState;
+    Native& N = sNative;
+    Native::Pending& P = N.pend;
+    if (s == nullptr || !P.on) {
+        return false;
+    }
+    P.on = false;
+    s->gfx->FinishReadbacks(); /* waits only if the GPU has not finished the copies */
+    st->step = P.step;
+    if (P.reply != nullptr) {
+        /* presenter.cpp Renderer::answer: the same reply, under the same seqlock */
+        LiveFbReply* r = P.reply;
+        __atomic_store_n(&r->seq, r->seq + 1, __ATOMIC_RELEASE);
+        __atomic_thread_fence(__ATOMIC_SEQ_CST);
+        r->frameSeq = P.seq;
+        r->step = P.step;
+        uint32_t n = 0;
+        for (const auto& d : P.depths) {
+            uint16_t z = 0;
+            if ((d.first & 0xFFFFFF) != P.zimg || !s->gfx->ReadbackGetDepth(d.second % LIVE_FB_W, d.second / LIVE_FB_W, &z)) {
+                st->depthOther += P.asked.count(d) != 0;
+                continue;
+            }
+            if (P.asked.count(d) != 0) {
+                (z == 0xFFFC ? st->depthFar : st->depthNear)++;
+            }
+            r->depth[n].img = d.first;
+            r->depth[n].idx = d.second;
+            r->depth[n].z = z;
+            n++;
+        }
+        r->nDepth = n;
+        n = 0;
+        for (size_t k = 0; k < P.reads.size(); k++) {
+            if ((P.reads[k] & 0xFFFFFF) != P.cimg) {
+                continue;
+            }
+            r->color[n].img = P.reads[k];
+            std::memcpy(r->pixels[n], P.readPixels[k].data(), sizeof(r->pixels[n]));
+            n++;
+            st->colorServed++;
+        }
+        r->nColor = n;
+        __atomic_thread_fence(__ATOMIC_SEQ_CST);
+        __atomic_store_n(&r->seq, r->seq + 1, __ATOMIC_RELEASE);
+    }
+    P.reads.clear();
+    P.depths.clear();
+    P.asked.clear();
+    return true;
+}
+
 bool port_fast3d_step(uint32_t vx, uint32_t vy, uint32_t vw, uint32_t vh, LiveFbReply* reply, uint32_t step,
                       uint32_t seq, PortFast3dStep* st) {
     State* s = sState;
@@ -1086,6 +1160,15 @@ bool port_fast3d_step(uint32_t vx, uint32_t vy, uint32_t vw, uint32_t vh, LiveFb
     bool drawn = false;
     if (s == nullptr) {
         return false;
+    }
+    if (N.pend.on) {
+        /* the previous frame's answers were not taken (no task since): complete them first */
+        PortFast3dStep late;
+        port_fast3d_complete(&late);
+        st->depthFar += late.depthFar;
+        st->depthNear += late.depthNear;
+        st->depthOther += late.depthOther;
+        st->colorServed += late.colorServed;
     }
     register_low_mappings(*s);
     std::vector<Fast::F3DGfx*> onRoots, offRoots;
@@ -1131,6 +1214,7 @@ bool port_fast3d_step(uint32_t vx, uint32_t vy, uint32_t vw, uint32_t vh, LiveFb
             }
             s->gfx->StartFrame();
             s->gfx->Run((Gfx*)offRoot, noReplacements);
+            s->gfx->FinishReadbacks(); /* the frame below samples these images: now */
             for (size_t k = 0; k < offIdx.size(); k++) {
                 native_store_rtt(*s, N.tasks[offIdx[k]].off, N.rttPixels[k]);
             }
@@ -1150,49 +1234,36 @@ bool port_fast3d_step(uint32_t vx, uint32_t vy, uint32_t vw, uint32_t vh, LiveFb
                 s->gfx->ReadbackRequestDepth(d.second % LIVE_FB_W, d.second / LIVE_FB_W);
             }
         }
+        N.frameNo++;
+        /* plan 33: while the game reads depth (the sun), the whole native depth grid comes back with every frame,
+         * asynchronously, and port_fast3d_depth_now answers from it (the depth requests read it too) */
+        const bool grid = N.async && (!N.depths.empty() || N.frameNo <= N.depthUntil);
+        if (grid) {
+            s->gfx->ReadbackRequestDepthGrid();
+        }
         s->gfx->StartFrame();
         s->gfx->Run((Gfx*)root, noReplacements);
         finish_view(*s, vx, vy, vw, vh);
         N.lastRoot = root;
         N.lastZimg = (uint32_t)(uintptr_t)s->gfx->mRdp->z_buf_address & 0xFFFFFF;
-        if (reply != nullptr) {
-            /* presenter.cpp Renderer::answer: the same reply, under the same seqlock */
-            const uint32_t cimg = (uint32_t)(uintptr_t)s->gfx->mRdp->color_image_address & 0xFFFFFF;
-            const uint32_t zimg = (uint32_t)(uintptr_t)s->gfx->mRdp->z_buf_address & 0xFFFFFF;
-            LiveFbReply* r = reply;
-            __atomic_store_n(&r->seq, r->seq + 1, __ATOMIC_RELEASE);
-            __atomic_thread_fence(__ATOMIC_SEQ_CST);
-            r->frameSeq = seq;
-            r->step = step;
-            uint32_t n = 0;
-            for (const auto& d : N.depths) {
-                uint16_t z = 0;
-                if ((d.first & 0xFFFFFF) != zimg || !s->gfx->ReadbackGetDepth(d.second % LIVE_FB_W, d.second / LIVE_FB_W, &z)) {
-                    st->depthOther += N.asked.count(d) != 0;
-                    continue;
-                }
-                if (N.asked.count(d) != 0) {
-                    (z == 0xFFFC ? st->depthFar : st->depthNear)++;
-                }
-                r->depth[n].img = d.first;
-                r->depth[n].idx = d.second;
-                r->depth[n].z = z;
-                n++;
-            }
-            r->nDepth = n;
-            n = 0;
-            for (size_t k = 0; k < N.reads.size(); k++) {
-                if ((N.reads[k] & 0xFFFFFF) != cimg) {
-                    continue;
-                }
-                r->color[n].img = N.reads[k];
-                std::memcpy(r->pixels[n], N.readPixels[k].data(), sizeof(r->pixels[n]));
-                n++;
-                st->colorServed++;
-            }
-            r->nColor = n;
-            __atomic_thread_fence(__ATOMIC_SEQ_CST);
-            __atomic_store_n(&r->seq, r->seq + 1, __ATOMIC_RELEASE);
+        if (grid) {
+            N.gridFrame = N.frameNo;
+        }
+        {
+            Native::Pending& P = N.pend;
+            P.on = true;
+            P.reply = reply;
+            P.step = step;
+            P.seq = seq;
+            P.cimg = (uint32_t)(uintptr_t)s->gfx->mRdp->color_image_address & 0xFFFFFF;
+            P.zimg = N.lastZimg;
+            P.reads.swap(N.reads);
+            P.depths.swap(N.depths);
+            P.asked.swap(N.asked);
+            P.readPixels.swap(N.readPixels);
+        }
+        if (!N.async) {
+            port_fast3d_complete(st); /* synchronous: the answers are ready now, as before plan 33 */
         }
     }
     if (drawn) {
@@ -1251,8 +1322,52 @@ int port_fast3d_depth_now(uint32_t img, uint32_t idx) {
         return -1;
     }
     uint16_t z = 0;
+    Native& N = sNative;
+    if (N.async) {
+        /* plan 33: from the depth grid of the last frame (read back with it while a depth reader is active; on the
+         * first read, now: one wait instead of one per pixel). The same pixel, the same value. */
+        N.depthUntil = N.frameNo + 60;
+        if (N.gridFrame != N.frameNo) {
+            s->gfx->ReadbackDepthGridNow();
+            N.gridFrame = N.frameNo;
+        }
+        const int got = s->gfx->ReadbackGridDepth(idx % LIVE_FB_W, idx / LIVE_FB_W, &z) ? (int)z : -1;
+        static const bool check = std::getenv("PORT_READBACK_CHECK") != nullptr;
+        if (check) {
+            /* the test of plan 33: the pixel read alone, synchronously, as before */
+            static uint32_t reads, diffs;
+            uint16_t z1 = 0;
+            s->gfx->mReadbackAsync = false;
+            const int old = live_depth_now(*s->gfx, idx % LIVE_FB_W, idx / LIVE_FB_W, 1, 1, &z1) ? (int)z1 : -1;
+            s->gfx->mReadbackAsync = true;
+            reads++;
+            if (old != got && ++diffs <= 20) {
+                std::fprintf(stderr, "port_fast3d: depth grid check: pixel %u,%u grid %d, alone %d\n", idx % LIVE_FB_W,
+                             idx / LIVE_FB_W, got, old);
+            }
+            if (reads % 500 == 0) {
+                std::fprintf(stderr, "port_fast3d: depth grid check: %u reads, %u differ\n", reads, diffs);
+            }
+        }
+        return got;
+    }
     /* live_backend.h: the read the presenter's LiveDepthAsk answers make too (plan 22.10) */
     return live_depth_now(*s->gfx, idx % LIVE_FB_W, idx / LIVE_FB_W, 1, 1, &z) ? (int)z : -1;
+}
+
+PortFast3dReadbacks port_fast3d_readbacks() {
+    PortFast3dReadbacks r;
+    if (sState != nullptr) {
+        const auto& st = sState->gfx->mReadbackStats;
+        r.colorReads = st.colorReads;
+        r.colorUs = st.colorUs;
+        r.depthReads = st.depthReads;
+        r.depthUs = st.depthUs;
+        r.depthPixels = st.depthPixels;
+        r.shaders = sState->gfx->mShaderStats.built;
+        r.shaderUs = sState->gfx->mShaderStats.us;
+    }
+    return r;
 }
 
 void port_fast3d_end_frame() {

@@ -100,6 +100,33 @@ struct PadInject {
     bool sent;
 };
 
+/* PORT_PERF=1 / [debug] perf = 1 / F3 (plan 33): where the main loop's time goes, once a second on stderr (1080.log
+ * on macOS, Windows and Android), and every loop iteration over 50 ms with its breakdown. The host sees the
+ * loop through its entry points: port_native_poll starts an iteration (host_poll_events), the game simulates
+ * until port_native_frame (render + present; once per step, several when the loop catches up), then
+ * port_native_idle and the loop's sleep until the next poll. */
+struct PerfAcc {
+    double sim = 0, queue = 0, depthNow = 0, render = 0, rb = 0, present = 0, idle = 0, events = 0, shader = 0;
+    double simMax = 0, renderMax = 0, presentMax = 0, iterMax = 0, busyMax = 0;
+    uint32_t steps = 0, presented = 0, depthNowN = 0, rbColor = 0, rbDepth = 0, iters = 0, spikes = 0, catchUp = 0;
+    uint32_t shaders = 0, skipped = 0;
+};
+struct Perf {
+    bool on = false;
+    double iterStart = 0;   /* this iteration's port_native_poll */
+    double gameSince = 0;   /* control went back to the game (simulation runs from here) */
+    double idleSince = 0;   /* port_native_idle: the loop's wait began */
+    double secStart = 0, startT = 0;
+    uint32_t flow = 0, step = 0, iterSteps = 0;
+    PerfAcc it, sec;
+    PortFast3dReadbacks rb0;
+    uint32_t underruns0 = 0, trimmed0 = 0, overruns0 = 0;
+    uint64_t totalSteps = 0, totalSpikes = 0;
+    double worstIter = 0;
+    uint32_t worstStep = 0;
+};
+Perf sPerf;
+
 struct Host {
     bool black = false; /* osViBlack (port_native_black) */
     uint8_t* block = nullptr;
@@ -125,7 +152,12 @@ struct Host {
     bool pngInterp = false;
     bool paced = false;   /* the main loop calls port_native_idle (real-time play): frames are spread over it */
     bool pending = false; /* the step's frame is drawn (read-backs answered) but not presented yet */
+    bool realtime = false;      /* the main loop paces itself (it calls port_native_idle) */
+    bool swapPending = false;   /* the step's frame is drawn but not swapped yet (swap_pending) */
+    bool swapEveryStep = false; /* PORT_NATIVE_SWAP_EVERY_STEP=1: swap each step at once, as before plan 33 */
+    uint32_t skippedSwaps = 0;
     uint32_t interpFrames = 0, presented = 0;
+    bool asyncReadbacks = true;
 };
 Host* sHost;
 
@@ -180,9 +212,15 @@ int frames_per_step() {
     return fps > 30 ? std::max(1, (int)lround(fps / 30.0)) : 1;
 }
 
+void perf_set(bool on);
+
 void pump(Host& h) {
     live_pump(h.win, h.in, h.lastStep);
     h.in.pollJoystick();
+    if (h.in.perfToggle) {
+        h.in.perfToggle = false;
+        perf_set(!sPerf.on);
+    }
     if (h.in.quit) {
         __atomic_store_n(&h.H->quit, 1, __ATOMIC_RELEASE);
     }
@@ -216,6 +254,137 @@ std::string summary(const std::vector<float>& v, float over) {
     std::snprintf(b, sizeof(b), "mean %.2f / p50 %.2f / p95 %.2f / p99 %.2f / max %.1f ms, %u > %.0f ms",
                   v.empty() ? 0.0 : sum / (double)v.size(), pct(v, 0.5), pct(v, 0.95), pct(v, 0.99), mx, n, over);
     return b;
+}
+
+void perf_take_readbacks(PerfAcc& a) {
+    const PortFast3dReadbacks r = port_fast3d_readbacks();
+    a.rbColor += (uint32_t)(r.colorReads - sPerf.rb0.colorReads);
+    a.rbDepth += (uint32_t)(r.depthReads - sPerf.rb0.depthReads);
+    a.rb += (double)((r.colorUs - sPerf.rb0.colorUs) + (r.depthUs - sPerf.rb0.depthUs)) / 1000.0;
+    a.shaders += (uint32_t)(r.shaders - sPerf.rb0.shaders);
+    a.shader += (double)(r.shaderUs - sPerf.rb0.shaderUs) / 1000.0;
+    sPerf.rb0 = r;
+}
+
+void perf_add(PerfAcc& d, const PerfAcc& a) {
+    d.sim += a.sim;
+    d.queue += a.queue;
+    d.depthNow += a.depthNow;
+    d.render += a.render;
+    d.rb += a.rb;
+    d.present += a.present;
+    d.idle += a.idle;
+    d.events += a.events;
+    d.shader += a.shader;
+    d.shaders += a.shaders;
+    d.skipped += a.skipped;
+    d.simMax = std::max(d.simMax, a.simMax);
+    d.renderMax = std::max(d.renderMax, a.renderMax);
+    d.presentMax = std::max(d.presentMax, a.presentMax);
+    d.steps += a.steps;
+    d.presented += a.presented;
+    d.depthNowN += a.depthNowN;
+    d.rbColor += a.rbColor;
+    d.rbDepth += a.rbDepth;
+}
+
+void perf_set(bool on) {
+    Perf& p = sPerf;
+    if (on == p.on) {
+        return;
+    }
+    p.on = on;
+    live_audio_perf_enable(on);
+    p.it = PerfAcc();
+    p.sec = PerfAcc();
+    p.rb0 = port_fast3d_readbacks();
+    p.secStart = p.iterStart = live_now_s();
+    if (p.startT == 0) {
+        p.startT = p.secStart;
+    }
+    p.gameSince = p.idleSince = 0;
+    const LiveAudioPerf a = live_audio_perf(true);
+    p.underruns0 = a.underruns;
+    p.trimmed0 = a.trimmedMs;
+    p.overruns0 = a.overruns;
+    std::fprintf(stderr, "perf: %s (PORT_PERF=1 or [debug] perf = 1 in the settings; F3 toggles)\n", on ? "on" : "off");
+}
+
+/* the iteration that began at p.iterStart ended at t (the next poll) */
+void perf_iteration_end(double t) {
+    Perf& p = sPerf;
+    PerfAcc& a = p.it;
+    const double iter = (t - p.iterStart) * 1000.0;
+    if (p.idleSince != 0) {
+        a.idle += (t - p.idleSince) * 1000.0;
+    } else if (p.gameSince != 0) {
+        a.sim += (t - p.gameSince) * 1000.0; /* the game ran to this poll without a frame */
+    }
+    const double busy = iter - a.idle;
+    if (iter > 50.0) {
+        a.spikes++;
+        p.totalSpikes++;
+        const LiveAudioPerf au = live_audio_perf(false);
+        std::fprintf(stderr,
+                     "perf: SLOW %.1f ms at step %u flow %u,%u,%u: %u steps, sim %.1f (queue %.1f, depth-now %u x = %.1f), "
+                     "render %.1f (read-backs %u colour + %u depth = %.1f, %u new shaders = %.1f), present %.1f (%u), wait %.1f, "
+                     "events %.1f; "
+                     "audio ring %u ms, output %d ms\n",
+                     iter, p.step, p.flow >> 16 & 0xFF, p.flow >> 8 & 0xFF, p.flow & 0xFF, a.steps,
+                     a.sim, a.queue, a.depthNowN, a.depthNow, a.render, a.rbColor, a.rbDepth, a.rb, a.shaders, a.shader, a.present, a.presented,
+                     a.idle, a.events, au.ringMs, au.queuedMs);
+    }
+    if (iter > p.worstIter) {
+        p.worstIter = iter;
+        p.worstStep = p.step;
+    }
+    a.catchUp += a.steps > 1;
+    PerfAcc& S = p.sec;
+    perf_add(S, a);
+    S.iterMax = std::max(S.iterMax, iter);
+    S.busyMax = std::max(S.busyMax, busy);
+    S.spikes += a.spikes;
+    S.catchUp += a.catchUp;
+    S.iters++;
+    p.it = PerfAcc();
+    p.gameSince = p.idleSince = 0;
+    if (t - p.secStart >= 1.0) {
+        const double secs = t - p.secStart;
+        const LiveAudioPerf au = live_audio_perf(true);
+        const double n = std::max(1u, S.steps);
+        std::fprintf(stderr,
+                     "perf: %.0f s step %u flow %u,%u,%u: %.1f steps/s, %.1f frames/s (%u not shown), %u iterations (%u caught up, %u > 50 ms, "
+                     "max %.1f, busy max %.1f) | sim %.1f / %.1f | queue %.2f | depth-now %u = %.1f ms | render %.1f / %.1f | "
+                     "read-backs %u colour + %u depth = %.1f ms | shaders %u = %.1f ms | present %.1f / %.1f | wait %.1f ms/s | events %.1f ms/s | "
+                     "audio %s ring %u ms, output %d ms, dry max %.0f ms, write max %.0f ms, underruns +%u, trimmed +%u ms, "
+                     "game overruns +%u\n",
+                     t - p.startT, p.step, p.flow >> 16 & 0xFF, p.flow >> 8 & 0xFF, p.flow & 0xFF, S.steps / secs, S.presented / secs, S.skipped, S.iters,
+                     S.catchUp, S.spikes, S.iterMax, S.busyMax, S.sim / n, S.simMax, S.queue / n, S.depthNowN, S.depthNow,
+                     S.render / n, S.renderMax, S.rbColor, S.rbDepth, S.rb, S.shaders, S.shader, S.present / std::max(1u, S.presented), S.presentMax,
+                     S.idle / secs, S.events / secs, au.output, au.ringMs, au.queuedMs, au.dryMaxMs, au.putMaxMs,
+                     au.underruns - p.underruns0, au.trimmedMs - p.trimmed0, au.overruns - p.overruns0);
+        p.underruns0 = au.underruns;
+        p.trimmed0 = au.trimmedMs;
+        p.overruns0 = au.overruns;
+        p.totalSteps += S.steps;
+        S = PerfAcc();
+        p.secStart = t;
+    }
+}
+
+/* plan 33: the last frame's read-backs into the reply (the GPU has had the whole wait since the frame for them) */
+void complete(Host& h) {
+    PortFast3dStep st;
+    if (!port_fast3d_complete(&st)) {
+        return;
+    }
+    h.depthFar += st.depthFar;
+    h.depthNear += st.depthNear;
+    h.colorServed += st.colorServed;
+    if (h.fbLog && (st.depthFar + st.depthNear + st.colorServed) != 0) {
+        std::printf("native: step %u answered: depth far %u near %u other %u, colour %u\n", st.step, st.depthFar,
+                    st.depthNear, st.depthOther, st.colorServed);
+    }
 }
 
 /* a setting the menu changed that applies now (settings_menu.h onApply) */
@@ -336,6 +505,9 @@ extern "C" unsigned port_native_open(void) {
     h->wapi = new LiveWindow(&h->win);
     h->wapi->mSwap = true;
     port_fast3d_init_window(h->wapi, h->win.w, h->win.h);
+    /* plan 33: the frame's read-backs finish while the game waits for its next step, not in the step */
+    h->asyncReadbacks = !(env("PORT_READBACK_SYNC") && std::strcmp(env("PORT_READBACK_SYNC"), "0") != 0);
+    port_fast3d_async_readbacks(h->asyncReadbacks);
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
     h->win.swap();
@@ -406,10 +578,14 @@ extern "C" unsigned port_native_open(void) {
         h->menu.onApply = [h](const char* field) { apply_setting(*h, field); };
     }
     h->fbLog = env("PORT_NATIVE_FB_LOG") != nullptr;
+    h->swapEveryStep = env("PORT_NATIVE_SWAP_EVERY_STEP") != nullptr && std::strcmp(env("PORT_NATIVE_SWAP_EVERY_STEP"), "0") != 0;
     h->pngInterp = env("PORT_NATIVE_PNG_INTERP") != nullptr && std::strcmp(env("PORT_NATIVE_PNG_INTERP"), "0") != 0;
     port_fast3d_interp_log(env("PORT_INTERP_LOG") != nullptr);
     h->secStart = live_now_s();
     sHost = h;
+    if (cfg->perf) {
+        perf_set(true);
+    }
     std::printf("native: in-process host: window %ux%u, audio %s, block at %p\n", h->win.w, h->win.h,
                 ao.mute ? "muted" : "on", (void*)h->block);
     std::printf("native: settings %s (%s)%s\n", port_settings_path(), haveFile ? "read" : "none: the defaults",
@@ -422,6 +598,11 @@ extern "C" int port_native_task(unsigned root, unsigned rq, unsigned imgs, int m
     if (sHost == nullptr) {
         return 0;
     }
+    const double t0 = sPerf.on ? live_now_s() : 0;
+    complete(*sHost); /* before the game takes the reply (port_live_fb_apply, after this task) */
+    if (sPerf.on) {
+        perf_take_readbacks(sPerf.it);
+    }
     const FbRequestsX32* r = (const FbRequestsX32*)port_gptr(rq);
     if (r != nullptr) {
         for (int i = 0; i < r->nColor && i < PORT_FB_MAX_COLOR; i++) {
@@ -431,7 +612,11 @@ extern "C" int port_native_task(unsigned root, unsigned rq, unsigned imgs, int m
             port_fast3d_ask_depth(r->depthImg[i], (uint32_t)r->depthIdx[i]);
         }
     }
-    return port_fast3d_queue(root, (uint32_t*)port_gptr(imgs), maxImgs);
+    const int n = port_fast3d_queue(root, (uint32_t*)port_gptr(imgs), maxImgs);
+    if (sPerf.on) {
+        sPerf.it.queue += (live_now_s() - t0) * 1000.0;
+    }
+    return n;
 }
 
 extern "C" void port_native_invalidate(unsigned addr, unsigned size) {
@@ -451,13 +636,51 @@ extern "C" void port_native_black(int black) {
 }
 
 extern "C" int port_native_depth(unsigned img, unsigned idx) {
-    return sHost == nullptr ? -1 : port_fast3d_depth_now(img, idx);
+    if (sHost == nullptr) {
+        return -1;
+    }
+    if (!sPerf.on) {
+        return port_fast3d_depth_now(img, idx);
+    }
+    const double t0 = live_now_s();
+    const int z = port_fast3d_depth_now(img, idx);
+    sPerf.it.depthNow += (live_now_s() - t0) * 1000.0;
+    sPerf.it.depthNowN++;
+    PerfAcc counted; /* its read-back is counted here, not in the next frame's */
+    perf_take_readbacks(counted);
+    return z;
 }
 
 namespace {
 
+/* the window's back buffer to the screen */
+void swap(Host& h) {
+    h.swapPending = false;
+    const double t0 = sPerf.on ? live_now_s() : 0;
+    port_fast3d_end_frame(); /* -> LiveWindow::SwapBuffersEnd -> eglSwapBuffers */
+    if (sPerf.on) {
+        const double ms = (live_now_s() - t0) * 1000.0;
+        sPerf.it.present += ms;
+        sPerf.it.presentMax = std::max(sPerf.it.presentMax, ms);
+        sPerf.it.presented++;
+    }
+    h.presented++;
+    h.secFrames++;
+}
+
+/* plan 33: real-time play swaps the step's frame when the main loop is done stepping (port_native_idle, or the next
+ * poll when it is behind). A loop catching up runs several steps back to back; each is drawn as before (its
+ * read-backs answered), but only the last is swapped, as the N64's VI shows only the last of several frames drawn
+ * within one of its frames: a swap can block (WSLg: 5-15 ms), and swapping every caught-up step made the catch-up
+ * itself slow, so the loop fell behind again. */
+void swap_pending(Host& h) {
+    if (h.swapPending) {
+        swap(h);
+    }
+}
+
 /* show the frame drawn last: osViBlack, the PNG, present */
-void present(Host& h, uint32_t step, int sub) {
+void present(Host& h, uint32_t step, int sub, bool deferSwap = false) {
     if (h.black) {
         /* osViBlack (plan 22.5): the VI outputs black while the RDP goes on drawing, so the frame is drawn
          * (its read-backs answered) and the window cleared over it. The faders blank the screen between
@@ -470,9 +693,17 @@ void present(Host& h, uint32_t step, int sub) {
     if ((sub == 0 || h.pngInterp) && png_wanted(h, step)) {
         write_window_png(h, step, sub);
     }
-    port_fast3d_end_frame(); /* -> LiveWindow::SwapBuffersEnd -> eglSwapBuffers */
-    h.presented++;
-    h.secFrames++;
+    if (deferSwap) {
+        if (h.swapPending) {
+            h.skippedSwaps++; /* the step before was never shown: the loop is catching up */
+            if (sPerf.on) {
+                sPerf.it.skipped++;
+            }
+        }
+        h.swapPending = true;
+        return;
+    }
+    swap(h);
 }
 
 /* PORT_FPS: draw and present the frames between the previous step and this one (sub 1 .. k - 1 of k) */
@@ -494,14 +725,34 @@ extern "C" void port_native_frame(unsigned step) {
         return;
     }
     const double t0 = live_now_s();
+    Perf& P = sPerf;
+    if (P.on) {
+        if (P.gameSince != 0) {
+            const double ms = (t0 - P.gameSince) * 1000.0;
+            P.it.sim += ms;
+            P.it.simMax = std::max(P.it.simMax, ms);
+        }
+        P.step = step;
+        P.it.steps++;
+    }
     uint32_t vx, vy, vw, vh;
     view(*h, &vx, &vy, &vw, &vh);
     PortFast3dStep st;
     h->lastStep = step;
     h->pending = false;
-    if (!port_fast3d_step(vx, vy, vw, vh, h->reply, step, h->seq++, &st)) {
+    const bool drew = port_fast3d_step(vx, vy, vw, vh, h->reply, step, h->seq++, &st);
+    if (P.on) {
+        const double ms = (live_now_s() - t0) * 1000.0;
+        P.it.render += ms;
+        P.it.renderMax = std::max(P.it.renderMax, ms);
+        perf_take_readbacks(P.it);
+    }
+    if (!drew) {
         h->empty++;
         pump(*h);
+        if (P.on) {
+            P.gameSince = live_now_s();
+        }
         return;
     }
     const int k = frames_per_step();
@@ -515,7 +766,7 @@ extern "C" void port_native_frame(unsigned step) {
                 present_interp(*h, step, i, k);
             }
         } else {
-            present(*h, step, 0);
+            present(*h, step, 0, h->realtime && !h->swapEveryStep);
         }
     }
     const double t1 = live_now_s();
@@ -550,6 +801,9 @@ extern "C" void port_native_frame(unsigned step) {
         }
     }
     pump(*h);
+    if (P.on) {
+        P.gameSince = live_now_s();
+    }
     if (t1 - h->secStart >= 1.0) {
         char title[160];
         std::snprintf(title, sizeof(title), "1080 Snowboarding (native) - step %u - %u fps", step, h->secFrames);
@@ -562,6 +816,13 @@ extern "C" void port_native_frame(unsigned step) {
 extern "C" int port_native_idle(unsigned us) {
     Host* h = sHost;
     const int k = frames_per_step();
+    if (h != nullptr) {
+        h->realtime = true;
+        swap_pending(*h);
+    }
+    if (sPerf.on && h != nullptr) {
+        sPerf.idleSince = live_now_s();
+    }
     if (h == nullptr || k <= 1) {
         return 0;
     }
@@ -603,7 +864,19 @@ extern "C" int port_native_poll(void) {
     if (h == nullptr) {
         return 0;
     }
+    swap_pending(*h); /* the loop was behind: it did not wait (port_native_idle) */
+    if (sPerf.on) {
+        const double t = live_now_s();
+        if (sPerf.iterStart != 0) {
+            perf_iteration_end(t);
+        }
+        sPerf.iterStart = t;
+    }
     pump(*h);
+    if (sPerf.on) {
+        sPerf.it.events += (live_now_s() - sPerf.iterStart) * 1000.0;
+        sPerf.gameSince = live_now_s();
+    }
     return __atomic_load_n(&h->H->quit, __ATOMIC_ACQUIRE) != 0;
 }
 
@@ -612,6 +885,8 @@ extern "C" void port_native_close(void) {
     if (h == nullptr) {
         return;
     }
+    complete(*h);
+    swap_pending(*h);
     std::string a = live_audio_status();
     if (a.size() > 2 && a.compare(0, 2, ", ") == 0) {
         a.erase(0, 2);
@@ -642,6 +917,10 @@ extern "C" void port_native_close(void) {
                 "answers far %u / near %u, %u colour images\n", h->frames, h->empty, h->unresolved, h->rtt, h->depthFar,
                 h->depthNear, h->colorServed);
     std::printf("native: render %s\n", summary(h->renderMs, 33.3f).c_str());
+    if (h->skippedSwaps != 0) {
+        std::printf("native: %u caught-up steps drawn but not shown (only the last of a catch-up is swapped)\n",
+                    h->skippedSwaps);
+    }
     std::printf("native: frame interval %s\n", summary(h->stepMs, 50.0f).c_str());
     if (frames_per_step() > 1) {
         uint32_t f, c, sm, sv, lr;
@@ -651,5 +930,14 @@ extern "C" void port_native_close(void) {
                     port_settings()->fps, h->presented, f, c, sm, sv, lr);
     }
     std::printf("native: audio %s\n", a.c_str());
+    if (sPerf.on) {
+        std::fprintf(stderr, "perf: total %llu steps, %llu iterations over 50 ms, the worst %.1f ms at step %u\n",
+                     (unsigned long long)sPerf.totalSteps, (unsigned long long)sPerf.totalSpikes, sPerf.worstIter,
+                     sPerf.worstStep);
+    }
     std::fflush(stdout);
+}
+
+extern "C" void port_native_flow(unsigned flow) {
+    sPerf.flow = flow;
 }

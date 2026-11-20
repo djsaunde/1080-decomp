@@ -57,7 +57,16 @@ int port_fast3d_depth_now(uint32_t img, uint32_t idx);
 struct PortFast3dStep {
     uint32_t tasks = 0, rttTasks = 0, unresolved = 0;
     uint32_t depthFar = 0, depthNear = 0, depthOther = 0, colorServed = 0;
+    uint32_t step = 0; /* port_fast3d_complete: the step answered */
 };
+/* plan 33: asynchronous read-backs (the native host; off by default). The step's Run then only queues the copies of
+ * the requested colour images and depth pixels, and port_fast3d_complete answers them into the reply: call it before
+ * the game takes the reply (its next task) and before anything else reads the frame back. The answers are the
+ * same and reach the game at the same step; the GPU finishes the copies meanwhile instead of the CPU waiting for it
+ * at once, a full pipeline flush each time on GL over D3D12 / Metal. */
+void port_fast3d_async_readbacks(bool on);
+/* the last frame's answers into its reply, if not yet (counted into st); false if there were none pending */
+bool port_fast3d_complete(PortFast3dStep* st);
 /* draw the queued tasks as one frame into the viewport (x, y from the window's top-left); answer the
  * requests into reply (may be null, stamped with step / seq). false: nothing was queued */
 bool port_fast3d_step(uint32_t vx, uint32_t vy, uint32_t vw, uint32_t vh, LiveFbReply* reply, uint32_t step,
@@ -71,3 +80,9 @@ void port_fast3d_interp_stats(uint32_t* frames, uint32_t* cuts, uint32_t* snappe
 void port_fast3d_interp_log(bool on);
 /* EndFrame: the window backend presents */
 void port_fast3d_end_frame();
+/* PORT_PERF (plan 33): the read-backs that waited for the GPU so far (LUS Interpreter::mReadbackStats) */
+struct PortFast3dReadbacks {
+    uint64_t colorReads = 0, colorUs = 0, depthReads = 0, depthUs = 0, depthPixels = 0;
+    uint64_t shaders = 0, shaderUs = 0; /* shader programs built (Interpreter::mShaderStats) */
+};
+PortFast3dReadbacks port_fast3d_readbacks();
