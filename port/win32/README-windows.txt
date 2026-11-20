@@ -21,6 +21,8 @@ Keys (rebindable: F1)
   C buttons   I J K L (up left down right)
   D-pad       T F G H (up left down right)
   F1 settings menu   F11 or Alt+Enter fullscreen   Esc quit
+  F3 perf log on / off: once a second a "perf:" line goes to 1080.log (where the time goes, for a bug
+     report about slow or choppy play; [debug] perf = 1 in 1080.ini turns it on from the start)
 
 Gamepads (XInput pads and the DirectInput pads SDL knows; up to 4)
   Left stick = stick, A = A, B / X = B, Y = C-up, LB / LT = Z, RB / RT = R, Back = L, Start = START,
