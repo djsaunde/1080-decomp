@@ -19,6 +19,7 @@ typedef struct ReplayInput {
 static FILE *sRecord;
 static FILE *sState;
 static int sRiderX; /* PORT_TRACE_RIDERX: the i<n>= rider input / handicap fields */
+int port_trace_map; /* PORT_TRACE_MAP: the mp= CourseGadget fields (plan 35; read by the game's collector) */
 static ReplayInput *sReplay;
 static u32 sReplayCount;
 static u32 sReplayPos;
@@ -111,6 +112,7 @@ int port_trace_open(const char *recordPath, const char *replayPath, const char *
         }
         setvbuf(sState, NULL, _IOLBF, 0); /* a crash keeps every frame's line */
         sRiderX = getenv("PORT_TRACE_RIDERX") != NULL && getenv("PORT_TRACE_RIDERX")[0] == '1';
+        port_trace_map = getenv("PORT_TRACE_MAP") != NULL && getenv("PORT_TRACE_MAP")[0] == '1';
         fprintf(sState, "# 1080 port state trace v1 (port/trace.h)\n");
     }
     if (replayPath != NULL && load_replay(replayPath) != 0) {
@@ -458,6 +460,10 @@ void port_trace_frame_end(u32 frameCount) {
     if (f.have & PORT_TRACE_HAVE_MGR) {
         fprintf(sState, " ml=%d,%d,%d,%d,%d", (int)f.mgrRetries, (int)f.mgrIdx, (int)f.mgrCount, (int)f.mgrCourse,
                 (int)f.mgrRider);
+    }
+    if (f.have & PORT_TRACE_HAVE_MAP) {
+        fprintf(sState, " mp=%x,%08x,%08x,%d,%d,%d,%d", (unsigned)f.mapFlags, fbits(f.mapMarker[0]),
+                fbits(f.mapMarker[1]), (int)f.pinPx[0][0], (int)f.pinPx[0][1], (int)f.pinPx[1][0], (int)f.pinPx[1][1]);
     }
     if (f.have & PORT_TRACE_HAVE_LESSON) {
         fprintf(sState, " trn=%d", (int)f.lesson);

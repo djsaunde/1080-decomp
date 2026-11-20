@@ -7995,6 +7995,7 @@ void *game_ItemType_create_00011A94(int *arg0) {
 #include "gdl/race.h"
 #include "game/trnproc.h"
 #include "game/modeproc.h"
+#include "gdl/gadget.h"
 #include "port_game.h"
 #include "../../port/trace.h"
 #include "../../port/uso/port_uso.h"
@@ -8138,6 +8139,19 @@ void port_trace_collect(PortTraceFrame *f) {
                 f->numRiders++;
             }
             f->have |= PORT_TRACE_HAVE_RIDERS;
+        }
+        if (port_trace_map && PORT_TRACE_PTR((u32)dm->course)) {
+            /* the race map (plan 35): the pins as CourseGadget_display (game_libs_o2_2B94.c) places them */
+            CourseGadget *cg = (CourseGadget *)(unsigned long)(u32)dm->course;
+            f32 h = (f32)cg->parms.my1.value - (f32)cg->parms.my0.value;
+            f->mapFlags = cg->arg1;
+            f->mapMarker[0] = cg->marker[1][0];
+            f->mapMarker[1] = cg->marker[1][1];
+            for (i = 0; i < 2; i++) {
+                f->pinPx[i][0] = (s32)(h * ((cg->marker[i][0] - cg->originX) / cg->extent));
+                f->pinPx[i][1] = (s32)(h * ((cg->marker[i][1] - cg->originZ) / cg->extent));
+            }
+            f->have |= PORT_TRACE_HAVE_MAP;
         }
     }
     game = flow->game;

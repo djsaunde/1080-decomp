@@ -28,6 +28,8 @@
  *     entries[0]'s "chk" gates still ahead, the next one's x / z; fork = entries[0].gateA, the next
  *     "gtl" / "gtr" slalom gate: cleared on its left when forkFlags & 1, else on its right
  *     (RaceTracker_passGates); 0 when none: include/game/course.h RaceGate)
+ *     [mp=<flags:hex>,<cpu x:hex8>,<cpu z:hex8>,<pin0 px x>,<pin0 px y>,<pin1 px x>,<pin1 px y>]
+ *     (only with PORT_TRACE_MAP=1: the race map's CourseGadget, PORT_TRACE_HAVE_MAP)
  *     [trn=<lesson>]  (Training, flow mode 7: TrnDataManager.lesson, the current lesson's TrickTable index)
  *     [scr=<hash:hex8>]  (only with PORT_TRACE_SCREEN=1: the step's gfx tasks' display-list content hash,
  *     pointer-free (dlump_screen_hash), 0 when no task ran; soak.py's screen-level stuck detector)
@@ -52,6 +54,7 @@
 #define PORT_TRACE_HAVE_TRICK 0x100  /* rider 0's RiderAnim trick input / trick (tk=) */
 #define PORT_TRACE_HAVE_LESSON 0x400 /* Training: TrnDataManager.lesson (trn=) */
 #define PORT_TRACE_HAVE_MGR 0x800    /* Match Race: MgrCourseList retries / idx / count / course / rider (ml=) */
+#define PORT_TRACE_HAVE_MAP 0x1000   /* the CourseGadget's CPU pin (mp=; PORT_TRACE_MAP=1) */
 #define PORT_TRACE_HAVE_GATES 0x200  /* DataManager score / countdown and entries[0]'s next gate (cd=) */
 
 #define PORT_TRACE_MAX_RIDERS 4
@@ -114,6 +117,13 @@ typedef struct PortTraceFrame {
     f32 forkZ;
     s32 forkFlags;
     s32 lesson;     /* PORT_TRACE_HAVE_LESSON: TrnDataManager.lesson (game/trnproc.h) */
+    /* PORT_TRACE_HAVE_MAP (only with PORT_TRACE_MAP=1, plan 35): the race HUD's CourseGadget
+     * (RaceTracker.course): flags (ctor arg 1), marker[1] (the CPU / rider 1 pin's x / z inputs), and the
+     * pins' pixel offsets as CourseGadget_display computes them, (int)((my1 - my0) * ((v - origin) / extent)):
+     * pinPx[0] the player's (sp A4 / A0), pinPx[1] the CPU's (sp 9C / 98) */
+    s32 mapFlags;
+    f32 mapMarker[2];
+    s32 pinPx[2][2];
 } PortTraceFrame;
 
 /* Open the logs. Any path may be NULL. record: input log written;
@@ -133,6 +143,7 @@ void port_trace_frame_end(u32 frameCount);
  * (gInputMgr, the sys_randf state); the PORT game glue overrides it with one
  * that knows the race, rider and camera objects. */
 void port_trace_collect(PortTraceFrame *f);
+extern int port_trace_map; /* PORT_TRACE_MAP=1: collect PORT_TRACE_HAVE_MAP (plan 35) */
 
 /* PORT_TRACE_FN (cmake -DPORT_TRACE_FN=ON, plan 21.8): the game library is compiled with
  * -finstrument-functions and port/trace.c logs every function entry / exit of one frame
