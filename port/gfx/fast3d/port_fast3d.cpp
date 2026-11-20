@@ -1326,7 +1326,7 @@ int port_fast3d_depth_now(uint32_t img, uint32_t idx) {
     if (N.async) {
         /* plan 33: from the depth grid of the last frame (read back with it while a depth reader is active; on the
          * first read, now: one wait instead of one per pixel). The same pixel, the same value. */
-        N.depthUntil = N.frameNo + 60;
+        N.depthUntil = N.frameNo + 2; /* the step's reads also ask for the grid (N.depths); this covers a skipped step */
         if (N.gridFrame != N.frameNo) {
             s->gfx->ReadbackDepthGridNow();
             N.gridFrame = N.frameNo;
