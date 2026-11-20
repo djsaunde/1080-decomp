@@ -39,9 +39,27 @@ void port_posix_set_gui(const char *dataDir, void (*alertHook)(const char *text)
     sAlertHook = alertHook;
 }
 
-static int file_exists(const char *p) {
+/* a plausible N64 ROM: a regular file of at least 1 MB whose first word is a known header in any of the three
+ * dump byte orders (.z64 80 37 12 40, .v64 37 80 40 12, .n64 40 12 37 80). Rejects app bundles, folders and
+ * stray files, so a wrong pick in the dialog asks again instead of starting the game on it. */
+static int rom_ok(const char *p) {
+    unsigned char h[4];
     struct stat st;
-    return stat(p, &st) == 0 && S_ISREG(st.st_mode);
+    FILE *f;
+    int ok;
+    if (stat(p, &st) != 0 || !S_ISREG(st.st_mode) || st.st_size < 0x100000) {
+        return 0;
+    }
+    f = fopen(p, "rb");
+    if (f == NULL) {
+        return 0;
+    }
+    ok = fread(h, 1, 4, f) == 4 &&
+         ((h[0] == 0x80 && h[1] == 0x37 && h[2] == 0x12 && h[3] == 0x40) ||
+          (h[0] == 0x37 && h[1] == 0x80 && h[2] == 0x40 && h[3] == 0x12) ||
+          (h[0] == 0x40 && h[1] == 0x12 && h[2] == 0x37 && h[3] == 0x80));
+    fclose(f);
+    return ok;
 }
 
 static void mkdir_p(const char *dir) {
@@ -132,7 +150,11 @@ static int remembered(char *out, size_t n) {
     }
     fclose(f);
     out[strcspn(out, "\r\n")] = '\0';
-    return out[0] != '\0' && file_exists(out);
+    if (out[0] == '\0' || !rom_ok(out)) {
+        out[0] = '\0';
+        return 0;
+    }
+    return 1;
 }
 
 static void remember(const char *rom) {
@@ -157,7 +179,11 @@ static int dialog(char *out, size_t n) {
     ok = fgets(out, (int)n, p) != NULL;
     pclose(p);
     out[strcspn(out, "\r\n")] = '\0';
-    return ok && file_exists(out);
+    if (!ok || !rom_ok(out)) {
+        out[0] = '\0';
+        return 0;
+    }
+    return 1;
 #else
     (void)out, (void)n;
     return 0;
@@ -248,17 +274,22 @@ char **port_posix_launch(int argc, char **argv, int *argcOut) {
             sRom[0] = '\0';
             for (i = 0; i < nd && sRom[0] == '\0'; i++) {
                 snprintf(p, sizeof(p), "%s/baserom.z64", dirs[i]);
-                if (file_exists(p)) {
+                if (rom_ok(p)) {
                     snprintf(sRom, sizeof(sRom), "%s", p);
                 }
             }
             for (i = 0; i < nd && sRom[0] == '\0'; i++) {
-                if (!one_rom_in(dirs[i], sRom, sizeof(sRom))) {
+                if (!one_rom_in(dirs[i], sRom, sizeof(sRom)) || !rom_ok(sRom)) {
                     sRom[0] = '\0';
                 }
             }
-            if (sRom[0] == '\0' && dialog(sRom, sizeof(sRom))) {
-                remember(sRom);
+            for (i = 0; i < 3 && sRom[0] == '\0'; i++) {
+                if (dialog(sRom, sizeof(sRom))) {
+                    remember(sRom);
+                } else if (i < 2) {
+                    port_posix_alert("That is not an N64 ROM. Choose your 1080 Snowboarding ROM file (US 1.0; "
+                                     ".z64, .n64 or .v64), not the 1080 app.");
+                }
             }
         }
     }

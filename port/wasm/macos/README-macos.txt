@@ -7,14 +7,18 @@ First start
   1. Unzip 1080-pc-macos.zip. Move 1080.app wherever you like (Applications, or a folder of its own).
   2. The app is not signed with an Apple Developer ID, so macOS blocks the first double-click
      ("cannot be opened because the developer cannot be verified" / "is damaged"). Either:
-       - right-click (or Control-click) 1080.app, choose Open, then Open again in the dialog; or
-       - in Terminal:  xattr -dr com.apple.quarantine /path/to/1080.app
+       - macOS 15 (Sequoia) and later: click Done in the "Not Opened" dialog (NOT Move to Trash), open
+         System Settings > Privacy & Security, scroll to Security, click "Open Anyway" next to
+         '"1080" was blocked', and confirm with your password / Touch ID;
+       - macOS 14 and earlier: right-click (or Control-click) 1080.app, choose Open, then Open again; or
+       - in Terminal (any version):  xattr -dr com.apple.quarantine /path/to/1080.app
      You only do this once.
   3. Give it your ROM, one of:
        - put it next to 1080.app (in the same folder) as baserom.z64 (.n64 / .v64 dumps work too; if it is the
          only ROM in that folder, any name works);
        - or put it in ~/Library/Application Support/1080-pc/ (same rules);
        - or just open the app: it asks for the ROM with a file dialog and remembers the choice (rom-path.txt).
+         Pick the ROM file itself, not 1080.app; a file that is not an N64 ROM is refused and it asks again.
   The save (1080.sram), the settings (1080.ini) and the log (1080.log) go to
   ~/Library/Application Support/1080-pc/  (Finder: Go > Go to Folder..., paste that path).
 

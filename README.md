@@ -113,8 +113,9 @@ same struct layouts as the i386 build), translates it to C with WABT's `wasm2c`,
 the SDL2 / OpenGL 4.1 host (plan section 30). The `macOS port` workflow builds `1080.app` on a macos-15 runner and
 uploads it (zipped, with a README) as the `1080-pc-macos-arm64` artifact; it contains no ROM data.
 
-To play: unzip, right-click `1080.app` > Open the first time (or `xattr -dr com.apple.quarantine 1080.app`: the app
-is not notarized), and give it your US 1.0 ROM: `baserom.z64` next to the app, or in
+To play: unzip, and the first time allow it (the app is not notarized): on macOS 15+ click Done, then System
+Settings > Privacy & Security > Open Anyway; on 14 and earlier right-click `1080.app` > Open; on any version
+`xattr -dr com.apple.quarantine 1080.app`), and give it your US 1.0 ROM: `baserom.z64` next to the app, or in
 `~/Library/Application Support/1080-pc/`, or pick it in the file dialog it shows. Saves, `1080.ini` and `1080.log`
 live in that folder. Keys and pads as on Windows; `port/wasm/macos/README-macos.txt` is the player's README.
 
