@@ -144,6 +144,9 @@ void port_trace_frame_end(u32 frameCount);
  * that knows the race, rider and camera objects. */
 void port_trace_collect(PortTraceFrame *f);
 extern int port_trace_map; /* PORT_TRACE_MAP=1: collect PORT_TRACE_HAVE_MAP (plan 35) */
+/* PORT_TRACE_MGR_COURSES=a,b,...: the Match Race course list the collector writes (tests, plan 35); -1 = none */
+extern int port_trace_mgrCourses[6];
+extern int port_trace_mgrRiders[6]; /* PORT_TRACE_MGR_RIDERS (the opponents) */
 
 /* PORT_TRACE_FN (cmake -DPORT_TRACE_FN=ON, plan 21.8): the game library is compiled with
  * -finstrument-functions and port/trace.c logs every function entry / exit of one frame

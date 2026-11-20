@@ -20,6 +20,18 @@ static FILE *sRecord;
 static FILE *sState;
 static int sRiderX; /* PORT_TRACE_RIDERX: the i<n>= rider input / handicap fields */
 int port_trace_map; /* PORT_TRACE_MAP: the mp= CourseGadget fields (plan 35; read by the game's collector) */
+int port_trace_mgrCourses[6] = { -1, -1, -1, -1, -1, -1 }; /* PORT_TRACE_MGR_COURSES (plan 35) */
+int port_trace_mgrRiders[6] = { -1, -1, -1, -1, -1, -1 };  /* PORT_TRACE_MGR_RIDERS (plan 35) */
+
+static void int_list(const char *c, int *out, int n) {
+    int k;
+    for (k = 0; k < n && c != NULL && *c != '\0'; k++) {
+        out[k] = (int)strtol(c, (char **)&c, 10);
+        while (*c == ',' || *c == ' ') {
+            c++;
+        }
+    }
+}
 static ReplayInput *sReplay;
 static u32 sReplayCount;
 static u32 sReplayPos;
@@ -113,6 +125,8 @@ int port_trace_open(const char *recordPath, const char *replayPath, const char *
         setvbuf(sState, NULL, _IOLBF, 0); /* a crash keeps every frame's line */
         sRiderX = getenv("PORT_TRACE_RIDERX") != NULL && getenv("PORT_TRACE_RIDERX")[0] == '1';
         port_trace_map = getenv("PORT_TRACE_MAP") != NULL && getenv("PORT_TRACE_MAP")[0] == '1';
+        int_list(getenv("PORT_TRACE_MGR_COURSES"), port_trace_mgrCourses, 6);
+        int_list(getenv("PORT_TRACE_MGR_RIDERS"), port_trace_mgrRiders, 6);
         fprintf(sState, "# 1080 port state trace v1 (port/trace.h)\n");
     }
     if (replayPath != NULL && load_replay(replayPath) != 0) {

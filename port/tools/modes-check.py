@@ -22,6 +22,13 @@ input script (port/host/*.input) and reads the --trace state.log (port/trace.h):
             records_reload.input in a NEW process on that file leaves it byte-identical; and the course
             map's marker inputs (the player's and the CPU rider's x / z) equal the real game's
             (port/tools/n64ref/map-golden.tsv, every 8th step of the race; plan 34)
+  matchlose match_race_lose.input (Match Race, a lost round: crashes, two ~20 s pauses, braking, standing still;
+            the CPU rider leads by up to 89 %, finishes first and waits at the goal; plan 35), with PORT_TRACE_MAP=1:
+            the course map's marker inputs equal the real game's (port/tools/n64ref/map-golden-lose.tsv, every 8th
+            race step outside the pauses), the map's CPU marker (mp=) is the CPU rider's x / z on every running race
+            step, and its pin (the pixel CourseGadget_display computes) never holds 300 steps (10 s) while the race
+            clock runs and the CPU rider is still racing.  Its holds of that length are the pauses and the wait at
+            the goal, as on the N64 (the user report of plan 35)
   options   options_save.input from a blank SRAM: the options record (SRAM 0x1F8, mirror 0x7FC8)
             holds the new settings (flags & 3 = 2 Mono, levels 9 / 7 / 8); options_reload.input in
             a NEW process on that file: BGM read back and stepped once more (levels 10 / 7 / 8)
@@ -48,6 +55,8 @@ REGEN = {
     'training': 'edit port/host/training.input (hop + grab windows; header comment)',
     'vs2p': 'edit port/host/vs2p.input (both pads ride straight; header comment); a golden mismatch is a port '
             'bug (plan 24) unless the script changed: then re-record port/tools/n64ref/vs2p-golden.py',
+    'matchlose': 'a golden mismatch with match_race_lose.input unchanged is a port bug (plan 35); a physics change '
+                 'that moves the riders: re-run n64ref and port/tools/n64ref/map-golden.py (map-golden-lose.tsv header)',
     'options': 'edit port/host/options_save.input / options_reload.input (menu steps; header comments)',
 }
 
@@ -56,7 +65,7 @@ def f32(h):
     return struct.unpack('>f', bytes.fromhex(h))[0]
 
 
-def run(a, name, script, frames, sram=None):
+def run(a, name, script, frames, sram=None, env_add=None):
     d = os.path.join(a.outdir, name)
     os.makedirs(d, exist_ok=True)
     sram = sram or os.path.join(d, '1080.sram')
@@ -64,6 +73,7 @@ def run(a, name, script, frames, sram=None):
             os.path.join(HOST, script), '--frames', str(frames), '--trace', os.path.join(d, 'state.log'),
             '--sram', sram]
     env = dict(os.environ)
+    env.update(env_add or {})
     if name == 'match' and a.gfx_steps:  # the build64 gate compares the Select Level screen's gfx (run 872)
         env.update(PORT_GFX_DUMP=os.path.join(d, 'gfx'), PORT_GFX_DUMP_STEPS=a.gfx_steps)
     with open(os.path.join(d, 'run.log'), 'w') as fh:
@@ -172,14 +182,15 @@ def vs2p_vs_n64(log):
 
 
 MAP_GOLDEN = os.path.join(HERE, 'n64ref', 'map-golden.tsv')
+MAP_GOLDEN_LOSE = os.path.join(HERE, 'n64ref', 'map-golden-lose.tsv')
 
 
-def map_vs_n64(log):
+def map_vs_n64(log, golden=MAP_GOLDEN):
     """(steps compared, first step whose course-map marker inputs differ from the N64's, or None): the player's
     and the CPU rider's x / z (r0= / r1=, which CourseGadget_setVec4 takes from RaceEntry.posX / progress each
     step) against port/tools/n64ref/map-golden.tsv (plan 34: the N64's CourseGadget markers, every 8th step)"""
     want = {}
-    for ln in lines(MAP_GOLDEN):
+    for ln in lines(golden):
         if ln and not ln.startswith('#'):
             f = ln.split()
             want[int(f[0])] = f[1:5]
@@ -272,6 +283,47 @@ def check_match(a):
         got, want[0], want[1], want[2], '' if mirror else ' MIRROR DIFFERS', rc2, 'unchanged' if same else 'CHANGED')
 
 
+def check_matchlose(a):
+    rc, log = run(a, 'matchlose', 'match_race_lose.input', end_of('match_race_lose.input', 6180),
+                  env_add={'PORT_TRACE_MAP': '1'})
+    nmap, badmap = map_vs_n64(log, MAP_GOLDEN_LOSE)
+    totalmap = sum(1 for ln in lines(MAP_GOLDEN_LOSE) if ln and not ln.startswith('#'))
+    # the running race steps (race state 1, the race clock el= advancing): the map's CPU marker is the CPU rider's
+    # x / z, and the CPU pin's longest hold while the CPU rider is still racing (entries[1].finished == 0)
+    prev_el, n, off, cpu_fin, goal = None, 0, None, None, None
+    hold, best, pin = 0, (0, None), None
+    for ln in lines(log):
+        m = re.match(r'F (\d+) .* race=1,.* el=(-?\d+) .* r1=([0-9a-f]{8}),[0-9a-f]{8},([0-9a-f]{8}),.* e0=([0-9a-f]{8}),'
+                     r'[0-9a-f]{8},(-?\d+),.* e1=[0-9a-f]{8},(-?\d+),.* mp=[0-9a-f]+,([0-9a-f]{8}),([0-9a-f]{8}),'
+                     r'-?\d+,-?\d+,(-?\d+),(-?\d+)', ln)
+        if not m:
+            continue
+        step, el = int(m.group(1)), m.group(2)
+        if el == prev_el:
+            continue   # paused: the race clock stands
+        prev_el = el
+        n += 1
+        if (m.group(8), m.group(9)) != (m.group(3), m.group(4)) and off is None:
+            off = step
+        if goal is None and int(m.group(6)) > 0:
+            goal = step
+        if int(m.group(7)) > 0:
+            cpu_fin = cpu_fin or step
+            continue
+        p = (m.group(10), m.group(11))
+        hold = hold + 1 if p == pin else 1
+        pin = p
+        if hold > best[0]:
+            best = (hold, step - hold + 1)
+    ok = (rc == 0 and badmap is None and nmap == totalmap and n > 0 and off is None and best[0] < 300
+          and cpu_fin is not None and goal is None)
+    return ok, 'rc %d; N64 map markers %d/%d steps%s; CPU marker = CPU x / z on %d running steps%s; longest CPU pin ' \
+        'hold while racing %d steps (from %s; limit 299); CPU finish %s, player %s (lost)' % (
+            rc, nmap, totalmap, '' if badmap is None else ', first differs at step %d' % badmap, n,
+            '' if off is None else ', first differs at step %d' % off, best[0], best[1], cpu_fin,
+            'never finished' if goal is None else 'finished at %d' % goal)
+
+
 def options_rec(path):
     try:
         b = open(path, 'rb').read()
@@ -308,12 +360,12 @@ def main():
     a = ap.parse_args()
     os.makedirs(a.outdir, exist_ok=True)
     checks = [('trick', check_trick), ('contest', check_contest), ('training', check_training),
-              ('vs2p', check_vs2p), ('match', check_match), ('options', check_options)]
+              ('vs2p', check_vs2p), ('match', check_match), ('matchlose', check_matchlose), ('options', check_options)]
     with ThreadPoolExecutor(a.jobs) as ex:
         res = list(ex.map(lambda c: (c[0],) + c[1](a), checks))
     fails = 0
     for name, ok, txt in res:
-        print('  %-8s %s  %s' % (name, 'ok  ' if ok else 'FAIL', txt))
+        print('  %-9s %s  %s' % (name, 'ok  ' if ok else 'FAIL', txt))
         if not ok:
             fails += 1
             print('           regenerate: %s (then re-run the gate)' % REGEN[name])

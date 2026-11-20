@@ -8025,6 +8025,20 @@ void port_trace_collect(PortTraceFrame *f) {
     f->randState = *(u32 *)PORT_RANDSTATE;
     f->retraceCount = port_game_retrace_count();
     f->have |= PORT_TRACE_HAVE_FLOW | PORT_TRACE_HAVE_RAND | PORT_TRACE_HAVE_RETRACE;
+    if ((port_trace_mgrCourses[0] >= 0 || port_trace_mgrRiders[0] >= 0) && flow->flowMode == 3 && PORT_TRACE_PTR(flow->flowProc)) {
+        /* PORT_TRACE_MGR_COURSES=a,b,... / PORT_TRACE_MGR_RIDERS=a,b,... (tests only, plan 35): the Match Race course
+         * list and opponents, so a race on a later level's course (6, 7: Expert) or against a boss starts without
+         * winning the rounds before it */
+        MgrCourseList *cl = ((ModeFlowProc *)flow->flowProc)->courseList;
+        if (PORT_TRACE_PTR(cl)) {
+            for (i = 0; i < 6 && port_trace_mgrCourses[i] >= 0; i++) {
+                cl->courses[i] = port_trace_mgrCourses[i];
+            }
+            for (i = 0; i < 6 && port_trace_mgrRiders[i] >= 0; i++) {
+                cl->riders[i] = port_trace_mgrRiders[i];
+            }
+        }
+    }
     if (!port_trace_raceLive()) {
         return;
     }

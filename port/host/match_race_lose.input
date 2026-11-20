@@ -1,0 +1,24 @@
+# Match Race, a lost round 1 (plan 35, port/tools: the CPU-pin hunt's seed 11, round 1): the player rides hard left
+# into the trees (crashes), pauses twice for ~20 s (START ... START), brakes, then stands still; the CPU rider leads
+# by up to 89 % of the course, finishes at ~5250 and waits at the goal, its map pin parked there until the end.
+# modes-check.py's matchlose check: the course map's marker inputs equal the N64's (port/tools/n64ref/
+# map-golden-lose.tsv, every 8th race step outside the pauses) and the map's CPU pin never holds 300 steps while
+# the race clock runs and the CPU rider is still racing.  Start from a blank SRAM.
+# END 6180
+PADS 1
+F 480:3 START          # title
+F 560:3 A              # English
+F 640:3 A              # Match Race (flow mode 3, MULTIGAMERACE)
+F 900:3 A              # Select Level: Normal
+F 1000:3 A             # Select Rider
+F 1100:3 A             # rider confirm
+F 1200:3 A             # Select Board
+F 1300:3 A             # board confirm -> race load (flow 2, 4); race state 1 at ~1501
+F 1500-2359 STICK -80,0
+F 2360-2362 START
+F 2949-2951 START
+F 3009-3241 STICK -80,-80
+F 3242-4078 STICK 0,-75
+F 4079-4081 START
+F 4638-4640 START
+F 4698-4968 STICK 0,-55
