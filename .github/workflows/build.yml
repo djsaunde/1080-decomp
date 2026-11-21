@@ -65,6 +65,57 @@ jobs:
           name: us_report
           path: report.json
 
+  linux-port:
+    runs-on: ubuntu-24.04
+
+    env:
+      LUS_TOOLS: ${{ github.workspace }}/build-linux/lus
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Linux port dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++ ninja-build libegl-dev libgl-dev libx11-dev libpulse-dev
+
+      - name: Fetch libultraship
+        run: bash port/gfx/fast3d/setup-lus.sh
+
+      - name: Build and package tenshoe
+        run: |
+          cmake -S port -B build-linux -G Ninja \
+                -DPORT_64=ON -DPORT_NATIVE=ON -DPORT_LINK=ON -DPORT_RUNTIME_BLOBS=ON \
+                -DPORT_LUS="$LUS_TOOLS" -DPORT_GL_DEV=/usr/include \
+                -DPORT_NATIVE_X11_DEV=/usr/include -DPORT_NATIVE_PULSE_DEV=/usr/include
+          cmake --build build-linux --target tenshoe -j"$(nproc)"
+
+          package=dist-linux/tenshoe-linux-x86_64
+          install -Dm755 build-linux/tenshoe "$package/tenshoe"
+          strip "$package/tenshoe"
+          install -Dm644 "$LUS_TOOLS/libultraship/LICENSE" "$package/licenses/libultraship/LICENSE"
+          install -Dm644 "$LUS_TOOLS/libultraship/src/fast/LICENSE.txt" "$package/licenses/libultraship/FAST3D-LICENSE.txt"
+          install -Dm644 "$LUS_TOOLS/prism/LICENSE" "$package/licenses/prism/LICENSE"
+          tar -C dist-linux -czf dist-linux/tenshoe-linux-x86_64.tar.gz tenshoe-linux-x86_64
+
+      - name: Check the packaged binary without a ROM
+        run: |
+          unpacked=$(mktemp -d)
+          tar -C "$unpacked" -xzf dist-linux/tenshoe-linux-x86_64.tar.gz
+          cd "$unpacked/tenshoe-linux-x86_64"
+          status=0
+          PORT_NATIVE=1 timeout 15s ./tenshoe --rom baserom.z64 --frames 1 > run.log 2>&1 || status=$?
+          cat run.log
+          test "$status" -eq 1
+          grep -Fq 'cannot read the ROM baserom.z64' run.log
+
+      - name: Upload Linux port
+        uses: actions/upload-artifact@v4
+        with:
+          name: tenshoe-linux-x86_64
+          path: dist-linux/tenshoe-linux-x86_64.tar.gz
+          if-no-files-found: error
+
   # The 32-bit Windows build of the PC port (port/, plan section 29): cross-compiled, no ROM needed (the
   # executable reads the user's ROM at run time). Independent of the matching build above.
   windows-port:

@@ -280,23 +280,15 @@ if(PORT_WIN32)
   set(_lus "${PORT_LUS}/libultraship")
   file(GLOB _prism_cpp "${PORT_LUS}/prism/src/prism/*.cpp" "${PORT_LUS}/prism/src/prism/utils/*.cpp")
   file(GLOB _prism_c "${PORT_LUS}/prism/src/prism/utils/*.c")
-  set(_shaders shaders/opengl/default.shader.glsl)
-  add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/win32gen/fast_shaders.inc
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/win32/embed-files.py ${_lus}/src/fast
-            ${CMAKE_CURRENT_BINARY_DIR}/win32gen/fast_shaders.inc ${_shaders}
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/win32/embed-files.py ${_lus}/src/fast/${_shaders}
-    COMMENT "Embedding libultraship's shaders" VERBATIM)
-  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/win32gen)
   add_library(port_native STATIC gfx/fast3d/native_host.cpp gfx/fast3d/live_window_sdl.cpp gfx/fast3d/live_audio.cpp
               settings.c input_map.c gfx/fast3d/settings_menu.cpp gfx/fast3d/menu_overlay_gl.cpp
               gfx/fast3d/port_fast3d.cpp gfx/fast3d/ship_shim.cpp gfx/replay/egl_png.c win32/win32_gl.c
-              ${CMAKE_CURRENT_BINARY_DIR}/win32gen/fast_shaders.inc
               ${_lus}/src/fast/interpreter.cpp ${_lus}/src/fast/backends/gfx_opengl.cpp
               ${_lus}/src/fast/debug/GfxDebugger.cpp ${_lus}/src/fast/resource/type/Texture.cpp
               ${_prism_cpp} ${_prism_c})
   target_include_directories(port_native PRIVATE gfx/fast3d/shim ${_lus}/include ${_lus}/include/fast ${_lus}/src
-                             ${PORT_LUS}/prism/src ${SDL2_MINGW}/include ${CMAKE_CURRENT_BINARY_DIR}/win32gen)
-  target_compile_definitions(port_native PRIVATE PORT_WIN32 PORT_SDL PORT_EMBED_SHADERS ENABLE_OPENGL SDL_MAIN_HANDLED
+                             ${PORT_LUS}/prism/src ${SDL2_MINGW}/include)
+  target_compile_definitions(port_native PRIVATE PORT_WIN32 PORT_SDL ENABLE_OPENGL SDL_MAIN_HANDLED
                              CVAR_MSAA_VALUE="gMSAAValue" CVAR_INTERNAL_RESOLUTION="gInternalResolution"
                              CVAR_Z_FIGHTING_MODE="gZFightingMode" LUS_FAST_DIR="${_lus}/src/fast")
   target_compile_options(port_native PRIVATE -O2 -msse2 -mfpmath=sse -w $<$<COMPILE_LANGUAGE:CXX>:-std=c++20>)
@@ -330,6 +322,19 @@ elseif(PORT_NATIVE)
                              LUS_FAST_DIR="${_lus}/src/fast")
   target_compile_options(port_native PRIVATE -O2 -fno-pie -w $<$<COMPILE_LANGUAGE:CXX>:-std=c++20>)
   target_compile_definitions(porthost PRIVATE PORT_GFX_NATIVE)
+endif()
+
+if(PORT_WIN32 OR PORT_NATIVE)
+  set(_shader shaders/opengl/default.shader.glsl)
+  set(_shader_inc "${CMAKE_CURRENT_BINARY_DIR}/fast_shaders.inc")
+  add_custom_command(OUTPUT "${_shader_inc}"
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/win32/embed-files.py ${_lus}/src/fast
+            "${_shader_inc}" "${_shader}"
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/win32/embed-files.py ${_lus}/src/fast/${_shader}
+    COMMENT "Embedding libultraship's shaders" VERBATIM)
+  target_sources(port_native PRIVATE "${_shader_inc}")
+  target_include_directories(port_native PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+  target_compile_definitions(port_native PRIVATE PORT_EMBED_SHADERS)
 endif()
 
 if(PORT_64)

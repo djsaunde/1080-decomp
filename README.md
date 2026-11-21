@@ -86,6 +86,22 @@ bash scripts/ghidra-decompile-func.sh __rmonClearBreak   # one-shot decomp
 
 Use Ghidra by trigger only (struct shape unknown, function family >3, stuck <50% fuzzy with structural unknowns) — m2c remains the default. See the `/decompile` skill for the trigger list.
 
+## PC port: Linux (x86-64)
+
+Download the `tenshoe-linux-x86_64` artifact from a successful [Build & Report](https://github.com/djsaunde/1080-decomp/actions/workflows/build.yml) run.
+Extract the archive, then put your US 1.0 ROM in the same directory as `tenshoe` and name it `baserom.z64`.
+The binary is built on Ubuntu 24.04 and reads the ROM at startup.
+It needs an X11 display (or Xwayland), EGL and an OpenGL driver. On Ubuntu, install `libx11-6`,
+`libegl1` and `libgl1`, plus `libgl1-mesa-dri` if you use Mesa.
+Install `libpulse0` for audio through PulseAudio or PipeWire's PulseAudio server.
+
+```bash
+PORT_NATIVE=1 ./tenshoe --rom baserom.z64 --realtime
+```
+
+Use **F1** for settings and control bindings, **F11** for fullscreen, and **Esc** to quit.
+The game writes `1080.sram` and `1080.ini` in the working directory.
+
 ## PC port: Windows
 
 `port/` builds the game as a native program (docs in `../docs/1080_PC_PORT_PLAN.md` of the monorepo, section 29).
